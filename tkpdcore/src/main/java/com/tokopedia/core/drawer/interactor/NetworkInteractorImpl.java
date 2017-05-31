@@ -1,9 +1,10 @@
 package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -11,6 +12,7 @@ import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
@@ -77,6 +79,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
+                    saveUserData(response.body().convertDataObj(ProfileData.class));
                     listener.onSuccess(parseToDrawerHeader(response.body()
                             .convertDataObj(ProfileData.class)));
                 } else {
@@ -89,6 +92,17 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    private void saveUserData(ProfileData userData){
+        try {
+
+            AnalyticsCacheHandler cacheHandler = new AnalyticsCacheHandler();
+            cacheHandler.setUserDataCache(userData);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void getDeposit(Context context, final DepositListener listener) {
@@ -141,7 +155,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.onError("Terjadi Kesalahan Koneksi");
                     }
 
                     @Override
@@ -372,6 +386,10 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(TopCashItem topCashItemResponse) {
                 listener.onSuccess(topCashItemResponse);
+                Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+                intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
+                        topCashItemResponse);
+                context.sendBroadcast(intent);
             }
         };
     }

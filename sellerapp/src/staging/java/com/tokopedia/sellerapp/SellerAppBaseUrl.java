@@ -20,5 +20,6 @@ public class SellerAppBaseUrl {
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant-staging.tokopedia.com/";
     public static final String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-staging.tokopedia.com/";
+    public static final String TOKOPEDIA_CART_DOMAIN = "http://fs-staging.tokopedia.net/tkpdcart/";
     public static final String BASE_ORDER_APP = "https://ws-staging.tokopedia.com/";
 }

@@ -797,7 +797,8 @@ public class ReputationViewShop extends TActivity {
 
     private void deleteComment() {
         showProgressDialog();
-        networkInteractor.deleteComment(this, getDeleteCommentParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
+        networkInteractor.deleteComment(this, getDeleteCommentParam(),
+                new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
                 dismissProgressDialog();
@@ -808,6 +809,7 @@ public class ReputationViewShop extends TActivity {
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 refreshData();
+                holderComment.postCommentView.setVisibility(View.VISIBLE);
             }
 
             @Override

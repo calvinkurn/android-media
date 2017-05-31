@@ -17,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -41,7 +42,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public static final int PROCESS_ORDER = 1;
     private boolean isRefresh = false;
     private boolean inhibit_spinner_deadline = true;
-    private LinearLayoutManager linearLayoutManager;
     private boolean shouldRefreshList = false;
 
     public static FragmentSellingNewOrder createInstance() {
@@ -93,7 +93,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         page = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, getActivity(), R.layout.selling_order_list_item, OrderViewHolder.class) {
             @Override
             protected void populateViewHolder(OrderViewHolder viewHolder, OrderShippingList model, int position) {
@@ -162,17 +161,18 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
         list = (RecyclerView) view.findViewById(R.id.order_list);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        mainView = (CoordinatorLayout) view.findViewById(R.id.root);
+        mainView = view.findViewById(R.id.root);
+
         initView();
         return view;
     }
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        setRefreshPullEnable(true);
-        list.setLayoutManager(linearLayoutManager);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_order, null);
         search = (SearchView) filterLayout.findViewById(R.id.search);
@@ -182,6 +182,12 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         deadline = (Spinner) filterLayout.findViewById(R.id.deadline_spinner);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterLayout);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     @Override
@@ -198,13 +204,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
-            }
-        });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.show();
+                presenter.onScrollList(((LinearLayoutManager) list.getLayoutManager()).findLastVisibleItemPosition() == list.getLayoutManager().getItemCount() - 1);
             }
         });
     }
@@ -217,7 +217,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
-
         presenter.getOrderList(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);

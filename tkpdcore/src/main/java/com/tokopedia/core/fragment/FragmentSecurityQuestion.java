@@ -31,10 +31,10 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
@@ -44,6 +44,7 @@ import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -111,6 +112,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
     IncomingSmsReceiver smsReceiver;
+    boolean isRunningTimer;
 
     public interface SecurityQuestionListener {
         void onSuccess();
@@ -130,12 +132,13 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     private SecurityQuestionListener Listener;
 
 
-    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, SecurityQuestionListener listener) {
+    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, String email, SecurityQuestionListener listener) {
         FragmentSecurityQuestion fragment = new FragmentSecurityQuestion();
         Bundle args = new Bundle();
         args.putInt(SECURITY_1_KEY, Security1);
         args.putInt(SECURITY_2_KEY, Security2);
         args.putString(USER_ID_KEY, UserID);
+        args.putString(EMAIL, email);
         fragment.setArguments(args);
         fragment.Listener = listener;
         return fragment;
@@ -251,34 +254,37 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void startTimer() {
+        if(!isRunningTimer){
+            countDownTimer = new CountDownTimer(90000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    try {
+                        isRunningTimer = true;
+                        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+                        vSendOtp.setEnabled(false);
+                        vSendOtp.setText(String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
 
-        countDownTimer = new CountDownTimer(90000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                try {
-                    MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
-                    vSendOtp.setEnabled(false);
-                    vSendOtp.setText("" + String.format(FORMAT,
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                        vSendOtpCall.setVisibility(View.GONE);
 
-                    vSendOtpCall.setVisibility(View.GONE);
-
-                } catch (Exception e) {
-                    cancel();
+                    } catch (Exception e) {
+                        cancel();
+                    }
                 }
-            }
 
-            public void onFinish() {
-                try {
-                    enableOtpButton();
-                } catch (Exception e) {
+                public void onFinish() {
+                    try {
+                        isRunningTimer = false;
+                        enableOtpButton();
+                    } catch (Exception e) {
 
+                    }
                 }
-            }
 
-        }.start();
+            }.start();
+        }
         vInputOtp.requestFocus();
     }
 
@@ -309,12 +315,17 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-//        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-        verifyTrueCaller.setVisibility(View.GONE);
+        if(GlobalConfig.isSellerApp()){
+            verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+            if(b) UnifyTracking.eventTruecallerImpression();
+        }else {
+            verifyTrueCaller.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void initListener() {
+        isRunningTimer = false;
         vSaveBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -325,12 +336,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                     presenter.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
                     presenter.doAnswerQuestion(vInputOtp.getText().toString());
                 }
-            }
-        });
-        vSendOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.doRequestOtp();
             }
         });
 
@@ -354,6 +359,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             @Override
             public void onClick(View v) {
                 presenter.getPhoneTrueCaller();
+                UnifyTracking.eventClickTruecaller();
             }
         });
     }
@@ -374,8 +380,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-            presenter.doRequestOtp();
+//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
+//                && !verifyTrueCaller.isShown())
+//            presenter.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
@@ -435,6 +442,15 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
                 presenter.showTrueCaller(getActivity());
+                if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true") && !verifyTrueCaller.isShown()) {
+                    presenter.doRequestOtp();
+                }
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtp();
+                    }
+                });
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(presenter.getOtpSendString());
@@ -443,9 +459,15 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.GONE);
                 vSendOtpCall.setVisibility(View.GONE);
                 verifyTrueCaller.setVisibility(View.GONE);
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtpToEmail();
+                    }
+                });
+                presenter.doRequestOtpToEmail();
                 break;
         }
-        ;
         vQuestion.setText(data.getTitle());
     }
 

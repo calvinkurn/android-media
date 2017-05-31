@@ -26,6 +26,7 @@
     <dimen name="margin_vl">40dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
     <dimen name="padding_vvs">3dp</dimen>
+    <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_small">10dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
@@ -138,6 +139,7 @@
     <dimen name="text_size_xsmall">11sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_xlarge">20sp</dimen>
     <dimen name="text_size_xxxlarge">30sp</dimen>
@@ -183,4 +185,9 @@
     <dimen name="banner_margin">2dp</dimen>
     <dimen name="drop_down_indicator_width">10dp</dimen>
     <dimen name="drop_down_indicator_height">5dp</dimen>
+    <dimen name="product_grid_padding">10dp</dimen>
+    <dimen name="top_ads_separator_height">15dp</dimen>
+
+    <dimen name="spacing_show_case">12dp</dimen>
+    <dimen name="arrow_width_show_case">16dp</dimen>
 </resources>

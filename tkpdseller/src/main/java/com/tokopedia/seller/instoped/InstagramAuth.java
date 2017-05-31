@@ -78,7 +78,6 @@ public class InstagramAuth {
 
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.replace(R.id.add_product_container, authenticationDialog);
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 

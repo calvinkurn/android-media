@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.inboxmessage.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,16 +43,14 @@ public class SendMessageActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentByTag(SendMessageFragment.class.getSimpleName());
-        if (fragment != null && fragment.getActivity() == null) {
-            finish();
-            startActivity(getIntent());
-        } else if (fragment == null) {
-            SendMessageFragment sendMessageFragment = SendMessageFragment.createInstance(getIntent().getExtras());
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.container, sendMessageFragment, sendMessageFragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        if (fragment == null) {
+            fragment = SendMessageFragment.createInstance(getIntent().getExtras());
         }
+
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 
     @Override

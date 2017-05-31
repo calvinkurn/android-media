@@ -1,23 +1,26 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -25,9 +28,15 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetailGroupPresenter> {
 
-    private TopAdsLabelView items;
+    public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
+    private LabelView items;
 
     private GroupAd ad;
+
+    OnTopAdsDetailGroupListener listener;
+    public interface OnTopAdsDetailGroupListener{
+        void startShowCase();
+    }
 
     public static Fragment createInstance(GroupAd groupAd, String adIs) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -41,7 +50,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     protected void initView(View view) {
         super.initView(view);
-        items = (TopAdsLabelView) view.findViewById(R.id.items);
+        items = (LabelView) view.findViewById(R.id.items);
         name.setTitle(getString(R.string.label_top_ads_groups));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.black_fifty_four_percent));
         items.setOnClickListener(new View.OnClickListener() {
@@ -101,12 +110,45 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        this.ad = (GroupAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.ad = (GroupAd) super.ad;
+        } else {
+            this.ad = (GroupAd) ad;
+        }
+        if (this.ad == null) return;
         items.setContent(String.valueOf(this.ad.getTotalItem()));
         if(this.ad.getTotalItem() > 0){
             items.setVisibleArrow(true);
             items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         }
+        if (listener != null) {
+            listener.startShowCase();
+        }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof  OnTopAdsDetailGroupListener) {
+            listener = (OnTopAdsDetailGroupListener) context;
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof  OnTopAdsDetailGroupListener) {
+            listener = (OnTopAdsDetailGroupListener) activity;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     void onProductItemClicked() {
@@ -125,4 +167,27 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        super.onSaveState(state);
+        state.putParcelable(GROUP_AD_PARCELABLE, ad);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        ad = savedState.getParcelable(GROUP_AD_PARCELABLE);
+        onAdLoaded(ad);
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
+    }
+
+    public View getProductView(){
+        return items;
+    }
+
 }

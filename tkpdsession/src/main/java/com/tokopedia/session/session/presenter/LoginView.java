@@ -27,7 +27,7 @@ public interface LoginView extends BaseView {
 
     LoginFragment.FocusPair validateSignIn();
 
-    void moveToFragmentSecurityQuestion(int security1, int security2, int userId);
+    void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email);
 
     void notifyAutoCompleteAdapter();
 
@@ -54,4 +54,6 @@ public interface LoginView extends BaseView {
     void triggerSaveAccount();
 
     void setSmartLock(int rcRead);
+
+    void setSmartLock(int rcSaveSecurityQuestion, String username, String password);
 }

@@ -140,6 +140,7 @@ public class TkpdCache {
         public static final String FAVORITE_SHOP = "FAVORITE_SHOP";
         public static final String RECOMMEND_SHOP = "RECOMMEND_SHOP";
         public static final String FAVORITE_PAGING = "FAVORITE_PAGING";
+        public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
 
         public static final String PROMO = "PROMO";
 
@@ -180,6 +181,8 @@ public class TkpdCache {
         public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
 
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
+
+        public static final String CATEOGRY_HEADER_LEVEL = "CATEGORY_LEVEL_";
     }
 
 }

@@ -32,6 +32,7 @@ import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -72,7 +73,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     private static final String ORDER_ID = "OrderID";
 
-    private LinearLayoutManager linearLayoutManager;
     private BaseSellingAdapter adapter;
     private Dialog editRefDialog;
     private TkpdProgressDialog progressDialog;
@@ -234,7 +234,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         mPaging = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<SellingStatusTxModel, TransactionViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, TransactionViewHolder.class) {
             @Override
             protected void populateViewHolder(TransactionViewHolder viewHolder, final SellingStatusTxModel model, int position) {
@@ -282,27 +281,26 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
         recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         rootView = (CoordinatorLayout) view.findViewById(R.id.root);
-
         initView();
         return view;
     }
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
-        setRefreshPullEnable(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_transaction, null);
         searchTxt = (SearchView) filterView.findViewById(R.id.search);
         startDate = (EditText) filterView.findViewById(R.id.start_date);
-        endDate = (EditText) filterView.findViewById(R.id.end_date);
+
+        endDate = (EditText)filterView.findViewById(R.id.end_date);
+
         spinnerFilter = (Spinner) filterView.findViewById(R.id.transaction_filter);
-        searchbtn = (TextView) filterView.findViewById(R.id.search_button);
+        searchbtn =  (TextView) filterView.findViewById(R.id.search_button);
 
         datePicker = DatePickerV2.createInstance(getActivity());
         spinnerFilter.setOnItemSelectedListener(onFilterSelected());
@@ -313,6 +311,12 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         bottomSheetDialog.setContentView(filterView);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         setDate();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -385,13 +389,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
-            }
-        });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.show();
+                presenter.onScrollList(((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }

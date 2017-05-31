@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -88,16 +90,14 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(getLayoutId(), container, false);
-        TitleMenuListView = (ListView) parentView.findViewById(R.id.menu_list);
-        return parentView;
-
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        TitleMenuListView = (ListView) view.findViewById(R.id.menu_list);
+        return view;
     }
 
     @Override
     public void initView() {
         Refresh = new RefreshHandler(getActivity(), getView(), refreshListener());
-        Refresh.setPullEnabled(false);
         TitleMenuListView.setAdapter(ListViewPeopleTransactionSummaryAdapter);
         TitleMenuListView.setOnItemClickListener(gridListener());
     }
@@ -251,7 +251,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
             }
             Refresh.finishRefresh();
             ListViewPeopleTransactionSummaryAdapter.notifyDataSetChanged();
-            Refresh.setPullEnabled(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

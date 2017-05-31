@@ -2,9 +2,12 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -24,33 +27,48 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.BuildConfig;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.BuildConfig;
+import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
+import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
+import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
+import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
 import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
@@ -61,6 +79,7 @@ import com.tokopedia.discovery.view.BrowseProductParentView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +93,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_I
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
-        BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
+        BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener, ProductFragment.ProductFragmentListener {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -118,10 +137,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void initDiscoverySearchView() {
+    public void initDiscoverySearchView(String lastQuery) {
         discoverySearchView.setActivity(this);
         discoverySearchView.setOnQueryTextListener(this);
         discoverySearchView.setOnSearchViewListener(this);
+        discoverySearchView.setLastQuery(lastQuery);
     }
 
     @Override
@@ -301,10 +321,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
+    public BrowseProductModel getDataForBrowseProduct() {
         Fragment fragment = fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof BrowseProductParentView) {
-            return ((BrowseProductParentView) fragment).getDataForBrowseProduct(firstTimeOnly);
+            return ((BrowseProductParentView) fragment).getDataForBrowseProduct();
         } else {
             return null;
         }
@@ -381,11 +401,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void openFilter(DataValue filterAttribute,
                            String source,
                            String parentDepartment,
+                           String departmentId,
                            Map<String, String> filters) {
         DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                 filters, getProductBreadCrumb(),
                 filterAttribute.getFilter(),
-                parentDepartment, source);
+                parentDepartment, source, departmentId);
     }
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {
@@ -438,6 +459,24 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
+    public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
+        if (context == null) return;
+
+        Intent intent = new Intent(context, BrowseProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        bundle.putString(EXTRA_SOURCE, source);
+        if (title != null) {
+            bundle.putString(EXTRA_TITLE, title);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
 
     @Override
     public void showLoading(boolean isLoading) {
@@ -498,9 +537,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void renderUpperCategoryLevel(SimpleCategory simpleCategory) {
-        browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
+        browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
-        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
+        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(),true);
     }
 
     @Override
@@ -558,6 +597,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         return shareUrl;
     }
 
+    @Override
+    public String getSource() {
+        if (browsePresenter != null && browsePresenter.getBrowseProductActivityModel() != null) {
+            return browsePresenter.getBrowseProductActivityModel().getSource();
+        } else {
+            return "";
+        }
+    }
+
     public void removeEmptyState() {
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
         NetworkErrorHelper.removeEmptyState(container);
@@ -589,9 +637,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         return browsePresenter.getGridType();
     }
 
-    private void renderNewCategoryLevel(String departementId, String name) {
-        if (departementId!=null && name!=null) {
-            toolbar.setTitle(name);
+    private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
+        if (departementId!=null) {
+            String toolbarTitle;
+            if (name!=null) {
+                toolbarTitle = name;
+            } else {
+                toolbarTitle = getString(R.string.title_activity_browse_category);
+            }
+            toolbar.setTitle(toolbarTitle);
             setFragment(
                     BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel()),
                     BrowseParentFragment.FRAGMENT_TAG
@@ -601,7 +655,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
-            parentFragment.setupWithTabViewPager();
         }
     }
 
@@ -609,7 +662,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         browsePresenter.onRenderLowerCategoryLevel(
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
-        renderNewCategoryLevel(child.getId(),child.getName());
+        renderNewCategoryLevel(child.getId(),child.getName(),false);
+
     }
 
     @Override
@@ -623,5 +677,14 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         } else {
             browsePresenter.onBackPressed();
         }
+    }
+
+    @Override
+    public String getDepartmentId() {
+        if(browsePresenter != null) {
+            return browsePresenter.getBrowseProductActivityModel().getDepartmentId();
+        }
+
+        return null;
     }
 }

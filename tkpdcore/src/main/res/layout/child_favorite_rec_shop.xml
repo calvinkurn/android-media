@@ -2,33 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small"
-    >
+    android:paddingBottom="@dimen/padding_small">
 
     <LinearLayout
         android:id="@+id/rec_shop_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginBottom="@dimen/margin_small"
-        >
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            >
+            android:background="@color/white">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small"
                 android:paddingBottom="@dimen/padding_vs"
-                android:singleLine="true"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingStart="@dimen/margin_small"
+                android:paddingEnd="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:maxLines="1"
                 android:text="@string/shop_reccomendation"
                 android:textStyle="bold" />
 
@@ -42,7 +41,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rec_shop_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/recommend_shop_height"
+                android:layout_height="wrap_content"
                 android:scrollbars="horizontal" />
         </RelativeLayout>
     </LinearLayout>

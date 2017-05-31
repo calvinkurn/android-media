@@ -25,17 +25,18 @@ public interface BrowseView {
 
     boolean isFragmentCreated(String TAG);
 
-    BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly);
+    BrowseProductModel getDataForBrowseProduct();
     NetworkParam.Product getProductParam();
     Context getContext();
     boolean checkHasFilterAttrIsNull(int activeTab);
     void openFilter(DataValue filterAttribute,
                     String source,
                     String parentDepartment,
+                    String departmentId,
                     Map<String, String> filters);
     void openSort(DataValue filterAttribute, String source);
 
-    void initDiscoverySearchView();
+    void initDiscoverySearchView(String lastQuery);
 
     void initToolbar(String title, boolean isClickable);
 
@@ -66,4 +67,5 @@ public interface BrowseView {
     void startShareActivity(ShareData shareData);
 
     String getShareUrl();
+    String getSource();
 }

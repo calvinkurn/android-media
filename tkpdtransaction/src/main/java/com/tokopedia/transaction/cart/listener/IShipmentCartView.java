@@ -68,4 +68,10 @@ public interface IShipmentCartView {
     void renderEmptyShipmentPackageSpinner();
 
     void showSnackbar(String message);
+
+    void renderErrorEditLocationShipmentNoConnection();
+
+    void renderErrorEditShipmentTimeout();
+
+    void renderEditShipmentErrorSnackbar(String errorMessage);
 }

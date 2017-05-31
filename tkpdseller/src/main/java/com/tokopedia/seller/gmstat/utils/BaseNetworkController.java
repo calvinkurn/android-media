@@ -8,6 +8,7 @@ import com.google.gson.Gson;
  * Created by normansyahputa on 8/31/16.
  */
 
+@Deprecated
 public abstract class BaseNetworkController {
     protected Context context;
     protected Gson gson;

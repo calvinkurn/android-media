@@ -32,10 +32,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gmsubscribe.GMSubscribeActivity"
-            android:label="Berlangganan Gold Merchant"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.view.SellerHomeActivity"
             android:exported="true"
             android:label="Home"
@@ -66,7 +62,7 @@
             android:value="@string/key_gtm" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga" />
+            android:value="@string/key_ga"/>
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
@@ -76,12 +72,16 @@
             android:value="OQcSB25ec2f92263c41b5a3d10152ace7888e" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
+
         <activity
             android:name="com.tokopedia.sellerapp.gmstat.activities.GMStatActivity"
             android:label="@string/title_activity_gmstat"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"></activity>
-        <activity android:name=".truecaller.TruecallerActivity"/>
+
+        <activity android:name=".truecaller.TruecallerActivity"
+            android:screenOrientation="portrait"
+            />
 
         <provider
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"

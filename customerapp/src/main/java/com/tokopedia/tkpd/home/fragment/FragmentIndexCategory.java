@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -37,11 +39,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
 import com.tokopedia.core.network.entity.home.Brands;
@@ -50,14 +58,13 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -104,7 +111,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed {
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -128,6 +135,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private SnackbarRetry messageSnackbar;
+    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -143,14 +152,17 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private View banner;
         private ConvenientBanner bannerPager;
         private RelativeLayout bannerContainer;
+        private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView tickerContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
+        CardView cardBrandLayout;
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
+        TextView textViewAllBrands;
         public LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
@@ -253,6 +265,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void OnError() {
                 if (holder.MainView.getParent() != null && holder.bannerContainer != null)
                     ((ViewGroup) holder.MainView.getParent()).removeView(holder.bannerContainer);
+                showGetHomeMenuNetworkError();
             }
         };
     }
@@ -316,17 +329,21 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
             @Override
             public void onSuccess(Brands brands) {
-                holder.rlBrands.setVisibility(View.VISIBLE);
+                holder.cardBrandLayout.setVisibility(View.VISIBLE);
                 brandsRecyclerViewAdapter.setDataList(brands);
                 brandsRecyclerViewAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError() {
-                holder.rlBrands.setVisibility(View.GONE);
+                holder.cardBrandLayout.setVisibility(View.GONE);
             }
         });
         rechargeCategoryPresenter.fecthDataRechargeCategory();
+        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
+                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
+        ));
     }
 
     private void startSlideTicker() {
@@ -409,7 +426,10 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.cardBrandLayout = (CardView) holder.MainView.findViewById(R.id.card_brand_layout);
         holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
+        holder.tokoCashHeaderView = (TokoCashHeaderView) holder
+                .MainView.findViewById(R.id.toko_cash_header_layout);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
@@ -440,8 +460,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCategoryClicked(CategoryItemModel categoryItemModel, int position) {
-        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null)
+        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null){
+            TrackingUtils.sendMoEngageClickMainCategoryIcon(categoryItemModel.getName());
             navigateToNextActivity(categoryItemModel.getRedirectValue(), categoryItemModel.getName());
+        }
+
     }
 
     @Override
@@ -466,11 +489,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void navigateToNextActivity(String depID, String title) {
-        BrowseProductActivity.moveTo(
+        IntermediaryActivity.moveTo(
                 getActivity(),
                 depID,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 title
         );
 
@@ -485,9 +506,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     /**
      * Brands a.k.a. Official Store
      * Created by Hafizh Herdi 20173001
+     * Modified by Oka 20170315 (add view all official store)
      */
     private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.textViewAllBrands = (TextView) holder.MainView.findViewById(R.id.text_view_all_brands);
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
@@ -506,8 +529,29 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         false)
         );
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+        holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
 
+    private View.OnClickListener onMoreBrandsClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SessionHandler.isV4Login(getContext())) {
+                    UnifyTracking.eventViewAllOSLogin();
+                } else {
+                    UnifyTracking.eventViewAllOSNonLogin();
+                }
+
+                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+            }
+        };
+    }
+
+    private void openWebViewBrandsURL(String url) {
+        if (!url.trim().equals("")) {
+            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
+        }
+    }
 
     /* TOP PICKS */
     private void initTopPicks() {
@@ -592,14 +636,20 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void showGetHomeMenuNetworkError() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                homeCatMenuPresenter.fetchHomeCategoryMenu(true);
-                topPicksPresenter.fetchTopPicks();
-                brandsPresenter.fetchBrands();
-            }
-        }).showRetrySnackbar();
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    rechargeCategoryPresenter.fecthDataRechargeCategory();
+                    getAnnouncement();
+                    getPromo();
+                    homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                    topPicksPresenter.fetchTopPicks();
+                    brandsPresenter.fetchBrands();
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
     }
 
     @Override
@@ -637,10 +687,17 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
+            if (messageSnackbar != null) {
+                messageSnackbar.resumeRetrySnackbar();
+            }
             ScreenTracking.screen(getScreenName());
+            TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
+            if (messageSnackbar != null) {
+                messageSnackbar.pauseRetrySnackbar();
+            }
             hideKeyboard();
         }
 
@@ -659,6 +716,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
     //region recharge
@@ -731,7 +789,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             TabLayout.Tab tab = holder.tabLayoutRecharge.newTab();
             tab.setText(category.getAttributes().getName());
             holder.tabLayoutRecharge.addTab(tab);
-            if (category.getAttributes().getIsNew()) {
+            if (category.getAttributes().isNew()) {
                 newRechargePositions.add(i);
 
             }
@@ -821,8 +879,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (width / 5);
-        return widthOfHomeMenuView;
+        return width / 5;
     }
 
     @Override
@@ -831,5 +888,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.closeTicker();
     }
 
+    @Override
+    public void onReceivedTokoCashData(TopCashItem tokoCashData) {
+        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
+        holder.tokoCashHeaderView.renderData(tokoCashData);
+        CommonUtils.dumper("PORING RECEIVED");
+    }
+
+    @Override
+    public void onTokoCashDataError(String errorMessage) {
+
+    }
 
 }

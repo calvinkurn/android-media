@@ -3,6 +3,7 @@ package com.tokopedia.core.shopinfo.models.shopmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.var.Badge;
 
 import java.util.ArrayList;
@@ -46,6 +47,9 @@ public class Info {
     @SerializedName("shop_is_gold")
     @Expose
     public int shopIsGold;
+    @SerializedName("shop_is_gold_badge")
+    @Expose
+    public boolean shopIsGoldBadge;
     @SerializedName("shop_open_since")
     @Expose
     public String shopOpenSince;
@@ -97,9 +101,19 @@ public class Info {
     @SerializedName("shop_domain")
     @Expose
     public String shopDomain;
+    @SerializedName("shop_is_free_returns")
+    @Expose
+    public String shopIsFreeReturns;
 
     @SerializedName("badges")
     @Expose
     public List<Badge> badges = new ArrayList<>();
+
+    public boolean isFreeReturns(){
+        if(StringUtils.isNotBlank(shopIsFreeReturns) && Double.parseDouble( shopIsFreeReturns) > 0){
+            return true;
+        }
+        return false;
+    }
 
 }

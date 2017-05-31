@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.PreviewProductImage;
@@ -41,6 +39,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -72,10 +71,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static com.raizlabs.android.dbflow.config.FlowLog.Level.D;
-import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
 
 /**
  * ProductDetailPresenterImpl
@@ -176,6 +171,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void processToIntermediary(@NonNull Context context, @NonNull Bundle bundle) {
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
+        intent.putExtras(bundle);
+        viewListener.navigateToActivity(intent);
+    }
+
+    @Override
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
@@ -269,36 +271,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         pdt.addProduct(product.getProduct());
 
         UnifyTracking.eventPDPDetail(pdt);
+        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
     }
 
     @Override
     public void requestProductDetail(@NonNull final Context context,
                                      @NonNull final ProductPass productPass,
-                                     final int type,
-                                     final boolean forceNetwork) {
-        if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
-        if (forceNetwork) {
-            getProductDetailFromNetwork(context, productPass);
-        } else {
-            getProductDetailFromCache(productPass,
-                    new CacheInteractor.GetProductDetailCacheListener() {
-                        @Override
-                        public void onSuccess(ProductDetailData productDetailData) {
-                            viewListener.onProductDetailLoaded(productDetailData);
-                            viewListener.hideProgressLoading();
-                            viewListener.refreshMenu();
-                            requestOtherProducts(context,
-                                    NetworkParam.paramOtherProducts(productDetailData));
-                            setGoldMerchantFeatures(context, productDetailData);
-                        }
+                                     final int type) {
 
-                        @Override
-                        public void onError(Throwable e) {
-                            getProductDetailFromNetwork(context, productPass);
-                            e.printStackTrace();
-                        }
-                    });
-        }
+        if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
+
+        getProductDetailFromNetwork(context, productPass);
     }
 
     @Override
@@ -378,7 +361,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onSuccessToWarehouse();
                             requestProductDetail(context, ProductPass.Builder.aProductPass()
                                             .setProductId(productId).build(),
-                                    ProductDetailFragment.RE_REQUEST, true);
+                                    ProductDetailFragment.RE_REQUEST);
                         }
                     }
 
@@ -642,7 +625,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                                     ProductPass.Builder.aProductPass()
                                                             .setProductId(productId)
                                                             .build(),
-                                                    ProductDetailFragment.RE_REQUEST, true);
+                                                    ProductDetailFragment.RE_REQUEST);
                                         }
                                     }
 
@@ -672,7 +655,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess() {
                         viewListener.finishLoadingWishList();
                         viewListener.showDialog(createSuccessWishListDialog(context));
-                        viewListener.updateWishListStatus(1);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_IN_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -694,7 +677,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
-                        viewListener.updateWishListStatus(0);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -743,8 +726,28 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     public void getProductDetailFromCache(@NonNull final ProductPass productPass,
-                                          @NonNull CacheInteractor.GetProductDetailCacheListener listener) {
-        cacheInteractor.getProductDetailCache(productPass.getProductId(), listener);
+                                          final Context context) {
+
+        cacheInteractor.getProductDetailCache(productPass.getProductId(),
+                new CacheInteractor.GetProductDetailCacheListener() {
+                    @Override
+                    public void onSuccess(ProductDetailData productDetailData) {
+                        viewListener.onProductDetailLoaded(productDetailData);
+                        viewListener.hideProgressLoading();
+                        viewListener.refreshMenu();
+                        requestOtherProducts(context,
+                                NetworkParam.paramOtherProducts(productDetailData));
+                        setGoldMerchantFeatures(context, productDetailData);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        viewListener.showProductDetailRetry();
+                        viewListener.hideProgressLoading();
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     public void getProductDetailFromNetwork(@NonNull final Context context,
@@ -764,14 +767,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onTimeout() {
-                        viewListener.showProductDetailRetry();
-                        viewListener.hideProgressLoading();
+                        getProductDetailFromCache(productPass, context);
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.showProductDetailRetry();
-                        viewListener.hideProgressLoading();
+                        getProductDetailFromCache(productPass, context);
                     }
 
                     @Override
@@ -817,6 +818,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {

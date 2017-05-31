@@ -20,15 +20,15 @@ import butterknife.ButterKnife;
  */
 
 public class TransactionViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
-    private ImageView icon;
-    private TextView subtitle;
-    private TextView title;
+    ImageView icon;
+    TextView subtitle;
+    TextView title;
     public LinearLayout overflow_btn;
-    private LinearLayout deadLineContainer;
-    private TextView status;
-    private TextView deadlineDate;
-    private TextView invoice;
-    private LinearLayout itemLayout;
+    LinearLayout deadLineContainer;
+    TextView status;
+    TextView deadlineDate;
+    TextView invoice;
+    LinearLayout itemLayout;
 
     public TransactionViewHolder(View itemView) {
         super(itemView);

@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -84,7 +84,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     @Override
     protected void onFirstTimeLaunched() {
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
-            presenter.resetPassword();
+            onSuccessResetPassword();
         }
         if (getArguments().getBoolean(ARGS_REMOVE_FOOTER, false)) {
             registerButton.setVisibility(View.GONE);
@@ -160,7 +160,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
         registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
-        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
+//        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {

@@ -1,15 +1,14 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.tokopedia.core.app.MainApplication;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
@@ -29,6 +28,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
+        initializeDatabase();
         super.onCreate();
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
@@ -55,8 +55,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
+
+        TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         TkpdBaseURL.BASE_ORDER_APP = ConsumerAppBaseUrl.BASE_ORDER_APP;
 
+    }
+
+    public void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
     }
 
 }

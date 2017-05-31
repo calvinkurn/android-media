@@ -49,19 +49,23 @@ public class RechargeOperatorModel extends BaseModel {
 
     @Column
     @Expose
-    public Boolean showPrice;
+    public boolean showPrice;
 
     @Column
     @Expose
-    public Boolean showProduct;
+    public boolean showProduct;
 
     @Column
     @Expose
-    public Integer weight;
+    public int weight;
 
     @Column
     @Expose
-    public Integer defaultProductId;
+    public int defaultProductId;
+
+    @Column
+    @Expose
+    public boolean allowAlphanumeric;
 
     @Override
     public String toString() {

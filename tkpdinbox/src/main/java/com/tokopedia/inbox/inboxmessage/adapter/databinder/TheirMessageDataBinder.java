@@ -41,8 +41,7 @@ import butterknife.ButterKnife;
 public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.ViewHolder>
         implements InboxMessageConstant {
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.user_ava)
         ImageView avatar;
@@ -59,54 +58,61 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnCreateContextMenuListener(this);
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu,
-                                        View view,
-                                        ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem actionCopy = contextMenu.add(view.getId(), R.id.action_copy, 99, R.string.menu_copy);
-            actionCopy.setOnMenuItemClickListener(this);
-
-            if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
-                MenuItem actionReportSpam = contextMenu.add(view.getId(), R.id.action_report, 99,R.string.action_report_as_spam);
-                actionReportSpam.setOnMenuItemClickListener(this);
-            }
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            int i = menuItem.getItemId();
-            if (i == R.id.action_copy) {
-                ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label", message.getText());
-                clipboard.setPrimaryClip(clip);
-                return true;
-            } else if (i == R.id.action_report) {
-                if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage(R.string.dialog_spam);
-                    builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+            message.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu contextMenu, final View view, ContextMenu.ContextMenuInfo menuInfo) {
+                    MenuItem actionCopy = contextMenu.add(view.getId(), R.id.action_copy, 99, R.string.menu_copy);
+                    actionCopy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            presenter.flagSpam(getAdapterPosition(), list.get(getAdapterPosition()));
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            int i = menuItem.getItemId();
+                            if (i == R.id.action_copy) {
+                                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("label", message.getText());
+                                clipboard.setPrimaryClip(clip);
+                                return true;
+                            } else {
+                                return false;
+                            }
                         }
                     });
-                    builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+
+                    if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
+                        MenuItem actionReportSpam = contextMenu.add(view.getId(), R.id.action_report, 99,R.string.action_report_as_spam);
+                        actionReportSpam.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                int i = menuItem.getItemId();
+                                if (i == R.id.action_report) {
+                                    if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setMessage(R.string.dialog_spam);
+                                        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                presenter.flagSpam(getAdapterPosition(), list.get(getAdapterPosition()));
+                                            }
+                                        });
+                                        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
+                                    }
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        });
+                    }
                 }
-                return true;
-            } else {
-                return false;
-            }
+            });
         }
+
     }
 
     ArrayList<InboxMessageDetailItem> list;

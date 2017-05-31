@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
@@ -61,6 +60,8 @@ public class ChangePhoneNumberRequestFragment
     ImageView buttonUploadAccountBook;
     ImageView idPhoto;
     ImageView accountBookPhoto;
+    View idPhotoView;
+    View accountBookPhotoView;
     ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
     View mainView;
@@ -153,16 +154,17 @@ public class ChangePhoneNumberRequestFragment
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         mainView = view.findViewById(R.id.main_view);
         contentView = view.findViewById(R.id.content_view);
-
+        idPhotoView = view.findViewById(R.id.upload_id_photo_view);
+        accountBookPhotoView = view.findViewById(R.id.upload_account_book_photo_view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
     }
 
     @Override
     protected void setViewListener() {
         buttonUploadAccountBook.setOnClickListener(onUploadAccountBook());
-        accountBookPhoto.setOnClickListener(onUploadAccountBook());
+        accountBookPhotoView.setOnClickListener(onUploadAccountBook());
         buttonUploadId.setOnClickListener(onUploadImageId());
-        idPhoto.setOnClickListener(onUploadImageId());
+        idPhotoView.setOnClickListener(onUploadImageId());
         buttonSubmit.setOnClickListener(onSubmit());
     }
 
@@ -272,12 +274,14 @@ public class ChangePhoneNumberRequestFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data != null
+        if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
                 && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
-            idPhoto.setVisibility(View.VISIBLE);
+            idPhotoView.setVisibility(View.VISIBLE);
+
             loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
             presenter.setIdImage(imageUploadHandler.getCameraFileloc());
         } else if (data != null
@@ -285,15 +289,16 @@ public class ChangePhoneNumberRequestFragment
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
-            idPhoto.setVisibility(View.VISIBLE);
+            idPhotoView.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
             presenter.setIdImage(data.getStringExtra(ImageGallery.EXTRA_URL));
-        } else if (data != null
+        } else if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
                 && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
-            accountBookPhoto.setVisibility(View.VISIBLE);
+            accountBookPhotoView.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
             presenter.setBankBookImage(imageUploadHandler.getCameraFileloc());
         } else if (data != null
@@ -301,7 +306,7 @@ public class ChangePhoneNumberRequestFragment
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
-            accountBookPhoto.setVisibility(View.VISIBLE);
+            accountBookPhotoView.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
             presenter.setBankBookImage(data.getStringExtra(ImageGallery.EXTRA_URL));
         }

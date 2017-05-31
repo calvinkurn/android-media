@@ -60,8 +60,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
+        WebViewGeneral.loadAuthUrl(url);
         WebViewGeneral.getSettings().setJavaScriptEnabled(true);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        WebViewGeneral.getSettings().setDomStorageEnabled(true);
         WebViewGeneral.setWebViewClient(new BaseWebViewClient(this));
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -73,7 +75,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 super.onProgressChanged(view, newProgress);
             }
         });
-        WebViewGeneral.loadAuthUrl(url);
         return fragmentView;
     }
 
@@ -117,6 +118,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onOverrideUrl(String url) {
         return false;
     }
 

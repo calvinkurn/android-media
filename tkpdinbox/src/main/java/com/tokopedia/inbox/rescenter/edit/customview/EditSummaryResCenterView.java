@@ -66,8 +66,8 @@ public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, Se
     public void renderData(@NonNull EditResCenterFormData data) {
         this.data = data;
         if (!isRelatedProduct(data)) {
-            solutionText.setText(data.getForm().getResolutionLast().getLastSolutionString());
-            remark.setText(data.getForm().getResolutionLast().getLastSolutionRemark());
+            solutionText.setText(data.getForm().getResolutionLast().getLastTroubleString());
+            remark.setVisibility(GONE);
             productRecyclerView.setVisibility(GONE);
         } else {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -92,7 +92,7 @@ public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, Se
         } else {
             flagCollapse.setImageResource(solutionText.getVisibility() == VISIBLE ? R.drawable.chevron_down : R.drawable.chevron_up);
             solutionText.setVisibility(solutionText.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            remark.setVisibility(remark.getVisibility() == VISIBLE ? GONE : VISIBLE);
+            remark.setVisibility(GONE);
         }
     }
 

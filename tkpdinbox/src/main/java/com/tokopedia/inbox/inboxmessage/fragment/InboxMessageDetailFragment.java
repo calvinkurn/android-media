@@ -21,6 +21,10 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageDetailAdapter;
 import com.tokopedia.inbox.inboxmessage.listener.InboxMessageDetailFragmentView;
@@ -29,10 +33,6 @@ import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDet
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.ToolTipUtils;
 
 import butterknife.BindView;
 
@@ -178,7 +178,7 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if ( bottom < oldBottom) {
+                if (bottom < oldBottom) {
                     mainList.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -255,13 +255,16 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 CommonUtils.dumper("NISNIS " + layoutManager.findFirstVisibleItemPosition() + " " + adapter.canLoadMore());
-                if ((layoutManager.findFirstVisibleItemPosition() == 0
-                        && adapter.canLoadMore() == 1)
-                        || adapter.getData().get(layoutManager.findFirstVisibleItemPosition()
-                        - adapter.canLoadMore()).getMessageReplyTimeFmt() == null) {
+                if (adapter.getData().size() == 0
+                        || ((layoutManager.findFirstVisibleItemPosition() == 0 && adapter.canLoadMore() == 1)
+                        || adapter.getData().get(
+                        layoutManager.findFirstVisibleItemPosition()
+                                - adapter.canLoadMore()).getMessageReplyTimeFmt() == null)) {
                     headerDate.setVisibility(View.GONE);
                 } else {
-                    headerDate.setText(adapter.getData().get(layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore()).getMessageReplyDateFmt());
+                    headerDate.setText(adapter.getData().get(
+                            layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore())
+                            .getMessageReplyDateFmt());
                 }
             }
         };
@@ -290,7 +293,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
 
         if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
             toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
-            toolbar.setSubtitle(inboxMessageDetail.getOpponent().getUserLabel());
+            InboxMessageItem messageItem = getArguments().getParcelable(PARAM_MESSAGE);
+            if (messageItem != null)
+                toolbar.setSubtitle(messageItem.getUserLabel());
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
@@ -347,7 +352,6 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         replyEditText.setEnabled(isEnabled);
         attachmentButton.setEnabled(isEnabled);
         sendButton.setEnabled(isEnabled);
-        refreshHandler.setPullEnabled(isEnabled);
         mainList.setEnabled(isEnabled);
         if (isEnabled) {
             header.setVisibility(View.VISIBLE);

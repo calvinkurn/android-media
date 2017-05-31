@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -66,18 +67,17 @@ import rx.subscriptions.CompositeSubscription;
 @RuntimePermissions
 public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener {
 
-    SearchView searchTxt;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
-    FloatingActionButton fab;
     CoordinatorLayout rootView;
+    SearchView searchTxt;
+    FloatingActionButton fab;
 
     private PagingHandler mPaging;
 
     private static final String ORDER_ID = "OrderID";
     public static final int REQUEST_CODE_BARCODE = 1;
 
-    private LinearLayoutManager linearLayoutManager;
     private BaseSellingAdapter adapter;
     private Dialog editRefDialog;
     private BottomSheetDialog bottomSheetDialog;
@@ -115,7 +115,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @Override
     protected void initPresenter() {
-        if (presenter == null) {
+        if(presenter==null) {
             presenter = new SellingStatusTransactionImpl(this, SellingStatusTransactionImpl.Type.STATUS);
         }
     }
@@ -173,10 +173,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public void onNetworkError(int type, Object... data) {
         swipeToRefresh.setRefreshing(false);
-        if (adapter.getListData().size() == 0) {
+        if(adapter.getListData().size() == 0) {
             adapter.setIsLoading(false);
             adapter.setIsRetry(true);
-        } else {
+        }else{
             NetworkErrorHelper.showSnackbar(getActivity());
         }
     }
@@ -190,15 +190,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         mPaging = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, StatusViewHolder.class) {
+        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(),  R.layout.selling_transaction_list_item, StatusViewHolder.class) {
             @Override
             protected void populateViewHolder(StatusViewHolder viewHolder, final SellingStatusTxModel model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
-                        if (adapter.isLoading()) {
+                        if(adapter.isLoading()) {
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
                         }
@@ -238,20 +237,17 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
         recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         rootView = (CoordinatorLayout) view.findViewById(R.id.root);
-
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         initView();
         return view;
     }
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
-        setRefreshPullEnable(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_status, null);
         searchTxt = (SearchView) filterView.findViewById(R.id.search);
@@ -261,6 +257,12 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterView);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -331,13 +333,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
-            }
-        });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.show();
+                presenter.onScrollList(((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }
@@ -388,8 +384,8 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_BARCODE) {
-                if (editRefDialog != null && editRefDialog.isShowing()) {
+            if(requestCode == REQUEST_CODE_BARCODE) {
+                if(editRefDialog != null && editRefDialog.isShowing()) {
                     ref.setText(CommonUtils.getBarcode(data));
                 }
             }
@@ -487,7 +483,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             public void onTrack(SellingStatusTxModel model) {
                 Bundle bundle = new Bundle();
                 bundle.putString(ORDER_ID, model.OrderId);
-                getActivity().startActivity(TrackingActivity.createInstance(getActivity(), bundle));
+                getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
             }
 
             @Override
@@ -549,31 +545,31 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -582,7 +578,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
     }
 
     private void createRetryPickupDialog(final String orderId, MenuItem retryMenu) {

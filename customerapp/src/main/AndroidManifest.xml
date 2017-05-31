@@ -16,6 +16,15 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+        <meta-data
+            android:name="APP_ID"
+            android:value="@string/key_moengage" />
+        <meta-data
+            android:name="SENDER_ID"
+            android:value="@string/key_sender_id" />
+        <meta-data
+            android:name="SKIP_GCM_REGISTRATION"
+            android:value="true" />
 
         <activity
             android:name="com.tokopedia.core.SplashScreen"
@@ -106,13 +115,13 @@
             android:value="@string/key_gtm" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga" />
+            android:value="@string/key_ga"/>
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="SjVFHa23dea572b1f4639907d58ccc3bff344" />
+            android:value="750vPeaf1a90a7d184daab0bdc49b1a0cee70" />
 
         <activity
             android:name=".home.ParentIndexHome"
@@ -141,7 +150,9 @@
 
         <activity android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".truecaller.TruecallerActivity"/>
+
+        <activity android:name=".truecaller.TruecallerActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

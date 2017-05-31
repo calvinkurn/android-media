@@ -41,11 +41,11 @@ public class TopAdsStatisticLabelView extends FrameLayout {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
-            titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
-            contentText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
-            contentColorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            titleText = styledAttributes.getString(R.styleable.LabelView_title);
+            contentText = styledAttributes.getString(R.styleable.LabelView_content);
+            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         } finally {
             styledAttributes.recycle();
         }

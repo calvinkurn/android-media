@@ -11,6 +11,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTopAdsSdk() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -138,6 +143,10 @@ dependencies {
 
     compile rootProject.ext.analyticsDependencies.appsflyer
     compile rootProject.ext.analyticsDependencies.localytics
+    compile (rootProject.ext.analyticsDependencies.moengage){
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    compile rootProject.ext.analyticsDependencies.moengageFCM
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -170,6 +179,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile getTopAdsSdk()
 
 }
 
