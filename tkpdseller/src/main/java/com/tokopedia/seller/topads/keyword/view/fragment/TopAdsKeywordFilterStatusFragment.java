@@ -1,10 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.util.SparseArrayCompat;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 
 /**
@@ -13,12 +16,22 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 
 public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragment {
 
+    SparseArrayCompat<Integer> map = new SparseArrayCompat<>();
+
     public static TopAdsKeywordFilterStatusFragment createInstance(int status) {
         TopAdsKeywordFilterStatusFragment fragment = new TopAdsKeywordFilterStatusFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        map.put(0, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
+        map.put(1, KeywordStatusTypeDef.KEYWORD_STATUS_ACTIVE);
+        map.put(2, KeywordStatusTypeDef.KEYWORD_STATUS_INACTIVE);
     }
 
     public String[] getStatusValueList() {
@@ -72,5 +85,15 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public Intent addResult(Intent intent) {
+        if (selectedAdapterPosition > -1) {
+            Bundle extras = new Bundle();
+            extras.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, map.get(selectedAdapterPosition));
+            intent.putExtras(extras);
+        }
+        return intent;
     }
 }
