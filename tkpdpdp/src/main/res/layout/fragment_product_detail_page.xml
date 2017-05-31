@@ -20,7 +20,7 @@
             app:expandedTitleMarginStart="48dp"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
             app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
@@ -38,6 +38,7 @@
                 app:layout_collapseMode="pin"
                 app:contentInsetStart="0dp"
                 app:contentInsetLeft="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
                 app:contentInsetStartWithNavigation="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 

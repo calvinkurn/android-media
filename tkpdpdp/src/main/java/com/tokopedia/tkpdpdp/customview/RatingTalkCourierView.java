@@ -75,9 +75,9 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 .setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
 
         String ulasan = getContext().getString(R.string.ulasan);
-        String review = data.getStatistic().getProductReviewCount() + ulasan;
+        String review = data.getStatistic().getProductReviewCount() + " " + ulasan;
         String diskusi = getContext().getString(R.string.diskusi);
-        String talk = data.getStatistic().getProductTalkCount() + diskusi;
+        String talk = data.getStatistic().getProductTalkCount() + " " + diskusi;
         String kurir = getContext().getString(R.string.kurir);
         tvReview.setText(review);
         tvTalk.setText(talk);
@@ -88,7 +88,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             courierCount = data.getShopInfo().getShopShipments().size();
         }
 
-        String courierText = String.valueOf(courierCount) + kurir;
+        String courierText = String.valueOf(courierCount) + " " + kurir;
         tvCourier.setText(courierText);
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
