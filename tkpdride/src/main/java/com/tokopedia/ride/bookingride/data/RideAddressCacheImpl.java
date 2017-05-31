@@ -34,7 +34,7 @@ public class RideAddressCacheImpl implements RideAddressCache {
         // set value
         cacheManager.setKey(RIDE_ADDRESS_CACHE);
         cacheManager.setValue(CacheUtil.convertListModelToString(entities, type));
-        cacheManager.setCacheDuration(3600);
+        cacheManager.setCacheDuration(259200);
         cacheManager.store();
     }
 
