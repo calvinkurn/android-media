@@ -22,6 +22,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -224,6 +225,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        stopNestedScrollingView();
     }
 
     @Override
@@ -948,5 +950,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             return noun + "s";
         }
         return noun;
+    }
+
+    private void stopNestedScrollingView() {
+        nsvContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        nsvContainer.setFocusable(true);
+        nsvContainer.setFocusableInTouchMode(true);
+        nsvContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.requestFocusFromTouch();
+                return false;
+            }
+        });
     }
 }
