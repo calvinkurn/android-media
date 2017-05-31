@@ -263,6 +263,7 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
                         wishlistNetworkParams.getTopAdsParams().getPage()
                 );
 
+
         return Observable.zip(topAdsHome,
                 Observable.just(favoriteTransformData),
                 new Func2<Response<TopAdsHome>, FavoriteTransformData, FavoriteTransformData>() {

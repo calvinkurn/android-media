@@ -13,7 +13,6 @@ import com.tokopedia.tkpd.home.feed.domain.interactor.GetAllFeedDataPageUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetDataFeedCacheUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetListShopIdUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetRecentProductUsecase;
-import com.tokopedia.tkpd.home.feed.domain.interactor.GetTopAdsUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.LoadMoreFeedUseCase;
 import com.tokopedia.tkpd.home.feed.view.FeedPresenter;
 
@@ -55,15 +54,6 @@ public class DataFeedModule {
 
     @DataFeedScope
     @Provides
-    GetTopAdsUseCase provideGetTopAdsUsecase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             FeedRepository feedRepository) {
-
-        return new GetTopAdsUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @DataFeedScope
-    @Provides
     GetListShopIdUseCase provideGetListShopIdUsecase(ThreadExecutor threadExecutor,
                                                      PostExecutionThread postExecutionThread,
                                                      FeedRepository feedRepository) {
@@ -77,16 +67,14 @@ public class DataFeedModule {
                                                         PostExecutionThread postExecutionThread,
                                                         FeedRepository feedRepository,
                                                         GetRecentProductUsecase recentProductUsecase,
-                                                        GetListShopIdUseCase getListShopIdUseCase,
-                                                        GetTopAdsUseCase getTopAdsUseCase) {
+                                                        GetListShopIdUseCase getListShopIdUseCase) {
 
         return new GetAllFeedDataPageUseCase(
                 threadExecutor,
                 postExecutionThread,
                 feedRepository,
                 recentProductUsecase,
-                getListShopIdUseCase,
-                getTopAdsUseCase
+                getListShopIdUseCase
         );
     }
 
@@ -95,15 +83,13 @@ public class DataFeedModule {
     LoadMoreFeedUseCase provideLoadMoreUsecase(ThreadExecutor threadExecutor,
                                                PostExecutionThread postExecutionThread,
                                                FeedRepository feedRepository,
-                                               GetListShopIdUseCase getListShopIdUseCase,
-                                               GetTopAdsUseCase getTopAdsUseCase) {
+                                               GetListShopIdUseCase getListShopIdUseCase) {
 
         return new LoadMoreFeedUseCase(
                 threadExecutor,
                 postExecutionThread,
                 feedRepository,
-                getListShopIdUseCase,
-                getTopAdsUseCase
+                getListShopIdUseCase
         );
     }
 

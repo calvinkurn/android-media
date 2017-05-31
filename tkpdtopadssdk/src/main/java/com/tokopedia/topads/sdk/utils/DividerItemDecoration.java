@@ -35,6 +35,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
+        } else if (mOrientation == HORIZONTAL_LIST) {
+            drawHorizontal(c, parent);
         } else {
             drawHorizontal(c, parent);
         }
