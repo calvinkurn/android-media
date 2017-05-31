@@ -122,6 +122,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_wishlist,
                 TkpdState.DrawerPosition.WISHLIST,
                 true));
+        data.add(new DrawerItem(context.getString(R.string.title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
         if (!sessionHandler.getShopID(context).equals("0")
@@ -458,13 +462,19 @@ public class DrawerBuyerHelper extends DrawerHelper
                     ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
                 }
                 break;
+            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                Intent topadsIntent = context.getPackageManager()
+                        .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+                if (topadsIntent != null) {
+                    context.startActivity(topadsIntent);
+                } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                }
+                break;
             default:
                 super.onItemClicked(item);
         }
-
-//        if (item.getId() != TkpdState.DrawerPosition.INDEX_HOME) {
-//            context.finish();
-//        }
         closeDrawer();
 
     }
