@@ -168,7 +168,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private void resetOpportunityList() {
         pagingHandler.resetPage();
-        adapter.getList().clear();
         presenter.getOpportunity();
     }
 
@@ -249,6 +248,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         finishLoadingList();
         finishRefresh();
         adapter.showEmpty(false);
+        if (pagingHandler.getPage() == 1) {
+            adapter.getList().clear();
+        }
         adapter.setList(viewModel.getListOpportunity());
         if (adapter.getList().size() == 0) {
             adapter.showEmptyFull(true);
@@ -402,7 +404,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             ArrayList<SortingTypeViewModel> listSort = data.getExtras().getParcelableArrayList(OpportunitySortFragment.ARGS_LIST_SORT);
             filterData.setListSortingType(listSort);
 
-            presenter.getPass().setSort(keySort,paramSort);
+            presenter.getPass().setSort(keySort, paramSort);
             resetOpportunityList();
 
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
