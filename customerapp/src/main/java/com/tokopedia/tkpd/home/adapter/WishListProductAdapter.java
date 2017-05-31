@@ -188,13 +188,14 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R.id.action_btn)
         Button actionBtn;
         private Context context;
+        private final String WISHLISH_SRC = "wishlist";
 
         public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             TopAdsParams params = new TopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SRC, "wishlist");
+            params.getParam().put(TopAdsParams.KEY_SRC, WISHLISH_SRC);
             Config topAdsconfig = new Config.Builder()
                     .setSessionId(GCMHandler.getRegistrationId(context))
                     .setUserId(SessionHandler.getLoginID(context))
@@ -261,57 +262,23 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void bindProductViewHolder(ViewHolder viewHolder, int position) {
-        if (data.get(position) instanceof ProductItem) {
+        if (data.get(position) !=null && data.get(position) instanceof ProductItem) {
             ProductItem product = (ProductItem) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
             viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getImgUri());
-            if (product.labels == null) {
-                product.labels = new ArrayList<Label>();
-                if (product.preorder != null && product.preorder.equals("1")) {
-                    Label label = new Label();
-                    label.setTitle(context.getString(R.string.preorder));
-                    label.setColor(context.getString(R.string.white_hex_color));
-                    product.labels.add(label);
-                }
-                if (product.wholesale != null && product.wholesale.equals("1")) {
-                    Label label = new Label();
-                    label.setTitle(context.getString(R.string.grosir));
-                    label.setColor(context.getString(R.string.white_hex_color));
-                    product.labels.add(label);
-                }
-            }
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-        } else if (data.get(position) instanceof RecentView) {
+        } else if (data.get(position) !=null && data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
             viewHolder.shopName.setText(Html.fromHtml(product.getShopName()));
             viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getProductImage());
-            if (product.getLabels() == null) {
-                product.setLabels(new ArrayList<com.tokopedia.core.network.entity.home.recentView.Label>());
-                if (product.getProductPreorder() != null && product.getProductPreorder().equals("1")) {
-                    com.tokopedia.core.network.entity.home.recentView.Label label
-                            = new com.tokopedia.core.network.entity.home.recentView.Label();
-
-                    label.setTitle(context.getString(R.string.preorder));
-                    label.setColor(context.getString(R.string.white_hex_color));
-                    product.getLabels().add(label);
-                }
-                if (product.getProductWholesale() != null && product.getProductWholesale().equals("1")) {
-                    com.tokopedia.core.network.entity.home.recentView.Label label
-                            = new com.tokopedia.core.network.entity.home.recentView.Label();
-
-                    label.setTitle(context.getString(R.string.grosir));
-                    label.setColor(context.getString(R.string.white_hex_color));
-                    product.getLabels().add(label);
-                }
-            }
             setBadgesRecentView(viewHolder, product);
             setLabelsRecentView(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
@@ -325,34 +292,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
-        if (product.labels == null) {
-            product.labels = new ArrayList<Label>();
-            if (product.preorder != null && product.preorder.equals("1")) {
-                Label label = new Label();
-                label.setTitle(context.getString(R.string.preorder));
-                label.setColor(context.getString(R.string.white_hex_color));
-                product.labels.add(label);
-            }
-            if (product.wholesale != null && product.wholesale.equals("1")) {
-                Label label = new Label();
-                label.setTitle(context.getString(R.string.grosir));
-                label.setColor(context.getString(R.string.white_hex_color));
-                product.labels.add(label);
-            }
-        }
-        if (product.badges == null) {
-            product.badges = new ArrayList<>();
-            if (product.isGold != null && product.isGold.equals("1")) {
-                Badge badge = new Badge();
-                badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
-                product.badges.add(badge);
-            }
-            if (product.luckyShop != null && !product.luckyShop.isEmpty()) {
-                Badge badge = new Badge();
-                badge.setImageUrl(product.luckyShop);
-                product.badges.add(badge);
-            }
-        }
         setBadges(viewHolder, product);
         setLabels(viewHolder, product);
 
@@ -428,7 +367,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                if (!label.getColor().toLowerCase().equals(context.getString(R.string.white_hex_color))) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
@@ -450,7 +389,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                if (!label.getColor().toLowerCase().equals(context.getString(R.string.white_hex_color))) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));

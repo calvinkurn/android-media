@@ -52,11 +52,11 @@
 
         <ImageView
             android:id="@+id/icon_official_store"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
+            android:layout_width="@dimen/icon_official_store_size"
+            android:layout_height="@dimen/icon_official_store_size"
+            android:layout_marginLeft="@dimen/icon_official_store_margin_l"
+            android:layout_marginTop="@dimen/icon_official_store_margin"
+            android:layout_marginBottom="@dimen/icon_official_store_margin"
             android:background="@drawable/ic_official_store"/>
 
         <LinearLayout

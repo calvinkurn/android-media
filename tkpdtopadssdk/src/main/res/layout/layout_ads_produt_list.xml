@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_item_list">
@@ -23,8 +24,8 @@
 
             <com.tokopedia.topads.sdk.view.SquareImageView
                 android:id="@id/product_image"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="@dimen/product_image_size"
+                android:layout_height="@dimen/product_image_size"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:src="@drawable/ic_loading_toped" />
@@ -42,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
-                android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
+                tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
                 android:textColor="@color/black_70"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -52,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Rp 3.121.500"
+                tools:text="Rp 3.121.500"
                 android:textColor="@color/orange_red"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/black_54"
-                android:text="ORIGINAL-ZONE"
+                tools:text="ORIGINAL-ZONE"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:textSize="12sp" />
@@ -91,7 +92,7 @@
                     android:drawableLeft="@drawable/ic_place_black_24dp"
                     android:gravity="center_vertical"
                     android:textColor="@color/black_70"
-                    android:text="Jakarta"
+                    tools:text="Jakarta"
                     android:textSize="11sp" />
 
                 <LinearLayout

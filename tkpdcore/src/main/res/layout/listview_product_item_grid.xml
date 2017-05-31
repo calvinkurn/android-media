@@ -28,8 +28,8 @@
 
     <RelativeLayout
         android:id="@id/wishlist_button_container"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="@dimen/wishlish_button_size"
+        android:layout_height="@dimen/wishlish_button_size"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="-5dp"
@@ -58,7 +58,7 @@
         android:maxLines="2"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
-        android:minHeight="38dp"
+        android:minHeight="@dimen/wishlish_button_size"
         style="@style/MediumText"
         android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/black_70"

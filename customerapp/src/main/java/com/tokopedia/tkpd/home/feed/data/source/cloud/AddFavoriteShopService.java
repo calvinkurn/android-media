@@ -46,6 +46,7 @@ public class AddFavoriteShopService extends IntentService {
     private static final String TAG = "AddFavoriteShopService";
     private static final String KEY_SRC = "src";
     private static final String DEFAULT_VALUE_SRC = "fav_shop";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     private ServiceV4 serviceV4;
     private Subscription subscription = Subscriptions.empty();
@@ -124,7 +125,7 @@ public class AddFavoriteShopService extends IntentService {
 
     public Gson buildGson() {
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setDateFormat(DATE_FORMAT)
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();

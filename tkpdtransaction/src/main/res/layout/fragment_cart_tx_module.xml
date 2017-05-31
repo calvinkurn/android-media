@@ -64,7 +64,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_small"
-                            android:background="#FFADAD"
+                            android:background="@color/holder_error"
                             android:orientation="vertical"
                             android:padding="@dimen/padding_small"
                             android:visibility="gone"

@@ -306,7 +306,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                if (!label.getColor().toLowerCase().equals(context.getString(R.color.white))) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));

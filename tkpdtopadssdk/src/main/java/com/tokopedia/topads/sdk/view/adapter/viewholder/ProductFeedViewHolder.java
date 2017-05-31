@@ -55,11 +55,10 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     @Override
     public void bind(ProductFeedViewModel element) {
         data = element.getData();
-        if(data.getProduct()!=null){
+        if (data.getProduct() != null) {
             bindProduct(data.getProduct());
         }
     }
-
 
 
     private void bindProduct(final Product product) {
@@ -76,7 +75,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
 
     @Override
     public void onClick(View v) {
-        if(itemClickListener!=null) {
+        if (itemClickListener != null) {
             itemClickListener.onProductItemClicked(getAdapterPosition(), data);
         }
     }

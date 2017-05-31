@@ -19,5 +19,8 @@
     <dimen name="font_small">12sp</dimen>
     <dimen name="abc_text_size_small_material">14sp</dimen>
     <dimen name="product_grid_padding">10dp</dimen>
+    <dimen name="product_title_min_height">38dp</dimen>
+    <dimen name="shop_image_size">60dp</dimen>
+    <dimen name="product_image_size">110dp</dimen>
 
 </resources>

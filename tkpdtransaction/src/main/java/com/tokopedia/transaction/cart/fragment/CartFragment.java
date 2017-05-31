@@ -170,6 +170,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
+    private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -411,7 +412,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             Button shop = (Button) emptyState.findViewById(R.id.shoping);
             shop.setOnClickListener(getRetryEmptyCartClickListener());
             TopAdsParams params = new TopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SRC, "empty_cart");
+            params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
 
             Config config = new Config.Builder()
                     .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))

@@ -100,6 +100,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private Unbinder unbinder;
     private RetryHandler retryHandler;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
+    private static final String TOPADS_ITEM = "4";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -436,7 +437,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private TopAdsParams generateTopAdsParams() {
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.SRC_PRODUCT_FEED);
-        params.getParam().put(TopAdsParams.KEY_ITEM, "4");
+        params.getParam().put(TopAdsParams.KEY_ITEM, TOPADS_ITEM);
         return params;
     }
 

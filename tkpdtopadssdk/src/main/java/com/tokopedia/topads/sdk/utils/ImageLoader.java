@@ -30,6 +30,7 @@ public class ImageLoader {
     private Context context;
     private ImageCache.ImageCacheParams cacheParams;
     private ImageFetcher imageFetcher;
+    private final String PATH_VIEW = "views";
 
     public ImageLoader(Context context) {
         this.context = context;
@@ -49,7 +50,7 @@ public class ImageLoader {
         imageFetcher.loadImage(ecs, imageView, new ImageWorker.OnImageLoadedListener() {
             @Override
             public void onImageLoaded(boolean success) {
-                if (success && url != null && url.contains("views")) {
+                if (success && url != null && url.contains(PATH_VIEW)) {
                     new ImpresionTask().execute(url);
                 }
             }
