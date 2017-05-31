@@ -10,14 +10,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 3/1/17.
@@ -27,24 +23,25 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.product_avatar)
         ImageView productAvatar;
-
-        @BindView(R2.id.product_name)
         TextView productName;
 
-        @BindView(R2.id.product_price)
         TextView productPrice;
 
-        @BindView(R2.id.deadline)
         TextView deadline;
 
-        @BindView(R2.id.opportunity_view)
         View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            productAvatar = (ImageView) itemView.findViewById(R.id.product_avatar);
+            productName = (TextView) itemView.findViewById(R.id.product_name);
+            productPrice = (TextView) itemView.findViewById(R.id.product_price);
+            deadline = (TextView) itemView.findViewById(R.id.deadline);
+            mainView = itemView.findViewById(R.id.opportunity_view);
+
+
+
         }
     }
 

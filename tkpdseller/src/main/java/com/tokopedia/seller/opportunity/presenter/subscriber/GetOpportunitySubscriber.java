@@ -16,6 +16,7 @@ import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderProduc
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipment;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShop;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.Paging;
+import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.seller.R;
@@ -63,51 +64,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof SocketTimeoutException) {
-            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
-        } else if (e instanceof IOException) {
-            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
-        } else if (e.getLocalizedMessage() != null
-                && e instanceof ErrorMessageException) {
-            viewListener.onErrorGetOpportunity(e.getLocalizedMessage());
-        } else if (e instanceof RuntimeException
-                && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
-
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
-
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_bad_request));
-
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_forbidden_auth));
-
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else {
-            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorGetOpportunity(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

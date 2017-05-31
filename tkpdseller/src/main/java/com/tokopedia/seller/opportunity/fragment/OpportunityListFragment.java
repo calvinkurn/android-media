@@ -169,7 +169,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private void resetOpportunityList() {
         pagingHandler.resetPage();
         adapter.getList().clear();
-        adapter.notifyDataSetChanged();
         presenter.getOpportunity();
     }
 
