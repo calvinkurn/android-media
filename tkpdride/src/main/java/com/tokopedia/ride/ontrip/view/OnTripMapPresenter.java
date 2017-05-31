@@ -550,12 +550,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         });
                     }
                 })
-                        .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
-                            @Override
-                            public Observable<?> call(Observable<? extends Throwable> observable) {
-                                return Observable.just(null);
-                            }
-                        })
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
