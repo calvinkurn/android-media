@@ -78,9 +78,20 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     @Override
     public void renderInitDataList(List<Product> dataList) {
         this.dataList = dataList;
-        if (!dataList.isEmpty() && (this.dataSelected == null
-                || !this.dataSelected.getProductId().equalsIgnoreCase(dataList.get(0).getProductId())))
-            this.dataSelected = dataList.get(0);
+        Product productInitSelected = null;
+        if (!dataList.isEmpty()) {
+            productInitSelected = dataList.get(0);
+            for (Product product : dataList) {
+                if (product.getStatus() != Product.STATUS_INACTIVE) {
+                    productInitSelected = product;
+                    break;
+                }
+            }
+        }
+        if (productInitSelected != null && (this.dataSelected == null
+                || !this.dataSelected.getProductId()
+                .equalsIgnoreCase(productInitSelected.getProductId())))
+            this.dataSelected = productInitSelected;
         invalidateContentView();
         if (actionListener != null)
             actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
@@ -89,8 +100,24 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
 
 
     private void invalidateContentView() {
-        this.tvNameProduct.setText(dataSelected.getDesc());
-        //TODO bisa set error text disini berdasarkan status productnya
+        if (dataSelected != null) {
+            this.tvNameProduct.setText(dataSelected.getDesc());
+            switch (dataSelected.getStatus()) {
+                case Product.STATUS_INACTIVE:
+                    tvErrorProduct.setVisibility(VISIBLE);
+                    tvErrorProduct.setText(R.string.error_message_product_inactive_digital_module);
+                    break;
+                case Product.STATUS_OUT_OF_STOCK:
+                    tvErrorProduct.setVisibility(VISIBLE);
+                    tvErrorProduct.setText(
+                            R.string.error_message_product_out_of_stock_digital_module
+                    );
+                    break;
+                default:
+                    tvErrorProduct.setVisibility(GONE);
+                    break;
+            }
+        }
     }
 
     @Override
