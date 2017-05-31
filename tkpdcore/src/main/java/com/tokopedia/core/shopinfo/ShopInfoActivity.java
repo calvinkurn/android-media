@@ -578,6 +578,10 @@ public class ShopInfoActivity extends BaseActivity
 
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
+
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
