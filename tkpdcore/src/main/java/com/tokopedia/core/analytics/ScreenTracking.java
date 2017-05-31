@@ -143,4 +143,10 @@ public class ScreenTracking extends TrackingUtils {
             );
         }
     }
+
+    public static void eventOfficialStoreScreenAuth(String shopID, String shopType){
+        getGTMEngine().sendScreenAuthenticatedOfficialStore(
+                AppScreen.SCREEN_OFFICIAL_STORE, shopID, shopType
+        );
+    }
 }
