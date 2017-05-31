@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
@@ -39,6 +41,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
+    private CoordinatorLayout coordinatorLayout;
     private DateLabelView dateLabelView;
     private FloatingActionButton fabFilter;
 
@@ -48,10 +51,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     boolean updateEmptyDefault;
 
     private boolean isSearchModeOn;
+
     protected abstract void goToFilter();
 
     OnAdListFragmentListener listener;
-    public interface OnAdListFragmentListener{
+
+    public interface OnAdListFragmentListener {
         void startShowCase();
     }
 
@@ -72,6 +77,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         fabFilter = (FloatingActionButton) view.findViewById(R.id.fab_filter);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +92,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 goToFilter();
             }
         });
+        swipeToRefresh.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override
@@ -108,7 +117,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             if (adDeleted && status <= 0 && TextUtils.isEmpty(keyword)) {
                 updateEmptyDefault = true;
             }
-        } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null){
+        } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null) {
             adsStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
         }
     }
@@ -128,6 +137,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             updateEmptyViewDefault();
             updateEmptyDefault = false;
         }
+        showDateLabelView();
     }
 
     @Override
@@ -138,7 +148,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         } else {
             showFabFilter(true);
         }
-        if (listener!=null && adapter.getDataSize() > 0) {
+        if (listener != null && adapter.getDataSize() > 0) {
             listener.startShowCase();
         }
     }
@@ -154,6 +164,14 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private void showFabFilter(boolean visible) {
         dateLabelView.setVisibility(visible ? View.VISIBLE : View.GONE);
         fabFilter.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    public void showDateLabelView() {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) dateLabelView.getLayoutParams();
+        QuickReturnHeaderBehavior behavior = (QuickReturnHeaderBehavior) params.getBehavior();
+        if (behavior != null) {
+            behavior.showView(dateLabelView);
+        }
     }
 
     @Override
@@ -211,16 +229,17 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     // for show case purpose
-    public FloatingActionButton getFab(){
+    public FloatingActionButton getFab() {
         return fabFilter;
     }
+
     // for show case
-    public View getItemRecyclerView(){
+    public View getItemRecyclerView() {
         int position = layoutManager.findFirstCompletelyVisibleItemPosition();
         return layoutManager.findViewByPosition(position);
     }
 
-    public RecyclerView getRecyclerView(){
+    public RecyclerView getRecyclerView() {
         return recyclerView;
     }
 }

@@ -14,6 +14,9 @@
     <dimen name="topads_arrow_left_margin">8dp</dimen>
     <dimen name="topads_arrow_left_width">8dp</dimen>
     <dimen name="topads_arrow_left_height">16dp</dimen>
+    <dimen name="top_ads_padding_top_list_with_date">70dp</dimen>
+    <dimen name="top_ads_refresher_date_offset">50dp</dimen>
+    <dimen name="top_ads_refresher_date_offset_end">80dp</dimen>
     <dimen name="gmsubscribe_height_widget_sub_feature">110dp</dimen>
 
 

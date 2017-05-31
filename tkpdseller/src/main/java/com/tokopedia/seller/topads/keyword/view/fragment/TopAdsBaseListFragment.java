@@ -50,7 +50,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected TopAdsBaseListAdapter<Ad> adapter;
     protected RecyclerView recyclerView;
-    private SwipeToRefresh swipeToRefresh;
+    protected SwipeToRefresh swipeToRefresh;
     private boolean searchMode;
     protected LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
