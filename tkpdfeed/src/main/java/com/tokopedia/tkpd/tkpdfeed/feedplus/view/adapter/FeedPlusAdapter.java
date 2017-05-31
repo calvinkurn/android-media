@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
@@ -25,13 +26,17 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private final FeedPlusTypeFactory typeFactory;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
+    private RetryModel retryModel;
     private boolean canLoadMore;
+    private AddFeedModel addFeedModel;
 
     public FeedPlusAdapter(FeedPlusTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
+        this.retryModel = new RetryModel();
+        this.addFeedModel = new AddFeedModel();
     }
 
     @Override
@@ -80,6 +85,14 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list.remove(emptyModel);
     }
 
+    public void showRetry(){
+        this.list.add(retryModel);
+    }
+
+    public void removeRetry(){
+        this.list.remove(retryModel);
+    }
+
     public void showLoading() {
         this.list.add(loadingModel);
     }
@@ -102,5 +115,13 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public List<Visitable> getlist() {
         return list;
+    }
+
+    public void showAddFeed() {
+        this.list.add(addFeedModel);
+    }
+
+    public void removeAddFeed(){
+        this.list.remove(addFeedModel);
     }
 }

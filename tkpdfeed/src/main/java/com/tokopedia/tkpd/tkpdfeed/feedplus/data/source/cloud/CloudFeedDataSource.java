@@ -13,6 +13,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 
@@ -49,12 +50,12 @@ public class CloudFeedDataSource {
 
     public Observable<FeedResult> getFirstPageFeedsList(RequestParams requestParams) {
         return getFeedsList(requestParams)
-                .doOnNext(new Action1<List<DataFeedDomain>>() {
+                .doOnNext(new Action1<FeedDomain>() {
                     @Override
-                    public void call(List<DataFeedDomain> dataFeedDomains) {
+                    public void call(FeedDomain dataFeedDomains) {
                         globalCacheManager.setKey(KEY_FEED_PLUS);
                         globalCacheManager.setValue(
-                                CacheUtil.convertListModelToString(dataFeedDomains,
+                                CacheUtil.convertListModelToString(dataFeedDomains.getList(),
                                         new TypeToken<List<DataFeedDomain>>() {
                                         }.getType()));
                         globalCacheManager.store();
@@ -66,7 +67,7 @@ public class CloudFeedDataSource {
         return getFeedsList(requestParams).map(feedResultMapper);
     }
 
-    private Observable<List<DataFeedDomain>> getFeedsList(RequestParams requestParams) {
+    private Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))

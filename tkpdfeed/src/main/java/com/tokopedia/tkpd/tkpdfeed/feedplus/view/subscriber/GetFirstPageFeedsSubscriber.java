@@ -46,13 +46,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onNext(FeedResult feedResult) {
-        if (feedResult.getDataSource() == FeedResult.SOURCE_LOCAL) {
-            viewListener.onSuccessGetFeedFirstPage(
-                    convertToViewModel(feedResult.getDataFeedDomainList()));
-        } else {
-            viewListener.onSuccessGetFeedFirstPage(
-                    convertToViewModel(feedResult.getDataFeedDomainList()));
-        }
+        viewListener.onSuccessGetFeedFirstPage(
+                convertToViewModel(feedResult.getDataFeedDomainList()));
 
         if (feedResult.getDataFeedDomainList().size() > 0)
             viewListener.updateCursor(getCurrentCursor(feedResult));

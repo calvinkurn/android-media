@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 5/29/17.
@@ -20,20 +23,22 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
     @Override
     public void onError(Throwable e) {
-
+        viewListener.onErrorGetFeed();
     }
 
     @Override
     public void onNext(FeedResult feedResult) {
-        if (feedResult.getDataSource() == FeedResult.SOURCE_LOCAL) {
-            viewListener.onSuccessGetFeed(
-                    convertToViewModel(feedResult.getDataFeedDomainList()));
-        } else {
-            viewListener.onSuccessGetFeed(
-                    convertToViewModel(feedResult.getDataFeedDomainList()));
-        }
+        ArrayList<Visitable> list = convertToViewModel(feedResult.getDataFeedDomainList());
 
-        if (feedResult.getDataFeedDomainList().size() > 0)
+        if (list.size() > 0) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
+            viewListener.onSuccessGetFeed(list);
+        }else{
+            if(feedResult.isHasNext())
+                viewListener.onShowRetryGetFeed();
+            else {
+                viewListener.onShowAddFeedMore();
+            }
+        }
     }
 }

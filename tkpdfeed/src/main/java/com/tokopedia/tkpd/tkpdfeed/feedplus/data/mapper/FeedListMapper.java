@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 import com.tkpdfeed.feeds.Feeds;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ContentFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ShopFeedDomain;
@@ -18,10 +19,10 @@ import rx.functions.Func1;
  * @author ricoharisin .
  */
 
-public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
+public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     @Override
-    public List<DataFeedDomain> call(Feeds.Data data) {
-        return convertToDataFeedDomain(data.feed().data());
+    public FeedDomain call(Feeds.Data data) {
+        return convertToDataFeedDomain(data.feed());
     }
 
     private ProductFeedDomain createProductFeedDomain(Feeds.Data.Product product, List<WholesaleDomain> wholesaleDomains) {
@@ -99,7 +100,9 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
         return new SourceFeedDomain(source.type(), shopFeedDomain);
     }
 
-    private List<DataFeedDomain> convertToDataFeedDomain(List<Feeds.Data.Datum> datumList) {
+    private FeedDomain convertToDataFeedDomain(Feeds.Data.Feed data) {
+
+        List<Feeds.Data.Datum> datumList = data.data();
         List<DataFeedDomain> dataFeedDomains = new ArrayList<>();
         if (datumList != null) {
             for (int i = 0 ; i < datumList.size(); i++) {
@@ -114,7 +117,7 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
             }
         }
 
-        return dataFeedDomains;
+        return new FeedDomain(dataFeedDomains, data.links().pagination().has_next_page());
     }
 
     private DataFeedDomain createDataFeedDomain(Feeds.Data.Datum datum,

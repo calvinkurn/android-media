@@ -4,8 +4,11 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.AddFeedModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.AddFeedViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -75,10 +78,19 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(AddFeedModel addFeedModel) {
+        return AddFeedViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(EmptyModel emptyModel) {
         return EmptyFeedViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(RetryModel retryModel) {
+        return RetryViewHolder.LAYOUT;
+    }
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -87,6 +99,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
         if (type == EmptyFeedViewHolder.LAYOUT)
             viewHolder = new EmptyFeedViewHolder(view, viewListener);
+        else if (type == RetryViewHolder.LAYOUT)
+            viewHolder = new RetryViewHolder(view, viewListener);
+        else if (type == AddFeedViewHolder.LAYOUT)
+            viewHolder = new AddFeedViewHolder(view, viewListener);
         else if (type == ActivityCardViewHolder.LAYOUT)
             viewHolder = new ActivityCardViewHolder(view, viewListener);
         else if (type == PromotedShopViewHolder.LAYOUT)

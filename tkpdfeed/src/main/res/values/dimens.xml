@@ -12,6 +12,7 @@
     <dimen name="small_icon_size"> 6dp </dimen>
 
     <dimen name="text_size_11"> 11sp </dimen>
+    <dimen name="text_size_12"> 12sp </dimen>
     <dimen name="text_size_13"> 13sp </dimen>
     <dimen name="text_size_14"> 14sp </dimen>
 
