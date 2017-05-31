@@ -1,4 +1,4 @@
-package com.tokopedia.otp.phoneverification.fragment;
+package com.tokopedia.otp.phoneverification.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -34,10 +34,10 @@ import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity;
-import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentView;
-import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenter;
-import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenterImpl;
+import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
+import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
+import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenterImpl;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;

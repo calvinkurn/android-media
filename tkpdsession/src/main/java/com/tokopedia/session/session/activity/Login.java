@@ -62,6 +62,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;

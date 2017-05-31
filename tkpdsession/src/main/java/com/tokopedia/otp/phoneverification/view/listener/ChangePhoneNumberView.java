@@ -1,5 +1,6 @@
-package com.tokopedia.otp.phoneverification.listener;
+package com.tokopedia.otp.phoneverification.view.listener;
 
+import android.app.Activity;
 import android.widget.EditText;
 
 /**
@@ -11,4 +12,8 @@ public interface ChangePhoneNumberView {
     EditText getPhoneNumberEditText();
 
     String getString(int resId);
+
+    Activity getActivity();
+
+    void onErrorChangePhoneNumber(String errorMessage);
 }
