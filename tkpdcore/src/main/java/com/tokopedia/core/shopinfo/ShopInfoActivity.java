@@ -500,6 +500,10 @@ public class ShopInfoActivity extends BaseActivity
         showNotice();
         ReputationLevelUtils.setReputationMedals(this, holder.badges, shopModel.stats.shopBadgeLevel.set, shopModel.stats.shopBadgeLevel.level, shopModel.stats.shopReputationScore);
         getIntent().putExtra(SHOP_AVATAR, shopModel.info.shopAvatar);
+
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
