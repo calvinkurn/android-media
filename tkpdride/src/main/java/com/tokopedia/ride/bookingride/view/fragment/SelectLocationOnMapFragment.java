@@ -58,7 +58,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
     private PlacePassViewModel locationDragged;
-    private boolean isDisabled;
 
     @Override
     public void onLayoutDrag() {
@@ -292,7 +291,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @Override
     public void disableDoneButton() {
-        isDisabled = false;
         doneBtn.setEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             doneBtn.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
@@ -309,7 +307,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @Override
     public void enableDoneButton() {
         doneBtn.setEnabled(true);
-        isDisabled = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             doneBtn.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
         } else {
@@ -325,8 +322,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @OnClick(R2.id.btn_done)
     public void actionOnDoneClicked() {
-        if (!isDisabled)
-            mListener.handleSelectDestinationOnMap(locationDragged);
+        mListener.handleSelectDestinationOnMap(locationDragged);
     }
 
     @OnClick(R2.id.cabs_autocomplete_back_icon)
