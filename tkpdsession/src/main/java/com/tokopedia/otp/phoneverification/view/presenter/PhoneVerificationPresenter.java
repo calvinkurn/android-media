@@ -1,4 +1,4 @@
-package com.tokopedia.otp.phoneverification.presenter;
+package com.tokopedia.otp.phoneverification.view.presenter;
 
 /**
  * Created by nisie on 2/22/17.

@@ -1,7 +1,6 @@
-package com.tokopedia.otp.phoneverification.listener;
+package com.tokopedia.otp.phoneverification.view.listener;
 
 import android.app.Activity;
-import android.content.Context;
 
 /**
  * Created by nisie on 2/23/17.

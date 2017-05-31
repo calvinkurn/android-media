@@ -44,8 +44,8 @@
             android:minHeight="42dp"
             android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
             android:textColor="@color/black_70"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            style="@style/MediumText"
+            android:textSize="13sp" />
 
 
         <LinearLayout
@@ -60,8 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Mulai dari"
-                android:textColor="@color/grey_600"
-                android:textSize="12sp" />
+                android:textColor="@color/black_38"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/price"
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:text="Rp 3.121.500"
                 android:textColor="@color/orange_red"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -78,8 +78,10 @@
             android:id="@+id/seller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="77 Penjual"
-            android:textSize="12sp" />
+            android:text="77 Produk"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black_70"
+            android:textSize="11sp" />
 
         <LinearLayout
             android:id="@+id/badges_container"

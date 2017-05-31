@@ -4,7 +4,7 @@ package com.tokopedia.session.changephonenumber.data;
  * Created by nisie on 3/9/17.
  */
 
-public class ChangePhoneNumberModel {
+public class ChangePhoneNumberRequestModel {
     private boolean success;
     private String errorMessage;
     private String statusMessage;

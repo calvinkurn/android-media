@@ -18,8 +18,8 @@ public class SessionRouter {
 
     private static final String LOGIN_ACTIVITY = "com.tokopedia.session.session.activity.Login";
 
-    private static final String PHONE_VERIFICATION_ACTIVATION_ACTIVITY = "com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity";
-    private static final String PHONE_VERIFICATION_PROFILE_ACTIVITY = "com.tokopedia.otp.phoneverification.activity.PhoneVerificationProfileActivity";
+    private static final String PHONE_VERIFICATION_ACTIVATION_ACTIVITY = "com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity";
+    private static final String PHONE_VERIFICATION_PROFILE_ACTIVITY = "com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity";
 
 
 
