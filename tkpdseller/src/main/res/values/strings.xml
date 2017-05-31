@@ -575,8 +575,8 @@
     <string name="top_ads_keyword_phrase_match">Phrase Match</string>
     <string name="top_ads_keyword_exact_match">Exact Match</string>
     <string name="top_ads_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="top_ads_keyword_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik.</string>
-    <string name="top_ads_keyword_exact_match_positive_description">Kata kunci dengan pencarian yang sama persis.</string>
+    <string name="top_ads_keyword_phrase_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci.</string>
+    <string name="top_ads_keyword_exact_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
     <string name="top_ads_keyword_phrase_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif.</string>
     <string name="top_ads_keyword_exact_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
     <string name="top_ads_keyword_type_hint">Kata Kunci</string>
