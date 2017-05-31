@@ -388,7 +388,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
-//                .withPreferedCategory()
+                .withPreferedCategory()
                 .setEndpoint(Endpoint.SHOP)
                 .displayMode(DisplayMode.FEED)
                 .topAdsParams(generateTopAdsParams())
