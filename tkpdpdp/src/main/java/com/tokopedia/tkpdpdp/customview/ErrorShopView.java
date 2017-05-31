@@ -12,7 +12,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by ANGGA on 10/29/2015.
+ * @author ANGGA on 10/29/2015.
  */
 public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView> {
 

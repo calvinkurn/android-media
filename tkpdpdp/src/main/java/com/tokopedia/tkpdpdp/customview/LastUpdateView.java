@@ -12,11 +12,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 02/11/2015.
+ * @author Angga.Prasetiyo on 02/11/2015.
  */
 public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = LastUpdateView.class.getSimpleName();
-
     private TextView tvLastUpdate;
 
     public LastUpdateView(Context context) {

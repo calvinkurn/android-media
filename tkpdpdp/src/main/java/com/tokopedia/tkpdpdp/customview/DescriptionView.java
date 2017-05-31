@@ -15,10 +15,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class DescriptionView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = DescriptionView.class.getSimpleName();
 
     private boolean isExpand = false;
     private DescriptionTextView tvDesc;

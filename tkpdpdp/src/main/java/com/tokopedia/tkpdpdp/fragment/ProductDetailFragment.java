@@ -230,25 +230,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void setViewListener() {
-        //errorProductView.setListener(this);
         errorShopView.setListener(this);
         headerInfoView.setListener(this);
         pictureView.setListener(this);
-        //buttonShareView.setListener(this);
         buttonBuyView.setListener(this);
-        //talkReviewView.setListener(this);
-        //manageView.setListener(this);
         ratingTalkCourierView.setListener(this);
         detailInfoView.setListener(this);
-        //descriptionView.setListener(this);
-        //wholesaleView.setListener(this);
         lastUpdateView.setListener(this);
         otherProductsView.setListener(this);
         newShopView.setListener(this);
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
-        //freeReturnView.setListener(this);
-        //transactionSuccess.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
@@ -415,20 +407,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
         this.productData = successResult;
-        //this.errorProductView.renderData(successResult);
         this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
-        //this.manageView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
-        //this.talkReviewView.renderVideoData(successResult);
         this.ratingTalkCourierView.renderData(successResult);
-        //this.freeReturnView.renderVideoData(successResult);
-        //this.transactionSuccess.renderVideoData(successResult);
         this.transactionDetailView.renderData(successResult);
         this.detailInfoView.renderData(successResult);
-        //this.descriptionView.renderData(successResult);
-        //this.wholesaleView.renderData(successResult);
         this.lastUpdateView.renderData(successResult);
         this.shopInfoView.renderData(successResult);
         this.otherProductsView.renderData(successResult);

@@ -13,11 +13,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 28/10/2015.
+ * @author Angga.Prasetiyo on 28/10/2015.
  */
 public class OtherProdItemView extends BaseView<ProductOther, ProductDetailView> {
-    private static final String TAG = OtherProdItemView.class.getSimpleName();
-
     private ImageView ivPic;
     private TextView tvName;
     private TextView tvPrice;
@@ -63,6 +61,5 @@ public class OtherProdItemView extends BaseView<ProductOther, ProductDetailView>
         tvName.setText(data.getProductName());
         tvPrice.setText(data.getProductPrice());
         ImageHandler.LoadImageResize(getContext(), ivPic, data.getProductImage(), 300, 300);
-//        ImageHandler.LoadImageRounded(ivPic, data.getProductImage());
     }
 }

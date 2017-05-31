@@ -74,7 +74,10 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
         VideoData videoData = getIntent().getParcelableExtra(KEY_VIDEO);
         if (videoData != null) {
+            productVideoHorizontalScroll.setVisibility(View.VISIBLE);
             productVideoHorizontalScroll.renderData(videoData);
+        } else {
+            productVideoHorizontalScroll.setVisibility(View.GONE);
         }
     }
 

@@ -16,11 +16,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 02/11/2015.
+ * @author by Angga.Prasetiyo on 02/11/2015.
  */
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = ButtonBuyView.class.getSimpleName();
-
     private TextView tvBuy;
 
     public ButtonBuyView(Context context) {
@@ -83,7 +81,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private class PromoteClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public PromoteClick(ProductDetailData data) {
+        PromoteClick(ProductDetailData data) {
             this.data = data;
         }
 
@@ -96,7 +94,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private class ClickBuy implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickBuy(ProductDetailData data) {
+        ClickBuy(ProductDetailData data) {
             this.data = data;
         }
 

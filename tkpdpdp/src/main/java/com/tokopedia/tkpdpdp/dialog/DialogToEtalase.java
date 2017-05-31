@@ -15,6 +15,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.tkpdpdp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,12 @@ public class DialogToEtalase extends Dialog {
 
     private final Listener listener;
 
-    public DialogToEtalase(Context context, int productId, List<Etalase> etalases, Listener listener) {
+    DialogToEtalase(Context context, int productId, List<Etalase> etalases, Listener listener) {
         super(context);
         this.context = context;
         this.etalaseList = etalases;
-        this.etalaseList.add(0, new Etalase(null, "Pilih Etalase"));
-        this.etalaseList.add(new Etalase(0, "Tambah Etalase"));
+        this.etalaseList.add(0, new Etalase(null, context.getString(R.string.choose_etalase)));
+        this.etalaseList.add(new Etalase(0, context.getString(R.string.add_etalase)));
         this.productId = productId;
         this.listener = listener;
     }

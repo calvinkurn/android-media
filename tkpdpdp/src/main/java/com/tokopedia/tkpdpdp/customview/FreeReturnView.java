@@ -25,7 +25,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by stevenfredian on 7/18/16.
+ * @author stevenfredian on 7/18/16.
  */
 public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailView> {
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 02/11/2015.
+ * @author Angga.Prasetiyo on 02/11/2015.
  */
 
 public class WholesaleActivity extends TActivity {

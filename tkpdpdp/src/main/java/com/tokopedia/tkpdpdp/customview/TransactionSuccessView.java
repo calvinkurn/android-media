@@ -12,7 +12,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by alvarisi on 9/8/16.
+ * @author alvarisi on 9/8/16.
  */
 public class TransactionSuccessView extends BaseView<ProductDetailData, ProductDetailView> {
 

@@ -9,25 +9,18 @@ import android.widget.TextView;
 
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.product.facade.NetworkParam;
-import com.tokopedia.core.product.interactor.RetrofitInteractor;
-import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = ManageView.class.getSimpleName();
-
     private TextView tvPromote;
     private TextView tvEdit;
     private TextView tvSoldOut;
     private TextView tvToEtalase;
-    private ProductDetailData data;
 
     public ManageView(Context context) {
         super(context);
@@ -89,28 +82,6 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
         tvSoldOut.setOnClickListener(new SoldOutClick(data));
     }
 
-    private void getProductPermission(final ProductDetailData data) {
-        this.data = data;
-        final RetrofitInteractor interactor = new RetrofitInteractorImpl();
-        interactor.getProductManagePermissions(getContext(),
-                NetworkParam.paramCheckPermission(data),
-                new RetrofitInteractor.ProductManagePermissionListener() {
-                    @Override
-                    public void onSuccess(String productManager) {
-                        ProductCache.SetPermission(data.getInfo().getProductId().toString(),
-                                productManager, getContext());
-                        setVisibility(VISIBLE);
-                        interactor.unSubscribeObservable();
-                    }
-
-                    @Override
-                    public void onError() {
-                        setVisibility(GONE);
-                        interactor.unSubscribeObservable();
-                    }
-                });
-    }
-
     public void hideToEtalase() {
         tvToEtalase.setVisibility(GONE);
         tvSoldOut.setVisibility(VISIBLE);
@@ -133,7 +104,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private class PromoteClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public PromoteClick(ProductDetailData data) {
+        PromoteClick(ProductDetailData data) {
             this.data = data;
         }
 
@@ -146,7 +117,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private class EditClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public EditClick(ProductDetailData data) {
+        EditClick(ProductDetailData data) {
             this.data = data;
         }
 
@@ -162,7 +133,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private class ToEtalaseClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public ToEtalaseClick(ProductDetailData data) {
+        ToEtalaseClick(ProductDetailData data) {
             this.data = data;
         }
 
@@ -185,7 +156,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private class SoldOutClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public SoldOutClick(ProductDetailData data) {
+        SoldOutClick(ProductDetailData data) {
             this.data = data;
         }
 

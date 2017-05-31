@@ -19,16 +19,24 @@ import java.util.List;
 import butterknife.BindViews;
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = WholesaleView.class.getSimpleName();
-
-    @BindViews({R2.id.wholesale_1, R2.id.wholesale_2, R2.id.wholesale_3, R2.id.wholesale_4, R2.id.wholesale_5})
+    @BindViews({
+            R2.id.wholesale_1,
+            R2.id.wholesale_2,
+            R2.id.wholesale_3,
+            R2.id.wholesale_4,
+            R2.id.wholesale_5})
     List<TableRow> rowWholesale;
     @BindViews({R2.id.qty_ws_1, R2.id.qty_ws_2, R2.id.qty_ws_3, R2.id.qty_ws_4, R2.id.qty_ws_5})
     List<TextView> wholesaleQty;
-    @BindViews({R2.id.price_ws_1, R2.id.price_ws_2, R2.id.price_ws_3, R2.id.price_ws_4, R2.id.price_ws_5})
+    @BindViews({
+            R2.id.price_ws_1,
+            R2.id.price_ws_2,
+            R2.id.price_ws_3,
+            R2.id.price_ws_4,
+            R2.id.price_ws_5})
     List<TextView> wholesalePrice;
 
     public WholesaleView(Context context) {
@@ -77,9 +85,11 @@ public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView
                 rowWholesale.size() : wholesalePrices.size();
         for (int i = 0; i < length; i++) {
             if (i == wholesalePrices.size() - 1) {
-                wholesaleQty.get(i).setText(String.format(">= %s", wholesalePrices.get(i).getWholesaleMin()));
+                wholesaleQty.get(i)
+                        .setText(String.format(">= %s", wholesalePrices.get(i).getWholesaleMin()));
             } else {
-                wholesaleQty.get(i).setText(String.format("%s - %s", wholesalePrices.get(i).getWholesaleMin(),
+                wholesaleQty.get(i)
+                        .setText(String.format("%s - %s", wholesalePrices.get(i).getWholesaleMin(),
                         data.getWholesalePrice().get(i).getWholesaleMax()));
             }
             wholesalePrice.get(i).setText(wholesalePrices.get(i).getWholesalePrice());

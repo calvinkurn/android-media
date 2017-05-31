@@ -19,10 +19,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by Angga.Prasetiyo on 30/10/2015.
+ * @author by Angga.Prasetiyo on 30/10/2015.
  */
 public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = ButtonShareView.class.getSimpleName();
     private Bitmap bitmap;
 
     public ButtonShareView(Context context) {
@@ -66,7 +65,7 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
     private class OnClicked implements OnClickListener {
         private final ProductDetailData data;
 
-        public OnClicked(ProductDetailData data) {
+        OnClicked(ProductDetailData data) {
             this.data = data;
         }
 
@@ -89,7 +88,7 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
         private final ProductDetailData data;
         private Context context;
 
-        public BitmapTask(ProductDetailData data, Context context) {
+        BitmapTask(ProductDetailData data, Context context) {
             this.data = data;
             this.context = context;
         }
@@ -108,9 +107,7 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
                                     .centerCrop()
                                     .into(500, 500)
                                     .get();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                         }
                 }

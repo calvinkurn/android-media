@@ -5,8 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.product.customview.BaseView;
@@ -19,13 +17,12 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import java.util.List;
 
 /**
- * Created by alifa on 5/9/17.
+ * @author alifa on 5/9/17.
  */
 
 public class OtherProductsView extends BaseView<ProductDetailData, ProductDetailView> {
 
     private LinearLayout layoutOther;
-    private boolean isShopFavorite = false;
 
     public OtherProductsView(Context context) {
         super(context);
@@ -75,18 +72,6 @@ public class OtherProductsView extends BaseView<ProductDetailData, ProductDetail
             otherProdItemView.renderData(productOther);
             otherProdItemView.setOnClickListener(new OtherProductsView.ClickOtherProduct(productOther));
             layoutOther.addView(otherProdItemView);
-        }
-    }
-
-    private class AnimationFav extends ScaleAnimation {
-
-        AnimationFav(int fromX, float toX, int fromY, float toY, int pivotXType,
-                     float pivotXValue, int pivotYType, float pivotYValue) {
-            super(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue);
-            setDuration(250);
-            setRepeatCount(Animation.INFINITE);
-            setRepeatMode(Animation.REVERSE);
-            setFillAfter(false);
         }
     }
 

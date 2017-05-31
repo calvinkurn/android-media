@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.product.model.share.ShareData;
 
 /**
- * Created by Angga.Prasetiyo on 18/11/2015.
+ * @author Angga.Prasetiyo on 18/11/2015.
  */
 public interface ProductInfoPresenter {
 

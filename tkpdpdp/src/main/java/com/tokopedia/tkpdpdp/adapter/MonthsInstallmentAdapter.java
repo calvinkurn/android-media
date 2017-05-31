@@ -15,7 +15,7 @@ import com.tokopedia.tkpdpdp.R;
 import java.util.ArrayList;
 
 /**
- * Created by alifa on 5/17/17.
+ * @author by alifa on 5/17/17.
  */
 
 public class MonthsInstallmentAdapter extends RecyclerView.Adapter<MonthsInstallmentAdapter.MonthsInstallmentViewHolder> {
@@ -74,7 +74,8 @@ public class MonthsInstallmentAdapter extends RecyclerView.Adapter<MonthsInstall
 
         public void bindData(MonthsInstallmentItem monthsInstallmentItem) {
             name.setText(monthsInstallmentItem.getValue());
-            info.setText(MIN_PURCHASE + monthsInstallmentItem.getInfo());
+            String minPurchaseValue = MIN_PURCHASE + monthsInstallmentItem.getInfo();
+            info.setText(minPurchaseValue);
             ImageHandler.LoadImage(image, monthsInstallmentItem.getImageUrl());
         }
     }

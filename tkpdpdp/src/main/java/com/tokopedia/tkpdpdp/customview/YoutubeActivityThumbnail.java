@@ -15,7 +15,7 @@ import com.tokopedia.tkpdpdp.listener.ProductYoutubeActivityView;
 
 
 /**
- * Created by kris on 11/8/16. Tokopedia
+ * @author kris on 11/8/16. Tokopedia
  */
 
 public class YoutubeActivityThumbnail extends LinearLayout{

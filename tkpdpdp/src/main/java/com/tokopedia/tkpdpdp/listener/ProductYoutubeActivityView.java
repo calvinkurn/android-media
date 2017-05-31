@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdpdp.listener;
 
 /**
- * Created by kris on 12/5/16. Tokopedia
+ * @author kris on 12/5/16. Tokopedia
  */
 
 public interface ProductYoutubeActivityView {

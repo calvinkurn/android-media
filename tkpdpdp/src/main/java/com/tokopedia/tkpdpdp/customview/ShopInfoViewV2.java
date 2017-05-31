@@ -166,7 +166,10 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                 favoriteButton.setSelected(false);
                 favoriteButton.setClickable(true);
                 favoriteText.setText(getContext().getString(R.string.favoritkan));
-                favoriteText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
+                favoriteText
+                        .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_add_black_24dp, 0, 0, 0);
+
                 favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
                 break;
         }
@@ -196,7 +199,8 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
+            bundle.putString(InboxRouter.PARAM_SHOP_ID,
+                    String.valueOf(data.getShopInfo().getShopId()));
             bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
             listener.onProductShopMessageClicked(bundle);
         }
