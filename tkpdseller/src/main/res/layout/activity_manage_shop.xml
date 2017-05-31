@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="Kelola akun Anda"
+            android:text="@string/label_manage_your_shop"
             android:textColor="@color/black"
             android:textSize="@dimen/fonts"
             android:textStyle="bold" />
