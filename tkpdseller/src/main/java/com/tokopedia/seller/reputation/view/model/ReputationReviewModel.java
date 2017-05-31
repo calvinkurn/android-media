@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * @author normansyahputa on 3/16/17.
  */
 
-public class ReputationReviewModel extends TypeBasedModel implements Parcelable {
+public class ReputationReviewModel implements Parcelable, TypeBasedModel {
     public static final int VIEW_DEPOSIT = 1912123;
     public static final Creator<ReputationReviewModel> CREATOR = new Creator<ReputationReviewModel>() {
         @Override
@@ -25,11 +25,9 @@ public class ReputationReviewModel extends TypeBasedModel implements Parcelable 
     Data data;
 
     public ReputationReviewModel() {
-        super(VIEW_DEPOSIT);
     }
 
     protected ReputationReviewModel(Parcel in) {
-        this();
         this.data = in.readParcelable(Data.class.getClassLoader());
     }
 
@@ -49,6 +47,11 @@ public class ReputationReviewModel extends TypeBasedModel implements Parcelable 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(data, flags);
+    }
+
+    @Override
+    public int getType() {
+        return VIEW_DEPOSIT;
     }
 
     public static class Data implements Parcelable {

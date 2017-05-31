@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -11,10 +12,12 @@ import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.domain.model.Datum;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -33,7 +36,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
 
     @KeywordStatusTypeDef
-    int filterStatus;
+    int filterStatus = KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
 
     GroupAd groupAd;
 
@@ -56,7 +59,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     protected void searchAd() {
         super.searchAd();
         BaseKeywordParam baseKeywordParam
-                = topAdsKeywordListPresenter.generateParam(keyword, page, false,
+                = topAdsKeywordListPresenter.generateParam(keyword, page, isPositive(),
                 startDate.getTime(), endDate.getTime());
 
         String s = filters.get(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
@@ -70,9 +73,17 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
             baseKeywordParam.keywordStatus = i;
         }
 
+        searchAd(baseKeywordParam);
+    }
+
+    protected void searchAd(BaseKeywordParam baseKeywordParam) {
         topAdsKeywordListPresenter.fetchNegativeKeyword(
                 baseKeywordParam
         );
+    }
+
+    protected boolean isPositive() {
+        return false;
     }
 
     @Override
@@ -87,12 +98,49 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     public void onCreateKeyword() {
         TopAdsKeywordNewChooseGroupActivity.start(
                 TopAdsKeywordNegativeListFragment.this,
-                getActivity(), REQUEST_CODE_CREATE_KEYWORD, false);
+                getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
     }
 
     @Override
     protected TopAdsBaseListAdapter<Datum> initializeTopAdsAdapter() {
-        return new TopAdsKeywordAdapter();
+        return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<Datum>() {
+            @Override
+            public void onClicked(Datum datum) {
+                if (datum != null) {
+                    KeywordAd keywordAd = getKeywordAd(datum);
+
+                    goToDetail(keywordAd);
+                }
+            }
+        });
+    }
+
+    protected void goToDetail(KeywordAd keywordAd) {
+        startActivity(TopAdsKeywordDetailNegativeActivity.createInstance(
+                getActivity(), keywordAd, ""
+        ));
+    }
+
+    @NonNull
+    protected KeywordAd getKeywordAd(Datum datum) {
+        KeywordAd keywordAd = new KeywordAd();
+        keywordAd.setId(Integer.toString(datum.getKeywordId()));
+        keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
+        keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
+
+        keywordAd.setKeywordTag(datum.getKeywordTag());
+        keywordAd.setStatus(datum.getKeywordStatus());
+        keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
+        keywordAd.setStatAvgClick(datum.getStatAvgClick());
+        keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
+        keywordAd.setStatTotalImpression(datum.getStatTotalImpression());
+        keywordAd.setStatTotalClick(datum.getStatTotalClick());
+        keywordAd.setStatTotalCtr(datum.getStatTotalCtr());
+        keywordAd.setStatTotalConversion(datum.getStatTotalConversion());
+        keywordAd.setPriceBidFmt(datum.getKeywordPriceBidFmt());
+        keywordAd.setLabelPerClick(datum.getLabelPerClick());
+        keywordAd.setKeywordTypeDesc(datum.getKeywordTypeDesc());
+        return keywordAd;
     }
 
     @Override
