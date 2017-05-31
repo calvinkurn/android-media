@@ -755,8 +755,10 @@ public class DrawerVariable {
             public void onSuccess(LoyaltyItem data) {
                 model.header.LoyaltyUrl = URLGenerator.generateURLLucky(data.getUri(), context);
                 model.header.Loyalty = data.getLoyaltyPoint().getAmount();
+                model.header.TopPointsEnabled = data.getActive();
                 Cache.putString("loyalty", model.header.Loyalty);
                 Cache.putString("loyalty_url", model.header.LoyaltyUrl);
+                Cache.putBoolean("loyalty_state", model.header.TopPointsEnabled);
                 Cache.applyEditor();
                 adapter.notifyDataSetChanged();
             }
