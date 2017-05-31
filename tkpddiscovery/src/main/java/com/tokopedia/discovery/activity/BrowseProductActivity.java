@@ -172,10 +172,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         browsePresenter.sendHotlist(selected, keyword);
     }
 
-    public void sendCategory(String departementId) {
-        browsePresenter.sendCategory(departementId);
-    }
-
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
         return false;
@@ -543,16 +539,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void renderCategoriesHeader(Data categoryHeader) {
-        BrowseParentFragment parentFragment = (BrowseParentFragment)
-                fragmentManager.findFragmentById(R.id.container);
-
-        if (parentFragment != null) {
-            parentFragment.renderCategories(categoryHeader);
-        }
-    }
-
-    @Override
     public int getCurrentSuggestionTab() {
         return discoverySearchView.getSuggestionFragment().getCurrentTab();
     }
@@ -639,6 +625,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null) {
+            getBrowseProductActivityModel().setQ("");
             String toolbarTitle;
             if (name!=null) {
                 toolbarTitle = name;
@@ -663,7 +650,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
         renderNewCategoryLevel(child.getId(),child.getName(),false);
-
     }
 
     @Override
