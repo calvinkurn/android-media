@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 
@@ -41,7 +42,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, BannerWebView.class);
+                    Intent intent = new Intent(context, TopPicksWebView.class);
                     intent.putExtra("url", bannerList.get(position).getUrl());
                     context.startActivity(intent);
                 }

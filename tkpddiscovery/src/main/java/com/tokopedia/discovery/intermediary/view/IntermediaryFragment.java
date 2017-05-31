@@ -307,7 +307,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
         bannerViewPager.setAdapter(bannerPagerAdapter);
         bannerViewPager.addOnPageChangeListener(onBannerChange());
-        bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_dark_orange));
         bannerIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white));
         bannerIndicator.setViewPager(bannerViewPager);
         bannerPagerAdapter.notifyDataSetChanged();
@@ -392,18 +392,23 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         brandsRecyclerView.setLayoutManager(
                 new NonScrollGridLayoutManager(getActivity(), 3,
                         GridLayoutManager.VERTICAL, false));
+        brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),R.drawable.divider300));
         brandsAdapter = new IntermediaryBrandsAdapter(  getCategoryWidth(),brandModels,this);
         brandsRecyclerView.setAdapter(brandsAdapter);
     }
 
     @Override
     public void showLoading() {
-        ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+            ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void hideLoading() {
-        ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+            ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
+        }
     }
 
     @Override
