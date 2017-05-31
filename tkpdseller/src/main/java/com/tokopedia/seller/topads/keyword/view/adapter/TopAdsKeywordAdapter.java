@@ -5,12 +5,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
 import com.tokopedia.seller.topads.keyword.domain.model.Datum;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +16,12 @@ import java.util.List;
  */
 
 public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
+
+    private Callback<Datum> callback;
+
+    public TopAdsKeywordAdapter(Callback<Datum> callback) {
+        this.callback = callback;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,7 +38,7 @@ public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
         switch (getItemViewType(position)) {
             case Datum.TYPE:
                 TopAdsKeywordViewHolder itemHolder = (TopAdsKeywordViewHolder) holder;
-                itemHolder.bindDataAds(data.get(position));
+                itemHolder.bindDataAds(data.get(position), callback);
                 break;
             default:
                 super.onBindViewHolder(holder, position);

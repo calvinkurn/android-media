@@ -596,4 +596,5 @@
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
+    <string name="top_ads_keyword_delete">Hapus</string>
 </resources>

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -44,8 +46,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     private EditText groupFilterSearch;
     private GroupAd selection;
 
-    private GroupAd allGroup = new GroupAd();
-
     /**
      * Sign for title filter list
      */
@@ -66,6 +66,8 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
             topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
         }
     };
+    private View hideThings;
+    private PopupMenu popupMenu;
 
     public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
         TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
@@ -106,13 +108,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
         if (savedInstanceState == null && getArguments() != null) {
             selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
         }
-
-        allGroup.setId(Long.MIN_VALUE);
-        allGroup.setName(getString(R.string.top_ads_keyword__all_group));
-
-        if (selection == null) {
-            selection = allGroup;
-        }
     }
 
     @Nullable
@@ -122,6 +117,27 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
+        hideThings = view.findViewById(R.id.hide_things);
+        hideThings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu.show();
+            }
+        });
+        hideThings.setVisibility(View.INVISIBLE);
+        popupMenu = new PopupMenu(getActivity(), hideThings);
+        popupMenu.getMenuInflater().inflate(R.menu.popup_delete_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.delete_keyword) {
+                    enableSelection();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         groupFilterSearch.addTextChangedListener(textWatcher);
         return view;
     }
@@ -160,9 +176,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
-        if (groupAds != null && groupAds.size() >= 0) {
-            groupAds.add(0, allGroup);
-        }
         onSearchAdLoaded(groupAds, groupAds.size());
     }
 
@@ -185,7 +198,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selection != null && !selection.equals(allGroup))
+        if (selection != null)
             intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, selection);
 
         return intent;
@@ -215,18 +228,24 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
         groupFilterSearch.setEnabled(false);
         groupFilterImage.setImageResource(R.drawable.ic_close_green_14x14);
         recyclerView.setVisibility(View.GONE);
+        hideThings.setVisibility(View.VISIBLE);
         groupFilterImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupFilterSearch.setFocusableInTouchMode(true);
-                groupFilterSearch.setEnabled(true);
-                groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
-                groupFilterImage.setOnClickListener(null);
-                groupFilterSearch.addTextChangedListener(textWatcher);
-                groupFilterSearch.setText("");
-                recyclerView.setVisibility(View.VISIBLE);
+                enableSelection();
             }
         });
+    }
+
+    protected void enableSelection() {
+        groupFilterSearch.setFocusableInTouchMode(true);
+        groupFilterSearch.setEnabled(true);
+        groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
+        groupFilterImage.setOnClickListener(null);
+        groupFilterSearch.addTextChangedListener(textWatcher);
+        groupFilterSearch.setText("");
+        recyclerView.setVisibility(View.VISIBLE);
+        hideThings.setVisibility(View.INVISIBLE);
     }
 
     @Override

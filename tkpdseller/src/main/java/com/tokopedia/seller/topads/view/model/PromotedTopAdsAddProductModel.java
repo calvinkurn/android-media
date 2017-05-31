@@ -4,21 +4,16 @@ package com.tokopedia.seller.topads.view.model;
  * Created by normansyahputa on 3/6/17.
  */
 
-public class PromotedTopAdsAddProductModel extends TypeBasedModel
-        implements BaseTopAdsProductModel {
+public class PromotedTopAdsAddProductModel
+        implements BaseTopAdsProductModel, TypeBasedModel {
     public static final int TYPE = 129130;
 
     public String description;
     public String snippet;
     public TopAdsProductViewModel productDomain;
 
-    private PromotedTopAdsAddProductModel() {
-        super(TYPE);
-    }
-
     public PromotedTopAdsAddProductModel(String description, String snippet
             , TopAdsProductViewModel productDomain) {
-        this();
         this.description = description;
         this.snippet = snippet;
         this.productDomain = productDomain;
@@ -51,5 +46,10 @@ public class PromotedTopAdsAddProductModel extends TypeBasedModel
     @Override
     public TopAdsProductViewModel getTopAdsProductViewModel() {
         return productDomain;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

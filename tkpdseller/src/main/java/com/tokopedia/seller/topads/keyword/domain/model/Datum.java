@@ -6,7 +6,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class Datum extends TypeBasedModel {
+public class Datum implements TypeBasedModel {
     public static final int TYPE = 292912;
 
     private int keywordId;// 1
@@ -28,10 +28,6 @@ public class Datum extends TypeBasedModel {
     private String labelEdit; // 17
     private String labelPerClick; // 18
     private String labelOf; // 19
-
-    public Datum() {
-        super(TYPE);
-    }
 
     public int getKeywordId() {
         return keywordId;
@@ -185,4 +181,8 @@ public class Datum extends TypeBasedModel {
         this.labelOf = labelOf;
     }
 
+    @Override
+    public int getType() {
+        return TYPE;
+    }
 }

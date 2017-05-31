@@ -112,7 +112,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
     private int negativeCount;
 
     public GroupAd() {
-        super(TYPE);
+
     }
 
     protected GroupAd(Parcel in) {
@@ -351,5 +351,10 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }
