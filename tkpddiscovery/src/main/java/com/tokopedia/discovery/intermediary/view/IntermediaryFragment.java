@@ -316,6 +316,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         bannerViewPager.setLayoutParams(param);
         headerContainer.setVisibility(View.GONE);
+        if (bannerModelList.size()==1) bannerIndicator.setVisibility(View.GONE);
         startSlide();
     }
 
