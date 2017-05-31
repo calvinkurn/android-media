@@ -22,5 +22,8 @@
     <dimen name="product_title_min_height">38dp</dimen>
     <dimen name="shop_image_size">60dp</dimen>
     <dimen name="product_image_size">110dp</dimen>
+    <dimen name="product_list_margin">11dp</dimen>
+    <dimen name="label_padding_left_right">5dp</dimen>
+    <dimen name="label_padding_top_bottom">2dp</dimen>
 
 </resources>
