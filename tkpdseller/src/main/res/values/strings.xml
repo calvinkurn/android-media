@@ -575,8 +575,10 @@
     <string name="top_ads_keyword_phrase_match">Phrase Match</string>
     <string name="top_ads_keyword_exact_match">Exact Match</string>
     <string name="top_ads_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="top_ads_keyword_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
-    <string name="top_ads_keyword_exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
+    <string name="top_ads_keyword_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik.</string>
+    <string name="top_ads_keyword_exact_match_positive_description">Kata kunci dengan pencarian yang sama persis.</string>
+    <string name="top_ads_keyword_phrase_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif.</string>
+    <string name="top_ads_keyword_exact_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
     <string name="top_ads_keyword_type_hint">Kata Kunci</string>
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
@@ -590,9 +592,9 @@
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
-    <string name="top_ads_keyword_phrase_match_positive_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
-                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]></string>
-    <string name="top_ads_keyword_exact_match_positive_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
+    <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
+                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]>, <![CDATA[<i><b>Trend</b></i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_exact_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
