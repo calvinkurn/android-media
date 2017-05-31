@@ -32,57 +32,14 @@ public class TopPointsSubscriber extends Subscriber<TopPointsModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorGetTopPoints(
-                    viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof RuntimeException &&
-                e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorGetTopPoints(
-                            viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorGetTopPoints(
-                            viewListener.getString(R.string.default_request_error_timeout));
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorGetTopPoints(
-                            viewListener.getString(R.string.default_request_error_internal_server));
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorGetTopPoints(
-                            viewListener.getString(R.string.default_request_error_bad_request));
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorGetTopPoints(
-                            viewListener.getString(R.string.default_request_error_forbidden_auth));
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else if (e instanceof MessageErrorException
-                && e.getLocalizedMessage() != null) {
-            viewListener.onErrorGetTopPoints(e.getLocalizedMessage());
-        } else {
-            viewListener.onErrorGetTopPoints(
-                    viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorGetTopPoints(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(TopPointsModel topPointsModel) {
         if (topPointsModel.isSuccess())
             viewListener.onGetTopPoints(convertToViewModel(topPointsModel.getTopPointsData()));
-        else 
+        else
             viewListener.onErrorGetTopPoints(topPointsModel.getErrorMessage());
     }
 

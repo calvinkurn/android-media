@@ -33,50 +33,7 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorGetTokoCash(
-                    viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof RuntimeException &&
-                e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorGetTokoCash(
-                            viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorGetTokoCash(
-                            viewListener.getString(R.string.default_request_error_timeout));
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorGetTokoCash(
-                            viewListener.getString(R.string.default_request_error_internal_server));
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorGetTokoCash(
-                            viewListener.getString(R.string.default_request_error_bad_request));
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorGetTokoCash(
-                            viewListener.getString(R.string.default_request_error_forbidden_auth));
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else if (e instanceof MessageErrorException
-                && e.getLocalizedMessage() != null) {
-            viewListener.onErrorGetTokoCash(e.getLocalizedMessage());
-        } else {
-            viewListener.onErrorGetTokoCash(
-                    viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorGetTokoCash(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

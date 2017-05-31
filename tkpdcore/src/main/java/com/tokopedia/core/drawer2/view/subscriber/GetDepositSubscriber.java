@@ -32,50 +32,7 @@ public class GetDepositSubscriber extends Subscriber<DepositModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorGetDeposit(
-                    viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof RuntimeException &&
-                e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorGetDeposit(
-                            viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorGetDeposit(
-                            viewListener.getString(R.string.default_request_error_timeout));
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorGetDeposit(
-                            viewListener.getString(R.string.default_request_error_internal_server));
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorGetDeposit(
-                            viewListener.getString(R.string.default_request_error_bad_request));
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorGetDeposit(
-                            viewListener.getString(R.string.default_request_error_forbidden_auth));
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else if (e instanceof MessageErrorException
-                && e.getLocalizedMessage() != null) {
-            viewListener.onErrorGetDeposit(e.getLocalizedMessage());
-        } else {
-            viewListener.onErrorGetDeposit(
-                    viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorGetDeposit(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
