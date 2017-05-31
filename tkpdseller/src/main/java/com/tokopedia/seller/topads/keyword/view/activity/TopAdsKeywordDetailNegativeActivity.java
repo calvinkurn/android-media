@@ -7,22 +7,22 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailFragment;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailActivity extends TopAdsBaseActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordDetailNegativeActivity extends TopAdsBaseActivity implements HasComponent<AppComponent> {
 
     public static Intent createInstance(Context context, KeywordAd keywordAd, String adId){
-        Intent intent = new Intent(context, TopAdsKeywordDetailActivity.class);
+        Intent intent = new Intent(context, TopAdsKeywordDetailNegativeActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, keywordAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         return intent;
@@ -32,6 +32,7 @@ public class TopAdsKeywordDetailActivity extends TopAdsBaseActivity implements H
     protected Fragment getNewFragment(Bundle savedinstancestate) {
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         String adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
-        return TopAdsKeywordDetailFragment.createInstance(keywordAd, adId);
+        return TopAdsKeywordDetailNegativeFragment.createInstance(keywordAd, adId);
     }
+
 }

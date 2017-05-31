@@ -11,9 +11,13 @@ import java.util.Date;
  */
 
 public abstract class TopadsKeywordDetailPresenter<T extends TopAdsKeywordDetailViewListener> extends BaseDaggerPresenter<T> {
-    public abstract void refreshAd(Date startDate, Date endDate, String id, int isPositve);
+    public abstract void refreshAd(Date startDate, Date endDate, String id, int isPositve, String shopId);
 
-    public abstract void deleteAd(String id);
+    public abstract void deleteAd(String id, String groupId, String shopId);
 
     public abstract void unSubscribe();
+
+    public abstract void turnOnAd(String id, String groupId, String shopID);
+
+    public abstract void turnOffAd(String id, String groupId, String shopID);
 }

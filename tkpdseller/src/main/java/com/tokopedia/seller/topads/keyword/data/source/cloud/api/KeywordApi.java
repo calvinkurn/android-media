@@ -8,6 +8,7 @@ import com.tokopedia.seller.topads.keyword.data.model.EditTopAdsKeywordDetailDat
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
 
 import java.util.List;
@@ -35,4 +36,7 @@ public interface KeywordApi {
 
     @PATCH(TopAdsNetworkConstant.PATH_EDIT_KEYWORD_DETAIL)
     Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>>> editTopAdsKeywordDetail(@Body DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataModel);
+
+    @PATCH(TopAdsNetworkConstant.PATH_BULK_KEYWORD_DETAIL)
+    Observable<PageDataResponse<DataBulkKeyword>> actionBulkKeyword(@Body DataRequest<DataBulkKeyword> dataModel);
 }
