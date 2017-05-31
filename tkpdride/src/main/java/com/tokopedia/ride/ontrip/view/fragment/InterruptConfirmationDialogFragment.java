@@ -142,7 +142,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                         digitalModuleRouter.instanceIntentCartDigitalProductWithBundle(bundle),
                         IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
                 );
-            } else if (uri.getScheme().equals("toko")) {
+            } else if (uri.getScheme().equals("tokopedia")) {
                 String id = "";
                 String key = "";
                 if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))) {
