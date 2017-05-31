@@ -322,6 +322,7 @@ public class CategoryProductStyle1View extends
             public void onClientNumberInputInvalid() {
                 operatorSelected = null;
                 productSelected = null;
+                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
