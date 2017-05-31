@@ -148,7 +148,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
         cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
         if (isFromCategory()) {
-            retrieveLastGridConfig(browseModel.getParentDepartement());
+            retrieveLastGridConfig(browseModel.getDepartmentId());
         }
         if (SessionHandler.isV4Login(context)) {
             String userId = SessionHandler.getLoginID(context);
@@ -318,7 +318,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 isCustomGridType = true;
 
                 if (isFromCategory()) {
-                    saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+                    saveLastGridConfig(browseModel.getDepartmentId(), gridType.toString());
                 }
 
                 browseView.sendChangeGridBroadcast(gridType);
@@ -589,12 +589,12 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
     }
 
-    private void retrieveLastGridConfig(final String rootDepartmentId) {
+    private void retrieveLastGridConfig(final String departmentId) {
         Subscription subscription = Observable
                 .create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
-                        String config = cacheGridType.getString(rootDepartmentId);
+                        String config = cacheGridType.getString(departmentId);
                         subscriber.onNext(config);
                     }
                 })
