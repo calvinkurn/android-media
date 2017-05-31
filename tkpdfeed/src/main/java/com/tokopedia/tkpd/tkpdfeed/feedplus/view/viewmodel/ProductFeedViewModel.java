@@ -10,6 +10,7 @@ public class ProductFeedViewModel {
     private String name;
     private String price;
     private String imageSource;
+    private String imageSourceSingle;
     private String url;
     private String shopName;
     private String shopAva;
@@ -19,6 +20,7 @@ public class ProductFeedViewModel {
                                 String name,
                                 String price,
                                 String imageSource,
+                                String imageSourceSingle,
                                 String url,
                                 String shopName,
                                 String shopAva,
@@ -27,6 +29,7 @@ public class ProductFeedViewModel {
         this.name = name;
         this.price = price;
         this.imageSource = imageSource;
+        this.imageSourceSingle = imageSourceSingle;
         this.url = url;
         this.shopName = shopName;
         this.shopAva = shopAva;
@@ -55,6 +58,14 @@ public class ProductFeedViewModel {
 
     public void setImageSource(String imageSource) {
         this.imageSource = imageSource;
+    }
+
+    public String getImageSourceSingle() {
+        return imageSourceSingle;
+    }
+
+    public void setImageSourceSingle(String imageSourceSingle) {
+        this.imageSourceSingle = imageSourceSingle;
     }
 
     public String getUrl() {

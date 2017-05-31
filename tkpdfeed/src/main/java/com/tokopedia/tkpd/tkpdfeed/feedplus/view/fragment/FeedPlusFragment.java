@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,14 +17,17 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -56,6 +61,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
 
@@ -185,7 +191,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent intent = FeedPlusDetailActivity.getIntent(
                 getActivity(),
                 feedId);
-        startActivity(intent);
+        startActivityForResult(intent, OPEN_DETAIL);
     }
 
     @Override
@@ -329,11 +335,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onSeePromo(String link) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case OPEN_DETAIL:
+                if(resultCode == Activity.RESULT_OK)
+                    showSnackbar(data.getStringExtra("message"));
+                break;
+            default:
+                break;
+        }
     }
 
 }

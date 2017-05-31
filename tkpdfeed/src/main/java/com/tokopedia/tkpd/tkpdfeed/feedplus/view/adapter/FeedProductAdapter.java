@@ -71,12 +71,12 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
+        ImageHandler.LoadImage(holder.productImage, getItemCount()>1? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
 
         if (list.size() > 6 && position == 5) {
             holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
             holder.extraProduct.setVisibility(View.VISIBLE);
-            String extra = "+" + (list.size() - 6);
+            String extra = "+" + (activityCardViewModel.getTotalProduct() - 5);
             holder.extraProduct.setText(extra);
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,22 +84,11 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                     viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
                 }
             });
-            holder.productName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
-                }
-            });
 
-            holder.productImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
-                }
-            });
         } else {
             holder.blackScreen.setForeground(null);
             holder.extraProduct.setVisibility(View.GONE);
+
             holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

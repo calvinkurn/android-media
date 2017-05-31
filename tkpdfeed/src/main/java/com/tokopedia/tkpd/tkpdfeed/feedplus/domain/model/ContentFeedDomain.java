@@ -33,6 +33,11 @@ public class ContentFeedDomain {
     }
 
     @Nullable
+    public String getType() {
+        return type;
+    }
+
+    @Nullable
     public Integer getTotalProduct() {
         return totalProduct;
     }
@@ -50,10 +55,5 @@ public class ContentFeedDomain {
     @Nullable
     public String getStatusActivity() {
         return statusActivity;
-    }
-
-    @Nullable
-    public String getType() {
-        return type;
     }
 }

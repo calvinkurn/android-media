@@ -297,7 +297,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                intent.putExtra(BannerWebView.EXTRA_URL, "https://www.tokopedia.com/promo/?flag_app=1");
                 startActivity(intent);
             }
         };

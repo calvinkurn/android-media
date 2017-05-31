@@ -64,6 +64,8 @@ public interface FeedPlus{
         void showLoading();
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
+
+        void onSeePromo(String link);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

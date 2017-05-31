@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -216,7 +217,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         }
 
         if (listDetail.size() == 0) {
-            adapter.showEmpty();
+//            adapter.showEmpty();
+            getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra("message", getString(R.string.feed_deleted)));
+            getActivity().finish();
         } else {
             adapter.addList(listDetail);
         }

@@ -92,6 +92,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         if (SessionHandler.isV4Login(context)) {
             return new Intent(context, SellerHomeActivity.class);

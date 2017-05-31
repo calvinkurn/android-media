@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class ActivityCardViewModel extends ProductCardViewModel {
 
+    private final int totalProduct;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
     private String actionText;
@@ -25,13 +26,15 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String shareUrl,
                                  String shareLinkDescription,
                                  String actionText,
-                                 String feedId) {
+                                 String feedId,
+                                 int totalProduct) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
         this.shareLinkDescription = shareLinkDescription;
         this.actionText = actionText;
         this.feedId = feedId;
+        this.totalProduct = totalProduct;
     }
 
     @Override
@@ -86,5 +89,9 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public void setShareLinkDescription(String shareLinkDescription) {
         this.shareLinkDescription = shareLinkDescription;
+    }
+
+    public int getTotalProduct() {
+        return totalProduct;
     }
 }
