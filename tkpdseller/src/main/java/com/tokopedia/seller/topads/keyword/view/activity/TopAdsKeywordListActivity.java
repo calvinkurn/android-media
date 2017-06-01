@@ -20,7 +20,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseKeywordListFragment;
+import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 
 /**
@@ -73,7 +73,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     }
 
     private void fabOnClick() {
-        getTopAdsBaseKeywordListFragment().onCreateKeyword();
+        getTopAdsBaseKeywordListFragment().onCreateAd();
     }
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
@@ -120,16 +120,16 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (getTopAdsBaseKeywordListFragment() != null) {
-            getTopAdsBaseKeywordListFragment().onSearchChanged(query);
+            getTopAdsBaseKeywordListFragment().onSearch(query);
         }
         return true;
     }
 
-    private TopAdsBaseKeywordListFragment getTopAdsBaseKeywordListFragment() {
+    private AdListMenuListener getTopAdsBaseKeywordListFragment() {
         Fragment registeredFragment = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
         if (registeredFragment != null && registeredFragment.isVisible()) {
-            if (registeredFragment instanceof TopAdsBaseKeywordListFragment) {
-                return ((TopAdsBaseKeywordListFragment) registeredFragment);
+            if (registeredFragment instanceof AdListMenuListener) {
+                return ((AdListMenuListener) registeredFragment);
             }
         }
         return null;
@@ -152,7 +152,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
             return true;
         } else if (item.getItemId() == R.id.menu_filter) {
             if (getTopAdsBaseKeywordListFragment() != null) {
-                getTopAdsBaseKeywordListFragment().onFilterChanged("sekarang");
+                getTopAdsBaseKeywordListFragment().goToFilter();
             }
             return true;
         }

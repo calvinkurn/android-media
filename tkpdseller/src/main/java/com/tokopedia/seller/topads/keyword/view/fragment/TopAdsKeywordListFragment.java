@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,30 +16,30 @@ import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActi
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
+import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
-
-import java.util.Map;
 
 import javax.inject.Inject;
 
 /**
  * @author normansyahputa on 5/17/17.
  */
-
-public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordListPresenterImpl> {
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl> implements AdListMenuListener {
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
     }
 
-    @KeywordStatusTypeDef
-    protected int filterStatus = KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
+    protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
 
+    @KeywordStatusTypeDef
+    protected int filterStatus;
     protected GroupAd groupAd;
 
     @Inject
@@ -51,6 +52,12 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        filterStatus = KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
     }
 
     @Override
@@ -67,49 +74,21 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     protected void searchAd() {
         super.searchAd();
-        BaseKeywordParam baseKeywordParam
-                = topAdsKeywordListPresenter.generateParam(keyword, page, isPositive(),
-                startDate.getTime(), endDate.getTime());
-
-        String s = filters.get(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
-        if (s != null && !s.isEmpty()) {
-            baseKeywordParam.groupId = Integer.parseInt(s);
+        BaseKeywordParam baseKeywordParam = topAdsKeywordListPresenter.generateParam(keyword, page,
+                isPositive(), startDate.getTime(), endDate.getTime());
+        if (groupAd != null) {
+            baseKeywordParam.groupId = Integer.parseInt(groupAd.getId());
         }
-
-        s = filters.get(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
-        if (s != null && !s.isEmpty()) {
-            @KeywordStatusTypeDef int i = Integer.parseInt(s);
-            baseKeywordParam.keywordStatus = i;
-        }
-
+        baseKeywordParam.keywordStatus = filterStatus;
         searchAd(baseKeywordParam);
     }
 
     protected void searchAd(BaseKeywordParam baseKeywordParam) {
-        topAdsKeywordListPresenter.fetchPositiveKeyword(
-                baseKeywordParam
-        );
-    }
-
-    protected boolean isPositive() {
-        return true;
+        topAdsKeywordListPresenter.fetchPositiveKeyword(baseKeywordParam);
     }
 
     @Override
-    public void onFilterChanged(Object someObject) {
-        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
-        startActivityForResult(intent, REQUEST_CODE_FILTER_KEYWORD);
-    }
-
-    @Override
-    public void onCreateKeyword() {
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
-    }
-
-    @Override
-    protected TopAdsBaseListAdapter<Datum> initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter<Datum> getNewAdapter() {
         return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<Datum>() {
             @Override
             public void onItemClicked(Datum datum) {
@@ -123,6 +102,10 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     protected void goToDetail(KeywordAd keywordAd) {
         onItemClicked(keywordAd);
+    }
+
+    protected boolean isPositive() {
+        return true;
     }
 
     @NonNull
@@ -148,19 +131,36 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     }
 
     @Override
-    public Map<String, String> parseFilter(int resultCode, Intent intent) {
-        Map<String, String> filters = super.parseFilter(resultCode, intent);
-        groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
-        filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
-        if (groupAd != null)
-            filters.put(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd.getId());
-        filters.put(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.toString(filterStatus));
-        return filters;
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
+            groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+            filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
+            searchAd();
+            updateEmptyViewNoResult();
+        } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSearch(null);
+            }
+        }
     }
 
     @Override
-    protected void goToFilter() {
+    public void onSearch(String keyword) {
+        onQueryTextSubmit(keyword);
+    }
 
+    @Override
+    public void goToFilter() {
+        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
+        startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
+    }
+
+    @Override
+    public void onCreateAd() {
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
     }
 
     @Override

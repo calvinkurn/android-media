@@ -207,7 +207,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unSubscribe();
+        if (presenter != null) {
+            presenter.unSubscribe();
+        }
     }
 
     @TargetApi(23)

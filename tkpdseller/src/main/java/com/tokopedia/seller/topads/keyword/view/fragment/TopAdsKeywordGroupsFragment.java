@@ -170,7 +170,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected TopAdsBaseListAdapter<GroupAd> initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter<GroupAd> getNewAdapter() {
         TopAdsKeywordGroupListAdapter topAdsKeywordGroupListAdapter = new TopAdsKeywordGroupListAdapter();
         topAdsKeywordGroupListAdapter.setListener(this);
         return topAdsKeywordGroupListAdapter;

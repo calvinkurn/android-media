@@ -51,7 +51,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     }
 
     @Override
-    public void onCreateKeyword() {
+    public void onCreateAd() {
         TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
     }
 
@@ -63,10 +63,5 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         return null;
-    }
-
-    @Override
-    protected void goToFilter() {
-
     }
 }

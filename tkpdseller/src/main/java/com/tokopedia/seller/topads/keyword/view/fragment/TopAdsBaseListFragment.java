@@ -132,7 +132,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                 searchAd(START_PAGE);
             }
         });
-        adapter = initializeTopAdsAdapter();
+        adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewBinder());
         TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
@@ -147,7 +147,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
-    protected TopAdsBaseListAdapter initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter getNewAdapter() {
         return new TopAdsAdListAdapter();
     }
 
