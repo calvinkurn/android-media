@@ -14,6 +14,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
@@ -29,7 +30,6 @@ import javax.inject.Inject;
 
 public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment implements TopAdsKeywordEditDetailView {
     public static final String TAG = "TopAdsKeywordEditDetailFragment";
-    public static final String KEYWORD_DETAIL_MODEL = "KEYWORD_DETAIL_MODEL";
 
     @Inject
     TopAdsKeywordEditDetailPresenter presenter;
@@ -37,13 +37,13 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected EditText topAdsKeyword;
     protected EditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
-    private KeywordAd model;
+
+    private KeywordAd keywordAd;
     private TopAdsKeywordEditDetailFragmentListener listener;
 
-    public static Bundle createArguments(
-            KeywordAd model) {
+    public static Bundle createArguments(KeywordAd model) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEYWORD_DETAIL_MODEL, model);
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, model);
         return bundle;
     }
 
@@ -65,10 +65,16 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        keywordAd = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
 
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_edit_detail, container, false);
 
@@ -76,10 +82,8 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         settingTopAdsKeyword(view);
         settingTopAdsCostPerClick(view);
 
-        Bundle bundle = getArguments();
-        model = bundle.getParcelable(KEYWORD_DETAIL_MODEL);
-        if (model != null) {
-            fillDataToView(model);
+        if (keywordAd != null) {
+            fillDataToView(keywordAd);
         }
 
         view.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
@@ -94,10 +98,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         return view;
     }
 
-    private void fillDataToView(KeywordAd model) {
-        topAdsKeywordType.setSpinnerValue(model.getKeywordTypeId());
-        topAdsKeyword.setText(model.getName());
-        topAdsCostPerClick.setText(model.getPriceBidFmt());
+    private void fillDataToView(KeywordAd keywordAd) {
+        topAdsKeywordType.setSpinnerValue(keywordAd.getKeywordTypeId());
+        topAdsKeyword.setText(keywordAd.getName());
+        topAdsCostPerClick.setText(keywordAd.getPriceBidFmt());
     }
 
     protected void settingTopAdsCostPerClick(View view) {
@@ -116,10 +120,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     private KeywordAd collectDataFromView() {
-        model.setKeywordTypeId(getTopAdsKeywordTypeId());
-        model.setKeywordTag(getTopAdsKeywordText());
-        model.setPriceBidFmt(getTopAdsCostPerClick());
-        return model;
+        keywordAd.setKeywordTypeId(getTopAdsKeywordTypeId());
+        keywordAd.setKeywordTag(getTopAdsKeywordText());
+        keywordAd.setPriceBidFmt(getTopAdsCostPerClick());
+        return keywordAd;
     }
 
     public String getTopAdsKeywordText() {

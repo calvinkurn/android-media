@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailNegativeFragment;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
@@ -18,7 +19,7 @@ public class TopAdsKeywordEditDetailNegativeActivity extends TopAdsKeywordEditDe
 
     public static Intent createIntent(Context context, KeywordAd model){
         Intent starter = new Intent(context, TopAdsKeywordEditDetailNegativeActivity.class);
-        starter.putExtra(KEYWORD_DETAIL_MODEL, model);
+        starter.putExtra(TopAdsExtraConstant.EXTRA_AD, model);
         return starter;
     }
 

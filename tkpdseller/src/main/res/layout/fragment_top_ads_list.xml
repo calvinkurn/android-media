@@ -22,7 +22,7 @@
 
     <com.tokopedia.seller.lib.widget.DateLabelView
         android:id="@+id/date_label_view"
-        style="@style/LabelLayoutWithoutBorder"
+        style="@style/LabelLayoutWithBorderBottom"
         app:layout_behavior="com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior" />
 
     <android.support.design.widget.FloatingActionButton

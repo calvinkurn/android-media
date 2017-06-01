@@ -27,9 +27,6 @@
                 android:layout_marginBottom="@dimen/topads_detail_padding_item"
                 app:content_color="@color/tkpd_dark_green"
                 app:title="@string/label_top_ads_groups" />
-
         </LinearLayout>
-
     </ScrollView>
-
 </com.tokopedia.core.customwidget.SwipeToRefresh>

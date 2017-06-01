@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_refresh_layout"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <com.tokopedia.seller.lib.widget.DateLabelView
-            android:id="@+id/date_label_view"
-            style="@style/LabelLayoutWithoutBorder" />
-
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:paddingTop="@dimen/top_ads_padding_top_list_with_date">
 
             <LinearLayout
-                android:id="@+id/container_detail_topads"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <include
@@ -42,6 +37,11 @@
                 <include layout="@layout/include_topads_content_detail" />
 
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</com.tokopedia.core.customwidget.SwipeToRefresh>
+        </android.support.v4.widget.NestedScrollView>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <com.tokopedia.seller.lib.widget.DateLabelView
+        android:id="@+id/date_label_view"
+        style="@style/LabelLayoutWithBorderBottom"
+        app:layout_behavior="com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior" />
+</android.support.design.widget.CoordinatorLayout>

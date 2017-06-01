@@ -98,6 +98,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        swipeToRefresh.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
