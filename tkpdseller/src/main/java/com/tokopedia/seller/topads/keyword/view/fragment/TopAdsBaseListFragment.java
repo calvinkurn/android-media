@@ -43,7 +43,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int START_PAGE = 1;
 
-
     protected int status;
     protected int page;
     protected int totalItem;
@@ -62,8 +61,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     }
 
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
-
-    protected abstract void goToFilter();
 
     @Override
     protected TopAdsDatePickerPresenter getDatePickerPresenter() {
@@ -166,7 +163,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected void updateEmptyViewDefault() {
         adapter.setEmptyView(getEmptyViewBinder());
-
         adapter.notifyDataSetChanged();
     }
 
@@ -184,6 +180,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     }
 
     protected void searchAd() {
+
     }
 
     @Override
