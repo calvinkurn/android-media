@@ -50,7 +50,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (callback != null) {
-                    callback.onClicked(datum);
+                    callback.onItemClicked(datum);
                 }
             }
         });

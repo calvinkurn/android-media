@@ -150,7 +150,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void onClicked(Ad ad) {
+    public void onItemClicked(Ad ad) {
 
     }
 

@@ -1,67 +1,90 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
+import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
+import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.view.model.Ad;
+
+import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * @author normansyahputa on 5/17/17.
  */
 
-public class TopAdsKeywordListFragment extends TopAdsKeywordNegativeListFragment {
-
-    private DateLabelView dateLabelView;
+public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordListPresenterImpl> {
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
     }
 
+    @KeywordStatusTypeDef
+    protected int filterStatus = KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
+
+    protected GroupAd groupAd;
+
+    @Inject
+    TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+
     @Override
-    protected String getScreenName() {
+    protected void initInjector() {
+        DaggerTopAdsKeywordComponent.builder()
+                .topAdsModule(new TopAdsModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    protected void initialPresenter() {
+        super.initialPresenter();
+        topAdsKeywordListPresenter.attachView(this);
+    }
+
+    @Override
+    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         return null;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-        dateLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDatePicker();
-            }
-        });
-        return view;
-    }
-
-    @Override
-    protected void loadData() {
-        super.loadData();
-        bindDate();
-    }
-
-    private void bindDate() {
-        dateLabelView.setDate(startDate, endDate);
-    }
-
-
     @Override
     protected void searchAd() {
-        bindDate(); // set ui after date changed.
         super.searchAd();
+        BaseKeywordParam baseKeywordParam
+                = topAdsKeywordListPresenter.generateParam(keyword, page, isPositive(),
+                startDate.getTime(), endDate.getTime());
+
+        String s = filters.get(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        if (s != null && !s.isEmpty()) {
+            baseKeywordParam.groupId = Integer.parseInt(s);
+        }
+
+        s = filters.get(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
+        if (s != null && !s.isEmpty()) {
+            @KeywordStatusTypeDef int i = Integer.parseInt(s);
+            baseKeywordParam.keywordStatus = i;
+        }
+
+        searchAd(baseKeywordParam);
     }
 
-    @Override
     protected void searchAd(BaseKeywordParam baseKeywordParam) {
         topAdsKeywordListPresenter.fetchPositiveKeyword(
                 baseKeywordParam
@@ -73,14 +96,86 @@ public class TopAdsKeywordListFragment extends TopAdsKeywordNegativeListFragment
     }
 
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_keyword_positive_list;
+    public void onFilterChanged(Object someObject) {
+        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
+        startActivityForResult(intent, REQUEST_CODE_FILTER_KEYWORD);
     }
 
     @Override
+    public void onCreateKeyword() {
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
+    }
+
+    @Override
+    protected TopAdsBaseListAdapter<Datum> initializeTopAdsAdapter() {
+        return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<Datum>() {
+            @Override
+            public void onItemClicked(Datum datum) {
+                if (datum != null) {
+                    KeywordAd keywordAd = getKeywordAd(datum);
+                    goToDetail(keywordAd);
+                }
+            }
+        });
+    }
+
     protected void goToDetail(KeywordAd keywordAd) {
-        startActivity(TopAdsKeywordDetailActivity.createInstance(
-                getActivity(), keywordAd, ""
-        ));
+        onItemClicked(keywordAd);
+    }
+
+    @NonNull
+    protected KeywordAd getKeywordAd(Datum datum) {
+        KeywordAd keywordAd = new KeywordAd();
+        keywordAd.setId(Integer.toString(datum.getKeywordId()));
+        keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
+        keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
+        keywordAd.setGroupName(datum.getGroupName());
+        keywordAd.setKeywordTag(datum.getKeywordTag());
+        keywordAd.setStatus(datum.getKeywordStatus());
+        keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
+        keywordAd.setStatAvgClick(datum.getStatAvgClick());
+        keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
+        keywordAd.setStatTotalImpression(datum.getStatTotalImpression());
+        keywordAd.setStatTotalClick(datum.getStatTotalClick());
+        keywordAd.setStatTotalCtr(datum.getStatTotalCtr());
+        keywordAd.setStatTotalConversion(datum.getStatTotalConversion());
+        keywordAd.setPriceBidFmt(datum.getKeywordPriceBidFmt());
+        keywordAd.setLabelPerClick(datum.getLabelPerClick());
+        keywordAd.setKeywordTypeDesc(datum.getKeywordTypeDesc());
+        return keywordAd;
+    }
+
+    @Override
+    public Map<String, String> parseFilter(int resultCode, Intent intent) {
+        Map<String, String> filters = super.parseFilter(resultCode, intent);
+        groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
+        if (groupAd != null)
+            filters.put(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd.getId());
+        filters.put(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.toString(filterStatus));
+        return filters;
+    }
+
+    @Override
+    protected void goToFilter() {
+
+    }
+
+    @Override
+    public void onItemClicked(Ad ad) {
+        startActivity(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""));
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsKeywordListPresenter.detachView();
     }
 }

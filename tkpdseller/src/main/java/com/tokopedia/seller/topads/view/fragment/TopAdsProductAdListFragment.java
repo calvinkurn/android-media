@@ -66,7 +66,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     }
 
     @Override
-    public void onClicked(Ad ad) {
+    public void onItemClicked(Ad ad) {
         if(ad instanceof ProductAd){
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);

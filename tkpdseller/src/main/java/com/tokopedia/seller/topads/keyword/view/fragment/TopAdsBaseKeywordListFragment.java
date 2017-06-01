@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
+import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Map;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsBaseListFragment<T> {
+public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsAdListPresenter> extends TopAdsAdListFragment<T> {
 
     public static final int REQUEST_CODE_FILTER_KEYWORD = 21;
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
