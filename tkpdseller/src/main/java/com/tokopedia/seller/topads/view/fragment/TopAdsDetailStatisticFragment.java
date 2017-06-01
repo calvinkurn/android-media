@@ -34,8 +34,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
     @Override
     protected void initView(View view) {
         super.initView(view);
-        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-
+        initDateLabelView(view);
         maxBid = (LabelView) view.findViewById(R.id.max_bid);
         avgCost = (LabelView) view.findViewById(R.id.avg_cost);
         start = (LabelView) view.findViewById(R.id.start);
@@ -49,19 +48,20 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        swipeToRefresh.setProgressViewOffset(false,
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
-        initDateLabelView();
+
     }
 
-    protected void initDateLabelView() {
+    protected void initDateLabelView(View view) {
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDatePicker();
             }
         });
+        swipeToRefresh.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
+                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override

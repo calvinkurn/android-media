@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter>
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";
@@ -81,16 +81,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public void onFilterChanged(Object someObject) {
-
-    }
-
-    @Override
-    public void onCreateKeyword() {
-
     }
 
     @Override
@@ -167,11 +157,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         return null;
-    }
-
-    @Override
-    protected void goToFilter() {
-
     }
 
     @Override

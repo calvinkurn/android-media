@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -32,7 +33,7 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
     }
 
     @Override
-    protected void initDateLabelView() {
+    protected void initDateLabelView(View view) {
         // Do nothing
     }
 

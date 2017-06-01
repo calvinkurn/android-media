@@ -39,8 +39,7 @@ import java.util.List;
 
 public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment<T> implements
         TopAdsListViewListener, TopAdsBaseListAdapter.Callback<Ad> {
-    protected static final int REQUEST_CODE_AD_STATUS = 2;
-    protected static final int REQUEST_CODE_AD_FILTER = 3;
+
     protected static final int START_PAGE = 1;
 
     protected int status;
@@ -181,20 +180,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected void searchAd() {
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        // check if the request code is the same
-        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
-            if (adStatusChanged || adDeleted) {
-                searchAd(START_PAGE);
-                setResultAdListChanged();
-            }
-        }
     }
 
     protected void setResultAdListChanged() {

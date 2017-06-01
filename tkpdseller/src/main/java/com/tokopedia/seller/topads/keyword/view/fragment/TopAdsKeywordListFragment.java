@@ -45,8 +45,8 @@ public class TopAdsKeywordListFragment extends TopAdsKeywordNegativeListFragment
     }
 
     @Override
-    void loadDateFromPresenter() {
-        super.loadDateFromPresenter();
+    protected void loadData() {
+        super.loadData();
         bindDate();
     }
 

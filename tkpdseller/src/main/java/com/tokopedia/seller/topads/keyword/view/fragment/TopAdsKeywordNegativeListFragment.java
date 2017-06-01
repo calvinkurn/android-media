@@ -174,11 +174,6 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     }
 
     @Override
-    protected void goToFilter() {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordListPresenter.detachView();

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -37,7 +36,10 @@ import java.util.List;
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsBaseListFragment<T> implements
         TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
 
-    private static final int START_PAGE = 1;
+    public interface OnAdListFragmentListener {
+        void startShowCase();
+    }
+
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
@@ -53,11 +55,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     protected abstract void goToFilter();
 
-    OnAdListFragmentListener listener;
-
-    public interface OnAdListFragmentListener {
-        void startShowCase();
-    }
+    private OnAdListFragmentListener listener;
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -76,6 +74,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        initDateLabelView(view);
+    }
+
+    protected void initDateLabelView(View view) {
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +93,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void loadData() {
         super.loadData();
+        updateDateLabelViewText();
+    }
+
+    protected void updateDateLabelViewText() {
         dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
     }
 
@@ -135,9 +141,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
         super.onSearchAdLoaded(adList, totalItem);
         if (adapter.getDataSize() < 1 && !isSearchModeOn) {
-            showFabFilter(false);
+            showFilterOption(false);
         } else {
-            showFabFilter(true);
+            showFilterOption(true);
         }
         if (listener != null && adapter.getDataSize() > 0) {
             listener.startShowCase();
@@ -148,11 +154,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onLoadSearchAdError() {
         super.onLoadSearchAdError();
         if (adapter.getDataSize() < 1) {
-            showFabFilter(false);
+            showFilterOption(false);
         }
     }
 
-    private void showFabFilter(boolean visible) {
+    private void showFilterOption(boolean visible) {
         dateLabelView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
