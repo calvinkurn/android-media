@@ -50,6 +50,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     @Override
+    protected int getContentId() {
+        return R.layout.drawer_activity;
+    }
+
+    @Override
     protected void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.removeAllViews();
@@ -140,7 +145,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             getDrawerDeposit();
             getDrawerNotification();
 
-            if(!GlobalConfig.isSellerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 getDrawerTopPoints();
                 getDrawerTokoCash();
             }
