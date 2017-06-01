@@ -24,12 +24,4 @@
         android:id="@+id/date_label_view"
         style="@style/LabelLayoutWithBorderBottom"
         app:layout_behavior="com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_filter"
-        style="@style/Fab"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_filter"
-        app:behavior_autoHide="true" />
 </android.support.design.widget.CoordinatorLayout>

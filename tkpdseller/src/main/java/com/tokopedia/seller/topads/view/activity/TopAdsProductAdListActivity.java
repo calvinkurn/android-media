@@ -99,7 +99,7 @@ public class TopAdsProductAdListActivity extends TActivity
                                         Color.WHITE));
                     }
 
-                    FloatingActionButton fab = topAdsProductAdListFragment.getFab();
+                    FloatingActionButton fab = null;
                     if (fab != null) {
                         fab.show();
                         showCaseList.add(

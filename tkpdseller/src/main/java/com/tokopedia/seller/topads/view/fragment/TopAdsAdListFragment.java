@@ -14,6 +14,7 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.seller.R;
@@ -41,9 +42,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
-    private CoordinatorLayout coordinatorLayout;
     private DateLabelView dateLabelView;
-    private FloatingActionButton fabFilter;
 
     protected String keyword;
 
@@ -77,19 +76,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-        fabFilter = (FloatingActionButton) view.findViewById(R.id.fab_filter);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDatePicker();
-            }
-        });
-        fabFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFilter();
             }
         });
         swipeToRefresh.setProgressViewOffset(false,
@@ -163,7 +154,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     private void showFabFilter(boolean visible) {
         dateLabelView.setVisibility(visible ? View.VISIBLE : View.GONE);
-        fabFilter.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void showDateLabelView() {
@@ -200,6 +190,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_filter) {
+            goToFilter();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
@@ -226,11 +225,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onDetach() {
         super.onDetach();
         listener = null;
-    }
-
-    // for show case purpose
-    public FloatingActionButton getFab() {
-        return fabFilter;
     }
 
     // for show case
