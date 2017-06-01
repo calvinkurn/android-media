@@ -20,7 +20,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;

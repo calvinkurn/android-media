@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenter;

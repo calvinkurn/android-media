@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**

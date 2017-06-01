@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 5/30/17.

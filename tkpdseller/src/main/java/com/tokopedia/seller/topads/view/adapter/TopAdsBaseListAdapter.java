@@ -1,14 +1,9 @@
 package com.tokopedia.seller.topads.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

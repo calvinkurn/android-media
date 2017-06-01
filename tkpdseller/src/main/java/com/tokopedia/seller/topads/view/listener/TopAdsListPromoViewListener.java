@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.listener;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
 

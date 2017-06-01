@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;

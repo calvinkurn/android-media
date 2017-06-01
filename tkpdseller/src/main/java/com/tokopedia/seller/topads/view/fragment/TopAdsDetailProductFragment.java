@@ -18,7 +18,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;

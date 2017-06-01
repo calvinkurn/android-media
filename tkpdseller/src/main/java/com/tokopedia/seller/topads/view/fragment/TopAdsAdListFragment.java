@@ -19,7 +19,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;

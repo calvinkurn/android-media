@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.data.model.data;
+package com.tokopedia.seller.topads.view.model;
 
 /**
  * Created by Nathaniel on 12/28/2016.
