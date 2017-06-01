@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.localytics.android.Localytics;
+import com.tokopedia.core.R;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 
 /**
@@ -32,6 +33,10 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
         registerReceiver(cartBadgeNotificationReceiver, intentFilter);
     }
 
+    @Override
+    protected int getContentId() {
+        return R.layout.drawer_activity;
+    }
 
     @Override
     protected void onResume() {

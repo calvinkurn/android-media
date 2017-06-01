@@ -498,7 +498,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onGoToTopPoints(String topPointsUrl) {
         Bundle bundle = new Bundle();
-        bundle.putString("url", topPointsUrl);
+        bundle.putString("url", URLGenerator.generateURLLucky(topPointsUrl, context));
         Intent intent = new Intent(context, LoyaltyDetail.class);
         intent.putExtras(bundle);
         context.startActivity(intent);

@@ -36,10 +36,14 @@ public abstract class TActivity extends BaseActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
 
-        setContentView(R.layout.drawer_activity);
+        setContentView(getContentId());
 
         parentView = (FrameLayout) findViewById(R.id.parent_view);
         setupToolbar();
+    }
+
+    protected int getContentId() {
+        return R.layout.main_activity;
     }
 
     protected void setupToolbar() {
