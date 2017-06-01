@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-@Deprecated
 public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragment {
 
     private long selectedGroupId;

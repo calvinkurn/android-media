@@ -20,7 +20,6 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
 public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenter>
         implements TopAdsEtalaseListView {
 

@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-@Deprecated
 public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterContentFragment<P> implements TopAdsBasicRadioButtonAdapter.Callback {
 
     protected TopAdsBasicRadioButtonAdapter adapter;

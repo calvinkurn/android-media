@@ -11,7 +11,6 @@ import com.tokopedia.core.app.BasePresenterFragment;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-@Deprecated
 public abstract class TopAdsFilterContentFragment<P> extends BasePresenterFragment<P> {
 
     public interface Callback {

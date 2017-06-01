@@ -11,7 +11,6 @@ import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
 public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFragment {
 
     private int selectedStatusPromo;
