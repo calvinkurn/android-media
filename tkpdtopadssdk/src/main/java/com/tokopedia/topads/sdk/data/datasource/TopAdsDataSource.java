@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.data.datasource;
 
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
 
@@ -10,7 +12,11 @@ import com.tokopedia.topads.sdk.base.TKPDMapParam;
 
 public interface TopAdsDataSource {
 
-    TopAdsModel getTopAds(String sessionId, TKPDMapParam<String, String> params);
+    void setConfig(Config config);
+
+    TopAdsModel getTopAds(TKPDMapParam<String, String> params);
+
+    PreferedCategory getPreferenceCategory();
 
     String clickTopAdsUrl(String url);
 

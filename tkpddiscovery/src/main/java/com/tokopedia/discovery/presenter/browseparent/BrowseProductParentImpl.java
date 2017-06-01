@@ -13,6 +13,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -33,6 +34,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -51,6 +53,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     HotListBannerModel hotListBannerModel;
     BrowseProductActivityModel browseProductActivityModel;
     private int index;
+    private Stack<SimpleCategory> categoryLevel = new Stack<>();
 
     public BrowseProductParentImpl(BrowseProductParentView view) {
         super(view);
@@ -111,7 +114,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 p.unique_id = null;
                 p.source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
                 p.sc = browseProductActivityModel.getDepartmentId();
-                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                discoveryInteractor.getProductWithCategory(NetworkParam.generateNetworkParamProduct(p), p.sc, categoryLevel.size() + 1);
                 break;
         }
     }
@@ -129,6 +132,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
             view.setSource(browseProductActivityModel.getSource());
             Log.d(TAG, "BROWSE_PRODUCT_ACTIVITY_MODEL " + browseProductActivityModel.toString());
             p = new NetworkParam.Product();
+            p.keyword = browseProductActivityModel.getQ();
             switch (browseProductActivityModel.getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
@@ -150,7 +154,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 p.fshop = hotListBannerModel.query.fshop;
                 p.ob = hotListBannerModel.query.ob;
                 p.h = hotListBannerModel.query.hot_id;
-                if(hotListBannerModel.query.q.equals("()")){
+                if (hotListBannerModel.query.q.equals("()")) {
                     p.q = browseProductActivityModel.getQ();
                 } else {
                     p.q = hotListBannerModel.query.q;
@@ -201,9 +205,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     public void initDataInstance(Context context) {
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
-        //[START] This is for demo only
-//        p = NetworkParam.getDummyProduct();
-        //[END] This is for demo only
     }
 
     @Override
@@ -221,7 +222,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
 
     @Override
     public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-        Log.d(TAG, "onSuccess type "+type);
+        Log.d(TAG, "onSuccess type " + type);
         ArrayMap<String, String> visibleTab = new ArrayMap<>();
         switch (type) {
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
@@ -234,11 +235,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 if (browseProductModel.result.redirect_url == null) {
                     // if has catalog, show three tabs
                     String source = browseProductActivityModel.getSource();
-                    Log.d(TAG, "source "+source);
+                    Log.d(TAG, "source " + source);
                     if (browseProductModel.result.hasCatalog != null && Integer.parseInt(browseProductModel.result.hasCatalog) == 1 && !source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.KATALOG, view.VISIBLE_ON);
-                        if(browseProductActivityModel.getSource().startsWith("search")){
+                        if (browseProductActivityModel.getSource().startsWith("search")) {
                             visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
                         }
                         view.initSectionAdapter(visibleTab);
@@ -254,9 +255,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(PAGER_THREE_TAB_PRODUCT_POSITION);
                         }
-                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                            view.setupCategory(browseProductModel);
-                        }
                     } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
@@ -265,7 +263,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithTabViewPager();
-                        view.setupCategory(browseProductModel);
                     } else {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
@@ -278,17 +275,16 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         }
                         getOfficialStoreBanner(p.q);
                     }
-                    if(view.checkHasFilterAttrIsNull(index)) {
+                    if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
+                    }
+                    if(browseProductModel.getCategoryData().getIsRevamp() && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
+                        view.showTabLayout(false);
                     }
                     view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
-
-                break;
-            case DiscoveryListener.TOPADS:
-                Log.d("MNORMANSYAH", "masuk sini gan!!");
                 break;
             case DiscoveryListener.OS_BANNER:
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());

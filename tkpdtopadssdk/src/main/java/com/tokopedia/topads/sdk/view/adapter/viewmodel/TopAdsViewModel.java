@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewmodel;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsTypeFactory;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class TopAdsViewModel implements Item<TopAdsTypeFactory> {
         return list;
     }
 
-    public void switchDisplayMode(final int displayMode) {
+    public void switchDisplayMode(final DisplayMode displayMode) {
         ModelConverter.convertList(list, displayMode);
     }
 }

@@ -359,14 +359,17 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.deposit.setVisibility(View.VISIBLE);
         }
 
-        if (header.Loyalty.equals("")) {
-            holder.loadingLoyalty.setVisibility(View.VISIBLE);
-            holder.topPoint.setVisibility(View.GONE);
-        } else {
-            holder.loadingLoyalty.setVisibility(View.GONE);
-            holder.topPoint.setVisibility(View.VISIBLE);
-            holder.topPoint.setText(header.Loyalty);
-        }
+        if (header.TopPointsEnabled) {
+            holder.topPointsLayout.setVisibility(View.VISIBLE);
+            if (header.Loyalty.equals("")) {
+                holder.loadingLoyalty.setVisibility(View.VISIBLE);
+                holder.topPoint.setVisibility(View.GONE);
+            } else {
+                holder.loadingLoyalty.setVisibility(View.GONE);
+                holder.topPoint.setVisibility(View.VISIBLE);
+                holder.topPoint.setText(header.Loyalty);
+            }
+        } else holder.topPointsLayout.setVisibility(View.GONE);
 
         setTokoCashLayoutValue(holder, header);
 

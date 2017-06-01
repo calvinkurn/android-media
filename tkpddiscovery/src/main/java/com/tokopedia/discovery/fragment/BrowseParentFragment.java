@@ -253,12 +253,26 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
+    public void showTabLayout(boolean show) {
+        if(show){
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void redirectUrl(BrowseProductModel productModel) {
         String uri = productModel.result.redirect_url;
         if (uri.contains("/hot/")) {
-            Uri myurl = Uri.parse(uri);
-            uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                Uri myurl = Uri.parse(uri);
+                uri = myurl.getPathSegments().get(1);
+                browseProductActivity.sendHotlist(uri, model.getQ());
+            }
         }
         if (uri.contains("/p/")) {
             if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
@@ -275,24 +289,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void setupCategory(BrowseProductModel browseProductModel) {
-        ((BrowseProductActivity) getActivity()).sendCategory(browseProductModel.result.departmentId);
-    }
-
-    @Override
-    public void renderCategories(Data categoryHeader) {
-        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
-            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
-                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
-                productFragment.addCategoryHeader(categoryHeader);
-                if (categoryHeader.getIsRevamp()) {
-                    tabLayout.setVisibility(View.GONE);
-                }
-            }
         }
     }
 
