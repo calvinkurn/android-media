@@ -1,43 +1,43 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDetailStatisticFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 
-import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
+import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment implements TopAdsDetailViewListener {
+public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
 
-    private DateLabelView dateLabelView;
-    private LabelView maxBid;
-    private LabelView avgCost;
-    private LabelView sent;
-    private LabelView impr;
-    private LabelView click;
-    private LabelView ctr;
-    private LabelView favorite;
+    private LabelView type;
+    private LabelView promoGroupLabelView;
+
+    private KeywordAd keywordAd;
+
+    @Inject
+    TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
     public static Fragment createInstance(KeywordAd ad, String adId) {
         Fragment fragment = new TopAdsKeywordDetailFragment();
@@ -48,24 +48,28 @@ public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment
         return fragment;
     }
 
+    @Override
+    protected void initInjector() {
+        DaggerTopAdsKeywordDetailComponent
+                .builder()
+                .appComponent(getComponent(AppComponent.class))
+                .topAdsKeywordDetailModule(new TopAdsKeywordDetailModule())
+                .build()
+                .inject(this);
+    }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
-        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-        maxBid = (LabelView) view.findViewById(R.id.max_bid);
-        avgCost = (LabelView) view.findViewById(R.id.avg_cost);
-        sent = (LabelView) view.findViewById(R.id.sent);
-        impr = (LabelView) view.findViewById(R.id.impr);
-        click = (LabelView) view.findViewById(R.id.click);
-        ctr = (LabelView) view.findViewById(R.id.ctr);
-        favorite = (LabelView) view.findViewById(R.id.favorite);
-        dateLabelView.setOnClickListener(new View.OnClickListener() {
+        type = (LabelView) view.findViewById(R.id.keyword);
+        promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
+        promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openDatePicker();
+                onPromoGroupClicked();
             }
         });
+        topadsKeywordDetailPresenter.attachView(this);
     }
 
     @Override
@@ -73,34 +77,70 @@ public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment
         return R.layout.fragment_top_ads_keyword_detail;
     }
 
-    protected void loadAdDetail(Ad ad) {
-        super.loadAdDetail(ad);
-        maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
-        avgCost.setContent(ad.getStatAvgClick());
-        sent.setContent(ad.getStatTotalSpent());
-        impr.setContent(ad.getStatTotalImpression());
-        click.setContent(ad.getStatTotalClick());
-        ctr.setContent(ad.getStatTotalCtr());
-        favorite.setContent(ad.getStatTotalConversion());
+    @Override
+    protected void turnOnAd() {
+        super.turnOnAd();
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+    }
+
+    @Override
+    protected void turnOffAd() {
+        super.turnOffAd();
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+    }
+
+    @Override
+    protected void refreshAd() {
+        if (keywordAd != null) {
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), keywordAd.getId(), TopAdsConstant.KEYWORD_TYPE_POSITIVE_VALUE, SessionHandler.getShopID(getActivity()));
+        } else {
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), adId, TopAdsConstant.KEYWORD_TYPE_POSITIVE_VALUE, SessionHandler.getShopID(getActivity()));
+        }
     }
 
     @Override
     protected void editAd() {
-        TopAdsKeywordEditDetailPositiveActivity.start(getActivity(), ad);
+        TopAdsKeywordEditDetailPositiveActivity.start(getActivity(), keywordAd);
     }
 
     @Override
-    protected void loadData() {
-        super.loadData();
-        setDatePresent();
-    }
-
-    private void setDatePresent() {
-        dateLabelView.setDate(getDatePickerPresenter().getStartDate(), getDatePickerPresenter().getEndDate());
+    protected void deleteAd() {
+        super.deleteAd();
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
-    protected int isPositive() {
-        return KeywordTypeDef.KEYWORD_TYPE_BROAD;
+    public void onAdLoaded(Ad ad) {
+        keywordAd = (KeywordAd) ad;
+        super.onAdLoaded(ad);
+    }
+
+    @Override
+    protected void updateMainView(Ad ad) {
+        super.updateMainView(ad);
+        type.setContent(keywordAd.getkeywordTypeDesc());
+        promoGroupLabelView.setContent(keywordAd.getGroupName());
+    }
+
+    @Override
+    protected void updateDailyBudgetView(Ad ad) {
+        // Empty daily budget
+    }
+
+    private void onPromoGroupClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, keywordAd.getGroupId());
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_delete) {
+            showDeleteConfirmation(getString(R.string.title_delete_keyword_topads), getString(R.string.label_confirm_delete_keyword_topads));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

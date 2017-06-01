@@ -158,14 +158,16 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     public void onAdLoaded(Ad ad) {
+        productAd = (ProductAd) ad;
         super.onAdLoaded(ad);
-        if (ad == null) {
-            // default ad from intent
-            this.productAd = (ProductAd) super.ad;
-        } else {
-            this.productAd = (ProductAd) ad;
+        if (listener!= null) {
+            listener.startShowCase();
         }
-        if (this.productAd == null) return;
+    }
+
+    @Override
+    protected void updateMainView(Ad ad) {
+        super.updateMainView(ad);
         String groupName = productAd.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));
@@ -175,9 +177,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         } else {
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
-        }
-        if (listener!= null) {
-            listener.startShowCase();
         }
     }
 
@@ -197,13 +196,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
     }
 
-    void onNameClicked() {
+    private void onNameClicked() {
         if (listener != null) {
             listener.goToProductActivity(productAd.getProductUri());
         }
     }
 
-    void onPromoGroupClicked() {
+    private void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());

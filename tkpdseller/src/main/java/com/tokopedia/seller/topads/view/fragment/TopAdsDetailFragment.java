@@ -319,6 +319,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unSubscribe();
+        if (presenter != null) {
+            presenter.unSubscribe();
+        }
     }
 }

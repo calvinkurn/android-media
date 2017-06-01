@@ -18,8 +18,8 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
 
     private DateLabelView dateLabelView;
 
-    private LabelView maxBid;
-    private LabelView avgCost;
+    protected LabelView maxBid;
+    protected LabelView avgCost;
 
     protected LabelView start;
     protected LabelView end;
@@ -70,12 +70,16 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
     protected void loadAdDetail(Ad ad) {
         super.loadAdDetail(ad);
         updateCostView(ad);
+        updateDailyBudgetView(ad);
         updateStatisticView(ad);
     }
 
     protected void updateCostView(Ad ad) {
         maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());
+    }
+
+    protected void updateDailyBudgetView(Ad ad) {
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
         if (TextUtils.isEmpty(ad.getEndTime())) {
             end.setContent(ad.getEndDate());

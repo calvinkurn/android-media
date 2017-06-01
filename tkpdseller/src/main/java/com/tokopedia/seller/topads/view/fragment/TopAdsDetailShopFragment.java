@@ -32,7 +32,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
 
     public static final String SHOP_AD_PARCELABLE = "SHOP_AD_PARCELABLE";
     private MenuItem deleteMenuItem;
-    private ShopAd ad;
+    private ShopAd shopAd;
 
     public static Fragment createInstance(ShopAd shopAd, String adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
@@ -73,19 +73,19 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(ad.getId());
+        presenter.turnOnAds(shopAd.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(ad.getId());
+        presenter.turnOffAds(shopAd.getId());
     }
 
     @Override
     protected void refreshAd() {
-        if (ad != null) {
-            presenter.refreshAd(startDate, endDate, ad.getId());
+        if (shopAd != null) {
+            presenter.refreshAd(startDate, endDate, shopAd.getId());
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
@@ -93,22 +93,22 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
 
     @Override
     protected void editAd() {
-        if (ad != null) {
+        if (shopAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditShopActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(shopAd.getId()));
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
 
     @Override
     public void onAdLoaded(Ad ad) {
+        shopAd = (ShopAd) ad;
         super.onAdLoaded(ad);
-        this.ad = (ShopAd) ad;
     }
 
     void onNameClicked() {
-        DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+        DeepLinkChecker.openShop(shopAd.getShopUri(), getActivity());
     }
 
     @Override
@@ -121,13 +121,13 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     public void onSaveState(Bundle state) {
         super.onSaveState(state);
-        state.putParcelable(SHOP_AD_PARCELABLE, ad);
+        state.putParcelable(SHOP_AD_PARCELABLE, shopAd);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         super.onRestoreState(savedState);
-        ad = savedState.getParcelable(SHOP_AD_PARCELABLE);
-        onAdLoaded(ad);
+        shopAd = savedState.getParcelable(SHOP_AD_PARCELABLE);
+        onAdLoaded(shopAd);
     }
 }

@@ -34,4 +34,7 @@ public class TopAdsConstant {
     public static final int AD_TYPE_PRODUCT = 1;
 
     public static final int REQUEST_CODE_AD_EDIT = 1;
+
+    public static final int KEYWORD_TYPE_POSITIVE_VALUE = 1;
+    public static final int KEYWORD_TYPE_NEGATIVE_VALUE = 0;
 }
