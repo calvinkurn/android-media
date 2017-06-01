@@ -27,7 +27,7 @@ import rx.functions.Func2;
  */
 
 public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesModel>,
-        Response<HotListResponse>,IntermediaryCategoryDomainModel> {
+        Response<HotListResponse>, IntermediaryCategoryDomainModel> {
 
     @Override
     public IntermediaryCategoryDomainModel call(Response<CategoryHadesModel> categoryHadesModelResponse,

@@ -30,17 +30,17 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity"
+            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity"
             android:label="@string/title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.tokopedia.otp.phoneverification.activity.PhoneVerificationProfileActivity"
+            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity"
             android:label="@string/title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity"
+            android:name="com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity"
             android:label="@string/title_activity_change_phone_number"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
