@@ -49,11 +49,11 @@ public class ManageNotificationActivity extends BasePresenterActivity {
         }
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment;
-        if (getFragmentManager().findFragmentByTag(ManageNotificationFragment.class.getSimpleName()) == null) {
+        Fragment fragment = getFragmentManager().findFragmentByTag(
+                ManageNotificationFragment.class.getSimpleName());
+
+        if (fragment == null) {
             fragment = ManageNotificationFragment.createInstance(bundle);
-        } else {
-            fragment = getFragmentManager().findFragmentByTag(ManageNotificationFragment.class.getSimpleName());
         }
 
         fragmentTransaction.replace(R.id.container, fragment, ManageNotificationFragment.class.getSimpleName());

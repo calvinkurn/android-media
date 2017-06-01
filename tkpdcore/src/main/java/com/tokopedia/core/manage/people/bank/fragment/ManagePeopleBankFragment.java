@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -191,18 +190,6 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
     }
 
     @Override
-    public void onSuccessEditDefaultBankAccount(Bundle resultData) {
-        presenter.initData();
-    }
-
-    @Override
-    public void onSuccessDeleteBankAccount(Bundle resultData) {
-
-        presenter.initData();
-
-    }
-
-    @Override
     public void onFailedEditDefaultBankAccount(final Bundle resultData) {
         final ActSettingBankPass pass = resultData.getParcelable(PARAM_DEFAULT_BANK_ACCOUNT);
         finishLoading();
@@ -264,6 +251,11 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
     @Override
     public BankFormListener getBankFormListener() {
         return listener;
+    }
+
+    @Override
+    public void onSuccessFinishAction() {
+        presenter.initData();
     }
 
     @Override
