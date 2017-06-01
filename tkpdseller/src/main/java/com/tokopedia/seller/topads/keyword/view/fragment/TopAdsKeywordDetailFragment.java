@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -31,10 +30,10 @@ import javax.inject.Inject;
 
 public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
 
-    private LabelView type;
+    private LabelView keywordTypeLabelView;
     private LabelView promoGroupLabelView;
 
-    private KeywordAd keywordAd;
+    protected KeywordAd keywordAd;
 
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
@@ -61,7 +60,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void initView(View view) {
         super.initView(view);
-        type = (LabelView) view.findViewById(R.id.keyword);
+        keywordTypeLabelView = (LabelView) view.findViewById(R.id.keyword);
         promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
         promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,10 +92,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     protected void refreshAd() {
         if (keywordAd != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), keywordAd.getId(), TopAdsConstant.KEYWORD_TYPE_POSITIVE_VALUE, SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), keywordAd.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
         } else {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), adId, TopAdsConstant.KEYWORD_TYPE_POSITIVE_VALUE, SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), adId, getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
         }
     }
 
@@ -120,8 +119,12 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void updateMainView(Ad ad) {
         super.updateMainView(ad);
-        type.setContent(keywordAd.getkeywordTypeDesc());
+        keywordTypeLabelView.setContent(keywordAd.getkeywordTypeDesc());
         promoGroupLabelView.setContent(keywordAd.getGroupName());
+    }
+
+    protected int getKeywordTypeValue() {
+        return TopAdsConstant.KEYWORD_TYPE_POSITIVE_VALUE;
     }
 
     @Override

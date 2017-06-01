@@ -52,6 +52,10 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
         swipeToRefresh.setProgressViewOffset(false,
                 getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
                 getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
+        initDateLabelView();
+    }
+
+    protected void initDateLabelView() {
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +67,10 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
     @Override
     protected void loadData() {
         super.loadData();
+        updateDateLabelViewText();
+    }
+
+    protected void updateDateLabelViewText() {
         dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
     }
 
@@ -93,7 +101,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
         }
     }
 
-    private void updateStatisticView(Ad ad) {
+    protected void updateStatisticView(Ad ad) {
         sent.setContent(ad.getStatTotalSpent());
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());
