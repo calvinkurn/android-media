@@ -18,8 +18,9 @@ import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
@@ -27,7 +28,7 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment implements TopAdsKeywordDetailViewListener {
+public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment implements TopAdsDetailViewListener {
 
     private DateLabelView dateLabelView;
     private LabelView maxBid;
@@ -72,7 +73,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment
         return R.layout.fragment_top_ads_keyword_detail;
     }
 
-    protected void loadAdDetail(KeywordAd ad) {
+    protected void loadAdDetail(Ad ad) {
         super.loadAdDetail(ad);
         maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());

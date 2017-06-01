@@ -4,8 +4,8 @@ import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
 import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
 import com.tokopedia.seller.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresenter<TopAdsKeywordDetailViewListener> {
+public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresenter<TopAdsDetailViewListener> {
 
     private final TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase;
     private final TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase;

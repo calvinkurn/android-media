@@ -24,13 +24,14 @@ import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword.Keyword;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.view.fragment.*;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 
@@ -42,7 +43,7 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFragment implements TopAdsKeywordDetailViewListener {
+public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFragment implements TopAdsDetailViewListener {
 
     private LabelView keywordName;
     private LabelView keywordType;
@@ -189,9 +190,8 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
         return super.onOptionsItemSelected(item);
     }
 
-    protected void loadAdDetail(KeywordAd ad) {
+    protected void loadAdDetail(Ad ad) {
         keywordName.setContent(ad.getName());
-        keywordType.setContent(ad.getkeywordTypeDesc());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
@@ -202,7 +202,7 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
-        promoGroupLabelView.setContent(ad.getGroupName());
+        promoGroupLabelView.setContent(ad.getName());
     }
 
     protected void showDeleteConfirmation(String title, String content) {
@@ -279,8 +279,8 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
     }
 
     @Override
-    public void onAdLoaded(KeywordAd ad) {
-        this.ad = ad;
+    public void onAdLoaded(Ad ad) {
+        this.ad = (KeywordAd) ad;
         hideLoading();
         loadAdDetail(ad);
         getActivity().invalidateOptionsMenu();
