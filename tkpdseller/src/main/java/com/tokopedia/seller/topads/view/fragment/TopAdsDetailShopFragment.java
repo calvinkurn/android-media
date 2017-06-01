@@ -28,7 +28,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
+public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter> {
 
     public static final String SHOP_AD_PARCELABLE = "SHOP_AD_PARCELABLE";
     private MenuItem deleteMenuItem;

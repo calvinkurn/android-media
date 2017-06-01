@@ -26,7 +26,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl
  * Created by zulfikarrahman on 1/3/17.
  */
 
-public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetailGroupPresenter> {
+public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
 
     public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
     private LabelView items;
@@ -189,5 +189,4 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     public View getProductView(){
         return items;
     }
-
 }

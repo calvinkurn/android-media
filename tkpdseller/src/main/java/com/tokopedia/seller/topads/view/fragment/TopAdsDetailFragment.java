@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,14 +20,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
@@ -42,35 +40,20 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
-    private DateLabelView dateLabelView;
-    protected LabelView priceAndSchedule;
     protected LabelView name;
     private LabelSwitch status;
-    private LabelView maxBid;
-    private LabelView avgCost;
-    protected LabelView start;
-    protected LabelView end;
-    protected LabelView dailyBudget;
-    private LabelView sent;
-    private LabelView impr;
-    private LabelView click;
-    private LabelView ctr;
-    protected LabelView favorite;
 
-    private SwipeToRefresh swipeToRefresh;
+    protected SwipeToRefresh swipeToRefresh;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
     protected Ad ad;
     protected String adId;
+    private boolean adStatusChanged = false;
 
     protected abstract void refreshAd();
 
     protected abstract void editAd();
-
-    public TopAdsDetailFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     protected TopAdsDatePickerPresenter getDatePickerPresenter() {
@@ -80,32 +63,15 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
-        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         name = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
-        maxBid = (LabelView) view.findViewById(R.id.max_bid);
-        avgCost = (LabelView) view.findViewById(R.id.avg_cost);
-        start = (LabelView) view.findViewById(R.id.start);
-        end = (LabelView) view.findViewById(R.id.end);
-        dailyBudget = (LabelView) view.findViewById(R.id.daily_budget);
-        sent = (LabelView) view.findViewById(R.id.sent);
-        impr = (LabelView) view.findViewById(R.id.impr);
-        click = (LabelView) view.findViewById(R.id.click);
-        ctr = (LabelView) view.findViewById(R.id.ctr);
-        favorite = (LabelView) view.findViewById(R.id.favorite);
+
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         swipeToRefresh.setProgressViewOffset(false,
                 getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
                 getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
-        dateLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDatePicker();
-            }
-        });
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -142,8 +108,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
     }
 
-    boolean adStatusChanged = false;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -166,7 +130,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void loadData() {
         showLoading();
-        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
         if (ad != null) {
             onAdLoaded(ad);
         } else {
@@ -299,6 +262,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void loadAdDetail(Ad ad) {
+        updateMainView(ad);
+    }
+
+    protected void updateMainView(Ad ad) {
         name.setContent(ad.getName());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
@@ -310,24 +277,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
-        maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
-        avgCost.setContent(ad.getStatAvgClick());
-        start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
-        if (TextUtils.isEmpty(ad.getEndTime())) {
-            end.setContent(ad.getEndDate());
-        } else {
-            end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
-        }
-        if(TextUtils.isEmpty(ad.getPriceDailySpentFmt())) {
-            dailyBudget.setContent(ad.getPriceDailyFmt());
-        }else{
-            dailyBudget.setContent(getString(R.string.topads_format_daily_budget, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
-        }
-        sent.setContent(ad.getStatTotalSpent());
-        impr.setContent(ad.getStatTotalImpression());
-        click.setContent(ad.getStatTotalClick());
-        ctr.setContent(ad.getStatTotalCtr());
-        favorite.setContent(ad.getStatTotalConversion());
     }
 
     protected void setStatusSwitch(boolean checked) {
@@ -372,5 +321,4 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         super.onDestroy();
         presenter.unSubscribe();
     }
-
 }

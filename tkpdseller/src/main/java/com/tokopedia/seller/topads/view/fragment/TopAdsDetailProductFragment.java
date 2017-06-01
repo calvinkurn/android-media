@@ -37,7 +37,7 @@ import org.parceler.Parcels;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
+public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter> {
 
     public static final String PRODUCT_AD_PARCELABLE = "PRODUCT_AD_PARCELABLE";
 
@@ -47,6 +47,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     private LabelView promoGroupLabelView;
+
+    private LabelView priceAndSchedule;
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
@@ -81,6 +83,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     protected void initView(View view) {
         super.initView(view);
         promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
+        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
+
         name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
