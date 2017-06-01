@@ -25,8 +25,7 @@ public class ReloginSubscriber extends Subscriber<MakeLoginDomainModel> {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorRelogin(ErrorHandler.getErrorMessage(e,
-                viewListener.getActivity()));
+        viewListener.onErrorRelogin(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

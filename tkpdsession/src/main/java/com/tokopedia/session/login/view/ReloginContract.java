@@ -13,8 +13,6 @@ import com.tokopedia.core.base.presentation.CustomerView;
 public interface ReloginContract {
 
     interface View extends CustomerView {
-        Activity getActivity();
-
         void onErrorRelogin(String errorMessage);
 
         void onSuccessRelogin();
