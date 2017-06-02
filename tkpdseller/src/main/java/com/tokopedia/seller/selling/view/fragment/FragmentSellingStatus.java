@@ -53,9 +53,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -70,14 +67,10 @@ import rx.subscriptions.CompositeSubscription;
 @RuntimePermissions
 public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener {
 
-    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R2.id.root)
     CoordinatorLayout rootView;
     SearchView searchTxt;
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private PagingHandler mPaging;
@@ -244,6 +237,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        rootView = (CoordinatorLayout) view.findViewById(R.id.root);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         initView();
         return view;
     }
@@ -253,13 +250,19 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_status, null);
-        searchTxt = ButterKnife.findById(filterView, R.id.search);
+        searchTxt = (SearchView) filterView.findViewById(R.id.search);
         int searchPlateId = searchTxt.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = searchTxt.findViewById(searchPlateId);
         searchPlate.setBackgroundColor(Color.TRANSPARENT);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterView);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -511,11 +514,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         };
     }
 
-
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
-    }
 
     public interface LVShopStatusInterface {
         void onEditRef(SellingStatusTxModel model);

@@ -27,6 +27,7 @@ public class Data {
     private String shopClickUrl;
     private Shop shop;
     private Product product;
+    private boolean favorit;
 
     public Data(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)) {
@@ -128,5 +129,13 @@ public class Data {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public boolean isFavorit() {
+        return favorit;
+    }
+
+    public void setFavorit(boolean favorit) {
+        this.favorit = favorit;
     }
 }

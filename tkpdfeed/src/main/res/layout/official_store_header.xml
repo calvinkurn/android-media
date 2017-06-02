@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/official_store_header"
-        android:textColor="@color/black_36"
+        android:textColor="@color/black"
         android:padding="@dimen/padding_small"
         android:textStyle="bold"
         android:background="@color/transparent"

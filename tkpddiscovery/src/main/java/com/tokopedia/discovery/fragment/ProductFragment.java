@@ -11,22 +11,25 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
@@ -35,20 +38,34 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
+import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -66,7 +83,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
  */
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
-        RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener {
+        RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -74,10 +92,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     // this value for main colum recyclerview
     private static final int LANDSCAPE_COLUMN_MAIN = 3;
     private static final int PORTRAIT_COLUMN_MAIN = 2;
-
-    private static final int PORTRAIT_COLUMN_HEADER = 2;
-    private static final int PORTRAIT_COLUMN_FOOTER = 2;
-    private static final int PORTRAIT_COLUMN = 1;
 
     @BindView(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
@@ -90,8 +104,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
-    private boolean isHasCategoryHeader = false;
+    private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProgressDialog loading;
+
+    private ProductFragmentListener mListener;
+
+    public interface ProductFragmentListener {
+        String getDepartmentId();
+    }
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -116,23 +136,23 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
-        switch (gridType){
+        switch (gridType) {
             case GRID_1: //List
                 spanCount = 1;
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(linearLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(linearLayoutManager);
                 break;
             case GRID_2: //Grid 2x2
                 spanCount = 2;
                 gridLayoutManager.setSpanCount(spanCount);
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
             case GRID_3: //Grid 1x1
                 spanCount = 1;
                 gridLayoutManager.setSpanCount(spanCount);
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
         }
     }
@@ -176,11 +196,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
-        if(!TextUtils.isEmpty(((BrowseProductActivity) getActivity())
-                .getBrowseProductActivityModel().getDepartmentId())) {
-            ScreenTracking.eventDiscoveryScreenAuth(((BrowseProductActivity) getActivity())
-                    .getBrowseProductActivityModel().getDepartmentId());
-        }
+        ScreenTracking.eventDiscoveryScreenAuth(mListener.getDepartmentId());
     }
 
     @Override
@@ -189,36 +205,26 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        productAdapter.addAll(false, false, new ArrayList<RecyclerViewItem>(model));
-        productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
+    public void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
+        productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
+        productAdapter.notifyDataSetChanged();
+        productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if(productAdapter.checkHasNext()){
-            productAdapter.setIsLoading(true);
-        }else{
-            productAdapter.setIsLoading(false);
+        if (!productAdapter.checkHasNext()) {
+            topAdsRecyclerAdapter.hideLoading();
         }
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-            if (browseModel.getHotListBannerModel() != null) {
-                HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
-                if (bannerModel.query.shop_id.isEmpty()) {
-                    presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
-                }
-            } else if (model.size() > 0) {
-                presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
-            }
 
-            if (totalProduct > 0)
-                browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
-                        .format(totalProduct.longValue()).replace(',', '.'));
             productAdapter.incrementPage();
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
             TrackingUtils.eventLocaSearched(browseModel.q);
 
         }
-
+        if (model.size() == 0)
+            displayTopAds();
     }
 
     @Override
@@ -282,6 +288,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public void updateTotalProduct(Long totalProduct) {
+        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+        if (totalProduct > 0) {
+            browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
+                    .format(totalProduct.longValue()).replace(',', '.'));
+        } else {
+            browseModel.setTotalDataCategory("0");
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
@@ -294,45 +311,41 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public int getTopAdsPaging() {
-        return productAdapter.getTopAddsCounter();
-    }
-
-    @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.hideLoading();
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if(productAdapter.checkHasNext()){
-            productAdapter.setIsLoading(true);
-        }else{
-            productAdapter.setIsLoading(false);
-        }
-
-        if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
-            BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-            if (browseModel.getHotListBannerModel() != null) {
-                HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
-                if (bannerModel.query.shop_id.isEmpty()) {
-                    presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
-                }
-            } else {
-                presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
-            }
-        }
-        if (model.isEmpty()) {
-            productAdapter.setSearchNotFound();
-        }
         productAdapter.incrementPage();
     }
 
     @Override
+    public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.hideLoading();
+        topAdsRecyclerAdapter.setHasHeader(true);
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
+        productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
+        productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
+        productAdapter.setPagingHandlerModel(pagingHandlerModel);
+        productAdapter.incrementPage();
+        productAdapter.notifyDataSetChanged();
+        if (model.size() == 0)
+            displayTopAds();
+    }
+
+    @Override
     public int getDataSize(String TAG) {
-        if(TAG!=null&& ProductFragment.TAG.equals(TAG)){
+        if (TAG != null && ProductFragment.TAG.equals(TAG)) {
             return productAdapter.getItemCount();
-        }else{
+        } else {
             return 0;
         }
+    }
+
+    @Override
+    public void displayTopAds() {
+        //TODO implement on next
+//        productAdapter.setSearchNotFound();
     }
 
     @Override
@@ -344,7 +357,31 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof ProductFragmentListener) {
+            mListener = (ProductFragmentListener) context;
+        } else {
+            throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof ProductFragmentListener) {
+            mListener = (ProductFragmentListener) activity;
+        } else {
+            throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     // to determine size of grid columns
@@ -353,25 +390,15 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             @Override
             public int getSpanSize(int position) {
 
-                // column size default is one
-                int regularColumnSize = 1;
-
-                regularColumnSize = PORTRAIT_COLUMN;
-
-                if (position == productAdapter.getData().size()) {
-                    return spanCount;
-                } else if (position == 0 && !productAdapter.isTopAds(position) && !productAdapter.isHotListBanner(position)
-                        && !productAdapter.isCategoryHeader(position)) {
-                    return regularColumnSize;
-                } else if (productAdapter.isTopAds(position)) {
-                    // top ads span column
-                    return spanCount;
-                } else if (productAdapter.isHotListBanner(position) || productAdapter.isCategoryHeader(position)
-                        || productAdapter.isEmptySearch(position)){
+                if (topAdsRecyclerAdapter.isTopAdsViewHolder(position)
+                        || topAdsRecyclerAdapter.isLoading(position)
+                        || productAdapter.isHotListBanner(position)
+                        || productAdapter.isCategoryHeader(position)
+                        || productAdapter.isEmptySearch(position)
+                        || productAdapter.isEmpty()) {
                     return spanCount;
                 } else {
-                    // regular one column
-                    return regularColumnSize;
+                    return 1;
                 }
             }
         };
@@ -379,31 +406,75 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public boolean setupRecyclerView() {
-        if (mRecyclerView.getAdapter() != null) {
-            return false;
-        }
-        mRecyclerView.setAdapter(productAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.PRODUCT)
+                .topAdsParams(populatedNetworkParams())
+                .build();
 
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
+        topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setConfig(config);
+        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
+            public void onLoad(int page, int totalCount) {
+                if (productAdapter.getPagingHandlerModel() != null) {
                     presenter.loadMore(getActivity());
-                }
-                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
-                        && productAdapter.getPagingHandlerModel() != null
-                        && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()){
-                    ((BrowseProductActivity) getActivity()).showBottomBar();
+                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
+                            productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
                 }
             }
         });
-        changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
+        mRecyclerView.setAdapter(topAdsRecyclerAdapter);
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
         return true;
+    }
+
+    private TopAdsParams populatedNetworkParams() {
+        NetworkParam.Product networkParam = ((BrowseProductActivity) getActivity()).getProductParam();
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC, networkParam.source);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, networkParam.sc);
+        if (networkParam.keyword != null) {
+            params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.keyword);
+        }
+        if (networkParam.h != null) {
+            params.getParam().put(TopAdsParams.KEY_HOTLIST_ID, networkParam.h);
+        }
+        if (networkParam.extraFilter != null) {
+            params.getParam().putAll(networkParam.extraFilter);
+        }
+        return params;
+    }
+
+    @Override
+    public void onInfoClicked() {
+
+    }
+
+    @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
+
     }
 
     @Override
@@ -418,8 +489,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void ariseRetry(int type, Object... data) {
-
-        productAdapter.setIsLoading(false);
 
         Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), (String) data[0]), Snackbar.LENGTH_INDEFINITE);
 
@@ -454,8 +523,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     }
 
-    private int getLastItemPosition(){
-        switch (gridType){
+    private int getLastItemPosition() {
+        switch (gridType) {
             case GRID_1:
                 return linearLayoutManager.findFirstVisibleItemPosition();
             case GRID_2:
@@ -467,14 +536,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public boolean isLoading() {
-
-        switch (gridType){
+        switch (gridType) {
             case GRID_1:
-                return productAdapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+                return productAdapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
             case GRID_2:
             case GRID_3:
             default:
-                    return productAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+                return productAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
         }
     }
 
@@ -485,12 +553,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     /**
      * need to supply correct TAG
+     *
      * @param TAG
      * @return -1 means invalid index
      */
     @Override
     public int getPage(String TAG) {
-        if(TAG.equals(ProductFragment.TAG))
+        if (TAG.equals(ProductFragment.TAG))
             return productAdapter.getPage();
         else
             return -1;
@@ -498,14 +567,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void savePaging(Bundle savedState) {
-        if(productAdapter!=null) {
+        if (productAdapter != null) {
             productAdapter.saveAdapterPaging(savedState);
         }
     }
 
     @Override
     public void restorePaging(Bundle savedState) {
-        if(productAdapter!=null) {
+        if (productAdapter != null) {
             productAdapter.restoreAdapterPaging(savedState);
         }
     }
@@ -513,34 +582,24 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(productAdapter!=null) {
+        if (productAdapter != null) {
             productAdapter.saveAdapterPaging(outState);
         }
     }
 
     @Override
-    public void addTopAds(List<ProductItem> passProduct, int page, String tag) {
-        if(!tag.equals(ProductFragment.TAG))
-            return;
-        if(!passProduct.isEmpty() && !(isHasCategoryHeader && page==1) ) {
-            mRecyclerView.scrollToPosition(productAdapter.addTopAds(passProduct, page));
-        } else if (!passProduct.isEmpty()) {
-            productAdapter.addTopAds(passProduct, page);
-        }
-    }
-
-
-    @Override
     public void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel) {
+        topAdsRecyclerAdapter.setHasHeader(true);
         productAdapter.addHotListHeader(hotListBannerModel);
+        Log.d(TAG, "addHotListHeader");
     }
 
     @Override
     public void addCategoryHeader(Data categoryHeader) {
-        isHasCategoryHeader = true;
+        topAdsRecyclerAdapter.setHasHeader(true);
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-            if (categoryHeader.getIsRevamp() !=null && categoryHeader.getIsRevamp()) {
+            if (categoryHeader.getIsRevamp() != null && categoryHeader.getIsRevamp()) {
                 productAdapter.addCategoryRevampHeader(
                         new ProductAdapter.CategoryHeaderRevampModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
@@ -549,9 +608,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
-            productAdapter.notifyDataSetChanged();
-            backToTop();
         }
+        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {
@@ -579,14 +637,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onCategoryClick(Child child) {
         UnifyTracking.eventLevelCategory(((BrowseProductActivity) getActivity()).
-                getBrowseProductActivityModel().getParentDepartement(),child.getId());
+                getBrowseProductActivityModel().getParentDepartement(), child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 
     @Override
     public void onCategoryRevampClick(Child child) {
         UnifyTracking.eventLevelCategory(((BrowseProductActivity) getActivity()).
-                getBrowseProductActivityModel().getParentDepartement(),child.getId());
+                getBrowseProductActivityModel().getParentDepartement(), child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 

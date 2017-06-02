@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.domain.model;
 
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -32,7 +32,7 @@ public class UploadProductInputDomainModel {
     private int productReturnable;
     @UploadToTypeDef
     private int productUploadTo;
-    @SwitchTypeDef
+    @InvenageSwitchTypeDef
     private int productInvenageSwitch;
     private int productInvenageValue;
     private int productWeight;

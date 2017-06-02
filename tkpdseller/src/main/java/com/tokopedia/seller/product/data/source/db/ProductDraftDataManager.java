@@ -43,4 +43,27 @@ public class ProductDraftDataManager {
         new Delete().from(ProductDraftDataBase.class).execute();
         return Observable.just(true);
     }
+
+    public void deleteDeraft(long productId) {
+        ProductDraftDataBase productDraftDataBase = new Select()
+                .from(ProductDraftDataBase.class)
+                .where(ProductDraftDataBase_Table.id.is(productId))
+                .querySingle();
+        if (productDraftDataBase != null) {
+            productDraftDataBase.delete();
+        }
+    }
+
+    public void updateDraft(long productId, String draftData) {
+        ProductDraftDataBase productDraftDataBase = new Select()
+                .from(ProductDraftDataBase.class)
+                .where(ProductDraftDataBase_Table.id.is(productId))
+                .querySingle();
+        if (productDraftDataBase != null){
+            productDraftDataBase.setData(draftData);
+            productDraftDataBase.save();
+        } else {
+            throw new RuntimeException("Draft tidak ditemukan");
+        }
+    }
 }

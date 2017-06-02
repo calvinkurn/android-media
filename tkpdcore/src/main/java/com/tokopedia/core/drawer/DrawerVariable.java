@@ -461,12 +461,12 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.HELP:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
@@ -755,8 +755,10 @@ public class DrawerVariable {
             public void onSuccess(LoyaltyItem data) {
                 model.header.LoyaltyUrl = URLGenerator.generateURLLucky(data.getUri(), context);
                 model.header.Loyalty = data.getLoyaltyPoint().getAmount();
+                model.header.TopPointsEnabled = data.getActive();
                 Cache.putString("loyalty", model.header.Loyalty);
                 Cache.putString("loyalty_url", model.header.LoyaltyUrl);
+                Cache.putBoolean("loyalty_state", model.header.TopPointsEnabled);
                 Cache.applyEditor();
                 adapter.notifyDataSetChanged();
             }

@@ -18,6 +18,9 @@ public class LoyaltyItem {
     @SerializedName("uri")
     @Expose
     private String uri;
+    @SerializedName("active")
+    @Expose
+    private boolean active;
 
     /**
      * 
@@ -91,4 +94,11 @@ public class LoyaltyItem {
         this.uri = uri;
     }
 
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

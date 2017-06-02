@@ -39,7 +39,7 @@
 
 
     <LinearLayout
-        android:id="@id/fav_btn"
+        android:id="@+id/fav_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/padding_small"

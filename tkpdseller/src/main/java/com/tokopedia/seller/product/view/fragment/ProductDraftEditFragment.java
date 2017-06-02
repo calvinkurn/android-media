@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -26,6 +28,8 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
 
     private String productId;
     private ProductPhotoListViewModel productPhotosBeforeEdit;
+    private List<ProductWholesaleViewModel> productWholesaleBeforeEdit;
+    private long catalogIdBeforeEdit;
 
     public static Fragment createInstance(String productDraftId) {
         ProductDraftEditFragment fragment = new ProductDraftEditFragment();
@@ -46,6 +50,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (view != null) {
             view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
+            view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
         }
         return view;
     }
@@ -55,12 +60,13 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         hideLoading();
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
-        if (model.getProductNameEditable() == 0){
+        productWholesaleBeforeEdit = model.getProductWholesaleList();
+        catalogIdBeforeEdit = model.getProductCatalogId();
+        if (model.getProductNameEditable() == 0) {
             productInfoViewHolder.setNameEnabled(false);
         }
         super.onSuccessLoadProduct(model);
     }
-
 
     @Override
     protected void getCategoryRecommendation(String productName) {
@@ -71,12 +77,40 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = super.collectDataFromView();
         viewModel.setProductId(productId);
-        if (proccessEditImage(viewModel.getProductPhotos(), productPhotosBeforeEdit)){
+        if (proccessEditImage(viewModel.getProductPhotos(), productPhotosBeforeEdit)) {
             viewModel.setProductChangePhoto(1);
         } else {
             viewModel.setProductChangePhoto(0);
         }
+        if (processEditWholesale(viewModel.getProductWholesaleList(), productWholesaleBeforeEdit)) {
+            viewModel.setProductChangeWholesale(1);
+        } else {
+            viewModel.setProductChangeWholesale(0);
+        }
+        if (viewModel.getProductCatalogId() != catalogIdBeforeEdit) {
+            viewModel.setProductChangeCatalog(1);
+        } else {
+            viewModel.setProductChangeCatalog(0);
+        }
         return viewModel;
+    }
+
+    private boolean processEditWholesale(List<ProductWholesaleViewModel> productWholesaleList, List<ProductWholesaleViewModel> productWholesaleBeforeEdit) {
+        if (productWholesaleList.size() != productWholesaleBeforeEdit.size()) {
+            return true;
+        }
+        for (int i = 0; i < productWholesaleBeforeEdit.size(); i++) {
+            if (productWholesaleList.get(i).getPrice() != productWholesaleBeforeEdit.get(i).getPrice()) {
+                return true;
+            }
+            if (productWholesaleList.get(i).getQtyMin() != productWholesaleBeforeEdit.get(i).getQtyMin()) {
+                return true;
+            }
+            if (productWholesaleList.get(i).getQtyMax() != productWholesaleBeforeEdit.get(i).getQtyMax()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean proccessEditImage(ProductPhotoListViewModel productPhotos, ProductPhotoListViewModel productPhotosBeforeEdit) {
@@ -90,8 +124,9 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         // if there is a photo without url existed in new photo list, the prepare it to be deleted
         for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
             try {
-                findImage(viewModel.getUrl(), productPhotos.getPhotos());
-            } catch (RuntimeException e){
+                findImage(viewModel, productPhotos.getPhotos());
+            } catch (RuntimeException e) {
+                viewModel.setStatus(ImageStatusTypeDef.WILL_BE_DELETED);
                 viewModel.setUrl("");
                 newPhotosList.add(viewModel);
                 isChanging = true;
@@ -103,13 +138,13 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         // if not found as path, find the model before edit to get the photos id
         for (int i = 0; i < photos.size(); i++) {
             ImageProductInputViewModel viewModel = photos.get(i);
-            String url = viewModel.getUrl();
-            if (StringUtils.isNotBlank(url)) {
-                viewModel = findImage(url, productPhotosBeforeEdit.getPhotos());
-            } else {
+            try {
+                viewModel = findImage(viewModel, productPhotosBeforeEdit.getPhotos());
+            } catch (RuntimeException e) {
                 isChanging = true;
+                viewModel.setStatus(ImageStatusTypeDef.WILL_BE_UPLOADED);
             }
-            if (i == productPhotos.getProductDefaultPicture()){
+            if (i == productPhotos.getProductDefaultPicture()) {
                 newPhotosList.add(0, viewModel);
                 defaultImage = 0;
             } else {
@@ -117,14 +152,21 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
             }
         }
 
+        // No need to reselect primary picture. already set from getPhotos.
         productPhotos.setProductDefaultPicture(defaultImage);
         productPhotos.setPhotos(newPhotosList);
         return isChanging;
     }
 
-    private ImageProductInputViewModel findImage(@NonNull String url, List<ImageProductInputViewModel> photoList) {
+    private ImageProductInputViewModel findImage(@NonNull ImageProductInputViewModel oldViewModel, List<ImageProductInputViewModel> photoList) {
         for (ImageProductInputViewModel viewModel : photoList) {
-            if (url.equals(viewModel.getUrl())) {
+            if (StringUtils.isNotBlank(oldViewModel.getUrl())
+                    && StringUtils.isNotBlank(viewModel.getUrl())
+                    && oldViewModel.getUrl().equals(viewModel.getUrl())
+                    || StringUtils.isNotBlank(oldViewModel.getImagePath())
+                    && StringUtils.isNotBlank(viewModel.getImagePath())
+                    && oldViewModel.getImagePath().equals(viewModel.getImagePath())) {
+                viewModel.setStatus(oldViewModel.getStatus());
                 return viewModel;
             }
         }
