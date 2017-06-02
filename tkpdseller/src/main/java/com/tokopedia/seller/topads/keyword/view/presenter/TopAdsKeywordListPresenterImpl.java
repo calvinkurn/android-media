@@ -50,7 +50,10 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onLoadSearchAdError();
             }
 
             @Override
@@ -118,7 +121,10 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onLoadSearchAdError();
             }
 
             @Override

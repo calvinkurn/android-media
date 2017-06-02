@@ -1,8 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,16 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
@@ -42,24 +39,32 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected static final int START_PAGE = 1;
 
-    protected int status;
-    protected int page;
-    protected int totalItem;
-
     protected TopAdsBaseListAdapter<Ad> adapter;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
-    private boolean searchMode;
     protected LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
+    protected int status;
+    protected int page;
+    protected int totalItem;
+    private boolean searchMode;
+
     public TopAdsBaseListFragment() {
         // Required empty public constructor
     }
 
-    protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
+    protected abstract TopAdsBaseListAdapter getNewAdapter();
+
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        return new NoResultDataBinder(adapter);
+    }
+
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        return getEmptyViewDefaultBinder();
+    }
 
     @Override
     protected TopAdsDatePickerPresenter getDatePickerPresenter() {
@@ -134,7 +139,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         });
         adapter = getNewAdapter();
         adapter.setCallback(this);
-        adapter.setEmptyView(getEmptyViewBinder());
+        adapter.setEmptyView(getEmptyViewDefaultBinder());
         TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -147,21 +152,13 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
-    protected TopAdsBaseListAdapter getNewAdapter() {
-        return new TopAdsAdListAdapter();
-    }
-
     protected void updateEmptyViewNoResult() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_promo_not_found_content_empty_text));
-        emptyGroupAdsDataBinder.setEmptyContentItemText(null);
-        adapter.setEmptyView(emptyGroupAdsDataBinder);
+        adapter.setEmptyView(getEmptyViewNoResultBinder());
         adapter.notifyDataSetChanged();
     }
 
     protected void updateEmptyViewDefault() {
-        adapter.setEmptyView(getEmptyViewBinder());
+        adapter.setEmptyView(getEmptyViewDefaultBinder());
         adapter.notifyDataSetChanged();
     }
 

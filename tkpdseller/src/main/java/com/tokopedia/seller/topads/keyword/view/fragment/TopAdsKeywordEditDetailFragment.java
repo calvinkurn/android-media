@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -93,7 +94,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     private void fillDataToView(KeywordAd keywordAd) {
         topAdsKeywordType.setSpinnerValue(keywordAd.getKeywordTypeId());
         topAdsKeyword.setText(keywordAd.getName());
-        topAdsCostPerClick.setText(keywordAd.getPriceBidFmt());
+        topAdsCostPerClick.setText(CurrencyFormatHelper.removeCurrencyPrefix(keywordAd.getPriceBidFmt()));
     }
 
     protected void settingTopAdsCostPerClick(View view) {
