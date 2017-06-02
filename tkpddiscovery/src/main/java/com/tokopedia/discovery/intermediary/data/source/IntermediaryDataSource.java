@@ -13,6 +13,10 @@ import java.util.Map;
 
 import rx.Observable;
 
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.CATEGORIES_PARAM;
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.CURATED_PARAM;
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.PAGE_PARAM;
+
 /**
  * Created by alifa on 3/27/17.
  */
@@ -24,6 +28,9 @@ public class IntermediaryDataSource {
     private final SearchApi aceApi;
     private final MojitoApi mojitoApi;
     private final IntermediaryCategoryMapper mapper;
+
+    private final static String NUM_PAGE = "7";
+    private final static String NUM_CURATED = "6";
 
     public IntermediaryDataSource(Context context, HadesApi hadesApi, SearchApi searchApi,
                                   MojitoApi mojitoApi, IntermediaryCategoryMapper mapper) {
@@ -37,16 +44,15 @@ public class IntermediaryDataSource {
     public Observable<IntermediaryCategoryDomainModel> getintermediaryCategory(String categoryId) {
 
         Map<String, String> param = new HashMap<>();
-        param.put("categories",categoryId);
-        param.put("perPage", "7");
+        param.put(CATEGORIES_PARAM,categoryId);
+        param.put(PAGE_PARAM, NUM_PAGE);
 
         Map<String, String> paramCat = new HashMap<>();
-        paramCat.put("total_curated","6");
+        paramCat.put(CURATED_PARAM,NUM_CURATED);
 
         return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat),
                 aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
 
     }
-
 
 }

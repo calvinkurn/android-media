@@ -18,10 +18,16 @@ import rx.Observable;
 
 public interface HadesApi {
 
-    String ANDROID_DEVICE = "android";
+    public static final String ANDROID_DEVICE = "android";
+    public static final String CATEGORIES_PARAM = "categories";
+    public static final String PAGE_PARAM = "perPage";
+    public static final String CURATED_PARAM = "total_curated";
 
     @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
     Observable<Response<CategoryHadesModel>> getCategories(@Header("X-Device") String device, @Path("catId") String categoryId,
                                                            @QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
+    Observable<Response<CategoryHadesModel>> getCategories(@Header("X-Device") String device, @Path("catId") String categoryId);
 
 }
