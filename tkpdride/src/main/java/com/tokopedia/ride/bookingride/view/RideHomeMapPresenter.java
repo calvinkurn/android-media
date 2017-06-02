@@ -242,7 +242,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                             placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
                             placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                             placeVm.setTitle(sourceAddress);
-                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+//                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
                             getView().setSourceLocation(placeVm);
                         }
                     }

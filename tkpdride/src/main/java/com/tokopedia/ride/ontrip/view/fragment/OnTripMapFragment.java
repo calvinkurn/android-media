@@ -597,14 +597,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void renderRiderCanceledRequest(RideRequest result) {
         Toast.makeText(getActivity(), "Rider Canceled Request", Toast.LENGTH_SHORT).show();
         PlacePassViewModel source = new PlacePassViewModel();
-        source.setType(PlacePassViewModel.TYPE.OTHER);
+//        source.setType(PlacePassViewModel.TYPE.OTHER);
         source.setTitle(result.getPickup().getAddressName());
         source.setAddress(result.getPickup().getAddress());
         source.setAndFormatLatitude(result.getPickup().getLatitude());
         source.setAndFormatLongitude(result.getPickup().getLongitude());
 
         PlacePassViewModel destination = new PlacePassViewModel();
-        destination.setType(PlacePassViewModel.TYPE.OTHER);
+//        destination.setType(PlacePassViewModel.TYPE.OTHER);
         destination.setTitle(result.getDestination().getAddressName());
         destination.setAddress(result.getDestination().getAddress());
         destination.setAndFormatLatitude(result.getDestination().getLatitude());
