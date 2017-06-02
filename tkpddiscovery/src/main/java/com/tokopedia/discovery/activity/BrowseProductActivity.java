@@ -625,7 +625,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null) {
-            browsePresenter.retrieveLastGridConfig(departementId);
             getBrowseProductActivityModel().setQ("");
             String toolbarTitle;
             if (name!=null) {
@@ -643,6 +642,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
+            browsePresenter.retrieveLastGridConfig(departementId);
         }
     }
 
