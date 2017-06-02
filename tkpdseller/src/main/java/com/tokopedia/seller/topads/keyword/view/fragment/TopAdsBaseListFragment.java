@@ -73,7 +73,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     }
 
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_list_without_fab;
+        return R.layout.fragment_top_ads_base_list;
     }
 
     @Override

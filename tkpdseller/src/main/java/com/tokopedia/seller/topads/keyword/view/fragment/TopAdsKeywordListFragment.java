@@ -30,7 +30,7 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl> implements AdListMenuListener {
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl> {
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
@@ -143,11 +143,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
                 onSearch(null);
             }
         }
-    }
-
-    @Override
-    public void onSearch(String keyword) {
-        onQueryTextSubmit(keyword);
     }
 
     @Override

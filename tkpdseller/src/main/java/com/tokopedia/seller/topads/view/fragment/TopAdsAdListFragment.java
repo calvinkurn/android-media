@@ -5,7 +5,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Px;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior;
@@ -34,7 +37,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsBaseListFragment<T> implements
-        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
+        AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
@@ -50,10 +53,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     boolean adsStatusChanged;
     boolean updateEmptyDefault;
+    @Px
+    private int tempTopPaddingRecycleView;
+    @Px
+    private int tempBottomPaddingRecycleView;
 
     private boolean isSearchModeOn;
-
-    protected abstract void goToFilter();
 
     private OnAdListFragmentListener listener;
 
@@ -74,6 +79,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        tempTopPaddingRecycleView = recyclerView.getPaddingTop();
+        tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
         initDateLabelView(view);
     }
 
@@ -134,7 +141,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             updateEmptyViewDefault();
             updateEmptyDefault = false;
         }
-        showDateLabelView();
+        showDateLabelView(true);
     }
 
     @Override
@@ -158,15 +165,29 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    private void showFilterOption(boolean visible) {
-        dateLabelView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    private void showFilterOption(boolean show) {
+        @Px int topPadding = 0;
+        @Px int bottomPadding = 0;
+        if (show) {
+            topPadding = tempTopPaddingRecycleView;
+            bottomPadding = tempBottomPaddingRecycleView;
+        }
+        recyclerView.setPadding(0, topPadding, 0, bottomPadding);
+        if (dateLabelView != null) {
+            dateLabelView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
-    public void showDateLabelView() {
+    public void showDateLabelView(boolean show) {
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) dateLabelView.getLayoutParams();
         QuickReturnHeaderBehavior behavior = (QuickReturnHeaderBehavior) params.getBehavior();
-        if (behavior != null) {
+        if (behavior == null) {
+            return;
+        }
+        if (show) {
             behavior.showView(dateLabelView);
+        } else {
+            behavior.hideView(dateLabelView);
         }
     }
 
@@ -180,10 +201,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        keyword = query;
+        onSearch(query);
+        return true;
+    }
+
+    @Override
+    public void onSearch(String keyword) {
+        this.keyword = keyword;
         searchAd(START_PAGE);
         updateEmptyViewNoResult();
-        return true;
     }
 
     @Override

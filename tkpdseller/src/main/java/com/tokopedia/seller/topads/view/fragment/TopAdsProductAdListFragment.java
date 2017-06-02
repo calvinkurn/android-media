@@ -75,7 +75,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     }
 
     @Override
-    protected void goToFilter() {
+    public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
@@ -104,8 +104,12 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     public void onEmptyButtonClicked() {
+        onCreateAd();
+    }
+
+    @Override
+    public void onCreateAd() {
         Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
         this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
-
 }
