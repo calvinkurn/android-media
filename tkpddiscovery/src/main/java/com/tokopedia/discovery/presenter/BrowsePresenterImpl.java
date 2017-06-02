@@ -589,7 +589,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
     }
 
-    private void retrieveLastGridConfig(final String departmentId) {
+    @Override
+    public void retrieveLastGridConfig(final String departmentId) {
         Subscription subscription = Observable
                 .create(new Observable.OnSubscribe<String>() {
                     @Override

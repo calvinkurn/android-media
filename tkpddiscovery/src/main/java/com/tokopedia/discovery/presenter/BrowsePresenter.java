@@ -45,4 +45,6 @@ public interface BrowsePresenter {
     BrowseProductRouter.GridType getGridType();
 
     void onRenderUpperCategoryLevel(String departmentId);
+
+    void retrieveLastGridConfig(final String departmentId);
 }
