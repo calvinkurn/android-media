@@ -10,16 +10,35 @@ import java.text.DecimalFormatSymbols;
  * Created by alvarisi on 3/15/17.
  */
 
-public class PlacePassViewModel implements Parcelable {
+public class PlacePassViewModel implements Parcelable{
     private String title;
     private String placeId;
     private String address;
     private double latitude;
     private double longitude;
-    private TYPE type;
 
     public PlacePassViewModel() {
     }
+
+    protected PlacePassViewModel(Parcel in) {
+        title = in.readString();
+        placeId = in.readString();
+        address = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    public static final Creator<PlacePassViewModel> CREATOR = new Creator<PlacePassViewModel>() {
+        @Override
+        public PlacePassViewModel createFromParcel(Parcel in) {
+            return new PlacePassViewModel(in);
+        }
+
+        @Override
+        public PlacePassViewModel[] newArray(int size) {
+            return new PlacePassViewModel[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -69,54 +88,17 @@ public class PlacePassViewModel implements Parcelable {
         this.longitude = Double.parseDouble(decimalFormat.format(longitude));
     }
 
-    public TYPE getType() {
-        return type;
-    }
-
-    public void setType(TYPE type) {
-        this.type = type;
-    }
-
-    public enum TYPE {
-        HOME,
-        WORK,
-        OTHER
-    }
-
-    protected PlacePassViewModel(Parcel in) {
-        title = in.readString();
-        placeId = in.readString();
-        address = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
-        type = (TYPE) in.readValue(TYPE.class.getClassLoader());
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(placeId);
-        dest.writeString(address);
-        dest.writeDouble(latitude);
-        dest.writeDouble(longitude);
-        dest.writeValue(type);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(placeId);
+        parcel.writeString(address);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<PlacePassViewModel> CREATOR = new Parcelable.Creator<PlacePassViewModel>() {
-        @Override
-        public PlacePassViewModel createFromParcel(Parcel in) {
-            return new PlacePassViewModel(in);
-        }
-
-        @Override
-        public PlacePassViewModel[] newArray(int size) {
-            return new PlacePassViewModel[size];
-        }
-    };
 }
