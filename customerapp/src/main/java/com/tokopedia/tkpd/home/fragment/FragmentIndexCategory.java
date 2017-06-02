@@ -15,6 +15,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -58,15 +59,20 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
@@ -413,6 +419,21 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         super.onStop();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
+                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), message);
+                    }
+                }
+                break;
+        }
+    }
+
     private void stopSlideTicker() {
         tickerHandler.removeCallbacks(tickerIncrementPage);
     }
@@ -448,6 +469,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
         recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
+        recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
 
 
         holder.categoriesRecylerview.setLayoutManager(
@@ -476,6 +498,38 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
         }
+    }
+
+    @Override
+    public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
+            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                    .appLinks(itemModel.getAppLinks())
+                    .categoryId(itemModel.getCategoryId())
+                    .categoryName(itemModel.getName())
+                    .url(itemModel.getRedirectValue())
+                    .build();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+            Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(itemModel.getAppLinks()));
+            startActivity(intent);
+        } else {
+            onGimmicClicked(itemModel);
+        }
+//        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+//            startActivityForResult(((IDigitalModuleRouter) getActivity().getApplication())
+//                    .instanceIntentDigitalProduct(
+//                            new DigitalCategoryDetailPassData.Builder()
+//                                    .appLinks(itemModel.getAppLinks())
+//                                    .categoryId(itemModel.getCategoryId())
+//                                    .categoryName(itemModel.getName())
+//                                    .url(itemModel.getRedirectValue())
+//                                    .build()
+//                    ), IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL);
+//        }
     }
 
     private void navigateToGimmicWebview(String url, String label) {

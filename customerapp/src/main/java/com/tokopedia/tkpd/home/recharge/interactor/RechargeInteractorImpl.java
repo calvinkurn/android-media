@@ -741,12 +741,12 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 rechargeModel.name = operator.getAttributes().getName();
                 rechargeModel.nominalText = operator.getAttributes().getRule().getProductText();
                 rechargeModel.operatorId = operator.getId();
-                rechargeModel.showPrice = operator.getAttributes().getRule().getShowPrice();
-                rechargeModel.showProduct = operator.getAttributes().getRule().getShowProduct();
+                rechargeModel.showPrice = operator.getAttributes().getRule().isShowPrice();
+                rechargeModel.showProduct = operator.getAttributes().getRule().isShowProduct();
                 rechargeModel.status = operator.getAttributes().getStatus();
                 rechargeModel.weight = operator.getAttributes().getWeight();
                 rechargeModel.defaultProductId = operator.getAttributes().getDefaultProductId();
-                rechargeModel.allowAlphanumeric = operator.getAttributes().getRule().getAllowAphanumericNumber();
+                rechargeModel.allowAlphanumeric = operator.getAttributes().getRule().isAllowAphanumericNumber();
                 return rechargeModel;
             }
         };

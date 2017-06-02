@@ -117,14 +117,8 @@
 
     <TextView
         android:id="@+id/btn_next"
-        android:layout_width="match_parent"
+        style="@style/DigitalButtonBuy"
         android:layout_height="@dimen/tab_height"
-        android:layout_below="@+id/total_pembayaran"
-        android:background="@drawable/btn_buy"
-        android:gravity="center"
-        android:text="@string/label_btn_next_cart_digital"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"/>
+        android:text="@string/label_btn_next_cart_digital"/>
 
 </LinearLayout>
