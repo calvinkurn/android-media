@@ -33,6 +33,7 @@ public class DeepLinkChecker {
     public static final int HOT_LIST = 6;
     public static final int CATEGORY = 7;
     public static final int HOME = 8;
+    public static final int PROMO = 9;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -42,6 +43,8 @@ public class DeepLinkChecker {
         try {
             if (isHome(url, linkSegment))
                 return HOME;
+            else if (isPromo(linkSegment))
+                return PROMO;
             else if (isBrowse(linkSegment))
                 return BROWSE;
             else if (isHot(linkSegment))
@@ -84,6 +87,10 @@ public class DeepLinkChecker {
 
     private static boolean isCatalog(List<String> linkSegment) {
         return (linkSegment.get(0).equals("catalog"));
+    }
+
+    private static boolean isPromo(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {

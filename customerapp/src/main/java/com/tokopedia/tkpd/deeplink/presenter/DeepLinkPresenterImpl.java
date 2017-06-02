@@ -71,6 +71,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int RECHARGE = 9;
     private static final int APPLINK = 10;
     private static final int CATEGORY = 11;
+    private static final int PROMO = 12;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
     private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
@@ -385,6 +386,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    private static boolean isPromo(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+    }
+
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
         Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
@@ -537,6 +542,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 return OTHER;
             else if (isExcludedUrl(uriData))
                 return OTHER;
+            else if (isPromo(linkSegment))
+                return PROMO;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isHomepage(linkSegment))
