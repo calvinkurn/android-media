@@ -195,5 +195,6 @@
     <dimen name="wishlish_button_size">38dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
 
-    <dimen name="intermediary_brand">92dp</dimen>
+    <dimen name="intermediary_brand">86dp</dimen>
+    <dimen name="intermediary_card">100dp</dimen>
 </resources>
