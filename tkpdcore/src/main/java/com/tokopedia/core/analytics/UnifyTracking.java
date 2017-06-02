@@ -1646,4 +1646,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TRUECALLER
         ).getEvent());
     }
+
+    public static void eventGMSwitcherManageShop(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.SHOP_MANAGE_GM_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+        ).getEvent());
+    }
 }

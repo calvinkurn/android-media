@@ -182,6 +182,7 @@ public interface AppEventTracking {
         String SLIDER = "Slider";
         String RECHARGE = "Recharge - ";
         String PRODUCT_FEED = "Product Feed";
+        String SHOP_MANAGE_GM_SWITCHER = "Manage Shop - GM Switcher";
     }
 
     interface Action {
