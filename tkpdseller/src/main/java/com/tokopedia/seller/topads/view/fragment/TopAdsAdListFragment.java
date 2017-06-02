@@ -27,7 +27,6 @@ import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.seller.lib.widget.QuickReturnHeaderBehavior;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
@@ -157,7 +156,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             updateEmptyViewDefault();
             updateEmptyDefault = false;
         }
-        showDateLabelView(true);
     }
 
     @Override
@@ -197,19 +195,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         recyclerView.setPadding(0, topPadding, 0, bottomPadding);
         if (dateLabelView != null) {
             dateLabelView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    public void showDateLabelView(boolean show) {
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) dateLabelView.getLayoutParams();
-        QuickReturnHeaderBehavior behavior = (QuickReturnHeaderBehavior) params.getBehavior();
-        if (behavior == null) {
-            return;
-        }
-        if (show) {
-            behavior.showView(dateLabelView);
-        } else {
-            behavior.hideView(dateLabelView);
         }
     }
 
@@ -287,6 +272,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public View getItemRecyclerView() {
         int position = layoutManager.findFirstCompletelyVisibleItemPosition();
         return layoutManager.findViewByPosition(position);
+    }
+
+    public View getDateView() {
+        return getView().findViewById(R.id.date_label_view);
     }
 
     public RecyclerView getRecyclerView() {
