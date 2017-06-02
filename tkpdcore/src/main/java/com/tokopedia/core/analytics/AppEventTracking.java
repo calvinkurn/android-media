@@ -184,6 +184,7 @@ public interface AppEventTracking {
         String PRODUCT_FEED = "Product Feed";
         String SHOP_MANAGE_GM_SWITCHER = "Manage Shop - GM Switcher";
         String TOPADS_SWITCHER = "TopAds Switcher";
+        String OPENSHOP_SWITCHER = "Open Shop Switcher";
     }
 
     interface Action {

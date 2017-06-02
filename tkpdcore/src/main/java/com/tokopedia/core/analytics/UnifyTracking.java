@@ -1656,11 +1656,19 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-
     public static void eventTopAdsSwitcher(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.TOPADS_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+        ).getEvent());
+    }
+
+    public static void eventOpenShopSwitcher(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.OPENSHOP_SWITCHER,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
         ).getEvent());
