@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,13 +14,16 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -243,7 +247,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
         String type = uriData. getQueryParameter("type");
         Intent intentToLaunch = null;
-        if (TextUtils.isEmpty(type)){
+        String shopId = SessionHandler.getShopID(context);
+        if (TextUtils.isEmpty(shopId)) {
+            // goto beranda
+            intentToLaunch = new Intent(context, SplashScreenActivity.class);
+            intentToLaunch.setData(uriData);
+        }
+        else if (TextUtils.isEmpty(type)){
             // goto Top Ads Dashboard
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);

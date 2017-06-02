@@ -32,6 +32,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
 
+import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarEmptyWithAction;
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
 /**
@@ -212,6 +213,19 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onLoadAdError() {
         hideLoading();
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshAd();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAdEmpty() {
+        hideLoading();
+        snackbarRetry = createSnackbarEmptyWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 refreshAd();

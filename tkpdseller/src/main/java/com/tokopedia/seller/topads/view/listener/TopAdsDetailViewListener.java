@@ -9,6 +9,8 @@ public interface TopAdsDetailViewListener {
 
     void onAdLoaded(Ad ad);
 
+    void onAdEmpty();
+
     void onLoadAdError();
 
     void onTurnOnAdSuccess();
