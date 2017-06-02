@@ -40,7 +40,6 @@ import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -48,7 +47,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,7 +190,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                    */
                 case APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0){
-                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))));
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false);
                         screenName = AppScreen.SCREEN_WEBVIEW;
                     }else {
                         return;
@@ -380,11 +378,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void prepareOpenWebView(Uri uriData) {
         CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
         String url = encodeUrl(uriData.toString());
-        openWebView(Uri.parse(url));
+        if (uriData.getQueryParameter("override_url") != null){
+            openWebView(Uri.parse(url), true);
+        }else {
+            openWebView(Uri.parse(url), false);
+        }
     }
 
-    private void openWebView(Uri encodedUri){
-        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()));
+    private void openWebView(Uri encodedUri, boolean allowingOverriding){
+        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
