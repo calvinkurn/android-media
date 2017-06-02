@@ -662,7 +662,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_no_result">Tidak ada hasil</string>
     <string name="title_qty">Qty:</string>
     <string name="title_add_notes">Tambahkan Catatan</string>
-    <string name="title_edit_to_add_notes">Edit untuk tambahkan catatan</string>
+    <string name="title_edit_to_add_notes">Pilih ubah untuk tambahkan catatan</string>
     <string name="title_buy_from">Beli dari</string>
     <string name="title_total">Total</string>
     <string name="title_details_info">Informasi Detil</string>

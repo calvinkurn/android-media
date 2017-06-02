@@ -53,4 +53,5 @@
     <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
     <string name="button_change_email">Ubah Email</string>
     <string name="title_new_email">Email Baru</string>
+    <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
 </resources>

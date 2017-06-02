@@ -1,6 +1,7 @@
 package com.tokopedia.core.inboxreputation.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,10 +9,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
@@ -49,6 +52,14 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     TabLayout indicator;
 
     private boolean goToReputationHistory;
+
+    @DeepLink(Constants.Applinks.REPUTATION)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, InboxReputationActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +108,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             if (sellerReputationFragment != null) {
                 indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
             }
-            if(goToReputationHistory){
+            if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         } else {
