@@ -845,6 +845,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layoutCartFragment.setVisibility(View.GONE);
                 navigateToActivity(
                         BrowseProductRouter.getDefaultBrowseIntent(getActivity())
                 );
