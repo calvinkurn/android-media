@@ -101,7 +101,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
-        TopAdsKeywordEditDetailPositiveActivity.start(getActivity(), keywordAd);
+        startActivity(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), keywordAd));
     }
 
     @Override

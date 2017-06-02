@@ -165,6 +165,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
+    protected void setResultAdListChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
     private void showFilterOption(boolean show) {
         @Px int topPadding = 0;
         @Px int bottomPadding = 0;

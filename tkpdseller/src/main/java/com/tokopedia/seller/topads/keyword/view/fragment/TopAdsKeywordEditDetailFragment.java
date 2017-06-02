@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected TextView topAdsMaxPriceInstruction;
 
     private KeywordAd keywordAd;
-    private TopAdsKeywordEditDetailFragmentListener listener;
 
     public static Bundle createArguments(KeywordAd model) {
         Bundle bundle = new Bundle();
@@ -55,14 +55,6 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                 .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof TopAdsKeywordEditDetailFragmentListener){
-            this.listener = (TopAdsKeywordEditDetailFragmentListener) context;
-        }
     }
 
     @Override
@@ -141,7 +133,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
-        listener.onSuccessEditTopAdsKeywordDetail(viewModel);
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override

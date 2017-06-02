@@ -7,7 +7,6 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.view.model.Ad;
@@ -64,6 +63,6 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
 
     @Override
     protected void editAd() {
-        TopAdsKeywordEditDetailNegativeActivity.start(getActivity(), keywordAd);
+        startActivity(TopAdsKeywordEditDetailNegativeActivity.createInstance(getActivity(), keywordAd));
     }
 }

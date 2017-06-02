@@ -182,12 +182,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     }
 
-    protected void setResultAdListChanged() {
-        Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-    }
-
     @Override
     public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
 
