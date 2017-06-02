@@ -254,6 +254,8 @@ public class RidePushNotificationBuildAndShow {
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.ic_stat_notify)
                             .setAutoCancel(true)
+                            .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                            .setPriority(Notification.PRIORITY_MAX)
                             .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                             .setContentTitle(title)
                             .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
