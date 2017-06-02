@@ -599,4 +599,7 @@
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
     <string name="top_ads_keyword_delete">Hapus</string>
+    <!-- tooltip statistic topads -->
+    <string name="tooltip_statistic_use">Rp %1s</string>
+    <string name="tooltip_statistic_avg">Rp %1s</string>
 </resources>
