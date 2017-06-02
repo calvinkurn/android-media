@@ -167,9 +167,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    if(!uriData.getPath().contains("activation")) {
+                    if (!uriData.getPath().contains("activation")) {
                         prepareOpenWebView(uriData);
-                    }else {
+                    } else {
                         context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
@@ -189,10 +189,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                    */
                 case APPLINK:
-                    if (linkSegment != null && linkSegment.size() > 0){
+                    if (linkSegment != null && linkSegment.size() > 0) {
                         openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false);
                         screenName = AppScreen.SCREEN_WEBVIEW;
-                    }else {
+                    } else {
                         return;
                     }
                     break;
@@ -378,14 +378,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void prepareOpenWebView(Uri uriData) {
         CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
         String url = encodeUrl(uriData.toString());
-        if (uriData.getQueryParameter("override_url") != null){
-            openWebView(Uri.parse(url), true);
-        }else {
+        if (uriData.getQueryParameter("override_url") != null) {
+            openWebView(Uri.parse(url), uriData.getQueryParameter("override_url").equalsIgnoreCase("true"));
+        } else {
             openWebView(Uri.parse(url), false);
         }
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding){
+    private void openWebView(Uri encodedUri, boolean allowingOverriding) {
         Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
@@ -622,13 +622,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isBrowse(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                 linkSegment.get(0).equals("search")
+                linkSegment.get(0).equals("search")
         );
     }
 
     private boolean isCategory(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                 linkSegment.get(0).equals("p")
+                linkSegment.get(0).equals("p")
         );
     }
 
