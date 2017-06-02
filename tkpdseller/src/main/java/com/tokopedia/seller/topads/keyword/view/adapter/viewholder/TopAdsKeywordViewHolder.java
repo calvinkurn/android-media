@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.domain.model.Datum;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
 /**
@@ -39,10 +39,10 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void bindDataAds(final Datum datum, final TopAdsBaseListAdapter.Callback<Datum> callback) {
+    public void bindDataAds(final KeywordAd datum, final TopAdsBaseListAdapter.Callback<KeywordAd> callback) {
         titleProduct.setText(datum.getKeywordTag());
-        statusActive.setText(datum.getKeywordStatusDesc());
-        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getKeywordPriceBidFmt()));
+        statusActive.setText(datum.getStatusDesc());
+        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getPriceBidFmt()));
         promoPriceUsed.setText(datum.getStatTotalSpent());
         groupName.setText(datum.getGroupName());
 
