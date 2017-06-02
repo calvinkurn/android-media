@@ -101,7 +101,7 @@
     <dimen name="shop_ava">50dp</dimen>
     <dimen name="medal_size">20dp</dimen>
     <dimen name="icon_size">48dp</dimen>
-    <dimen name="item_revamp_category">175dp</dimen>
+    <dimen name="item_revamp_category">150dp</dimen>
     <dimen name="text_item_revamp_category">28sp</dimen>
 
     <!-- youtube thumbnail dimens -->

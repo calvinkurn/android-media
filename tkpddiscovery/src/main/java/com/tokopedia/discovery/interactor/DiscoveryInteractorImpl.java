@@ -48,6 +48,8 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.ANDROID_DEVICE;
+
 
 /**
  * Created by noiz354 on 3/17/16.
@@ -216,7 +218,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     public Observable<BrowseProductModel> getProductObservable(HashMap<String, String> data) {
         Map<String, String> param = MapNulRemover.removeNull(data);
-        return Observable.zip(hadesService.getApi().getCategories(data.get(BrowseApi.SC)),
+        return Observable.zip(hadesService.getApi().getCategories(ANDROID_DEVICE,data.get(BrowseApi.SC)),
                 discoveryService.getApi().browseProducts(param), new Func2<Response<CategoryHadesModel>, Response<BrowseProductModel>, BrowseProductModel>() {
                     @Override
                     public BrowseProductModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
