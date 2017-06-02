@@ -64,12 +64,12 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == object;
+        return view.equals(object);
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
+        if (object != null && object instanceof View) container.removeView((View) object);
     }
 
 
