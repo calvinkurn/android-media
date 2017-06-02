@@ -632,16 +632,27 @@ public class ShopAddressForm extends TActivity {
 
                 JSONObject jsonObject = null;
                 try {
+                    List<String> errorMessages = response.getErrorMessages();
+                    if (errorMessages!= null && errorMessages.size() > 0) {
+                        String responses = "";
+                        for (int i = 0; i < response.getErrorMessages().size(); i++) {
+                            responses += response.getErrorMessages().get(i) + " ";
+                        }
+                        Snackbar snackbarError = SnackbarManager.make(ShopAddressForm.this,
+                                responses,
+                                Snackbar.LENGTH_LONG);
+                        snackbarError.show();
+                        return;
+                    }
+
                     jsonObject = new JSONObject(response.getStringData());
                     Gson gson = new GsonBuilder().create();
-
                     // NEEDS TO BE REMEMBER, THE RESPONSE FOR EDIT AND CREATE NEW ADDRESS IS DIFFERENCE
                     // CREATE NEW ADDRESS ALSO RETURN ADDRESS ID, BUT IT IS NOT USED
                     // TO REDUCE REDUNDANCY THE RESPONSE
                     // IS ONLY STORED ONCE AS SAVE ADDRESS OBJECT.
                     SaveAddress data =
                             gson.fromJson(jsonObject.toString(), SaveAddress.class);
-                    mProgressDialog.dismiss();
                     if (data.getIsSuccess() == 1) {
                         NetworkErrorHelper.removeEmptyState(rootView);
                         Intent intent = new Intent(ShopAddressForm.this, ManageShopAddress.class);
@@ -650,21 +661,13 @@ public class ShopAddressForm extends TActivity {
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();
-                    } else {
-                        if (response.getErrorMessages().size() > 0) {
-                            String responses = "";
-                            for (int i = 0; i < response.getErrorMessages().size(); i++) {
-                                responses += response.getErrorMessages().get(i) + " ";
-                            }
-                            Snackbar snackbarError = SnackbarManager.make(ShopAddressForm.this,
-                                    responses,
-                                    Snackbar.LENGTH_LONG);
-                            snackbarError.show();
-                        }
                     }
 
                 } catch (JSONException je) {
 
+                }
+                finally {
+                    mProgressDialog.dismiss();
                 }
             }
         };
