@@ -152,7 +152,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         super.onViewCreated(view, savedInstanceState);
         setViewListener();
         setupToolbar();
-        mapView.onCreate(savedInstanceState);
+        try {
+            mapView.onCreate(savedInstanceState);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         mapView.getMapAsync(this);
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -168,7 +172,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        mapView.onCreate(savedInstanceState);
+        try {
+            mapView.onCreate(savedInstanceState);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         mapView.getMapAsync(this);
         if (savedInstanceState != null) {
             source = savedInstanceState.getParcelable(EXTRA_SOURCE);
