@@ -59,9 +59,4 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     public void onItemClicked(Ad ad) {
         startActivity(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""));
     }
-
-    @Override
-    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
-        return null;
-    }
 }

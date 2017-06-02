@@ -155,7 +155,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
+    protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
         return null;
     }
 
