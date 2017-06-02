@@ -234,7 +234,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void showLoadingList() {
-        if (!refreshHandler.isRefreshing() && (adapter.getList().size() == 0 || adapter.isEmpty())) {
+        if (pagingHandler.getPage() == 1 && adapter.getList().size() > 0) {
+            refreshHandler.setRefreshing(true);
+        } else if (!refreshHandler.isRefreshing() && (adapter.getList().size() == 0 || adapter.isEmpty())) {
             adapter.showLoadingFull(true);
         } else if (!refreshHandler.isRefreshing()) {
             adapter.showLoading(true);

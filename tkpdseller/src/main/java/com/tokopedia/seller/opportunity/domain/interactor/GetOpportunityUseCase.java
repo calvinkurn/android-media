@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
-import com.tokopedia.seller.opportunity.domain.ReplacementRepository;
+import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 
 import rx.Observable;
 

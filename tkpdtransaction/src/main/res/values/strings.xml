@@ -59,4 +59,6 @@
     <string name="label_transaction_potential_cashback">Potensi Cashback</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
+    <string name="cancel_replacement">Batalkan Pesanan</string>
+    <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
 </resources>

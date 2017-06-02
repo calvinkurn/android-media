@@ -15,6 +15,7 @@ public class ActionReplacementSourceFactory {
     private ReplacementActService actService;
     private AcceptOpportunityMapper acceptMapper;
 
+
     public ActionReplacementSourceFactory(Context context) {
         this.context = context;
         this.acceptMapper = new AcceptOpportunityMapper();
@@ -24,4 +25,5 @@ public class ActionReplacementSourceFactory {
     public CloudActionReplacementSource createCloudActionReplacementSource() {
         return new CloudActionReplacementSource(context, actService, acceptMapper);
     }
+
 }

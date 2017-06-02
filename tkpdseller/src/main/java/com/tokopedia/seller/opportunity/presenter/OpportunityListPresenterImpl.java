@@ -10,7 +10,7 @@ import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFact
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
-import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
+import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;

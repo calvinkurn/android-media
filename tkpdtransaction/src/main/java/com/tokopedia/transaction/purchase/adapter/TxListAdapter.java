@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,7 @@ import butterknife.ButterKnife;
  * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListAdapter extends ArrayAdapter<OrderData> {
+    private static final int ID_CANCEL_REPLACEMENT = 132;
     private final LayoutInflater inflater;
     private final int instanceType;
     private final Context context;
@@ -53,6 +55,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         void actionShowComplain(OrderData orderData);
 
         void actionCopyResiNumber(String resiNumber);
+
+        void actionCancelReplacement(OrderData orderData);
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
@@ -174,6 +178,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                         holder.btnOverflow.setVisibility(View.GONE);
                         break;
                 }
+//                setButtonOverflowCancelOpportunity(holder, item);
                 break;
             case TxListFragment.INSTANCE_RECEIVE:
                 holder.btnOverflow.setVisibility(View.VISIBLE);
@@ -181,12 +186,23 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         }
     }
 
+    private void setButtonOverflowCancelOpportunity(ViewHolder holder, OrderData item) {
+        if (item.getOrderButton().getButtonCancelReplacement().equals("1"))
+            holder.btnOverflow.setVisibility(View.VISIBLE);
+    }
+
     private void showPopup(View v, final OrderData item) {
         PopupMenu popup = new PopupMenu(context, v);
+//        addCancelReplacementMenu(item, popup.getMenu());
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(getMenuId(item), popup.getMenu());
         popup.setOnMenuItemClickListener(new OnMenuPopupClicked(item));
         popup.show();
+    }
+
+    private void addCancelReplacementMenu(OrderData item, Menu menu) {
+        if (item.getOrderButton().getButtonCancelReplacement().equals("1"))
+            menu.add(0, ID_CANCEL_REPLACEMENT, 0, R.string.cancel_replacement);
     }
 
     private int getMenuId(OrderData item) {
@@ -284,6 +300,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_show_complain) {
                 actionListener.actionShowComplain(orderData);
+                return true;
+            } else if (item.getItemId() == ID_CANCEL_REPLACEMENT) {
+                actionListener.actionCancelReplacement(orderData);
                 return true;
             } else {
                 return false;

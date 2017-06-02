@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity.domain;
+package com.tokopedia.seller.opportunity.domain.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;

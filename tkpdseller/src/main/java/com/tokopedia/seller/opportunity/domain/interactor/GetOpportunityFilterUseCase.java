@@ -1,12 +1,11 @@
 package com.tokopedia.seller.opportunity.domain.interactor;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
-import com.tokopedia.seller.opportunity.domain.ReplacementRepository;
+import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
