@@ -34,7 +34,7 @@
                 android:drawableLeft="@drawable/ic_sort"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
-                android:text="@string/sort" />
+                android:text="@string/action_sort" />
         </RelativeLayout>
 
         <RelativeLayout

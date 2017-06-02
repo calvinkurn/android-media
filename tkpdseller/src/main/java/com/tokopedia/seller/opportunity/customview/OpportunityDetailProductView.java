@@ -74,7 +74,11 @@ public class OpportunityDetailProductView extends BaseView<OpportunityItemViewMo
         productName.setText(data.getOrderProducts().get(0).getProductName());
         String quantity = data.getOrderProducts().get(0).getProductQuantity() + " " + getContext().getString(R.string.item);
         productQuantity.setText(quantity);
-        productDescription.setText(data.getOrderProducts().get(0).getProductDescription());
+        if (data.getOrderProducts().get(0).getProductNotes().equals("")
+                && data.getOrderProducts().get(0).getProductNotes().equals("0"))
+            productDescription.setText(data.getOrderProducts().get(0).getProductNotes());
+        else
+            productDescription.setText("-");
 
         actionSeeProduct.setOnClickListener(new OnClickListener() {
             @Override

@@ -287,7 +287,7 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
-    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain</string>
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
 
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
@@ -546,7 +546,7 @@
     <string name="deadline">Jatuh Tempo</string>
     <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
     <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
-    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli</string>
+    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
     <string name="action_agree">Setuju</string>
     <string name="action_back">Kembali</string>
     <string name="title_opportunity_detail">Peluang Baru</string>
@@ -558,4 +558,5 @@
     <string name="item">barang</string>
     <string name="title_supported_shipping">Dukungan Pengiriman</string>
     <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
+    <string name="action_sort">Urutkan</string>
 </resources>
