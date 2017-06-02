@@ -1517,6 +1517,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventBannerEmptyFeedOS() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
+                AppEventTracking.Category.PRODUCT_FEED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED
+        ).getEvent());
+    }
+
     public static void eventAddProductErrorServer(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
@@ -1608,6 +1617,33 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.CLICK_LANJUT_CHECKOUT,
                 el
+        ).getEvent());
+    }
+
+    public static void eventClickTruecaller() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_ATTEMPT
+        ).getEvent());
+    }
+
+    public static void eventClickTruecallerConfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_CONFIRM
+        ).getEvent());
+    }
+
+    public static void eventTruecallerImpression() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.IMPRESSION,
+                AppEventTracking.EventLabel.TRUECALLER
         ).getEvent());
     }
 }

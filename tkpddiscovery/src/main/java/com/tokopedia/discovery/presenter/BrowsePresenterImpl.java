@@ -482,78 +482,6 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
     }
-
-    @Override
-    public void fetchCategoriesHeader(final String departementId) {
-        browseView.showLoading(true);
-        discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
-            @Override
-            public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
-                browseView.showLoading(false);
-            }
-
-            @Override
-            public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-                //only show ace products
-            }
-
-            @Override
-            public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-                switch (type) {
-                    case DiscoveryListener.CATEGORY_HEADER:
-
-                        ObjContainer objContainer = data.getModel2();
-                        CategoryHadesModel.CategoriesHadesContainer categoriesHadesContainer
-                                = (CategoryHadesModel.CategoriesHadesContainer) objContainer;
-                        CategoryHadesModel body = categoriesHadesContainer.body();
-
-                        if (browseModel != null && body != null && body.getData() != null) {
-                            browseModel.categoryHeader = body.getData();
-                            browseView.renderCategoriesHeader(browseModel.categoryHeader);
-                            changeGridTypeIfNeeded(browseModel.categoryHeader.getView());
-                        }
-                        break;
-                }
-            }
-        });
-        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        discoveryInteractor.getCategoryHeader(departementId,categoryLevel.size()+1);
-    }
-
-    private void changeGridTypeIfNeeded(Integer viewType) {
-        if (!isFromCategory() || isCustomGridType) {
-            return;
-        }
-
-        int gridIcon;
-        int gridTitleRes;
-
-        switch (viewType) {
-            case Data.GRID_2_VIEW_TYPE:
-                this.gridType = BrowseProductRouter.GridType.GRID_2;
-                gridIcon = R.drawable.ic_grid_default;
-                gridTitleRes = R.string.grid;
-                break;
-            case Data.GRID_1_VIEW_TYPE:
-                this.gridType = BrowseProductRouter.GridType.GRID_3;
-                gridIcon = R.drawable.ic_grid_box;
-                gridTitleRes = R.string.grid;
-                break;
-            case Data.LIST_VIEW_TYPE:
-                this.gridType = BrowseProductRouter.GridType.GRID_1;
-                gridIcon = R.drawable.ic_list;
-                gridTitleRes = R.string.list;
-                break;
-            default:
-                this.gridType = BrowseProductRouter.GridType.GRID_2;
-                gridIcon = R.drawable.ic_grid_default;
-                gridTitleRes = R.string.grid;
-        }
-
-        browseView.sendChangeGridBroadcast(gridType);
-        browseView.changeBottomBarGridIcon(gridIcon, gridTitleRes);
-    }
-
     private boolean isFromCategory() {
         return !TextUtils.isEmpty(browseModel.getParentDepartement())
                 && !("0").equals(browseModel.getParentDepartement());
@@ -599,12 +527,6 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         browseModel.setQ(keyword);
         browseModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseModel.alias = selected;
-    }
-
-    @Override
-    public void sendCategory(String departementId) {
-        browseModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        fetchCategoriesHeader(departementId);
     }
 
     @Override

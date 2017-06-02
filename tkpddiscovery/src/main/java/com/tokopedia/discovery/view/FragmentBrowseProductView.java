@@ -27,15 +27,14 @@ public interface FragmentBrowseProductView extends BaseView {
     int getDataSize(String TAG);
     void setupAdapter();
     boolean setupRecyclerView();
-    void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
     int getStartIndexForQuery(String TAG);
     int getPage(String TAG);
     void savePaging(Bundle savedState);
     void restorePaging(Bundle savedState);
-
-    void addTopAds(List<ProductItem> passProduct, int page, String tag);
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
     void addCategoryHeader(Data category);
     BrowseProductModel getDataModel();
@@ -50,7 +49,7 @@ public interface FragmentBrowseProductView extends BaseView {
     void showDialog(Dialog dialog);
     void closeView();
     void showWishListRetry(String errorMessage);
+    void updateTotalProduct(Long totalProduct);
+    void displayTopAds();
 
-    //    int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
-    int getTopAdsPaging();
 }

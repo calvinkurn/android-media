@@ -386,8 +386,8 @@ public class TkpdState {
         public static final int VIEW_FAV_SHOP = 7;
         public static final int VIEW_PRODUCT_RIGHT = 8;
         public static final int VIEW_EMPTY_SEARCH = 9;
-        public static final int VIEW_CATEGORY = 10;
-        public static final int VIEW_TOP_ADS_4 = 999;
+        public static final int VIEW_EMPTY_STATE = 10;
+        public static final int VIEW_CATEGORY = 11;
         public static final int VIEW_BANNER_HOT_LIST = 998;
         public static final int VIEW_TOP_ADS_LIST = 997;
         public static final int VIEW_CATEGORY_HEADER = 996;

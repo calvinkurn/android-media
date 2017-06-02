@@ -14,7 +14,7 @@ public class ClientNumber implements Parcelable {
     private String help;
     @SerializedName("is_shown")
     @Expose
-    private Boolean isShown;
+    private boolean isShown;
     @SerializedName("placeholder")
     @Expose
     private String placeholder;
@@ -22,12 +22,36 @@ public class ClientNumber implements Parcelable {
     @Expose
     private String text;
 
-    protected ClientNumber(Parcel in) {
-        help = in.readString();
-        byte isShownVal = in.readByte();
-        isShown = isShownVal == 0x02 ? null : isShownVal != 0x00;
-        placeholder = in.readString();
-        text = in.readString();
+    public String getHelp() {
+        return help;
+    }
+
+    public void setHelp(String help) {
+        this.help = help;
+    }
+
+    public boolean isShown() {
+        return isShown;
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
+    }
+
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
@@ -37,21 +61,26 @@ public class ClientNumber implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(help);
-        if (isShown == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isShown ? 0x01 : 0x00));
-        }
-        dest.writeString(placeholder);
-        dest.writeString(text);
+        dest.writeString(this.help);
+        dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
+        dest.writeString(this.placeholder);
+        dest.writeString(this.text);
     }
 
-    @SuppressWarnings("unused")
+    public ClientNumber() {
+    }
+
+    protected ClientNumber(Parcel in) {
+        this.help = in.readString();
+        this.isShown = in.readByte() != 0;
+        this.placeholder = in.readString();
+        this.text = in.readString();
+    }
+
     public static final Creator<ClientNumber> CREATOR = new Creator<ClientNumber>() {
         @Override
-        public ClientNumber createFromParcel(Parcel in) {
-            return new ClientNumber(in);
+        public ClientNumber createFromParcel(Parcel source) {
+            return new ClientNumber(source);
         }
 
         @Override
@@ -59,77 +88,4 @@ public class ClientNumber implements Parcelable {
             return new ClientNumber[size];
         }
     };
-
-    /**
-     * 
-     * @return
-     *     The help
-     */
-    public String getHelp() {
-        return help;
-    }
-
-    /**
-     * 
-     * @param help
-     *     The help
-     */
-    public void setHelp(String help) {
-        this.help = help;
-    }
-
-    /**
-     * 
-     * @return
-     *     The isShown
-     */
-    public Boolean getIsShown() {
-        return isShown;
-    }
-
-    /**
-     * 
-     * @param isShown
-     *     The is_shown
-     */
-    public void setIsShown(Boolean isShown) {
-        this.isShown = isShown;
-    }
-
-    /**
-     * 
-     * @return
-     *     The placeholder
-     */
-    public String getPlaceholder() {
-        return placeholder;
-    }
-
-    /**
-     * 
-     * @param placeholder
-     *     The placeholder
-     */
-    public void setPlaceholder(String placeholder) {
-        this.placeholder = placeholder;
-    }
-
-    /**
-     * 
-     * @return
-     *     The text
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * 
-     * @param text
-     *     The text
-     */
-    public void setText(String text) {
-        this.text = text;
-    }
-
 }

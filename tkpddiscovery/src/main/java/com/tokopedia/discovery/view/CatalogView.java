@@ -22,6 +22,7 @@ public interface CatalogView extends BaseView {
     int getDataSize();
     void onCallNetwork();
     BrowseCatalogModel getDataModel();
+    void setLoading(boolean isLoading);
 
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
 }

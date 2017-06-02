@@ -394,9 +394,12 @@ public class DrawerVariableSeller extends DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
-                    intent.putExtra("link", "https://tokopedia.com/contact-us-android");
-                }
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.HELP:
+                intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
@@ -418,12 +421,7 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent = new Intent(context, TopAdsDashboardActivity.class);
                 context.startActivity(intent);
                 break;
-            case TkpdState.DrawerPosition.HELP:
-                intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
-                context.startActivity(intent);
-                break;
+
             default:
                 break;
         }

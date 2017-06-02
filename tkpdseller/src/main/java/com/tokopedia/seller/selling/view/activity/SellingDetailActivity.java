@@ -29,15 +29,11 @@ import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Erry on 7/25/2016.
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {
@@ -70,9 +66,9 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_selling_detail);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

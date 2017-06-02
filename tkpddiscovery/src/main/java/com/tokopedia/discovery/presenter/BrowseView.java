@@ -54,8 +54,6 @@ public interface BrowseView {
     void sendChangeGridBroadcast(BrowseProductRouter.GridType gridType);
     void renderUpperCategoryLevel(SimpleCategory simpleCategory);
 
-    void renderCategoriesHeader(Data categoryHeader);
-
     int getCurrentSuggestionTab();
     void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId);
 

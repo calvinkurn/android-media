@@ -45,6 +45,7 @@ import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -70,7 +71,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_I
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
-        BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
+        BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener, ProductFragment.ProductFragmentListener {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -147,10 +148,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void sendHotlist(String selected, String keyword) {
         browsePresenter.sendHotlist(selected, keyword);
-    }
-
-    public void sendCategory(String departementId) {
-        browsePresenter.sendCategory(departementId);
     }
 
     @Override
@@ -520,16 +517,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void renderCategoriesHeader(Data categoryHeader) {
-        BrowseParentFragment parentFragment = (BrowseParentFragment)
-                fragmentManager.findFragmentById(R.id.container);
-
-        if (parentFragment != null) {
-            parentFragment.renderCategories(categoryHeader);
-        }
-    }
-
-    @Override
     public int getCurrentSuggestionTab() {
         return discoverySearchView.getSuggestionFragment().getCurrentTab();
     }
@@ -616,6 +603,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null) {
+            getBrowseProductActivityModel().setQ("");
             String toolbarTitle;
             if (name!=null) {
                 toolbarTitle = name;
@@ -640,7 +628,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
         renderNewCategoryLevel(child.getId(),child.getName(),false);
-
     }
 
     @Override
@@ -654,5 +641,14 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         } else {
             browsePresenter.onBackPressed();
         }
+    }
+
+    @Override
+    public String getDepartmentId() {
+        if(browsePresenter != null) {
+            return browsePresenter.getBrowseProductActivityModel().getDepartmentId();
+        }
+
+        return null;
     }
 }
