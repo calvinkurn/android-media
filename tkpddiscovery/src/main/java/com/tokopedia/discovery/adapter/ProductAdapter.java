@@ -89,8 +89,6 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.G
 public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static final String DATA_LIST = "DATA_LIST";
     public static final String ADAPTER_PAGING = "ADAPTER_PAGING";
-    public static final String KEYWORD = "keyword";
-    public static final String ETALASE_NAME = "etalase_name";
     private static final String TAG = ProductAdapter.class.getSimpleName();
     public static final int ROWS_OF_PRODUCT = 12;
     //    private static final int PRODUCT_GRIDVIEW = 151_458;
@@ -148,7 +146,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
-                return onCreateBannerOfficialStore(context, parent);
+                return OsBannerAdapter.onCreateBannerOfficialStore(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -181,7 +179,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
                     break;
                 case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
-                    ((BannerOsViewHolder) holder).bind((OsBannerViewModel) data.get(position));
+                    ((OsBannerAdapter.BannerOsViewHolder) holder).bind((OsBannerAdapter.OsBannerViewModel) data.get(position));
                     break;
                 default:
                     super.onBindViewHolder(holder, position);
@@ -688,7 +686,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         data.add(0, categoryHeaderModel);
     }
 
-    public void addOfficialStoreBanner(OsBannerViewModel bannerModel) {
+    public void addOfficialStoreBanner(OsBannerAdapter.OsBannerViewModel bannerModel) {
         data.add(0, bannerModel);
     }
 
@@ -976,114 +974,5 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public interface ScrollListener {
         void backToTop();
-    }
-
-    /**
-     * View Model for Official Stores Banner
-     */
-    public static class OsBannerViewModel extends RecyclerViewItem {
-        private BannerOfficialStoreModel bannerOfficialStore;
-
-        private OsBannerViewModel() {
-            setType(TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE);
-        }
-
-        public OsBannerViewModel(BannerOfficialStoreModel bannerOfficialStore) {
-            this();
-            this.bannerOfficialStore = bannerOfficialStore;
-        }
-    }
-
-    /**
-     * Create new Official Stores Banner View Holder
-     *
-     * @param parent parent view
-     * @return view holder of Official Store Banner
-     */
-    private BannerOsViewHolder onCreateBannerOfficialStore(Context context, ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.official_store_banner, parent, false);
-        return new BannerOsViewHolder(context, inflate);
-    }
-
-    /**
-     * View Holder for Official Store Banner
-     */
-    public static class BannerOsViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.image_banner_os)
-        ImageView imageBannerOs;
-
-        Context context;
-
-        public BannerOsViewHolder(Context context, View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            this.context = context;
-        }
-
-        public void bind(final OsBannerViewModel viewModel) {
-            ImageHandler.loadImageWithTarget(context, viewModel.bannerOfficialStore.getBannerUrl(),
-                    new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            if (resource.getHeight() != 1 && resource.getWidth() != 1) {
-                                imageBannerOs.setImageBitmap(resource);
-                            }
-                        }
-                    }
-            );
-
-            imageBannerOs.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToUrl(viewModel.bannerOfficialStore.getShopUrl());
-
-                    // GTM Tracker
-                    UnifyTracking.eventClickOsBanner(
-                            viewModel.bannerOfficialStore.getBannerUrl()
-                                    + " - "
-                                    + viewModel.bannerOfficialStore.getKeyword()
-                    );
-                }
-            });
-        }
-
-        private void goToUrl(String url) {
-            switch ((DeepLinkChecker.getDeepLinkType(url))) {
-                case DeepLinkChecker.BROWSE:
-                    DeepLinkChecker.openBrowse(url, context);
-                    break;
-                case DeepLinkChecker.HOT:
-                    DeepLinkChecker.openHot(url, context);
-                    break;
-                case DeepLinkChecker.HOT_LIST:
-                    DeepLinkChecker.openHomepage(context);
-                    break;
-                case DeepLinkChecker.CATALOG:
-                    DeepLinkChecker.openCatalog(url, context);
-                    break;
-                case DeepLinkChecker.PRODUCT:
-                    DeepLinkChecker.openProduct(url, context);
-                    break;
-                case DeepLinkChecker.SHOP:
-                    Bundle bundle = new Bundle();
-                    if (DeepLinkChecker.getQuery(url, KEYWORD) != null) {
-                        bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
-                    }
-                    DeepLinkChecker.openShopWithParameter(url, context, bundle);
-                    break;
-                case DeepLinkChecker.ETALASE:
-                    bundle = new Bundle();
-                    bundle.putString(ETALASE_NAME, DeepLinkChecker.getLinkSegment(url).get(2));
-                    if (DeepLinkChecker.getQuery(url, KEYWORD) != null) {
-                        bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
-                    }
-                    DeepLinkChecker.openShopWithParameter(url, context, bundle);
-                    break;
-                default:
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    context.startActivity(intent);
-                    break;
-            }
-        }
     }
 }

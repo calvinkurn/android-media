@@ -47,6 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
+import com.tokopedia.discovery.adapter.OsBannerAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
@@ -100,7 +101,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
-    private boolean isHasOfficialStoreBanner = false;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProgressDialog loading;
 
@@ -654,9 +654,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void showOfficialStoreBanner(BannerOfficialStoreModel model) {
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             if (!TextUtils.isEmpty(model.getBannerUrl()) && !TextUtils.isEmpty(model.getShopUrl())) {
-                productAdapter.addOfficialStoreBanner(new ProductAdapter.OsBannerViewModel(model));
+                topAdsRecyclerAdapter.setHasHeader(true);
+                productAdapter.addOfficialStoreBanner(new OsBannerAdapter.OsBannerViewModel(model));
                 productAdapter.notifyDataSetChanged();
-                isHasOfficialStoreBanner = true;
+                topAdsRecyclerAdapter.notifyDataSetChanged();
                 backToTop();
 
                 UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
