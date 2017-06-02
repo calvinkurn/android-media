@@ -2,8 +2,6 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -64,7 +62,6 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                 YouTubeInitializationResult initializationResult) {
-                Log.d("test", "onInitializationFailure: ");
 
             }
         };
@@ -84,7 +81,6 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                 YouTubeInitializationResult initializationResult) {
-                Log.d("test", "onInitializationFailure: ");
 
             }
         };

@@ -11,8 +11,8 @@
         android:layout_margin="@dimen/margin_vs"
         card_view:cardCornerRadius="0dip"
         card_view:cardElevation="3dip"
-        android:padding="3dp"
-        card_view:contentPadding="3dp">
+        android:padding="@dimen/padding_vvs"
+        card_view:contentPadding="@dimen/padding_vvs">
 
         <LinearLayout
             android:id="@id/linWrapper"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
             android:orientation="horizontal"
-            android:padding="2dp">
+            android:padding="@dimen/padding_vvvs">
 
             <ImageView
                 android:id="@id/thumbnail"
@@ -28,7 +28,7 @@
                 android:layout_height="@dimen/intermediary_brand"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_loading_toped"
-                android:layout_margin="3dp"
+                android:layout_margin="@dimen/padding_vvs"
                 />
 
         </LinearLayout>

@@ -26,6 +26,7 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     List<BannerModel> bannerList = new ArrayList<>();
     private final Context context;
+    private static final String URL = "url";
 
     public BannerPagerAdapter(Context context, List<BannerModel> bannerList) {
         this.context = context;
@@ -43,7 +44,7 @@ public class BannerPagerAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, TopPicksWebView.class);
-                    intent.putExtra("url", bannerList.get(position).getUrl());
+                    intent.putExtra(URL, bannerList.get(position).getUrl());
                     context.startActivity(intent);
                 }
             });

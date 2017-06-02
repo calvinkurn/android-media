@@ -14,8 +14,8 @@
         android:tint="@color/cardview_shadow_start_color"/>
 
     <View
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/youtube_video_thumbnail_overlay_size"
+        android:layout_height="@dimen/youtube_video_thumbnail_overlay_size"
         android:layout_centerInParent="true"
         android:background="@drawable/ic_play_circle_outline_48dp"/>
 
