@@ -20,8 +20,9 @@ public class MediaItem implements Parcelable {
     public final Uri uri;
     public final long size;
     public final long duration; // only for video, in ms
+    private final String realPath;
 
-    private MediaItem(long id, String mimeType, long size, long duration) {
+    private MediaItem(long id, String realPath, String mimeType, long size, long duration) {
         this.id = id;
         this.mimeType = mimeType;
         Uri contentUri;
@@ -36,10 +37,12 @@ public class MediaItem implements Parcelable {
         this.uri = ContentUris.withAppendedId(contentUri, id);
         this.size = size;
         this.duration = duration;
+        this.realPath = realPath;
     }
 
     public static MediaItem valueOf(Cursor cursor) {
         return new MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
+                cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                 cursor.getLong(cursor.getColumnIndex("duration")));
@@ -69,6 +72,14 @@ public class MediaItem implements Parcelable {
                 || mimeType.equals(MimeType.AVI.toString());
     }
 
+    public Uri getContentUri() {
+        return uri;
+    }
+
+    public String getRealPath() {
+        return realPath;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -81,6 +92,7 @@ public class MediaItem implements Parcelable {
         dest.writeParcelable(this.uri, flags);
         dest.writeLong(this.size);
         dest.writeLong(this.duration);
+        dest.writeString(this.realPath);
     }
 
     protected MediaItem(Parcel in) {
@@ -89,9 +101,10 @@ public class MediaItem implements Parcelable {
         this.uri = in.readParcelable(Uri.class.getClassLoader());
         this.size = in.readLong();
         this.duration = in.readLong();
+        this.realPath = in.readString();
     }
 
-    public static final Parcelable.Creator<MediaItem> CREATOR = new Parcelable.Creator<MediaItem>() {
+    public static final Creator<MediaItem> CREATOR = new Creator<MediaItem>() {
         @Override
         public MediaItem createFromParcel(Parcel source) {
             return new MediaItem(source);
@@ -102,8 +115,4 @@ public class MediaItem implements Parcelable {
             return new MediaItem[size];
         }
     };
-
-    public Uri getContentUri() {
-        return uri;
-    }
 }

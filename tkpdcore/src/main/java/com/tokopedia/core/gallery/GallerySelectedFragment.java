@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +84,9 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
     public void onMediaClick(AlbumItem album, MediaItem item, int adapterPosition) {
         // this finish here
         Intent intent = new Intent();
-        intent.putExtra("EXTRA_RESULT_SELECTION", item.getContentUri());
+        intent.putExtra("EXTRA_RESULT_SELECTION", item);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
+
 }
