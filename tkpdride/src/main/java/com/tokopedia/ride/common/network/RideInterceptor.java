@@ -1,5 +1,9 @@
 package com.tokopedia.ride.common.network;
 
+import android.content.Intent;
+
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -69,9 +73,12 @@ public class RideInterceptor extends TkpdBaseInterceptor {
 
     private void handleError(String errorMessage) throws SessionExpiredException,
             UnprocessableEntityHttpException {
-        if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant"))
+        if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
+            Intent intent = new Intent();
+            intent.setAction(BaseActivity.FORCE_LOGOUT);
+            MainApplication.getAppContext().sendBroadcast(intent);
             throw new SessionExpiredException(errorMessage);
-        else
+        } else
             throw new UnprocessableEntityHttpException(errorMessage);
     }
 

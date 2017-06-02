@@ -60,7 +60,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
-    private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
