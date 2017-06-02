@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
 import java.util.List;
@@ -15,18 +15,18 @@ import java.util.List;
  * @author normansyahputa on 5/19/17.
  */
 
-public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
+public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<KeywordAd> {
 
-    private Callback<Datum> callback;
+    private Callback<KeywordAd> callback;
 
-    public TopAdsKeywordAdapter(Callback<Datum> callback) {
+    public TopAdsKeywordAdapter(Callback<KeywordAd> callback) {
         this.callback = callback;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case Datum.TYPE:
+            case KeywordAd.TYPE:
                 return new TopAdsKeywordViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_ad_main, parent, false));
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -36,7 +36,7 @@ public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case Datum.TYPE:
+            case KeywordAd.TYPE:
                 TopAdsKeywordViewHolder itemHolder = (TopAdsKeywordViewHolder) holder;
                 itemHolder.bindDataAds(data.get(position), callback);
                 break;
@@ -58,7 +58,7 @@ public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
     @Override
     public void addData(List data) {
         if (data != null && data.size() > 0) {
-            if (data.get(0) instanceof Datum) {
+            if (data.get(0) instanceof KeywordAd) {
                 this.data.addAll(data);
                 notifyDataSetChanged();
             }

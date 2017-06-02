@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
@@ -7,12 +8,18 @@ import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
+import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
+import com.tokopedia.seller.topads.keyword.view.model.KeywodDashboardViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,16 +56,49 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
                 Log.d(TAG, "fetchPositiveKeyword " + keywordDashboardDomain);
-                revealData(keywordDashboardDomain);
+                revealData(getKeywordAds(keywordDashboardDomain));
             }
         });
     }
 
-    protected void revealData(KeywordDashboardDomain keywordDashboardDomain) {
+    private KeywodDashboardViewModel getKeywordAds(KeywordDashboardDomain keywordDashboardDomain) {
+        KeywodDashboardViewModel keywodDashboardViewModel = new KeywodDashboardViewModel();
+        keywodDashboardViewModel.setPage(keywordDashboardDomain.getPage());
+        List<KeywordAd> keywordAds = new ArrayList<>();
+        for (Datum datum : keywordDashboardDomain.getData()) {
+            keywordAds.add(getKeywordAd(datum));
+        }
+        keywodDashboardViewModel.setData(keywordAds);
+        return keywodDashboardViewModel;
+    }
+
+    @NonNull
+    private KeywordAd getKeywordAd(Datum datum) {
+        KeywordAd keywordAd = new KeywordAd();
+        keywordAd.setId(Integer.toString(datum.getKeywordId()));
+        keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
+        keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
+        keywordAd.setGroupName(datum.getGroupName());
+        keywordAd.setKeywordTag(datum.getKeywordTag());
+        keywordAd.setStatus(datum.getKeywordStatus());
+        keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
+        keywordAd.setStatAvgClick(datum.getStatAvgClick());
+        keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
+        keywordAd.setStatTotalImpression(datum.getStatTotalImpression());
+        keywordAd.setStatTotalClick(datum.getStatTotalClick());
+        keywordAd.setStatTotalCtr(datum.getStatTotalCtr());
+        keywordAd.setStatTotalConversion(datum.getStatTotalConversion());
+        keywordAd.setPriceBidFmt(datum.getKeywordPriceBidFmt());
+        keywordAd.setLabelPerClick(datum.getLabelPerClick());
+        keywordAd.setKeywordTypeDesc(datum.getKeywordTypeDesc());
+        return keywordAd;
+    }
+
+    protected void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
         if (isViewAttached()) {
             getView().onSearchAdLoaded(
-                    keywordDashboardDomain.getData(),
-                    keywordDashboardDomain.getPage().getTotal()
+                    keywordDashboardViewModel.getData(),
+                    keywordDashboardViewModel.getPage().getTotal()
             );
         }
     }
@@ -84,7 +124,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
                 Log.d(TAG, "fetchNegativeKeyword " + keywordDashboardDomain);
-                revealData(keywordDashboardDomain);
+                revealData(getKeywordAds(keywordDashboardDomain));
             }
         });
     }

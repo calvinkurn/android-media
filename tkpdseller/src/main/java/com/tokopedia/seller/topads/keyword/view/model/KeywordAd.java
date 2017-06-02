@@ -4,12 +4,25 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public class KeywordAd implements Ad, Parcelable {
+public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
+    public static final int TYPE = 192929201;
+    public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {
+        @Override
+        public KeywordAd createFromParcel(Parcel source) {
+            return new KeywordAd(source);
+        }
+
+        @Override
+        public KeywordAd[] newArray(int size) {
+            return new KeywordAd[size];
+        }
+    };
     private String id;
     private String groupId;
     private String keywordTypeId;
@@ -30,64 +43,23 @@ public class KeywordAd implements Ad, Parcelable {
     public KeywordAd() {
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public void setKeywordTypeId(String keywordTypeId) {
-        this.keywordTypeId = keywordTypeId;
-    }
-
-    public void setKeywordTag(String keywordTag) {
-        this.keywordTag = keywordTag;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public void setStatusDesc(String statusDesc) {
-        this.statusDesc = statusDesc;
-    }
-
-    public void setStatAvgClick(String statAvgClick) {
-        this.statAvgClick = statAvgClick;
-    }
-
-    public void setStatTotalSpent(String statTotalSpent) {
-        this.statTotalSpent = statTotalSpent;
-    }
-
-    public void setStatTotalImpression(String statTotalImpression) {
-        this.statTotalImpression = statTotalImpression;
-    }
-
-    public void setStatTotalClick(String statTotalClick) {
-        this.statTotalClick = statTotalClick;
-    }
-
-    public void setStatTotalCtr(String statTotalCtr) {
-        this.statTotalCtr = statTotalCtr;
-    }
-
-    public void setStatTotalConversion(String statTotalConversion) {
-        this.statTotalConversion = statTotalConversion;
-    }
-
-    public void setPriceBidFmt(String priceBidFmt) {
-        this.priceBidFmt = priceBidFmt;
-    }
-
-    public void setLabelPerClick(String labelPerClick) {
-        this.labelPerClick = labelPerClick;
-    }
-
-    public void setKeywordTypeDesc(String keywordTypeDesc) {
-        this.keywordTypeDesc = keywordTypeDesc;
+    protected KeywordAd(Parcel in) {
+        this.id = in.readString();
+        this.groupId = in.readString();
+        this.keywordTypeId = in.readString();
+        this.groupName = in.readString();
+        this.keywordTag = in.readString();
+        this.status = in.readInt();
+        this.statusDesc = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.priceBidFmt = in.readString();
+        this.labelPerClick = in.readString();
+        this.keywordTypeDesc = in.readString();
     }
 
     @Override
@@ -95,14 +67,26 @@ public class KeywordAd implements Ad, Parcelable {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public int getStatus() {
         return status;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String getStatusDesc() {
         return statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 
     @Override
@@ -113,6 +97,10 @@ public class KeywordAd implements Ad, Parcelable {
     @Override
     public String getPriceBidFmt() {
         return priceBidFmt;
+    }
+
+    public void setPriceBidFmt(String priceBidFmt) {
+        this.priceBidFmt = priceBidFmt;
     }
 
     @Override
@@ -155,9 +143,17 @@ public class KeywordAd implements Ad, Parcelable {
         return statAvgClick;
     }
 
+    public void setStatAvgClick(String statAvgClick) {
+        this.statAvgClick = statAvgClick;
+    }
+
     @Override
     public String getStatTotalSpent() {
         return statTotalSpent;
+    }
+
+    public void setStatTotalSpent(String statTotalSpent) {
+        this.statTotalSpent = statTotalSpent;
     }
 
     @Override
@@ -165,9 +161,17 @@ public class KeywordAd implements Ad, Parcelable {
         return statTotalImpression;
     }
 
+    public void setStatTotalImpression(String statTotalImpression) {
+        this.statTotalImpression = statTotalImpression;
+    }
+
     @Override
     public String getStatTotalClick() {
         return statTotalClick;
+    }
+
+    public void setStatTotalClick(String statTotalClick) {
+        this.statTotalClick = statTotalClick;
     }
 
     @Override
@@ -175,9 +179,17 @@ public class KeywordAd implements Ad, Parcelable {
         return statTotalCtr;
     }
 
+    public void setStatTotalCtr(String statTotalCtr) {
+        this.statTotalCtr = statTotalCtr;
+    }
+
     @Override
     public String getStatTotalConversion() {
         return statTotalConversion;
+    }
+
+    public void setStatTotalConversion(String statTotalConversion) {
+        this.statTotalConversion = statTotalConversion;
     }
 
     @Override
@@ -188,6 +200,10 @@ public class KeywordAd implements Ad, Parcelable {
     @Override
     public String getLabelPerClick() {
         return labelPerClick;
+    }
+
+    public void setLabelPerClick(String labelPerClick) {
+        this.labelPerClick = labelPerClick;
     }
 
     @Override
@@ -204,9 +220,12 @@ public class KeywordAd implements Ad, Parcelable {
         return keywordTypeDesc;
     }
 
-
     public String getGroupId() {
         return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getGroupName() {
@@ -219,6 +238,26 @@ public class KeywordAd implements Ad, Parcelable {
 
     public String getKeywordTypeId() {
         return keywordTypeId;
+    }
+
+    public void setKeywordTypeId(String keywordTypeId) {
+        this.keywordTypeId = keywordTypeId;
+    }
+
+    public String getKeywordTag() {
+        return keywordTag;
+    }
+
+    public void setKeywordTag(String keywordTag) {
+        this.keywordTag = keywordTag;
+    }
+
+    public String getKeywordTypeDesc() {
+        return keywordTypeDesc;
+    }
+
+    public void setKeywordTypeDesc(String keywordTypeDesc) {
+        this.keywordTypeDesc = keywordTypeDesc;
     }
 
     @Override
@@ -246,34 +285,8 @@ public class KeywordAd implements Ad, Parcelable {
         dest.writeString(this.keywordTypeDesc);
     }
 
-    protected KeywordAd(Parcel in) {
-        this.id = in.readString();
-        this.groupId = in.readString();
-        this.keywordTypeId = in.readString();
-        this.groupName = in.readString();
-        this.keywordTag = in.readString();
-        this.status = in.readInt();
-        this.statusDesc = in.readString();
-        this.statAvgClick = in.readString();
-        this.statTotalSpent = in.readString();
-        this.statTotalImpression = in.readString();
-        this.statTotalClick = in.readString();
-        this.statTotalCtr = in.readString();
-        this.statTotalConversion = in.readString();
-        this.priceBidFmt = in.readString();
-        this.labelPerClick = in.readString();
-        this.keywordTypeDesc = in.readString();
+    @Override
+    public int getType() {
+        return TYPE;
     }
-
-    public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {
-        @Override
-        public KeywordAd createFromParcel(Parcel source) {
-            return new KeywordAd(source);
-        }
-
-        @Override
-        public KeywordAd[] newArray(int size) {
-            return new KeywordAd[size];
-        }
-    };
 }

@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -11,12 +10,10 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
-import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
-import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
@@ -32,18 +29,16 @@ import javax.inject.Inject;
  */
 public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl> {
 
-    public static Fragment createInstance() {
-        return new TopAdsKeywordListFragment();
-    }
-
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
-
     @KeywordStatusTypeDef
     protected int filterStatus;
     protected GroupAd groupAd;
-
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+
+    public static Fragment createInstance() {
+        return new TopAdsKeywordListFragment();
+    }
 
     @Override
     protected void initInjector() {
@@ -88,12 +83,11 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected TopAdsBaseListAdapter<Datum> getNewAdapter() {
-        return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<Datum>() {
+    protected TopAdsBaseListAdapter<KeywordAd> getNewAdapter() {
+        return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<KeywordAd>() {
             @Override
-            public void onItemClicked(Datum datum) {
-                if (datum != null) {
-                    KeywordAd keywordAd = getKeywordAd(datum);
+            public void onItemClicked(KeywordAd keywordAd) {
+                if (keywordAd != null) {
                     goToDetail(keywordAd);
                 }
             }
@@ -106,28 +100,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     protected boolean isPositive() {
         return true;
-    }
-
-    @NonNull
-    protected KeywordAd getKeywordAd(Datum datum) {
-        KeywordAd keywordAd = new KeywordAd();
-        keywordAd.setId(Integer.toString(datum.getKeywordId()));
-        keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
-        keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
-        keywordAd.setGroupName(datum.getGroupName());
-        keywordAd.setKeywordTag(datum.getKeywordTag());
-        keywordAd.setStatus(datum.getKeywordStatus());
-        keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
-        keywordAd.setStatAvgClick(datum.getStatAvgClick());
-        keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
-        keywordAd.setStatTotalImpression(datum.getStatTotalImpression());
-        keywordAd.setStatTotalClick(datum.getStatTotalClick());
-        keywordAd.setStatTotalCtr(datum.getStatTotalCtr());
-        keywordAd.setStatTotalConversion(datum.getStatTotalConversion());
-        keywordAd.setPriceBidFmt(datum.getKeywordPriceBidFmt());
-        keywordAd.setLabelPerClick(datum.getLabelPerClick());
-        keywordAd.setKeywordTypeDesc(datum.getKeywordTypeDesc());
-        return keywordAd;
     }
 
     @Override
@@ -172,5 +144,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordListPresenter.detachView();
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
     }
 }
