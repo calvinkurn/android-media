@@ -138,7 +138,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
                 Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-                long delta = sf.parse(data.getEndDate()).getTime() + 3000 - now.getTimeInMillis();
+                long delta = sf.parse(data.getEndDate()).getTime() - now.getTimeInMillis();
                 textDiscountTimer.setText(getCountdownText(delta));
 
                 new CountDownTimer(delta, 1000) {
