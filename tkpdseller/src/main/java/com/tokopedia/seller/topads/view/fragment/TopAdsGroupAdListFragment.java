@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -89,6 +90,11 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
             searchAd();
         }
+    }
+
+    // use for showcase
+    public View getDateView(){
+        return getView().findViewById(R.id.date_label_view);
     }
 
 }

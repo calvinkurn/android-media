@@ -175,7 +175,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     private void hideLoading() {
-        progressDialog.dismiss();
+        if (progressDialog!= null) {
+            progressDialog.dismiss();
+        }
         swipeToRefresh.setRefreshing(false);
         snackbarRetry.hideRetrySnackbar();
     }

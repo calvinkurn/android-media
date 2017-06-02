@@ -37,11 +37,6 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     }
 
     @Override
-    public void showDateLabelView(boolean show) {
-        // Do nothing
-    }
-
-    @Override
     protected void searchAd(BaseKeywordParam baseKeywordParam) {
         topAdsKeywordListPresenter.fetchNegativeKeyword(baseKeywordParam);
     }
