@@ -523,12 +523,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
-//        if (MainApplication.getNotificationStatus()) {
-//            drawer.getNotification();
-//        }
-//        if (MainApplication.getDrawerStatus()) {
-//            drawer.updateData();
-//        }
         super.onResume();
 
         sendNotifLocalyticsCallback();

@@ -120,6 +120,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     protected void onResume() {
         super.onResume();
         initSellerTicker();
+        setDrawerPosition(mViewPager.getCurrentItem());
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -240,22 +241,24 @@ public class ActivitySellingTransaction extends TkpdActivity
     }
 
     private void setDrawerPosition(int position) {
-//        switch (position) {
-//            case 1:
-//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
-//                break;
-//            case 2:
-//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
-//                break;
-//            case 3:
-//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
-//                break;
-//            case 4:
-//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
-//                break;
-//            default:
-//                break;
-//        }
+        if(drawerHelper != null) {
+            switch (position) {
+                case 1:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+                    break;
+                case 2:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+                    break;
+                case 3:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+                    break;
+                case 4:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**
