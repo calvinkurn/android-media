@@ -21,7 +21,7 @@
         <RelativeLayout
             android:id="@id/header_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/item_revamp_category">
+            android:layout_height="@dimen/item_banner_category">
 
             <ImageView
                 android:id="@id/image_header"
