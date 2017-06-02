@@ -174,10 +174,11 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                     }
                 }
 
-            } else {
+            } else  {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
-                preference.setSummary(stringValue);
+                if(!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
+                    preference.setSummary(stringValue);
             }
 
             if(preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO)){

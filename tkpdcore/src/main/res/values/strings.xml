@@ -113,7 +113,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_old_email">Email Terdaftar</string>
     <string name="title_new_desired_email">Masukkan Email Baru!</string>
     <string name="title_insert_new_phone_number">Masukkan Nomor Baru</string>
-    <string name="title_send_verification_code">Request</string>
+    <string name="title_send_verification_code">Request OTP</string>
     <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
     <string name="message_verification_timeout">Silahkan coba kembali</string>
     <string name="link_change_email">Ubah Email</string>
@@ -135,7 +135,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_search_etalase">Cari Etalase</string>
     <string name="hint_search_status">Cari Status</string>
     <string name="error_change_primary_image">Tidak Dapat Mengubah Gambar Utama</string>
-    <string name="error_delete_primary_image">Tidak Dapat Menghapus Gambar Utama</string>
+    <string name="error_delete_primary_image">Gambar Utama tidak dapat dihapus</string>
     <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silahkan Coba Lagi</string>
     <string name="upload_product_waiting">Produk Anda Sedang Diunggah Silahkan Lihat Notifikasi</string>
     <string name="maximum_instoped_limit">Batas Maksimum Untuk Mengunggah Gambar Telah Tercapai</string>
@@ -176,6 +176,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_img_delete">Hapus</string>
     <string name="title_dollar">US$</string>
     <string name="title_rupiah">Rp</string>
+    <string name="title_rupiah_empty">Rp - </string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
@@ -551,7 +552,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
 
     <!-- Strings related to browse category -->
-    <string name="title_total_prods">produk</string>
+    <string name="title_total_prods">Produk</string>
     <string name="hint_search_categories">Cari kategori</string>
     <string name="title_shop">Toko</string>
     <string name="title_location">Lokasi</string>
@@ -676,7 +677,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
-    <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
+    <string name="title_use_promo_code">Gunakan Kode Promo Tokopedia</string>
     <string name="title_payment_method_s">Metode Pembayaran : </string>
     <string name="title_total_invoice">Total Invoice</string>
     <string name="title_use_total_balance">Saldo Tokopedia yang digunakan</string>
@@ -1206,8 +1207,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="msg_ecash_loading">Harap Tunggu, Transaksi anda sedang diproses</string>
     <string name="msg_error_ecash">Pembayaran gagal dikarenakan terjadi kesalahan, harap cek jumlah saldo anda dan cek apakah OTP anda sudah benar</string>
     <string name="msg_promo_ecash">Diskon Rp. 50.000,-\nUntuk pembelian diatas Rp. 200.000,-\nPeriode 7 Oktober - 9 November</string>
-    <string name="title_use_voucher">Penggunaan Voucher</string>
-    <string name="msg_voucher_empty">Masukkan kode voucher terlebih dahulu</string>
+    <string name="title_use_voucher">Penggunaan Kode Promo</string>
+    <string name="msg_voucher_empty">Masukkan kode promo terlebih dahulu</string>
     <string name="title_detail_order">Lihat Detail Barang</string>
     <string name="title_activity_download_invoice">Invoice</string>
     <string name="title_activity_gallery_browser">Pilih Gambar</string>
@@ -1265,6 +1266,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
     <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
     <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
+    <string name="error_code_truecaller">Kode Error %1$d</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>
@@ -1435,6 +1437,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="toko_cash_top_up">Topup</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
@@ -1939,6 +1942,6 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_negative_button">Batal</string>
     <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
 
-    <string name="banner_official_store_title_text">Sudah Pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
 </resources>

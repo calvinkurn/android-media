@@ -7,12 +7,14 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
+import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
@@ -58,54 +60,55 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void setMoEUserAttributes(ProfileData profileData){
+        if(profileData!=null) {
+            CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
+                    .setFullName(profileData.getUserInfo().getUserName())
+                    .setEmailAddress(profileData.getUserInfo().getUserEmail())
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
+                    .setCustomerId(profileData.getUserInfo().getUserId())
+                    .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
+                    .setSeller(profileData.getShopInfo() != null)
+                    .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
+                    .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName(), " "))
+                    .build();
 
-        CommonUtils.dumper("MoEngage called app launch events "+profileData.getUserInfo().getUserBirth());
-
-        CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                .setFullName(profileData.getUserInfo().getUserName())
-                .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
-                .setCustomerId(profileData.getUserInfo().getUserId())
-                .setShopId(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopId():"")
-                .setSeller(profileData.getShopInfo()!=null)
-                .setShopName(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopName():"")
-                .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName()," "))
-                .build();
-
-        getMoEngine().setUserData(customerWrapper);
+            getMoEngine().setUserData(customerWrapper);
+        }
+        if(!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
+            PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
     public static void setMoEUserAttributes(Bundle bundle, String label){
-
         AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
 
-        CommonUtils.dumper("MoEngage called login events "+bundle+" data "+accountsParameter.getInfoModel().getBday());
+        if(accountsParameter!=null)
+        {
+            CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                    .setCustomerId(
+                            bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
+                                    com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                    )
+                    .setFullName(
+                            bundle.getString(com.tokopedia.core.analytics.AppEventTracking.FULLNAME_KEY,
+                                    com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                    )
+                    .setEmailAddress(
+                            bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
+                                    com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                    )
+                    .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getPhone():""))
+                    .setGoldMerchant(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopIsGold() == 1:false)
+                    .setShopName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():"")
+                    .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
+                    .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
+                    .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""," "))
+                    .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
+                    .setMethod(label)
+                    .build();
 
-        CustomerWrapper wrapper = new CustomerWrapper.Builder()
-                .setCustomerId(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setFullName(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.FULLNAME_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setEmailAddress(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel().getPhone()))
-                .setGoldMerchant(accountsParameter.getAccountsModel().getShopIsGold() == 1)
-                .setShopName(accountsParameter.getAccountsModel().getShopName())
-                .setShopId(String.valueOf(accountsParameter.getAccountsModel().getShopId()))
-                .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel().getShopName()))
-                .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel().getFullName()," "))
-                .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel().getBday(),"T")))
-                .setMethod(label)
-                .build();
-
-        getMoEngine().setUserData(wrapper);
-        sendMoEngageLoginEvent(wrapper);
+            getMoEngine().setUserData(wrapper);
+            sendMoEngageLoginEvent(wrapper);
+        }
     }
 
     public static void eventMoEngageLogoutUser(){

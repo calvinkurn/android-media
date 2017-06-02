@@ -88,7 +88,7 @@ ext {
     analyticsDependencies = [
             localytics : "com.localytics.android:library:4.2.1",
             appsflyer  : "com.appsflyer:af-android-sdk:4.6.1@aar",
-            moengage   : "com.moengage:moe-android-sdk:7.7.00",
+            moengage   : "com.moengage:moe-android-sdk:7.7.02",
             moengageFCM: "com.moengage:moe-push-firebase:1.1.01"
     ]
 

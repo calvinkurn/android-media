@@ -25,4 +25,6 @@ public interface YoutubeAddVideoView extends CustomerView {
     void showLoading();
 
     void hideLoading();
+
+    void hideRetryFull();
 }

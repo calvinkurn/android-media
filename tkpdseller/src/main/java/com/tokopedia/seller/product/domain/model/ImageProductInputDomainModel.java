@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.domain.model;
 
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 
 /**
  * @author sebastianuskh on 4/10/17.
@@ -12,6 +13,8 @@ public class ImageProductInputDomainModel {
     private String imagePath;
     private String picObj;
     private String picId;
+    @ImageStatusTypeDef
+    private int status;
 
     public ImageProductInputDomainModel() {
         url = "";
@@ -58,5 +61,14 @@ public class ImageProductInputDomainModel {
 
     public String getPicObj() {
         return picObj;
+    }
+
+    public void setStatus(@ImageStatusTypeDef int status) {
+        this.status = status;
+    }
+
+    @ImageStatusTypeDef
+    public int getStatus() {
+        return status;
     }
 }

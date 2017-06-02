@@ -45,7 +45,6 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
         // jika datanya kosong, maka itu dianggap first time.
         this.browseView = browseView;
         if (view.getDataSize() <= 0) {
-
             catalog = new NetworkParam.Catalog();
             catalog.start = 0;
             catalog.q = browseView.getProductParam().q;
@@ -58,6 +57,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
             catalog.breadcrumb = browseView.getProductParam().breadcrumb;
             catalog.extraFilter = browseView.getProductParam().extraFilter;
             discoveryInteractor.getCatalogs(NetworkParam.generateCatalogQuery(catalog));
+            view.setLoading(true);
         }
     }
 
@@ -140,6 +140,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
                 Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
                 view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                view.setLoading(false);
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:

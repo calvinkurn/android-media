@@ -22,8 +22,11 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -37,9 +40,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -48,7 +54,16 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -75,13 +90,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
+
 
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
-        TopPayBroadcastReceiver.ActionTopPayListener {
+        TopPayBroadcastReceiver.ActionTopPayListener, TopAdsItemClickListener {
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -154,6 +172,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
+    private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -207,6 +226,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        stopNestedScrollingView();
     }
 
     @Override
@@ -385,14 +405,51 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
-        NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), getString(R.string.label_title_empty_cart),
-                getString(R.string.label_sub_title_empty_cart),
-                getString(R.string.label_btn_action_empty_cart), R.drawable.status_no_result,
-                getRetryEmptyCartClickListener()
-        );
+
+        View rootview = getView();
+        try {
+            rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
+        } catch (NullPointerException e) {
+            View emptyState = LayoutInflater.from(context).
+                    inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
+            Button shop = (Button) emptyState.findViewById(R.id.shoping);
+            shop.setOnClickListener(getRetryEmptyCartClickListener());
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
+
+            Config config = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                    .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .setEndpoint(Endpoint.PRODUCT)
+                    .topAdsParams(params)
+                    .build();
+
+            TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
+            topAdsView.setConfig(config);
+            topAdsView.setAdsItemClickListener(this);
+            topAdsView.loadTopAds();
+        }
     }
 
+    @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Data shopData) {
+        //TODO: this listener not used in this sprint
+    }
 
     @Override
     public void renderVisibleMainCartContainer() {
@@ -743,6 +800,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     holderUseVoucher.setVisibility(View.GONE);
                     btnCheckVoucher.setOnClickListener(null);
                     etVoucherCode.setText("");
+                    tvVoucherDesc.setText("");
+                    tilEtVoucherCode.setErrorEnabled(false);
                     tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
@@ -756,7 +815,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.processCheckVoucherCode();
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                if (getVoucherCodeCheckoutData().isEmpty()) {
+                    renderErrorCheckVoucher(
+                            getStringFromResource(R.string.label_error_form_voucher_code_empty));
+                } else {
+                    presenter.processCheckVoucherCode();
+                }
             }
         };
     }
@@ -776,10 +841,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @NonNull
-    private NetworkErrorHelper.RetryClickedListener getRetryEmptyCartClickListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
+    private View.OnClickListener getRetryEmptyCartClickListener() {
+        return new View.OnClickListener() {
             @Override
-            public void onRetryClicked() {
+            public void onClick(View view) {
                 navigateToActivity(
                         BrowseProductRouter.getDefaultBrowseIntent(getActivity())
                 );
@@ -891,8 +956,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             convertedAmount = 0;
         }
         if (convertedAmount > 1) {
-            return noun+"s";
+            return noun + "s";
         }
         return noun;
+    }
+
+    private void stopNestedScrollingView() {
+        nsvContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        nsvContainer.setFocusable(true);
+        nsvContainer.setFocusableInTouchMode(true);
+        nsvContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.requestFocusFromTouch();
+                return false;
+            }
+        });
     }
 }

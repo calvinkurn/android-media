@@ -2,6 +2,7 @@ package com.tokopedia.core.manage.people.profile.fragment;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,15 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.manage.people.profile.listener.EmailVerificationView;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenter;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenterImpl;
+import com.tokopedia.core.util.MethodChecker;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +34,11 @@ import butterknife.ButterKnife;
 
 public class EmailVerificationDialogFragment extends DialogFragment implements EmailVerificationView {
 
+    private static final String HAS_CHANGE_EMAIL_TIMER = "HAS_CHANGE_EMAIL_TIMER";
     private static final String PARAM_USER_EMAIL = "user_email";
+    private static final String FORMAT = "%02d:%02d";
+    private static final String CACHE_CHANGE_EMAIL = "CACHE_CHANGE_EMAIL";
+
     @BindView(R2.id.current_email)
     TextView currentEmail;
 
@@ -68,6 +77,9 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     EmailVerificationPresenter presenter;
     EmailChangeConfirmationListener listener;
 
+    CountDownTimer countDownTimer;
+    LocalCacheHandler cacheHandler;
+    boolean isRunningTimer;
 
     public static EmailVerificationDialogFragment createInstance(String userEmail, EmailChangeConfirmationListener listener) {
         EmailVerificationDialogFragment fragment = new EmailVerificationDialogFragment();
@@ -107,6 +119,11 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
         setViewListener();
         initialVar();
         setActionVar();
+
+        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_CHANGE_EMAIL_TIMER, false)) {
+            inputOtpCodeField.setEnabled(true);
+            startTimer();
+        }
     }
 
     @Override
@@ -159,6 +176,7 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     }
 
     private void setActionVar() {
+        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_CHANGE_EMAIL);
 
     }
 
@@ -169,8 +187,60 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
 
     @Override
     public void onSuccessRequestOTP() {
+        startTimer();
         Toast.makeText(getActivity(), getString(R.string.success_send_otp), Toast.LENGTH_LONG).show();
     }
+
+    private void startTimer() {
+
+        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_CHANGE_EMAIL_TIMER, false)) {
+            cacheHandler.putBoolean(HAS_CHANGE_EMAIL_TIMER, true);
+            cacheHandler.setExpire(90);
+            cacheHandler.applyEditor();
+        }
+
+        if(!isRunningTimer){
+            countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    try {
+                        isRunningTimer = true;
+
+                        MethodChecker.setBackground(requestOTPButton, getResources().getDrawable(R.drawable.btn_transparent_disable));
+                        requestOTPButton.setTextColor(getResources().getColor(R.color.grey_600));
+                        requestOTPButton.setEnabled(false);
+                        requestOTPButton.setText(String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                    } catch (Exception e) {
+                        cancel();
+                    }
+                }
+
+                public void onFinish() {
+                    try {
+                        isRunningTimer = false;
+                        enableOtpButton();
+                    } catch (Exception e) {
+
+                    }
+                }
+
+            }.start();
+        }
+
+        requestOTPButton.requestFocus();
+    }
+
+    private void enableOtpButton() {
+        requestOTPButton.setTextColor(getResources().getColor(R.color.white));
+        MethodChecker.setBackground(requestOTPButton, getResources().getDrawable(R.drawable.btn_buy));
+        requestOTPButton.setText(R.string.title_send_verification_code);
+        requestOTPButton.setEnabled(true);
+    }
+
 
     @Override
     public void finishLoading() {
@@ -216,5 +286,9 @@ public class EmailVerificationDialogFragment extends DialogFragment implements E
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 }

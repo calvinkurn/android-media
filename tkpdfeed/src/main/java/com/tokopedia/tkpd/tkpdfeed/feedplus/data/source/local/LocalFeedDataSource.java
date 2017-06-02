@@ -6,6 +6,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
 
 import java.util.List;
@@ -33,19 +34,21 @@ public class LocalFeedDataSource {
 
     public Observable<FeedResult> getFeeds() {
 
-        return Observable.fromCallable(new Callable<List<DataFeedDomain>>() {
+        return Observable.fromCallable(new Callable<FeedDomain>() {
            @Override
-           public List<DataFeedDomain> call() throws Exception {
+           public FeedDomain call() throws Exception {
                cacheManager = new GlobalCacheManager();
                cacheManager.setKey(KEY_FEED_PLUS);
                cacheManager.setCacheDuration(CACHE_DURATION);
-               return CacheUtil.convertStringToListModel(cacheManager.getValueString(KEY_FEED_PLUS),
-                       new TypeToken<List<DataFeedDomain>>(){}.getType());
+               List<DataFeedDomain> list = CacheUtil.convertStringToListModel(cacheManager.getValueString(KEY_FEED_PLUS),
+                       new TypeToken<List<DataFeedDomain>>() {
+                       }.getType());
+               return new FeedDomain(list, true);
            }
-       }).doOnNext(new Action1<List<DataFeedDomain>>() {
+       }).doOnNext(new Action1<FeedDomain>() {
             @Override
-            public void call(List<DataFeedDomain> dataFeedDomains) {
-                if (dataFeedDomains == null || dataFeedDomains.size() == 0) {
+            public void call(FeedDomain dataFeedDomains) {
+                if (dataFeedDomains.getList() == null || dataFeedDomains.getList().size() == 0) {
                     throw new RuntimeException("No Data");
                 }
             }

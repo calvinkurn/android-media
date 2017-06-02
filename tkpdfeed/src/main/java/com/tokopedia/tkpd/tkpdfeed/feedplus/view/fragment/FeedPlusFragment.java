@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
@@ -41,6 +42,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.TransparentVideoActivi
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.AddFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
@@ -141,7 +143,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         return new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (!adapter.isLoading() && !(adapter.getlist().get(0) instanceof EmptyModel))
+                int size = adapter.getlist().size();
+                int lastIndex = size-1;
+                if (!adapter.isLoading() && !(adapter.getlist().get(0) instanceof EmptyModel)
+                                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                        )
                     presenter.fetchNextPage();
             }
         };
@@ -335,11 +342,38 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    public void onShowRetryGetFeed() {
+        finishLoading();
+        adapter.removeEmpty();
+        adapter.showRetry();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onShowAddFeedMore() {
+        finishLoading();
+        adapter.removeEmpty();
+        adapter.showAddFeed();
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onSeePromo(String link) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
     }
 
+    @Override
+    public void onErrorGetFeed() {
+
+    }
+
+    @Override
+    public void onRetryClicked() {
+        adapter.removeRetry();
+        presenter.fetchNextPage();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

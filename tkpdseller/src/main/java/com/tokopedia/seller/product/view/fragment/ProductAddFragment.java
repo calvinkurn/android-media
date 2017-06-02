@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -24,7 +25,7 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
@@ -44,6 +45,7 @@ import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -51,6 +53,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
+import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,6 +276,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onProductNameChanged(String productName) {
         getCategoryRecommendation(productName);
+        productInfoViewHolder.hideAndClearCatalog();
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
         valueIndicatorScoreModel.setLengthProductName(productName.length());
         updateProductScoring();
@@ -390,7 +394,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     }
 
-    private boolean isDataValid() {
+    protected boolean isDataValid() {
         if (!productInfoViewHolder.isDataValid().first) {
             UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
             return false;
@@ -423,9 +427,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onImagePickerItemClicked(int position, boolean isPrimary) {
+    public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary);
+        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary,allowDelete);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
@@ -443,6 +447,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                     public void onImageDescDialogOK(String newDescription) {
                         productImageViewHolder.getImagesSelectView().changeImageDesc(newDescription);
                     }
+
+                    @Override
+                    public void onDismiss() {
+                        ProductAddFragment.this.clearFocus();
+                    }
                 });
             }
 
@@ -453,7 +462,21 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickRemoveImage(int positions) {
-                productImageViewHolder.getImagesSelectView().removeImage();
+                ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+                imagesSelectView.removeImage();
+            }
+        });
+    }
+
+    private void clearFocus(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                View view = getActivity().getCurrentFocus();
+                if (view != null) {
+                    CommonUtils.hideSoftKeyboard(view);
+                    view.clearFocus();
+                }
             }
         });
     }
@@ -553,7 +576,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
         viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
-        viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? SwitchTypeDef.TYPE_ACTIVE : SwitchTypeDef.TYPE_NOT_ACTIVE);
+        viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? InvenageSwitchTypeDef.TYPE_ACTIVE : InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
         viewModel.setProductInvenageValue(productDetailViewHolder.getTotalStock());
         viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
         viewModel.setProductEtalaseName(productDetailViewHolder.getEtalaseName());
@@ -567,6 +590,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
         }
         viewModel.setProductStatus(getStatusUpload());
+        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
         return viewModel;
     }
 

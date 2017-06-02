@@ -39,7 +39,7 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
                 finish();
                 break;
             default:
-                setResult(RESULT_OK, new Intent().putExtra("error",getString(R.string.error_fetch_truecaller)));
+                setResult(RESULT_OK, new Intent().putExtra("error", String.format("%s (%s)", getString(R.string.error_fetch_truecaller), getString(R.string.error_code_truecaller, trueError.getErrorType()))));
                 finish();
                 break;
         }
