@@ -90,9 +90,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
-
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -845,7 +842,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layoutCartFragment.setVisibility(View.GONE);
                 navigateToActivity(
                         BrowseProductRouter.getDefaultBrowseIntent(getActivity())
                 );
