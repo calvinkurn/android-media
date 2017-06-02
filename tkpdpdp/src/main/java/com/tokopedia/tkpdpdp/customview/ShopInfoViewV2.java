@@ -44,6 +44,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private LinearLayout llReputationMedal;
     private ImageView lastOnlineImageView;
 
+    private boolean isShopFavorite = false;
 
     public ShopInfoViewV2(Context context) {
         super(context);
@@ -141,10 +142,27 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                 String.valueOf(data.getShopInfo().getShopReputation()));
     }
 
+    public void reverseFavorite() {
+        if (isShopFavorite) {
+            updateFavoriteStatus(0);
+        } else {
+            updateFavoriteStatus(1);
+        }
+    }
 
     public void updateFavoriteStatus(int statFave) {
         switch (statFave) {
+            case 1:
+                favoriteButton.setSelected(true);
+                favoriteButton.setClickable(true);
+                favoriteText.setText(getContext().getString(R.string.favorited));
+                favoriteText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_green_24dp, 0, 0, 0);
+                favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+                isShopFavorite = true;
+                break;
             case 0:
+            default:
+                isShopFavorite = false;
                 favoriteButton.setSelected(false);
                 favoriteButton.setClickable(true);
                 favoriteText.setText(getContext().getString(R.string.favoritkan));
@@ -153,17 +171,6 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                                 R.drawable.ic_add_black_24dp, 0, 0, 0);
 
                 favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                break;
-            case 1:
-                favoriteButton.setSelected(true);
-                favoriteButton.setClickable(false);
-                favoriteText.setText(getContext().getString(R.string.favorited));
-                favoriteText
-                        .setCompoundDrawablesWithIntrinsicBounds(
-                                R.drawable.ic_check_green_24dp, 0, 0, 0);
-
-                favoriteText.setTextColor(
-                        ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
                 break;
         }
     }

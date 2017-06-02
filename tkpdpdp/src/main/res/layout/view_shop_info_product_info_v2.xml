@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
-                android:background="@drawable/border_button_rounded"
+                android:background="@drawable/button_selector"
                 android:gravity="center"
                 android:padding="@dimen/margin_2"
                 android:text="Kirim Pesan"

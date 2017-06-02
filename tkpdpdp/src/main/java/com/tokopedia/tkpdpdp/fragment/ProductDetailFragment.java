@@ -458,7 +458,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onShopFavoriteUpdated(int statFave) {
-        shopInfoView.updateFavoriteStatus(statFave);
+        shopInfoView.reverseFavorite();
     }
 
     @Override
@@ -853,10 +853,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange + verticalOffset == 0) {
                     initStatusBarLight();
                     initToolbarLight();
+                    fabWishlist.setVisibility(View.GONE);
                     isShow = true;
                 } else if (isShow) {
                     initStatusBarDark();
                     initToolbarTransparant();
+                    fabWishlist.setVisibility(View.VISIBLE);
                     isShow = false;
                 }
             }
