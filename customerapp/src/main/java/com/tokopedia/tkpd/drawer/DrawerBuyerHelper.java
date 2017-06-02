@@ -325,6 +325,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void setSelectedPosition(int id) {
+        super.setSelectedPosition(id);
         adapter.setSelectedItem(id);
     }
 
@@ -382,101 +383,104 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onItemClicked(DrawerItem item) {
-        Intent intent;
-        switch (item.getId()) {
-            case TkpdState.DrawerPosition.INDEX_HOME:
-                intent = HomeRouter.getHomeActivity(context);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-                break;
-            case TkpdState.DrawerPosition.WISHLIST:
-                Intent wishList = SimpleHomeRouter
-                        .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
+        if (item.getId() == selectedPosition) {
+            closeDrawer();
+        } else {
+            Intent intent;
+            switch (item.getId()) {
+                case TkpdState.DrawerPosition.INDEX_HOME:
+                    intent = HomeRouter.getHomeActivity(context);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.WISHLIST:
+                    Intent wishList = SimpleHomeRouter
+                            .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
 
-                context.startActivity(wishList);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
-                context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.ORDER_STATUS);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
-                context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.CANCELLED_ORDER);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
-                break;
-            case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                Bundle bundle = new Bundle();
-                bundle.putInt("tab", 1);
-                bundle.putString("user_id", SessionHandler.getLoginID(context));
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
-                break;
-            case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 2);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 3);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
-                break;
-            case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 4);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
-                break;
-            case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
-                }
-                break;
-            case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                startIntent(context, EtalaseShopEditor.class);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
-                break;
-            case TkpdState.DrawerPosition.GOLD_MERCHANT:
-                Intent launchIntent = context.getPackageManager()
-                        .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                    context.startActivity(wishList);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
+                    context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
+                    context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.ORDER_STATUS);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
+                    context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
+                    context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.CANCELLED_ORDER);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
+                    context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("tab", 1);
+                    bundle.putString("user_id", SessionHandler.getLoginID(context));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 2);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 3);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 4);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_PRODUCT:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
+                    }
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_ETALASE:
+                    startIntent(context, EtalaseShopEditor.class);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
+                    break;
+                case TkpdState.DrawerPosition.GOLD_MERCHANT:
+                    Intent launchIntent = context.getPackageManager()
+                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
-                if (launchIntent != null) {
-                    context.startActivity(launchIntent);
-                } else if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                }
-                break;
-            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                Intent topadsIntent = context.getPackageManager()
-                        .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                    if (launchIntent != null) {
+                        context.startActivity(launchIntent);
+                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                    }
+                    break;
+                case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                    Intent topadsIntent = context.getPackageManager()
+                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
-                if (topadsIntent != null) {
-                    context.startActivity(topadsIntent);
-                } else if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                }
-                break;
-            default:
-                super.onItemClicked(item);
+                    if (topadsIntent != null) {
+                        context.startActivity(topadsIntent);
+                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                    }
+                    break;
+                default:
+                    super.onItemClicked(item);
+            }
+            closeDrawer();
         }
-        closeDrawer();
-
     }
 
     @Override

@@ -153,7 +153,9 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void setFooterData(DrawerProfile profile);
 
-    public abstract void setSelectedPosition(int id);
+    public void setSelectedPosition(int id){
+        this.selectedPosition = id;
+    }
 
     public abstract void setExpand();
 }

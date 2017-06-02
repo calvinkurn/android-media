@@ -272,8 +272,8 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void setSelectedPosition(int id) {
+        super.setSelectedPosition(id);
         adapter.setSelectedItem(id);
-
     }
 
     @Override
@@ -310,63 +310,66 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onItemClicked(DrawerItem item) {
-        Intent intent;
-        switch (item.getId()) {
-            case TkpdState.DrawerPosition.INDEX_HOME:
-                context.startActivity(new Intent(context, SellerHomeActivity.class));
-                break;
-            case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                Bundle bundle = new Bundle();
-                bundle.putInt("tab", 1);
-                bundle.putString("user_id", SessionHandler.getLoginID(context));
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
-                break;
-            case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 2);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 3);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
-                break;
-            case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
-                intent = SellerRouter.getActivitySellingTransaction(context);
-                intent.putExtra("tab", 4);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
-                break;
-            case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
-                }
-                break;
-            case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                startIntent(context, EtalaseShopEditor.class);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
-                break;
-            case TkpdState.DrawerPosition.SELLER_GM_STAT:
-                intent = new Intent(context, GMStatActivity.class);
-                intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
-                intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
-                context.startActivity(intent);
-                UnifyTracking.eventClickGMStat();
-                break;
-            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                intent = new Intent(context, TopAdsDashboardActivity.class);
-                context.startActivity(intent);
-                break;
-            default:
-                super.onItemClicked(item);
+        if (item.getId() == selectedPosition) {
+            closeDrawer();
+        } else {
+            Intent intent;
+            switch (item.getId()) {
+                case TkpdState.DrawerPosition.INDEX_HOME:
+                    context.startActivity(new Intent(context, SellerHomeActivity.class));
+                    break;
+                case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("tab", 1);
+                    bundle.putString("user_id", SessionHandler.getLoginID(context));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 2);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 3);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 4);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_PRODUCT:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
+                    }
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_ETALASE:
+                    startIntent(context, EtalaseShopEditor.class);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
+                    break;
+                case TkpdState.DrawerPosition.SELLER_GM_STAT:
+                    intent = new Intent(context, GMStatActivity.class);
+                    intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                    intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                    context.startActivity(intent);
+                    UnifyTracking.eventClickGMStat();
+                    break;
+                case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                    intent = new Intent(context, TopAdsDashboardActivity.class);
+                    context.startActivity(intent);
+                    break;
+                default:
+                    super.onItemClicked(item);
+            }
+            closeDrawer();
         }
-        closeDrawer();
-
     }
 
     @Override
