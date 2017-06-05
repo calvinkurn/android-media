@@ -69,12 +69,6 @@ public class NetworkErrorHelper {
                 Snackbar.LENGTH_INDEFINITE), listener);
     }
 
-    public static SnackbarRetry createSnackbarEmptyWithAction(Activity activity, final RetryClickedListener listener){
-        return new SnackbarRetry(SnackbarManager.make(activity,
-                activity.getResources().getString(R.string.error_data_not_found),
-                Snackbar.LENGTH_INDEFINITE), listener);
-    }
-
     public static SnackbarRetry createSnackbarWithAction(Activity activity, String message, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(activity,
                 message,
