@@ -154,7 +154,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        recyclerviewScrollListener = onRecyclerViewListener();
     }
 
     private GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
@@ -203,22 +202,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.fetchFirstPage();
-    }
-
-
-    private EndlessRecyclerviewListener onRecyclerViewListener() {
-        return new EndlessRecyclerviewListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                int size = adapter.getlist().size();
-                int lastIndex = size-1;
-                if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                        )
-                    presenter.fetchNextPage();
-            }
-        };
     }
 
     @Override
@@ -340,7 +323,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-        Log.d("TOPADSDEBUG", "onSuccessGetFeedFirstPage");
         adapter.clearData();
         finishLoading();
         adapter.removeEmpty();
@@ -353,7 +335,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void finishLoading() {
-        Log.d("TOPADSDEBUG", "finishLoading");
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
         topAdsRecyclerAdapter.hideLoading();
