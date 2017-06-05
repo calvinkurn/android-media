@@ -154,14 +154,23 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     int qty = ((CartProductItemEditable) dataList.get(position))
                             .getProductEditData().getProductQuantity();
                     try {
-                        ((CartProductItemEditable) dataList.get(position))
-                                .getProductEditData().setProductQuantity(
-                                Integer.parseInt(s.toString())
-                        );
+                        if (dataList.get(position) instanceof CartProductItemEditable) {
+                            if (!s.toString().equals("")) {
+                                ((CartProductItemEditable) dataList.get(position))
+                                        .getProductEditData().setProductQuantity(
+                                        Integer.parseInt(s.toString())
+                                );
+                            } else {
+                                ((CartProductItemEditable) dataList.get(position))
+                                        .getProductEditData().setProductQuantity(0);
+                            }
+                        }
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
-                        ((CartProductItemEditable) dataList.get(position))
-                                .getProductEditData().setProductQuantity(qty);
+                        if (dataList.get(position) instanceof CartProductItemEditable) {
+                            ((CartProductItemEditable) dataList.get(position))
+                                    .getProductEditData().setProductQuantity(qty);
+                        }
                     }
                 }
             }

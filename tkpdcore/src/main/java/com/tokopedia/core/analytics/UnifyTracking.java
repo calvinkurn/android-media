@@ -1517,6 +1517,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventBannerEmptyFeedOS() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
+                AppEventTracking.Category.PRODUCT_FEED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED
+        ).getEvent());
+    }
+
     public static void eventAddProductErrorServer(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
@@ -1550,6 +1559,91 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ADD_MORE,
                 label
+        ).getEvent());
+    }
+
+    public static void eventClickBeli(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_BELI,
+                el
+        ).getEvent());
+    }
+
+
+    public static void eventClickBeliInstantSaldo(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_BELI_INSTANT_SALDO,
+                el
+        ).getEvent());
+    }
+
+
+    public static void eventClickBeliInstantSaldoWidget(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_BELI_INSTANT_SALDO_WIDGET,
+                el
+        ).getEvent());
+    }
+
+
+    public static void eventClickBeliWidget(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_BELI_WIDGET,
+                el
+        ).getEvent());
+    }
+
+
+    public static void eventViewCheckoutPage(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.VIEW_CHECKOUT_PAGE,
+                el
+        ).getEvent());
+    }
+
+    public static void eventClickLanjutCheckoutPage(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_LANJUT_CHECKOUT,
+                el
+        ).getEvent());
+    }
+
+    public static void eventClickTruecaller() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_ATTEMPT
+        ).getEvent());
+    }
+
+    public static void eventClickTruecallerConfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_CONFIRM
+        ).getEvent());
+    }
+
+    public static void eventTruecallerImpression() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.IMPRESSION,
+                AppEventTracking.EventLabel.TRUECALLER
         ).getEvent());
     }
 }

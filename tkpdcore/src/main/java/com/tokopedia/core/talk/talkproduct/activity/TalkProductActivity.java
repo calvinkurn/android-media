@@ -7,11 +7,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -27,6 +31,14 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
     public boolean stateHasAdded = false;
 
     InboxTalkResultReceiver mReceiver;
+
+    @DeepLink(Constants.Applinks.PRODUCT_TALK)
+    public static Intent getCallingTaskStack(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, TalkProductActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

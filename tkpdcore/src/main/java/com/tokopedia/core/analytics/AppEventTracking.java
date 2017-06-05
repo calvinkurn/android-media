@@ -85,6 +85,8 @@ public interface AppEventTracking {
         String TOP_SELLER = "clickTopSeller";
         String SLIDE_BANNER = "sliderBanner";
         String SUCCESS_SMART_LOCK = "eventSuccessSmartLock";
+        String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+        String RECHARGE_TRACKING = "rechargeTracking";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -112,7 +114,10 @@ public interface AppEventTracking {
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
-        String CLICK_VIEW_ALL_OS = "clickOS";
+        String CLICK_VIEW_ALL_OS = "clickOfficialStore";
+        String IMPRESSION_OTP = "impressionOtp";
+        String CLICK_OTP = "clickOtp";
+        String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
     }
 
     interface Category {
@@ -175,6 +180,8 @@ public interface AppEventTracking {
         String PUSH_NOTIFICATION = "Push Notification";
         String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
+        String RECHARGE = "Recharge - ";
+        String PRODUCT_FEED = "Product Feed";
     }
 
     interface Action {
@@ -227,6 +234,13 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
+        String CLICK_BELI = "Click Beli";
+        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
+        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
+        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+        String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
+        String VIEW_CHECKOUT_PAGE = "View Checkout Page";
+        String IMPRESSION = "Impression";
     }
 
     interface EventLabel {
@@ -380,6 +394,10 @@ public interface AppEventTracking {
         String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
         String SAVE_PASSWORD = "Save Password";
         String NEVER = "Never";
+        String TRUECALLER = "Truecaller";
+        String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
+        String TRUECALLER_CONFIRM = "Truecaller - Confirm";
+        String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
     }
 
     interface SOCIAL_MEDIA {
@@ -443,17 +461,17 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
-        String LOGIN_STATUS = "Logged_in_Status";
-        String PRODUCTS_NUMBER = "Number_of_Products";
-        String SUBCATEGORY = "SubCategory_name";
-        String SUBCATEGORY_ID = "SubCategory_id";
-        String CATEGORY = "Category";
-        String PRODUCT_ID = "Product_id";
-        String PRODUCT_NAME = "Product_name";
-        String PRODUCT_URL = "Product_url";
-        String PRODUCT_PRICE = "Product_price";
-        String BRAND_NAME = "Brand_name";
-        String BRAND_ID = "Brand_id";
+        String LOGIN_STATUS = "logged_in_status";
+        String PRODUCTS_NUMBER = "number_of_products";
+        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY_ID = "subcategory_id";
+        String CATEGORY = "category";
+        String PRODUCT_ID = "product_id";
+        String PRODUCT_NAME = "product_name";
+        String PRODUCT_URL = "product_url";
+        String PRODUCT_PRICE = "product_price";
+        String BRAND_NAME = "brand_name";
+        String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
 
@@ -461,11 +479,11 @@ public interface AppEventTracking {
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
         String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
+        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
 
 
         String REG_START = "Registration_Start";

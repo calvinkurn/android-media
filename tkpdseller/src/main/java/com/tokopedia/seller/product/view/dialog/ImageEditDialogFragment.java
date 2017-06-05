@@ -19,31 +19,31 @@ public class ImageEditDialogFragment extends DialogFragment {
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
     public static final String IMAGE_IS_PRIMARY = "IMAGE_IS_PRIMARY";
-    public static final String FRAGMENT_PRODUCT_POSITION = "FRAGMENT_PRODUCT_POSITION";
+    public static final String ALLOW_DELETE = "ALLOW_DELETE";
 
     private CharSequence imageMenu[];
     private OnImageEditListener mListener;
+    boolean allowDelete;
 
-    public static final int DELETE_IMAGE = 0;
-    public static final int CHANGE_IMAGE = 1;
-    public static final int ADD_DESCRIPTION = 2;
-    public static final int CHANGE_TO_PRIMARY = 3;
-
-    public interface OnImageEditListener{
+    public interface OnImageEditListener {
         void clickEditImagePath(int position);
+
         void clickEditImageDesc(int position);
+
         void clickEditImagePrimary(int position);
+
         void clickRemoveImage(int positions);
     }
 
     public int position;
     public boolean isPrimary;
 
-    public static DialogFragment newInstance(int position, boolean isPrimary){
+    public static DialogFragment newInstance(int position, boolean isPrimary, boolean allowDelete) {
         ImageEditDialogFragment f = new ImageEditDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
         args.putBoolean(IMAGE_IS_PRIMARY, isPrimary);
+        args.putBoolean(ALLOW_DELETE, allowDelete);
         f.setArguments(args);
         return f;
     }
@@ -57,6 +57,7 @@ public class ImageEditDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(IMAGE_PRODUCT_POSITION);
         isPrimary = getArguments().getBoolean(IMAGE_IS_PRIMARY);
+        allowDelete = getArguments().getBoolean(ALLOW_DELETE);
     }
 
 
@@ -65,18 +66,32 @@ public class ImageEditDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (isPrimary) {
-            imageMenu = new CharSequence[]{
-                    getActivity().getString(R.string.title_img_delete),
-                    getActivity().getString(R.string.action_edit),
-                    getActivity().getString(R.string.title_img_desc)};
+            if (allowDelete) { // primary image and allow delete
+                imageMenu = new CharSequence[]{
+                        getString(R.string.title_img_delete),
+                        getString(R.string.action_edit),
+                        getString(R.string.title_img_desc)};
+            } else { // primary image and not allow delete
+                imageMenu = new CharSequence[]{
+                        getString(R.string.action_edit),
+                        getString(R.string.title_img_desc)};
+            }
+
         } else {
-            imageMenu = new CharSequence[]{
-                    getActivity().getString(R.string.title_img_delete),
-                    getActivity().getString(R.string.action_edit),
-                    getActivity().getString(R.string.title_img_desc),
-                    getActivity().getString(R.string.title_img_default)};
+            if (allowDelete) { // not primary image and allow delete
+                imageMenu = new CharSequence[]{
+                        getString(R.string.title_img_delete),
+                        getString(R.string.action_edit),
+                        getString(R.string.title_img_desc),
+                        getString(R.string.title_img_default)};
+            } else { // not primary image and not allow delete
+                imageMenu = new CharSequence[]{
+                        getString(R.string.action_edit),
+                        getString(R.string.title_img_desc),
+                        getString(R.string.title_img_default)};
+            }
         }
-        builder.setItems(imageMenu,getImageAddProductListener());
+        builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
     }
 
@@ -84,22 +99,16 @@ public class ImageEditDialogFragment extends DialogFragment {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(mListener != null){
-                    switch (which) {
-                        case DELETE_IMAGE:
-                            mListener.clickRemoveImage(position);
-                            break;
-                        case CHANGE_IMAGE:
-                            mListener.clickEditImagePath(position);
-                            break;
-                        case ADD_DESCRIPTION:
-                            mListener.clickEditImageDesc(position);
-                            break;
-                        case CHANGE_TO_PRIMARY:
-                            mListener.clickEditImagePrimary(position);
-                            break;
-                        default:
-                            break;
+                if (mListener != null) {
+                    CharSequence stringClicked = imageMenu[which];
+                    if (stringClicked.equals(getString(R.string.title_img_delete))) {
+                        mListener.clickRemoveImage(position);
+                    } else if (stringClicked.equals(getString(R.string.action_edit))) {
+                        mListener.clickEditImagePath(position);
+                    } else if (stringClicked.equals(getString(R.string.title_img_desc))) {
+                        mListener.clickEditImageDesc(position);
+                    } else if (stringClicked.equals(getString(R.string.title_img_default))) {
+                        mListener.clickEditImagePrimary(position);
                     }
                 }
             }

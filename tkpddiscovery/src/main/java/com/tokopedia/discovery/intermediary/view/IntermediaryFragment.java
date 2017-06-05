@@ -49,7 +49,9 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
@@ -158,16 +160,20 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderTopAds() {
-        topAdsView.setAdsItemClickListener(this);
-        topAdsView.setAdsListener(this);
-        topAdsView.setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()));
-
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
         params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
-        topAdsView.setTopAdsParams(params);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .topAdsParams(params)
+                .build();
+
+        topAdsView.setAdsItemClickListener(this);
+        topAdsView.setAdsListener(this);
+        topAdsView.setConfig(config);
         topAdsView.loadTopAds();
     }
 
@@ -291,9 +297,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onStart() {
         super.onStart();
-        if(!TextUtils.isEmpty(departmentId)) {
-            ScreenTracking.eventDiscoveryScreenAuth(departmentId);
-        }
+        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
     }
 
     private void showErrorEmptyState() {
@@ -364,7 +368,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onAddFavorite(Shop shop) {
+    public void onAddFavorite(Data shopData) {
         //TODO: this listener not used in this sprint
     }
 

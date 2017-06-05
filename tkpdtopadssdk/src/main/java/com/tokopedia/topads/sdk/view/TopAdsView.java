@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -42,13 +43,11 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private TypedArray styledAttributes;
-    private int displayMode = DisplayMode.GRID; // Default Display Mode
+    private DisplayMode displayMode = DisplayMode.GRID; // Default Display Mode
     private TopAdsItemClickListener adsItemClickListener;
     private DividerItemDecoration itemDecoration;
     private RelativeLayout contentLayout;
     private static final int DEFAULT_SPAN_COUNT = 2;
-    private boolean isLoading = false;
-    private boolean showLoading = false;
     private TopAdsListener adsListener;
 
     public TopAdsView(Context context) {
@@ -71,7 +70,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
-        showLoading = styledAttributes.getBoolean(R.styleable.TopAdsView_show_loading, false);
         inflate(getContext(), R.layout.layout_ads, this);
         adsHeader = (LinearLayout) findViewById(R.id.ads_header);
         adapter = new AdsItemAdapter(getContext());
@@ -98,9 +96,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         }
     }
 
-    @Override
-    public void setSessionId(String sessionId) {
-        presenter.setSessionId(sessionId);
+    public void setConfig(Config config){
+        presenter.setConfig(config);
     }
 
     @Override
@@ -140,29 +137,27 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void setTopAdsParams(TopAdsParams adsParams) {
-        presenter.setParams(adsParams);
-    }
-
-    @Override
     public void loadTopAds() {
+        adsHeader.setVisibility(GONE);
         presenter.loadTopAds();
     }
 
     @Override
-    public void setDisplayMode(int displayMode) {
+    public void setDisplayMode(DisplayMode displayMode) {
         switch (displayMode) {
-            case DisplayMode.GRID:
+            case GRID:
                 itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
                 break;
-            case DisplayMode.LIST:
+            case LIST:
+            case FEED:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;
         }
         this.displayMode = displayMode;
+        presenter.setDisplayMode(displayMode);
         adapter.switchDisplayMode(displayMode);
     }
 
@@ -188,9 +183,9 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void onAddFavorite(int position, Shop shop) {
+    public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(shop);
+            adsItemClickListener.onAddFavorite(dataShop);
         }
     }
 
@@ -213,28 +208,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         if (adsListener != null) {
             adsListener.onTopAdsFailToLoad(errorCode, message);
         }
-    }
-
-    @Override
-    public void initLoading() {
-        adsHeader.setVisibility(GONE);
-        if (!isLoading && showLoading) {
-            LayoutInflater.from(getContext()).inflate(R.layout.layout_progress, contentLayout);
-            isLoading = true;
-        }
-    }
-
-    @Override
-    public void finishLoading() {
-        if (isLoading && showLoading) {
-            contentLayout.removeView(contentLayout.findViewById(R.id.progress_bar));
-            isLoading = false;
-        }
-    }
-
-    @Override
-    public void showLoading(boolean showLoading) {
-        this.showLoading = showLoading;
     }
 
 }

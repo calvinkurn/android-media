@@ -30,8 +30,9 @@
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:hint="@string/product_label_name"
-                android:inputType="textShortMessage|textMultiLine"
-                android:maxLength="@integer/product_max_character_name" />
+                android:inputType="text"
+                android:maxLength="@integer/product_max_character_name"
+                android:imeOptions="actionDone"/>
 
         </android.support.design.widget.TextInputLayout>
     </FrameLayout>

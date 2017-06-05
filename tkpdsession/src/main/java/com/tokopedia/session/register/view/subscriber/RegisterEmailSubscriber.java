@@ -85,7 +85,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
 
     @Override
     public void onNext(RegisterEmailModel registerEmailModel) {
-        if (registerEmailModel.getRegisterEmailData().getIsSuccess() == 1) {
+        if (registerEmailModel.isSuccess()) {
             viewListener.onSuccessRegister(mappingToViewModel(registerEmailModel.getRegisterEmailData()));
         } else {
             viewListener.onErrorRegister(

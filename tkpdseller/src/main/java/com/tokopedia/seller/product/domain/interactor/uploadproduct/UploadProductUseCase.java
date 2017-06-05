@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -66,7 +67,8 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository));
+                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository, new ProductDraftUpdate(productDraftRepository, productId)))
+                .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 
     private class GetProductModelObservable implements Func1<Long, Observable<UploadProductInputDomainModel>> {
@@ -79,4 +81,33 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
 
+    private static class DeleteProductDraft implements Action1<AddProductDomainModel> {
+        private final long productId;
+        private final ProductDraftRepository productDraftRepository;
+
+        public DeleteProductDraft(long productId, ProductDraftRepository productDraftRepository) {
+            this.productId = productId;
+            this.productDraftRepository = productDraftRepository;
+        }
+
+        @Override
+        public void call(AddProductDomainModel addProductDomainModel) {
+            productDraftRepository.deleteDraft(productId);
+        }
+    }
+
+    public class ProductDraftUpdate {
+
+        private final ProductDraftRepository productDraftRepository;
+        private final long productId;
+
+        public ProductDraftUpdate(ProductDraftRepository productDraftRepository, long productId) {
+            this.productDraftRepository = productDraftRepository;
+            this.productId = productId;
+        }
+
+        public void updateDraft(UploadProductInputDomainModel domainModel) {
+            productDraftRepository.updateDraft(productId, domainModel);
+        }
+    }
 }
