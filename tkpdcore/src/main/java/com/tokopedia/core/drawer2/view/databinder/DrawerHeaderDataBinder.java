@@ -216,7 +216,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
     private void setTopCash(ViewHolder holder) {
         if (isTokoCashDisabled(data.getDrawerTokoCash())) {
-            holder.tokoCashLayout.setVisibility(View.GONE);
+            holder.loadingTokoCash.setVisibility(View.VISIBLE);
         } else {
             if (isRegistered(data.getDrawerTokoCash())) {
                 showTokoCashBalanceView(holder);

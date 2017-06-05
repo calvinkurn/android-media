@@ -9,6 +9,8 @@ import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 
 import rx.Observable;
 
+import static com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase.PARAM_TYPE;
+
 /**
  * Created by nisie on 5/5/17.
  */
@@ -16,6 +18,7 @@ import rx.Observable;
 public class NotificationUseCase extends UseCase<NotificationModel> {
 
     private final NotificationRepository notificationRepository;
+    private static final String PARAM_TYPE = "type";
 
     public NotificationUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
@@ -27,5 +30,11 @@ public class NotificationUseCase extends UseCase<NotificationModel> {
     @Override
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
         return notificationRepository.getNotification(requestParams.getParameters());
+    }
+
+    public RequestParams getRequestParam(boolean isSeller) {
+        RequestParams params = RequestParams.create();
+        params.putInt(PARAM_TYPE, isSeller ? 2 : 1);
+        return params;
     }
 }

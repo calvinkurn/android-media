@@ -45,6 +45,7 @@ import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -144,47 +145,30 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getProfile() {
-        profileUseCase.execute(getProfileParam(), new ProfileSubscriber(viewListener));
-    }
-
-    private RequestParams getProfileParam() {
-        return RequestParams.EMPTY;
+        profileUseCase.execute(RequestParams.EMPTY, new ProfileSubscriber(viewListener));
     }
 
     @Override
     public void getDeposit() {
-        depositUseCase.execute(getDepositParam(), new GetDepositSubscriber(viewListener));
-    }
-
-    private RequestParams getDepositParam() {
-        return RequestParams.EMPTY;
+        depositUseCase.execute(RequestParams.EMPTY, new GetDepositSubscriber(viewListener));
     }
 
     @Override
     public void getTopPoints() {
-        topPointsUseCase.execute(getTopPointsParam(), new TopPointsSubscriber(viewListener));
-    }
-
-    private RequestParams getTopPointsParam() {
-        return RequestParams.EMPTY;
+        topPointsUseCase.execute(RequestParams.EMPTY, new TopPointsSubscriber(viewListener));
     }
 
     @Override
     public void getTokoCash() {
-        tokoCashUseCase.execute(getTokoCashParam(), new TokoCashSubscriber(viewListener));
-    }
-
-    private RequestParams getTokoCashParam() {
-        return RequestParams.EMPTY;
+        tokoCashUseCase.execute(RequestParams.EMPTY, new TokoCashSubscriber(viewListener));
     }
 
     @Override
     public void getNotification() {
-        notificationUseCase.execute(getNotificationParam(), new NotificationSubscriber(viewListener));
-    }
-
-    private RequestParams getNotificationParam() {
-        return RequestParams.EMPTY;
+        notificationUseCase.execute(
+                notificationUseCase.getRequestParam(
+                        GlobalConfig.isSellerApp()),
+                new NotificationSubscriber(viewListener));
     }
 
     @Override

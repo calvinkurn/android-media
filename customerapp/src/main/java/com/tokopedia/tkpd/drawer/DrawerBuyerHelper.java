@@ -483,7 +483,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     super.onItemClicked(item);
             }
 
-            if (item.getId() != TkpdState.DrawerPosition.INDEX_HOME
+            if (selectedPosition != TkpdState.DrawerPosition.INDEX_HOME
                     && item.getId() != TkpdState.DrawerPosition.LOGOUT) {
                 context.finish();
             }
