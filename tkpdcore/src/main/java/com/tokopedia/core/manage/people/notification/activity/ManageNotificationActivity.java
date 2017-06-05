@@ -1,5 +1,6 @@
 package com.tokopedia.core.manage.people.notification.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
@@ -46,10 +47,16 @@ public class ManageNotificationActivity extends BasePresenterActivity {
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
         }
-        ManageNotificationFragment fragment = ManageNotificationFragment.createInstance(bundle);
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        Fragment fragment = getFragmentManager().findFragmentByTag(
+                ManageNotificationFragment.class.getSimpleName());
+
+        if (fragment == null) {
+            fragment = ManageNotificationFragment.createInstance(bundle);
+        }
+
+        fragmentTransaction.replace(R.id.container, fragment, ManageNotificationFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
 

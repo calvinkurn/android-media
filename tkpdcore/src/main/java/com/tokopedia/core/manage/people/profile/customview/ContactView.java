@@ -73,7 +73,12 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
 
     private void renderEmailView(String userEmail) {
         email.setText(userEmail);
-        changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
+        if (SessionHandler.isMsisdnVerified()) {
+            changeEmailBtn.setVisibility(VISIBLE);
+            changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
+        } else {
+            changeEmailBtn.setVisibility(GONE);
+        }
 
     }
 

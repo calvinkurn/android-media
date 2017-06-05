@@ -34,8 +34,10 @@ public class TopAdsParams {
     public static final String SRC_INTERMEDIARY_VALUE = "intermediary";
 
     public static final String DEFAULT_KEY_ITEM = "2";
-    public static final String DEFAULT_KEY_DEVICE = "android";
     public static final String DEFAULT_KEY_EP = "product";
+    public static final String DEFAULT_KEY_DEVICE = "android";
+
+    public static final String SRC_PRODUCT_FEED = "fav_product";
 
 
 

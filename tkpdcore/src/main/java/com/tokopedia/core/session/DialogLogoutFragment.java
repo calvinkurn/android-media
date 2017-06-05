@@ -168,6 +168,7 @@ public class DialogLogoutFragment extends DialogFragment {
 
     @Override
     public void onPause() {
+        dismiss();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.onPause();
     }

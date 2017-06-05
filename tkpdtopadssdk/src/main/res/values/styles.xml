@@ -8,4 +8,8 @@
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
+    <style name="MediumText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
