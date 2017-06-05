@@ -13,5 +13,5 @@ public interface OpportunityListPresenter {
 
     GetOpportunityListParam getPass();
 
-    void getFilter();
+    void initOpportunityForFirstTime();
 }

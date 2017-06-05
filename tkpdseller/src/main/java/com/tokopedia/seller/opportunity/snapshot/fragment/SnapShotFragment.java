@@ -55,7 +55,8 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_PASS_OPPORTUNITY_ID = "ARG_PASS_OPPORTUNITY_ID";
-    private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
+    private static final String ARG_PRODUCT_DATA = "ARG_PRODUCT_DATA";
+
     private static final String TAG = SnapShotFragment.class.getSimpleName();
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
@@ -72,6 +73,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     private ProductPass productPass;
     private ProductDetailData productData;
     private TkpdProgressDialog progressDialog;
+    private String opportunityId;
 
 
     public static Fragment newInstance(ProductPass productPass, String opportunityId) {
@@ -103,7 +105,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected boolean isRetainInstance() {
-        return true;
+        return false;
     }
 
     @Override
@@ -139,11 +141,20 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putString(ARG_PASS_OPPORTUNITY_ID, opportunityId);
+        state.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
+        state.putParcelable(ARG_PRODUCT_DATA, productData);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
+
+        productData = savedState.getParcelable(ARG_PRODUCT_DATA);
+
+        productPass = savedState.getParcelable(ARG_PARAM_PRODUCT_PASS_DATA);
+        opportunityId = savedState.getString(ARG_PASS_OPPORTUNITY_ID);
+
+        onFirstTimeLaunched();
 
     }
 
@@ -178,6 +189,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     @Override
     protected void setupArguments(Bundle arguments) {
         productPass = arguments.getParcelable(ARG_PARAM_PRODUCT_PASS_DATA);
+        opportunityId = arguments.getString(ARG_PASS_OPPORTUNITY_ID);
     }
 
     @Override
@@ -327,7 +339,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public String getOpportunityId() {
-        return getArguments().getString(ARG_PASS_OPPORTUNITY_ID, "");
+        return opportunityId;
     }
 
     @Override
@@ -348,4 +360,5 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         finishLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
+
 }

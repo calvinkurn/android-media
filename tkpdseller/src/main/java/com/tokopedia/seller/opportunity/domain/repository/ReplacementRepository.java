@@ -2,7 +2,7 @@ package com.tokopedia.seller.opportunity.domain.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
-import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
+import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 
 import rx.Observable;
@@ -16,8 +16,8 @@ public interface ReplacementRepository {
 
     Observable<OpportunityModel> getOpportunityListFromNetwork(TKPDMapParam<String, Object> parameters);
 
-    Observable<OpportunityCategoryModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters);
+    Observable<OpportunityFilterModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters);
 
-    Observable<OpportunityCategoryModel> getOpportunityCategoryFromLocal();
+    Observable<OpportunityFilterModel> getOpportunityCategoryFromLocal();
 
 }

@@ -77,7 +77,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
 
     }
 
-    private OpportunityViewModel mappingToViewModel(OpportunityModel opportunityModel) {
+    public static OpportunityViewModel mappingToViewModel(OpportunityModel opportunityModel) {
         OpportunityViewModel viewModel = new OpportunityViewModel();
         viewModel.setListOpportunity(
                 mappingOpportunityViewModel(
@@ -88,7 +88,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return viewModel;
     }
 
-    private PagingHandler.PagingHandlerModel mappingPagingModel(Paging paging) {
+    public static PagingHandler.PagingHandlerModel mappingPagingModel(Paging paging) {
         PagingHandler.PagingHandlerModel pagingViewModel = new PagingHandler.PagingHandlerModel();
         pagingViewModel.setUriNext(paging.getUriNext());
         pagingViewModel.setUriPrevious(paging.getUriPrevious());
@@ -96,7 +96,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return pagingViewModel;
     }
 
-    private ArrayList<OpportunityItemViewModel> mappingOpportunityViewModel(List<OpportunityList> listOpportunity) {
+    public static ArrayList<OpportunityItemViewModel> mappingOpportunityViewModel(List<OpportunityList> listOpportunity) {
         ArrayList<OpportunityItemViewModel> list = new ArrayList<>();
 
         for (OpportunityList opportunityItem : listOpportunity) {
@@ -122,7 +122,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return list;
     }
 
-    private OrderDestinationViewModel getOrderDestinationViewModel(OrderDestination orderDestination) {
+    public static OrderDestinationViewModel getOrderDestinationViewModel(OrderDestination orderDestination) {
         OrderDestinationViewModel orderDestinationViewModel = new OrderDestinationViewModel();
         orderDestinationViewModel.setReceiverPhoneIsTokopedia(orderDestination.getReceiverPhoneIsTokopedia());
         orderDestinationViewModel.setReceiverName(orderDestination.getReceiverName());
@@ -136,7 +136,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderDestinationViewModel;
     }
 
-    private List<OrderHistoryViewModel> getOrderHistoryViewModel(List<OrderHistory> listOrderHistory) {
+    public static List<OrderHistoryViewModel> getOrderHistoryViewModel(List<OrderHistory> listOrderHistory) {
         List<OrderHistoryViewModel> list = new ArrayList<>();
         for (OrderHistory orderHistory : listOrderHistory) {
             OrderHistoryViewModel orderHistoryViewModel = new OrderHistoryViewModel();
@@ -152,7 +152,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return list;
     }
 
-    private OrderLastViewModel getOrderLastViewModel(OrderLast orderLast) {
+    public static OrderLastViewModel getOrderLastViewModel(OrderLast orderLast) {
         OrderLastViewModel orderLastViewModel = new OrderLastViewModel();
         orderLastViewModel.setLastOrderId(orderLast.getLastOrderId());
         orderLastViewModel.setLastShipmentId(orderLast.getLastShipmentId());
@@ -170,7 +170,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderLastViewModel;
     }
 
-    private OrderShipmentViewModel getOrderShipmentViewModel(OrderShipment orderShipment) {
+    public static OrderShipmentViewModel getOrderShipmentViewModel(OrderShipment orderShipment) {
         OrderShipmentViewModel orderShipmentViewModel = new OrderShipmentViewModel();
         orderShipmentViewModel.setShipmentLogo(orderShipment.getShipmentLogo());
         orderShipmentViewModel.setShipmentPackageId(orderShipment.getShipmentPackageId());
@@ -181,7 +181,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderShipmentViewModel;
     }
 
-    private List<OrderProductViewModel> getOrderProductsViewModel(List<OrderProduct> orderProducts) {
+    public static List<OrderProductViewModel> getOrderProductsViewModel(List<OrderProduct> orderProducts) {
         List<OrderProductViewModel> list = new ArrayList<>();
         for (OrderProduct orderProduct : orderProducts) {
             OrderProductViewModel orderProductViewModel = new OrderProductViewModel();
@@ -209,7 +209,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return list;
     }
 
-    private OrderShopViewModel getOrderShopViewModel(OrderShop orderShop) {
+    public static OrderShopViewModel getOrderShopViewModel(OrderShop orderShop) {
         OrderShopViewModel orderShopViewModel = new OrderShopViewModel();
         orderShopViewModel.setAddressPostal(orderShop.getAddressPostal());
         orderShopViewModel.setAddressDistrict(orderShop.getAddressDistrict());
@@ -221,7 +221,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderShopViewModel;
     }
 
-    private OrderDeadlineViewModel getOrderDeadlineViewModel(OrderDeadline orderDeadline) {
+    public static OrderDeadlineViewModel getOrderDeadlineViewModel(OrderDeadline orderDeadline) {
         OrderDeadlineViewModel orderDeadlineViewModel = new OrderDeadlineViewModel();
         orderDeadlineViewModel.setDeadlineProcessDayLeft(String.valueOf(orderDeadline.getDeadlineProcessDayLeft()));
         orderDeadlineViewModel.setDeadlineProcessHourLeft(String.valueOf(orderDeadline.getDeadlineProcessHourLeft()));
@@ -237,7 +237,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderDeadlineViewModel;
     }
 
-    private OrderDetailViewModel getOrderDetailViewModel(OrderDetail orderDetail) {
+    public static OrderDetailViewModel getOrderDetailViewModel(OrderDetail orderDetail) {
         OrderDetailViewModel orderDetailViewModel = new OrderDetailViewModel();
         orderDetailViewModel.setDetailInsurancePrice(orderDetail.getDetailInsurancePrice());
         orderDetailViewModel.setDetailOpenAmount(orderDetail.getDetailOpenAmount());
@@ -274,7 +274,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderDetailViewModel;
     }
 
-    private DetailCancelRequestViewModel getDetailCancelRequestViewModel(DetailCancelRequest detailCancelRequest) {
+    public static DetailCancelRequestViewModel getDetailCancelRequestViewModel(DetailCancelRequest detailCancelRequest) {
         DetailCancelRequestViewModel detailCancelRequestViewModel = new DetailCancelRequestViewModel();
         detailCancelRequestViewModel.setCancelRequest(detailCancelRequest.getCancelRequest());
         detailCancelRequestViewModel.setReason(detailCancelRequest.getReason());
@@ -282,7 +282,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return detailCancelRequestViewModel;
     }
 
-    private DetailPreorderViewModel getDetailPreorderViewModel(DetailPreorder detailPreorder) {
+    public static DetailPreorderViewModel getDetailPreorderViewModel(DetailPreorder detailPreorder) {
         DetailPreorderViewModel detailPreorderViewModel = new DetailPreorderViewModel();
         detailPreorderViewModel.setPreorderStatus(detailPreorder.getPreorderStatus());
         detailPreorderViewModel.setPreorderProcessTimeType(String.valueOf(detailPreorder.getPreorderProcessTimeType()));
@@ -291,7 +291,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return detailPreorderViewModel;
     }
 
-    private OrderPaymentViewModel getOrderPaymentViewModel(OrderPayment orderPayment) {
+    public static OrderPaymentViewModel getOrderPaymentViewModel(OrderPayment orderPayment) {
         OrderPaymentViewModel orderPaymentViewModel = new OrderPaymentViewModel();
         orderPaymentViewModel.setPaymentProcessDueDate(orderPayment.getPaymentProcessDueDate());
         orderPaymentViewModel.setPaymentKomisi(orderPayment.getPaymentKomisi());
@@ -304,7 +304,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         return orderPaymentViewModel;
     }
 
-    private OrderCustomerViewModel getOrderCustomerViewModel(OrderCustomer orderCustomer) {
+    public static OrderCustomerViewModel getOrderCustomerViewModel(OrderCustomer orderCustomer) {
         OrderCustomerViewModel orderCustomerViewModel = new OrderCustomerViewModel();
         orderCustomerViewModel.setCustomerId(orderCustomer.getCustomerId());
         orderCustomerViewModel.setCustomerImage(orderCustomer.getCustomerImage());

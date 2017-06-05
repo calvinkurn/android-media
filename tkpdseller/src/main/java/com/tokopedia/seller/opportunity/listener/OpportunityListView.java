@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.listener;
 import android.app.Activity;
 
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
+import com.tokopedia.seller.opportunity.domain.model.OpportunityFirstTimeModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
 
@@ -20,19 +21,15 @@ public interface OpportunityListView {
 
     OpportunityListAdapter getAdapter();
 
-    String getSortParam();
-
-    String getShippingParam();
-
-    String getCategoryParam();
-
     Activity getActivity();
 
     boolean isFilterEmpty();
 
     int getPage();
 
-    void onSuccessGetFilter(OpportunityFilterViewModel opportunityFilterViewModel);
+    void disableView();
 
-    void onErrorGetFilter(String errorMessage);
+    void onErrorFirstTime(String errorMessage);
+
+    void onSuccessFirstTime(OpportunityViewModel opportunityViewModel, OpportunityFilterViewModel opportunityFilterViewModel);
 }

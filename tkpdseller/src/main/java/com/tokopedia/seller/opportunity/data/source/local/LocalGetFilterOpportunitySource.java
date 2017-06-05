@@ -8,9 +8,8 @@ import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.Fil
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OptionItem;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SearchData;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.ShippingType;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortData;
-import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
+import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 
 import java.util.ArrayList;
@@ -31,16 +30,16 @@ public class LocalGetFilterOpportunitySource {
         this.globalCacheManager = globalCacheManager;
     }
 
-    public Observable<OpportunityCategoryModel> getFilter() {
+    public Observable<OpportunityFilterModel> getFilter() {
 
         return Observable.just(GetOpportunityFilterUseCase.FILTER_CACHE)
-                .map(new Func1<String, OpportunityCategoryModel>() {
+                .map(new Func1<String, OpportunityFilterModel>() {
                     @Override
-                    public OpportunityCategoryModel call(String key) {
+                    public OpportunityFilterModel call(String key) {
                         CommonUtils.dumper("NISNIS GET FILTER CACHE");
                         if (getCache(key) != null)
                             return CacheUtil.convertStringToModel(getCache(key),
-                                    new TypeToken<OpportunityCategoryModel>() {
+                                    new TypeToken<OpportunityFilterModel>() {
                                     }.getType());
                         else throw new RuntimeException("NO CACHE");
 

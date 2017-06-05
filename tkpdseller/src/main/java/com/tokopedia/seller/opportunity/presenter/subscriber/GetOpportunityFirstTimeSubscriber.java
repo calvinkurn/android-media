@@ -1,42 +1,34 @@
 package com.tokopedia.seller.opportunity.presenter.subscriber;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.FilterData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OptionItem;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SearchData;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.ShippingType;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
+import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
+import com.tokopedia.seller.opportunity.domain.model.OpportunityFirstTimeModel;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SearchViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
 
 /**
- * Created by nisie on 4/5/17.
+ * @author by nisie on 6/2/17.
  */
 
-public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCategoryModel> {
+public class GetOpportunityFirstTimeSubscriber extends Subscriber<OpportunityFirstTimeModel> {
 
     private final OpportunityListView viewListener;
 
-    public GetOpportunityFilterSubscriber(OpportunityListView viewListener) {
+    public GetOpportunityFirstTimeSubscriber(OpportunityListView viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -47,63 +39,21 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS error Filter" + e.toString());
-
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorGetFilter(viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof SocketTimeoutException) {
-            viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_timeout));
-        } else if (e instanceof IOException) {
-            viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_internal_server));
-        } else if (e.getLocalizedMessage() != null
-                && e instanceof ErrorMessageException) {
-            viewListener.onErrorGetFilter(e.getLocalizedMessage());
-        } else if (e instanceof RuntimeException
-                && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_timeout));
-
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_internal_server));
-
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_bad_request));
-
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_forbidden_auth));
-
-                }
-            }, Integer.parseInt(e.toString()));
-        } else {
-            viewListener.onErrorGetFilter(viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorFirstTime(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
-    public void onNext(OpportunityCategoryModel opportunityCategoryModel) {
-        viewListener.onSuccessGetFilter(
-                mappingToViewModel(opportunityCategoryModel.getOpportunityCategoryData()));
-
+    public void onNext(OpportunityFirstTimeModel opportunityFirstTimeModel) {
+        viewListener.onSuccessFirstTime(
+                GetOpportunitySubscriber.mappingToViewModel(
+                        opportunityFirstTimeModel.getOpportunityModel()), 
+                mappingToViewModel(
+                        opportunityFirstTimeModel.getOpportunityFilterModel()));
     }
 
-    private OpportunityFilterViewModel mappingToViewModel(OpportunityCategoryData opportunityCategoryData) {
+
+    private OpportunityFilterViewModel mappingToViewModel(OpportunityFilterModel opportunityFilterModel) {
+        OpportunityCategoryData opportunityCategoryData = opportunityFilterModel.getOpportunityCategoryData();
         OpportunityFilterViewModel viewModel = new OpportunityFilterViewModel();
         viewModel.setListFilter(mapplingFilterToViewModel(opportunityCategoryData.getFilter()));
         viewModel.setListSortingType(mappingSortToViewModel(opportunityCategoryData.getSort()));

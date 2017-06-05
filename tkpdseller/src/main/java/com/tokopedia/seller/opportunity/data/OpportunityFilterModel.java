@@ -6,7 +6,7 @@ import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.Opp
  * Created by nisie on 3/6/17.
  */
 
-public class OpportunityCategoryModel {
+public class OpportunityFilterModel {
     private boolean success;
     private OpportunityCategoryData opportunityCategoryData;
     private String errorMessage;

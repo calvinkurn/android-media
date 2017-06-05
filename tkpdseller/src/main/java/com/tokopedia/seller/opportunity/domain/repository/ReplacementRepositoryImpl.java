@@ -2,7 +2,7 @@ package com.tokopedia.seller.opportunity.domain.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
-import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
+import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
@@ -37,13 +37,13 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
     }
 
     @Override
-    public Observable<OpportunityCategoryModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters) {
+    public Observable<OpportunityFilterModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters) {
         return opportunityDataSourceFactory.createCloudFilterReplacementSource()
                 .getFilter(parameters);
     }
 
     @Override
-    public Observable<OpportunityCategoryModel> getOpportunityCategoryFromLocal() {
+    public Observable<OpportunityFilterModel> getOpportunityCategoryFromLocal() {
         return opportunityDataSourceFactory.createLocalFilterReplacementSource()
                 .getFilter();
     }

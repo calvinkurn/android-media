@@ -1,7 +1,6 @@
 package com.tokopedia.seller.opportunity.presenter;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
@@ -10,14 +9,14 @@ import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFact
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
-import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunityFilterSubscriber;
+import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunityFirstTimeSubscriber;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunitySubscriber;
-import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 /**
  * Created by nisie on 3/2/17.
@@ -29,6 +28,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
     private GetOpportunityUseCase getOpportunityUseCase;
     private GetOpportunityFilterUseCase getFilterUseCase;
+    private GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase;
     private GetOpportunityListParam opportunityParam;
     private SessionHandler sessionHandler;
 
@@ -53,35 +53,31 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
         this.sessionHandler = new SessionHandler(viewListener.getActivity());
 
+        this.getOpportunityFirstTimeUseCase = new GetOpportunityFirstTimeUseCase(
+                new JobExecutor(), new UIThread(), getOpportunityUseCase, getFilterUseCase
+        );
+
     }
 
     @Override
     public void getOpportunity() {
         viewListener.showLoadingList();
-        getOpportunityUseCase.execute(getOpportunityParam(), new GetOpportunitySubscriber(viewListener));
+        viewListener.disableView();
+        getOpportunityUseCase.execute(GetOpportunityUseCase.getRequestParam(
+                viewListener.getPage(),
+                opportunityParam.getQuery(),
+                opportunityParam.getKeySort(),
+                opportunityParam.getSort(),
+                opportunityParam.getListFilter()
+        ), new GetOpportunitySubscriber(viewListener));
 
-    }
-
-    private RequestParams getOpportunityParam() {
-        RequestParams param = RequestParams.create();
-        param.putString(GetOpportunityUseCase.PAGE, String.valueOf(viewListener.getPage()));
-        param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
-        if (opportunityParam.getQuery() != null)
-            param.putString(GetOpportunityUseCase.QUERY, opportunityParam.getQuery());
-        if (opportunityParam.getSort() != null && opportunityParam.getKeySort() != null)
-            param.putString(opportunityParam.getKeySort(), opportunityParam.getSort());
-        if (opportunityParam.getListFilter() != null && opportunityParam.getListFilter().size() > 0) {
-            for (FilterPass filterPass : opportunityParam.getListFilter()) {
-                param.putString(filterPass.getKey(), filterPass.getValue());
-            }
-        }
-        return param;
     }
 
     @Override
     public void unsubscribeObservable() {
         getOpportunityUseCase.unsubscribe();
         getFilterUseCase.unsubscribe();
+        getOpportunityFirstTimeUseCase.unsubscribe();
     }
 
     @Override
@@ -90,21 +86,18 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     }
 
     @Override
-    public void getFilter() {
-        if (needsToRefresh())
-            getFilterUseCase.execute(getOpportunityFilterParam(),
-                    new GetOpportunityFilterSubscriber(viewListener));
+    public void initOpportunityForFirstTime() {
+        viewListener.showLoadingList();
+        viewListener.disableView();
+        getOpportunityFirstTimeUseCase.execute(
+                GetOpportunityFirstTimeUseCase.getRequestParam(
+                        1,
+                        opportunityParam.getQuery(),
+                        opportunityParam.getKeySort(),
+                        opportunityParam.getSort(),
+                        opportunityParam.getListFilter(),
+                        sessionHandler.getShopID()),
+                new GetOpportunityFirstTimeSubscriber(viewListener));
     }
-
-    private RequestParams getOpportunityFilterParam() {
-        RequestParams params = RequestParams.create();
-        params.putString(GetOpportunityFilterUseCase.SHOP_ID, sessionHandler.getShopID());
-        return params;
-    }
-
-    private boolean needsToRefresh() {
-        return viewListener.isFilterEmpty();
-    }
-
 
 }

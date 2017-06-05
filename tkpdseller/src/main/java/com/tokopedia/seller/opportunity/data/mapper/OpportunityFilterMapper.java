@@ -3,7 +3,7 @@ package com.tokopedia.seller.opportunity.data.mapper;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
+import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -11,15 +11,15 @@ import rx.functions.Func1;
 /**
  * Created by nisie on 3/6/17.
  */
-public class OpportunityFilterMapper implements Func1<Response<TkpdResponse>, OpportunityCategoryModel> {
+public class OpportunityFilterMapper implements Func1<Response<TkpdResponse>, OpportunityFilterModel> {
 
     @Override
-    public OpportunityCategoryModel call(Response<TkpdResponse> response) {
+    public OpportunityFilterModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
-    private OpportunityCategoryModel mappingResponse(Response<TkpdResponse> response) {
-        OpportunityCategoryModel model = new OpportunityCategoryModel();
+    private OpportunityFilterModel mappingResponse(Response<TkpdResponse> response) {
+        OpportunityFilterModel model = new OpportunityFilterModel();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 OpportunityCategoryData data = response.body().convertDataObj(OpportunityCategoryData.class);

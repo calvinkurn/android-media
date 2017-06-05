@@ -1,11 +1,16 @@
 package com.tokopedia.seller.opportunity.domain.interactor;
 
+import android.support.annotation.Nullable;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 
@@ -36,4 +41,24 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
     }
 
 
+    public static RequestParams getRequestParam(int page,
+                                                @Nullable String query,
+                                                @Nullable String key_sort,
+                                                @Nullable String sort,
+                                                @Nullable ArrayList<FilterPass> listFilter
+                                                ) {
+        RequestParams param = RequestParams.create();
+        param.putString(GetOpportunityUseCase.PAGE, String.valueOf(page));
+        param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
+        if (query != null)
+            param.putString(GetOpportunityUseCase.QUERY, query);
+        if (sort != null && key_sort != null)
+            param.putString(key_sort, sort);
+        if (listFilter != null && listFilter.size() > 0) {
+            for (FilterPass filterPass : listFilter) {
+                param.putString(filterPass.getKey(), filterPass.getValue());
+            }
+        }
+        return param;
+    }
 }
