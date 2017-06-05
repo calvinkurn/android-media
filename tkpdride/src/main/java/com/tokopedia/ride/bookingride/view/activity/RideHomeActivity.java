@@ -375,7 +375,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             }
         } else if (requestCode == RideHomeActivity.LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(this)) {
-                Toast.makeText(this, "Login Cancelled", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 mPresenter.initialize();
