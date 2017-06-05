@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
@@ -40,6 +42,14 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     private Bundle bundleData;
 
     ProductInfoResultReceiver mReceiver;
+
+    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ProductInfoActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
