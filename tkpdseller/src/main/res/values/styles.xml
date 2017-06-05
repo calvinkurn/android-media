@@ -303,7 +303,6 @@
     <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
         <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
         <item name="android:drawablePadding">8dp</item>
-        <item name="android:completionThreshold">1</item>
         <item name="android:inputType">textNoSuggestions</item>
     </style>
 
