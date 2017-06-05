@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -23,7 +25,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
 
-    int totalProductAd;
+    private int totalProductAd;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -66,6 +68,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 onKeywordLabelClicked();
             }
         });
+
+        if (TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD)) {
+            keywordLabelView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -135,22 +141,14 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
-    boolean adStatusChanged = false;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-        }
         super.onActivityResult(requestCode, resultCode, intent);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adStatusChanged) {
-            loadData();
-            adStatusChanged = false;
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                loadData();
+            }
         }
     }
 

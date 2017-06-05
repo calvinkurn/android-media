@@ -593,7 +593,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             return;
         }

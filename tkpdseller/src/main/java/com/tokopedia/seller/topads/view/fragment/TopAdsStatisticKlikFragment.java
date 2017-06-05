@@ -18,7 +18,7 @@ public class TopAdsStatisticKlikFragment extends TopAdsStatisticFragment {
 
     @Override
     public float getValueData(Cell cell) {
-        return (float)cell.getClickSum();
+        return (float) cell.getClickSum();
     }
 
     @Override

@@ -445,6 +445,8 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE          = "autocomplete";
         String SEARCH_HOTLIST               = "hotlist";
         String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
+
+        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
     }
 
     interface MOENGAGE {

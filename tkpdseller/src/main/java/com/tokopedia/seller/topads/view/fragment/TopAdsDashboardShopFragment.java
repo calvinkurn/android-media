@@ -22,8 +22,8 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     protected static final int REQUEST_CODE_AD_STATUS = 2;
 
-    View shopAdView;
-    View shopAdEmptyView;
+    private View shopAdView;
+    private View shopAdEmptyView;
 
     private ShopAd shopAd;
 
@@ -83,29 +83,18 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     private void populateShop() {
-        if (startDate == null && endDate == null) {
-            startDate = datePickerPresenter.getStartDate();
-            endDate = datePickerPresenter.getEndDate();
-        }
         presenter.populateShopAd(startDate, endDate);
     }
 
-    boolean adStatusChanged = false;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adStatusChanged) {
-            populateShop();
-            adStatusChanged = false;
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                populateShop();
+            }
         }
     }
 

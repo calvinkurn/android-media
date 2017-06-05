@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 /**
@@ -40,9 +42,16 @@ public class TopAdsAdapterTypeFactory implements TopAdsTypeFactory {
     }
 
     @Override
+    public int type(LoadingViewModel viewModel) {
+        return LoadingViewHolder.LAYOUT;
+    }
+
+    @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup view, int viewType) {
         if (viewType == TopAdsViewHolder.LAYOUT) {
             return new TopAdsViewHolder(view, itemClickListener);
+        } else if(viewType == LoadingViewHolder.LAYOUT){
+            return new LoadingViewHolder(view);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

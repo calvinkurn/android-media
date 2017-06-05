@@ -16,13 +16,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.BaseCustomView;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
 /**
  * Created by nathan on 04/05/17.
  */
 
-public class SpinnerTextView extends FrameLayout {
+public class SpinnerTextView extends BaseCustomView {
 
     public interface OnItemChangeListener {
 
@@ -150,7 +151,7 @@ public class SpinnerTextView extends FrameLayout {
     }
 
     public String getSpinnerValue() {
-        if (values == null) {
+        if (values == null || selectionIndex < 0) {
             return null;
         }
         return values[selectionIndex].toString();
@@ -211,35 +212,5 @@ public class SpinnerTextView extends FrameLayout {
 
     public EditText getEditText() {
         return textAutoComplete;
-    }
-
-    @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
-    }
-
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.initChildrenStates();
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
-        }
-        return ss;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
-        }
     }
 }

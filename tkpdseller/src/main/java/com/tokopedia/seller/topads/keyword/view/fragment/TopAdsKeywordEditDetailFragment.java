@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +114,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     private KeywordAd collectDataFromView() {
-        keywordAd.setKeywordTypeId(getTopAdsKeywordTypeId());
+        if (!TextUtils.isEmpty(topAdsKeywordType.getSpinnerValue())) {
+            keywordAd.setKeywordTypeId(topAdsKeywordType.getSpinnerValue());
+        }
         keywordAd.setKeywordTag(getTopAdsKeywordText());
         keywordAd.setPriceBidFmt(getTopAdsCostPerClick());
         return keywordAd;
@@ -143,9 +146,5 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void showError(String detail) {
         NetworkErrorHelper.showSnackbar(getActivity(), detail);
-    }
-
-    public String getTopAdsKeywordTypeId() {
-        return topAdsKeywordType.getSpinnerValue();
     }
 }

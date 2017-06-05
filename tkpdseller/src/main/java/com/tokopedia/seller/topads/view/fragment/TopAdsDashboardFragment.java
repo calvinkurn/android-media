@@ -28,7 +28,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static final int REQUEST_CODE_ADD_KREDIT = TopAdsDashboardFragment.class.hashCode();
+    private static final int REQUEST_CODE_ADD_CREDIT = 1;
     private SwipeToRefresh swipeToRefresh;
     private ImageView shopIconImageView;
     private TextView shopTitleTextView;
@@ -129,7 +129,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         });
     }
 
-    public void loadData() {
+    protected void loadData() {
         swipeToRefresh.setRefreshing(true);
         dateLabelView.setDate(startDate, endDate);
         presenter.populateSummary(startDate, endDate);
@@ -267,13 +267,13 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     void goToAddCredit() {
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_ADD_KREDIT);
+        startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT) {
+        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_CREDIT) {
             if (callback != null) {
                 callback.onCreditAdded();
             }

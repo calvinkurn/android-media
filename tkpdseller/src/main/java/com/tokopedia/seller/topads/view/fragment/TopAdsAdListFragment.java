@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
@@ -33,6 +34,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,12 +47,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         void startShowCase();
     }
 
+    protected static final String EXTRA_STATUS = "EXTRA_STATUS";
+    protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
+
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
     private DateLabelView dateLabelView;
 
+    protected int status;
     protected String keyword;
 
     boolean adsStatusChanged;
@@ -107,9 +113,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 openDatePicker();
             }
         });
-        swipeToRefresh.setProgressViewOffset(false,
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override
@@ -245,7 +248,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -280,5 +283,22 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     public RecyclerView getRecyclerView() {
         return recyclerView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_STATUS, status);
+        outState.putString(EXTRA_KEYWORD, keyword);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        status = savedInstanceState.getInt(EXTRA_STATUS);
+        keyword = savedInstanceState.getString(EXTRA_KEYWORD);
     }
 }

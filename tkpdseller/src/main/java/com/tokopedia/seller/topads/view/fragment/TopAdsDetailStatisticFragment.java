@@ -45,10 +45,6 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
         click = (LabelView) view.findViewById(R.id.click);
         ctr = (LabelView) view.findViewById(R.id.ctr);
         favorite = (LabelView) view.findViewById(R.id.favorite);
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-
     }
 
     protected void initDateLabelView(View view) {
@@ -59,9 +55,6 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
                 openDatePicker();
             }
         });
-        swipeToRefresh.setProgressViewOffset(false,
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override

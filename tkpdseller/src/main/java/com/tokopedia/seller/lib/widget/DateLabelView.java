@@ -18,7 +18,7 @@ import java.util.Locale;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class DateLabelView extends FrameLayout {
+public class DateLabelView extends BaseCustomView {
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
     private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";

@@ -111,6 +111,16 @@ public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextV
     public void lockView(){
         setEnabled(false);
         setVisibleDrawableRight(true);
+        dismissDropDown();
     }
 
+    public void performFiltering(CharSequence text){
+        super.performFiltering(text, 0);
+    }
+
+    @Override
+    public boolean enoughToFilter() {
+        return true;
+    }
 }
+

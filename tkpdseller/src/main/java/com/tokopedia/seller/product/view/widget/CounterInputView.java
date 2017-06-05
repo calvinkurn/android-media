@@ -14,12 +14,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.BaseCustomView;
 
 /**
  * Created by nathan on 04/05/17.
  */
 
-public class CounterInputView extends FrameLayout {
+public class CounterInputView extends BaseCustomView {
 
     private static final int DEFAULT_MIN_VALUE = 0;
     private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
@@ -195,36 +196,6 @@ public class CounterInputView extends FrameLayout {
 
     public EditText getEditText() {
         return decimalInputView.getEditText();
-    }
-
-    @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
-    }
-
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.initChildrenStates();
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
-        }
-        return ss;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
-        }
     }
 
     public void setMaxLength(int maxLengthInput) {

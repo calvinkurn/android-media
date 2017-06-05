@@ -79,9 +79,13 @@ public interface WishListView {
 
     void loadDataChange();
 
+    void setEmptyState();
+
     void setAdapter();
 
-    void displayMainContent(boolean isShow);
+    void displayContentList(boolean isShow);
+
+    void setSearchNotFound();
 
     void displayLoading(boolean isShow);
 
@@ -99,5 +103,5 @@ public interface WishListView {
 
     String getUserId();
 
-    void clearSearch();
+    void clearSearchView();
 }

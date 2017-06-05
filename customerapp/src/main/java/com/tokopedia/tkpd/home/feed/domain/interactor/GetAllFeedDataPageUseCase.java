@@ -11,14 +11,13 @@ import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
-import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func3;
+import rx.functions.Func2;
 
 /**
  * @author kulomady on 12/8/16.
@@ -30,14 +29,12 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     private final FeedRepository feedRepository;
     private final GetRecentProductUsecase getRecentProductUsecase;
     private final GetListShopIdUseCase getListShopIdUseCase;
-    private final GetTopAdsUseCase getTopAdsUseCase;
 
     public GetAllFeedDataPageUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      FeedRepository feedRepository,
                                      GetRecentProductUsecase getRecentProductUsecase,
-                                     GetListShopIdUseCase getListShopIdUseCase,
-                                     GetTopAdsUseCase getTopAdsUseCase) {
+                                     GetListShopIdUseCase getListShopIdUseCase) {
 
         super(threadExecutor, postExecutionThread);
         this.threadExecutor = threadExecutor;
@@ -45,25 +42,18 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         this.feedRepository = feedRepository;
         this.getRecentProductUsecase = getRecentProductUsecase;
         this.getListShopIdUseCase = getListShopIdUseCase;
-        this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
 
     @Override
     public Observable<DataFeed> createObservable(RequestParams requestParams) {
-        return Observable.zip(
-                getRecentProductObservable(),
-                getFeedObservable(),
-                getTopAdsObservable(),
-                new Func3<List<ProductFeed>, Feed, List<TopAds>, DataFeed>() {
-                    @Override
-                    public DataFeed call(List<ProductFeed> products,
-                                         Feed feed, List<TopAds> topAds) {
-
-                        return getValidDataFeed(products, feed, topAds);
-                    }
-                }
-        ).onErrorReturn(new Func1<Throwable, DataFeed>() {
+        return Observable.zip(getRecentProductObservable(), getFeedObservable(),
+                new Func2<List<ProductFeed>, Feed, DataFeed>() {
+            @Override
+            public DataFeed call(List<ProductFeed> productFeeds, Feed feed) {
+                return getValidDataFeed(productFeeds, feed);
+            }
+        }).onErrorReturn(new Func1<Throwable, DataFeed>() {
             @Override
             public DataFeed call(Throwable throwable) {
                 return getInvalidDataFeed();
@@ -72,7 +62,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     @NonNull
-    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed, List<TopAds> topAds) {
+    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed) {
         DataFeed dataFeed = new DataFeed();
         if (products == null) {
             dataFeed.setRecentProductError(true);
@@ -86,7 +76,6 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         } else {
             dataFeed.setFeed(feed);
         }
-        dataFeed.setTopAds(topAds);
         dataFeed.setValid(true);
         return dataFeed;
     }
@@ -149,25 +138,6 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                         return feed;
                     }
                 });
-    }
-
-    private Observable<List<TopAds>> getTopAdsObservable() {
-        return getTopAdsUseCase.createObservable(getTopAdsDefaultParams())
-                .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
-                    @Override
-                    public List<TopAds> call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        return Collections.emptyList();
-                    }
-                });
-    }
-
-    private RequestParams getTopAdsDefaultParams() {
-        RequestParams params = RequestParams.create();
-        params.putString(GetTopAdsUseCase.KEY_PAGE,GetTopAdsUseCase.TOPADS_PAGE_DEFAULT_VALUE);
-        params.putString(GetTopAdsUseCase.KEY_ITEM,GetTopAdsUseCase.TOPADS_ITEM_DEFAULT_VALUE);
-        params.putString(GetTopAdsUseCase.KEY_SRC,GetTopAdsUseCase.SRC_PRODUCT_FEED);
-        return params;
     }
 
     @NonNull
