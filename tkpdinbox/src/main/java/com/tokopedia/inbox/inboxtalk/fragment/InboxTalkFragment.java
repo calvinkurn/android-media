@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxtalk.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -63,6 +64,14 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
+    public static Fragment createInstance(String nav, Boolean forceUnread) {
+        Bundle bundle = new Bundle();
+        InboxTalkFragment fragment = new InboxTalkFragment();
+        bundle.putString("nav", nav);
+        bundle.putBoolean("unread", forceUnread);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public void onErrorAction(Bundle resultData, int resultCode) {
         adapter.onErrorAction(resultData, resultCode);
@@ -88,6 +97,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onCreate(savedInstanceState);
         items = new ArrayList<>();
         adapter = InboxTalkAdapter.createAdapter(getActivity(), this, items, false, true, presenter);
+
     }
 
     @Override
@@ -96,9 +106,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         displayLoading(true);
         requestFromCache();
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
     }
 
     @Override
@@ -467,4 +483,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         }
 
     }
+
+
 }

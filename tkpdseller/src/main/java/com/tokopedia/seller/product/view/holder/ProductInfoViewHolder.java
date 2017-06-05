@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -309,13 +310,17 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         }
     }
 
+    public Pair<Boolean, String> checkWithPreviousNameBeforeCopy(String productNameBeforeCopy) {
+        if (nameEditText.getText().toString().equals(productNameBeforeCopy)) {
+            return setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_copy_duplicate));
+        }
+        return new Pair<>(true, "");
+    }
+
     @Override
     public Pair<Boolean, String> isDataValid() {
         if (TextUtils.isEmpty(getName())) {
-            nameTextInputLayout.setError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
-            nameTextInputLayout.clearFocus();
-            nameTextInputLayout.requestFocus();
-            return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME);
+            return setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
         }
         if (categoryId < 0) {
             Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
@@ -325,6 +330,14 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
         }
         return new Pair<>(true, "");
+    }
+
+    @NonNull
+    private Pair<Boolean, String> setNameError(String errorMessage) {
+        nameTextInputLayout.setError(errorMessage);
+        nameTextInputLayout.clearFocus();
+        nameTextInputLayout.requestFocus();
+        return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME);
     }
 
     @Override

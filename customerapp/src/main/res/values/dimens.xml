@@ -2,4 +2,7 @@
 <resources>
     <dimen name="banner_margin">-42dp</dimen>
     <dimen name="promo_image_height">145dp</dimen>
+    <dimen name="icon_official_store_size">35dp</dimen>
+    <dimen name="icon_official_store_margin">11dp</dimen>
+    <dimen name="icon_official_store_margin_l">15dp</dimen>
 </resources>
