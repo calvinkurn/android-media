@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
@@ -107,9 +108,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 openDatePicker();
             }
         });
-        swipeToRefresh.setProgressViewOffset(false,
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override
@@ -245,7 +243,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
