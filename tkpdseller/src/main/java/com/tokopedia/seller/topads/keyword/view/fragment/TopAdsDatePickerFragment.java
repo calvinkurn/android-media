@@ -3,9 +3,6 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
@@ -18,9 +15,11 @@ import java.util.Date;
  */
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
-    public static final String START_DATE = "start_date";
-    public static final String END_DATE = "end_date";
+    private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
+    private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
+
     private static final int REQUEST_CODE_DATE = 5;
+
     protected Date startDate;
     protected Date endDate;
     protected DatePickerResultListener datePickerResultListener;
@@ -85,17 +84,19 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (startDate != null && endDate != null) {
-            outState.putLong(START_DATE, startDate.getTime());
-            outState.putLong(END_DATE, endDate.getTime());
+            outState.putLong(EXTRA_START_DATE, startDate.getTime());
+            outState.putLong(EXTRA_END_DATE, endDate.getTime());
         }
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        if (startDate == null && endDate == null) {
-            startDate = new Date(savedState.getLong(START_DATE));
-            endDate = new Date(savedState.getLong(END_DATE));
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
         }
+        startDate = new Date(savedInstanceState.getLong(EXTRA_START_DATE));
+        endDate = new Date(savedInstanceState.getLong(EXTRA_END_DATE));
     }
 
     @Override
