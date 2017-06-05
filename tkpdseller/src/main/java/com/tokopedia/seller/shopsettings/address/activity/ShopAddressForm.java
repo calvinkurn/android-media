@@ -3,6 +3,7 @@ package com.tokopedia.seller.shopsettings.address.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -616,7 +617,9 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void onError(Throwable e) {
-                mProgressDialog.dismiss();
+                if (mProgressDialog!= null) {
+                    mProgressDialog.dismiss();
+                }
                 NetworkErrorHelper.showEmptyState(ShopAddressForm.this, rootView, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -627,13 +630,16 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void onNext(Response<TkpdResponse> responseData) {
-                Log.d("alifa", "onNext: ");
+                if (mProgressDialog!= null) {
+                    mProgressDialog.dismiss();
+                }
+
                 TkpdResponse response = responseData.body();
 
                 JSONObject jsonObject = null;
                 try {
                     List<String> errorMessages = response.getErrorMessages();
-                    if (errorMessages!= null && errorMessages.size() > 0) {
+                    if (errorMessages!= null && errorMessages.size() > 0 && !TextUtils.isEmpty( errorMessages.get(0))) {
                         String responses = "";
                         for (int i = 0; i < response.getErrorMessages().size(); i++) {
                             responses += response.getErrorMessages().get(i) + " ";
@@ -665,9 +671,6 @@ public class ShopAddressForm extends TActivity {
 
                 } catch (JSONException je) {
 
-                }
-                finally {
-                    mProgressDialog.dismiss();
                 }
             }
         };
