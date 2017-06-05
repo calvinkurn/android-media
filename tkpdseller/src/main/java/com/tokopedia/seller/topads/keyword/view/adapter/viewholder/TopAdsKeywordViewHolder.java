@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
@@ -19,6 +20,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
     private final TextView pricePromoPerClick;
     private final TextView promoPriceUsed;
     private final TextView groupName;
+    private final View statusActiveDot;
 
     public TopAdsKeywordViewHolder(View itemView) {
         super(itemView);
@@ -27,6 +29,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         pricePromoPerClick = (TextView) itemView.findViewById(R.id.price_promo_per_click);
         promoPriceUsed = (TextView) itemView.findViewById(R.id.promo_price_used);
         groupName = (TextView) itemView.findViewById(R.id.group_name);
+        statusActiveDot = itemView.findViewById(R.id.status_active_dot);
 
     }
 
@@ -45,6 +48,15 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getPriceBidFmt()));
         promoPriceUsed.setText(datum.getStatTotalSpent());
         groupName.setText(datum.getGroupName());
+
+        switch (datum.getStatus()) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+                statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);
+                break;
+            default:
+                statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
+                break;
+        }
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
