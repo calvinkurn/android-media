@@ -163,55 +163,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     }
 
-    private Uri simplifyUrl(String url) {
-        Uri afUri = Uri.parse(url);
-        String newUri = afUri.getQueryParameter("af_dp");
-        Map<String, String> maps = splitQuery(afUri);
-        for (Map.Entry<String, String> imap : maps.entrySet()) {
-            switch (imap.getKey()) {
-                case "utm_source":
-                    newUri += "&utm_source=" + imap.getValue();
-                    break;
-                case "utm_medium":
-                    newUri += "&utm_medium=" + imap.getValue();
-                    break;
-                case "utm_term":
-                    newUri += "&utm_term=" + imap.getValue();
-                    break;
-                case "utm_content":
-                    newUri += "&utm_content=" + imap.getValue();
-                    break;
-                case "utm_campaign":
-                    newUri += "&utm_campaign=" + imap.getValue();
-                    break;
-                case "gclid":
-                    newUri += "&gclid=" + imap.getValue();
-                    break;
-            }
-        }
-        return Uri.parse(newUri);
-    }
-
-    private Map<String, String> splitQuery(Uri url) {
-        Map<String, String> queryPairs = new LinkedHashMap<>();
-        String query = url.getQuery();
-        if (!TextUtils.isEmpty(query)) {
-            String[] pairs = query.split("&|\\?");
-            for (String pair : pairs) {
-                int indexKey = pair.indexOf("=");
-                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
-                    try {
-                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
-                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return queryPairs;
-    }
-
     private boolean isExcludedUrl(Uri uriData) {
         if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
             List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
