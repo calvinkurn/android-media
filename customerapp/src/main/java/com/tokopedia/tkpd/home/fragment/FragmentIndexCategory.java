@@ -648,7 +648,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     public void openWebViewTopPicksURL(String url) {
-        if (url != "") {
+        if (!url.isEmpty()) {
             startActivity(TopPicksWebView.newInstance(getActivity(), url));
         }
     }
