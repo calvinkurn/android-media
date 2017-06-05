@@ -90,6 +90,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeEditText.OnButtonPickerListener,
         RechargeView, AdapterView.OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, View.OnTouchListener {
+    private static final String EXTRA_CHECKOUT_PASS_DATA = "EXTRA_CHECKOUT_PASS_DATA";
 
     //region final static member variable
     private static final String TAG = "RechargeFragment";
@@ -181,14 +182,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null)
             digitalCheckoutPassDataState = savedInstanceState.getParcelable(
-                    "EXTRA_CHECKOUT_PASS_DATA"
+                    EXTRA_CHECKOUT_PASS_DATA
             );
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("EXTRA_CHECKOUT_PASS_DATA", digitalCheckoutPassDataState);
+        outState.putParcelable(EXTRA_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
     }
 
     @Override
