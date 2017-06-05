@@ -1944,5 +1944,5 @@ di Tokopedia Sekarang!</string>
 
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
-    <string name="error_data_not_found">Data tidak ditemukan. Silakan coba lagi.</string>
+    <string name="error_data_not_found">Data tidak ditemukan.</string>
 </resources>

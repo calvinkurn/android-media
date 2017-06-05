@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -32,7 +33,6 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
 
-import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarEmptyWithAction;
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
 /**
@@ -225,14 +225,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onAdEmpty() {
         hideLoading();
-        snackbarRetry = createSnackbarEmptyWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                refreshAd();
-            }
-        });
-        snackbarRetry.showRetrySnackbar();
-        getActivity().invalidateOptionsMenu();
+        CommonUtils.UniversalToast(getActivity(),getString(R.string.error_data_not_found));
+        getActivity().finish();
     }
 
     @Override
