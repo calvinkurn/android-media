@@ -108,7 +108,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             card_view:display_type="grid"
-            card_view:show_loading="false"
             card_view:ep="shop"
             card_view:items="2" />
 

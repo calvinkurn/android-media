@@ -17,6 +17,7 @@ import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 import java.util.List;
@@ -34,10 +35,10 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private Context context;
-    private DividerItemDecoration itemDecoration;
     private static final int DEFAULT_SPAN_COUNT = 2;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
+    private DisplayMode displayMode;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
@@ -50,8 +51,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
-        itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
-        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -61,6 +60,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         List<Item> list = element.getList();
         if (list.size() > 0) {
             adsHeader.setVisibility(View.VISIBLE);
+            switchDisplay(list.get(0));
         }
         adapter.setList(list);
     }
@@ -74,14 +74,23 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         }
     }
 
-    public void setDisplayMode(int displayMode) {
+    public void setDisplayMode(DisplayMode displayMode) {
+        this.displayMode = displayMode;
+    }
+
+    private void switchDisplay(Item item){
         switch (displayMode) {
-            case DisplayMode.GRID:
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
+            case FEED:
+                if(item instanceof ShopFeedViewModel){
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                } else {
+                    recyclerView.setLayoutManager(gridLayoutManager);
+                }
+                break;
+            case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);
                 break;
-            case DisplayMode.LIST:
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
+            case LIST:
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
