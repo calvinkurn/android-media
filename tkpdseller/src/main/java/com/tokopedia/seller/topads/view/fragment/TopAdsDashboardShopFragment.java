@@ -83,10 +83,6 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     private void populateShop() {
-        if (startDate == null && endDate == null) {
-            startDate = datePickerPresenter.getStartDate();
-            endDate = datePickerPresenter.getEndDate();
-        }
         presenter.populateShopAd(startDate, endDate);
     }
 

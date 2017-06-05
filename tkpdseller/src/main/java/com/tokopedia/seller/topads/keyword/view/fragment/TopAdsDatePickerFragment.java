@@ -15,8 +15,6 @@ import java.util.Date;
  */
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
-    private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
-    private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
 
     private static final int REQUEST_CODE_DATE = 5;
 
@@ -78,25 +76,6 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, REQUEST_CODE_DATE);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (startDate != null && endDate != null) {
-            outState.putLong(EXTRA_START_DATE, startDate.getTime());
-            outState.putLong(EXTRA_END_DATE, endDate.getTime());
-        }
-    }
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null) {
-            return;
-        }
-        startDate = new Date(savedInstanceState.getLong(EXTRA_START_DATE));
-        endDate = new Date(savedInstanceState.getLong(EXTRA_END_DATE));
     }
 
     @Override

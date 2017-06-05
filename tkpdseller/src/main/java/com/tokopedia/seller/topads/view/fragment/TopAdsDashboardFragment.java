@@ -28,7 +28,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static final int REQUEST_CODE_ADD_CREDIT = TopAdsDashboardFragment.class.hashCode();
+    private static final int REQUEST_CODE_ADD_CREDIT = 1;
     private SwipeToRefresh swipeToRefresh;
     private ImageView shopIconImageView;
     private TextView shopTitleTextView;
@@ -129,7 +129,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         });
     }
 
-    public void loadData() {
+    protected void loadData() {
         swipeToRefresh.setRefreshing(true);
         dateLabelView.setDate(startDate, endDate);
         presenter.populateSummary(startDate, endDate);
