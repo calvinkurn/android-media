@@ -130,7 +130,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
