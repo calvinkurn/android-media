@@ -295,4 +295,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         super.onDestroy();
         drawerDataManager.unsubscribe();
     }
+
+
 }

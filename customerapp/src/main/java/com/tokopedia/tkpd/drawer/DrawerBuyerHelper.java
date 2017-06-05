@@ -502,7 +502,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
+                PeopleInfoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
@@ -510,23 +510,27 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopPoints(String topPointsUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", URLGenerator.generateURLLucky(topPointsUrl, context));
-        Intent intent = new Intent(context, LoyaltyDetail.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
+        if (topPointsUrl != null && topPointsUrl.equals("")) {
+            Bundle bundle = new Bundle();
+            bundle.putString("url", URLGenerator.generateURLLucky(topPointsUrl, context));
+            Intent intent = new Intent(context, LoyaltyDetail.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
+        }
     }
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        String seamlessURL;
-        seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-        Bundle bundle = new Bundle();
-        bundle.putString("url", seamlessURL);
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, bundle);
+        if (topCashUrl != null && topCashUrl.equals("")) {
+            String seamlessURL;
+            seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
+            Bundle bundle = new Bundle();
+            bundle.putString("url", seamlessURL);
+            if (context.getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) context.getApplication())
+                        .goToWallet(context, bundle);
+            }
         }
 
     }

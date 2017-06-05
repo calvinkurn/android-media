@@ -32,6 +32,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
@@ -317,6 +318,9 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     context.startActivity(new Intent(context, SellerHomeActivity.class));
+                    break;
+                case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
+                    context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransaction(context);
