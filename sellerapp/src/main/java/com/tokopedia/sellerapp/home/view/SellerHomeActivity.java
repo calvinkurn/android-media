@@ -43,8 +43,6 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tkpd.library.utils.network.ManyRequestErrorException;
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -216,12 +214,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     SnackbarRetry snackbarRetryUndefinite;
     @BindView(R.id.widget_shop_score)
     ShopScoreWidget shopScoreWidget;
+    @BindString(R.string.message_exception_description)
+    String messageExceptionDescription;
     private boolean isInit = false;
     private SellerHomePresenterImpl presenter;
     private SessionHandler sessionHandler;
-
-    @BindString(R.string.message_exception_description)
-    String messageExceptionDescription;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -503,12 +500,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     protected void showMessageError(Throwable e) {
-        if (e instanceof MessageErrorException) {
-            Snackbar.make(activitySellerHome, messageExceptionDescription, Snackbar.LENGTH_LONG).show();
-        }else{
-            if (snackbarRetryUndefinite != null) {
-                snackbarRetryUndefinite.showRetrySnackbar();
-            }
+        if (snackbarRetryUndefinite != null) {
+            snackbarRetryUndefinite.showRetrySnackbar();
         }
     }
 
