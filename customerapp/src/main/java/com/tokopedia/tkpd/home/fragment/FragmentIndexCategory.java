@@ -125,7 +125,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
 
     private ViewHolder holder;
-    private Model model;
     private Runnable tickerIncrementPage;
     private Handler tickerHandler;
     Category category;
@@ -327,7 +326,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void initVar() {
         category = new CategoryImpl(getActivity(), this);
         holder = new ViewHolder();
-        model = new Model();
         tickerAdapter = TickerAdapter.createInstance(getActivity(), this);
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
@@ -519,17 +517,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         } else {
             onGimmicClicked(itemModel);
         }
-//        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-//            startActivityForResult(((IDigitalModuleRouter) getActivity().getApplication())
-//                    .instanceIntentDigitalProduct(
-//                            new DigitalCategoryDetailPassData.Builder()
-//                                    .appLinks(itemModel.getAppLinks())
-//                                    .categoryId(itemModel.getCategoryId())
-//                                    .categoryName(itemModel.getName())
-//                                    .url(itemModel.getRedirectValue())
-//                                    .build()
-//                    ), IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL);
-//        }
     }
 
     private void navigateToGimmicWebview(String url, String label) {
