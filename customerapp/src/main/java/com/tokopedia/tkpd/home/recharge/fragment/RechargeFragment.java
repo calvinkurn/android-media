@@ -427,7 +427,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     goToNativeCheckout();
             }
         } else {
-            gotoLogin();
+            if (selectedProduct == null) {
+                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
+                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+            } else {
+                gotoLogin();
+            }
         }
     }
     //endregion
@@ -644,9 +649,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void showProductById(Product product) {
         selectedProduct = product;
-        if (checkStockProduct(selectedProduct))
-            goToNativeCheckout();
-//            goToCheckout(getUrlCheckout());
+        if (SessionHandler.isV4Login(getActivity())) {
+            if (checkStockProduct(selectedProduct))
+                goToNativeCheckout();
+        } else {
+            gotoLogin();
+        }
     }
 
     @Override
