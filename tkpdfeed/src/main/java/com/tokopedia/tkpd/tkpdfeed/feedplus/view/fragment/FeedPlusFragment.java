@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -57,6 +59,11 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
@@ -71,7 +78,8 @@ import javax.inject.Inject;
 
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        TopAdsItemClickListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -89,6 +97,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
+    private static final String TAG = FeedPlusFragment.class.getSimpleName();
 
     @Override
     protected String getScreenName() {
@@ -126,8 +135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .topAdsParams(generateTopAdsParams())
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
-//        topAdsRecyclerAdapter.setAdsItemClickListener(this);
-//        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -146,7 +154,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        recyclerviewScrollListener = onRecyclerViewListener();
     }
 
     private GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
@@ -187,32 +194,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
-//        recyclerView.addOnScrollListener(recyclerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
-
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.fetchFirstPage();
-    }
-
-
-    private EndlessRecyclerviewListener onRecyclerViewListener() {
-        return new EndlessRecyclerviewListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                int size = adapter.getlist().size();
-                int lastIndex = size-1;
-                if (!adapter.isLoading() && !(adapter.getlist().get(0) instanceof EmptyModel)
-                                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                        )
-                    presenter.fetchNextPage();
-            }
-        };
     }
 
     @Override
@@ -348,8 +337,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
-//        adapter.removeLoading();
-//        adapter.notifyDataSetChanged();
+        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -389,19 +377,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         presenter.setCursor(currentCursor);
     }
 
-    @Override
-    public void showLoading() {
-//        adapter.showLoading();
-//        adapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
-//        finishLoading();
-//        adapter.removeEmpty();
-        topAdsRecyclerAdapter.hideLoading();
+        adapter.removeEmpty();
         adapter.addList(listFeed);
-//        adapter.notifyDataSetChanged();
+        finishLoading();
     }
 
 
@@ -451,4 +432,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Data dataShop) {
+        Log.d(TAG, "onAddFavorite "+dataShop.getShop().getName());
+    }
 }

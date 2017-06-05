@@ -55,15 +55,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
-//        if (checkDataSize(position)) {
-//            return list.get(position).type(typeFactory);
-//        } else {
-//            return super.getItemViewType(position);
-//        }
-    }
-
-    private boolean checkDataSize(int position) {
-        return list != null && list.size() > 0 && position > -1 && position < list.size();
     }
 
     @Override
@@ -76,8 +67,9 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addList(List<Visitable> list) {
+        int positionStart = getItemCount();
         this.list.addAll(list);
-        notifyItemRangeInserted(getItemCount(), list.size());
+        notifyItemRangeInserted(positionStart, list.size());
     }
 
     public void clearData() {
