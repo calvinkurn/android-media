@@ -61,8 +61,6 @@ public interface FeedPlus{
 
         void updateCursor(String currentCursor);
 
-        void showLoading();
-
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
         void onSeePromo(String link);
