@@ -59,10 +59,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void processDeepLinkAction(Uri uriData) {
 
-        List<String> linkSegment = uriData.getPathSegments();
         String screenName;
         int type = getDeepLinkType(uriData);
-        CommonUtils.dumper("FCM wvlogin deeplink type " + type);
         switch (type) {
             case TOPADS:
                 openTopAds(uriData);
@@ -249,12 +247,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Intent intentToLaunch = null;
         String shopId = SessionHandler.getShopID(context);
         if (TextUtils.isEmpty(shopId)) {
-            // goto beranda
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
         }
         else if (TextUtils.isEmpty(type)){
-            // goto Top Ads Dashboard
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);
         }
@@ -271,8 +267,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         context.startActivity(intentToLaunch);
         context.finish();
-
-        CommonUtils.dumper("TOPADS segment "+uriData.getQuery());
 
     }
 
