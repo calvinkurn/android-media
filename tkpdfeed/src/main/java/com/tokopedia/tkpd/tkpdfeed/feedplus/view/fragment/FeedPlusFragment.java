@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
@@ -25,7 +27,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.CustomerRouter;
@@ -34,6 +38,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
@@ -49,6 +54,11 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +87,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private CallbackManager callbackManager;
     private List<Visitable> list;
     private TopAdsInfoBottomSheet infoBottomSheet;
+    private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
+    private static final String TOPADS_ITEM = "4";
 
     @Override
     protected String getScreenName() {
@@ -102,12 +114,60 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .withPreferedCategory()
+                .setEndpoint(Endpoint.RANDOM)
+                .displayMode(DisplayMode.FEED)
+                .topAdsParams(generateTopAdsParams())
+                .build();
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
+//        topAdsRecyclerAdapter.setAdsItemClickListener(this);
+//        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
+        topAdsRecyclerAdapter.setConfig(config);
+
+        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
+            @Override
+            public void onLoad(int page, int totalCount) {
+                int size = adapter.getlist().size();
+                int lastIndex = size-1;
+                if (!(adapter.getlist().get(0) instanceof EmptyModel)
+                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                        )
+                    presenter.fetchNextPage();
+            }
+        });
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         recyclerviewScrollListener = onRecyclerViewListener();
+    }
+
+    private GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (topAdsRecyclerAdapter.isTopAdsViewHolder(position)
+                        || topAdsRecyclerAdapter.isLoading(position)) {
+                    return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
+                } else {
+                    return ProductFeedHelper.PORTRAIT_COLUMN;
+                }
+            }
+        };
+    }
+
+    private TopAdsParams generateTopAdsParams() {
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.SRC_PRODUCT_FEED);
+        params.getParam().put(TopAdsParams.KEY_ITEM, TOPADS_ITEM);
+        return params;
     }
 
     @Nullable
@@ -126,10 +186,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(recyclerviewScrollListener);
+        recyclerView.setAdapter(topAdsRecyclerAdapter);
+//        recyclerView.addOnScrollListener(recyclerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
+
     }
 
     @Override
@@ -279,7 +340,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (listFeed.size() == 0) {
             adapter.showEmpty();
         } else {
-            adapter.addList(listFeed);
+            adapter.setList(listFeed);
         }
         adapter.notifyDataSetChanged();
     }
@@ -287,8 +348,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
-        adapter.removeLoading();
-        adapter.notifyDataSetChanged();
+//        adapter.removeLoading();
+//        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -330,16 +391,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
-        adapter.showLoading();
-        adapter.notifyDataSetChanged();
+//        adapter.showLoading();
+//        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
-        finishLoading();
-        adapter.removeEmpty();
+//        finishLoading();
+//        adapter.removeEmpty();
+        topAdsRecyclerAdapter.hideLoading();
         adapter.addList(listFeed);
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
     }
 
 

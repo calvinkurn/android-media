@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-
         return typeFactory.createViewHolder(view, viewType);
     }
 
@@ -55,6 +55,15 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
+//        if (checkDataSize(position)) {
+//            return list.get(position).type(typeFactory);
+//        } else {
+//            return super.getItemViewType(position);
+//        }
+    }
+
+    private boolean checkDataSize(int position) {
+        return list != null && list.size() > 0 && position > -1 && position < list.size();
     }
 
     @Override
@@ -64,12 +73,11 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void setList(List<Visitable> list) {
         this.list = list;
-        notifyDataSetChanged();
     }
 
     public void addList(List<Visitable> list) {
         this.list.addAll(list);
-        notifyItemInserted(list.size());
+        notifyItemRangeInserted(getItemCount(), list.size());
     }
 
     public void clearData() {

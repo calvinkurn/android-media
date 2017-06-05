@@ -65,7 +65,7 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchNextPage() {
-        viewListener.showLoading();
+//        viewListener.showLoading();
         getFeedsUseCase.execute(
                 getFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
                 new GetFeedsSubscriber(viewListener));
