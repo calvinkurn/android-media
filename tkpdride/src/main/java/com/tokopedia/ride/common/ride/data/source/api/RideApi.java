@@ -6,6 +6,7 @@ import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
+import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
@@ -21,6 +22,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -77,4 +79,9 @@ public interface RideApi {
 
     @GET(RideUrl.PRODUCT)
     Observable<ProductEntity> getProduct(@QueryMap TKPDMapParam<String, Object> params);
+
+
+    @POST(RideUrl.RIDE_RATING)
+    @FormUrlEncoded
+    Observable<String> sendRating(@Query("request_id") String requestId, @FieldMap TKPDMapParam<String, Object> parameters);
 }

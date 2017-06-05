@@ -14,9 +14,11 @@ import java.util.List;
 
 public class RideHistoryEntityMapper {
     private RideRequestEntityMapper rideRequestEntityMapper;
+    private RatingEntityMapper ratingEntityMapper;
 
     public RideHistoryEntityMapper() {
         rideRequestEntityMapper = new RideRequestEntityMapper();
+        ratingEntityMapper = new RatingEntityMapper();
     }
 
     public List<RideHistory> transform(List<RideHistoryEntity> rideHistoryEntities) {
@@ -51,6 +53,7 @@ public class RideHistoryEntityMapper {
             rideHistory.setCashbackAmount(entity.getCashbackAmount());
             rideHistory.setDiscountAmount(entity.getDiscountAmount());
             rideHistory.setRequestTime(entity.getRequestTime());
+            rideHistory.setRating(ratingEntityMapper.transform(entity.getRating()));
         }
         return rideHistory;
     }

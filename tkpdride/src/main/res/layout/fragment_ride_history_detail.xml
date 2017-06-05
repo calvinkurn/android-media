@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context="com.tokopedia.ride.history.view.RideHistoryDetailFragment">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -13,6 +13,7 @@
             android:id="@+id/top_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="40dp"
             android:visibility="visible">
 
             <android.support.v7.widget.AppCompatImageView
@@ -293,16 +294,26 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
 
+                android:layout_below="@+id/rl_payment_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    layout="@layout/layout_rate_trip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
         </RelativeLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/layout_need_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?attr/selectableItemBackground"
+        android:background="@color/white"
         android:gravity="center"
         android:padding="12dp">
 

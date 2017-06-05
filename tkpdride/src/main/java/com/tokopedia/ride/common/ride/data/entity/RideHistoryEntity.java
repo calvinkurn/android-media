@@ -8,44 +8,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class RideHistoryEntity {
-    /*
-     * {
-     "payment": {
-     "currency_code": "IDR",
-     "amount": 75000
-     },
-     "driver": {
-     "name": "John",
-     "phone_number": "(555)555-5555",
-     "picture_url": "https://d1a3f4spazzrp4.cloudfront.net/uberex-sandbox/images/driver.jpg",
-     "rating": 4.9
-     },
-     "guest": {
-     "phone_number": "+14150001234",
-     "first_name": "Jane",
-     "last_name": "Smith",
-     "email": "jane.smith@email.com"
-     },
-     "pickup": {
-     "latitude": -6.1901543,
-     "longitude": 106.7986657
-     },
-     "destination": {
-     "latitude": -6.1713426,
-     "longitude": 106.8237374
-     },
-     "product_id": "89da0988-cb4f-4c85-b84f-aac2f5115068",
-     "request_id": "aa48107a-b8ea-4538-82a4-0be351f6cac4",
-     "shared": false,
-     "status": "accepted",
-     "vehicle": {
-     "license_plate": "UBER-PLATE",
-     "make": "Toyota",
-     "model": "Prius",
-     "picture_url": "https://d1a3f4spazzrp4.cloudfront.net/uberex-sandbox/images/prius.jpg"
-     }
-     }
-     */
 
     @SerializedName("payment")
     @Expose
@@ -86,6 +48,10 @@ public class RideHistoryEntity {
     @SerializedName("create_time")
     @Expose
     String requestTime;
+
+    @SerializedName("rating")
+    @Expose
+    RatingEntity rating;
 
     public RideHistoryEntity() {
     }
@@ -140,5 +106,9 @@ public class RideHistoryEntity {
 
     public float getCashbackAmount() {
         return cashbackAmount;
+    }
+
+    public RatingEntity getRating() {
+        return rating;
     }
 }

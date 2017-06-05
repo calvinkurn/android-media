@@ -24,6 +24,7 @@ import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
+import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.view.CompleteTripContract;
 import com.tokopedia.ride.completetrip.view.CompleteTripPresenter;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -181,11 +182,36 @@ public class CompleteTripDependencyInjection {
         String userId = sessionHandler.getLoginID();
         GetReceiptUseCase getReceiptUseCase = injection.provideGetReceiptUseCase(token, userId);
         GetRideRequestDetailUseCase getRideRequestDetailUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
-        return new CompleteTripPresenter(getReceiptUseCase, getRideRequestDetailUseCase);
+        GiveDriverRatingUseCase giveDriverRatingUseCase = injection.provideGiveDriverRatingUseCase(token, userId);
+        return new CompleteTripPresenter(getReceiptUseCase, getRideRequestDetailUseCase, giveDriverRatingUseCase);
     }
 
     private GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
         return new GetRideRequestDetailUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GiveDriverRatingUseCase provideGiveDriverRatingUseCase(String token, String userId) {
+        return new GiveDriverRatingUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(

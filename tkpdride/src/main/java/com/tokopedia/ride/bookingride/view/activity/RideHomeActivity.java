@@ -377,6 +377,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             if (!SessionHandler.isV4Login(this)) {
                 finish();
             } else {
+                mPresenter = RideHomeDependencyInjection.createPresenter(this);
+                mPresenter.attachView(this);
                 mPresenter.initialize();
             }
         } else if (requestCode == RIDE_PHONE_VERIFY_REQUEST_CODE) {

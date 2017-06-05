@@ -7,6 +7,7 @@ import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
+import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
@@ -116,5 +117,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getAddresses(parameters);
+    }
+
+    @Override
+    public Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters) {
+        return mRideApi.sendRating(requestId, parameters);
     }
 }

@@ -13,8 +13,11 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
+import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
@@ -83,6 +87,12 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     TextView cashbackLableTextView;
     @BindView(R2.id.tv_cashback)
     TextView cashbackValueTextView;
+    @BindView(R2.id.rb_rate_star)
+    RatingBar rateStarRatingBar;
+    @BindView(R2.id.et_rate_comment)
+    EditText rateCommentEditText;
+    @BindView(R2.id.rate_confirmation)
+    Button rateConfirmationButton;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
@@ -166,6 +176,30 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                         vehiclePictImageView.setImageDrawable(roundedBitmapDrawable);
                     }
                 });
+
+
+        rateConfirmationButton.setEnabled(false);
+        rateStarRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                if (ratingBar.getRating() > 0.0) {
+                    rateConfirmationButton.setEnabled(true);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                    } else {
+                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                    }
+                } else {
+                    rateConfirmationButton.setEnabled(false);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                    } else {
+                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -279,5 +313,27 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         fragmentTransaction.addToBackStack(null);
         DialogFragment dialogFragment = UberSignupDialogFragment.newInstance(this.receipt.getUberSignupTermsUrl());
         dialogFragment.show(getFragmentManager().beginTransaction(), "uber_singup_dialog");
+    }
+
+    @OnClick(R2.id.rate_confirmation)
+    public void actionRateConfirmClicked() {
+        presenter.actionSendRating();
+    }
+
+    @Override
+    public RequestParams getRatingParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_COMMENT, getRateComment());
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_REQUEST_ID, requestId);
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_STARS, getRateStars());
+        return requestParams;
+    }
+
+    private String getRateStars() {
+        return String.valueOf(Float.floatToIntBits(rateStarRatingBar.getRating()));
+    }
+
+    private String getRateComment() {
+        return rateCommentEditText.getText().toString().trim();
     }
 }

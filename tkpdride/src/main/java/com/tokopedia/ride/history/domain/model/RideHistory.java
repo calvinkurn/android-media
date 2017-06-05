@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
+import com.tokopedia.ride.common.ride.domain.model.Rating;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 /**
@@ -24,6 +25,36 @@ public class RideHistory implements Parcelable {
     private String requestTime;
     private float cashbackAmount;
     private float discountAmount;
+    private Rating rating;
+
+
+    protected RideHistory(Parcel in) {
+        requestId = in.readString();
+        productId = in.readString();
+        status = in.readString();
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        driver = in.readParcelable(Driver.class.getClassLoader());
+        pickup = in.readParcelable(LocationLatLng.class.getClassLoader());
+        destination = in.readParcelable(LocationLatLng.class.getClassLoader());
+        shared = in.readByte() != 0;
+        payment = in.readParcelable(Payment.class.getClassLoader());
+        requestTime = in.readString();
+        cashbackAmount = in.readFloat();
+        discountAmount = in.readFloat();
+        rating = in.readParcelable(Rating.class.getClassLoader());
+    }
+
+    public static final Creator<RideHistory> CREATOR = new Creator<RideHistory>() {
+        @Override
+        public RideHistory createFromParcel(Parcel in) {
+            return new RideHistory(in);
+        }
+
+        @Override
+        public RideHistory[] newArray(int size) {
+            return new RideHistory[size];
+        }
+    };
 
     public String getRequestId() {
         return requestId;
@@ -125,17 +156,12 @@ public class RideHistory implements Parcelable {
 
     }
 
-    protected RideHistory(Parcel in) {
-        requestId = in.readString();
-        productId = in.readString();
-        status = in.readString();
-        vehicle = (Vehicle) in.readValue(Vehicle.class.getClassLoader());
-        driver = (Driver) in.readValue(Driver.class.getClassLoader());
-        pickup = (LocationLatLng) in.readValue(LocationLatLng.class.getClassLoader());
-        destination = (LocationLatLng) in.readValue(LocationLatLng.class.getClassLoader());
-        shared = in.readByte() != 0x00;
-        payment = (Payment) in.readValue(Payment.class.getClassLoader());
-        requestTime = in.readString();
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
     }
 
     @Override
@@ -144,29 +170,19 @@ public class RideHistory implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(requestId);
-        dest.writeString(productId);
-        dest.writeString(status);
-        dest.writeValue(vehicle);
-        dest.writeValue(driver);
-        dest.writeValue(pickup);
-        dest.writeValue(destination);
-        dest.writeByte((byte) (shared ? 0x01 : 0x00));
-        dest.writeValue(payment);
-        dest.writeString(requestTime);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(requestId);
+        parcel.writeString(productId);
+        parcel.writeString(status);
+        parcel.writeParcelable(vehicle, i);
+        parcel.writeParcelable(driver, i);
+        parcel.writeParcelable(pickup, i);
+        parcel.writeParcelable(destination, i);
+        parcel.writeByte((byte) (shared ? 1 : 0));
+        parcel.writeParcelable(payment, i);
+        parcel.writeString(requestTime);
+        parcel.writeFloat(cashbackAmount);
+        parcel.writeFloat(discountAmount);
+        parcel.writeParcelable(rating, i);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<RideHistory> CREATOR = new Parcelable.Creator<RideHistory>() {
-        @Override
-        public RideHistory createFromParcel(Parcel in) {
-            return new RideHistory(in);
-        }
-
-        @Override
-        public RideHistory[] newArray(int size) {
-            return new RideHistory[size];
-        }
-    };
 }

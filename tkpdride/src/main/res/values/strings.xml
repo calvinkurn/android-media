@@ -115,4 +115,7 @@
     <string name="label_discount">Discount</string>
     <string name="label_cashback">Cashback</string>
     <string name="open_map_done">DONE</string>
+    <string name="trip_completed_rate_your_ride">Rate Your Ride</string>
+    <string name="complete_trip_write_comments">Write comments...</string>
+    <string name="complete_trip_submit">SUBMIT</string>
 </resources>

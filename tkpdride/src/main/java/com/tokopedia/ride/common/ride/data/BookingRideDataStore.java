@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
+import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
@@ -51,4 +52,6 @@ public interface BookingRideDataStore {
     Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters);
 }
