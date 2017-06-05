@@ -39,4 +39,7 @@
     <color name="wholesale_color">#89000000</color>
     
     <color name="black_twenty_five_percent">#40000000</color>
+
+    <!-- tooltip statistic-->
+    <color name="grey_title_topads_statistic">#a3a3a3</color>
 </resources>

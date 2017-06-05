@@ -148,6 +148,14 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     }
 
     private void setChooseGroupListener() {
+        autoCompleteChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean isFocus) {
+                if(isFocus) {
+                    topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+                }
+            }
+        });
         autoCompleteChooseGroup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -302,7 +310,8 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
-        adapterChooseGroup.getFilter().filter(autoCompleteChooseGroup.getText());
+        autoCompleteChooseGroup.performFiltering(autoCompleteChooseGroup.getText());
+        autoCompleteChooseGroup.showDropDown();
     }
 
     @Override

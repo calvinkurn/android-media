@@ -55,9 +55,6 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
                 openDatePicker();
             }
         });
-        swipeToRefresh.setProgressViewOffset(false,
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset),
-                getResources().getDimensionPixelSize(R.dimen.top_ads_refresher_date_offset_end));
     }
 
     @Override

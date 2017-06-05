@@ -45,7 +45,6 @@ import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
-import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -602,10 +601,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        productInfoViewHolder.onRestoreInstanceState(savedInstanceState);
-        productImageViewHolder.onRestoreInstanceState(savedInstanceState);
-        productDetailViewHolder.onRestoreInstanceState(savedInstanceState);
-        productAdditionalInfoViewHolder.onRestoreInstanceState(savedInstanceState);
+        productInfoViewHolder.onViewStateRestored(savedInstanceState);
+        productImageViewHolder.onViewStateRestored(savedInstanceState);
+        productDetailViewHolder.onViewStateRestored(savedInstanceState);
+        productAdditionalInfoViewHolder.onViewStateRestored(savedInstanceState);
 
     }
 

@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -66,6 +68,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 onKeywordLabelClicked();
             }
         });
+
+        if (TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD)) {
+            keywordLabelView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

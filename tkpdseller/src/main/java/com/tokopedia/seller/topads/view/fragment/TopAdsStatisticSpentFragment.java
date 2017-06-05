@@ -28,6 +28,6 @@ public class TopAdsStatisticSpentFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return cell.getCostSumFmt();
+        return getString(R.string.tooltip_statistic_use, cell.getCostSumFmt());
     }
 }
