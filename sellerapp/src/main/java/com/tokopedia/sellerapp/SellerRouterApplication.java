@@ -11,7 +11,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -20,6 +19,7 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
@@ -28,8 +28,6 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -86,8 +84,9 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToMerchantRedirect(Context context) {
-        //no route to merchant redirect on seller, go to default
-        goToDefaultRoute(context);
+        Intent intent = new Intent(context,
+                GmSubscribeHomeActivity.class);
+        context.startActivity(intent);
     }
 
     @Override

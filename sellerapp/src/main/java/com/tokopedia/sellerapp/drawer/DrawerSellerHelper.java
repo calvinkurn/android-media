@@ -105,7 +105,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
         data.add(new DrawerItem("Hubungi Kami",
-                R.drawable.ic_contact_us,
+                R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
