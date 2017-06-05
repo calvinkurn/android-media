@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/17/17.
  */
 
-public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordNewChooseGroupActivity extends TActivity implements HasComponent<AppComponent> {
 
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
 

@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddActivity extends BaseActivity
+public class TopAdsKeywordAddActivity extends TActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
