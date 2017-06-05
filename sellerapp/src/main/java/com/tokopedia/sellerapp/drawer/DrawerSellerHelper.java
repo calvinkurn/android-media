@@ -368,6 +368,11 @@ public class DrawerSellerHelper extends DrawerHelper
                 default:
                     super.onItemClicked(item);
             }
+
+            if (item.getId() != TkpdState.DrawerPosition.INDEX_HOME
+                    && item.getId() != TkpdState.DrawerPosition.LOGOUT) {
+                context.finish();
+            }
             closeDrawer();
         }
     }

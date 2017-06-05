@@ -45,11 +45,20 @@ public class ProfileSubscriber extends Subscriber<ProfileModel> {
 
     private DrawerProfile convertToViewModel(ProfileData profileData) {
         DrawerProfile drawerProfile = new DrawerProfile();
-        drawerProfile.setShopAvatar(profileData.getShopInfo().getShopAvatar());
-        drawerProfile.setShopCover(profileData.getShopInfo().getShopCover());
-        drawerProfile.setShopName(profileData.getShopInfo().getShopName());
-        drawerProfile.setUserAvatar(profileData.getUserInfo().getUserImage());
-        drawerProfile.setUserName(profileData.getUserInfo().getUserName());
+        if (profileData.getShopInfo() != null) {
+            if (profileData.getShopInfo().getShopAvatar() != null)
+                drawerProfile.setShopAvatar(profileData.getShopInfo().getShopAvatar());
+            if (profileData.getShopInfo().getShopCover() != null)
+                drawerProfile.setShopCover(profileData.getShopInfo().getShopCover());
+            if (profileData.getShopInfo().getShopName() != null)
+                drawerProfile.setShopName(profileData.getShopInfo().getShopName());
+        }
+        if (profileData.getUserInfo() != null) {
+            if (profileData.getUserInfo().getUserImage() != null)
+                drawerProfile.setUserAvatar(profileData.getUserInfo().getUserImage());
+            if (profileData.getUserInfo().getUserName() != null)
+                drawerProfile.setUserName(profileData.getUserInfo().getUserName());
+        }
         return drawerProfile;
     }
 }
