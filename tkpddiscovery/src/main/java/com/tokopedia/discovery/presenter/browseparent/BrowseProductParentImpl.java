@@ -226,7 +226,9 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 break;
             case DiscoveryListener.BROWSE_PRODUCT:
                 browseProductModel = (BrowseProductModel) data.getModel2().body();
-                view.setDefaultGridTypeFromNetwork(browseProductModel.getCategoryData().getView());
+                if (browseProductModel.getCategoryData() != null) {
+                    view.setDefaultGridTypeFromNetwork(browseProductModel.getCategoryData().getView());
+                }
                 browseProductModel.hotListBannerModel = hotListBannerModel;
                 if (browseProductModel.result.redirect_url == null) {
                     // if has catalog, show three tabs
