@@ -527,7 +527,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     private Observable<List<Product>> getObservableNetworkListProduct() {
         return rechargeService.getApi().getProduct()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
                 .doOnNext(storeResponseProductToDb())
                 .flatMap(new Func1<Response<ProductData>, Observable<List<Product>>>() {
                     @Override
@@ -538,9 +538,10 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     }
 
     private Observable<List<Product>> getObservableDbListProduct() {
+
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
                 .map(new Func1<Boolean, List<Product>>() {
                     @Override
                     public List<Product> call(Boolean condition) {
