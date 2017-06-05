@@ -18,11 +18,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -43,13 +42,12 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-    private SnackbarRetry snackBarRetry;
-    private ProgressDialog progressDialog;
-    private RecyclerView.OnScrollListener onScrollListener;
-
     protected int status;
     protected int page;
     protected int totalItem;
+    private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
+    private RecyclerView.OnScrollListener onScrollListener;
     private boolean searchMode;
 
     public TopAdsBaseListFragment() {
@@ -107,8 +105,10 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem) {
+                if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem &&
+                        totalItem != Integer.MAX_VALUE) {
                     searchAd(page + 1);
+                    adapter.showRetryFull(false);
                     adapter.showLoading(true);
                 }
             }
@@ -145,6 +145,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
             @Override
             public void onRetryCliked() {
                 hideLoading();
+                adapter.showRetryFull(false);
                 adapter.showLoadingFull(true);
                 searchAd(START_PAGE);
             }
@@ -166,6 +167,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected void loadData() {
         page = START_PAGE;
         adapter.clearData();
+        adapter.showRetryFull(false);
         adapter.showLoadingFull(true);
         searchAd();
     }
@@ -216,10 +218,12 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         } else {
             recyclerView.removeOnScrollListener(onScrollListener);
             adapter.showRetryFull(true);
+            swipeToRefresh.setEnabled(false);
         }
     }
 
     private void hideLoading() {
+        swipeToRefresh.setEnabled(true);
         adapter.showLoading(false);
         adapter.showLoadingFull(false);
         adapter.showEmptyFull(false);

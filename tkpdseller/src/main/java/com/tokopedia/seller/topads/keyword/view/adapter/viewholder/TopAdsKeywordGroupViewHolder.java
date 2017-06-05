@@ -30,7 +30,7 @@ public class TopAdsKeywordGroupViewHolder extends RecyclerView.ViewHolder {
                 if (groupAd != null) {
                     groupAd.setSelected(!groupAd.isSelected());
                     if (groupAd.isSelected()) {
-                        listener.notifySelect(groupAd, getAdapterPosition());
+                        listener.notifySelect(groupAd);
                     }
                 }
             }

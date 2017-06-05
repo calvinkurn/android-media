@@ -26,9 +26,9 @@ import java.util.List;
  *         just move to new architecture.
  */
 public abstract class TopAdsFilterActivity extends BaseActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
+    protected TopAdsFilterListFragment topAdsFilterListFragment;
+    protected List<Fragment> filterContentFragmentList;
     Fragment currentContentFragment;
-    private TopAdsFilterListFragment topAdsFilterListFragment;
-    private List<Fragment> filterContentFragmentList;
     private Button submitButton;
 
     protected abstract List<Fragment> getFilterContentList();
@@ -149,5 +149,17 @@ public abstract class TopAdsFilterActivity extends BaseActivity implements TopAd
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public <C extends Fragment> C getCurrentFragment(int position, Class<C> classType) {
+        if (filterContentFragmentList != null && filterContentFragmentList.size() > 0) {
+            if (position >= 0 && position <= filterContentFragmentList.size() - 1) {
+                return classType.cast(filterContentFragmentList.get(position));
+            } else {
+                throw new RuntimeException("please pass valid position");
+            }
+        } else {
+            throw new RuntimeException("empty fragment list");
+        }
     }
 }

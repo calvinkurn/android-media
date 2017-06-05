@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,16 +18,16 @@ import android.widget.ImageView;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     };
     private View hideThings;
     private PopupMenu popupMenu;
+    private TopAdsKeywordGroupListListener groupListAdapterListener;
 
     public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
         TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
@@ -90,6 +92,14 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+        super.initialListener(activity);
+        if (activity != null && activity instanceof TopAdsKeywordGroupListListener) {
+            groupListAdapterListener = (TopAdsKeywordGroupListListener) activity;
+        }
     }
 
     @Override
@@ -133,6 +143,12 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
+    protected void initView(View view) {
+        super.initView(view);
+        swipeToRefresh.setEnabled(false);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
@@ -155,13 +171,11 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        return null;
-    }
-
-    @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         onSearchAdLoaded(groupAds, groupAds.size());
+        if (selection != null) {
+            notifySelect(selection);
+        }
     }
 
     @Override
@@ -205,7 +219,11 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void notifySelect(GroupAd groupAd, int adapterPosition) {
+    public void notifySelect(GroupAd groupAd) {
+        if (groupListAdapterListener != null) {
+            groupListAdapterListener.notifySelect(groupAd);
+        }
+
         this.selection = groupAd;
         groupFilterSearch.removeTextChangedListener(textWatcher);
         groupFilterSearch.setText(groupAd.getName());
@@ -223,6 +241,11 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     protected void enableSelection() {
+        if (groupListAdapterListener != null) {
+            groupListAdapterListener.resetSelection();
+        }
+
+        selection = null;
         groupFilterSearch.setFocusableInTouchMode(true);
         groupFilterSearch.setEnabled(true);
         groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
@@ -231,10 +254,5 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
         groupFilterSearch.setText("");
         recyclerView.setVisibility(View.VISIBLE);
         hideThings.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public boolean isSelection(GroupAd groupAd) {
-        return selection != null && selection.equals(groupAd);
     }
 }
