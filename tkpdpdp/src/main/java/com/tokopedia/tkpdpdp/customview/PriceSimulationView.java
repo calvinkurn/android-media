@@ -77,7 +77,8 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
             String installmentMinPercentage = data.getInfo().getInstallmentMinPercentage();
             String bunga = getContext().getString(R.string.bunga);
             String installmentMinPrice = data.getInfo().getInstallmentMinPrice();
-            String installment = bunga + installmentMinPercentage + mulaiDari + installmentMinPrice;
+            String installment = bunga + " " + installmentMinPercentage + " " + mulaiDari
+                    + " " + installmentMinPrice;
             tvInstallment.setText(installment);
             isInstallment = true;
             installmentLayout.setOnClickListener(new OnClickListener() {
