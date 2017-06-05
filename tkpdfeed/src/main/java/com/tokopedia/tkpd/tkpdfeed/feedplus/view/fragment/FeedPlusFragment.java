@@ -64,6 +64,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
@@ -79,7 +80,8 @@ import javax.inject.Inject;
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener,
+        TopAdsListener{
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -136,6 +138,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -382,7 +385,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
         adapter.removeEmpty();
         adapter.addList(listFeed);
-        finishLoading();
     }
 
 
@@ -450,5 +452,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(Data dataShop) {
         Log.d(TAG, "onAddFavorite "+dataShop.getShop().getName());
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        finishLoading();
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        finishLoading();
     }
 }

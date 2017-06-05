@@ -12,7 +12,7 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
     // The total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
     private boolean loading = true;
-    private int visibleThreshold = 6;
+    private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
     private int startingPageIndex = 0;
     private int currentPage = 0;
