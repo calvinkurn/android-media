@@ -482,7 +482,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCategoryClicked(CategoryItemModel categoryItemModel, int position) {
-        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null){
+        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null) {
             TrackingUtils.sendMoEngageClickMainCategoryIcon(categoryItemModel.getName());
             navigateToNextActivity(categoryItemModel.getRedirectValue(), categoryItemModel.getName());
         }
@@ -502,7 +502,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
             DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                     .appLinks(itemModel.getAppLinks())

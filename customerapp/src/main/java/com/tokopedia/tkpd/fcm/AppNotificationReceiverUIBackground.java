@@ -148,22 +148,34 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
+                break;
+            default:
+                ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                applinkBuildAndShowNotification.showApplinkNotification(data);
                 break;
         }
 
-        saveApplinkPushNotification(
-                category,
-                convertBundleToJsonString(data),
-                customIndex,
-                serverId,
-                new SavePushNotificationCallback()
-        );
+
     }
 
 
@@ -201,7 +213,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(applink);
     }
 
