@@ -80,8 +80,7 @@ import javax.inject.Inject;
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener,
-        TopAdsListener{
+        TopAdsItemClickListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -138,7 +137,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -340,7 +338,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
-        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -454,13 +451,4 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Log.d(TAG, "onAddFavorite "+dataShop.getShop().getName());
     }
 
-    @Override
-    public void onTopAdsLoaded() {
-        finishLoading();
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        finishLoading();
-    }
 }

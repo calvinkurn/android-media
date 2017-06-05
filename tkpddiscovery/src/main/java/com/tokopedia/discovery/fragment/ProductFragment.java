@@ -85,7 +85,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -212,9 +212,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-//        if (!productAdapter.checkHasNext()) {
-//            topAdsRecyclerAdapter.hideLoading();
-//        }
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
 
@@ -416,7 +413,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setAdsInfoClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -653,13 +649,4 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         mRecyclerView.scrollToPosition(0);
     }
 
-    @Override
-    public void onTopAdsLoaded() {
-        topAdsRecyclerAdapter.hideLoading();
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
-    }
 }

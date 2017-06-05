@@ -60,7 +60,7 @@ import butterknife.BindView;
  * Created by Erry on 6/30/2016.
  */
 public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork,
-        TopAdsItemClickListener, TopAdsListener {
+        TopAdsItemClickListener {
     public static final int IDFRAGMENT = 123_348;
     public static final String INDEX = "FRAGMENT_INDEX";
 
@@ -242,7 +242,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseCatalogAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -388,13 +387,4 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         return defaultColumnNumber;
     }
 
-    @Override
-    public void onTopAdsLoaded() {
-        setLoading(false);
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        setLoading(false);
-    }
 }

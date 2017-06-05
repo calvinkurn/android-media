@@ -103,6 +103,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 break;
         }
+        hideLoading();
     }
 
     public void setConfig(Config config) {
