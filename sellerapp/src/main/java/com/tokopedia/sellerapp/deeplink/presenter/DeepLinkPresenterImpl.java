@@ -12,6 +12,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.SessionHandler;
@@ -134,7 +136,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void sendCampaignGTM(String campaignUri, String screenName) {
-
+        if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
+            return;
+        }
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
+        campaign.setScreenName(screenName);
+        UnifyTracking.eventCampaign(campaign);
+        UnifyTracking.eventCampaign(campaignUri);
     }
 
     @Override
@@ -202,31 +210,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
         }
         return queryPairs;
-    }
-
-    private boolean isValidCampaignUrl(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
-        return maps.containsKey("utm_source") &&
-                maps.containsKey("utm_medium") &&
-                maps.containsKey("utm_campaign");
-    }
-
-    private Campaign convertUrlCampaign(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
-        Campaign campaign = new Campaign();
-        campaign.setUtmSource(maps.get("utm_source") != null ?
-                maps.get("utm_source") : "");
-        campaign.setUtmMedium(maps.get("utm_medium") != null ?
-                maps.get("utm_medium") : "");
-        campaign.setUtmCampaign(maps.get("utm_campaign") != null ?
-                maps.get("utm_campaign") : "");
-        campaign.setUtmContent(maps.get("utm_content") != null ?
-                maps.get("utm_content") : "");
-        campaign.setUtmTerm(maps.get("utm_term") != null ?
-                maps.get("utm_term") : "");
-        campaign.setGclid(maps.get("gclid") != null ?
-                maps.get("gclid") : "");
-        return campaign;
     }
 
     private boolean isExcludedUrl(Uri uriData) {
