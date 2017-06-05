@@ -15,7 +15,6 @@ import java.util.Date;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment}
  */
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
@@ -30,6 +29,8 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     protected TopAdsDatePickerPresenter datePickerPresenter;
 
     protected abstract TopAdsDatePickerPresenter getDatePickerPresenter();
+
+    protected abstract void loadData();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,36 +55,9 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         }
     }
 
-    void loadDateFromPresenter() {
+    private void loadDateFromPresenter() {
         startDate = datePickerPresenter.getStartDate();
         endDate = datePickerPresenter.getEndDate();
-    }
-
-    protected abstract void loadData();
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (startDate != null && endDate != null) {
-            outState.putLong(START_DATE, startDate.getTime());
-            outState.putLong(END_DATE, endDate.getTime());
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            onRestoreState(savedInstanceState);
-        }
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    public void onRestoreState(Bundle savedState) {
-        if (startDate == null && endDate == null) {
-            startDate = new Date(savedState.getLong(START_DATE));
-            endDate = new Date(savedState.getLong(END_DATE));
-        }
     }
 
     @Override
@@ -99,13 +73,29 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         loadDateFromPresenter();
         datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
         datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
-
         loadData();
     }
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, REQUEST_CODE_DATE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (startDate != null && endDate != null) {
+            outState.putLong(START_DATE, startDate.getTime());
+            outState.putLong(END_DATE, endDate.getTime());
+        }
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        if (startDate == null && endDate == null) {
+            startDate = new Date(savedState.getLong(START_DATE));
+            endDate = new Date(savedState.getLong(END_DATE));
+        }
     }
 
     @Override
