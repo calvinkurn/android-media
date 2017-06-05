@@ -58,11 +58,6 @@ public class ReloginActivity extends AppCompatActivity
     }
 
     @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
     public void onErrorRelogin(String errorMessage) {
         Intent intent = new Intent();
         intent.putExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, errorMessage);

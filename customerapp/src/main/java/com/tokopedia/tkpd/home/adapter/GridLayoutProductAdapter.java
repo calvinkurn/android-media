@@ -46,7 +46,6 @@ import java.util.List;
  */
 public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
-    //test commit
     private static final String TAG = GridLayoutProductAdapter.class.getSimpleName();
     private List<RecyclerViewItem> data;
     private Context context;
