@@ -42,4 +42,6 @@ public interface BrowseProductParentView extends BaseView {
     BrowseProductModel getDataForBrowseProduct();
 
     NetworkParam.Product getProductParam();
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
 }

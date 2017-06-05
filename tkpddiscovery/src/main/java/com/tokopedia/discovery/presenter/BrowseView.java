@@ -66,4 +66,6 @@ public interface BrowseView {
 
     String getShareUrl();
     String getSource();
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
 }

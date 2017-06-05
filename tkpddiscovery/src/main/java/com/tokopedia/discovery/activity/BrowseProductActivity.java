@@ -592,6 +592,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
     }
 
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        browsePresenter.setDefaultGridTypeFromNetwork(viewType);
+    }
+
     public void removeEmptyState() {
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
         NetworkErrorHelper.removeEmptyState(container);

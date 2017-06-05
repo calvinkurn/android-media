@@ -47,4 +47,6 @@ public interface BrowsePresenter {
     void onRenderUpperCategoryLevel(String departmentId);
 
     void retrieveLastGridConfig(final String departmentId);
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
 }

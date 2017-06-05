@@ -122,6 +122,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         return presenter.getProductParam();
     }
 
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
         return newInstance(browseProductActivityModel, 0);
     }
