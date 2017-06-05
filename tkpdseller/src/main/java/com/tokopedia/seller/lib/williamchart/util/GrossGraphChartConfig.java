@@ -34,6 +34,8 @@ import java.text.DecimalFormat;
  * rename class to gross graph chart config because it belongs to gross graph.
  */
 public class GrossGraphChartConfig {
+    public static final int HEIGHT_TIP = 80;
+    public static final int WIDTH_TIP = 60;
     private String[] mLabels;
     private float[] mValues;
     private boolean mIsLineSmooth = true;
@@ -148,7 +150,7 @@ public class GrossGraphChartConfig {
 //                Typeface.createFromAsset(chart.getContext().getAssets(), "OpenSans-Semibold.ttf"));
 
         mTip.setVerticalAlignment(Tooltip.Alignment.BOTTOM_TOP);
-        mTip.setDimensions((int) Tools.fromDpToPx(80), (int) Tools.fromDpToPx(30));
+        mTip.setDimensions((int) Tools.fromDpToPx(HEIGHT_TIP), (int) Tools.fromDpToPx(WIDTH_TIP));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 
@@ -165,8 +167,11 @@ public class GrossGraphChartConfig {
         }
 
         chart.setTooltips(mTip);
-        chart.putYRndrStringFormatter(new YAxisRenderer());
+        chart.putYRndrStringFormatter(new TopAdsYAxisRenderer());
         chart.setDrawable(dotDrawable);
+
+        //give space for display tooltip
+        chart.setTopMargin((int) Tools.fromDpToPx(WIDTH_TIP));
 
         Paint mGridPaint = new Paint();
         mGridPaint.setColor(mGridColorId);

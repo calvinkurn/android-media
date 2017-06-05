@@ -203,4 +203,9 @@
         <attr name="feature_desc" format="string"/>
     </declare-styleable>
 
+    <!-- william chart tooltip -->
+    <declare-styleable name="TooltipPointerAttrs">
+        <attr name="tooltip_pointer_color" format="reference|color"/>
+    </declare-styleable>
+
 </resources>

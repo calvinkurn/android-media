@@ -23,11 +23,19 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.williamchart.listener.OnTooltipEventListener;
+import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 
 import java.text.DecimalFormat;
@@ -37,7 +45,6 @@ import java.text.DecimalFormat;
  * Class representing chart's tooltips. It works basically as a wrapper.
  */
 public class Tooltip extends RelativeLayout {
-
 
 	private Alignment mVerticalAlignment = Alignment.CENTER;
 
@@ -83,16 +90,12 @@ public class Tooltip extends RelativeLayout {
 		init();
 	}
 
-
 	public Tooltip(Context context, int layoutId) {
 
 		super(context);
 		init();
 
-		View layoutParent = inflate(getContext(), layoutId, null);
-		layoutParent.setLayoutParams(
-				  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		addView(layoutParent);
+		initView(context, layoutId);
 	}
 
 
@@ -101,10 +104,8 @@ public class Tooltip extends RelativeLayout {
 		super(context);
 		init();
 
-		View layoutParent = inflate(getContext(), layoutId, null);
-		layoutParent.setLayoutParams(
-				  new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		addView(layoutParent);
+		initView(context, layoutId);
+
 		mTooltipValue = (TextView) findViewById(valueId);
 	}
 
@@ -114,15 +115,18 @@ public class Tooltip extends RelativeLayout {
 		super(context);
 		init();
 
-		View layoutParent = inflate(getContext(), layoutId, null);
-		layoutParent.setLayoutParams(
-				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		addView(layoutParent);
+		initView(context, layoutId);
+
 		mTooltipValue = (TextView) findViewById(valueId);
 		this.stringFormatRenderer = stringFormatRenderer;
 	}
 
-
+	private void initView(Context context, int layoutId) {
+		View layoutParent = inflate(getContext(), layoutId, null);
+		layoutParent.setLayoutParams(
+				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		addView(layoutParent);
+	}
 
 	private void init() {
 
@@ -144,13 +148,13 @@ public class Tooltip extends RelativeLayout {
 	 * clicked {@link com.tokopedia.seller.lib.williamchart.model.ChartEntry}.
 	 * @param value Value of the entry.
 	 */
-	public void prepare(Rect rect, String value) {
+	public void prepare(Rect rect, TooltipModel value) {
 
 		// If no previous dimensions defined, the size of the area of the entry will be used.
 		int width = (mWidth == -1) ? rect.width() : mWidth;
 		int height = (mHeight == -1) ? rect.height() : mHeight;
 
-		LayoutParams layoutParams = new LayoutParams(width, height);
+		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, height);
 
 		// Adjust left coordinate of the tooltip based on the Alignment defined
 		if (mHorizontalAlignment == Alignment.RIGHT_LEFT)
@@ -178,7 +182,8 @@ public class Tooltip extends RelativeLayout {
 
 		setLayoutParams(layoutParams);
 
-		if (mTooltipValue != null) mTooltipValue.setText(stringFormatRenderer.formatString(String.valueOf(value)));
+
+		if (mTooltipValue != null) mTooltipValue.setText(stringFormatRenderer.formatString(String.valueOf(value.getValue())));
 	}
 
 
@@ -193,7 +198,7 @@ public class Tooltip extends RelativeLayout {
 	 */
 	public void correctPosition(int left, int top, int right, int bottom) {
 
-		final LayoutParams layoutParams = (LayoutParams) getLayoutParams();
+		final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
 
 		if (layoutParams.leftMargin < left) layoutParams.leftMargin = left;
 		if (layoutParams.topMargin < top) layoutParams.topMargin = top;
@@ -326,7 +331,6 @@ public class Tooltip extends RelativeLayout {
 		return this;
 	}
 
-
 	/**
 	 * Set the margins of the tooltip wrt entry.
 	 *
@@ -418,5 +422,4 @@ public class Tooltip extends RelativeLayout {
 		RIGHT_RIGHT,
 		LEFT_RIGHT
 	}
-
 }

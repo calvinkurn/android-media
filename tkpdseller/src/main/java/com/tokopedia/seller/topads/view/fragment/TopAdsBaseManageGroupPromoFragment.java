@@ -145,6 +145,14 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
             }
         });
         inputChooseGroup.setAdapter(adapterChooseGroup);
+        inputChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean isFocus) {
+                if(isFocus){
+                    presenter.searchGroupName("");
+                }
+            }
+        });
         inputChooseGroup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -224,7 +232,8 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
-        adapterChooseGroup.getFilter().filter(inputChooseGroup.getText());
+        inputChooseGroup.performFiltering(inputChooseGroup.getText());
+        inputChooseGroup.showDropDown();
     }
 
     @Override
