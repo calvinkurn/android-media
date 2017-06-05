@@ -79,6 +79,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String TOKOPEDIA_HOST = "tokopedia";
+    private static final String OVERRIDE_URL = "override_url";
     private final Activity context;
     private final DeepLinkView viewListener;
     SignInInteractor interactor;
@@ -308,7 +309,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
         String url = encodeUrl(uriData.toString());
         if (uriData.getQueryParameter("override_url") != null) {
-            openWebView(Uri.parse(url), uriData.getQueryParameter("override_url").equalsIgnoreCase("true"));
+            openWebView(Uri.parse(url), uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("true"));
         } else {
             openWebView(Uri.parse(url), false);
         }
