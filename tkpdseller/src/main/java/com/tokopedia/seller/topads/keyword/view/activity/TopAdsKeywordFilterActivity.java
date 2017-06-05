@@ -11,6 +11,7 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
+        implements HasComponent<AppComponent>, TopAdsKeywordGroupListListener {
 
     @KeywordStatusTypeDef
     private int selectedFilterStatus;
@@ -29,7 +31,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
-        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
+        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
     }
 
@@ -40,7 +42,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements
         topAdsFilterStatusFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
         TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(currentGroupAd);
-        topAdsFilterGroupNameFragment.setActive(true);
+        topAdsFilterGroupNameFragment.setActive(currentGroupAd != null);
         filterContentFragmentList.add(topAdsFilterGroupNameFragment);
         return filterContentFragmentList;
     }
@@ -61,5 +63,17 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void notifySelect(GroupAd groupAd) {
+        getCurrentFragment(1, TopAdsKeywordGroupsFragment.class).setActive(true);
+        topAdsFilterListFragment.setActive(1, true);
+    }
+
+    @Override
+    public void resetSelection() {
+        getCurrentFragment(1, TopAdsKeywordGroupsFragment.class).setActive(false);
+        topAdsFilterListFragment.setActive(1, false);
     }
 }
