@@ -65,6 +65,10 @@
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
+    <style name="TextView.TopAds.Body.LightGray">
+        <item name="android:textColor">@color/font_top_ads_black_38</item>
+    </style>
+
     <style name="TextView.TopAds.Body.Black">
         <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
