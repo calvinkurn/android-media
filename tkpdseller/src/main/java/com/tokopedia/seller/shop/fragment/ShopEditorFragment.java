@@ -20,8 +20,11 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
@@ -31,6 +34,8 @@ import com.tokopedia.seller.shop.presenter.ShopEditorView;
  * Created by Toped10 on 5/19/2016.
  */
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
+
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     EditText mShopNameText;
     EditText mShopSloganText;
@@ -64,8 +69,20 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     void showAboutGM() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gold.tokopedia.com/"));
-        startActivity(browserIntent);
+        if(GlobalConfig.isSellerApp()) {
+            if(getActivity().getApplication() instanceof TkpdCoreRouter){
+                ((TkpdCoreRouter) getActivity().getApplication()).goToMerchantRedirect(getActivity());
+            }
+        }else{
+            Intent launchIntent = getActivity().getPackageManager()
+                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+            if (launchIntent != null) {
+                getActivity().startActivity(launchIntent);
+            } else if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
+            }
+        }
     }
 
     @Override
