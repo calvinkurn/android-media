@@ -191,4 +191,6 @@
 
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
+    <dimen name="wishlish_button_size">38dp</dimen>
+    <dimen name="card_view_margin">5dp</dimen>
 </resources>

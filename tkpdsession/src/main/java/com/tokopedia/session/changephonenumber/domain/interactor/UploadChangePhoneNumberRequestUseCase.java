@@ -9,7 +9,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberModel;
+import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberRequestModel;
 import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
 import com.tokopedia.session.changephonenumber.data.UploadHostModel;
 import com.tokopedia.session.changephonenumber.data.UploadImageModel;
@@ -26,7 +26,7 @@ import rx.functions.Func1;
  * Created by nisie on 3/9/17.
  */
 
-public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNumberModel> {
+public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNumberRequestModel> {
 
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_NEW_ADD = "new_add";
@@ -68,131 +68,131 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     }
 
     @Override
-    public Observable<ChangePhoneNumberModel> createObservable(final RequestParams requestParams) {
-        final ChangePhoneNumberModel changePhoneNumberModel = new ChangePhoneNumberModel();
+    public Observable<ChangePhoneNumberRequestModel> createObservable(final RequestParams requestParams) {
+        final ChangePhoneNumberRequestModel changePhoneNumberRequestModel = new ChangePhoneNumberRequestModel();
 
         return Observable.just(requestParams)
-                .flatMap(new Func1<RequestParams, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<RequestParams, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(RequestParams requestParams) {
-                        return Observable.just(changePhoneNumberModel);
+                    public Observable<ChangePhoneNumberRequestModel> call(RequestParams requestParams) {
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 })
 
-                .flatMap(new Func1<ChangePhoneNumberModel, Observable<ValidateImageModel>>() {
+                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<ValidateImageModel>>() {
                     @Override
-                    public Observable<ValidateImageModel> call(ChangePhoneNumberModel changePhoneNumberModel) {
+                    public Observable<ValidateImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return validateImage(getValidateImageParam(requestParams));
                     }
                 })
-                .flatMap(new Func1<ValidateImageModel, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<ValidateImageModel, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(ValidateImageModel validateImageModel) {
-                        changePhoneNumberModel.setValidateImageModel(validateImageModel);
-                        changePhoneNumberModel.setSuccess(validateImageModel.isSuccess());
+                    public Observable<ChangePhoneNumberRequestModel> call(ValidateImageModel validateImageModel) {
+                        changePhoneNumberRequestModel.setValidateImageModel(validateImageModel);
+                        changePhoneNumberRequestModel.setSuccess(validateImageModel.isSuccess());
 
-                        if (!changePhoneNumberModel.getValidateImageModel().isSuccess()
-                                && changePhoneNumberModel.getValidateImageModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberModel.getValidateImageModel().getErrorMessage());
-                        else if (!changePhoneNumberModel.getValidateImageModel().isSuccess()
-                                && changePhoneNumberModel.getValidateImageModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberModel.getValidateImageModel().getResponseCode()));
+                        if (!changePhoneNumberRequestModel.getValidateImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getValidateImageModel().getErrorMessage() != null)
+                            throw new ErrorMessageException(changePhoneNumberRequestModel.getValidateImageModel().getErrorMessage());
+                        else if (!changePhoneNumberRequestModel.getValidateImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getValidateImageModel().getResponseCode() != 200)
+                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getValidateImageModel().getResponseCode()));
 
 
-                        return Observable.just(changePhoneNumberModel);
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 })
 
-                .flatMap(new Func1<ChangePhoneNumberModel, Observable<UploadHostModel>>() {
+                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadHostModel>>() {
                     @Override
-                    public Observable<UploadHostModel> call(ChangePhoneNumberModel changePhoneNumberModel) {
+                    public Observable<UploadHostModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return getUploadHost(getUploadHostParam(requestParams));
                     }
                 })
-                .flatMap(new Func1<UploadHostModel, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<UploadHostModel, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(UploadHostModel uploadHostModel) {
-                        changePhoneNumberModel.setUploadHostModel(uploadHostModel);
-                        changePhoneNumberModel.setSuccess(uploadHostModel.isSuccess());
+                    public Observable<ChangePhoneNumberRequestModel> call(UploadHostModel uploadHostModel) {
+                        changePhoneNumberRequestModel.setUploadHostModel(uploadHostModel);
+                        changePhoneNumberRequestModel.setSuccess(uploadHostModel.isSuccess());
 
-                        if (!changePhoneNumberModel.getUploadHostModel().isSuccess()
-                                && changePhoneNumberModel.getUploadHostModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberModel.getUploadHostModel().getErrorMessage());
-                        else if (!changePhoneNumberModel.getUploadHostModel().isSuccess()
-                                && changePhoneNumberModel.getUploadHostModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberModel.getUploadHostModel().getResponseCode()));
-                        return Observable.just(changePhoneNumberModel);
+                        if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage() != null)
+                            throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage());
+                        else if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadHostModel().getResponseCode() != 200)
+                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getResponseCode()));
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 })
 
-                .flatMap(new Func1<ChangePhoneNumberModel, Observable<UploadImageModel>>() {
+                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>() {
                     @Override
-                    public Observable<UploadImageModel> call(ChangePhoneNumberModel changePhoneNumberModel) {
+                    public Observable<UploadImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return uploadImage(getUploadIdImageParam(requestParams,
-                                changePhoneNumberModel));
+                                changePhoneNumberRequestModel));
                     }
                 })
-                .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(UploadImageModel uploadImageModel) {
-                        changePhoneNumberModel.setUploadIdImageModel(uploadImageModel);
-                        changePhoneNumberModel.setSuccess(uploadImageModel.isSuccess());
+                    public Observable<ChangePhoneNumberRequestModel> call(UploadImageModel uploadImageModel) {
+                        changePhoneNumberRequestModel.setUploadIdImageModel(uploadImageModel);
+                        changePhoneNumberRequestModel.setSuccess(uploadImageModel.isSuccess());
 
-                        if (!changePhoneNumberModel.getUploadIdImageModel().isSuccess()
-                                && changePhoneNumberModel.getUploadIdImageModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberModel.getUploadIdImageModel().getErrorMessage());
-                        else if (!changePhoneNumberModel.getUploadIdImageModel().isSuccess()
-                                && changePhoneNumberModel.getUploadIdImageModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberModel.getUploadIdImageModel().getResponseCode()));
-                        return Observable.just(changePhoneNumberModel);
+                        if (!changePhoneNumberRequestModel.getUploadIdImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadIdImageModel().getErrorMessage() != null)
+                            throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadIdImageModel().getErrorMessage());
+                        else if (!changePhoneNumberRequestModel.getUploadIdImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadIdImageModel().getResponseCode() != 200)
+                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadIdImageModel().getResponseCode()));
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 })
 
-                .flatMap(new Func1<ChangePhoneNumberModel, Observable<UploadImageModel>>() {
+                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>() {
                     @Override
-                    public Observable<UploadImageModel> call(ChangePhoneNumberModel changePhoneNumberModel) {
+                    public Observable<UploadImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return uploadImage(getUploadBookBankImageParam(requestParams,
-                                changePhoneNumberModel));
+                                changePhoneNumberRequestModel));
                     }
                 })
-                .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(UploadImageModel uploadImageModel) {
-                        changePhoneNumberModel.setUploadBankBookImageModel(uploadImageModel);
-                        changePhoneNumberModel.setSuccess(uploadImageModel.isSuccess());
+                    public Observable<ChangePhoneNumberRequestModel> call(UploadImageModel uploadImageModel) {
+                        changePhoneNumberRequestModel.setUploadBankBookImageModel(uploadImageModel);
+                        changePhoneNumberRequestModel.setSuccess(uploadImageModel.isSuccess());
 
-                        if (!changePhoneNumberModel.getUploadBankBookImageModel().isSuccess()
-                                && changePhoneNumberModel.getUploadBankBookImageModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberModel.getUploadBankBookImageModel().getErrorMessage());
-                        else if (!changePhoneNumberModel.getUploadBankBookImageModel().isSuccess()
-                                && changePhoneNumberModel.getUploadBankBookImageModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberModel.getUploadBankBookImageModel().getResponseCode()));
+                        if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage() != null)
+                            throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage());
+                        else if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode() != 200)
+                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode()));
 
-                        return Observable.just(changePhoneNumberModel);
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 })
 
-                .flatMap(new Func1<ChangePhoneNumberModel, Observable<SubmitImageModel>>() {
+                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<SubmitImageModel>>() {
                     @Override
-                    public Observable<SubmitImageModel> call(ChangePhoneNumberModel changePhoneNumberModel) {
+                    public Observable<SubmitImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return submitImage(getSubmitImageParam(requestParams,
-                                changePhoneNumberModel));
+                                changePhoneNumberRequestModel));
                     }
                 })
-                .flatMap(new Func1<SubmitImageModel, Observable<ChangePhoneNumberModel>>() {
+                .flatMap(new Func1<SubmitImageModel, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
-                    public Observable<ChangePhoneNumberModel> call(SubmitImageModel submitImageModel) {
-                        changePhoneNumberModel.setSubmitImageModel(submitImageModel);
-                        changePhoneNumberModel.setSuccess(submitImageModel.isSuccess());
+                    public Observable<ChangePhoneNumberRequestModel> call(SubmitImageModel submitImageModel) {
+                        changePhoneNumberRequestModel.setSubmitImageModel(submitImageModel);
+                        changePhoneNumberRequestModel.setSuccess(submitImageModel.isSuccess());
 
-                        if (!changePhoneNumberModel.getSubmitImageModel().isSuccess()
-                                && changePhoneNumberModel.getSubmitImageModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberModel.getSubmitImageModel().getErrorMessage());
-                        else if (!changePhoneNumberModel.getSubmitImageModel().isSuccess()
-                                && changePhoneNumberModel.getSubmitImageModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberModel.getSubmitImageModel().getResponseCode()));
+                        if (!changePhoneNumberRequestModel.getSubmitImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getSubmitImageModel().getErrorMessage() != null)
+                            throw new ErrorMessageException(changePhoneNumberRequestModel.getSubmitImageModel().getErrorMessage());
+                        else if (!changePhoneNumberRequestModel.getSubmitImageModel().isSuccess()
+                                && changePhoneNumberRequestModel.getSubmitImageModel().getResponseCode() != 200)
+                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getSubmitImageModel().getResponseCode()));
 
-                        return Observable.just(changePhoneNumberModel);
+                        return Observable.just(changePhoneNumberRequestModel);
                     }
                 });
 
@@ -203,22 +203,22 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     }
 
     private RequestParams getSubmitImageParam(RequestParams requestParams,
-                                              ChangePhoneNumberModel changePhoneNumberModel) {
+                                              ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         RequestParams params = RequestParams.create();
         params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
-                generateFileUploaded(requestParams, changePhoneNumberModel));
+                generateFileUploaded(requestParams, changePhoneNumberRequestModel));
         params.putString(SubmitImageUseCase.PARAM_OS_TYPE, SubmitImageUseCase.DEFAULT_OS_TYPE);
         return params;
     }
 
-    private String generateFileUploaded(RequestParams requestParams, ChangePhoneNumberModel changePhoneNumberModel) {
+    private String generateFileUploaded(RequestParams requestParams, ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         JSONObject reviewPhotos = new JSONObject();
 
         try {
             reviewPhotos.put(PARAM_KTP_IMAGE_ID,
-                    changePhoneNumberModel.getUploadIdImageModel().getUploadImageData().getPicObj());
+                    changePhoneNumberRequestModel.getUploadIdImageModel().getUploadImageData().getPicObj());
             reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
-                    changePhoneNumberModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
+                    changePhoneNumberRequestModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
         } catch (JSONException e) {
             throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string.default_error_upload_image));
         }
@@ -247,9 +247,9 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         return params;
     }
 
-    private RequestParams getUploadBookBankImageParam(RequestParams requestParams, ChangePhoneNumberModel changePhoneNumberModel) {
+    private RequestParams getUploadBookBankImageParam(RequestParams requestParams, ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         RequestParams params = RequestParams.create();
-        String uploadUrl = "https://" + changePhoneNumberModel.getUploadHostModel()
+        String uploadUrl = "https://" + changePhoneNumberRequestModel.getUploadHostModel()
                 .getUploadHostData().getGeneratedHost().getUploadHost();
         params.putString(UploadImageUseCase.PARAM_USER_ID,
                 requestParams.getString(PARAM_USER_ID,
@@ -261,10 +261,10 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, ""));
         params.putString(UploadImageUseCase.PARAM_SERVER_ID,
-                String.valueOf(changePhoneNumberModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
+                String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
                 requestParams.getString(PARAM_USER_ID, ""));
-        params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
+        params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberRequestModel
                 .getValidateImageModel().getValidateImageData().getToken());
         params.putString(UploadImageUseCase.PARAM_WEB_SERVICE, "1");
         return params;
@@ -274,9 +274,9 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         return uploadImageUseCase.createObservable(requestParams);
     }
 
-    private RequestParams getUploadIdImageParam(RequestParams requestParams, ChangePhoneNumberModel changePhoneNumberModel) {
+    private RequestParams getUploadIdImageParam(RequestParams requestParams, ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         RequestParams params = RequestParams.create();
-        String uploadUrl = "https://" + changePhoneNumberModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost();
+        String uploadUrl = "https://" + changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost();
         params.putString(UploadImageUseCase.PARAM_USER_ID,
                 requestParams.getString(PARAM_USER_ID,
                         SessionHandler.getTempLoginSession(MainApplication.getAppContext())));
@@ -287,10 +287,10 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(PARAM_KTP_IMAGE_PATH, ""));
         params.putString(UploadImageUseCase.PARAM_SERVER_ID,
-                String.valueOf(changePhoneNumberModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
+                String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
                 requestParams.getString(PARAM_USER_ID, ""));
-        params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
+        params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberRequestModel
                 .getValidateImageModel().getValidateImageData().getToken());
         params.putString(UploadImageUseCase.PARAM_WEB_SERVICE, "1");
         return params;

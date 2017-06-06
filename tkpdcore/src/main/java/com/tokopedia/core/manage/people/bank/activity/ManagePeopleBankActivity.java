@@ -214,10 +214,10 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
                 ((ManagePeopleBankFormFragment) fragment).onSuccessEditBankAccount(resultData);
                 break;
             case ACTION_EDIT_DEFAULT_BANK_ACCOUNT:
-                ((ManagePeopleBankFragment) fragment).onSuccessEditDefaultBankAccount(resultData);
+                ((ManagePeopleBankFragment) fragment).onSuccessFinishAction();
                 break;
             case ACTION_DELETE_BANK_ACCOUNT:
-                ((ManagePeopleBankFragment) fragment).onSuccessDeleteBankAccount(resultData);
+                ((ManagePeopleBankFragment) fragment).onSuccessFinishAction();
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid Type Action");
