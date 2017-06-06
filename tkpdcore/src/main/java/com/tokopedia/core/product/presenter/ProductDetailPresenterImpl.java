@@ -567,18 +567,29 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
+        if(value != null) outState.putParcelable(key, value);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
+        ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
+
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
             }
+        }
+
+        if(productCampaign != null) {
+            viewListener.showProductCampaign(productCampaign);
         }
     }
 

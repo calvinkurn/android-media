@@ -94,6 +94,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     @BindView(R2.id.tv_ticker_gtm)
@@ -141,6 +142,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
     private VideoData videoData;
+    private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -623,6 +625,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
+        presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
     }
 
     @Override
@@ -771,7 +774,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
-        headerInfoView.renderProductCampaign(productCampaign);
+        this.productCampaign = productCampaign;
+        headerInfoView.renderProductCampaign(this.productCampaign);
     }
 
     private void destroyVideoLayout() {
