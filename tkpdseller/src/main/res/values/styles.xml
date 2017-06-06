@@ -37,6 +37,10 @@
         <item name="android:textColor">@color/thirty_eight_percent_black</item>
     </style>
 
+    <style name="TextView.TopAds.Caption1.Grey">
+        <item name="android:textColor">@color/thirty_eight_percent_black</item>
+    </style>
+
     <style name="TextView.TopAds.Title">
         <item name="android:textSize">@dimen/font_medium</item>
     </style>

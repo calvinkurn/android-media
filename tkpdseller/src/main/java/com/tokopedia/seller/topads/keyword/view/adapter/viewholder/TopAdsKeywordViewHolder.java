@@ -3,11 +3,13 @@ package com.tokopedia.seller.topads.keyword.view.adapter.viewholder;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
 /**
@@ -21,6 +23,8 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
     private final TextView promoPriceUsed;
     private final TextView groupName;
     private final View statusActiveDot;
+    private final LinearLayout promoPriceUsedContainer;
+    private final TextView keywordTypeDescription;
 
     public TopAdsKeywordViewHolder(View itemView) {
         super(itemView);
@@ -30,6 +34,8 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         promoPriceUsed = (TextView) itemView.findViewById(R.id.promo_price_used);
         groupName = (TextView) itemView.findViewById(R.id.group_name);
         statusActiveDot = itemView.findViewById(R.id.status_active_dot);
+        promoPriceUsedContainer = (LinearLayout) itemView.findViewById(R.id.promo_price_used_container);
+        keywordTypeDescription = (TextView) itemView.findViewById(R.id.title_keyword_type_description);
 
     }
 
@@ -43,6 +49,13 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
 
 
     public void bindDataAds(final KeywordAd datum, final TopAdsBaseListAdapter.Callback<KeywordAd> callback) {
+
+        if (datum != null && datum instanceof NegativeKeywordAd) {
+            promoPriceUsedContainer.setVisibility(View.GONE);
+            pricePromoPerClick.setVisibility(View.GONE);
+        }
+
+        keywordTypeDescription.setText(datum.getKeywordTypeDesc());
         titleProduct.setText(datum.getKeywordTag());
         statusActive.setText(datum.getStatusDesc());
         pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getPriceBidFmt()));
