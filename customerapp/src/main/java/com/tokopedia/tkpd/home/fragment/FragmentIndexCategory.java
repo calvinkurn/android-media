@@ -117,7 +117,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener {
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener, TokoCashHeaderView.ActionListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -151,6 +151,25 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         }
     };
+
+    @Override
+    public void onTopUpTokoCashClicked() {
+        /* Jangan komentar. memang ini HARDCODE dan Jorok */
+        Intent intent = DigitalProductActivity.newInstance(
+                getActivity(), new DigitalCategoryDetailPassData.Builder()
+                        .appLinks("tokopedia://digital/form?category_id=103")
+                        .categoryId("103")
+                        .categoryName("Tokocash")
+                        .build()
+        );
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onActivationTokoCashClicked() {
+
+    }
 
     private class ViewHolder {
         private View MainView;
@@ -449,6 +468,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         holder.tokoCashHeaderView = (TokoCashHeaderView) holder
                 .MainView.findViewById(R.id.toko_cash_header_layout);
+        holder.tokoCashHeaderView.setActionListener(this);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
