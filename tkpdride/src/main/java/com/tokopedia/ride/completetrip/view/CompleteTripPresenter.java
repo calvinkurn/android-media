@@ -67,13 +67,21 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                if (isViewAttached()){
+                    getView().hideGetReceiptLoading();
+                    getView().showRatingErrorLayout();
+                }
             }
 
             @Override
             public void onNext(String s) {
                 if (isViewAttached()) {
-                    getView().showMessage(s);
+//                    getView().showMessage(s);
+                    getView().showRatingSuccessDialog();
+                    getView().hideGetReceiptLoading();
+                    getView().showReceiptLayout();
+                    getView().hideRatingLayout();
                 }
             }
         });

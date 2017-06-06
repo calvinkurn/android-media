@@ -3,6 +3,7 @@ package com.tokopedia.ride.completetrip.view;
 
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -93,6 +96,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     EditText rateCommentEditText;
     @BindView(R2.id.rate_confirmation)
     Button rateConfirmationButton;
+    @BindView(R2.id.rating_layout)
+    RelativeLayout ratingLayout;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
@@ -327,6 +332,35 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         requestParams.putString(GiveDriverRatingUseCase.PARAM_REQUEST_ID, requestId);
         requestParams.putString(GiveDriverRatingUseCase.PARAM_STARS, getRateStars());
         return requestParams;
+    }
+
+    @Override
+    public void showRatingSuccessDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Rating Successfully sent");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void showRatingErrorLayout() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.actionSendRating();
+            }
+        });
+    }
+
+    @Override
+    public void hideRatingLayout() {
+        ratingLayout.setVisibility(View.GONE);
     }
 
     private String getRateStars() {

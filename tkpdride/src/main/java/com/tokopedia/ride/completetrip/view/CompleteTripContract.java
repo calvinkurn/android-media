@@ -29,6 +29,11 @@ public interface CompleteTripContract {
 
         RequestParams getRatingParam();
 
+        void showRatingSuccessDialog();
+
+        void showRatingErrorLayout();
+
+        void hideRatingLayout();
     }
 
     interface Presenter extends CustomerPresenter<View> {
