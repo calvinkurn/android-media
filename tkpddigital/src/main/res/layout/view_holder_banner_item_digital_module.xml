@@ -53,7 +53,7 @@
                 android:paddingRight="@dimen/padding_vs"
                 android:paddingStart="@dimen/padding_vs"
                 android:textColor="@color/tkpd_main_green"
-                tools:text="ANGGAKEREN"/>
+                tools:text="ANGGAKERENABIS"/>
 
             <TextView
                 android:id="@+id/btn_copy"
