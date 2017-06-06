@@ -27,7 +27,7 @@
                 android:id="@+id/text_input_layout_top_ads_keyword"
                 style="@style/TextInputLayout"
                 android:layout_margin="@dimen/top_ads_margin_layout"
-                android:hint="@string/top_ads_keyword_change_hint">
+                android:hint="@string/top_ads_key_word">
 
                 <EditText
                     android:id="@+id/edit_text_top_ads_keyword"
@@ -42,9 +42,10 @@
                 android:layout_margin="@dimen/top_ads_margin_layout"
                 android:hint="@string/top_ads_keyword_cost_per_click">
 
-                <EditText
+                <com.tokopedia.seller.topads.view.widget.PrefixEditText
                     android:id="@+id/edit_text_top_ads_cost_per_click"
                     style="@style/EditText.Currency"
+                    app:prefix="@string/top_ads_label_currency_rupiah_editext"
                     android:layout_width="match_parent" />
 
             </android.support.design.widget.TextInputLayout>
