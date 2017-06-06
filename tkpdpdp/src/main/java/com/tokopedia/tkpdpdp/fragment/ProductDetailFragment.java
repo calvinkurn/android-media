@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -105,7 +107,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_VIDEO = "STATE_VIDEO";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
-
+    private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
     private DetailInfoView detailInfoView;
     private PictureView pictureView;
@@ -191,6 +193,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initView(View view) {
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
         videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
@@ -612,7 +615,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
-        CommonUtils.UniversalToast(getActivity(), message);
+        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
+                .show();
     }
 
     @Override
@@ -832,6 +836,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
+    }
+
+    @Override
+    public void showSuccessWishlistSnackBar() {
+        Snackbar.make(coordinatorLayout, context.getString(R.string.msg_add_wishlist), Snackbar.LENGTH_LONG)
+                .setAction(context.getString(R.string.go_to_wishlist), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
+                        intent.putExtra(
+                                SimpleHomeRouter.FRAGMENT_TYPE,
+                                SimpleHomeRouter.WISHLIST_FRAGMENT);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        navigateToActivity(intent);
+                        closeView();
+                    }
+                })
+                .setActionTextColor(getResources().getColor(R.color.tkpd_main_green ))
+                .show();
     }
 
     private void destroyVideoLayout() {
