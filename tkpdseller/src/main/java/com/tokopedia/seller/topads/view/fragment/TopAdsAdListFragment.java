@@ -215,7 +215,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     private void showOption(boolean show) {
         fabAdd.setVisibility(show ? View.VISIBLE : View.GONE);
-        filterMenuItem.setVisible(show);
+        if (filterMenuItem != null) {
+            filterMenuItem.setVisible(show);
+        }
     }
 
     private void showDateLabel(boolean show) {
