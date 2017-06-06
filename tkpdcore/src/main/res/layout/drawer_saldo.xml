@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/grey_100"
+    android:orientation="vertical"
     android:visibility="visible">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -35,10 +35,10 @@
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_toEndOf="@id/saldo_icon"
                 android:layout_toRightOf="@id/saldo_icon"
-                android:text="@string/saldo"
                 android:fontFamily="sans-serif"
-                android:textStyle="normal"
-                android:textColor="@color/black_54" />
+                android:text="@string/saldo"
+                android:textColor="@color/black_54"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/deposit_text"
@@ -61,11 +61,11 @@
                 android:id="@+id/loading_saldo"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginLeft="@dimen/margin_med"
-                android:layout_marginStart="@dimen/margin_med"
-                android:layout_toEndOf="@id/textViewSaldoSub"
-                android:layout_toRightOf="@id/textViewSaldoSub" />
+                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginStart="@dimen/margin_med" />
 
 
         </RelativeLayout>
@@ -94,10 +94,10 @@
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_toEndOf="@id/icon_toko_cash"
                 android:layout_toRightOf="@id/icon_toko_cash"
-                android:text="@string/toko_cash_info"
                 android:fontFamily="sans-serif"
-                android:textStyle="normal"
-                android:textColor="@color/black_54" />
+                android:text="@string/toko_cash_info"
+                android:textColor="@color/black_54"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/top_cash_value"
@@ -114,7 +114,7 @@
                 android:paddingStart="@dimen/padding_small"
                 android:textColor="@color/green_500"
                 tools:text="Rp.10000"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/toko_cash_activation_button"
@@ -134,11 +134,10 @@
                 android:id="@+id/loading_top_cash"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_med"
-                android:layout_marginStart="@dimen/margin_med"
-                android:layout_toEndOf="@id/toko_cash_label"
-                android:layout_toRightOf="@id/toko_cash_label" />
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/top_cash_value"
+                android:layout_marginEnd="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med" />
 
 
         </RelativeLayout>
@@ -167,10 +166,10 @@
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_toEndOf="@id/icon_top_points"
                 android:layout_toRightOf="@id/icon_top_points"
-                android:text="@string/loyalty_points_info"
                 android:fontFamily="sans-serif"
-                android:textStyle="normal"
-                android:textColor="@color/black_54" />
+                android:text="@string/loyalty_points_info"
+                android:textColor="@color/black_54"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/toppoints_text"
@@ -193,12 +192,13 @@
                 android:id="@+id/loading_loyalty"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginLeft="@dimen/margin_med"
-                android:layout_marginStart="@dimen/margin_med"
-                android:layout_toEndOf="@id/textViewLoyaltySub"
-                android:layout_toRightOf="@id/textViewLoyaltySub" />
+                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginStart="@dimen/margin_med" />
 
 
         </RelativeLayout>
