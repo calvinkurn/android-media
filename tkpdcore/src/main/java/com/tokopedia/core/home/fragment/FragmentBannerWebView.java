@@ -23,8 +23,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+
+import java.net.URL;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -147,7 +150,7 @@ public class FragmentBannerWebView extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        webview.loadAuthUrl(url);
+        webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
         webview.setWebViewClient(new MyWebClient());
         webview.setWebChromeClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

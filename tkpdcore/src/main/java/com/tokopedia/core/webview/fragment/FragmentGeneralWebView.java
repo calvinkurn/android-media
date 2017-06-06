@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 
 
@@ -60,7 +61,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
-        WebViewGeneral.loadAuthUrl(url);
+        WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
         WebViewGeneral.getSettings().setJavaScriptEnabled(true);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
