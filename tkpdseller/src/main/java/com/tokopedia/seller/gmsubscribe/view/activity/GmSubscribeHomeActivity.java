@@ -106,17 +106,6 @@ public class GmSubscribeHomeActivity
     }
 
     @Override
-    public void changeActionBarTitle(String title) {
-        toolbar.setTitle(title);
-    }
-
-    @Override
-    public void setDrawer(boolean isShown) {
-        drawer.setEnabled(isShown);
-    }
-
-
-    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_GM_SUBSCRIBE;
     }

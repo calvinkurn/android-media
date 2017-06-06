@@ -1,6 +1,6 @@
 package com.tokopedia.otp.phoneverification.data;
 
-import com.tokopedia.core.network.entity.phoneverification.VerifyPhoneNumberData;
+import com.tokopedia.otp.phoneverification.data.pojo.VerifyPhoneNumberData;
 
 /**
  * Created by nisie on 3/7/17.

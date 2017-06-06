@@ -663,6 +663,15 @@ public class TkpdBaseURL {
         public class Ktp {
             public static final String CHECK_STATUS = "/api/ktp/check-status";
         }
+
+        public class MSISDN {
+            public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+            public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
+        }
+
+        public class Wallet {
+            public static final String GET_BALANCE = "api/v1/wallet/balance";
+        }
     }
 
     public static class Home {

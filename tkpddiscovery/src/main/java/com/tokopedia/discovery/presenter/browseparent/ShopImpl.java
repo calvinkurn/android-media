@@ -50,8 +50,8 @@ public class ShopImpl extends Shop implements DiscoveryListener {
             shop.fshop = browseView.getProductParam().fshop;
             shop.start = 0;
             shop.extraFilter = browseView.getProductParam().extraFilter;
-            discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
             view.setLoading(true);
+            discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
         }
     }
 
@@ -135,7 +135,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
                 Pair<List<ShopModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseShopModel(browseShopModel);
                 view.setLoading(false);
-                view.onCallProductServiceLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                view.setShopData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:

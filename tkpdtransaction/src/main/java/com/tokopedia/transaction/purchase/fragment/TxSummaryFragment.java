@@ -148,7 +148,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected void setActionVar() {
-        presenter.getNotificationFromNetwork(context);
     }
 
     @Override

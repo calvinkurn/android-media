@@ -1,5 +1,9 @@
 package com.tokopedia.seller.selling.presenter;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.presenter.BaseView;
 
 /**
@@ -26,4 +30,10 @@ public interface PeopleTxCenterView extends BaseView{
     String getState();
 
     void loadData();
+
+    Activity getActivity();
+
+    void onErrorRefresh(String errorMessage);
+
+    void onSuccessRefresh();
 }

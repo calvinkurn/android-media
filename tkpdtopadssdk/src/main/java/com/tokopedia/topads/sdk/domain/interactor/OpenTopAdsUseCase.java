@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.UseCase;
 import com.tokopedia.topads.sdk.data.datasource.CloudTopAdsDataSource;
 import com.tokopedia.topads.sdk.data.datasource.TopAdsDataSource;
@@ -20,6 +21,11 @@ public class OpenTopAdsUseCase extends UseCase<String, AdsView> {
 
     public OpenTopAdsUseCase(Context context) {
         this.dataSource = new CloudTopAdsDataSource(context);
+    }
+
+    @Override
+    public void setConfig(Config config) {
+
     }
 
     @Override

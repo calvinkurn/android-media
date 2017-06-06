@@ -15,7 +15,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberModel;
+import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberRequestModel;
 import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberRequestPass;
 import com.tokopedia.session.changephonenumber.data.CheckStatusModel;
 import com.tokopedia.session.changephonenumber.data.factory.KtpSourceFactory;
@@ -115,7 +115,7 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
         if (isValidParam()) {
             viewListener.showLoading();
             uploadChangePhoneNumberRequestUseCase.execute(getUploadChangePhoneNumberRequestParam(),
-                    new Subscriber<ChangePhoneNumberModel>() {
+                    new Subscriber<ChangePhoneNumberRequestModel>() {
                         @Override
                         public void onCompleted() {
 
@@ -170,11 +170,11 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                         }
 
                         @Override
-                        public void onNext(ChangePhoneNumberModel changePhoneNumberModel) {
-                            if (changePhoneNumberModel.isSuccess()) {
+                        public void onNext(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
+                            if (changePhoneNumberRequestModel.isSuccess()) {
                                 viewListener.onSuccessSubmitRequest();
                             } else {
-                                viewListener.onErrorSubmitRequest(changePhoneNumberModel.getErrorMessage());
+                                viewListener.onErrorSubmitRequest(changePhoneNumberRequestModel.getErrorMessage());
                             }
                         }
                     });

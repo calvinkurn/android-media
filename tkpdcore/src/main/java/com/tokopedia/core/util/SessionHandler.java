@@ -22,8 +22,16 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
+import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
@@ -126,11 +134,11 @@ public class SessionHandler {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
-        editor.putString(USER_DATA,null);
+        editor.putString(USER_DATA, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
-        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
@@ -143,6 +151,7 @@ public class SessionHandler {
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
         TrackingUtils.eventMoEngageLogoutUser();
 
@@ -592,6 +601,11 @@ public class SessionHandler {
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TOKEN_TYPE, "");
+    }
+
+    public String getUUID() {
+        return new LocalCacheHandler(context, LOGIN_UUID_KEY)
+                .getString(UUID_KEY, DEFAULT_UUID_VALUE);
     }
 
     public interface onLogoutListener {

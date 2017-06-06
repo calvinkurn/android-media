@@ -109,7 +109,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public void onRestoreState(Bundle savedState) {
         setImagePath(savedState.getString(IMAGE_PATH_DATA));
         setProfileData((Profile) savedState.getParcelable(PROFILE_DATA));
-        presenter.setOnRequestSuccess(getProfileData());
+        if (getProfileData() != null)
+            presenter.setOnRequestSuccess(getProfileData());
     }
 
     @Override
@@ -221,9 +222,11 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void renderData() {
-        avatarSection.renderData(getProfileData());
-        detailSection.renderData(getProfileData());
-        contactSection.renderData(getProfileData());
+        if (getProfileData() != null) {
+            avatarSection.renderData(getProfileData());
+            detailSection.renderData(getProfileData());
+            contactSection.renderData(getProfileData());
+        }
     }
 
     @Override

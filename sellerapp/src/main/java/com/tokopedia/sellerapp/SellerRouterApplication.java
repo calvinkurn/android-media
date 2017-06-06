@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -18,6 +19,7 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
@@ -25,7 +27,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
+import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -36,11 +38,6 @@ public class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
-
-    @Override
-    public DrawerVariable getDrawer(AppCompatActivity activity) {
-        return new DrawerVariableSeller(activity);
-    }
 
     @Override
     public void startInstopedActivity(Context context) {
@@ -87,6 +84,13 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToMerchantRedirect(Context context) {
+        Intent intent = new Intent(context,
+                GmSubscribeHomeActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
     }
@@ -107,6 +111,11 @@ public class SellerRouterApplication extends MainApplication
         } else {
             return Class.forName(COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY);
         }
+    }
+
+    @Override
+    public DrawerHelper getDrawer(AppCompatActivity activity, SessionHandler sessionHandler, LocalCacheHandler drawerCache) {
+        return DrawerSellerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
     @Override

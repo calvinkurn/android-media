@@ -27,9 +27,6 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 @SuppressLint("ValidFragment")
 public class ManageGeneral extends TkpdActivity implements NotificationReceivedListener {
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
@@ -38,9 +35,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     public final static int TAB_POSITION_MANAGE_APP = 2;
     public final static int TAB_POSITION_ABOUT_US = 3;
 
-    @BindView(R2.id.pager)
     ViewPager mViewPager;
-    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     public static Intent getCallingIntent(Activity activity, int position) {
@@ -58,9 +53,9 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_general);
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SETTINGS);
 
-        ButterKnife.bind(this);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        indicator = (TabLayout) findViewById(R.id.indicator);
         String[] content;
         GeneralFragmentAdapter adapter = new GeneralFragmentAdapter(getFragmentManager());
         if (isUserDoesntHaveShop()) {
@@ -143,7 +138,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     @Override
     public void onGetNotif() {
         if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
+//            drawer.getNotification();
         }
     }
 
@@ -167,6 +162,11 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         sendNotifLocalyticsCallback();
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.SETTINGS;
     }
 
     private void sendNotifLocalyticsCallback() {

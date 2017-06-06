@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -22,10 +25,12 @@ import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
@@ -33,7 +38,10 @@ import com.tokopedia.transaction.wallet.WalletActivity;
  */
 
 public class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
+        TkpdCoreRouter,
+        SellerModuleRouter,
+        IConsumerModuleRouter,
+        IDigitalModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -67,8 +75,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public DrawerVariable getDrawer(AppCompatActivity activity) {
-        return new DrawerVariable(activity);
+    public DrawerHelper getDrawer(AppCompatActivity activity,
+                                  SessionHandler sessionHandler,
+                                  LocalCacheHandler drawerCache) {
+        CommonUtils.dumper("NISNIS " + activity.getClass().getSimpleName());
+        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
     @Override
@@ -118,6 +129,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToCreateMerchantRedirect(Context context) {
+        Intent intent = new Intent(context, RedirectCreateShopActivity.class);
         context.startActivity(intent);
     }
 

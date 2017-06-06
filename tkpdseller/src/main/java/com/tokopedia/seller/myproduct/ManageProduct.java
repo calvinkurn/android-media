@@ -251,7 +251,6 @@ public class ManageProduct extends TkpdActivity implements
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onCompletedAddReceiver,
                 new IntentFilter(ProductServiceConstant.ACTION_COMPLETED_ADD_PRODUCT));
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
 
@@ -603,6 +602,11 @@ public class ManageProduct extends TkpdActivity implements
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
     }
 
     private OnConnectionTimeout onTimeout() {

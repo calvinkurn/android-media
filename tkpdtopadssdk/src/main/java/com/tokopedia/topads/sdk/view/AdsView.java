@@ -17,9 +17,7 @@ public interface AdsView {
 
     void setMaxItems(int items);
 
-    void setTopAdsParams(TopAdsParams adsParams);
-
-    void setDisplayMode(int displayMode);
+    void setDisplayMode(DisplayMode displayMode);
 
     void loadTopAds();
 
@@ -31,11 +29,4 @@ public interface AdsView {
 
     void notifyShopClickListener(Shop shop);
 
-    void initLoading();
-
-    void finishLoading();
-
-    void showLoading(boolean showLoading);
-
-    void setSessionId(String sessionId);
 }
