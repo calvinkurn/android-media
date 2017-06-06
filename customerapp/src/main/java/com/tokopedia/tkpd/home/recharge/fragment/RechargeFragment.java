@@ -384,7 +384,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onRechargeTextClear() {
         //TODO ini yang lama
-      /*  LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);*/
+        /*LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);*/
         rechargePresenter.clearRechargePhonebookCache();
         hideFormAndImageOperator();
     }
@@ -786,26 +786,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void setTextToEditTextOrSetVisibilityForm() {
         cacheHandlerPhoneBook = new LocalCacheHandler(getActivity(), KEY_PHONEBOOK);
-//        if (rechargePresenter.isAlreadyHavePhonebookDataOnCache(LAST_INPUT_KEY + category.getId())) {
-//            rechargeEditText.setText(
-//                    rechargePresenter.getLastInputFromCache(LAST_INPUT_KEY + category.getId())
-//            );
-//            showFormAndImageOperator();
-//        } else if (!TextUtils.isEmpty(
-//                cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId()))
-//                ) {
-//            rechargeEditText.setText(
-//                    cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId())
-//            );
-//            LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
-//            showFormAndImageOperator();
-//        } else if (SessionHandler.isV4Login(getActivity())
-//                && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
-//            renderLastOrder();
-//        } else {
-//            handlingAppearanceFormAndImageOperator();
-//        }
-
 
         String defaultPhoneNumber = SessionHandler.getPhoneNumber();
 
@@ -816,7 +796,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             rechargeEditText.setText(lastClientNumberTyped);
-            //   showFormAndImageOperator();
             handlingAppearanceFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
@@ -824,16 +803,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
             rechargeEditText.setText(defaultPhoneNumber);
-            //   showFormAndImageOperator();
             handlingAppearanceFormAndImageOperator();
         } else if (!SessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             rechargeEditText.setText(lastClientNumberTyped);
-            //    showFormAndImageOperator();
             handlingAppearanceFormAndImageOperator();
         }
-
-
     }
 
     private void renderLastOrder() {
