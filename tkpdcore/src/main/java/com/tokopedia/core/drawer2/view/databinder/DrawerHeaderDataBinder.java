@@ -187,16 +187,22 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (data.getDrawerTopPoints() != null
+                        && data.getDrawerTopPoints().getTopPointsUrl() != null
                 listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
             }
         });
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isRegistered(data.getDrawerTokoCash()))
-                    listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
-                else
-                    listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+                if (data.getDrawerTokoCash() != null
+                        && data.getDrawerTokoCash().getRedirectUrl() != null
+                        && !data.getDrawerTokoCash().getRedirectUrl().equals("")) {
+                    if (isRegistered(data.getDrawerTokoCash()))
+                        listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
+                    else
+                        listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+                }
 
             }
         });
@@ -208,6 +214,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         });
         holder.avatar.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
                 listener.onGoToProfile();
             }
