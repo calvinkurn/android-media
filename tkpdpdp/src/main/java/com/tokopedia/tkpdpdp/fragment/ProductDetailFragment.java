@@ -496,7 +496,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
-        if (productData.getShopInfo().getShopIsOwner() == 1) {
+        if (productData.getShopInfo().getShopIsOwner() == 1 || productData.getShopInfo().getShopIsAllowManage()==1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
             fabWishlist.setOnClickListener(new EditClick(productData));
         } else if (status == 1) {
