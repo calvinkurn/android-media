@@ -395,6 +395,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             requestParams.putString("traffic_model", "best_guess");
             requestParams.putString("mode", "driving");
 
+
             requestParams.putString("departure_time", (int) (System.currentTimeMillis() / 1000) + "");
 
             if (driverlat != 0 && driverLon != 0) {
@@ -404,6 +405,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 ));
             }
 
+            requestParams.putString("key", getString(R.string.GOOGLE_API_KEY));
             return requestParams;
         }
     }

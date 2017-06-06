@@ -331,6 +331,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                 destinationLng
         ));
         requestParams.putString("sensor", "false");
+        requestParams.putString("key", getView().getActivity().getString(R.string.GOOGLE_API_KEY));
         getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
             @Override
             public void onCompleted() {

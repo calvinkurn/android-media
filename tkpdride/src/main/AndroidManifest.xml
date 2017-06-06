@@ -62,7 +62,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".maplocationpicker.MapLocationPickerActivity"></activity>
     </application>
 
 </manifest>
