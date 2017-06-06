@@ -18,7 +18,7 @@
         android:paddingTop="12dp"
         android:singleLine="true"
         android:text="1 min away"
-        android:textColor="@color/accent_material_light"
+        android:textColor="@color/tkpd_main_green"
         android:textSize="15sp" />
 
     <RelativeLayout
@@ -108,22 +108,16 @@
                 android:id="@+id/icon_call"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/shape_bg_border_green"
                 android:clickable="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_call_black_24dp"
-                android:tint="@color/grey_600" />
+                android:src="@drawable/ic_call_black_24dp" />
 
             <ImageView
                 android:id="@+id/icon_message"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
-                android:background="@drawable/shape_bg_border_green"
                 android:clickable="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_message"
-                android:tint="@color/grey_600" />
+                android:src="@drawable/ic_message" />
 
         </LinearLayout>
     </RelativeLayout>
