@@ -50,6 +50,17 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private GridLayoutManager.SpanSizeLookup spanSizeLookup;
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private TopAdsPlacer placer;
+    private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount) {
+            if (loadMore)
+                return;
+            showLoading();
+            if (loadListener != null) {
+                loadListener.onLoad(placer.getPage(), totalItemsCount);
+            }
+        }
+    };
 
     public TopAdsRecyclerAdapter(
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
@@ -144,17 +155,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
         setLayoutManager(this.recyclerView.getLayoutManager());
-        this.recyclerView.addOnScrollListener(new EndlessScrollRecycleListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (loadMore)
-                    return;
-                showLoading();
-                if (loadListener != null) {
-                    loadListener.onLoad(placer.getPage(), totalItemsCount);
-                }
-            }
-        });
+        this.recyclerView.addOnScrollListener(endlessScrollListener);
+    }
+
+    public void setEndlessScrollListenerVisibleThreshold(int threshold){
+        this.endlessScrollListener.setVisibleThreshold(threshold);
     }
 
     @Override

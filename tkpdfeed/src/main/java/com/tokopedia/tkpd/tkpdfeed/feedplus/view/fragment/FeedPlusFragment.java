@@ -64,6 +64,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
@@ -79,7 +80,7 @@ import javax.inject.Inject;
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -136,6 +137,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -194,6 +196,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
+        topAdsRecyclerAdapter.setEndlessScrollListenerVisibleThreshold(3);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
@@ -356,7 +359,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Log.d("TOPADSDEBUG", "finishLoading");
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
-        topAdsRecyclerAdapter.hideLoading();
+//        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -417,8 +420,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShowAddFeedMore() {
         finishLoading();
         adapter.removeEmpty();
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        topAdsRecyclerAdapter.hideLoading();
         adapter.showAddFeed();
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -469,5 +473,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(Data dataShop) {
         Log.d(TAG, "onAddFavorite "+dataShop.getShop().getName());
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        topAdsRecyclerAdapter.hideLoading();
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        topAdsRecyclerAdapter.hideLoading();
     }
 }
