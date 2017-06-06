@@ -405,7 +405,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 ));
             }
 
-            requestParams.putString("key", getString(R.string.GOOGLE_API_KEY));
+//            requestParams.putString("key", getString(R.string.GOOGLE_API_KEY));
             return requestParams;
         }
     }
