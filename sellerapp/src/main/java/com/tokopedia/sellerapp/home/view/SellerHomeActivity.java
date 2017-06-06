@@ -60,6 +60,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
@@ -134,7 +135,7 @@ import rx.functions.Action1;
 public class SellerHomeActivity extends BaseActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener,
         SellerHomeView, ShopScoreWidgetCallback,
-        DrawerDataListener{
+        DrawerDataListener {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
@@ -265,13 +266,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     @OnClick(R.id.gold_merchant_announcement)
-    public void goToGoldMerchant(){
+    public void goToGoldMerchant() {
 //        Toast.makeText(this, "Please implement !!!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, GmSubscribeHomeActivity.class));
     }
 
     @OnClick(R.id.seller_home_reputation_view)
-    public void goToSellerReputationHistory(){
+    public void goToSellerReputationHistory() {
         Intent intent = new Intent(this, InboxReputationActivity.class);
         intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
         startActivity(intent);
@@ -301,7 +302,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
                 if (Build.VERSION.SDK_INT < 16) {
                     smoothAppBarLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }else{
+                } else {
                     smoothAppBarLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
                 int width = smoothAppBarLayout.getMeasuredWidth();
@@ -377,11 +378,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private void initDrawer() {
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
         drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
-        drawerDataManager = new DrawerDataManagerImpl(this, this);
+        drawerDataManager = DrawerInjector.getDrawerDataManager(this, this, sessionHandler, drawerCache);
 
     }
 
@@ -410,7 +411,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         );
     }
 
-    protected ShopController.ListenerGetTicker getTicker(){
+    protected ShopController.ListenerGetTicker getTicker() {
         return new ShopController.ListenerGetTicker() {
             @Override
             public void onSuccess(Ticker.Tickers[] tickers) {
@@ -429,7 +430,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private void generateTicker(Ticker.Tickers[] tickers) {
         announcementTicker.removeAllViews();
         announcementTicker.setVisibility(View.VISIBLE);
-        for(int position = 0; position<tickers.length; position++){
+        for (int position = 0; position < tickers.length; position++) {
 
             View view = getLayoutInflater().inflate(R.layout.layout_ticker_announcement, null);
 
@@ -445,11 +446,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             message.setText(tickers[position].getMessage());
             message.setMovementMethod(new SelectableSpannedMovementMethod());
 
-            Spannable sp = (Spannable)message.getText();
-            URLSpan[] urls=sp.getSpans(0, message.getText().length(), URLSpan.class);
-            SpannableStringBuilder style=new SpannableStringBuilder(message.getText());
+            Spannable sp = (Spannable) message.getText();
+            URLSpan[] urls = sp.getSpans(0, message.getText().length(), URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(message.getText());
             style.clearSpans();
-            for(final URLSpan url : urls){
+            for (final URLSpan url : urls) {
                 style.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
@@ -478,7 +479,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
+                } else {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
@@ -508,7 +509,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
+                } else {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
@@ -580,7 +581,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
+                } else {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
@@ -680,9 +681,9 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 */
                 SellerHomeActivity.this.setGoldMerchant(shopModel);
 
-                if(isGold){
+                if (isGold) {
                     goldMerchantAnnouncementText.setText(R.string.extend_gold_merchant);
-                }else{
+                } else {
                     goldMerchantAnnouncementText.setText(R.string.upgrade_gold_merchant);
                 }
                 goldMerchantAnnouncementImage.setVisibility(View.VISIBLE);
@@ -782,10 +783,9 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 TextView textView = (TextView) toolbar.findViewById(R.id.actionbar_title);
 
                 if (isScrimShown) {
-                    if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null){
+                    if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null) {
                         textView.setText("Home");
-                    }
-                    else
+                    } else
                         textView.setText(MethodChecker.fromHtml(shopModel.info.shopName).toString());
                 } else {
                     textView.setText(" ");
@@ -1037,7 +1037,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @Override
     public void onStart() {
         super.onStart();
-        if(appInstalledOrNot(ARG_TRUECALLER_PACKAGE)){
+        if (appInstalledOrNot(ARG_TRUECALLER_PACKAGE)) {
             UnifyTracking.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
@@ -1048,8 +1048,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         try {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
         }
         return app_installed;
@@ -1129,7 +1128,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onGetProfile(DrawerProfile profile) {
-       if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerProfile(profile);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();

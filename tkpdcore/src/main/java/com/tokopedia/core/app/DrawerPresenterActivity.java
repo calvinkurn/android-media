@@ -14,6 +14,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
@@ -87,12 +88,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     protected void setupDrawer() {
-        drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
         drawerHelper.setSelectedPosition(setDrawerPosition());
-        drawerDataManager = new DrawerDataManagerImpl(this, this);
-
+        drawerDataManager = DrawerInjector.getDrawerDataManager(this, this, sessionHandler, drawerCache);
     }
 
     protected void getDrawerDeposit() {

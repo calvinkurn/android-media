@@ -63,84 +63,18 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     private final DrawerDataListener viewListener;
 
-    public DrawerDataManagerImpl(Context context, DrawerDataListener viewListener) {
+    public DrawerDataManagerImpl(DrawerDataListener viewListener,
+                                 ProfileUseCase profileUseCase,
+                                 DepositUseCase depositUseCase,
+                                 NotificationUseCase notificationUseCase,
+                                 TokoCashUseCase tokoCashUseCase,
+                                 TopPointsUseCase topPointsUseCase) {
         this.viewListener = viewListener;
-        SessionHandler sessionHandler = new SessionHandler(context);
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        LocalCacheHandler drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
-
-        ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
-                context,
-                new PeopleService(),
-                new ProfileMapper(),
-                cacheManager
-        );
-
-        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
-
-        profileUseCase = new ProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                profileRepository
-        );
-
-        TopPointsSourceFactory topPointsSourceFactory = new TopPointsSourceFactory(
-                context,
-                new CloverService(),
-                new TopPointsMapper(),
-                cacheManager);
-
-        TopPointsRepository topPointsRepository = new TopPointsRepositoryImpl(topPointsSourceFactory);
-
-        topPointsUseCase = new TopPointsUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                topPointsRepository
-        );
-
-        Bundle bundle = new Bundle();
-        String authKey = sessionHandler.getAccessToken(context);
-        authKey = "Bearer" + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-        AccountsService accountsService = new AccountsService(bundle);
-
-        TokoCashSourceFactory tokoCashSourceFactory = new TokoCashSourceFactory(
-                context,
-                accountsService,
-                new TokoCashMapper(),
-                cacheManager);
-
-        TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
-        tokoCashUseCase = new TokoCashUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                tokoCashRepository
-        );
-
-        NotificationSourceFactory notificationSourceFactory = new NotificationSourceFactory(
-                context,
-                new NotificationService(),
-                new NotificationMapper(),
-                drawerCache
-        );
-        NotificationRepository notificationRepository = new NotificationRepositoryImpl(notificationSourceFactory);
-        notificationUseCase = new NotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                notificationRepository
-        );
-
-        DepositSourceFactory depositSourceFactory = new DepositSourceFactory(
-                context,
-                new DepositService(),
-                new DepositMapper(),
-                drawerCache);
-
-        DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
-        depositUseCase = new DepositUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                depositRepository);
+        this.profileUseCase = profileUseCase;
+        this.depositUseCase = depositUseCase;
+        this.notificationUseCase = notificationUseCase;
+        this.tokoCashUseCase = tokoCashUseCase;
+        this.topPointsUseCase = topPointsUseCase;
     }
 
     @Override

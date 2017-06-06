@@ -58,6 +58,8 @@ public class CloudNotificationSource {
                 drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, notificationData.getPurchase().getPurchaseOrderStatus());
                 drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, notificationData.getPurchase().getPurchasePaymentConfirm());
                 drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_REORDER, notificationData.getPurchase().getPurchaseReorder());
+                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, notificationData.getPurchase().getPurchasePaymentConf());
+
 
                 drawerCache.putInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, notificationData.getSales().getSalesNewOrder());
                 drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());

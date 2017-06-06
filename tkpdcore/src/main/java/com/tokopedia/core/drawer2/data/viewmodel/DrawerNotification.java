@@ -15,6 +15,7 @@ public class DrawerNotification {
     public static final String CACHE_INBOX_TICKET = "CACHE_INBOX_TICKET";
 
     public static final String CACHE_PURCHASE_ORDER_STATUS = "CACHE_PURCHASE_ORDER_STATUS";
+    public static final String CACHE_PURCHASE_PAYMENT_CONF = "CACHE_PURCHASE_PAYMENT_CONF";
     public static final String CACHE_PURCHASE_PAYMENT_CONFIRM = "CACHE_PURCHASE_PAYMENT_CONFIRM";
     public static final String CACHE_PURCHASE_DELIVERY_CONFIRM = "CACHE_PURCHASE_DELIVERY_CONFIRM";
     public static final String CACHE_PURCHASE_REORDER = "CACHE_PURCHASE_REORDER";

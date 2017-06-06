@@ -23,15 +23,12 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
-import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talk.model.model.TalkUserReputation;
-import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenter;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.talkview.method.DeleteTalkDialog;
 import com.tokopedia.core.talkview.method.FollowTalkDialog;
@@ -41,8 +38,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokenHandler;
 import com.tokopedia.core.util.ToolTipUtils;
-import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenter;
 
 import java.util.List;
 
@@ -57,7 +55,6 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
 
     public static final int MAIN_TYPE = 123456789;
     public LayoutInflater inflater;
-    NotificationVariable notif;
     boolean isShop, isInbox;
     TokenHandler token;
     private TkpdProgressDialog progress;
@@ -194,9 +191,6 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
         final TalkProductViewHolder holder = (TalkProductViewHolder) viewHolder;
         final InboxTalk talk = (InboxTalk) data.get(position);
         LabelUtils label = LabelUtils.getInstance(context, holder.UserView);
-        notif = MainApplication.getNotifInstance();
-        notif.setContext((Activity) context);
-
 
         if (isShop) {
             ImageHandler.loadImageCircle2(context, holder.UserImageView, String.valueOf(talk.getTalkProductImage()));
@@ -446,7 +440,6 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
                     notifyDataSetChanged();
                     break;
                 case InboxTalkIntentService.STATUS_SUCCESS_DELETE:
-                    notif.GetNotif();
                     data.remove(position);
                     SnackbarManager.make((Activity) context,
                             context.getApplicationContext().getString(R.string.message_success_delete_talk),

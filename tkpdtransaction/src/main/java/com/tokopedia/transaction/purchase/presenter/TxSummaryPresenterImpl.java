@@ -4,17 +4,27 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.drawer.interactor.NetworkInteractor;
-import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
-import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
+import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
+import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
+import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
+import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * @author Angga.Prasetiyo on 07/04/2016.
@@ -22,19 +32,77 @@ import java.util.List;
 public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     private static final String TAG = TxSummaryPresenterImpl.class.getSimpleName();
     private final TxSummaryViewListener viewListener;
+    private NotificationUseCase notificationUseCase;
+    private LocalCacheHandler cacheHandler;
+
 
     public TxSummaryPresenterImpl(TxSummaryViewListener viewListener) {
         this.viewListener = viewListener;
+
+        cacheHandler =
+                new LocalCacheHandler(viewListener.getActivity(), DrawerHelper.DRAWER_CACHE);
+
+        NotificationService notificationService = new NotificationService();
+        NotificationSourceFactory notificationSourceFactory =
+                new NotificationSourceFactory(
+                        viewListener.getActivity(),
+                        notificationService,
+                        new NotificationMapper(),
+                        cacheHandler
+                );
+        NotificationRepository notificationRepository =
+                new NotificationRepositoryImpl(notificationSourceFactory);
+        this.notificationUseCase =
+                new NotificationUseCase(
+                        new JobExecutor(),
+                        new UIThread(),
+                        notificationRepository);
     }
 
     @Override
     public void getNotificationPurcase(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
-        List<Integer> countList = cache.getArrayListInteger(TkpdCache.Key.PURCHASE_COUNT);
+        List<Integer> countList = new ArrayList<>();
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_REORDER, 0));
+
         List<TxSummaryItem> summaryItemList = new ArrayList<>();
 
-        if(countList.size() < 1) viewListener.showLoadingError();
+        if (countList.size() < 1) viewListener.showLoadingError();
         else setSummaryData(context, countList, summaryItemList);
+
+    }
+
+    private Subscriber<NotificationModel> onGetNotification(final Context context) {
+        return new Subscriber<NotificationModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.showLoadingError();
+            }
+
+            @Override
+            public void onNext(NotificationModel notificationModel) {
+                NotificationData data = notificationModel.getNotificationData();
+                List<Integer> countList = new ArrayList<>();
+                countList.add(data.getPurchase().getPurchasePaymentConf());
+                countList.add(data.getPurchase().getPurchasePaymentConfirm());
+                countList.add(data.getPurchase().getPurchaseOrderStatus());
+                countList.add(data.getPurchase().getPurchaseDeliveryConfirm());
+                countList.add(data.getPurchase().getPurchaseReorder());
+
+                List<TxSummaryItem> summaryItemList = new ArrayList<>();
+
+                if (countList.size() < 1) viewListener.showLoadingError();
+                else setSummaryData(context, countList, summaryItemList);
+            }
+        };
     }
 
     private void setSummaryData(Context context, List<Integer> countList, List<TxSummaryItem> summaryItemList) {
@@ -67,23 +135,13 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
 
     @Override
     public void getNotificationFromNetwork(final Context context) {
-        NetworkInteractor networkInteractor = new NetworkInteractorImpl();
-        networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
-            @Override
-            public void onSuccess(NotificationItem data) {
-                getNotificationPurcase(context);
-            }
-
-            @Override
-            public void onError(String message) {
-                viewListener.showLoadingError();
-            }
-
-        });
+        notificationUseCase.execute(
+                notificationUseCase.getRequestParam(
+                        GlobalConfig.isSellerApp()), onGetNotification(context));
     }
 
     @Override
     public void onDestroyView() {
-
+        notificationUseCase.unsubscribe();
     }
 }
