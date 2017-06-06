@@ -32,6 +32,12 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
     }
 
     @Override
+    protected void initView(View view) {
+        super.initView(view);
+        status.setVisibility(View.GONE);
+    }
+
+    @Override
     protected void initDateLabelView(View view) {
         // Do nothing
     }

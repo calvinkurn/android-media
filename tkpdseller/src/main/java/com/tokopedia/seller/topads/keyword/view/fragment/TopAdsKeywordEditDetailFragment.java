@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -41,6 +42,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected EditText topAdsKeyword;
     protected PrefixEditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
+    protected ProgressDialog progressDialog;
 
     private KeywordAd keywordAd;
 
@@ -76,6 +78,8 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         settingTopAdsKeywordType(view);
         settingTopAdsKeyword(view);
         settingTopAdsCostPerClick(view);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
 
         if (keywordAd != null) {
             fillDataToView(keywordAd);
@@ -84,6 +88,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         view.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoading();
                 presenter.editTopAdsKeywordDetail(collectDataFromView());
             }
         });
@@ -91,6 +96,14 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         presenter.attachView(this);
 
         return view;
+    }
+
+    private void showLoading() {
+        progressDialog.show();
+    }
+
+    protected void hideLoading(){
+        progressDialog.dismiss();
     }
 
     private void fillDataToView(KeywordAd keywordAd) {
@@ -138,6 +151,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
+        hideLoading();
         finishAndSetResult();
     }
 
@@ -150,6 +164,13 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String detail) {
+        hideLoading();
         NetworkErrorHelper.showSnackbar(getActivity(), detail);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
     }
 }

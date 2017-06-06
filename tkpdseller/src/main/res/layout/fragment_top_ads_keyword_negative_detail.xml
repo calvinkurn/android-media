@@ -20,13 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/topads_detail_padding_item" />
 
-            <com.tokopedia.seller.lib.widget.LabelView
-                android:id="@+id/label_view_promo_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/topads_detail_padding_item"
-                app:content_color="@color/tkpd_dark_green"
-                app:title="@string/label_top_ads_groups" />
+            <include layout="@layout/include_layout_grup_labelview" />
         </LinearLayout>
     </ScrollView>
 </com.tokopedia.core.customwidget.SwipeToRefresh>

@@ -36,6 +36,7 @@ public class TopAdsKeywordDetailMapperToDomain implements Func1<PageDataResponse
         keywordDetailDomain.setGroupId(datum.getGroupId());
         keywordDetailDomain.setGroupName(datum.getGroupName());
         keywordDetailDomain.setKeywordId(datum.getKeywordId());
+        keywordDetailDomain.setStatusToogle(datum.getKeywordStatusToogle());
         keywordDetailDomain.setKeywordPriceBidFmt(datum.getKeywordPriceBidFmt());
         keywordDetailDomain.setKeywordStatus(datum.getKeywordStatus());
         keywordDetailDomain.setKeywordStatusDesc(datum.getKeywordStatusDesc());
