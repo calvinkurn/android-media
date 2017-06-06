@@ -57,6 +57,7 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ManageProduct.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
