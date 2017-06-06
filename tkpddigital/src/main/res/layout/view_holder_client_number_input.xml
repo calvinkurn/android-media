@@ -72,7 +72,7 @@
                 <ImageView
                     android:id="@+id/iv_pic_operator"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
@@ -81,8 +81,8 @@
 
                 <Button
                     android:id="@+id/btn_clear_client_number"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="@dimen/digital_height_width_25"
+                    android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:layout_marginRight="@dimen/margin_small"/>

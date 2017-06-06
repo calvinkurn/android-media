@@ -10,10 +10,10 @@
             <!--<corners android:radius="2dp" />-->
 
             <padding
-                android:bottom="8dp"
-                android:left="8dp"
-                android:right="8dp"
-                android:top="8dp" />
+                android:bottom="@dimen/digital_padding_8"
+                android:left="@dimen/digital_padding_8"
+                android:right="@dimen/digital_padding_8"
+                android:top="@dimen/digital_padding_8"/>
         </shape>
     </item>
 
