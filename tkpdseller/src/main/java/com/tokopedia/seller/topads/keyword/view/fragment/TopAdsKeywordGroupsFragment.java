@@ -229,7 +229,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
         groupFilterSearch.setText(groupAd.getName());
         groupFilterSearch.setFocusable(false);
         groupFilterSearch.setEnabled(false);
-        groupFilterImage.setImageResource(R.drawable.ic_close_green_14x14);
+        groupFilterImage.setImageResource(R.drawable.ic_delete_keyword);
         recyclerView.setVisibility(View.GONE);
         hideThings.setVisibility(View.VISIBLE);
         groupFilterImage.setOnClickListener(new View.OnClickListener() {

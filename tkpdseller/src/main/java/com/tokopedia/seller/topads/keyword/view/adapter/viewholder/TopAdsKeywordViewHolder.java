@@ -60,7 +60,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         statusActive.setText(datum.getStatusDesc());
         pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getPriceBidFmt()));
         promoPriceUsed.setText(datum.getStatTotalSpent());
-        groupName.setText(datum.getGroupName());
+        groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, datum.getGroupName()));
 
         switch (datum.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:

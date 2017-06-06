@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center_horizontal"
-        android:src="@drawable/asset_13_x" />
+        android:src="@drawable/ic_top_ads_keyword_empty" />
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
@@ -26,7 +26,7 @@
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:textSize="@dimen/font_medium"
-        tools:text="@string/top_ads_empty_group_title_promo_text" />
+        tools:text="@string/top_ads_keyword_your_keyword_empty" />
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
@@ -34,7 +34,7 @@
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:maxLines="4"
-        tools:text="@string/top_ads_empty_group_promo_content_text" />
+        tools:text="@string/top_ads_keyword_please_use" />
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
@@ -51,6 +51,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
-        android:text="@string/menu_top_ads_add_promo_group" />
+        android:text="@string/top_ads_keyword_add_keyword" />
 
 </LinearLayout>
