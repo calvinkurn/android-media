@@ -6,9 +6,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
-import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
@@ -34,11 +32,6 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     @Override
     protected void updateDateLabelViewText() {
         // Do nothing
-    }
-
-    @Override
-    protected void searchAd(BaseKeywordParam baseKeywordParam) {
-        topAdsKeywordListPresenter.fetchNegativeKeyword(baseKeywordParam);
     }
 
     protected boolean isPositive() {

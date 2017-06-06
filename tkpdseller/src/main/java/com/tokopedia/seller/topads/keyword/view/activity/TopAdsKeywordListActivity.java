@@ -177,4 +177,13 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     public void expand() {
         searchItem.expandActionView();
     }
+
+    @Override
+    public void hideFab(int visibiltiy) {
+        fab.setVisibility(visibiltiy);
+    }
+
+    public interface Listener {
+        boolean isShowFab();
+    }
 }
