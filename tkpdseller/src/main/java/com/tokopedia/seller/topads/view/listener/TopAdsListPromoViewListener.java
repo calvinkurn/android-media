@@ -12,8 +12,8 @@ import java.util.List;
  */
 public interface TopAdsListPromoViewListener<T extends Ad> extends CustomerView {
 
-    void onSearchAdLoaded(@NonNull List<T> adList, int totalItem);
+    void onSearchLoaded(@NonNull List<T> adList, int totalItem);
 
-    void onLoadSearchAdError();
+    void onLoadSearchError();
 
 }

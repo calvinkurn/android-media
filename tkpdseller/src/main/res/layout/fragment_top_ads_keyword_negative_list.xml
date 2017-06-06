@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_product"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -20,4 +20,12 @@
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_filter"
+        style="@style/Fab"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_black_48dp_00"
+        app:layout_anchor="@id/recycler_view"
+        app:layout_anchorGravity="bottom|right|end" />
 </android.support.design.widget.CoordinatorLayout>

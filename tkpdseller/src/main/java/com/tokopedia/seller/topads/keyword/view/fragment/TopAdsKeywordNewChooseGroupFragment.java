@@ -326,17 +326,17 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+    public void onSearchLoaded(@NonNull List adList, boolean isEndOfFile) {
 
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+    public void onSearchLoaded(@NonNull List adList, int totalItem) {
 
     }
 
     @Override
-    public void onLoadSearchAdError() {
+    public void onLoadSearchError() {
 
     }
 

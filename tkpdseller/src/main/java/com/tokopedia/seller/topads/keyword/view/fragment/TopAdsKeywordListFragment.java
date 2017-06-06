@@ -159,8 +159,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        super.onSearchAdLoaded(adList, totalItem);
+    public void onSearchLoaded(@NonNull List list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
         if (isShowFab()) {
             keywordAdListener.hideFab(View.VISIBLE);
         } else {
