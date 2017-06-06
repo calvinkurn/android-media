@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -126,7 +127,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isTopAds(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
+        return linkSegment.size() > 0 && linkSegment.get(0).equals(DeeplinkConst.URL.TOPADS);
     }
 
     @Override
@@ -177,7 +178,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openTopAds(Uri uriData) {
 
-        String type = uriData. getQueryParameter("type");
+        String type = uriData. getQueryParameter(DeeplinkConst.PARAM.TYPE);
         Intent intentToLaunch = null;
         String shopId = SessionHandler.getShopID(context);
         if (TextUtils.isEmpty(shopId) || "0".equals(shopId)) {
