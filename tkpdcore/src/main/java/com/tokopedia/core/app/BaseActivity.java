@@ -1,5 +1,7 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,9 +32,11 @@ import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -46,6 +50,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,6 +69,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
+    private static final int REQUEST_RELOGIN = 12123;
     protected Boolean isAllowFetchDepartmentView = false;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
@@ -73,6 +80,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
+    private boolean isReloginActivityShown = false;
+    private int retryLogin = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,7 +310,15 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
-        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+        if (!isReloginActivityShown && retryLogin > 0) {
+            isReloginActivityShown = true;
+            retryLogin--;
+            startActivityForResult(
+                    SessionRouter.getReloginActivityIntent(BaseActivity.this),
+                    REQUEST_RELOGIN);
+        } else if (!DialogForceLogout.isDialogShown(this) && retryLogin == 0) {
+            showForceLogoutDialog();
+        }
     }
 
     @Override
@@ -378,6 +395,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .getApplicationComponent(getActivityModule());
     }
 
+
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
     }
@@ -385,4 +403,19 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RELOGIN) {
+            isReloginActivityShown = false;
+            if (resultCode == Activity.RESULT_CANCELED &&
+                    !DialogForceLogout.isDialogShown(this)) {
+                showForceLogoutDialog();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
 }

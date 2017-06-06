@@ -664,6 +664,11 @@ public class TkpdBaseURL {
             public static final String CHECK_STATUS = "/api/ktp/check-status";
         }
 
+        public class MSISDN {
+            public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+            public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
+        }
+
         public class Wallet {
             public static final String GET_BALANCE = "api/v1/wallet/balance";
         }
@@ -671,7 +676,6 @@ public class TkpdBaseURL {
 
     public static class Home {
         public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
-
     }
 
     public static class GoldMerchant {

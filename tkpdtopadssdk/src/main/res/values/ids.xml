@@ -6,4 +6,8 @@
     <item name="info_topads" type="id" />
     <item name="title_promote" type="id" />
     <item name="ads_header" type="id" />
+    <item name="shop_detail_container" type="id" />
+    <item name="shop_name" type="id" />
+    <item name="price" type="id" />
+    <item name="label_container" type="id" />
 </resources>

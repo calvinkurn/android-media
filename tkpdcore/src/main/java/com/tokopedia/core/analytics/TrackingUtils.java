@@ -7,11 +7,13 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
+import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -72,6 +74,8 @@ public class TrackingUtils extends TrackingConfig {
 
             getMoEngine().setUserData(customerWrapper);
         }
+        if(!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
+            PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
     public static void setMoEUserAttributes(Bundle bundle, String label){

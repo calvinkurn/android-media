@@ -1,7 +1,6 @@
 package com.tokopedia.session.changephonenumber.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberModel;
 import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
 import com.tokopedia.session.changephonenumber.data.ValidateImageModel;
 import com.tokopedia.session.changephonenumber.data.UploadHostModel;

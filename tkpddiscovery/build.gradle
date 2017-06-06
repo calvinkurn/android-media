@@ -12,6 +12,11 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTopAdsSdk() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -89,6 +94,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
+    compile getTopAdsSdk()
 
     compile project(':tkpdtopadssdk')
 

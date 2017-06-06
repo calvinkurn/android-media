@@ -1,16 +1,16 @@
 package com.tokopedia.tkpd.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,8 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -32,15 +32,14 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
-import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
@@ -49,15 +48,11 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
@@ -90,15 +85,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final String FETCH_BANK = "FETCH_BANK";
     private static final java.lang.String BUNDLE_EXTRA_REFRESH = "refresh";
     private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
-    private static final int ONBOARDING_REQUEST = 101;
+    public static final int ONBOARDING_REQUEST = 101;
+    public static final int WISHLIST_REQUEST = 202;
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
-    protected WrappedTabPageIndicator indicatorTab;
-    protected ListViewHotProductParent lvAdapter;
     protected View footerCat;
-    protected IndexHomeInterafaces.IndexFavRefresh2 prodListener;
-    protected IndexHomeInterafaces.IndexFavRefresh2 shopListener;
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
@@ -108,6 +100,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+
+    @DeepLink(Constants.Applinks.HOME)
+    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     public ViewPager getViewPager() {
         return mViewPager;
@@ -564,11 +564,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ONBOARDING_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK) {
             Intent intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtras(data.getExtras());
             startActivity(intent);
             finish();
+        }
+        if(requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
+            mViewPager.setCurrentItem(3);
         }
     }
 
