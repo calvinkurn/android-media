@@ -2,7 +2,10 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
@@ -13,8 +16,10 @@ import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordCompo
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
+import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
@@ -23,12 +28,15 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl> implements TopAdsEmptyAdDataBinder.Callback{
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
+        implements TopAdsEmptyAdDataBinder.Callback, TopAdsKeywordListActivity.Listener {
 
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
     @KeywordStatusTypeDef
@@ -36,9 +44,18 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected GroupAd groupAd;
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+    private KeywordListListener.Listener keywordAdListener;
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+        super.initialListener(activity);
+        if (activity != null && activity instanceof KeywordListListener.Listener) {
+            keywordAdListener = (KeywordListListener.Listener) activity;
+        }
     }
 
     @Override
@@ -85,7 +102,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     protected void searchAd(BaseKeywordParam baseKeywordParam) {
-        topAdsKeywordListPresenter.fetchPositiveKeyword(baseKeywordParam);
+        topAdsKeywordListPresenter.fetchKeyword(baseKeywordParam);
     }
 
     @Override
@@ -114,7 +131,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
-            searchAd();
         } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD) {
             if (resultCode == Activity.RESULT_OK) {
                 onSearch(null);
@@ -141,6 +157,16 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+        super.onSearchAdLoaded(adList, totalItem);
+        if (isShowFab()) {
+            keywordAdListener.hideFab(View.VISIBLE);
+        } else {
+            keywordAdListener.hideFab(View.GONE);
+        }
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -163,5 +189,18 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     public void onEmptyButtonClicked() {
         onCreateAd();
+    }
+
+
+    @Override
+    public boolean isShowFab() {
+        return adapter.getDataSize() > 0;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
+        outState.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
     }
 }

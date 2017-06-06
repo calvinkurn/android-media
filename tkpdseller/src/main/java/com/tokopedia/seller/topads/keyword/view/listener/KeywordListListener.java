@@ -37,6 +37,10 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
     @Override
     public void onPageSelected(int position) {
         super.onPageSelected(position);
+
+        if (searchView == null)
+            return;
+
         isProcessing = true;
 
         // get previous position
@@ -108,5 +112,7 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
         void addListener();
 
         void expand();
+
+        void hideFab(int visibiltiy);
     }
 }

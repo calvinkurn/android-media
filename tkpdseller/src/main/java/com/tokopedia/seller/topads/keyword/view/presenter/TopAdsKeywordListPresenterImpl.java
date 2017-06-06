@@ -41,7 +41,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         this.keywordDashboardUseCase = keywordDashboardUseCase;
     }
 
-    public void fetchPositiveKeyword(BaseKeywordParam baseKeywordParam) {
+    public void fetchKeyword(BaseKeywordParam baseKeywordParam) {
         keywordDashboardUseCase.execute(generateParam(baseKeywordParam), new Subscriber<KeywordDashboardDomain>() {
             @Override
             public void onCompleted() {
@@ -58,7 +58,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchPositiveKeyword " + keywordDashboardDomain);
+                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
                 revealData(getKeywordAds(keywordDashboardDomain));
             }
         });
@@ -110,29 +110,6 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         return GoldMerchantDateUtils.getDateFormatForInput(
                 date, KEYWORD_DATE_FORMAT
         );
-    }
-
-    public void fetchNegativeKeyword(BaseKeywordParam baseKeywordParam) {
-        keywordDashboardUseCase.execute(generateParam(baseKeywordParam), new Subscriber<KeywordDashboardDomain>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                getView().onLoadSearchAdError();
-            }
-
-            @Override
-            public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchNegativeKeyword " + keywordDashboardDomain);
-                revealData(getKeywordAds(keywordDashboardDomain));
-            }
-        });
     }
 
     @Override
