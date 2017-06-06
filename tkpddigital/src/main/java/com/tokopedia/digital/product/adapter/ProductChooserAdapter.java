@@ -17,6 +17,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,7 +46,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                  String productStyleView,
                                  ActionListener actionListener) {
         this.hostFragment = hostFragment;
-        this.productList = productList;
+        this.productList = productList != null ? productList : new ArrayList<Product>();
         this.productStyleView = productStyleView;
         this.actionListener = actionListener;
     }

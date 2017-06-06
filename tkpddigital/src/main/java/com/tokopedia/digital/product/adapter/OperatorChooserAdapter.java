@@ -14,6 +14,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.model.Operator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by kris on 5/9/17. Tokopedia
  */
 
-public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE =
             R.layout.view_holder_item_operator_name_image;
@@ -34,11 +35,10 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public OperatorChooserAdapter(Fragment hostFragment,
                                   List<Operator> operatorList,
-                                  DigitalChooserOperatorFragment
-                                          .ActionListener operatorActionListener) {
+                                  DigitalChooserOperatorFragment.ActionListener operatorActionListener) {
         this.hostFragment = hostFragment;
-        this.operatorList = operatorList;
-        actionListener = operatorActionListener;
+        this.operatorList = operatorList != null ? operatorList : new ArrayList<Operator>();
+        this.actionListener = operatorActionListener;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final int type = getItemViewType(position);
         final Operator operator = operatorList.get(position);
-        if(type == TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE) {
+        if (type == TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE) {
             ItemNameAndImageHolder itemNameAndImageHolder = (ItemNameAndImageHolder) holder;
             ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getImage());
             itemNameAndImageHolder.operatorName.setText(operator.getName());
