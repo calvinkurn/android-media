@@ -30,6 +30,7 @@
                     android:hint="@string/add_keyword"
                     android:inputType="text"
                     android:maxLength="@integer/keyword_max_length"
+                    android:maxLines="1"
                     android:digits="abcdefghijklmnopqrstuvwxyz 0123456789"
                     android:imeOptions="actionDone"/>
 
@@ -44,10 +45,9 @@
                 android:clickable="true"
                 android:src="@drawable/selector_ic_add"
                 android:layout_marginTop="@dimen/margin_med"
-                android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="top"/>
         </LinearLayout>
 
         <com.tokopedia.seller.topads.keyword.view.widget.KeywordRecyclerView
