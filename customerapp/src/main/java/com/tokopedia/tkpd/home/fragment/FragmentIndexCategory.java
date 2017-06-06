@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
@@ -151,6 +153,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         }
     };
+    private TopCashItem tokoCashData;
 
     @Override
     public void onTopUpTokoCashClicked() {
@@ -487,8 +490,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
         recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
-        recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
-
 
         holder.categoriesRecylerview.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -520,24 +521,44 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
-            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                    .appLinks(itemModel.getAppLinks())
-                    .categoryId(itemModel.getCategoryId())
-                    .categoryName(itemModel.getName())
-                    .url(itemModel.getRedirectValue())
-                    .build();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-            Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(itemModel.getAppLinks()));
-            startActivity(intent);
+        if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
+                && tokoCashData.getData().getLink() != 1) {
+            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
+            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
+                    getContext());
+            openActivationTokoCashWebView(seamlessUrl);
         } else {
-            onGimmicClicked(itemModel);
+            DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+            if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
+                DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                        .appLinks(itemModel.getAppLinks())
+                        .categoryId(itemModel.getCategoryId())
+                        .categoryName(itemModel.getName())
+                        .url(itemModel.getRedirectValue())
+                        .build();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+                intent.putExtras(bundle);
+                intent.setData(Uri.parse(itemModel.getAppLinks()));
+                startActivity(intent);
+            } else {
+                onGimmicClicked(itemModel);
+            }
         }
     }
+
+    private void openActivationTokoCashWebView(String seamlessUrl) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url", seamlessUrl);
+        if (getContext() instanceof Activity) {
+            if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
+                        .goToWallet(getContext(), bundle);
+            }
+        }
+    }
+
 
     private void navigateToGimmicWebview(String url, String label) {
         if (!url.equals("")) {
@@ -954,6 +975,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         holder.tokoCashHeaderView.renderData(tokoCashData);
         CommonUtils.dumper("PORING RECEIVED");
+        this.tokoCashData = tokoCashData;
     }
 
     @Override
@@ -961,4 +983,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     }
 
+    private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
+        if (tokoCashData.getData().getAction() == null) return "";
+        else return tokoCashData.getData().getAction().getRedirectUrl();
+    }
 }
