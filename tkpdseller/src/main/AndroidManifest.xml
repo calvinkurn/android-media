@@ -239,7 +239,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.ProductScoringDetailActivity"
-            android:label="@string/title_activity_product_score"
+            android:label="@string/product_title_activity_product_score"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
@@ -248,7 +248,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.EtalasePickerActivity"
-            android:label="@string/title_activity_etalase_picker"
+            android:label="@string/product_title_activity_etalase_picker"
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.CatalogPickerActivity"
@@ -257,7 +257,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/product_product_label_video"
+            android:label="@string/product_label_video"
             android:theme="@style/BasicThemeActionBar" />
 
         <activity

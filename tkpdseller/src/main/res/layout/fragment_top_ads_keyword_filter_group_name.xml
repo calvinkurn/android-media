@@ -15,7 +15,7 @@
             android:id="@+id/group_filter_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/search_group"
+            android:hint="@string/top_ads_keyword_search_group"
             android:imeOptions="actionSearch"
             android:maxLines="1"
             android:paddingEnd="24dp"

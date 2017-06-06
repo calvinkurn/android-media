@@ -141,7 +141,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_delete) {
-            showDeleteConfirmation(getString(R.string.title_delete_keyword_topads), getString(R.string.label_confirm_delete_keyword_topads));
+            showDeleteConfirmation(getString(R.string.top_ads_keyword_title_delete), getString(R.string.top_ads_keyword_confirmation_delete));
             return true;
         }
         return super.onOptionsItemSelected(item);

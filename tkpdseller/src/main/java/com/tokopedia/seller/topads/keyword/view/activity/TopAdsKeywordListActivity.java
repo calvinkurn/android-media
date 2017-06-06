@@ -68,8 +68,8 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         viewPager.addOnPageChangeListener(keywordListTablayout);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_key_word));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_negative));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
     }
 
     private void fabOnClick() {
@@ -78,8 +78,8 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
         String[] titles = {
-                getString(R.string.top_ads_key_word),
-                getString(R.string.top_ads_negative)
+                getString(R.string.top_ads_keyword_title),
+                getString(R.string.top_ads_keyword_title_negative)
         };
         return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
     }

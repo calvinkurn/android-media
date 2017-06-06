@@ -269,7 +269,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     }
 
     private void setCurrentMaxKeyword(){
-        textViewKeywordCurrentMax.setText(getString(R.string.top_ads_total_keywords_current_and_max,
+        textViewKeywordCurrentMax.setText(getString(R.string.top_ads_keywords_total_current_and_max,
                 getLocalKeyWordSize(),
                 maxKeyword));
     }
