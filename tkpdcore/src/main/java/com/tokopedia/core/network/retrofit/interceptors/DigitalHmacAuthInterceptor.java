@@ -9,6 +9,7 @@ import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceExcep
 import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.IOException;
@@ -40,18 +41,23 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
                 throw new ResponseErrorException(digitalErrorResponse.getDigitalErrorMessageFormatted());
             } else if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
-                if (digitalErrorResponse.getStatus().equalsIgnoreCase("UNDER_MAINTENANCE")) {
+                if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        ServerErrorHandler.STATUS_UNDER_MAINTENANCE
+                )) {
                     throw new ServerErrorMaintenanceException(
                             digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
                             response.code(), response.request().url().toString()
                     );
-                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase("REQUEST_DENIED")) {
+                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        ServerErrorHandler.STATUS_REQUEST_DENIED
+                )) {
                     throw new ServerErrorRequestDeniedException(
                             digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
                             response.code(), response.request().url().toString()
                     );
-                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase("FORBIDDEN")
-                        && MethodChecker.isTimezoneNotAutomatic()) {
+                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        ServerErrorHandler.STATUS_FORBIDDEN
+                ) && MethodChecker.isTimezoneNotAutomatic()) {
                     throw new ServerErrorTimeZoneException(
                             digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
                             response.code(), response.request().url().toString()
