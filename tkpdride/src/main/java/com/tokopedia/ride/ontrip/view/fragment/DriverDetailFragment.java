@@ -166,7 +166,7 @@ public class DriverDetailFragment extends BaseFragment {
         Glide.with(getActivity()).load(driver.getPictureUrl())
                 .asBitmap()
                 .centerCrop()
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.default_user_pic_light)
                 .into(new BitmapImageViewTarget(driverImageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
