@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
@@ -25,8 +27,8 @@ import java.util.List;
  * @author normansyahputa on 5/26/17.
  *         just move to new architecture.
  */
-public abstract class TopAdsFilterActivity extends BaseActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
-    protected TopAdsFilterListFragment topAdsFilterListFragment;
+public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
+	protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     Fragment currentContentFragment;
     private Button submitButton;
@@ -44,6 +46,8 @@ public abstract class TopAdsFilterActivity extends BaseActivity implements TopAd
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         int selectedPosition = 0;
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {

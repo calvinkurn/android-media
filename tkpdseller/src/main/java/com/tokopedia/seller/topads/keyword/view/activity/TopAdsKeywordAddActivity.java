@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddActivity extends BaseActivity
+public class TopAdsKeywordAddActivity extends TActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
@@ -144,8 +144,8 @@ public class TopAdsKeywordAddActivity extends BaseActivity
         TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddFragment.TAG);
         if (fragment!= null && fragment.isButtonSaveEnabled()) {
             AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.dialog_cancel_title))
-                    .setMessage(getString(R.string.dialog_cancel_message))
+                    .setTitle(getString(R.string.product_dialog_cancel_title))
+                    .setMessage(getString(R.string.product_dialog_cancel_message))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

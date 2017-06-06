@@ -28,6 +28,6 @@ public class TopAdsStatisticAvgFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return getString(R.string.tooltip_statistic_avg, cell.getCostAvgFmt());
+        return getString(R.string.top_ads_tooltip_statistic_avg, cell.getCostAvgFmt());
     }
 }

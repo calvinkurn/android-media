@@ -13,7 +13,7 @@
         app:imageLimit="5"
         app:primaryImageString="@string/prompt_main_picture"
         app:recyclerviewPadding="0dp"
-        app:titleString="@string/upload_product_image"
-        app:addImageString="@string/add_image"/>
+        app:titleString="@string/product_upload_product_image"
+        app:addImageString="@string/product_add_image"/>
 
 </FrameLayout>

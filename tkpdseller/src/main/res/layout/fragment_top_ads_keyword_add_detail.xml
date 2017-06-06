@@ -27,7 +27,7 @@
                     android:id="@+id/edit_text_word"
                     style="@style/EditText"
                     android:layout_width="match_parent"
-                    android:hint="@string/add_keyword"
+                    android:hint="@string/top_ads_keyword_add"
                     android:inputType="text"
                     android:maxLength="@integer/keyword_max_length"
                     android:maxLines="1"
@@ -64,7 +64,7 @@
             android:id="@+id/text_keyword_current_and_max"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="@string/top_ads_total_keywords_current_and_max"
+            tools:text="@string/top_ads_keywords_total_current_and_max"
             android:textColor="@color/black_seventy_percent"
             android:textSize="14sp"/>
         <android.support.v7.widget.AppCompatTextView
@@ -80,7 +80,7 @@
             style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_margin="0dp"
-            android:text="@string/save_keyword" />
+            android:text="@string/top_ads_keyword_save" />
     </LinearLayout>
 
 </LinearLayout>
