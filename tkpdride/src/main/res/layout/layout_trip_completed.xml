@@ -138,7 +138,8 @@
                         android:layout_below="@+id/layout_driver_details"
                         android:layout_marginLeft="12dp"
                         android:layout_marginRight="12dp"
-                        android:layout_marginTop="20dp">
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/crux_cabs_src_dest_line"
@@ -321,7 +322,8 @@
                     android:id="@+id/rating_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="35dp">
+                    android:layout_marginBottom="35dp"
+                    android:layout_marginTop="20dp">
 
                     <include
                         layout="@layout/layout_rate_trip"
