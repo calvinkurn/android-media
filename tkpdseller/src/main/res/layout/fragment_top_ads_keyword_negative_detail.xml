@@ -17,10 +17,13 @@
             <include
                 layout="@layout/include_topads_keyword_header_detail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/topads_detail_padding_item" />
+                android:layout_height="wrap_content"/>
 
-            <include layout="@layout/include_layout_grup_labelview" />
+            <include
+                android:layout_marginTop="@dimen/topads_detail_padding_item"
+                layout="@layout/include_layout_grup_labelview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
         </LinearLayout>
     </ScrollView>
 </com.tokopedia.core.customwidget.SwipeToRefresh>
