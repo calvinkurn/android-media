@@ -55,7 +55,7 @@
                 style="@style/TextView.TopAds.Body.Gray"
                 android:maxLines="3"
                 android:layout_margin="@dimen/top_ads_margin_layout"
-                android:text="@string/label_top_ads_max_price_description" />
+                android:text="@string/top_ads_label_price_desc" />
 
         </LinearLayout>
 
