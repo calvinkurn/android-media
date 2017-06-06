@@ -45,6 +45,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -334,7 +335,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        ProductDetailFragmentPermissionsDispatcher.shareProductWithCheck(ProductDetailFragment.this, data);
+        Intent intent = new Intent(getActivity(), ShareActivity.class);
+        intent.putExtra(ShareData.TAG, data);
+        startActivity(intent);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
