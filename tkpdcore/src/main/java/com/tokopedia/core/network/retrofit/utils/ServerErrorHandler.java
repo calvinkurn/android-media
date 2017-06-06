@@ -11,7 +11,9 @@ import com.tokopedia.core.app.MainApplication;
  *         Pindahan dari TkpdAuthInterceptor, biar bisa dipake rame rame
  */
 public class ServerErrorHandler {
+    private static final String ACTION_FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    private static final String ACTION_SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
 
     public static void showMaintenancePage() {
         MainApplication.getAppContext().startActivity(
@@ -20,7 +22,7 @@ public class ServerErrorHandler {
 
     public static void showForceLogoutDialog() {
         Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
+        intent.setAction(ACTION_FORCE_LOGOUT);
         MainApplication.getAppContext().sendBroadcast(intent);
     }
 
@@ -34,7 +36,7 @@ public class ServerErrorHandler {
 
     public static void showServerErrorSnackbar() {
         Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.SERVER_ERROR");
+        intent.setAction(ACTION_SERVER_ERROR);
         MainApplication.getAppContext().sendBroadcast(intent);
     }
 
