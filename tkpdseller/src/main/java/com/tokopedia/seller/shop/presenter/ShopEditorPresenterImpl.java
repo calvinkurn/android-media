@@ -238,7 +238,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         break;
                     case ShopEditServiceConstant.UPDATE_SHOP_IMAGE:
                         UpdateShopImageModel updateShopImageModel = Parcels.unwrap(resultData.getParcelable(ShopEditService.UPLOAD_SHOP_LOGO_DATA));
-                        if (updateShopImageModel == null) {
+                        if (updateShopImageModel == null || updateShopImageModel.getData() == null) {
                             return;
                         }
                         if(updateShopImageModel.getData().getIs_success() == 1){

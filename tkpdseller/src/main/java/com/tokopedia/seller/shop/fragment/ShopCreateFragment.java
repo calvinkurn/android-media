@@ -450,13 +450,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        // handle when progress dialog is showing when paused
-        showProgress(false);
-    }
-
-    @Override
     public Context getMainContext() {
         return getActivity();
     }
