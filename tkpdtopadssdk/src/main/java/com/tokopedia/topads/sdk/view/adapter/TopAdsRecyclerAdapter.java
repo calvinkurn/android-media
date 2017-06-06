@@ -53,8 +53,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void onLoadMore(int page, int totalItemsCount) {
             if (loadMore)
                 return;
-            showLoading();
             if (loadListener != null) {
+                showLoading();
                 loadListener.onLoad(placer.getPage(), totalItemsCount);
             }
         }
@@ -153,11 +153,19 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
         setLayoutManager(this.recyclerView.getLayoutManager());
-        this.recyclerView.addOnScrollListener(endlessScrollListener);
+        setEndlessScrollListener();
     }
 
     public void setEndlessScrollListenerVisibleThreshold(int threshold){
         this.endlessScrollListener.setVisibleThreshold(threshold);
+    }
+
+    public void unsetEndlessScrollListener(){
+        recyclerView.removeOnScrollListener(endlessScrollListener);
+    }
+
+    public void setEndlessScrollListener(){
+        recyclerView.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
@@ -267,7 +275,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         placer.reset();
         if (this.recyclerView != null) this.recyclerView.removeAllViews();
         notifyDataSetChanged();
-
     }
 
     public void showLoading() {

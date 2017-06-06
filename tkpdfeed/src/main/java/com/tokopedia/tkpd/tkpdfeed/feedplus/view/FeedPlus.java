@@ -72,6 +72,10 @@ public interface FeedPlus{
         void onShowRetryGetFeed();
 
         void onShowAddFeedMore();
+
+        void shouldLoadTopAds(boolean loadTopAds);
+
+        void hideTopAdsAdapterLoading();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

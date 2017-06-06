@@ -187,6 +187,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private void renderItemWithoutAds(int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
+        Log.d(TAG, "renderItemWithoutAds start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
             ClientViewModel model = new ClientViewModel();
             model.setPosition(i);
@@ -200,7 +201,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
-        Log.d(TAG, "start " + positionStart + " item count " + itemCount);
+        Log.d(TAG, "renderItemsWithAds start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
             ClientViewModel model = new ClientViewModel();
             model.setPosition(i);

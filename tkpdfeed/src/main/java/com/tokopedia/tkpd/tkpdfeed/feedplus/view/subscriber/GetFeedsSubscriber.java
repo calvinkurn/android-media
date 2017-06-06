@@ -46,14 +46,18 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 //        }
 
         if (list.size() == 0) {
+            viewListener.shouldLoadTopAds(false);
             viewListener.onShowAddFeedMore();
+            viewListener.hideTopAdsAdapterLoading();
         }else {
             if (feedResult.isHasNext()) {
                 viewListener.updateCursor(getCurrentCursor(feedResult));
                 viewListener.onSuccessGetFeed(list);
             } else {
+                viewListener.shouldLoadTopAds(false);
                 viewListener.onSuccessGetFeed(list);
                 viewListener.onShowAddFeedMore();
+                viewListener.hideTopAdsAdapterLoading();
             }
         }
     }

@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,11 +28,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
@@ -145,7 +142,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onLoad(int page, int totalCount) {
                 int size = adapter.getlist().size();
-                int lastIndex = size-1;
+                int lastIndex = size - 1;
                 if (!(adapter.getlist().get(0) instanceof EmptyModel)
                         && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
                         && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
@@ -210,6 +207,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         presenter.refreshPage();
+        topAdsRecyclerAdapter.setEndlessScrollListener();
     }
 
     @Override
@@ -340,7 +338,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
-//        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -400,9 +397,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShowAddFeedMore() {
         finishLoading();
         adapter.removeEmpty();
-        topAdsRecyclerAdapter.shouldLoadAds(false);
-        topAdsRecyclerAdapter.hideLoading();
         adapter.showAddFeed();
+    }
+
+    @Override
+    public void shouldLoadTopAds(boolean loadTopAds) {
+        topAdsRecyclerAdapter.shouldLoadAds(loadTopAds);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+    }
+
+    @Override
+    public void hideTopAdsAdapterLoading() {
+        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -425,9 +431,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case OPEN_DETAIL:
-                if(resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
                 break;
             default:
@@ -452,16 +458,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onAddFavorite(Data dataShop) {
-        Log.d(TAG, "onAddFavorite "+dataShop.getShop().getName());
+        Log.d(TAG, "onAddFavorite " + dataShop.getShop().getName());
     }
 
     @Override
     public void onTopAdsLoaded() {
-        topAdsRecyclerAdapter.hideLoading();
+        hideTopAdsAdapterLoading();
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
+        hideTopAdsAdapterLoading();
     }
 }
