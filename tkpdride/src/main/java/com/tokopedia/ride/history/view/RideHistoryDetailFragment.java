@@ -266,7 +266,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @Override
     public boolean isRatingAvailable() {
-        return rideHistory.getRating() != null && !rideHistory.getRating().getStar().equalsIgnoreCase("0");
+        return rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED) &&
+                rideHistory.getRating() != null && !rideHistory.getRating().getStar().equalsIgnoreCase("0");
     }
 
     @Override
