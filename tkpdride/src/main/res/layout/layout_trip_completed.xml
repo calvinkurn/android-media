@@ -33,7 +33,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/complete_trip_your_fare"
-                        android:textAllCaps="true" />
+                        android:textAllCaps="true"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tv_total_fare"
@@ -42,9 +43,9 @@
                         android:layout_below="@+id/tv_total_fare_label"
                         android:layout_centerHorizontal="true"
                         android:paddingTop="12dp"
-                        android:text="---"
+                        android:text="-"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="22sp" />
 
                     <LinearLayout
                         android:id="@+id/layout_driver_details"
@@ -250,7 +251,8 @@
                         android:gravity="center"
                         android:text="@string/label_discount"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_discount"
@@ -261,7 +263,8 @@
                         android:paddingTop="8dp"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_label_cashback"
@@ -272,7 +275,8 @@
                         android:gravity="center"
                         android:text="@string/label_cashback"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_cashback"
@@ -283,7 +287,8 @@
                         android:paddingTop="8dp"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <View
                         android:id="@+id/fare_sep"
@@ -379,37 +384,49 @@
     </RelativeLayout>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:background="@drawable/material_card"
-        android:paddingBottom="@dimen/fifteen_dp"
-        android:paddingLeft="@dimen/fifteen_dp"
-        android:paddingRight="@dimen/fifteen_dp"
-        android:paddingTop="@dimen/fifteen_dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone">
 
-        <ProgressBar
-            android:id="@+id/materialLoader"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="12dp"
-            android:visibility="visible" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:background="#AA000000" />
 
-        <TextView
-            android:id="@+id/cabs_ontrip_progress_text"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@id/materialLoader"
-            android:text="Loading..." />
-    </LinearLayout>
+            android:background="@drawable/material_card"
+            android:paddingBottom="@dimen/fifteen_dp"
+            android:paddingLeft="@dimen/fifteen_dp"
+            android:paddingRight="@dimen/fifteen_dp"
+            android:paddingTop="@dimen/fifteen_dp">
+
+            <ProgressBar
+                android:id="@+id/materialLoader"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="12dp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/cabs_ontrip_progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/materialLoader"
+                android:text="Loading..." />
+        </LinearLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>

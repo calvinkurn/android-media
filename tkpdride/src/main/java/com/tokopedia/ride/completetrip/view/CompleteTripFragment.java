@@ -15,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,7 +50,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @BindView(R2.id.on_trip_complete_layout)
     RelativeLayout onTripCompleteLayout;
     @BindView(R2.id.layout_loader)
-    LinearLayout loaderLayout;
+    RelativeLayout loaderLayout;
     @BindView(R2.id.tv_total_fare)
     TextView totalChargedTopTextView;
     @BindView(R2.id.iv_driver_pict)
@@ -251,6 +250,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
         if (receipt.getCashback() > 0) {
             cashbackValueTextView.setText(receipt.getCashback() + "");
+            cashbackLableTextView.setVisibility(View.VISIBLE);
+            cashbackValueTextView.setVisibility(View.VISIBLE);
         } else {
             cashbackValueTextView.setVisibility(View.GONE);
             cashbackLableTextView.setVisibility(View.GONE);
@@ -258,6 +259,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
         if (receipt.getDiscount() > 0) {
             discountValueTextView.setText("- " + receipt.getDiscount());
+            discountValueTextView.setVisibility(View.VISIBLE);
+            discountLabelTextView.setVisibility(View.VISIBLE);
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
@@ -292,7 +295,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @Override
     public void hideReceiptLayout() {
-        onTripCompleteLayout.setVisibility(View.GONE);
+        //onTripCompleteLayout.setVisibility(View.GONE);
     }
 
 
