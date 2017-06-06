@@ -257,7 +257,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/product_product_label_video"
+            android:label="@string/product_label_video"
             android:theme="@style/BasicThemeActionBar" />
 
         <activity

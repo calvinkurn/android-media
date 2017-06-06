@@ -113,7 +113,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
             @Override
             public void onEmptyButtonClicked() {
-                
+
             }
         });
         addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
@@ -256,7 +256,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void showMaxRows() {
-        showMessageErrorRaw(getString(R.string.product_couldn_t_add_videos));
+        showMessageErrorRaw(getString(R.string.product_could_not_add_videos));
     }
 
     public void showMenuButton() {
