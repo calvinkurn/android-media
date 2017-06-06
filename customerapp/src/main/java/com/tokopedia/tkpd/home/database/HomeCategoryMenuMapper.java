@@ -124,19 +124,19 @@ class HomeCategoryMenuMapper {
     }
 
     private class CategoryItemDefaultMapper {
-        private LayoutRow mLayoutRow;
-        private CategoryItemModel mCategoryItemModel;
+        private LayoutRow layoutRow;
+        private CategoryItemModel categoryItemModel;
 
         CategoryItemDefaultMapper(LayoutRow layoutRow, CategoryItemModel categoryItemModel) {
-            mLayoutRow = layoutRow;
-            mCategoryItemModel = categoryItemModel;
+            this.layoutRow = layoutRow;
+            this.categoryItemModel = categoryItemModel;
         }
 
         void invoke() {
-            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
-            mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
-            mCategoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
-            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
+            categoryItemModel.setCategoryId(String.valueOf(layoutRow.getCategoryId()));
+            categoryItemModel.setRedirectValue(layoutRow.getUrl());
+            categoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
+            categoryItemModel.setAppLinks(layoutRow.getAppLinks());
         }
     }
 }
