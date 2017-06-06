@@ -4,14 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.MenuItem;
 
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordDetailNegativeFragment;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
@@ -19,7 +15,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordDetailNegativeActivity extends TopAdsBaseActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordDetailNegativeActivity extends TopAdsBaseSimpleActivity implements HasComponent<AppComponent> {
 
     public static Intent createInstance(Context context, KeywordAd keywordAd, String adId){
         Intent intent = new Intent(context, TopAdsKeywordDetailNegativeActivity.class);

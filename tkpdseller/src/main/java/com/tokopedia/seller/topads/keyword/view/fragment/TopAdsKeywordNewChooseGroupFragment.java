@@ -169,7 +169,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (! autoCompleteChooseGroup.isEnabled()) {
+                if (!autoCompleteChooseGroup.isEnabled() || autoCompleteChooseGroup.isPerformingCompletion()) {
                     return;
                 }
                 inputLayoutChooseGroup.hideErrorSuccess();

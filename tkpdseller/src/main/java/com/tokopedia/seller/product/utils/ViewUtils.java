@@ -30,7 +30,7 @@ public class ViewUtils {
     }
 
     public static String getErrorMessage(@NonNull Context context, Throwable t) {
-        String errorMessage =getErrorMessage(t);
+        String errorMessage = getErrorMessage(t);
         if (TextUtils.isEmpty(errorMessage)) {
             return getGeneralErrorMessage(context, t);
         } else {
@@ -41,15 +41,15 @@ public class ViewUtils {
     public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
         if (t instanceof ResponseErrorListStringException) {
             return ((ResponseErrorListStringException) t).getErrorList().get(0);
-        }else if(t instanceof ResponseErrorException){
+        } else if (t instanceof ResponseErrorException) {
             return getErrorMessage(t);
-        }else if (t instanceof UnknownHostException) {
+        } else if (t instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (t instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
         } else if (t instanceof IOException) {
             return context.getString(R.string.default_request_error_internal_server);
-        }else {
+        } else {
             return context.getString(R.string.default_request_error_unknown);
         }
     }

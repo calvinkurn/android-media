@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,6 +27,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     private LabelView keywordLabelView;
 
     private int totalProductAd;
+    private int totalGroupAd;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -99,6 +101,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         itemSummaryLabelView.setVisibleArrow(true);
         keywordLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
+        totalGroupAd = totalAd.getTotalProductGroupAd();
         onLoadDataSuccess();
         showShowCase();
     }
@@ -138,6 +141,9 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     private void onKeywordLabelClicked() {
         Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
+        if (totalGroupAd >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
+        }
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 

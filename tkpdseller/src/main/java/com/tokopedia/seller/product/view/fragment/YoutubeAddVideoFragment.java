@@ -113,7 +113,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
             @Override
             public void onEmptyButtonClicked() {
-                
+
             }
         });
         addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
@@ -157,8 +157,8 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.title_video_delete_confirmation);
-        builder.setMessage(R.string.video_delete_confirmation);
+        builder.setTitle(R.string.product_title_confirmation_delete_video);
+        builder.setMessage(R.string.product_confirmation_delete_video);
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -256,7 +256,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void showMaxRows() {
-        showMessageErrorRaw(getString(R.string.product_couldn_t_add_videos));
+        showMessageErrorRaw(getString(R.string.product_could_not_add_videos));
     }
 
     public void showMenuButton() {

@@ -45,6 +45,6 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
 
     @Override
     public void onItemClicked(Ad ad) {
-        startActivity(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""));
+        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_STATUS);
     }
 }

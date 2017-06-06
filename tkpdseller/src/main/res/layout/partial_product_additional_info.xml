@@ -34,10 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
         android:visibility="gone"
-        app:content="@string/etalase_picker_add_etalase_add_button_dialog"
+        app:content="@string/product_etalase_picker_add_etalase_add_button_dialog"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:title="@string/product_product_label_video" />
+        app:title="@string/product_label_video" />
 
     <com.tokopedia.expandable.ExpandableOptionSwitch
         android:id="@+id/expandable_option_switch_pre_order"
