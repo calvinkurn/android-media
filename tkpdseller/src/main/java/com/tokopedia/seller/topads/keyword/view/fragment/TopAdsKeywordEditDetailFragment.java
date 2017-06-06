@@ -23,6 +23,7 @@ import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModu
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
+import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     TopAdsKeywordEditDetailPresenter presenter;
     protected SpinnerTextView topAdsKeywordType;
     protected EditText topAdsKeyword;
-    protected EditText topAdsCostPerClick;
+    protected PrefixEditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
 
     private KeywordAd keywordAd;
@@ -93,13 +94,13 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     private void fillDataToView(KeywordAd keywordAd) {
-        topAdsKeywordType.setSpinnerValue(keywordAd.getKeywordTypeId());
+        topAdsKeywordType.setSpinnerValueByEntries(keywordAd.getkeywordTypeDesc());
         topAdsKeyword.setText(keywordAd.getName());
-        topAdsCostPerClick.setText(CurrencyFormatHelper.removeCurrencyPrefix(keywordAd.getPriceBidFmt()));
+        topAdsCostPerClick.setText(String.valueOf(CurrencyFormatHelper.convertRupiahToInt(keywordAd.getPriceBidFmt())));
     }
 
     protected void settingTopAdsCostPerClick(View view) {
-        topAdsCostPerClick = (EditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
+        topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
         CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick);
         topAdsCostPerClick.addTextChangedListener(textWatcher);
@@ -127,7 +128,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     public String getTopAdsCostPerClick() {
-        return topAdsCostPerClick.getText().toString();
+        return topAdsCostPerClick.getTextWithoutPrefix().toString();
     }
 
     @Override
@@ -137,6 +138,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
+        finishAndSetResult();
+    }
+
+    void finishAndSetResult() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);

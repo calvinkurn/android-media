@@ -1,6 +1,10 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
@@ -15,6 +19,15 @@ public class TopAdsKeywordEditDetailNegativeFragment extends TopAdsKeywordEditDe
         TopAdsKeywordEditDetailNegativeFragment fragment = new TopAdsKeywordEditDetailNegativeFragment();
         fragment.setArguments(createArguments(model));
         return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        View costPerClickView = view.findViewById(R.id.linear_layout_cost_per_click);
+        costPerClickView.setVisibility(View.GONE);
+        return view;
     }
 
     @Override

@@ -194,6 +194,21 @@ public class SpinnerTextView extends BaseCustomView {
         resetPosition();
     }
 
+    public void setSpinnerValueByEntries(String entri){
+        if (TextUtils.isEmpty(entri)) {
+            resetPosition();
+            return;
+        }
+        for (int i = 0; i < entries.length; i++) {
+            String tempValue = entries[i].toString();
+            if (tempValue.equalsIgnoreCase(entri)) {
+                setSpinnerPosition(i);
+                return;
+            }
+        }
+        resetPosition();
+    }
+
     public void setError(String error) {
         textInputLayout.setError(error);
     }

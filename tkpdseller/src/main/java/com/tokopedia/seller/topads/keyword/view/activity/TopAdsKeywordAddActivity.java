@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.view.MenuItem;
 
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -25,7 +22,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddActivity extends TActivity
+public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
@@ -37,13 +34,6 @@ public class TopAdsKeywordAddActivity extends TActivity
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
 
     public static final String RESULT_WORDS = "rslt_wrds";
-
-    private String groupId;
-    private String groupName;
-    private int keywordType;
-    private int serverCount;
-    private int maxWords;
-    private ArrayList<String> localWords = new ArrayList<>();
 
     public static void start(Activity activity, int requestCode,
                              String groupId,
@@ -85,30 +75,21 @@ public class TopAdsKeywordAddActivity extends TActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_product_add);
-        retrieveFromIntent();
-        getSupportActionBar().setTitle(KeywordTypeMapper.mapToKeywordName(this,keywordType));
-
-        if (savedInstanceState == null) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container,
-                    TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords)
-                    , TopAdsKeywordAddFragment.TAG);
-            fragmentTransaction.commit();
-        }
+    protected Fragment getNewFragment(Bundle savedinstancestate) {
+        String groupId = getIntent().getStringExtra(EXTRA_GROUP_ID);
+        String groupName = getIntent().getStringExtra(EXTRA_GROUP_NAME);
+        int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
+        int serverCount = getIntent().getIntExtra(EXTRA_SERVER_COUNT, 0);
+        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.topads_max_keyword_in_group));
+        ArrayList<String> localWords = getIntent().getStringArrayListExtra(EXTRA_LOCAL_WORDS);
+        return TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords);
     }
 
-    private void retrieveFromIntent() {
-        Intent intent = getIntent();
-        groupId = intent.getStringExtra(EXTRA_GROUP_ID);
-        groupName = intent.getStringExtra(EXTRA_GROUP_NAME);
-        keywordType = intent.getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
-        serverCount = intent.getIntExtra(EXTRA_SERVER_COUNT, 0);
-        maxWords = intent.getIntExtra(EXTRA_MAX_WORDS,
-                getResources().getInteger(R.integer.topads_max_keyword_in_group));
-        localWords = intent.getStringArrayListExtra(EXTRA_LOCAL_WORDS);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
+        getSupportActionBar().setTitle(KeywordTypeMapper.mapToKeywordName(this, keywordType));
     }
 
     @Override
@@ -122,16 +103,6 @@ public class TopAdsKeywordAddActivity extends TActivity
         intent.putStringArrayListExtra(RESULT_WORDS, keyWordsList);
         setResult(Activity.RESULT_OK, intent);
         finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -157,10 +128,5 @@ public class TopAdsKeywordAddActivity extends TActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
     }
 }
