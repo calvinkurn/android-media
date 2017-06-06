@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         tools:text="@string/top_ads_keyword_phrase_match_positive_description"
         android:maxLines="4"
-        style="@style/TextView.TopAds.Body.Gray"/>
+        style="@style/TextView.TopAds.Body.LightGray"/>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_keyword_example"
         android:layout_width="match_parent"

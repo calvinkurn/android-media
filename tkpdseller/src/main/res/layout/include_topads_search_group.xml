@@ -12,7 +12,7 @@
     <com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView
         android:id="@+id/choose_group_auto_text"
         style="@style/EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView"
-        android:drawablePadding="10dp"
+        android:drawableRight="@drawable/ic_close_green_wpadding"
         android:hint="@string/label_top_ads_choose_group" />
 
 </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>

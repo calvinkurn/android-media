@@ -69,6 +69,10 @@
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
+    <style name="TextView.TopAds.Body.LightGray">
+        <item name="android:textColor">@color/font_top_ads_black_38</item>
+    </style>
+
     <style name="TextView.TopAds.Body.Black">
         <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
@@ -306,7 +310,7 @@
     </style>
 
     <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
-        <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
+        <item name="android:drawableRight">@drawable/ic_close_green_wpadding</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:completionThreshold">1</item>
         <item name="android:inputType">textNoSuggestions</item>
