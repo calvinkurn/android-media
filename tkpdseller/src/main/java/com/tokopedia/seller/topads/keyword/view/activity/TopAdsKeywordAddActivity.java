@@ -87,10 +87,7 @@ public class TopAdsKeywordAddActivity extends TActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_add);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        inflateView(R.layout.activity_product_add);
         retrieveFromIntent();
         getSupportActionBar().setTitle(KeywordTypeMapper.mapToKeywordName(this,keywordType));
 

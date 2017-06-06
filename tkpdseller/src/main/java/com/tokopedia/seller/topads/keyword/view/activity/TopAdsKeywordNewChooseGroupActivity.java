@@ -55,17 +55,16 @@ public class TopAdsKeywordNewChooseGroupActivity extends TActivity implements Ha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_top_ads_edit_promo);
+        inflateView(R.layout.activity_top_ads_edit_promo);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE);
         }
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
         setupFragment();
     }
+
+
 
     private void setupFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TopAdsKeywordNewChooseGroupFragment.TAG);
