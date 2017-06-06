@@ -78,11 +78,11 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
                 mainView.editAddressSpinner();
             }
         };
-        findViewById(R.id.title_edit_shipping_change_location).setOnClickListener(editAddressSpinnerClickListener);
         findViewById(R.id.fragment_shipping_header).setOnClickListener(editAddressSpinnerClickListener);
-        findViewById(R.id.text_edit_shipping_province).setOnClickListener(editAddressSpinnerClickListener);
-        findViewById(R.id.text_edit_shipping_city).setOnClickListener(editAddressSpinnerClickListener);
-        findViewById(R.id.text_edit_shipping_district).setOnClickListener(editAddressSpinnerClickListener);
+        editShippingProvinceCitiesDistrict.setOnClickListener(editAddressSpinnerClickListener);
+        shopProvince.setOnClickListener(editAddressSpinnerClickListener);
+        shopCity.setOnClickListener(editAddressSpinnerClickListener);
+        shopDistrict.setOnClickListener(editAddressSpinnerClickListener);
     }
 
     @Override
