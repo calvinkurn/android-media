@@ -25,6 +25,15 @@ public class KeywordDetailDomain {
     private String statTotalCtr;
     private String statTotalConversion;
     private String labelPerClick;
+    private int statusToogle;
+
+    public int getStatusToogle() {
+        return statusToogle;
+    }
+
+    public void setStatusToogle(int statusToogle) {
+        this.statusToogle = statusToogle;
+    }
 
     public int getKeywordId() {
         return keywordId;

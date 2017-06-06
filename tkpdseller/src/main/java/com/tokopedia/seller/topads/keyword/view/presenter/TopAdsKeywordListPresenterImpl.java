@@ -86,6 +86,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         keywordAd.setKeywordTag(datum.getKeywordTag());
         keywordAd.setStatus(datum.getKeywordStatus());
         keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
+        keywordAd.setStatusToogle(datum.getKeywordStatusToogle());
         keywordAd.setStatAvgClick(datum.getStatAvgClick());
         keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
         keywordAd.setStatTotalImpression(datum.getStatTotalImpression());

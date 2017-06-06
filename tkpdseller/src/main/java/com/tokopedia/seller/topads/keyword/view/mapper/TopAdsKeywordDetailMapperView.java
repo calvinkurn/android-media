@@ -24,6 +24,7 @@ public class TopAdsKeywordDetailMapperView {
         keywordAd.setStatAvgClick(keywordDetailDomain.getStatAvgClick());
         keywordAd.setStatTotalClick(keywordDetailDomain.getStatTotalClick());
         keywordAd.setStatus(keywordDetailDomain.getKeywordStatus());
+        keywordAd.setStatusToogle(keywordDetailDomain.getStatusToogle());
         keywordAd.setStatusDesc(keywordDetailDomain.getKeywordStatusDesc());
         keywordAd.setGroupName(keywordDetailDomain.getGroupName());
         return keywordAd;

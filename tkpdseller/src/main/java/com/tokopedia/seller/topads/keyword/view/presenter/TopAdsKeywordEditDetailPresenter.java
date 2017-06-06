@@ -10,4 +10,6 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 public abstract class TopAdsKeywordEditDetailPresenter extends BaseDaggerPresenter<TopAdsKeywordEditDetailView>{
     public abstract void editTopAdsKeywordDetail(KeywordAd topAdsKeywordEditDetailViewModel);
+
+    public abstract void unSubscribe();
 }

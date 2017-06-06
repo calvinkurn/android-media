@@ -29,6 +29,11 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
         editTopadsKeywordDetailUseCase.execute(params, new EditTopAdsKeywordDetailSubscriber());
     }
 
+    @Override
+    public void unSubscribe() {
+        editTopadsKeywordDetailUseCase.unsubscribe();
+    }
+
     private class EditTopAdsKeywordDetailSubscriber extends Subscriber<EditTopAdsKeywordDetailDomainModel> {
         @Override
         public void onCompleted() {
