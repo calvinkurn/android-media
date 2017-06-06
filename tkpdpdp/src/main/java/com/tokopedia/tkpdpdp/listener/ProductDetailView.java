@@ -280,4 +280,6 @@ public interface ProductDetailView extends ViewListener {
     void showFullScreenError();
 
     void moveToEditFragment(boolean isEdit, String productId);
+
+    void showSuccessWishlistSnackBar();
 }

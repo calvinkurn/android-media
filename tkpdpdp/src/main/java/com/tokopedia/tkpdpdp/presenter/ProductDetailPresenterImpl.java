@@ -675,7 +675,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onSuccess() {
                         viewListener.finishLoadingWishList();
-                        viewListener.showDialog(createSuccessWishListDialog(context));
+                        viewListener.showSuccessWishlistSnackBar();
                         viewListener.updateWishListStatus(1);
                         cacheInteractor.deleteProductDetail(productId);
                     }
@@ -707,41 +707,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showWishListRetry(error);
                     }
                 });
-    }
-
-    private Dialog createSuccessWishListDialog(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.msg_add_wishlist));
-        builder.setPositiveButton(context.getString(R.string.go_to_wishlist),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-//                        Intent intent = new Intent(context, ParentIndexHome.class);
-//                        intent.putExtra(FragmentIndexFavoriteV2.WISHLISH_EXTRA_KEY, true);
-//                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-//                                ParentIndexHome.INIT_STATE_FRAGMENT_FAVORITE);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
-                        intent.putExtra(
-                                SimpleHomeRouter.FRAGMENT_TYPE,
-                                SimpleHomeRouter.WISHLIST_FRAGMENT);
-
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                        viewListener.navigateToActivity(intent);
-                        viewListener.closeView();
-                    }
-                });
-        builder.setNegativeButton(context.getString(R.string.prompt_shop_again),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        return builder.create();
     }
 
     public void getProductDetailFromCache(@NonNull final ProductPass productPass,
