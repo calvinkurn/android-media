@@ -337,7 +337,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void showRatingSuccessDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Rating Successfully sent");
+        builder.setMessage(R.string.complete_trip_rating_successfully);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
