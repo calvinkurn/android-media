@@ -40,6 +40,7 @@
         android:id="@+id/button_next"
         style="@style/Button.Submit.Green"
         android:enabled="false"
-        android:text="@string/next" />
+        android:text="@string/next"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
 </LinearLayout>
