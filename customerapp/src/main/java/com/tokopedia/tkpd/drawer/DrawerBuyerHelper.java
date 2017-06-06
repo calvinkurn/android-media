@@ -510,7 +510,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopPoints(String topPointsUrl) {
-        if (topPointsUrl != null && topPointsUrl.equals("")) {
+        if (topPointsUrl != null && !topPointsUrl.equals("")) {
             Bundle bundle = new Bundle();
             bundle.putString("url", URLGenerator.generateURLLucky(topPointsUrl, context));
             Intent intent = new Intent(context, LoyaltyDetail.class);
@@ -522,7 +522,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        if (topCashUrl != null && topCashUrl.equals("")) {
+        if (topCashUrl != null && !topCashUrl.equals("")) {
             String seamlessURL;
             seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
             Bundle bundle = new Bundle();

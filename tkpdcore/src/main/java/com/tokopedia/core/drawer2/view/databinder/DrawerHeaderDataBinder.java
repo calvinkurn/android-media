@@ -188,7 +188,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 if (data.getDrawerTopPoints() != null
-                        && data.getDrawerTopPoints().getTopPointsUrl() != null
+                        && data.getDrawerTopPoints().getTopPointsUrl() != null)
                 listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
             }
         });
@@ -255,8 +255,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private boolean isTokoCashDisabled(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getText() == null
-                || drawerTokoCash.getText().equals("");
+        return (drawerTokoCash == null) ||
+                (drawerTokoCash.getText() == null || drawerTokoCash.getText().equals(""));
     }
 
     private void setTopPoints(ViewHolder holder) {
