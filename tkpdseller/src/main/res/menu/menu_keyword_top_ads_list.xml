@@ -13,5 +13,6 @@
         android:id="@+id/menu_filter"
         android:icon="@drawable/ic_filter"
         android:title="@string/filter_top_ads"
+        android:visible="false"
         app:showAsAction="always" />
 </menu>

@@ -14,6 +14,7 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_NAME = "EXTRA_NAME";
     public static final String EXTRA_GROUP_NAME = "EXTRA_NAME";
     public static final String EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS";
+    public static final String EXTRA_TOTAL_GROUP_ADS = "EXTRA_TOTAL_GROUP_ADS";
     public static final String EXTRA_AD_CHANGED = "EXTRA_AD_CHANGED";
     public static final String EXTRA_AD_DELETED = "EXTRA_AD_DELETED";
     public static final String EXTRA_CHOOSEN_OPTION_GROUP = "EXTRA_CHOOSEN_OPTION_GROUP";

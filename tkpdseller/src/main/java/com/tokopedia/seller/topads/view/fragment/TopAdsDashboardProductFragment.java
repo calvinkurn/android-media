@@ -140,11 +140,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     }
 
     private void onKeywordLabelClicked() {
-        if (totalGroupAd <= 0) {
-            Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.top_ads_keyword_error_group_is_empty, Snackbar.LENGTH_LONG).show();
-            return;
-        }
         Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
+        if (totalGroupAd >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
+        }
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 

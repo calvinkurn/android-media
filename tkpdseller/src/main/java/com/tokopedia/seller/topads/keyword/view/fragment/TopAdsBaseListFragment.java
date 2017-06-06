@@ -38,17 +38,20 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected static final int START_PAGE = 1;
 
+    protected static final String KEY_STATUS = "KEY_STATUS";
+    protected static final String KEY_PAGE = "KEY_PAGE";
+    protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
+
     protected TopAdsBaseListAdapter<Ad> adapter;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-    private SnackbarRetry snackBarRetry;
-    private ProgressDialog progressDialog;
-    private RecyclerView.OnScrollListener onScrollListener;
-
     protected int status;
     protected int page;
     protected int totalItem;
+    private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
+    private RecyclerView.OnScrollListener onScrollListener;
     private boolean searchMode;
 
     public TopAdsBaseListFragment() {
@@ -249,5 +252,24 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null)
+            return;
+
+        status = savedInstanceState.getInt(KEY_STATUS);
+        page = savedInstanceState.getInt(KEY_STATUS, 0);
+        totalItem = savedInstanceState.getInt(KEY_STATUS, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_STATUS, status);
+        outState.putInt(KEY_PAGE, page);
+        outState.putInt(KEY_TOTAL_ITEM, totalItem);
     }
 }

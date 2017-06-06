@@ -30,6 +30,7 @@
                     android:hint="@string/top_ads_keyword_add"
                     android:inputType="text"
                     android:maxLength="@integer/keyword_max_length"
+                    android:maxLines="1"
                     android:digits="abcdefghijklmnopqrstuvwxyz 0123456789"
                     android:imeOptions="actionDone"/>
 

@@ -16,6 +16,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywodDashboardViewModel;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
+import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         this.keywordDashboardUseCase = keywordDashboardUseCase;
     }
 
-    public void fetchPositiveKeyword(BaseKeywordParam baseKeywordParam) {
+    public void fetchKeyword(final BaseKeywordParam baseKeywordParam) {
         keywordDashboardUseCase.execute(generateParam(baseKeywordParam), new Subscriber<KeywordDashboardDomain>() {
             @Override
             public void onCompleted() {
@@ -58,26 +59,26 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchPositiveKeyword " + keywordDashboardDomain);
-                revealData(getKeywordAds(keywordDashboardDomain));
+                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
+                revealData(getKeywordAds(keywordDashboardDomain, baseKeywordParam.isPositive));
             }
         });
     }
 
-    private KeywodDashboardViewModel getKeywordAds(KeywordDashboardDomain keywordDashboardDomain) {
+    private KeywodDashboardViewModel getKeywordAds(KeywordDashboardDomain keywordDashboardDomain, boolean isPositive) {
         KeywodDashboardViewModel keywodDashboardViewModel = new KeywodDashboardViewModel();
         keywodDashboardViewModel.setPage(keywordDashboardDomain.getPage());
         List<KeywordAd> keywordAds = new ArrayList<>();
         for (Datum datum : keywordDashboardDomain.getData()) {
-            keywordAds.add(getKeywordAd(datum));
+            keywordAds.add(getKeywordAd(datum, isPositive));
         }
         keywodDashboardViewModel.setData(keywordAds);
         return keywodDashboardViewModel;
     }
 
     @NonNull
-    private KeywordAd getKeywordAd(Datum datum) {
-        KeywordAd keywordAd = new KeywordAd();
+    private KeywordAd getKeywordAd(Datum datum, boolean isPositive) {
+        KeywordAd keywordAd = isPositive ? new KeywordAd() : new NegativeKeywordAd();
         keywordAd.setId(Integer.toString(datum.getKeywordId()));
         keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
         keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
@@ -111,29 +112,6 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         return GoldMerchantDateUtils.getDateFormatForInput(
                 date, KEYWORD_DATE_FORMAT
         );
-    }
-
-    public void fetchNegativeKeyword(BaseKeywordParam baseKeywordParam) {
-        keywordDashboardUseCase.execute(generateParam(baseKeywordParam), new Subscriber<KeywordDashboardDomain>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                getView().onLoadSearchAdError();
-            }
-
-            @Override
-            public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchNegativeKeyword " + keywordDashboardDomain);
-                revealData(getKeywordAds(keywordDashboardDomain));
-            }
-        });
     }
 
     @Override

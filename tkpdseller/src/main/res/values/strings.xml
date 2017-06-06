@@ -569,7 +569,6 @@
     <string name="top_ads_keyword_has_existed">Kata Kunci telah ada.</string>
     <string name="top_ads_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
     <string name="top_ads_keyword_title">Kata Kunci</string>
-    <string name="top_ads_keyword_error_group_is_empty">Silahkan menambah Group Ad terlebih dahulu</string>
     <string name="top_ads_keyword_title_negative">Negatif</string>
     <string name="top_ads_keyword_search_group">Cari Grup</string>
     <string name="top_ads_keyword_title_add">Tambah Kata Kunci</string>
@@ -607,5 +606,6 @@
     <!-- tooltip statistic topads -->
     <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
     <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
-
+    <string name="title_top_ads_keyword">Kata Kunci</string>
+    <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
 </resources>
