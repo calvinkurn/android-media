@@ -209,8 +209,10 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
             return;
         }
+        mGoogleMap.setPadding(0, 0, 400, 0);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
 
 //        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
 //            @Override
