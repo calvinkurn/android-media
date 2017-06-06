@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.exception;
 
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+
 import java.io.IOException;
 
 /**
@@ -15,7 +17,7 @@ public class ServerErrorException extends IOException {
 
     public ServerErrorException(String message, String errorBody, int errorCode, String url) {
         super(message == null || message.isEmpty()
-                ? "Terjadi Kesalahan, mohon coba kembali" : message);
+                ? ErrorNetMessage.MESSAGE_ERROR_DEFAULT : message);
         this.errorBody = errorBody;
         this.errorCode = errorCode;
         this.url = url;
