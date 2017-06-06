@@ -196,7 +196,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
             orderProductViewModel.setProductDescription(orderProduct.getProductDescription());
             orderProductViewModel.setProductNormalPrice(orderProduct.getProductNormalPrice());
             orderProductViewModel.setProductPriceCurrency(String.valueOf(orderProduct.getProductPriceCurrency()));
-            orderProductViewModel.setProductNotes(String.valueOf(orderProduct.getProductNotes()));
+            orderProductViewModel.setProductNotes(orderProduct.getProductNotes());
             orderProductViewModel.setOrderSubtotalPrice(orderProduct.getOrderSubtotalPrice());
             orderProductViewModel.setProductQuantity(orderProduct.getProductQuantity());
             orderProductViewModel.setProductWeight(orderProduct.getProductWeight());

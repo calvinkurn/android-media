@@ -322,6 +322,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onErrorFirstTime(String errorMessage) {
         finishLoadingList();
+        finishRefresh();
+
         if (!isFilterEmpty())
             enableView();
 
@@ -351,14 +353,17 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         finishLoadingList();
         finishRefresh();
         setPaging(opportunityViewModel.getPagingHandlerModel());
-
+        adapter.showEmptyFull(false);
+        adapter.getList().clear();
         adapter.setList(opportunityViewModel.getListOpportunity());
         if (adapter.getList().size() == 0) {
             adapter.showEmptyFull(true);
         }
 
         enableView();
-        filterData = opportunityFilterViewModel;
+        if (filterData.getListFilter() == null
+                && filterData.getListSortingType() == null)
+            filterData = opportunityFilterViewModel;
         setFilter();
         setSort();
     }

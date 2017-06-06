@@ -559,4 +559,6 @@
     <string name="title_supported_shipping">Dukungan Pengiriman</string>
     <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
     <string name="action_sort">Urutkan</string>
+    <string name="take_opportunity">Ambil Peluang</string>
+    <string name="delete_opportunity">Hapus Peluang</string>
 </resources>

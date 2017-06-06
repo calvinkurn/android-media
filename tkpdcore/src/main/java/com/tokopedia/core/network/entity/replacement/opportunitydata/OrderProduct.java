@@ -41,7 +41,7 @@ public class OrderProduct {
     private int productPriceCurrency;
     @SerializedName("product_notes")
     @Expose
-    private int productNotes;
+    private String productNotes;
     @SerializedName("order_subtotal_price")
     @Expose
     private String orderSubtotalPrice;
@@ -152,11 +152,11 @@ public class OrderProduct {
         this.productPriceCurrency = productPriceCurrency;
     }
 
-    public int getProductNotes() {
+    public String getProductNotes() {
         return productNotes;
     }
 
-    public void setProductNotes(int productNotes) {
+    public void setProductNotes(String productNotes) {
         this.productNotes = productNotes;
     }
 

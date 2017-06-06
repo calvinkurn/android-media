@@ -59,8 +59,6 @@ public class OpportunityDetailButtonView extends BaseView<OpportunityItemViewMod
 
     @Override
     public void renderData(@NonNull OpportunityItemViewModel data) {
-        actionDelete.setVisibility(VISIBLE);
-        actionConfirm.setVisibility(VISIBLE);
 
         actionDelete.setOnClickListener(new OnClickListener() {
             @Override
