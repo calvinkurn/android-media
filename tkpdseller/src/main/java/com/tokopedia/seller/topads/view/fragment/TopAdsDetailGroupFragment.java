@@ -110,7 +110,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     public void onAdLoaded(Ad ad) {
-        groupAd = (GroupAd) super.ad;
+        groupAd = (GroupAd) ad;
         super.onAdLoaded(ad);
         if (listener != null) {
             listener.startShowCase();

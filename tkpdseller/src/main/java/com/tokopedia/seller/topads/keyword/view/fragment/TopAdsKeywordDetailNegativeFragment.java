@@ -63,6 +63,6 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
 
     @Override
     protected void editAd() {
-        startActivity(TopAdsKeywordEditDetailNegativeActivity.createInstance(getActivity(), keywordAd));
+        startActivityForResult(TopAdsKeywordEditDetailNegativeActivity.createInstance(getActivity(), keywordAd), REQUEST_CODE_AD_EDIT);
     }
 }

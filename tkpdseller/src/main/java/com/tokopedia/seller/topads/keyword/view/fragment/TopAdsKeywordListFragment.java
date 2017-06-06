@@ -137,7 +137,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onItemClicked(Ad ad) {
-        startActivity(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""));
+        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_STATUS);
     }
 
     @Override

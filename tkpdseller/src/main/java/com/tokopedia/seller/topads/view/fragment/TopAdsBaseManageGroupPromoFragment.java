@@ -166,6 +166,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if(inputChooseGroup.isPerformingCompletion()){
+                    return;
+                }
                 presenter.searchGroupName(editable.toString());
             }
         });
