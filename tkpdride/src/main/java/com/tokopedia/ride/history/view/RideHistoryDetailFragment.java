@@ -3,6 +3,7 @@ package com.tokopedia.ride.history.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,16 +12,22 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
@@ -68,6 +75,18 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     TextView totalChargedTexView;
     @BindView(R2.id.rl_payment_details)
     RelativeLayout paymentDetailsLayout;
+    @BindView(R2.id.layout_rate)
+    RelativeLayout ratingLayout;
+    @BindView(R2.id.rb_rate_star)
+    RatingBar rateStarRatingBar;
+    @BindView(R2.id.et_rate_comment)
+    EditText rateCommentEditText;
+    @BindView(R2.id.rate_confirmation)
+    Button rateConfirmationButton;
+    @BindView(R2.id.ride_history_layout)
+    RelativeLayout rideHistoryLayout;
+    @BindView(R2.id.progress_bar)
+    ProgressBar progressBar;
 
     RideHistoryDetailContract.Presenter mPresenter;
 
@@ -103,6 +122,32 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         mPresenter = RideHistoryDetailDependencyInjection.createPresenter(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
+        setViewListener();
+    }
+
+    private void setViewListener() {
+        rateConfirmationButton.setEnabled(false);
+        rateStarRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                if (ratingBar.getRating() > 0.0) {
+                    rateConfirmationButton.setEnabled(true);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                    } else {
+                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                    }
+                } else {
+                    rateConfirmationButton.setEnabled(false);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                    } else {
+                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -194,7 +239,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
-    public void showMainLayout() {
+    public void showHistoryDetailLayout() {
         topLayout.setVisibility(View.VISIBLE);
     }
 
@@ -217,10 +262,85 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         return rideHistory;
     }
 
+    @Override
+    public boolean isRatingAvailable() {
+        return rideHistory.getRating() != null;
+    }
+
+    @Override
+    public void showRatingLayout() {
+        ratingLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideRatingLayout() {
+        ratingLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public RequestParams getRatingParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_COMMENT, getRateComment());
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_REQUEST_ID, rideHistory.getRequestId());
+        requestParams.putString(GiveDriverRatingUseCase.PARAM_STARS, getRateStars());
+        return requestParams;
+    }
+
+    private String getRateStars() {
+        return String.valueOf(Float.floatToIntBits(rateStarRatingBar.getRating()));
+    }
+
+    private String getRateComment() {
+        return rateCommentEditText.getText().toString().trim();
+    }
+
+    @Override
+    public void showSuccessRatingDialog() {
+
+    }
+
+    @Override
+    public void hideMainLayout() {
+        rideHistoryLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showMainLayout() {
+        rideHistoryLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRatingNetworkError() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), getErrorRatingListener());
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getErrorRatingListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                mPresenter.actionSendRating();
+            }
+        };
+    }
+
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 
-
+    @OnClick(R2.id.rate_confirmation)
+    public void actionRateConfirmClicked() {
+        mPresenter.actionSendRating();
+    }
 }

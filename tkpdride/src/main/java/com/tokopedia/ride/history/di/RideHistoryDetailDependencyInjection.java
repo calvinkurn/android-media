@@ -30,6 +30,7 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.view.RideHistoryDetailContract;
 import com.tokopedia.ride.history.view.RideHistoryDetailPresenter;
@@ -233,7 +234,29 @@ public class RideHistoryDetailDependencyInjection {
                 ))), new DirectionEntityMapper())
         );
     }
-
+    private GiveDriverRatingUseCase provideGiveDriverRatingUseCase(String token, String userId) {
+        return new GiveDriverRatingUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
     public static RideHistoryDetailContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
@@ -241,6 +264,7 @@ public class RideHistoryDetailDependencyInjection {
         RideHistoryDetailDependencyInjection injection = new RideHistoryDetailDependencyInjection();
         GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
         GetSingleRideHistoryUseCase getSingleRideHistoryUseCase = injection.provideGetSingleRideHistoryUseCase(token, userId);
-        return new RideHistoryDetailPresenter(getSingleRideHistoryUseCase, getOverviewPolylineUseCase);
+        GiveDriverRatingUseCase giveDriverRatingUseCase = injection.provideGiveDriverRatingUseCase(token, userId);
+        return new RideHistoryDetailPresenter(getSingleRideHistoryUseCase, getOverviewPolylineUseCase, giveDriverRatingUseCase);
     }
 }

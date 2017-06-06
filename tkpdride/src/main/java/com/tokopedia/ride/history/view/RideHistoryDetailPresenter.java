@@ -1,18 +1,11 @@
 package com.tokopedia.ride.history.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-import java.io.IOException;
-
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 4/20/17.
@@ -21,16 +14,57 @@ import rx.schedulers.Schedulers;
 public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryDetailContract.View> implements RideHistoryDetailContract.Presenter {
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
+    private GiveDriverRatingUseCase giveDriverRatingUseCase;
 
-    public RideHistoryDetailPresenter(GetSingleRideHistoryUseCase getSingleRideHistoryUseCase, GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
+    public RideHistoryDetailPresenter(GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
+                                      GetOverviewPolylineUseCase getOverviewPolylineUseCase,
+                                      GiveDriverRatingUseCase giveDriverRatingUseCase) {
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
+        this.giveDriverRatingUseCase = giveDriverRatingUseCase;
     }
 
     @Override
     public void initialize() {
-        getView().showMainLayout();
+        getView().showHistoryDetailLayout();
         getView().renderHistory();
+        if (!getView().isRatingAvailable()) {
+            getView().showRatingLayout();
+        } else {
+            getView().hideRatingLayout();
+        }
+    }
+
+    @Override
+    public void actionSendRating() {
+        getView().hideMainLayout();
+        getView().showLoading();
+        giveDriverRatingUseCase.execute(getView().getRatingParam(), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().showMainLayout();
+                    getView().hideLoading();
+                    getView().showRatingNetworkError();
+                }
+            }
+
+            @Override
+            public void onNext(String s) {
+                if (isViewAttached()) {
+                    getView().showSuccessRatingDialog();
+                    getView().hideRatingLayout();
+                    getView().showMainLayout();
+                    getView().hideLoading();
+                }
+            }
+        });
     }
 
 //    private void actionGetRenderedLocation(final RideHistoryViewModel rideHistory) {

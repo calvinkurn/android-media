@@ -101,6 +101,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         }
 
                         viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
+                        viewModel.setRating(rideHistory.getRating());
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();
