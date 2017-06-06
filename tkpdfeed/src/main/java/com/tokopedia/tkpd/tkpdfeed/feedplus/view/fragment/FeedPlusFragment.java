@@ -207,6 +207,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         presenter.refreshPage();
+        topAdsRecyclerAdapter.reset();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
         topAdsRecyclerAdapter.setEndlessScrollListener();
     }
 

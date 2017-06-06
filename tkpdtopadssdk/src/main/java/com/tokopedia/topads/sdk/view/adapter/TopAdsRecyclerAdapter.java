@@ -275,6 +275,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         placer.reset();
         if (this.recyclerView != null) this.recyclerView.removeAllViews();
         notifyDataSetChanged();
+        endlessScrollListener.resetState();
     }
 
     public void showLoading() {
