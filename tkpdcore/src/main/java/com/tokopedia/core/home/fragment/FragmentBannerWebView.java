@@ -96,7 +96,7 @@ public class FragmentBannerWebView extends Fragment {
         args.putString(EXTRA_URL, url);
         Uri uri = Uri.parse(url);
         if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
-            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("true"));
+            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
         }
         fragment.setArguments(args);
         return fragment;
