@@ -182,7 +182,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
         String clientNumber = preCheckoutProduct.getClientNumber();
         return new DigitalCheckoutPassData.Builder()
-                .action("init_data")
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                 .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber(clientNumber)
                 .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
@@ -192,8 +192,8 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 .utmCampaign((preCheckoutProduct.getCategoryName()))
                 .utmContent(view.getVersionInfoApplication())
                 .idemPotencyKey(generateATokenRechargeCheckout())
-                .utmSource("android")
-                .utmMedium("widget")
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
                 .build();
     }
