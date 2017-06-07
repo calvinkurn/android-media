@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="@dimen/btn_height"
     android:orientation="horizontal">
 
-    <TextView
+        <TextView
         android:id="@+id/action_confirm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/green_button"
+        android:background="@color/green_500"
         android:gravity="center"
-        android:text="@string/accept_replacement"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fontl" />
+        android:text="@string/take_opportunity"
+        android:textColor="@color/white"/>
 
 </RelativeLayout>
