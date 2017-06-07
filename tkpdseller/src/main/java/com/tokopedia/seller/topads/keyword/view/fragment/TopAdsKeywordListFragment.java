@@ -107,18 +107,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     protected TopAdsBaseListAdapter<KeywordAd> getNewAdapter() {
-        return new TopAdsKeywordAdapter(new TopAdsBaseListAdapter.Callback<KeywordAd>() {
-            @Override
-            public void onItemClicked(KeywordAd keywordAd) {
-                if (keywordAd != null) {
-                    goToDetail(keywordAd);
-                }
-            }
-        });
-    }
-
-    protected void goToDetail(KeywordAd keywordAd) {
-        onItemClicked(keywordAd);
+        return new TopAdsKeywordAdapter();
     }
 
     protected boolean isPositive() {

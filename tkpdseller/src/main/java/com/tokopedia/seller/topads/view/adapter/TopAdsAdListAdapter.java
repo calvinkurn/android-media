@@ -38,6 +38,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends TopAdsBaseListAdapter<T> 
         }
     }
 
+    @Override
     public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;

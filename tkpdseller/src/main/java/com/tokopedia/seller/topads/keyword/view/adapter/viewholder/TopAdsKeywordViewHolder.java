@@ -50,22 +50,21 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void bindDataAds(final KeywordAd datum, final TopAdsBaseListAdapter.Callback<KeywordAd> callback) {
-
-        if (datum != null && datum instanceof NegativeKeywordAd) {
+    public void bindObject(final KeywordAd keywordAd) {
+        if (keywordAd != null && keywordAd instanceof NegativeKeywordAd) {
             promoPriceUsedContainer.setVisibility(View.GONE);
             pricePromoPerClick.setVisibility(View.GONE);
             statusActiveContainer.setVisibility(View.GONE);
         }
 
-        keywordTypeDescription.setText(datum.getKeywordTypeDesc());
-        titleProduct.setText(datum.getKeywordTag());
-        statusActive.setText(datum.getStatusDesc());
-        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getPriceBidFmt()));
-        promoPriceUsed.setText(datum.getStatTotalSpent());
-        groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, datum.getGroupName()));
+        keywordTypeDescription.setText(keywordAd.getKeywordTypeDesc());
+        titleProduct.setText(keywordAd.getKeywordTag());
+        statusActive.setText(keywordAd.getStatusDesc());
+        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, keywordAd.getPriceBidFmt()));
+        promoPriceUsed.setText(keywordAd.getStatTotalSpent());
+        groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, keywordAd.getGroupName()));
 
-        switch (datum.getStatus()) {
+        switch (keywordAd.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);
                 break;
@@ -73,14 +72,5 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
                 break;
         }
-
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (callback != null) {
-                    callback.onItemClicked(datum);
-                }
-            }
-        });
     }
 }

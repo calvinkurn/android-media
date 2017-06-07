@@ -80,8 +80,10 @@ public abstract class TopAdsBaseListAdapter<T> extends BaseLinearRecyclerViewAda
     }
 
     public void addData(List<T> data) {
-        this.data.addAll(data);
-        notifyDataSetChanged();
+        if (data != null && data.size() > 0) {
+            this.data.addAll(data);
+            notifyDataSetChanged();
+        }
     }
 
     public void clearData() {
