@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.home.view;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,7 +40,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
@@ -91,7 +89,6 @@ import com.tokopedia.sellerapp.home.boommenu.Types.ButtonType;
 import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 import com.tokopedia.sellerapp.home.boommenu.Util;
 import com.tokopedia.sellerapp.home.di.SellerHomeDependencyInjection;
-import com.tokopedia.sellerapp.home.fragment.CloseAppsDialogFragment;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
@@ -911,19 +908,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         } else if (drawer.isOpened()) {
             drawer.closeDrawer();
         } else {
-            showExitDialog();
-        }
-    }
-
-    private void showExitDialog() {
-        LocalCacheHandler handler = new LocalCacheHandler(this, CloseAppsDialogFragment.CLOSE_APPS_CACHE);
-        if (handler.getBoolean(CloseAppsDialogFragment.DONT_SHOW_FLAG)) {
             super.onBackPressed();
-        } else {
-            CloseAppsDialogFragment dialog = CloseAppsDialogFragment.newInstance();
-            FragmentManager fm = getFragmentManager();
-
-            dialog.show(fm, "filter_dialog");
         }
     }
 

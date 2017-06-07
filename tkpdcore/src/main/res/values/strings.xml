@@ -424,7 +424,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
-    <string name="title_copy_prod">Salin</string>
+    <string name="title_copy_prod">Duplikat</string>
     <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
