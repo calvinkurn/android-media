@@ -172,10 +172,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     public void displayAds(List<Item> list) {
         switch (observerType) {
             case ObserverType.CHANGE:
+                Log.d(TAG, "CHANGE");
                 reset();
                 renderItemsWithAds(list, ajustedPositionStart, ajustedItemCount);
                 break;
             case ObserverType.ITEM_RANGE_INSERTED:
+                Log.d(TAG, "ITEM_RANGE_INSERTED");
                 renderItemsWithAds(list, ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
                 break;
         }

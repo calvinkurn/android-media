@@ -192,7 +192,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
-        topAdsRecyclerAdapter.setEndlessScrollListenerVisibleThreshold(3);
+        topAdsRecyclerAdapter.setEndlessScrollListenerVisibleThreshold(2);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
@@ -326,7 +326,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-        adapter.clearData();
         finishLoading();
         adapter.removeEmpty();
         if (listFeed.size() == 0) {
