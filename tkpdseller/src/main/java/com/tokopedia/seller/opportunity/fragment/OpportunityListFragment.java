@@ -172,7 +172,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
 
-
     private OpportunityListAdapter.OpportunityListener onGoToDetail() {
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
@@ -191,21 +190,21 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     protected void setViewListener() {
         opportunityList.addOnScrollListener(
                 new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = layoutManager.findLastVisibleItemPosition();
-                int visibleItem = layoutManager.getItemCount() - 1;
-                if (!refreshHandler.isRefreshing()
-                        && adapter.getList().size() != 0
-                        && lastItemPosition == visibleItem
-                        && !adapter.isLoading()
-                        && hasNextPage()) {
-                    pagingHandler.nextPage();
-                    presenter.getOpportunity();
-                }
-            }
-        });
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        int lastItemPosition = layoutManager.findLastVisibleItemPosition();
+                        int visibleItem = layoutManager.getItemCount() - 1;
+                        if (!refreshHandler.isRefreshing()
+                                && adapter.getList().size() != 0
+                                && lastItemPosition == visibleItem
+                                && !adapter.isLoading()
+                                && hasNextPage()) {
+                            pagingHandler.nextPage();
+                            presenter.getOpportunity();
+                        }
+                    }
+                });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -252,6 +251,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onSuccessGetOpportunity(OpportunityViewModel viewModel) {
         setPaging(viewModel.getPagingHandlerModel());
+        enableView();
         finishLoadingList();
         adapter.setList(viewModel.getListOpportunity());
     }
@@ -298,7 +298,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onErrorGetOpportunity(String errorMessage) {
         finishLoadingList();
-
+        enableView();
         if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else
@@ -328,8 +328,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void onErrorFirstTime(String errorMessage) {
         finishLoadingList();
         finishRefresh();
-
-        if (!isFilterEmpty())
             enableView();
 
         if (adapter.getList().size() == 0 && errorMessage.equals("")) {
@@ -374,8 +372,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     private void enableView() {
-        searchView.setVisibility(View.VISIBLE);
-        footer.setVisibility(View.VISIBLE);
+        if (!isFilterEmpty()) {
+            searchView.setVisibility(View.VISIBLE);
+            footer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
