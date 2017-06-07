@@ -46,6 +46,8 @@ public interface RideHistoryDetailContract {
         void hideLoading();
 
         void showRatingNetworkError();
+
+        void renderSuccessfullGiveRating();
     }
 
     interface Presenter extends CustomerPresenter<View> {

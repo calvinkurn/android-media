@@ -58,6 +58,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
             @Override
             public void onNext(String s) {
                 if (isViewAttached()) {
+                    getView().renderSuccessfullGiveRating();
                     getView().showSuccessRatingDialog();
                     getView().hideRatingLayout();
                     getView().showMainLayout();

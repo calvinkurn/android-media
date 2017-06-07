@@ -89,6 +89,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     RelativeLayout rideHistoryLayout;
     @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R2.id.rb_rating_result)
+    RatingBar ratingResult;
 
     RideHistoryDetailContract.Presenter mPresenter;
 
@@ -329,6 +331,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @Override
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSuccessfullGiveRating() {
+        ratingResult.setVisibility(View.VISIBLE);
+        ratingResult.setRating(Float.parseFloat(getRateStars()));
     }
 
     @Override

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="20dp"
+    android:padding="20dp"
     tools:context="com.tokopedia.ride.ontrip.view.fragment.DriverNotFoundDialogFragment">
     <!--Sorry, we couldn’t find the driver!-->
     <!--Please try again in few minutes-->

@@ -448,7 +448,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 ));
                             }
                             if (animation) {
-                                getView().zoomMapFitByRouteWithAnimation(latLngs);
+                                getView().zoomMapFitByPolyline(latLngs);
                             }
                         } else {
                             if (routes.size() > 0) {
@@ -473,7 +473,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                             overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
                                     ));
                                     if (animation) {
-                                        getView().zoomMapFitByRouteWithAnimation(latLngs);
+                                        getView().zoomMapFitByPolyline(latLngs);
                                     }
                                 }
                             }
@@ -535,71 +535,60 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
 
                         if (activeRideRequest != null) {
-                            CommonUtils.dumper("Zoom activeRideRequest is not null");
-                            double startLat = activeRideRequest.getPickup().getLatitude();
-                            double startLng = activeRideRequest.getPickup().getLongitude();
-                            double endLat = activeRideRequest.getDestination().getLatitude();
-                            double endLng = activeRideRequest.getDestination().getLongitude();
+                            List<LatLng> latLngs = new ArrayList<LatLng>();
+                            latLngs.add(new LatLng(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude()));
+                            latLngs.add(new LatLng(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude()));
 
                             //draw vehicle location based on last update
                             if (activeRideRequest.getLocation() != null) {
                                 getView().reDrawDriverMarker(activeRideRequest);
                             }
 
-                            getView().renderSourceMarker(startLat, startLng);
-                            getView().renderDestinationMarker(endLat, endLng);
+                            getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude());
+                            getView().renderDestinationMarker(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude());
 
                             if (zoomToFit) {
-                                if (overviewPolylines.size() > 0) {/*
-                                    getView().zoomMapFitWithSourceAndDestination(
+                                if (overviewPolylines.size() > 0) {
+                                    latLngs.add(new LatLng(
                                             overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
-                                            overviewPolylines.get(0).getBounds().getNortheast().getLongitude(),
+                                            overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
+                                    ));
+
+                                    latLngs.add(new LatLng(
                                             overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
                                             overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
-                                    );*/
-                                    getView().zoomMapFitWithSourceAndDestination(
-                                            startLat,
-                                            startLng,
-                                            endLat,
-                                            endLng,
-                                            overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
-                                            overviewPolylines.get(0).getBounds().getNortheast().getLongitude(),
-                                            overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
-                                            overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
+                                    ));
+                                    getView().zoomMapFitByPolyline(
+                                            latLngs
                                     );
                                 }
 
 
                             }
                         } else {
-                            CommonUtils.dumper("Zoom activeRideRequest is null");
-
                             if (routes.size() > 0) {
+                                List<LatLng> latLngs = new ArrayList<LatLng>();
                                 List<LatLng> route = routes.get(0);
                                 double startLat = route.get(0).latitude;
                                 double startLng = route.get(0).longitude;
+                                latLngs.add(new LatLng(startLat, startLng));
                                 if (route.size() > 0) {
                                     double endLat = route.get(route.size() - 1).latitude;
                                     double endLng = route.get(route.size() - 1).longitude;
                                     getView().renderSourceMarker(startLat, startLng);
                                     getView().renderDestinationMarker(endLat, endLng);
-                                    if (zoomToFit) {/*
-                                        getView().zoomMapFitWithSourceAndDestination(
-                                                startLat,
-                                                startLng,
-                                                endLat,
-                                                endLng
-                                        );*/
-                                        getView().zoomMapFitWithSourceAndDestination(
-                                                startLat,
-                                                startLng,
-                                                endLat,
-                                                endLng,
-                                                overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
-                                                overviewPolylines.get(0).getBounds().getNortheast().getLongitude(),
-                                                overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
-                                                overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
-                                        );
+                                    latLngs.add(new LatLng(endLat, endLng));
+                                    latLngs.add(new LatLng(
+                                            overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
+                                            overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
+                                    ));
+
+                                    latLngs.add(new LatLng(
+                                            overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
+                                            overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
+                                    ));
+                                    if (zoomToFit) {
+                                        getView().zoomMapFitByPolyline(latLngs);
                                     }
                                 }
                             }

@@ -137,8 +137,6 @@ public interface OnTripMapContract {
 
         void renderDestinationMarker(double latitude, double longitude);
 
-        void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng);
-
         void openSmsIntent(String smsNumber);
 
         void setAddressPickerText(String startAddressName, String endAddressName);
@@ -181,15 +179,13 @@ public interface OnTripMapContract {
 
         void hideShareEtaProgress();
 
-        void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng, double latitude, double longitude, double latitude1, double longitude1);
-
         void showCurrentLocationIndicator();
 
         void hideCurrentLocationIndicator();
 
         RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude);
 
-        void zoomMapFitByRouteWithAnimation(List<LatLng> latLngs);
+        void zoomMapFitByPolyline(List<LatLng> latLngs);
     }
 
     interface Presenter extends CustomerPresenter<View> {

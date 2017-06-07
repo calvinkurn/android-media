@@ -194,7 +194,7 @@
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_driver_name"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="16dp"
@@ -203,6 +203,24 @@
                         android:text="Your trip with John"
                         android:textColor="@color/black" />
 
+                    <RatingBar
+                        android:id="@+id/rb_rating_result"
+                        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
+                        android:clickable="true"
+                        android:numStars="5"
+                        android:rating="0"
+                        android:scaleX=".75"
+                        android:scaleY=".75"
+                        android:stepSize="1"
+                        android:theme="@style/RatingBar"
+                        android:visibility="gone"
+                        tools:rating="3" />
                 </RelativeLayout>
 
 

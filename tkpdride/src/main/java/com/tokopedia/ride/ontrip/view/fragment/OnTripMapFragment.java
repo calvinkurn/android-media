@@ -744,33 +744,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(new LatLng(startLat, startLng));
-        builder.include(new LatLng(endLat, endLng));
-
-        mGoogleMap.animateCamera(CameraUpdateFactory.
-                newLatLngBounds(builder.build(),
-                        getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
-        );
-    }
-
-    @Override
-    public void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng, double latitude, double longitude, double latitude1, double longitude1) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(new LatLng(startLat, startLng));
-        builder.include(new LatLng(endLat, endLng));
-        builder.include(new LatLng(latitude, longitude));
-        builder.include(new LatLng(latitude1, longitude1));
-        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
-                widthPixels, widthPixels,
-                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
-        );
-    }
-
-    @Override
-    public void zoomMapFitByRouteWithAnimation(List<LatLng> latLngs) {
+    public void zoomMapFitByPolyline(List<LatLng> latLngs) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (LatLng latLng : latLngs){
             builder.include(latLng);
