@@ -47,30 +47,32 @@ public class CloudNotificationSource {
         return new Action1<NotificationModel>() {
             @Override
             public void call(NotificationModel notificationModel) {
-                NotificationData notificationData = notificationModel.getNotificationData();
-                drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
-                drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
-                drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
-                drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
-                drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
+                if (notificationModel != null && notificationModel.isSuccess()) {
+                    NotificationData notificationData = notificationModel.getNotificationData();
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
+                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
 
-                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
-                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, notificationData.getPurchase().getPurchaseOrderStatus());
-                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, notificationData.getPurchase().getPurchasePaymentConfirm());
-                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_REORDER, notificationData.getPurchase().getPurchaseReorder());
-                drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, notificationData.getPurchase().getPurchasePaymentConf());
+                    drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
+                    drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, notificationData.getPurchase().getPurchaseOrderStatus());
+                    drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, notificationData.getPurchase().getPurchasePaymentConfirm());
+                    drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_REORDER, notificationData.getPurchase().getPurchaseReorder());
+                    drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, notificationData.getPurchase().getPurchasePaymentConf());
 
 
-                drawerCache.putInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, notificationData.getSales().getSalesNewOrder());
-                drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());
-                drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.getSales().getSalesShippingStatus());
+                    drawerCache.putInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, notificationData.getSales().getSalesNewOrder());
+                    drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());
+                    drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.getSales().getSalesShippingStatus());
 
-                drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
-                drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
-                drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData.getTotalNotif());
-                drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
+                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
+                    drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
+                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData.getTotalNotif());
+                    drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
 
-                drawerCache.applyEditor();
+                    drawerCache.applyEditor();
+                }
             }
         };
     }

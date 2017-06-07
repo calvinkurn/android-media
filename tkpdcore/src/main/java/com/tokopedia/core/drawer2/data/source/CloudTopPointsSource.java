@@ -47,7 +47,7 @@ public class CloudTopPointsSource {
         return new Action1<TopPointsModel>() {
             @Override
             public void call(TopPointsModel topPointsModel) {
-                if (topPointsModel != null) {
+                if (topPointsModel != null && topPointsModel.isSuccess()) {
                     topPointsCache.setKey(TopPointsSourceFactory.KEY_TOPPOINTS_DATA);
                     topPointsCache.setValue(CacheUtil.convertModelToString(topPointsModel,
                             new TypeToken<TopPointsModel>() {

@@ -38,9 +38,12 @@ public class TopPointsSubscriber extends Subscriber<TopPointsModel> {
     @Override
     public void onNext(TopPointsModel topPointsModel) {
         if (topPointsModel.isSuccess())
-            viewListener.onGetTopPoints(convertToViewModel(topPointsModel.getTopPointsData()));
+            viewListener.onGetTopPoints(
+                    convertToViewModel(
+                            topPointsModel.getTopPointsData()));
         else
-            viewListener.onErrorGetTopPoints(topPointsModel.getErrorMessage());
+            viewListener.onErrorGetTopPoints(
+                    viewListener.getString(R.string.default_request_error_unknown));
     }
 
     private DrawerTopPoints convertToViewModel(TopPointsData topPointsData) {

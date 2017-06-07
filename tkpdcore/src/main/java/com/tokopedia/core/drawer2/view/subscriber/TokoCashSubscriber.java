@@ -39,9 +39,12 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
     @Override
     public void onNext(TokoCashModel tokoCashModel) {
         if(tokoCashModel.isSuccess())
-            viewListener.onGetTokoCash(convertToViewModel(tokoCashModel.getTokoCashData()));
-        else 
-            viewListener.onErrorGetTokoCash(tokoCashModel.getErrorMessage());
+            viewListener.onGetTokoCash(
+                    convertToViewModel(
+                            tokoCashModel.getTokoCashData()));
+        else
+            viewListener.onErrorGetTokoCash(
+                    viewListener.getString(R.string.default_request_error_unknown));
     }
 
     private DrawerTokoCash convertToViewModel(TokoCashData tokoCashData) {
