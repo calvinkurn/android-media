@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
@@ -67,7 +68,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     public void onItemClicked(Ad ad) {
-        if(ad instanceof ProductAd){
+        if (ad instanceof ProductAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
@@ -109,7 +110,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     public void onCreateAd() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
         this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
 }
