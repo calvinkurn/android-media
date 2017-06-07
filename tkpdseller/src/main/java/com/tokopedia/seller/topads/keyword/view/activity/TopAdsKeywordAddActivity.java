@@ -86,6 +86,11 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
     }
 
     @Override
+    protected String getTagFragment() {
+        return TopAdsKeywordAddActivity.class.getSimpleName();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
