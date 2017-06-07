@@ -97,7 +97,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,  @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false);
 
         buttonNext = view.findViewById(R.id.button_next);
@@ -134,6 +134,8 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             keywordType = KeywordTypeMapper.mapToDef(isPositive, spinnerPos);
             setKeywordsInfo(keywordType);
         }
+
+        view.requestFocus();
         return view;
     }
 

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -55,6 +57,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
+    private AppBarLayout appBarLayout;
     private DateLabelView dateLabelView;
     private FloatingActionButton fabAdd;
     private MenuItem filterMenuItem;
@@ -63,8 +66,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected int status;
     protected String keyword;
 
-    boolean adsStatusChanged;
-    boolean updateEmptyDefault;
+    private CoordinatorLayout.Behavior appBarBehaviour;
+    private boolean adsStatusChanged;
+    private boolean updateEmptyDefault;
+    private int scrollFlags;
     @Px
     private int tempTopPaddingRecycleView;
     @Px
@@ -130,6 +135,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     protected void initDateLabelView(View view) {
+        appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +143,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 openDatePicker();
             }
         });
+        AppBarLayout.LayoutParams dateLabelViewLayoutParams = (AppBarLayout.LayoutParams) dateLabelView.getLayoutParams();
+        scrollFlags = dateLabelViewLayoutParams.getScrollFlags();
+
+        appBarBehaviour = new AppBarLayout.Behavior();
     }
 
     @Override
@@ -248,6 +258,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             bottomPadding = tempBottomPaddingRecycleView;
         }
         recyclerView.setPadding(0, topPadding, 0, bottomPadding);
+        if (appBarLayout != null) {
+            AppBarLayout.LayoutParams dateLabelLayoutParams = (AppBarLayout.LayoutParams) dateLabelView.getLayoutParams();
+            dateLabelLayoutParams.setScrollFlags(show ? scrollFlags : 0);
+            dateLabelView.setLayoutParams(dateLabelLayoutParams);
+
+            CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+            appBarLayoutParams.setBehavior(show ? appBarBehaviour : null);
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        }
         if (dateLabelView != null) {
             dateLabelView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
