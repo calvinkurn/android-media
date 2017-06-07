@@ -85,7 +85,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -412,7 +412,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -446,11 +445,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             params.getParam().putAll(networkParam.extraFilter);
         }
         return params;
-    }
-
-    @Override
-    public void onInfoClicked() {
-
     }
 
     @Override

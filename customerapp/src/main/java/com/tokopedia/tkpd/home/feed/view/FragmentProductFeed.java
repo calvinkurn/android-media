@@ -395,7 +395,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+//        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setConfig(config);

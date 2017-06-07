@@ -217,6 +217,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             TopAdsViewModel adsViewModel = (TopAdsViewModel) placer.getItem(position);
             topAdsViewHolder.setDisplayMode(placer.getDisplayMode());
             topAdsViewHolder.bind(adsViewModel);
+            if (adsInfoClickListener != null){
+                topAdsViewHolder.setClickListener(adsInfoClickListener);
+            }
         } else if (originalPos == LoadingViewModel.LOADING_POSITION_TYPE) {
             return;
         } else {

@@ -13,7 +13,7 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
@@ -39,6 +39,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode displayMode;
+    private TopAdsInfoClickListener clickListener;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
@@ -68,9 +69,13 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-            Activity activity = (Activity) context;
-            infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            if(clickListener != null){
+                clickListener.onInfoClicked();
+            }else {
+                TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
+                Activity activity = (Activity) context;
+                infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            }
         }
     }
 
@@ -94,5 +99,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
+    }
+
+    public void setClickListener(TopAdsInfoClickListener adsInfoClickListener) {
+        clickListener = adsInfoClickListener;
     }
 }
