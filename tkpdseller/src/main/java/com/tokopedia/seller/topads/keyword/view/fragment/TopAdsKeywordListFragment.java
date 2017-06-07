@@ -3,9 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
@@ -16,7 +14,6 @@ import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordCompo
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
@@ -27,8 +24,6 @@ import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,6 +39,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private KeywordListListener.Listener keywordAdListener;
+    private int selectedPosition;
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
@@ -135,6 +131,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
+            selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
         } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD) {
             if (resultCode == Activity.RESULT_OK) {
                 onSearch(null);
@@ -147,6 +144,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
     }
 

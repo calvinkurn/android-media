@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
@@ -30,6 +29,7 @@ import java.util.List;
 public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
 	protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
+    protected int selectedPosition = 0;
     Fragment currentContentFragment;
     private Button submitButton;
 
@@ -48,7 +48,6 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        int selectedPosition = 0;
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,12 +110,16 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
 
     @Override
     public void onStatusChanged(boolean active) {
-        int position = topAdsFilterListFragment.getCurrentPosition();
-        topAdsFilterListFragment.setActive(position, active);
+        topAdsFilterListFragment.setActive(selectedPosition = getSelectionPosition(), active);
+    }
+
+    protected int getSelectionPosition() {
+        return topAdsFilterListFragment.getCurrentPosition();
     }
 
     @Override
     public void onItemSelected(int position) {
+        selectedPosition = position;
         changeContent(filterContentFragmentList.get(position));
     }
 

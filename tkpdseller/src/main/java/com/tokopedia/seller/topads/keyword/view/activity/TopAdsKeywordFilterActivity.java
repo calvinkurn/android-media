@@ -33,6 +33,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
         super.setupBundlePass(extras);
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        selectedPosition = extras.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
     }
 
     @Override
@@ -52,6 +53,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedFilterStatus);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, currentGroupAd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         return intent;
     }
 
