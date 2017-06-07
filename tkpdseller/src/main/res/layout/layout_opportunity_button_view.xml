@@ -13,8 +13,6 @@
         android:gravity="center"
         android:text="@string/delete_opportunity"
         android:textColor="@color/href_link"
-        android:textSize="@dimen/fontl"
-        android:textStyle="bold"
         android:visibility="gone" />
 
     <TextView
@@ -25,8 +23,6 @@
         android:background="@color/green_500"
         android:gravity="center"
         android:text="@string/take_opportunity"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fontl"
-        android:textStyle="bold" />
+        android:textColor="@color/white"/>
 
 </LinearLayout>
