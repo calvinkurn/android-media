@@ -39,8 +39,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
@@ -115,12 +115,11 @@ import java.util.Map;
  */
 public class
 FragmentIndexCategory extends TkpdBaseV4Fragment implements
-        CategoryView,
-        RechargeCategoryView,
-        SectionListCategoryAdapter.OnCategoryClickedListener,
+        CategoryView, RechargeCategoryView, SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener, TokoCashHeaderView.ActionListener {
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener,
+        TokoCashHeaderView.ActionListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -191,7 +190,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
-        public LinearLayout wrapperLinearLayout;
+        LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
         }
