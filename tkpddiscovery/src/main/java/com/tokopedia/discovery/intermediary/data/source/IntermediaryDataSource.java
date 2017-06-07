@@ -2,27 +2,20 @@ package com.tokopedia.discovery.intermediary.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.recharge.operator.Operator;
-import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
-import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
-import com.tokopedia.core.network.entity.hotlist.HotListResponse;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
+
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.CATEGORIES_PARAM;
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.CURATED_PARAM;
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.PAGE_PARAM;
 
 /**
  * Created by alifa on 3/27/17.
@@ -33,26 +26,33 @@ public class IntermediaryDataSource {
     private final Context context;
     private final HadesApi hadesApi;
     private final SearchApi aceApi;
+    private final MojitoApi mojitoApi;
     private final IntermediaryCategoryMapper mapper;
 
+    private final static String NUM_PAGE = "7";
+    private final static String NUM_CURATED = "6";
+
     public IntermediaryDataSource(Context context, HadesApi hadesApi, SearchApi searchApi,
-                                  IntermediaryCategoryMapper mapper) {
+                                  MojitoApi mojitoApi, IntermediaryCategoryMapper mapper) {
         this.context = context;
         this.hadesApi = hadesApi;
         this.aceApi=searchApi;
+        this.mojitoApi = mojitoApi;
         this.mapper = mapper;
     }
 
     public Observable<IntermediaryCategoryDomainModel> getintermediaryCategory(String categoryId) {
 
         Map<String, String> param = new HashMap<>();
-        param.put("categories",categoryId);
-        param.put("perPage", "4");
+        param.put(CATEGORIES_PARAM,categoryId);
+        param.put(PAGE_PARAM, NUM_PAGE);
 
-        return Observable.zip(hadesApi.getCategories(categoryId),
-                aceApi.getHotlistCategory(param), mapper);
+        Map<String, String> paramCat = new HashMap<>();
+        paramCat.put(CURATED_PARAM,NUM_CURATED);
+
+        return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat),
+                aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
 
     }
-
 
 }

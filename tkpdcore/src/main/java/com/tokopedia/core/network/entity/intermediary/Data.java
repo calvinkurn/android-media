@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.network.entity.categoriesHades;
+package com.tokopedia.core.network.entity.intermediary;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -51,6 +51,22 @@ public class Data implements Parcelable {
     @SerializedName("is_intermediary")
     @Expose
     private Boolean isIntermediary;
+    @SerializedName("banner")
+    @Expose
+    private Banner banner;
+    @SerializedName("template")
+    @Expose
+    private String template;
+    @SerializedName("applinks")
+    @Expose
+    private String applinks;
+    @SerializedName("video")
+    @Expose
+    private Video video;
+    @SerializedName("root_category_id")
+    @Expose
+    private Integer rootCategoryId;
+
 
     public List<Child> getChild() {
         return child;
@@ -148,6 +164,61 @@ public class Data implements Parcelable {
         this.isIntermediary = isIntermediary;
     }
 
+    public Boolean getRevamp() {
+        return isRevamp;
+    }
+
+    public void setRevamp(Boolean revamp) {
+        isRevamp = revamp;
+    }
+
+    public Boolean getIntermediary() {
+        return isIntermediary;
+    }
+
+    public void setIntermediary(Boolean intermediary) {
+        isIntermediary = intermediary;
+    }
+
+    public Banner getBanner() {
+        return banner;
+    }
+
+    public void setBanner(Banner banner) {
+        this.banner = banner;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
+    }
+
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+    }
+
+    public Integer getRootCategoryId() {
+        return rootCategoryId;
+    }
+
+    public void setRootCategoryId(Integer rootCategoryId) {
+        this.rootCategoryId = rootCategoryId;
+    }
 
     protected Data(Parcel in) {
         if (in.readByte() == 0x01) {
@@ -169,6 +240,11 @@ public class Data implements Parcelable {
         isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
         byte isIntermediaryVal = in.readByte();
         isIntermediary = isIntermediaryVal == 0x02 ? null : isIntermediaryVal != 0x00;
+        banner = (Banner) in.readValue(Banner.class.getClassLoader());
+        template = in.readString();
+        applinks = in.readString();
+        video = (Video) in.readValue(Video.class.getClassLoader());
+        rootCategoryId = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -212,6 +288,16 @@ public class Data implements Parcelable {
             dest.writeByte((byte) (0x02));
         } else {
             dest.writeByte((byte) (isIntermediary ? 0x01 : 0x00));
+        }
+        dest.writeValue(banner);
+        dest.writeString(template);
+        dest.writeString(applinks);
+        dest.writeValue(video);
+        if (rootCategoryId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(rootCategoryId);
         }
     }
 
