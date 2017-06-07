@@ -405,6 +405,27 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
     }
 
+    @Override
+    public RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("origin", String.format("%s,%s",
+                latitude,
+                longitude
+        ));
+        requestParams.putString("destination", String.format("%s,%s",
+                destination.getLatitude(),
+                destination.getLongitude()
+        ));
+        requestParams.putString("sensor", "false");
+        requestParams.putString("traffic_model", "best_guess");
+        requestParams.putString("mode", "driving");
+
+
+        requestParams.putString("departure_time", (int) (System.currentTimeMillis() / 1000) + "");
+
+        return requestParams;
+    }
+
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
         showCancelPanel();
@@ -741,6 +762,19 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         builder.include(new LatLng(endLat, endLng));
         builder.include(new LatLng(latitude, longitude));
         builder.include(new LatLng(latitude1, longitude1));
+        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                widthPixels, widthPixels,
+                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        );
+    }
+
+    @Override
+    public void zoomMapFitByRouteWithAnimation(List<LatLng> latLngs) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : latLngs){
+            builder.include(latLng);
+        }
         int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
                 widthPixels, widthPixels,

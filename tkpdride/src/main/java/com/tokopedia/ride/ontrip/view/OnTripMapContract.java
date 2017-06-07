@@ -186,6 +186,10 @@ public interface OnTripMapContract {
         void showCurrentLocationIndicator();
 
         void hideCurrentLocationIndicator();
+
+        RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude);
+
+        void zoomMapFitByRouteWithAnimation(List<LatLng> latLngs);
     }
 
     interface Presenter extends CustomerPresenter<View> {
