@@ -3,6 +3,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionRefresh;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +44,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
+
+        if (isNeedRelogin(response)) {
+            doRelogin();
+            response = getResponse(chain, finalRequest);
+        }
 
         if (!response.isSuccessful()) {
             throwChainProcessCauseHttpError(response);
@@ -279,5 +285,26 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         ServerErrorHandler.sendErrorNetworkAnalytics(
                 response.request().url().toString(), response.code()
         );
+    }
+
+    private Boolean isNeedRelogin(Response response) {
+        try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
+            String responseString = response.peekBody(512).string();
+            return responseString.contains("REQUEST_DENIED") &&
+                    !response.request().url().encodedPath().contains("make_login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void doRelogin() {
+        SessionRefresh sessionRefresh = new SessionRefresh();
+        try {
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

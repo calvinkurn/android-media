@@ -482,7 +482,13 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 .filter(new Func1<Operator, Boolean>() {
                     @Override
                     public Boolean call(Operator operator) {
-                        return operator.getAttributes().getPrefix().contains(prefix);
+                        String prefixTemp = prefix.substring(0, 4);
+                        if (operator.getAttributes().getPrefix().contains(prefixTemp)) {
+                            return true;
+                        } else {
+                            prefixTemp = prefix.substring(0, 3);
+                            return operator.getAttributes().getPrefix().contains(prefixTemp);
+                        }
                     }
                 })
                 .toList();
@@ -527,7 +533,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     private Observable<List<Product>> getObservableNetworkListProduct() {
         return rechargeService.getApi().getProduct()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
                 .doOnNext(storeResponseProductToDb())
                 .flatMap(new Func1<Response<ProductData>, Observable<List<Product>>>() {
                     @Override
@@ -538,9 +544,10 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     }
 
     private Observable<List<Product>> getObservableDbListProduct() {
+
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
                 .map(new Func1<Boolean, List<Product>>() {
                     @Override
                     public List<Product> call(Boolean condition) {

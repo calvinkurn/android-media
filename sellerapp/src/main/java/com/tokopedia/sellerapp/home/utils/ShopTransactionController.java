@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.BaseNetworkController;
 import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -76,7 +77,7 @@ public class ShopTransactionController extends BaseNetworkController {
                                 OrderShippingData shopModel = gson.fromJson(stringData, OrderShippingData.class);
                                 getNewOrder.onSuccess(shopModel);
                             }else {
-                                throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                                throw new MessageErrorException(response.body().getErrorMessages().get(0));
                             }
                         } else {
                             onResponseError(response.code(), getNewOrder);

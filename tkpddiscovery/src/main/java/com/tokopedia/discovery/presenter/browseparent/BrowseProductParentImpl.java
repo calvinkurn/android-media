@@ -12,7 +12,7 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -117,6 +117,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 discoveryInteractor.getProductWithCategory(NetworkParam.generateNetworkParamProduct(p), p.sc, categoryLevel.size() + 1);
                 break;
         }
+    }
+
+    @Override
+    public void getOfficialStoreBanner(String keyword) {
+        discoveryInteractor.getOSBanner(keyword);
     }
 
     @Override
@@ -268,6 +273,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(0);
                         }
+                        getOfficialStoreBanner(p.q);
                     }
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
@@ -279,6 +285,9 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+                break;
+            case DiscoveryListener.OS_BANNER:
+                view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
     }

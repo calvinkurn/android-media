@@ -39,6 +39,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
@@ -264,7 +265,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     } else if (tickersResponse.size() == 1) {
                         tickerAdapter.addItem(tickersResponse);
                     }
-                    holder.wrapperScrollview.smoothScrollTo(0, 0);
                 }
 
                 @Override
@@ -416,7 +416,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onResume() {
         LocalCacheHandler.clearCache(getActivity(), "RechargeCache");
-        holder.wrapperScrollview.smoothScrollTo(0, 0);
         rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
@@ -775,7 +774,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-            holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
@@ -804,6 +802,22 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     //region recharge
     @Override
     public void renderDataRechargeCategory(CategoryData rechargeCategory) {
+        holder.wrapperScrollview.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        holder.wrapperScrollview.setFocusable(true);
+        holder.wrapperScrollview.setFocusableInTouchMode(true);
+        holder.wrapperScrollview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (view instanceof RechargeEditText) {
+                    view.requestFocusFromTouch();
+                } else {
+                    hideKeyboard();
+                    view.clearFocus();
+                }
+                return false;
+            }
+        });
+
         if (rechargeCategory.getData().size() == 0) {
             return;
         }
@@ -832,7 +846,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
         );
         addTablayoutListener(rechargeViewPagerAdapter);
-        holder.viewpagerRecharge.setOffscreenPageLimit(rechargeCategory.getData().size() + 2);
+        holder.viewpagerRecharge.setOffscreenPageLimit(rechargeCategory.getData().size());
         final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
         if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
             holder.viewpagerRecharge.postDelayed(new Runnable() {
