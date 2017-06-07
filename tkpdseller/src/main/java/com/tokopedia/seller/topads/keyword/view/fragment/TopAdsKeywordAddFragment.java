@@ -7,9 +7,11 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -116,7 +118,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_top_ads_keyword_add_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_top_ads_keyword_add, container, false);
         textInputKeyword = (TextInputLayout) v.findViewById(R.id.text_input_layout_word);
         editTextKeyword = textInputKeyword.getEditText();
         editTextKeyword.addTextChangedListener(new TextWatcher() {
@@ -141,6 +143,16 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
                     }
                 }
                 checkAddButtonEnabled();
+            }
+        });
+        editTextKeyword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    onButtonAddClicked();
+                    return true;
+                }
+                return false;
             }
         });
         buttonAddKeyword = v.findViewById(R.id.button_add_keyword);
@@ -227,7 +239,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
             return;
         }
 
-        String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword).toLowerCase();
+        String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword);
         if (TextUtils.isEmpty(validKeyword)){
             textInputKeyword.setError(getString(R.string.top_ads_keyword_must_be_filled));
             return;
@@ -287,7 +299,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         List<String> keywordList = keywordRecyclerView.getKeywordList();
         boolean hasInputtedInLocal = false;
         for (int i=0, sizei = keywordList.size(); i<sizei; i++) {
-            if (validKeyword.equals(keywordList.get(i))) {
+            if (validKeyword.equalsIgnoreCase(keywordList.get(i))) {
                 hasInputtedInLocal = true;
                 break;
             }

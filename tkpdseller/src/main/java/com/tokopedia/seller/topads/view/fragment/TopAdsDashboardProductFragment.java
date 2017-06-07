@@ -73,6 +73,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD)) {
             keywordLabelView.setVisibility(View.VISIBLE);
+        } else {
+            keywordLabelView.setVisibility(View.GONE);
         }
     }
 
