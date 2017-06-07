@@ -57,6 +57,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private DateLabelView dateLabelView;
     private FloatingActionButton fabAdd;
     private MenuItem filterMenuItem;
+    private MenuItem searchMenuItem;
 
     protected int status;
     protected String keyword;
@@ -218,6 +219,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (filterMenuItem != null) {
             filterMenuItem.setVisible(show);
         }
+        if (searchMenuItem != null) {
+            searchMenuItem.setVisible(show);
+        }
     }
 
     private void showDateLabel(boolean show) {
@@ -257,11 +261,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         menu.clear();
+        initMenuItem(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    protected void initMenuItem(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_top_ads_list, menu);
         filterMenuItem = menu.findItem(R.id.menu_filter);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchMenuItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
