@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,13 +29,12 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -49,6 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
+import com.tokopedia.discovery.adapter.OsBannerAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
@@ -63,8 +62,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
@@ -362,7 +359,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ProductFragmentListener) {
+        if (context instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) context;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -372,7 +369,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity instanceof ProductFragmentListener) {
+        if (activity instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) activity;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -395,6 +392,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         || productAdapter.isHotListBanner(position)
                         || productAdapter.isCategoryHeader(position)
                         || productAdapter.isEmptySearch(position)
+                        || productAdapter.isOfficialStoreBanner(position)
                         || productAdapter.isEmpty()) {
                     return spanCount;
                 } else {
@@ -651,5 +649,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void backToTop() {
         mRecyclerView.scrollToPosition(0);
+    }
+
+    public void showOfficialStoreBanner(BannerOfficialStoreModel model) {
+        if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+            if (!TextUtils.isEmpty(model.getBannerUrl()) && !TextUtils.isEmpty(model.getShopUrl())) {
+                topAdsRecyclerAdapter.setHasHeader(true);
+                productAdapter.addOfficialStoreBanner(new OsBannerAdapter.OsBannerViewModel(model));
+                productAdapter.notifyDataSetChanged();
+                topAdsRecyclerAdapter.notifyDataSetChanged();
+                backToTop();
+
+                UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
+            }
+        }
     }
 }
