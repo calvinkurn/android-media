@@ -86,10 +86,13 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showRetry(){
+        int positionStart = getItemCount();
         this.list.add(retryModel);
+        notifyItemRangeInserted(positionStart, 1);
     }
 
     public void removeRetry(){
+        int positionStart = getItemCount();
         this.list.remove(retryModel);
     }
 
