@@ -274,6 +274,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private Boolean isNeedRelogin(Response response) {
         try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
             return responseString.contains("REQUEST_DENIED") &&
                     !response.request().url().encodedPath().contains("make_login");
