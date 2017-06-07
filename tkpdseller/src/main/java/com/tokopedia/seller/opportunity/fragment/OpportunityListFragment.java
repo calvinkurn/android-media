@@ -171,6 +171,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         presenter.initOpportunityForFirstTime();
     }
 
+
+
     private OpportunityListAdapter.OpportunityListener onGoToDetail() {
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
@@ -187,7 +189,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void setViewListener() {
-        opportunityList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        opportunityList.addOnScrollListener(
+                new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -197,8 +200,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                         && adapter.getList().size() != 0
                         && lastItemPosition == visibleItem
                         && !adapter.isLoading()
-                        && hasNextPage())
+                        && hasNextPage()) {
+                    pagingHandler.nextPage();
                     presenter.getOpportunity();
+                }
             }
         });
 
