@@ -271,7 +271,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onSearch(String keyword) {
         this.keyword = keyword;
         searchAd(START_PAGE);
-        searchMode = true;
+        if (!searchMode && !TextUtils.isEmpty(keyword)) {
+            searchMode = true;
+        }
     }
 
     @Override
