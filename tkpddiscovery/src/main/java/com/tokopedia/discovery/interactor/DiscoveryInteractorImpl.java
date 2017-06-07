@@ -11,11 +11,13 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -58,6 +60,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     TopAdsService topAdsService;
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
+    MojitoService mojitoService;
     CompositeSubscription compositeSubscription;
     Gson gson = new GsonBuilder().create();
     GlobalCacheManager cacheManager;
@@ -77,6 +80,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        mojitoService = new MojitoService();
         cacheManager = new GlobalCacheManager();
         mojitoSimpleService = new MojitoSimpleService();
     }
@@ -368,5 +372,42 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                         discoveryListener.onSuccess(DiscoveryListener.DYNAMIC_ATTRIBUTE, pair);
                     }
                 }));
+    }
+
+    @Override
+    public void getOSBanner(final String keyword) {
+        getCompositeSubscription().add(mojitoService.getApi().getOSBanner(keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<Response<BannerOfficialStoreModel>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Response<BannerOfficialStoreModel> modelResponse) {
+                                modelResponse.body().setKeyword(keyword);
+
+                                Pair<String, BannerOfficialStoreModel.BannerOfficialStoreContainer> pair =
+                                        new Pair<>(
+                                                DiscoveryListener.OSBANNER,
+                                                new BannerOfficialStoreModel.BannerOfficialStoreContainer(
+                                                        modelResponse.body()
+                                                )
+                                        );
+
+                                discoveryListener.onSuccess(DiscoveryListener.OS_BANNER, pair);
+                            }
+                        }
+                )
+        );
     }
 }
