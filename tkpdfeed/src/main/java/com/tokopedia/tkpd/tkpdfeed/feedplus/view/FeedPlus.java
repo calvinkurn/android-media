@@ -61,8 +61,6 @@ public interface FeedPlus{
 
         void updateCursor(String currentCursor);
 
-        void showLoading();
-
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
         void onSeePromo(String link);
@@ -74,6 +72,10 @@ public interface FeedPlus{
         void onShowRetryGetFeed();
 
         void onShowAddFeedMore();
+
+        void shouldLoadTopAds(boolean loadTopAds);
+
+        void hideTopAdsAdapterLoading();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

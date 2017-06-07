@@ -30,14 +30,34 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
     public void onNext(FeedResult feedResult) {
         ArrayList<Visitable> list = convertToViewModel(feedResult.getDataFeedDomainList());
 
-        if (list.size() > 0) {
-            viewListener.updateCursor(getCurrentCursor(feedResult));
-            viewListener.onSuccessGetFeed(list);
-        }else{
-            if(feedResult.isHasNext())
-                viewListener.onShowRetryGetFeed();
-            else {
+//        if (list.size() > 0) {
+//            if(getCurrentCursor(feedResult) != null){
+//                viewListener.updateCursor(getCurrentCursor(feedResult));
+//            }else {
+//                viewListener.onShowAddFeedMore();
+//            }
+//            viewListener.onSuccessGetFeed(list);
+//        }else{
+//            if(feedResult.isHasNext())
+//                viewListener.onShowRetryGetFeed();
+//            else {
+//                viewListener.onShowAddFeedMore();
+//            }
+//        }
+
+        if (list.size() == 0) {
+            viewListener.shouldLoadTopAds(false);
+            viewListener.onShowAddFeedMore();
+            viewListener.hideTopAdsAdapterLoading();
+        }else {
+            if (feedResult.isHasNext()) {
+                viewListener.updateCursor(getCurrentCursor(feedResult));
+                viewListener.onSuccessGetFeed(list);
+            } else {
+                viewListener.shouldLoadTopAds(false);
+                viewListener.onSuccessGetFeed(list);
                 viewListener.onShowAddFeedMore();
+                viewListener.hideTopAdsAdapterLoading();
             }
         }
     }
