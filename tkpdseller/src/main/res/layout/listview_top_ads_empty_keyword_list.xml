@@ -10,15 +10,20 @@
     android:padding="@dimen/padding_small">
 
     <!-- Untuk onRetry satu halaman -->
-    <ImageView
-        android:id="@+id/no_result_image"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:gravity="center_horizontal"
-        android:src="@drawable/ic_top_ads_keyword_empty" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/no_result_image"
+            android:layout_width="234dp"
+            android:layout_height="171dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:src="@drawable/ic_top_ads_keyword_empty" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
