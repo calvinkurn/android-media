@@ -590,7 +590,7 @@
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
-    <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus keyword ini?</string>
+    <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus kata kunci ini?</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
