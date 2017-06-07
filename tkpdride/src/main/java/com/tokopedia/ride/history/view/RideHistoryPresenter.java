@@ -138,7 +138,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
         //return mapImageUrl;
     }
 
-    private void actionGetOverviewPolyline(ArrayList<Visitable> histories) {
+    /*private void actionGetOverviewPolyline(ArrayList<Visitable> histories) {
         for (int position = 0; position < histories.size(); position++) {
             final RideHistoryViewModel viewModel = (RideHistoryViewModel) histories.get(position);
             RequestParams requestParams = RequestParams.create();
@@ -178,7 +178,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                 }
             });
         }
-    }
+    }*/
 
     @Override
     public void actionRefreshHistoriesData() {

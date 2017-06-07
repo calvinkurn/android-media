@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -346,13 +347,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
+        if (checkLocationPermission()) return;
         mGoogleMap.setPadding(0, 0, 400, 0);
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -732,7 +727,23 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(startLat, startLng));
         builder.include(new LatLng(endLat, endLng));
+
+        mGoogleMap.animateCamera(CameraUpdateFactory.
+                newLatLngBounds(builder.build(),
+                        getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        );
+    }
+
+    @Override
+    public void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng, double latitude, double longitude, double latitude1, double longitude1) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(startLat, startLng));
+        builder.include(new LatLng(endLat, endLng));
+        builder.include(new LatLng(latitude, longitude));
+        builder.include(new LatLng(latitude1, longitude1));
+        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                widthPixels, widthPixels,
                 getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
         );
     }
@@ -1291,5 +1302,29 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void showCurrentLocationIndicator() {
+        if (mGoogleMap != null) {
+            if (checkLocationPermission()) return;
+            mGoogleMap.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    public void hideCurrentLocationIndicator() {
+        if (mGoogleMap != null) {
+            if (checkLocationPermission()) return;
+            mGoogleMap.setMyLocationEnabled(false);
+        }
+    }
+
+    private boolean checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
     }
 }

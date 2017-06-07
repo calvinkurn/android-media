@@ -32,6 +32,7 @@ import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 
 import java.io.IOException;
@@ -332,7 +333,29 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         ));
         requestParams.putString("sensor", "false");
 //        requestParams.putString("key", getView().getActivity().getString(R.string.GOOGLE_API_KEY));
-        getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
+        getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<OverviewPolyline>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<OverviewPolyline> overviewPolylines) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    List<List<LatLng>> routes = new ArrayList<>();
+                    for (OverviewPolyline route : overviewPolylines) {
+                        routes.add(PolyUtil.decode(route.getOverviewPolyline()));
+                    }
+                    getView().renderTripRoute(routes);
+                }
+            }
+        });
+        /*getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
             @Override
             public void onCompleted() {
 
@@ -353,7 +376,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     getView().renderTripRoute(routes);
                 }
             }
-        });
+        });*/
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.tokopedia.ride.common.place.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -10,6 +12,6 @@ import rx.Observable;
  */
 
 public interface PlaceRepository {
-    Observable<OverviewPolyline> getOveriewPolyline(TKPDMapParam<String, Object> param);
+    Observable<List<OverviewPolyline>> getOveriewPolyline(TKPDMapParam<String, Object> param);
 
 }

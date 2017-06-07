@@ -180,6 +180,12 @@ public interface OnTripMapContract {
         void showShareEtaProgress();
 
         void hideShareEtaProgress();
+
+        void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng, double latitude, double longitude, double latitude1, double longitude1);
+
+        void showCurrentLocationIndicator();
+
+        void hideCurrentLocationIndicator();
     }
 
     interface Presenter extends CustomerPresenter<View> {

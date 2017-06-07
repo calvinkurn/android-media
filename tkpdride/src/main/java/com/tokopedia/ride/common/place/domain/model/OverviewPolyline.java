@@ -7,16 +7,25 @@ import java.util.List;
  */
 
 public class OverviewPolyline {
-    List<String> overviewPolyline;
+    private String overviewPolyline;
+    private Bounds bounds;
 
     public OverviewPolyline() {
     }
 
-    public List<String> getOverviewPolyline() {
+    public String getOverviewPolyline() {
         return overviewPolyline;
     }
 
-    public void setOverviewPolyline(List<String> overviewPolyline) {
+    public void setOverviewPolyline(String overviewPolyline) {
         this.overviewPolyline = overviewPolyline;
+    }
+
+    public Bounds getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds;
     }
 }

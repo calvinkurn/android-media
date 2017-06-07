@@ -16,7 +16,7 @@ import rx.functions.Func1;
  * Created by alvarisi on 3/18/17.
  */
 
-public class GetOverviewPolylineUseCase extends UseCase<List<String>> {
+public class GetOverviewPolylineUseCase extends UseCase<List<OverviewPolyline>> {
     private final PlaceRepository placeRepository;
 
     public GetOverviewPolylineUseCase(ThreadExecutor threadExecutor,
@@ -26,13 +26,7 @@ public class GetOverviewPolylineUseCase extends UseCase<List<String>> {
     }
 
     @Override
-    public Observable<List<String>> createObservable(RequestParams requestParams) {
-        return this.placeRepository.getOveriewPolyline(requestParams.getParameters())
-                .map(new Func1<OverviewPolyline, List<String>>() {
-                    @Override
-                    public List<String> call(OverviewPolyline overviewPolyline) {
-                        return overviewPolyline.getOverviewPolyline();
-                    }
-                });
+    public Observable<List<OverviewPolyline>> createObservable(RequestParams requestParams) {
+        return this.placeRepository.getOveriewPolyline(requestParams.getParameters());
     }
 }

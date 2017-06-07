@@ -5,6 +5,8 @@ import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
+import java.util.List;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -22,14 +24,20 @@ public class PlaceDataRepository implements PlaceRepository {
     }
 
     @Override
-    public Observable<OverviewPolyline> getOveriewPolyline(TKPDMapParam<String, Object> param) {
+    public Observable<List<OverviewPolyline>> getOveriewPolyline(TKPDMapParam<String, Object> param) {
         return placeDataStoreFactory.createCloudPlaceDataStore()
                 .getDirection("json", param)
-                .map(new Func1<DirectionEntity, OverviewPolyline>() {
+                .map(new Func1<DirectionEntity, List<OverviewPolyline>>() {
+                    @Override
+                    public List<OverviewPolyline> call(DirectionEntity directionEntity) {
+                        return directionEntityMapper.transformOverViews(directionEntity);
+                    }
+                });
+                /*.map(new Func1<DirectionEntity, OverviewPolyline>() {
                     @Override
                     public OverviewPolyline call(DirectionEntity directionEntity) {
                         return directionEntityMapper.transformToOverviewPolyline(directionEntity);
                     }
-                });
+                });*/
     }
 }
