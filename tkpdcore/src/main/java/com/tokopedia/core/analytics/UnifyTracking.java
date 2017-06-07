@@ -1674,7 +1674,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDownloadFromSwitcher(String label){
+    public static void eventDownloadFromSwitcher(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.SWITCHER,
