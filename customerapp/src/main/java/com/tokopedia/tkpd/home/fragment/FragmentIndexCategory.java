@@ -237,7 +237,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     } else if (tickersResponse.size() == 1) {
                         tickerAdapter.addItem(tickersResponse);
                     }
-                    holder.wrapperScrollview.smoothScrollTo(0, 0);
                 }
 
                 @Override
@@ -390,7 +389,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onResume() {
         LocalCacheHandler.clearCache(getActivity(), "RechargeCache");
-        holder.wrapperScrollview.smoothScrollTo(0, 0);
         rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
@@ -693,7 +691,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
-            holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
