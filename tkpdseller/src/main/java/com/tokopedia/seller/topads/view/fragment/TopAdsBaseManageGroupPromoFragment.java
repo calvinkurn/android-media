@@ -235,8 +235,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
-        inputChooseGroup.performFiltering(inputChooseGroup.getText());
-        inputChooseGroup.showDropDown();
+        inputChooseGroup.showDropDownFilter();
     }
 
     @Override
