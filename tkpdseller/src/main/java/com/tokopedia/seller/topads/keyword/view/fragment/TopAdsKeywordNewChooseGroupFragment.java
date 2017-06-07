@@ -310,8 +310,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
-        autoCompleteChooseGroup.performFiltering(autoCompleteChooseGroup.getText());
-        autoCompleteChooseGroup.showDropDown();
+        autoCompleteChooseGroup.showDropDownFilter();
     }
 
     @Override
