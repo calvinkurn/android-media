@@ -39,7 +39,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         implements TopAdsEmptyAdDataBinder.Callback {
 
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
-    @KeywordStatusTypeDef
     protected int filterStatus;
     protected GroupAd groupAd;
     @Inject

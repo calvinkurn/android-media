@@ -564,6 +564,7 @@
     <string name="top_ads_keywords_total_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
     <string name="top_ads_keywords_total_current_and_max_summary">Total Kata Kunci ditambahkan (%1$d/%2$d)</string>
     <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
+    <string name="top_ads_keyword_must_be_filled">Kata kunci harus diisi.</string>
     <string name="top_ads_keyword_must_only_letter_or_digit">Kata kunci hanya boleh huruf dan angka.</string>
     <string name="top_ads_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
     <string name="top_ads_keyword_has_existed">Kata Kunci telah ada.</string>
@@ -584,13 +585,11 @@
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
-    <string name="top_ads_keyword_choose_keyword_type">Pilih Tipe Kata Kunci</string>
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
     <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus keyword ini?</string>
 
-    <string name="top_ads_keyword_choose_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
     <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
