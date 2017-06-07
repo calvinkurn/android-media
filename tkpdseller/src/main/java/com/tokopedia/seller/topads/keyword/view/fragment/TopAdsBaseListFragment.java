@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
 
     protected TopAdsBaseListAdapter<Ad> adapter;
+    protected CoordinatorLayout coordinatorLayout;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
@@ -96,6 +98,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     @Override
     protected void initView(View view) {
         super.initView(view);
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());

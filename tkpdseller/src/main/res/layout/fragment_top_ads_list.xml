@@ -6,11 +6,12 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:background="@android:color/white">
-        
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="0dp">
+
         <com.tokopedia.seller.lib.widget.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayoutWithBorderBottom"
@@ -20,7 +21,7 @@
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
