@@ -324,12 +324,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 
     @Override
     public void onGetNotif() {
-        if (MainApplication.getNotificationStatus()) {
-//            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-//            drawer.updateData();
-        }
+
     }
 
     @Override
@@ -339,12 +334,6 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
             finish();
         }
         MainApplication.setCurrentActivity(this);
-        if (MainApplication.getNotificationStatus()) {
-//            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-//            drawer.updateData();
-        }
         super.onResume();
     }
 

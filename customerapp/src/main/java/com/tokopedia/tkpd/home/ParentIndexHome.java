@@ -198,7 +198,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
 
-//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
         initCreate();
         adapter.notifyDataSetChanged();
 
@@ -473,9 +472,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public void onGetNotif() {
         CommonUtils.dumper("nyampeee nich status: " + MainApplication.getNotificationStatus());
-//        if (MainApplication.getDrawerStatus()) {
-//            drawer.updateData();
-//        }
     }
 
     @Override
