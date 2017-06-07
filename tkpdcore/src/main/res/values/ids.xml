@@ -21,6 +21,7 @@
     <item name="tv_buy" type="id" />
     <item name="layout_desc" type="id" />
     <item name="tv_desc" type="id" />
+    <item name="tv_description" type="id" />
     <item name="iv_toggle" type="id" />
     <item name="tv_weight" type="id" />
     <item name="tv_minimum" type="id" />
@@ -56,6 +57,8 @@
     <item name="iv_quality" type="id" />
     <item name="iv_accuracy" type="id" />
     <item name="tv_success" type="id" />
+    <item name="tv_discussion" type="id" />
+    <item name="tv_courier" type="id" />
     <item name="iv_ava" type="id" />
     <item name="iv_gold" type="id" />
     <item name="iv_official" type="id" />
@@ -116,6 +119,8 @@
     <item name="rl_title_layout" type="id"/>
     <item name="rv_view_list" type="id"/>
     <item name="rv_brands_list" type="id"/>
+    <item name="view_other_products" type="id" />
+    <item name="view_no_free_return" type="id" />
 
     <!--ids for PDP youtube-->
     <item name="product_video_horizontal_scroll" type="id" />
@@ -155,5 +160,27 @@
     <item name="wishlist_button_container" type="id"/>
     <item name="rating" type="id"/>
     <item name="review_count" type="id"/>
+    <item name="last_online_textview" type="id" />
+    <item name="review_container" type="id" />
+    <item name="talk_container" type="id" />
+    <item name="courier_container" type="id" />
+    <item name="installmet" type="id" />
+    <item name="tv_installmet" type="id" />
+    <item name="wholesale" type="id" />
+    <item name="tv_wholesale" type="id" />
+    <item name="separator_pdp" type="id" />
+    <item name="favorite_button" type="id" />
+    <item name="favorite_tv" type="id" />
+    <item name="tabs" type="id" />
+    <item name="viewpager" type="id" />
+    <item name="error_product_container" type="id" />
+    <item name="error_product_title" type="id" />
+    <item name="error_product_subtitle" type="id" />
+    <item name="appbarDetail" type="id" />
+    <item name="view_transaction_detail" type="id" />
+    <item name="fab_detail" type="id" />
+    <item name="view_price_simulation" type="id" />
+    <item name="button_buy_container" type="id" />
+
 
 </resources>

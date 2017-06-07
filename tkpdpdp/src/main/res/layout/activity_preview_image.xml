@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.tkpd.library.ui.widget.TouchViewPager
+        android:id="@+id/view_pager_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/download_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:background="@drawable/border_button_rounded"
+        android:gravity="center"
+        android:padding="@dimen/margin_2"
+        android:text="@string/download"
+        android:textAllCaps="false"
+        android:textSize="@dimen/text_size_small" />
+
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_med"
+        android:src="@drawable/icon_close_white" />
+
+</RelativeLayout>

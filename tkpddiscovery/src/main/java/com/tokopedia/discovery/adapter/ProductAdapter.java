@@ -964,7 +964,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 UnifyTracking.eventProductOnCategory(categoryId);
             }
             Bundle bundle = new Bundle();
-            Intent intent = new Intent(context, ProductInfoActivity.class);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
             bundle.putInt(ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION, position);
             intent.putExtras(bundle);

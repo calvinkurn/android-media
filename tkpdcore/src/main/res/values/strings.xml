@@ -345,6 +345,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_share_product">Gagal membagikan produk</string>
     <string name="success_share_review">Sukses membagikan ulasan</string>
     <string name="error_share_review">Gagal membagikan ulasan</string>
+    <string name="download">Download</string>
     <!-- Strings related product info -->
 
 

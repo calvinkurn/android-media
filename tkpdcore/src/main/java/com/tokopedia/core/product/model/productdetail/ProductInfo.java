@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
@@ -86,8 +89,33 @@ public class ProductInfo implements Parcelable {
     @Expose
     private ReturnInfo returnInfo;
 
+    @SerializedName("product_installments")
+    @Expose
+    private List<ProductInstallment> productInstallments = null;
+
+    @SerializedName("wholesale_min_price")
+    @Expose
+    private String wholseSaleMinPrice;
+    @SerializedName("wholesale_min_quantity")
+    @Expose
+    private String wholeSaleMinQuantity;
+    @SerializedName("installment_min_percentage")
+    @Expose
+    private String installmentMinPercentage;
+    @SerializedName("installment_min_price")
+    @Expose
+    private String installmentMinPrice;
+
 
     public ProductInfo() {
+    }
+
+    public List<ProductInstallment> getProductInstallments() {
+        return productInstallments;
+    }
+
+    public void setProductInstallments(List<ProductInstallment> productInstallments) {
+        this.productInstallments = productInstallments;
     }
 
     public String getProductWeightUnit() {
@@ -282,6 +310,38 @@ public class ProductInfo implements Parcelable {
         this.returnInfo = returnInfo;
     }
 
+    public String getWholseSaleMinPrice() {
+        return wholseSaleMinPrice;
+    }
+
+    public void setWholseSaleMinPrice(String wholseSaleMinPrice) {
+        this.wholseSaleMinPrice = wholseSaleMinPrice;
+    }
+
+    public String getWholeSaleMinQuantity() {
+        return wholeSaleMinQuantity;
+    }
+
+    public void setWholeSaleMinQuantity(String wholeSaleMinQuantity) {
+        this.wholeSaleMinQuantity = wholeSaleMinQuantity;
+    }
+
+    public String getInstallmentMinPercentage() {
+        return installmentMinPercentage;
+    }
+
+    public void setInstallmentMinPercentage(String installmentMinPercentage) {
+        this.installmentMinPercentage = installmentMinPercentage;
+    }
+
+    public String getInstallmentMinPrice() {
+        return installmentMinPrice;
+    }
+
+    public void setInstallmentMinPrice(String installmentMinPrice) {
+        this.installmentMinPrice = installmentMinPrice;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -305,6 +365,12 @@ public class ProductInfo implements Parcelable {
         productCatalogName = in.readString();
         productCatalogUrl = in.readString();
         returnInfo = (ReturnInfo) in.readValue(ReturnInfo.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            productInstallments = new ArrayList<ProductInstallment>();
+            in.readList(productInstallments, ProductInstallment.class.getClassLoader());
+        } else {
+            productInstallments = null;
+        }
     }
 
     @Override
@@ -351,6 +417,16 @@ public class ProductInfo implements Parcelable {
         dest.writeString(productCatalogName);
         dest.writeString(productCatalogUrl);
         dest.writeValue(returnInfo);
+        if (productInstallments == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(productInstallments);
+        }
+        dest.writeString(wholseSaleMinPrice);
+        dest.writeString(wholeSaleMinQuantity);
+        dest.writeString(installmentMinPercentage);
+        dest.writeString(installmentMinPrice);
     }
 
     @SuppressWarnings("unused")
