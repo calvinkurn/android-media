@@ -175,7 +175,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/rounded_filled_theme_bttn"
+            android:background="@drawable/rounded_filled_theme_bttn_orange"
             android:gravity="center"
             android:text="@string/btn_request"
             android:textAllCaps="false"
