@@ -37,10 +37,13 @@ public class NotificationSubscriber extends Subscriber<NotificationModel> {
 
     @Override
     public void onNext(NotificationModel notificationModel) {
-        if(notificationModel.isSuccess())
-            viewListener.onGetNotificationDrawer(convertToViewModel(notificationModel.getNotificationData()));
+        if (notificationModel.isSuccess())
+            viewListener.onGetNotificationDrawer(
+                    convertToViewModel(
+                            notificationModel.getNotificationData()));
         else
-            viewListener.onErrorGetNotificationDrawer(notificationModel.getErrorMessage());
+            viewListener.onErrorGetNotificationDrawer(
+                    viewListener.getString(R.string.default_request_error_unknown));
     }
 
     private DrawerNotification convertToViewModel(NotificationData notificationData) {

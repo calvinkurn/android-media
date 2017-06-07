@@ -48,7 +48,7 @@ public class CloudTokoCashSource {
         return new Action1<TokoCashModel>() {
             @Override
             public void call(TokoCashModel tokoCashModel) {
-                if (tokoCashModel != null) {
+                if (tokoCashModel != null && tokoCashModel.isSuccess()) {
                     walletCache.setKey(TokoCashSourceFactory.KEY_TOKOCASH_DATA);
                     walletCache.setValue(CacheUtil.convertModelToString(tokoCashModel,
                             new TypeToken<TokoCashModel>() {

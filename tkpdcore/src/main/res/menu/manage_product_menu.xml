@@ -11,6 +11,12 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/title_copy_prod"/>
+
+	<item
+		android:id="@+id/action_delete"
+		android:orderInCategory="100"
+		android:showAsAction="never"
+		android:title="@string/title_delete"/>
  	
  	<item
         android:id="@+id/action_edit_price"
@@ -35,11 +41,5 @@
 		android:orderInCategory="100"
 		android:showAsAction="never"
 		android:title="@string/title_update_insurance"/>
-
-	<item
-		android:id="@+id/action_delete"
-		android:orderInCategory="100"
-		android:showAsAction="never"
-		android:title="@string/title_delete"/>
 
 </menu>

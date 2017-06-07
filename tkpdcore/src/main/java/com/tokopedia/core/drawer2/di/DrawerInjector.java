@@ -66,13 +66,13 @@ public class DrawerInjector {
                                                          SessionHandler sessionHandler,
                                                          LocalCacheHandler drawerCache) {
 
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        GlobalCacheManager profileCache = new GlobalCacheManager();
 
         ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
                 context,
                 new PeopleService(),
                 new ProfileMapper(),
-                cacheManager
+                profileCache
         );
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
@@ -83,11 +83,13 @@ public class DrawerInjector {
                 profileRepository
         );
 
+        GlobalCacheManager topPointsCache = new GlobalCacheManager();
+
         TopPointsSourceFactory topPointsSourceFactory = new TopPointsSourceFactory(
                 context,
                 new CloverService(),
                 new TopPointsMapper(),
-                cacheManager);
+                topPointsCache);
 
         TopPointsRepository topPointsRepository = new TopPointsRepositoryImpl(topPointsSourceFactory);
 
@@ -103,11 +105,13 @@ public class DrawerInjector {
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         AccountsService accountsService = new AccountsService(bundle);
 
+        GlobalCacheManager walletCache = new GlobalCacheManager();
+
         TokoCashSourceFactory tokoCashSourceFactory = new TokoCashSourceFactory(
                 context,
                 accountsService,
                 new TokoCashMapper(),
-                cacheManager);
+                walletCache);
 
         TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(

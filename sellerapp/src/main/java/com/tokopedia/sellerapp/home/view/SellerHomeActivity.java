@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.home.view;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,8 +42,6 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tkpd.library.utils.network.ManyRequestErrorException;
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -53,7 +50,6 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -62,7 +58,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
-import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
@@ -78,6 +73,8 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -95,6 +92,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
@@ -102,7 +100,6 @@ import com.tokopedia.sellerapp.home.boommenu.Types.ButtonType;
 import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 import com.tokopedia.sellerapp.home.boommenu.Util;
 import com.tokopedia.sellerapp.home.di.SellerHomeDependencyInjection;
-import com.tokopedia.sellerapp.home.fragment.CloseAppsDialogFragment;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
@@ -112,6 +109,7 @@ import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
+import com.tokopedia.sellerapp.home.utils.MojitoController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
@@ -124,6 +122,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -217,6 +216,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     SnackbarRetry snackbarRetryUndefinite;
     @BindView(R.id.widget_shop_score)
     ShopScoreWidget shopScoreWidget;
+    @BindString(R.string.message_exception_description)
+    String messageExceptionDescription;
     private boolean isInit = false;
     private SellerHomePresenterImpl presenter;
 
@@ -315,7 +316,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             }
         });
 
-        snackbarRetry = new SnackbarRetry(Snackbar.make(activitySellerHome, getString(R.string.msg_network_error_1), Snackbar.LENGTH_LONG),
+        snackbarRetry = new SnackbarRetry(Snackbar.make(activitySellerHome, messageExceptionDescription, Snackbar.LENGTH_LONG),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -325,7 +326,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 });
 
         snackbarRetryUndefinite = new SnackbarRetry(Snackbar.make(activitySellerHome,
-                getString(R.string.msg_network_error_1), Snackbar.LENGTH_INDEFINITE),
+                messageExceptionDescription, Snackbar.LENGTH_INDEFINITE),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -358,8 +359,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         MyShopOrderService myShopOrderService = new MyShopOrderService();
         ShopTransactionController shopTransactionController
                 = new ShopTransactionController(myShopOrderService, this, gson);
+        TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
+        MojitoController mojitoController = new MojitoController(this, tickerApiSeller, gson);
         shopController = new ShopController(gcmHandler, shopNetworkController, notifNetworkController,
-                inboxResCenterNetworkController, depositNetworkController, shopTransactionController
+                inboxResCenterNetworkController, depositNetworkController, shopTransactionController,
+                mojitoController
                 , gson);
         shopController.subscribe();
 
@@ -405,24 +409,34 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         ShopNetworkController.ShopInfoParam shopInfoParam = new ShopNetworkController.ShopInfoParam();
         shopInfoParam.shopId = this.shopId;
 
-        // get all this using this
-        shopController.getData(userId, gcmId, shopInfoParam, getShopInfo(),
-                getNotif(gcmId, userId), getResCenter(), getDeposit(), getTicker()
-        );
+        shopController.getShopInfo(gcmId, userId, shopInfoParam, getShopInfo());
+
+        shopController.getNotif(gcmId, userId, getNotif(gcmId, userId));
+
+        shopController.getResCenter(userId, gcmId, getResCenter());
+
+        shopController.getDeposit(userId, gcmId, getDeposit());
+
+        shopController.getTicker(getTicker());
     }
 
-    protected ShopController.ListenerGetTicker getTicker() {
-        return new ShopController.ListenerGetTicker() {
+    protected MojitoController.ListenerGetTicker getTicker() {
+        return new MojitoController.ListenerGetTicker() {
+            @Override
+            public void onError(Throwable e) {
+                announcementTicker.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+
             @Override
             public void onSuccess(Ticker.Tickers[] tickers) {
                 if (tickers != null && tickers.length > 0) {
                     generateTicker(tickers);
                 }
-            }
-
-            @Override
-            public void onError() {
-                announcementTicker.setVisibility(View.GONE);
             }
         };
     }
@@ -477,13 +491,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -491,6 +499,12 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             }
         };
+    }
+
+    protected void showMessageError(Throwable e) {
+        if (snackbarRetryUndefinite != null) {
+            snackbarRetryUndefinite.showRetrySnackbar();
+        }
     }
 
     @NonNull
@@ -507,13 +521,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -579,13 +587,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -695,20 +697,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-//                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else if (e instanceof ManyRequestErrorException) {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                } else {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
         };
     }
@@ -737,9 +726,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -945,19 +932,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         } else if (drawerHelper.isOpened()) {
             drawerHelper.closeDrawer();
         } else {
-            showExitDialog();
-        }
-    }
-
-    private void showExitDialog() {
-        LocalCacheHandler handler = new LocalCacheHandler(this, CloseAppsDialogFragment.CLOSE_APPS_CACHE);
-        if (handler.getBoolean(CloseAppsDialogFragment.DONT_SHOW_FLAG)) {
             super.onBackPressed();
-        } else {
-            CloseAppsDialogFragment dialog = CloseAppsDialogFragment.newInstance();
-            FragmentManager fm = getFragmentManager();
-
-            dialog.show(fm, "filter_dialog");
         }
     }
 

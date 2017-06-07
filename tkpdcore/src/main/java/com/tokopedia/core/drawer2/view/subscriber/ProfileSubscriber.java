@@ -38,9 +38,12 @@ public class ProfileSubscriber extends Subscriber<ProfileModel> {
     @Override
     public void onNext(ProfileModel profileModel) {
         if (profileModel.isSuccess())
-            viewListener.onGetProfile(convertToViewModel(profileModel.getProfileData()));
+            viewListener.onGetProfile(
+                    convertToViewModel(
+                            profileModel.getProfileData()));
         else
-            viewListener.onErrorGetProfile(profileModel.getErrorMessage());
+            viewListener.onErrorGetProfile(
+                    viewListener.getString(R.string.default_request_error_unknown));
     }
 
     private DrawerProfile convertToViewModel(ProfileData profileData) {

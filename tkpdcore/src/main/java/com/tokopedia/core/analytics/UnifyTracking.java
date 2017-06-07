@@ -1517,6 +1517,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickOsBanner(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_AD_BANNER,
+                AppEventTracking.Category.OS_AD_BANNER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventImpressionOsBanner(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_AD_BANNER,
+                AppEventTracking.Category.OS_AD_BANNER,
+                AppEventTracking.Action.IMPRESSION,
+                label
+        ).getEvent());
+    }
+
     public static void eventBannerEmptyFeedOS() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,

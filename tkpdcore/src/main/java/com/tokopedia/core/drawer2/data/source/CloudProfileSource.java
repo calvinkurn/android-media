@@ -47,7 +47,7 @@ public class CloudProfileSource {
         return new Action1<ProfileModel>() {
             @Override
             public void call(ProfileModel profileModel) {
-                if (profileModel != null) {
+                if (profileModel != null && profileModel.isSuccess()) {
                     peopleCache.setKey(ProfileSourceFactory.KEY_PROFILE_DATA);
                     peopleCache.setValue(CacheUtil.convertModelToString(profileModel,
                             new TypeToken<ProfileModel>() {

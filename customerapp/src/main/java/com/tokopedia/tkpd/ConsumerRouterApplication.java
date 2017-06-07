@@ -78,7 +78,6 @@ public class ConsumerRouterApplication extends MainApplication implements
     public DrawerHelper getDrawer(AppCompatActivity activity,
                                   SessionHandler sessionHandler,
                                   LocalCacheHandler drawerCache) {
-        CommonUtils.dumper("NISNIS " + activity.getClass().getSimpleName());
         return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
