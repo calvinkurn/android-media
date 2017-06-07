@@ -66,16 +66,6 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd
         return data.get(position).getType();
     }
 
-    @Override
-    public void addData(List data) {
-        if (data != null && data.size() > 0) {
-            if (data.get(0) instanceof GroupAd) {
-                this.data.addAll(data);
-                notifyDataSetChanged();
-            }
-        }
-    }
-
     public interface Listener {
         void notifySelect(GroupAd groupAd);
     }

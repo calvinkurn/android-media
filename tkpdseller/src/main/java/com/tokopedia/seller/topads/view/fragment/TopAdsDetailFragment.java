@@ -49,6 +49,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected Ad ad;
     protected String adId;
+    private Ad adFromIntent;
     private boolean adStatusChanged = false;
 
     protected abstract void refreshAd();
@@ -81,7 +82,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
@@ -127,8 +128,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void loadData() {
         showLoading();
-        if (ad != null) {
-            onAdLoaded(ad);
+        if (adFromIntent != null) {
+            onAdLoaded(adFromIntent);
+            adFromIntent = null;
         } else {
             refreshAd();
         }
@@ -197,7 +199,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOnAdSuccess() {
-        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -219,7 +220,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOffAdSuccess() {
-        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();

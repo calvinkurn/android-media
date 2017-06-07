@@ -9,20 +9,13 @@ import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeyword
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
-
-import java.util.List;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.
  */
 
 public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<KeywordAd> {
-
-    private Callback<KeywordAd> callback;
-
-    public TopAdsKeywordAdapter(Callback<KeywordAd> callback) {
-        this.callback = callback;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,12 +36,23 @@ public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<KeywordAd> {
             case KeywordAd.TYPE:
             case NegativeKeywordAd.TYPE:
                 TopAdsKeywordViewHolder itemHolder = (TopAdsKeywordViewHolder) holder;
-                itemHolder.bindDataAds(data.get(position), callback);
+                bindData(position, itemHolder);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
                 break;
         }
+    }
+
+    @Override
+    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
+        super.bindData(position, viewHolder);
+        final TopAdsKeywordViewHolder topAdsViewHolder = (TopAdsKeywordViewHolder) viewHolder;
+        if (data.size() <= position) {
+            return;
+        }
+        final Ad ad = data.get(position);
+        topAdsViewHolder.bindObject(data.get(position));
     }
 
     @Override
@@ -58,15 +62,5 @@ public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<KeywordAd> {
             return itemType;
         }
         return data.get(position).getType();
-    }
-
-    @Override
-    public void addData(List data) {
-        if (data != null && data.size() > 0) {
-            if (data.get(0) instanceof KeywordAd) {
-                this.data.addAll(data);
-                notifyDataSetChanged();
-            }
-        }
     }
 }

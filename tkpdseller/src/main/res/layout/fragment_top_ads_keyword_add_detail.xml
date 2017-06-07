@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout style="@style/LabelLayoutWithoutBorder"
+    <LinearLayout style="@style/LabelLayoutWithBorderBottom"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -30,7 +30,6 @@
                     android:hint="@string/top_ads_keyword_add"
                     android:inputType="text"
                     android:maxLength="@integer/keyword_max_length"
-                    android:maxLines="1"
                     android:digits="abcdefghijklmnopqrstuvwxyz 0123456789"
                     android:imeOptions="actionDone"/>
 
@@ -39,12 +38,12 @@
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/button_add_keyword"
                 android:scaleType="fitCenter"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:src="@drawable/selector_ic_add"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="24dp"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_gravity="top"/>
@@ -56,7 +55,7 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <LinearLayout style="@style/LabelLayoutWithoutBorder"
+    <LinearLayout style="@style/LabelLayoutWithBorder"
         android:orientation="vertical"
         android:clickable="false"
         android:layout_marginTop="@dimen/product_margin_cards">
@@ -65,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="@string/top_ads_keywords_total_current_and_max"
-            android:textColor="@color/black_seventy_percent"
+            android:textColor="@color/black_fifty_four_percent"
             android:textSize="14sp"/>
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_keyword_group"
@@ -74,7 +73,8 @@
             tools:text="@string/top_ads_keywords_in_groups"
             android:textColor="@color/thirty_eight_percent_black"
             android:textSize="@dimen/fontvs"
-            android:layout_marginBottom="@dimen/margin_ms"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"/>
         <Button
             android:id="@+id/button_save"
             style="@style/Button.Submit.Green"

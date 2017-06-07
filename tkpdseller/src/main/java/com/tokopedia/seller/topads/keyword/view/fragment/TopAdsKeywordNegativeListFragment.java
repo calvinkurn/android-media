@@ -7,6 +7,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
@@ -32,6 +33,14 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     @Override
     protected void updateDateLabelViewText() {
         // Do nothing
+    }
+
+    @Override
+    protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
+        TopAdsEmptyAdDataBinder emptyViewDefaultBinder = super.getEmptyViewDefaultBinder();
+        emptyViewDefaultBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_negative_empty));
+        emptyViewDefaultBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use_negative));
+        return emptyViewDefaultBinder;
     }
 
     protected boolean isPositive() {

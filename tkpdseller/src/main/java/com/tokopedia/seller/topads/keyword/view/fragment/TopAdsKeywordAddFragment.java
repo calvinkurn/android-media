@@ -132,6 +132,14 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // check if contain alphanumeric
+                String keyword = editable.toString();
+                if (!hasInvalidChar(keyword)) {
+                    String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword).toLowerCase();
+                    if (!TextUtils.isEmpty(validKeyword) && isValidateWordAndCheckLocalSuccess(validKeyword)){
+                        textInputKeyword.setErrorEnabled(false);
+                    }
+                }
                 checkAddButtonEnabled();
             }
         });
@@ -215,36 +223,17 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         String keyword = editTextKeyword.getText().toString();
 
         // check if contain alphanumeric
-        if (StringUtils.containNonSpaceAlphaNumeric(keyword)) {
-            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
+        if (hasInvalidChar(keyword)) {
             return;
         }
-        // revalidate double space, then check if empty
+
         String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword).toLowerCase();
-        if (TextUtils.isEmpty(validKeyword)) {
-            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
+        if (TextUtils.isEmpty(validKeyword)){
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_be_filled));
             return;
         }
 
-        // validate no more 5 words
-        String words[] = validKeyword.split("\\s|\\n", MIN_WORDS + 1);
-        if (words.length > MIN_WORDS) {
-            textInputKeyword.setError(getString(R.string.top_ads_keyword_cannot_more_than_5));
-            return;
-        }
-
-        // validate if keyword has existed in local
-        List<String> keywordList = keywordRecyclerView.getKeywordList();
-        boolean hasInputtedInLocal = false;
-        for (int i=0, sizei = keywordList.size(); i<sizei; i++) {
-            if (validKeyword.equals(keywordList.get(i))) {
-                hasInputtedInLocal = true;
-                break;
-            }
-        }
-
-        if (hasInputtedInLocal) {
-            textInputKeyword.setError(getString(R.string.top_ads_keyword_has_existed));
+        if (!isValidateWordAndCheckLocalSuccess(validKeyword)){
             return;
         }
 
@@ -258,6 +247,62 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         }
         setCurrentMaxKeyword();
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // START VALIDATOR
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isValidateWordAndCheckLocalSuccess(String validKeyword){
+        // validate no more 5 words
+        if (!hasValidWordLength(validKeyword)) {
+            return false;
+        }
+
+        // validate if keyword has existed in local
+        if (keywordAlreadyInLocal(validKeyword)) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasInvalidChar(String keyword){
+        // check if contain alphanumeric
+        if (StringUtils.containNonSpaceAlphaNumeric(keyword)) {
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasValidWordLength(String validKeyword){
+        String words[] = validKeyword.split("\\s|\\n", MIN_WORDS + 1);
+        if (words.length > MIN_WORDS) {
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_cannot_more_than_5));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean keywordAlreadyInLocal(String validKeyword){
+        List<String> keywordList = keywordRecyclerView.getKeywordList();
+        boolean hasInputtedInLocal = false;
+        for (int i=0, sizei = keywordList.size(); i<sizei; i++) {
+            if (validKeyword.equals(keywordList.get(i))) {
+                hasInputtedInLocal = true;
+                break;
+            }
+        }
+
+        if (hasInputtedInLocal) {
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_has_existed));
+            return true;
+        }
+        return false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // END VALIDATOR
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

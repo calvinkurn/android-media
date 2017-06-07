@@ -46,13 +46,15 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-    protected int status;
-    protected int page;
-    protected int totalItem;
+
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
-    private boolean searchMode;
+
+    protected int status;
+    protected int page;
+    protected int totalItem;
+    protected boolean searchMode;
 
     public TopAdsBaseListFragment() {
         // Required empty public constructor
@@ -94,7 +96,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     @Override
     protected void initView(View view) {
         super.initView(view);
-        recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -115,11 +117,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                     adapter.showRetryFull(false);
                     adapter.showLoading(true);
                 }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
             }
         };
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -157,16 +154,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
-    protected void updateEmptyViewNoResult() {
-        adapter.setEmptyView(getEmptyViewNoResultBinder());
-        adapter.notifyDataSetChanged();
-    }
-
-    protected void updateEmptyViewDefault() {
-        adapter.setEmptyView(getEmptyViewDefaultBinder());
-        adapter.notifyDataSetChanged();
-    }
-
     @Override
     protected void loadData() {
         page = START_PAGE;
@@ -186,31 +173,51 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+    public void onSearchLoaded(@NonNull List list, boolean isEndOfFile) {
 
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+    public void onSearchLoaded(@NonNull List list, int totalItem) {
         recyclerView.removeOnScrollListener(onScrollListener);
         recyclerView.addOnScrollListener(onScrollListener);
         this.totalItem = totalItem;
-        if (totalItem > 0 && !searchMode) {
-            updateEmptyViewNoResult();
+        hideLoading();
+        if (totalItem <= 0) {
+            if (searchMode) {
+                showViewSearchNoResult();
+            } else {
+                showViewEmptyList();
+            }
+        } else {
+            showViewList(list);
         }
+    }
+
+    protected void showViewEmptyList() {
+        adapter.setEmptyView(getEmptyViewDefaultBinder());
+        adapter.clearData();
+        layoutManager.scrollToPositionWithOffset(0, 0);
+        adapter.showEmptyFull(true);
+    }
+
+    protected void showViewSearchNoResult() {
+        adapter.setEmptyView(getEmptyViewNoResultBinder());
+        adapter.clearData();
+        layoutManager.scrollToPositionWithOffset(0, 0);
+        adapter.showEmptyFull(true);
+    }
+
+    protected void showViewList(@NonNull List list) {
         if (page == START_PAGE) {
             adapter.clearData();
             layoutManager.scrollToPositionWithOffset(0, 0);
         }
-        adapter.addData(adList);
-        hideLoading();
-        if (adapter.getDataSize() < 1) {
-            adapter.showEmptyFull(true);
-        }
+        adapter.addData(list);
     }
 
     @Override
-    public void onLoadSearchAdError() {
+    public void onLoadSearchError() {
         hideLoading();
         if (adapter.getDataSize() > 0) {
             showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
@@ -259,7 +266,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState == null)
             return;
-
         status = savedInstanceState.getInt(KEY_STATUS);
         page = savedInstanceState.getInt(KEY_STATUS, 0);
         totalItem = savedInstanceState.getInt(KEY_STATUS, Integer.MAX_VALUE);

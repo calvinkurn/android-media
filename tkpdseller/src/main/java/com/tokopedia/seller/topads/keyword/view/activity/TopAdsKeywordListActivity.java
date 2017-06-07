@@ -39,7 +39,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     private SearchView searchView;
     private KeywordListListener keywordListTablayout;
     private MenuItem searchItem;
-    private FloatingActionButton fab;
 
     private int totalGroupAd;
 
@@ -52,13 +51,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        fab = (FloatingActionButton) findViewById(R.id.top_ads_dashboard_keyword_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabOnClick();
-            }
-        });
 
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
@@ -186,14 +178,5 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     public void expand() {
         searchItem.expandActionView();
-    }
-
-    @Override
-    public void hideFab(int visibiltiy) {
-        fab.setVisibility(visibiltiy);
-    }
-
-    public interface Listener {
-        boolean isShowFab();
     }
 }
