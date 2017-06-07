@@ -192,7 +192,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     public String getTitle(Context context) {
-        return "Filter Group";
+        return getString(R.string.top_ads_keyword_group_title);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
         groupFilterSearch.setText(groupAd.getName());
         groupFilterSearch.setFocusable(false);
         groupFilterSearch.setEnabled(false);
-        groupFilterImage.setImageResource(R.drawable.ic_delete_keyword);
+        groupFilterImage.setImageResource(R.drawable.ic_group_keyword);
         recyclerView.setVisibility(View.GONE);
         hideThings.setVisibility(View.VISIBLE);
         groupFilterImage.setOnClickListener(new View.OnClickListener() {

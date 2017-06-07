@@ -25,6 +25,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
     private final View statusActiveDot;
     private final LinearLayout promoPriceUsedContainer;
     private final TextView keywordTypeDescription;
+    private final LinearLayout statusActiveContainer;
 
     public TopAdsKeywordViewHolder(View itemView) {
         super(itemView);
@@ -36,6 +37,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         statusActiveDot = itemView.findViewById(R.id.status_active_dot);
         promoPriceUsedContainer = (LinearLayout) itemView.findViewById(R.id.promo_price_used_container);
         keywordTypeDescription = (TextView) itemView.findViewById(R.id.title_keyword_type_description);
+        statusActiveContainer = (LinearLayout) itemView.findViewById(R.id.status_active_container);
 
     }
 
@@ -53,6 +55,7 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         if (datum != null && datum instanceof NegativeKeywordAd) {
             promoPriceUsedContainer.setVisibility(View.GONE);
             pricePromoPerClick.setVisibility(View.GONE);
+            statusActiveContainer.setVisibility(View.GONE);
         }
 
         keywordTypeDescription.setText(datum.getKeywordTypeDesc());

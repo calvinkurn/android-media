@@ -123,16 +123,17 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsAddProductListActivity"
-            android:label="@string/title_activity_top_ads_list" />
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordListActivity"
-            android:theme="@style/Theme.Tokopedia3"
             android:label="@string/title_top_ads_keyword"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordFilterActivity"
             android:label="@string/title_top_ads_filter_keyword"
