@@ -192,7 +192,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     public String getTitle(Context context) {
-        return getString(R.string.top_ads_keyword_group_title);
+        return context.getString(R.string.top_ads_keyword_group_title);
     }
 
     @Override
