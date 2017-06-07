@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -80,7 +81,7 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> validateOtp(@FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
+    @POST(TkpdBaseURL.Accounts.MSISDN.VERIFY_PHONE_NUMBER)
     Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
@@ -114,4 +115,16 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.CHANGE_EMAIL)
     Observable<Response<TkpdResponse>> changeEmail(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.MSISDN.CHANGE_PHONE_NUMBER)
+    Observable<Response<TkpdResponse>> changePhoneNumber(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
+    Observable<Response<TkpdResponse>> makeLogin(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
+    Call<String> makeLoginsynchronous(@FieldMap TKPDMapParam<String, Object> parameters);
 }

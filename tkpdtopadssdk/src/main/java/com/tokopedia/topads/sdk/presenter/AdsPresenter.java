@@ -1,9 +1,11 @@
 package com.tokopedia.topads.sdk.presenter;
 
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.view.AdsView;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -21,6 +23,8 @@ public interface AdsPresenter <V extends AdsView>{
 
     void setParams(TopAdsParams adsParams);
 
+    TopAdsParams getTopAdsParam();
+
     void setMaxItems(int items);
 
     void setEndpoinParam(String ep);
@@ -31,7 +35,11 @@ public interface AdsPresenter <V extends AdsView>{
 
     void openShopTopAds(String click_url, Shop shop);
 
-    void setSessionId(String sessionId);
+    void setDisplayMode(DisplayMode displayMode);
 
-    void setDisplayMode(int displayMode);
+    void getPreferedCategory();
+
+    void setConfig(Config config);
+
+    Config getConfig();
 }

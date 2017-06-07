@@ -578,6 +578,8 @@ public class TkpdBaseURL {
         public static final String PATH_USER_WISHLIST = "/users";
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
+
+        public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
     }
 
 
@@ -664,6 +666,11 @@ public class TkpdBaseURL {
 
         public class Ktp {
             public static final String CHECK_STATUS = "/api/ktp/check-status";
+        }
+
+        public class MSISDN {
+            public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+            public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
         }
     }
 

@@ -74,7 +74,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseShopAdapter.setIsLoading(false);
         browseShopAdapter.setIsErrorState(true);
         browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
             @Override
@@ -181,9 +180,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 } else if (position == 0) {
 //                    return headerColumnSize;
                     return regularColumnSize;
-                } else if (browseShopAdapter.isTopAds(position)) {
-                    // top ads span column
-                    return headerColumnSize;
                 } else {
                     // regular one column
                     return regularColumnSize;
@@ -192,13 +188,19 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         };
     }
 
+
+    @Override
+    public void setEmptyState() {
+
+    }
+
     @Override
     public void setLoading(boolean isLoading) {
         if (browseShopAdapter != null) browseShopAdapter.setIsLoading(isLoading);
     }
 
     @Override
-    public void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void setShopData(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         browseShopAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseShopAdapter.setPagingHandlerModel(pagingHandlerModel);
         if (browseShopAdapter.checkHasNext()) {

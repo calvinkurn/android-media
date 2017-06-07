@@ -18,22 +18,37 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
+import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
+import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Catalog;
 import com.tokopedia.discovery.presenter.browseparent.CatalogImpl;
 import com.tokopedia.discovery.view.CatalogView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +58,13 @@ import butterknife.BindView;
 /**
  * Created by Erry on 6/30/2016.
  */
-public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork {
+public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork,
+        TopAdsItemClickListener {
     public static final int IDFRAGMENT = 123_348;
     public static final String INDEX = "FRAGMENT_INDEX";
 
     private static final int LANDSCAPE_COLUMN_MAIN = 3;
     private static final int PORTRAIT_COLUMN_MAIN = 2;
-
-    private static final int PORTRAIT_COLUMN_HEADER = 2;
-    private static final int PORTRAIT_COLUMN_FOOTER = 2;
-    private static final int PORTRAIT_COLUMN = 1;
 
     @BindView(R2.id.list_catalog)
     RecyclerView list_catalog;
@@ -62,6 +74,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType;
+    private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private int spanCount = 2;
 
 
@@ -86,21 +99,20 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         switch (gridType) {
             case GRID_1:
                 spanCount = 1;
-                linearLayoutManager = new LinearLayoutManager(getActivity());
                 browseCatalogAdapter.setGridView(gridType);
-                list_catalog.setLayoutManager(linearLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(linearLayoutManager);
                 break;
             case GRID_2:
                 spanCount = 2;
                 gridLayoutManager.setSpanCount(spanCount);
                 browseCatalogAdapter.setGridView(gridType);
-                list_catalog.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
             case GRID_3:
                 spanCount = 1;
                 gridLayoutManager.setSpanCount(spanCount);
                 browseCatalogAdapter.setGridView(gridType);
-                list_catalog.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
         }
     }
@@ -142,7 +154,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseCatalogAdapter.setIsLoading(false);
         browseCatalogAdapter.setIsErrorState(true);
         browseCatalogAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
             @Override
@@ -195,27 +206,64 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Data data) {
+
+    }
+
+    @Override
     public void setupRecyclerView() {
         if (list_catalog.getAdapter() != null) {
             return;
         }
-        list_catalog.setLayoutManager(gridLayoutManager);
-        list_catalog.setAdapter(browseCatalogAdapter);
-        list_catalog.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
 
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.PRODUCT)
+                .topAdsParams(populatedNetworkParams())
+                .build();
+
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseCatalogAdapter);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
+        topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setConfig(config);
+        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
-                    presenter.loadMore(getActivity());
-                }
+            public void onLoad(int page, int totalCount) {
+                presenter.loadMore(getActivity());
             }
         });
+        list_catalog.setAdapter(topAdsRecyclerAdapter);
         changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+    }
+
+    private TopAdsParams populatedNetworkParams() {
+        NetworkParam.Product networkParam = ((BrowseProductActivity) getActivity()).getProductParam();
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC, networkParam.source);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, networkParam.sc);
+        if (networkParam.keyword != null) {
+            params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.keyword);
+        }
+        if (networkParam.extraFilter != null) {
+            params.getParam().putAll(networkParam.extraFilter);
+        }
+        return params;
     }
 
     @Override
@@ -224,11 +272,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
             return;
         }
         browseCatalogAdapter = new BrowseCatalogAdapter(getActivity().getApplicationContext(), browseCatalogModelList);
-        browseCatalogAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
 
     // to determine size of grid columns
@@ -236,24 +282,12 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-
-                // column size default is one
-                int headerColumnSize = 1,
-                        footerColumnSize = 1,
-                        regularColumnSize = 1;
-
-                headerColumnSize = PORTRAIT_COLUMN_HEADER;
-                regularColumnSize = PORTRAIT_COLUMN;
-                footerColumnSize = PORTRAIT_COLUMN_FOOTER;
-
-                // set the value of footer, regular and header
-                if (position == browseCatalogAdapter.getData().size()) {
+                if (topAdsRecyclerAdapter.isTopAdsViewHolder(position)
+                        || topAdsRecyclerAdapter.isLoading(position)
+                        || browseCatalogAdapter.isEmptySearch(position)) {
                     return spanCount;
-                } else if (position == 0) {
-                    return regularColumnSize;
                 } else {
-                    // regular one column
-                    return regularColumnSize;
+                    return 1;
                 }
             }
         };
@@ -261,16 +295,11 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        browseCatalogAdapter.addAll(false, new ArrayList<RecyclerViewItem>(model));
+        topAdsRecyclerAdapter.hideLoading();
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
+        browseCatalogAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
         browseCatalogAdapter.setGridView(((BrowseProductActivity) getActivity()).getGridType());
-        if (browseCatalogAdapter.checkHasNext()) {
-            browseCatalogAdapter.setIsLoading(true);
-        } else {
-            browseCatalogAdapter.setIsLoading(false);
-        }
-        browseCatalogAdapter.notifyDataSetChanged();
-
         browseCatalogAdapter.incrementPage();
     }
 
@@ -310,6 +339,15 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     public BrowseCatalogModel getDataModel() {
         Log.d(TAG, "presenter " + presenter);
         return ((CatalogImpl) presenter).getCatalogModel();
+    }
+
+    @Override
+    public void setLoading(boolean isLoading) {
+        if(isLoading){
+            topAdsRecyclerAdapter.showLoading();
+        } else {
+            topAdsRecyclerAdapter.hideLoading();
+        }
     }
 
     @Override

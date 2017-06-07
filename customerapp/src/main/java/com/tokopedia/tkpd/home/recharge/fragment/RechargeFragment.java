@@ -320,10 +320,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             }
         } else {
             if (temp.length() >= 3) {
-                String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                            category.getId(),
+                    this.rechargePresenter.validatePhonePrefix(temp, category.getId(),
                             category.getAttributes().isValidatePrefix());
                 } else {
                     isAlreadyHavePhonePrefixInView = false;

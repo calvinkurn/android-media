@@ -146,7 +146,14 @@
     <item name="category_view_all" type="id"/>
     <item name="top_ads_view" type="id"/>
     <item name="nested_intermediary" type="id"/>
-
-
+    <item name="fragmentv2list" type="id"/>
+    <item name="topads" type="id"/>
+    <item name="include_no_result" type="id"/>
+    <item name="no_result_image" type="id"/>
+    <item name="text_no_result" type="id"/>
+    <item name="wishlist_button" type="id"/>
+    <item name="wishlist_button_container" type="id"/>
+    <item name="rating" type="id"/>
+    <item name="review_count" type="id"/>
 
 </resources>

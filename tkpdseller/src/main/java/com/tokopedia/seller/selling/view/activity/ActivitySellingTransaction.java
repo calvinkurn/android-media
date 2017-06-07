@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -35,10 +36,13 @@ import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
@@ -68,6 +72,42 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     DownloadResultReceiver mReceiver;
 
     FragmentManager fragmentManager;
+
+    @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
+    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_SHIPMENT)
+    public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_STATUS)
+    public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_HISTORY)
+    public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
@@ -247,16 +287,16 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void setDrawerPosition(int position) {
         switch (position) {
-            case 1:
+            case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
-            case 2:
+            case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
-            case 3:
+            case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
-            case 4:
+            case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
                 break;
             case 5:
@@ -430,6 +470,16 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         @Override
         public int getCount() {
             return fragmentList.size();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }

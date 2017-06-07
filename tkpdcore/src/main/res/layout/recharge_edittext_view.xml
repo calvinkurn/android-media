@@ -8,8 +8,6 @@
         android:id="@+id/layout_recharge"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -20,18 +18,10 @@
             android:layout_weight="0.92"
             android:visibility="visible">
 
-            <LinearLayout
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                tools:ignore="UselessLeaf"/>
-
             <AutoCompleteTextView
                 android:id="@+id/pulsa_autocompleteview"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
                 android:inputType="numberDecimal"
                 android:maxLength="14"
                 android:maxLines="1"
