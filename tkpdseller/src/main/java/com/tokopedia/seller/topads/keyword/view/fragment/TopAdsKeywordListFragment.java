@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/17/17.
  */
 public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
-        implements TopAdsEmptyAdDataBinder.Callback, TopAdsKeywordListActivity.Listener {
+        implements TopAdsEmptyAdDataBinder.Callback {
 
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
     @KeywordStatusTypeDef
@@ -162,16 +162,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        super.onSearchAdLoaded(adList, totalItem);
-        if (isShowFab()) {
-            keywordAdListener.hideFab(View.VISIBLE);
-        } else {
-            keywordAdListener.hideFab(View.GONE);
-        }
-    }
-
-    @Override
     protected String getScreenName() {
         return null;
     }
@@ -194,12 +184,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     public void onEmptyButtonClicked() {
         onCreateAd();
-    }
-
-
-    @Override
-    public boolean isShowFab() {
-        return adapter.getDataSize() > 0;
     }
 
     @Override

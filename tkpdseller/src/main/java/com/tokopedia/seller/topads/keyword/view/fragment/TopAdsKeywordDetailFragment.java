@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter> {
 
-    private LabelView keywordTypeLabelView;
+    private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
 
     protected KeywordAd keywordAd;
@@ -60,8 +60,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void initView(View view) {
         super.initView(view);
-        keywordTypeLabelView = (LabelView) view.findViewById(R.id.keyword);
+        keywordLabelView = (LabelView) view.findViewById(R.id.keyword);
         promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
+
+        name.setTitle(getString(R.string.top_ads_keyword_label_type));
         promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,8 +121,9 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void updateMainView(Ad ad) {
         super.updateMainView(ad);
-        keywordTypeLabelView.setContent(keywordAd.getkeywordTypeDesc());
+        keywordLabelView.setContent(keywordAd.getKeywordTag());
         promoGroupLabelView.setContent(keywordAd.getGroupName());
+        name.setContent(keywordAd.getkeywordTypeDesc());
     }
 
     protected int getKeywordTypeValue() {

@@ -11,5 +11,5 @@ import java.util.List;
  */
 
 public interface TopAdsListViewListener extends TopAdsListPromoViewListener {
-    void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile);
+    void onSearchLoaded(@NonNull List adList, boolean isEndOfFile);
 }

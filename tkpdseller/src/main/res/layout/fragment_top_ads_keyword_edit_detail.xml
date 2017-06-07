@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/top_ads_margin_layout"
-                app:spinner_hint="@string/top_ads_keyword_type_hint" />
+                app:spinner_hint="@string/top_ads_keyword_label_type" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_top_ads_keyword"
@@ -42,28 +42,27 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-				<android.support.design.widget.TextInputLayout
-	                android:id="@+id/text_input_layout_top_ads_cost_per_click"
-	                style="@style/TextInputLayout"
-	                android:layout_margin="@dimen/top_ads_margin_layout"
-	                android:hint="@string/top_ads_keyword_cost_per_click">
-	
-	                <com.tokopedia.seller.topads.view.widget.PrefixEditText
-	                    android:id="@+id/edit_text_top_ads_cost_per_click"
-	                    style="@style/EditText.Currency"
-	                    app:prefix="@string/top_ads_label_currency_rupiah_editext"
-	                    android:layout_width="match_parent" />
-	
-	            </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_top_ads_cost_per_click"
+                    style="@style/TextInputLayout"
+                    android:layout_margin="@dimen/top_ads_margin_layout"
+                    android:hint="@string/top_ads_keyword_cost_per_click">
+
+                    <com.tokopedia.seller.topads.view.widget.PrefixEditText
+                        android:id="@+id/edit_text_top_ads_cost_per_click"
+                        style="@style/EditText.Currency"
+                        android:layout_width="match_parent"
+                        app:prefix="@string/top_ads_label_currency_rupiah_editext" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <TextView
                     android:id="@+id/text_view_top_ads_max_price_description"
                     style="@style/TextView.TopAds.Body.Gray"
                     android:layout_margin="@dimen/top_ads_margin_layout"
                     android:maxLines="3"
-                    android:text="@string/label_top_ads_max_price_description" />
+                    android:text="@string/top_ads_label_price_desc" />
             </LinearLayout>
-
 
         </LinearLayout>
 

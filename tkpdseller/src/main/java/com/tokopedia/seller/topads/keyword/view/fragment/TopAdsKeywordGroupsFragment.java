@@ -172,7 +172,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
-        onSearchAdLoaded(groupAds, groupAds.size());
+        onSearchLoaded(groupAds, groupAds.size());
         if (selection != null) {
             notifySelect(selection);
         }

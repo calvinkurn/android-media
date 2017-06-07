@@ -54,7 +54,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onLoadSearchAdError();
+                getView().onLoadSearchError();
             }
 
             @Override
@@ -86,6 +86,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
         keywordAd.setKeywordTag(datum.getKeywordTag());
         keywordAd.setStatus(datum.getKeywordStatus());
         keywordAd.setStatusDesc(datum.getKeywordStatusDesc());
+        keywordAd.setStatusToogle(datum.getKeywordStatusToogle());
         keywordAd.setStatAvgClick(datum.getStatAvgClick());
         keywordAd.setStatTotalSpent(datum.getStatTotalSpent());
         keywordAd.setStatTotalImpression(datum.getStatTotalImpression());
@@ -100,7 +101,7 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<T
 
     protected void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
         if (isViewAttached()) {
-            getView().onSearchAdLoaded(
+            getView().onSearchLoaded(
                     keywordDashboardViewModel.getData(),
                     keywordDashboardViewModel.getPage().getTotal()
             );

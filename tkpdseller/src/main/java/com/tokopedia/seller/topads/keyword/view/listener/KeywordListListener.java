@@ -112,7 +112,5 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
         void addListener();
 
         void expand();
-
-        void hideFab(int visibiltiy);
     }
 }

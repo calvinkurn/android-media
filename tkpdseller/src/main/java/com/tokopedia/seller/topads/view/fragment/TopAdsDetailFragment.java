@@ -41,7 +41,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
     protected LabelView name;
-    private LabelSwitch status;
+    protected LabelSwitch status;
 
     protected SwipeToRefresh swipeToRefresh;
     protected ProgressDialog progressDialog;

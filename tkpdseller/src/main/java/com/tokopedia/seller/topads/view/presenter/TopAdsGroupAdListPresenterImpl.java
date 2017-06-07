@@ -38,12 +38,12 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
         groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<GroupAd>> pageDataResponse) {
-                topAdsListPromoViewListener.onSearchAdLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
+                topAdsListPromoViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onLoadSearchAdError();
+                topAdsListPromoViewListener.onLoadSearchError();
             }
         });
     }

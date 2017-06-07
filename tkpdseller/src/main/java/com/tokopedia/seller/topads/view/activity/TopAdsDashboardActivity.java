@@ -43,7 +43,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private FloatingActionButton fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -83,26 +82,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_TOP_ADS);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
-        fabSpeedDial = (FloatingActionButton) findViewById(R.id.top_ads_dashboard_fab);
         datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         topadsDashList = new TopAdsDashboardTabListener(viewPager);
-        topadsDashList.setTopAdsDashboardList(new TopAdsDashboardTabListener.TopAdsDashboardList() {
-            @Override
-            public void onSelected(int positon) {
-                switch (positon) {
-                    case 0:
-                        fabSpeedDial.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                    default:
-                        fabSpeedDial.setVisibility(View.GONE);
-                        break;
-                }
-            }
-        });
         tabLayout.setOnTabSelectedListener(topadsDashList);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_product));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_store));
@@ -114,15 +98,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
-        fabSpeedDial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getCurrentFragment() != null && getCurrentFragment() instanceof TopAdsDashboardProductFragment) {
-                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
-                    getCurrentFragment().startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
-                }
-            }
-        });
     }
 
     Fragment getCurrentFragment() {
@@ -257,12 +232,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                             0,
                             scrollView));
                 }
-
-                showCaseList.add(new ShowCaseObject(
-                        fabSpeedDial,
-                        getString(R.string.topads_showcase_home_title_6),
-                        getString(R.string.topads_showcase_home_desc_6)));
-
                 showCaseDialog.show(TopAdsDashboardActivity.this, showCaseTag, showCaseList);
             }
         });

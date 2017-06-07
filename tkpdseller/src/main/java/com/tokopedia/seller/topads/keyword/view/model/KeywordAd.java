@@ -12,23 +12,13 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
     public static final int TYPE = 192929201;
-    public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {
-        @Override
-        public KeywordAd createFromParcel(Parcel source) {
-            return new KeywordAd(source);
-        }
-
-        @Override
-        public KeywordAd[] newArray(int size) {
-            return new KeywordAd[size];
-        }
-    };
     private String id;
     private String groupId;
     private String keywordTypeId;
     private String groupName;
     private String keywordTag;
     private int status;
+    private int statusToogle;
     private String statusDesc;
     private String statAvgClick;
     private String statTotalSpent;
@@ -41,25 +31,6 @@ public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
     private String keywordTypeDesc;
 
     public KeywordAd() {
-    }
-
-    protected KeywordAd(Parcel in) {
-        this.id = in.readString();
-        this.groupId = in.readString();
-        this.keywordTypeId = in.readString();
-        this.groupName = in.readString();
-        this.keywordTag = in.readString();
-        this.status = in.readInt();
-        this.statusDesc = in.readString();
-        this.statAvgClick = in.readString();
-        this.statTotalSpent = in.readString();
-        this.statTotalImpression = in.readString();
-        this.statTotalClick = in.readString();
-        this.statTotalCtr = in.readString();
-        this.statTotalConversion = in.readString();
-        this.priceBidFmt = in.readString();
-        this.labelPerClick = in.readString();
-        this.keywordTypeDesc = in.readString();
     }
 
     @Override
@@ -91,7 +62,11 @@ public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
 
     @Override
     public int getStatusToogle() {
-        return 0;
+        return statusToogle;
+    }
+
+    public void setStatusToogle(int statusToogle) {
+        this.statusToogle = statusToogle;
     }
 
     @Override
@@ -261,6 +236,11 @@ public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
     }
 
     @Override
+    public int getType() {
+        return TYPE;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -273,6 +253,7 @@ public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
         dest.writeString(this.groupName);
         dest.writeString(this.keywordTag);
         dest.writeInt(this.status);
+        dest.writeInt(this.statusToogle);
         dest.writeString(this.statusDesc);
         dest.writeString(this.statAvgClick);
         dest.writeString(this.statTotalSpent);
@@ -285,8 +266,35 @@ public class KeywordAd implements Ad, Parcelable, TypeBasedModel {
         dest.writeString(this.keywordTypeDesc);
     }
 
-    @Override
-    public int getType() {
-        return TYPE;
+    protected KeywordAd(Parcel in) {
+        this.id = in.readString();
+        this.groupId = in.readString();
+        this.keywordTypeId = in.readString();
+        this.groupName = in.readString();
+        this.keywordTag = in.readString();
+        this.status = in.readInt();
+        this.statusToogle = in.readInt();
+        this.statusDesc = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.priceBidFmt = in.readString();
+        this.labelPerClick = in.readString();
+        this.keywordTypeDesc = in.readString();
     }
+
+    public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {
+        @Override
+        public KeywordAd createFromParcel(Parcel source) {
+            return new KeywordAd(source);
+        }
+
+        @Override
+        public KeywordAd[] newArray(int size) {
+            return new KeywordAd[size];
+        }
+    };
 }

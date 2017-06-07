@@ -602,10 +602,12 @@
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
     <string name="top_ads_keyword_delete">Hapus</string>
+    <string name="top_ads_label_currency_rupiah_editext">Rp \u0020</string>
+    <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran promo Anda.</string>
+
     <!-- tooltip statistic topads -->
     <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
     <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
-    <string name="top_ads_label_currency_rupiah_editext">Rp \u0020</string>
     <string name="title_top_ads_keyword">Kata Kunci</string>
     <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>

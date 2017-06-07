@@ -45,5 +45,6 @@
         android:src="@drawable/ic_add_black_48dp_00"
         app:backgroundTint="@color/tkpd_main_green"
         app:fabSize="normal"
+        android:visibility="gone"
         app:layout_anchorGravity="bottom|right|end" />
 </android.support.design.widget.CoordinatorLayout>
