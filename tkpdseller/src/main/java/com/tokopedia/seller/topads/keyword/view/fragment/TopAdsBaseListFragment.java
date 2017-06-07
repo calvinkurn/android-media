@@ -118,11 +118,6 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                     adapter.showLoading(true);
                 }
             }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-            }
         };
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

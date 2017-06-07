@@ -40,6 +40,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsBaseListFragment<T> implements
         AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
 
@@ -108,6 +109,21 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             @Override
             public void onClick(View v) {
                 onCreateAd();
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    if (fabAdd.isShown()) {
+                        fabAdd.hide();
+                    }
+                } else if (dy < 0) {
+                    if (!fabAdd.isShown()) {
+                        fabAdd.show();
+                    }
+                }
             }
         });
         initDateLabelView(view);
