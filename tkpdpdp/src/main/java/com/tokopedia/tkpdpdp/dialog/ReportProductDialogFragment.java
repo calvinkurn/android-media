@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
@@ -42,10 +44,6 @@ import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 
 /**
  * @author stevenfredian on 7/4/16.
@@ -54,27 +52,16 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     ProductDetailData productDetailData;
 
-    @BindView(R2.id.cancel_but)
     TextView cancelButton;
-    @BindView(R2.id.report)
     TextView reportButton;
-    @BindView(R2.id.report_desc)
     EditText reportDesc;
-    @BindView(R2.id.wrapper)
     TextInputLayout wrapper;
-    @BindView(R2.id.report_type)
     Spinner reportTypeSpinner;
-    @BindView(R2.id.error_spinner)
     TextView errorSpinner;
-    @BindView(R2.id.dummy_spinner)
     TextView dummySpinner;
-    @BindView(R2.id.redirect_text)
     TextView redirectText;
-    @BindView(R2.id.scrollView)
     View mainLayout;
-    @BindView(R2.id.action_layout)
     View actionLayout;
-    @BindView(R2.id.progressBar)
     ProgressBar progressBar;
 
     List<ReportType> reportTypeList;
@@ -100,9 +87,75 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         View view = inflater.inflate(com.tokopedia.core.R.layout.dialog_report_product, container);
-        ButterKnife.bind(this, view);
+        initview(view);
         setContent();
         return view;
+    }
+
+    private void initview(View view) {
+        cancelButton = (TextView) view.findViewById(R.id.cancel_but);
+        reportButton = (TextView) view.findViewById(R.id.report);
+        reportDesc = (EditText) view.findViewById(R.id.report_desc);
+        wrapper = (TextInputLayout) view.findViewById(R.id.wrapper);
+        reportTypeSpinner = (Spinner) view.findViewById(R.id.report_type);
+        errorSpinner = (TextView) view.findViewById(R.id.error_spinner);
+        dummySpinner = (TextView) view.findViewById(R.id.dummy_spinner);
+        redirectText = (TextView) view.findViewById(R.id.redirect_text);
+        mainLayout = view.findViewById(R.id.scrollView);
+        actionLayout =  view.findViewById(R.id.action_layout);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetError();
+                if (isValidForm()) {
+                    doReport();
+                    reportButton.setEnabled(false);
+                }
+            }
+        });
+
+        dummySpinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dummySpinner.setVisibility(View.GONE);
+                reportTypeSpinner.setVisibility(View.VISIBLE);
+                reportTypeSpinner.performClick();
+            }
+        });
+
+        reportTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                errorSpinner.setVisibility(View.GONE);
+                ReportType reportChose = reportTypeList.get(reportTypeSpinner.getSelectedItemPosition());
+                int response = reportChose.getReportResponse();
+
+                if (response == 0) {
+                    wrapper.setVisibility(View.GONE);
+                    reportButton.setVisibility(View.GONE);
+                    redirectText.setVisibility(View.VISIBLE);
+                    String link = reportChose.getReportUrl();
+                    setRedirect(reportTypeName.getItem(reportTypeSpinner.getSelectedItemPosition()), false, link);
+                } else {
+                    wrapper.setVisibility(View.VISIBLE);
+                    reportButton.setVisibility(View.VISIBLE);
+                    redirectText.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void setContent() {
@@ -123,20 +176,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         super.onResume();
     }
 
-    @OnClick(R2.id.cancel_but)
-    public void dismissDialog() {
-        dismiss();
-    }
-
-    @OnClick(R2.id.report)
-    public void report() {
-        resetError();
-        if (isValidForm()) {
-            doReport();
-            reportButton.setEnabled(false);
-        }
-    }
-
     private boolean isValidForm() {
         if (reportDesc.getText().toString().trim().length() > 0) {
             return true;
@@ -147,24 +186,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         }
     }
 
-    @OnItemSelected(R2.id.report_type)
-    public void onItemSpinnerSelected() {
-        errorSpinner.setVisibility(View.GONE);
-        ReportType reportChose = reportTypeList.get(reportTypeSpinner.getSelectedItemPosition());
-        int response = reportChose.getReportResponse();
-
-        if (response == 0) {
-            wrapper.setVisibility(View.GONE);
-            reportButton.setVisibility(View.GONE);
-            redirectText.setVisibility(View.VISIBLE);
-            String link = reportChose.getReportUrl();
-            setRedirect(reportTypeName.getItem(reportTypeSpinner.getSelectedItemPosition()), false, link);
-        } else {
-            wrapper.setVisibility(View.VISIBLE);
-            reportButton.setVisibility(View.VISIBLE);
-            redirectText.setVisibility(View.GONE);
-        }
-    }
 
     private void setRedirect(String item, boolean status, String link) {
         String string = getResources().getString(com.tokopedia.core.R.string.redirect_report_product);
@@ -202,13 +223,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
                 ds.setColor(ContextCompat.getColor(getActivity(), com.tokopedia.core.R.color.blue_link));
             }
         };
-    }
-
-    @OnClick(R2.id.dummy_spinner)
-    public void onDummySpinnerClicked() {
-        dummySpinner.setVisibility(View.GONE);
-        reportTypeSpinner.setVisibility(View.VISIBLE);
-        reportTypeSpinner.performClick();
     }
 
     private void resetError() {
@@ -314,4 +328,5 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         super.onDestroyView();
         retrofitInteractor.unSubscribeObservable();
     }
+
 }
