@@ -30,4 +30,9 @@ public class TopAdsKeywordDetailActivity extends TopAdsBaseSimpleActivity implem
         String adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         return TopAdsKeywordDetailFragment.createInstance(keywordAd, adId);
     }
+
+    @Override
+    protected String getTagFragment() {
+        return TopAdsKeywordDetailActivity.class.getSimpleName();
+    }
 }

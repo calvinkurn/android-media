@@ -31,4 +31,8 @@ public class TopAdsKeywordDetailNegativeActivity extends TopAdsBaseSimpleActivit
         return TopAdsKeywordDetailNegativeFragment.createInstance(keywordAd, adId);
     }
 
+    @Override
+    protected String getTagFragment() {
+        return TopAdsKeywordDetailNegativeActivity.class.getSimpleName();
+    }
 }

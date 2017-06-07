@@ -17,7 +17,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 public class TopAdsKeywordEditDetailNegativeActivity extends TopAdsKeywordEditDetailPositiveActivity {
 
-    public static Intent createIntent(Context context, KeywordAd keywordAd){
+    public static Intent createInstance(Context context, KeywordAd keywordAd){
         Intent starter = new Intent(context, TopAdsKeywordEditDetailNegativeActivity.class);
         starter.putExtra(TopAdsExtraConstant.EXTRA_AD, keywordAd);
         return starter;
@@ -27,5 +27,10 @@ public class TopAdsKeywordEditDetailNegativeActivity extends TopAdsKeywordEditDe
     protected Fragment getNewFragment(Bundle savedinstancestate) {
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         return TopAdsKeywordEditDetailNegativeFragment.createInstance(keywordAd);
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TopAdsKeywordEditDetailNegativeActivity.class.getSimpleName();
     }
 }

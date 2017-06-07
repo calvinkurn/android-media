@@ -15,8 +15,6 @@ import com.tokopedia.seller.R;
 
 public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasComponent<AppComponent> {
 
-    public static final String TAG_FRAGMENT = TopAdsBaseSimpleActivity.class.getSimpleName();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +26,12 @@ public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasC
 
     private void setupFragment(Bundle savedinstancestate) {
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.parent_view, getFragment(savedinstancestate), TAG_FRAGMENT)
+                .replace(R.id.parent_view, getFragment(savedinstancestate), getTagFragment())
                 .commit();
     }
 
     protected Fragment getFragment(Bundle savedinstancestate) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if(fragment == null){
             fragment = getNewFragment(savedinstancestate);
         }
@@ -56,5 +54,7 @@ public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasC
     }
 
     protected abstract Fragment getNewFragment(Bundle savedinstancestate);
+
+    protected abstract String getTagFragment();
 
 }
