@@ -17,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -111,7 +112,7 @@ public class OsBannerAdapter {
                     DeepLinkChecker.openHot(url, context);
                     break;
                 case DeepLinkChecker.HOT_LIST:
-                    DeepLinkChecker.openHomepage(context);
+                    DeepLinkChecker.openHomepage(context,  HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
                     break;
                 case DeepLinkChecker.CATALOG:
                     DeepLinkChecker.openCatalog(url, context);
