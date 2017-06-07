@@ -284,7 +284,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
 
         getProductDetailFromNetwork(context, productPass);
-        getProductCampaign(context, productPass.getProductId());
     }
 
     @Override
@@ -777,6 +776,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
+                        getProductCampaign(context, data.getInfo().getProductId().toString());
                     }
 
                     @Override
