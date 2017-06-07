@@ -21,7 +21,7 @@
             app:expandedTitleMarginStart="48dp"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
             app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
-            app:layout_scrollFlags="scroll|snap">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
