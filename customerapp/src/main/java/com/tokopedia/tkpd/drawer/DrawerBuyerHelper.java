@@ -466,10 +466,10 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     if (launchIntent != null) {
                         context.startActivity(launchIntent);
-                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_APP);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                     } else if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.Category.SWITCHER);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:

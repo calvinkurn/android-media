@@ -381,6 +381,7 @@ public interface AppEventTracking {
         String COPY_PRODUCT = "Copy";
         String OPEN_TOP_SELLER = "Open TopSeller - ";
         String OPEN_OPENSHOP = "Open OpenShop - ";
+        String OPEN_GM = "Open GM - ";
         String OPEN_APP = "Open App";
         String DOWNLOAD_APP = "Download App";
         String OTP = "OTP";

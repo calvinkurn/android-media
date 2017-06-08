@@ -1431,7 +1431,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.TOP_SELLER,
                 AppEventTracking.Category.GM_SWITCHER,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+                label
         ).getEvent());
     }
 
