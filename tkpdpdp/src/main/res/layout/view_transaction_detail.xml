@@ -48,6 +48,7 @@
                 android:text="@string/title_sold" />
 
             <TextView
+                android:id="@+id/text_sold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/fontvs"
@@ -76,6 +77,7 @@
                 android:text="@string/title_seen" />
 
             <TextView
+                android:id="@+id/text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/fontvs"
@@ -104,6 +106,7 @@
                 android:text="@string/title_insurance" />
 
             <TextView
+                android:id="@+id/text_insurance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -133,6 +136,7 @@
                 android:text="@string/title_weight" />
 
             <TextView
+                android:id="@+id/text_weight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

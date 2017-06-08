@@ -109,12 +109,14 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             }
             listener.onProductStatusError();
         } else if (data.getInfo().getProductStatus().equals("3") &
-                data.getShopInfo().getShopStatus() == 1) {
+                data.getShopInfo().getShopStatus() == 1 && data.getInfo().getProductStatusTitle().length()>1) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getInfo().getProductStatusTitle());
             errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
         } else if (!data.getInfo().getProductStatus().equals("1")) {
             listener.onProductStatusError();
+        } else {
+            errorProductContainer.setVisibility(GONE);
         }
     }
 
