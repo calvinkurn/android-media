@@ -194,4 +194,21 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             keywordAdListener.validateMenuItem();
         }
     }
+
+    @Override
+    public void onLoadSearchError() {
+        super.onLoadSearchError();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
 }

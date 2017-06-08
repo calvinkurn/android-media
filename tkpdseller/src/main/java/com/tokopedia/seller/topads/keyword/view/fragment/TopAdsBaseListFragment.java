@@ -192,9 +192,8 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                 showViewEmptyList();
             }
         } else {
-            showViewList(list);
             hasData = true;
-
+            showViewList(list);
         }
     }
 

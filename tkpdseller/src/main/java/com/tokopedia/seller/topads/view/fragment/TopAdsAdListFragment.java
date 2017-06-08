@@ -201,21 +201,21 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected void showViewEmptyList() {
         super.showViewEmptyList();
         showDateLabel(false);
-        showOption(false);
+        // showOption(false);
     }
 
     @Override
     protected void showViewSearchNoResult() {
         super.showViewSearchNoResult();
         showDateLabel(true);
-        showOption(true);
+        // showOption(true);
     }
 
     @Override
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
         showDateLabel(true);
-        showOption(true);
+        // showOption(true);
     }
 
     private void showOption(boolean show) {
