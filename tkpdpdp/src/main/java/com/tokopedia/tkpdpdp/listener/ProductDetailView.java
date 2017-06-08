@@ -216,15 +216,6 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductShopFaveClicked(String shopId);
 
-    /**
-     * Pada saat berhasil pindahkan product ke etalase
-     */
-    void onSuccessToEtalase();
-
-    /**
-     * Pada saat berhasil pindahkan product ke gudang
-     */
-    void onSuccessToWarehouse();
 
     /**
      * Pada saat reputation di shop info diklik

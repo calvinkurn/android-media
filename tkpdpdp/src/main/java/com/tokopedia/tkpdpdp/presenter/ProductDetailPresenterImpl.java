@@ -42,7 +42,6 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -369,7 +368,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess(boolean success) {
                         mProgressDialog.dismiss();
                         if (success) {
-                            viewListener.onSuccessToWarehouse();
+                            viewListener.showToastMessage(context
+                                    .getString(R.string.title_sold_out_action));
                             requestProductDetail(context, ProductPass.Builder.aProductPass()
                                             .setProductId(productId).build(),
                                     ProductDetailFragment.RE_REQUEST, true);
@@ -378,6 +378,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(String error) {
+                        viewListener.showToastMessage(error);
                         mProgressDialog.dismiss();
                     }
                 });
@@ -504,6 +505,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         MenuItem menuShare = menu.findItem(R.id.action_share);
         MenuItem menuCart = menu.findItem(R.id.action_cart);
         MenuItem report = menu.findItem(R.id.action_report);
+        MenuItem warehouse = menu.findItem(R.id.action_warehouse);
+        MenuItem etalase = menu.findItem(R.id.action_etalase);
         boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
@@ -530,6 +533,22 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 report.setVisible(false);
                 report.setEnabled(false);
             }
+            switch (productData.getInfo().getProductStatus()) {
+                case "1":
+                    etalase.setVisible(false);
+                    etalase.setEnabled(false);
+                    break;
+                case "3":
+                    warehouse.setVisible(false);
+                    warehouse.setEnabled(false);
+                    break;
+                case "-1":
+                    etalase.setVisible(false);
+                    etalase.setEnabled(false);
+                    warehouse.setVisible(false);
+                    warehouse.setEnabled(false);
+                    break;
+            }
         } else {
             menuShare.setVisible(false);
             menuShare.setEnabled(false);
@@ -537,6 +556,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             menuCart.setEnabled(false);
             report.setVisible(false);
             report.setEnabled(false);
+            warehouse.setVisible(false);
+            warehouse.setEnabled(false);
+            etalase.setVisible(false);
+            etalase.setEnabled(false);
+            warehouse.setVisible(false);
+            warehouse.setEnabled(false);
         }
     }
 
@@ -641,7 +666,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     public void onSuccess(boolean success) {
                                         mProgressDialog.dismiss();
                                         if (success) {
-                                            viewListener.onSuccessToEtalase();
+                                            viewListener.showToastMessage
+                                                    (context.getString(R.string.title_move_etalase));
                                             requestProductDetail(context,
                                                     ProductPass.Builder.aProductPass()
                                                             .setProductId(productId)

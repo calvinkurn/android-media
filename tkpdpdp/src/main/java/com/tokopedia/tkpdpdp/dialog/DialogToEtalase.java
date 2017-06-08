@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.tokopedia.core.R2;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.util.ValidationTextUtil;
@@ -21,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author Angga.Prasetiyo on 17/11/2015.
@@ -32,11 +28,8 @@ public class DialogToEtalase extends Dialog {
     private final Context context;
     private final int productId;
 
-    @BindView(R2.id.ok_button)
     TextView tvYes;
-    @BindView(R2.id.spinner_etalase)
     Spinner spinner;
-    @BindView(R2.id.etalase_name)
     EditText etNew;
 
     private final Listener listener;
@@ -56,7 +49,9 @@ public class DialogToEtalase extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(com.tokopedia.core.R.layout.dialog_move_to_etalase);
-        ButterKnife.bind(this);
+        tvYes = (TextView) findViewById(R.id.ok_button);
+        spinner = (Spinner) findViewById(R.id.spinner_etalase);
+        etNew = (EditText) findViewById(R.id.etalase_name);
         setCancelable(true);
         ArrayAdapter<Etalase> adapter = new ArrayAdapter<>(
                 context, android.R.layout.simple_spinner_item, etalaseList
