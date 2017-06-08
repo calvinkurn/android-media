@@ -12,6 +12,7 @@ import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussio
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadImageUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
@@ -36,6 +37,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase;
     private GenerateHostUseCase generateHostUseCase;
     private UploadImageUseCase uploadImageUseCase;
+    private UploadVideoUseCase uploadVideoUseCase;
     private CreatePictureUseCase createPictureUseCase;
     private ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
 

@@ -532,6 +532,7 @@ public class TkpdBaseURL {
         public static final String PATH_CONTACT_IMAGE = "/web-service/v4/action/upload-image/upload_contact_image.pl";
         public static final String PATH_CREATE_RESOLUTION_PICTURE_FULL = "/web-service/v4/action/upload-image-helper/create_resolution_picture.pl";
         public static final String PATH_PROFILE_IMAGE = "/web-service/v4/action/upload-image/upload_profile_image.pl";
+        public static final String PATH_UPLOAD_VIDEO = "/upload/video";
     }
 
     public static class Ace {

@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
@@ -134,6 +135,12 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> uploadImage(@Url String url,
                                                    @PartMap Map<String, RequestBody> params,
                                                    @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part MultipartBody.Part file);
 
     @Multipart
     @POST("")

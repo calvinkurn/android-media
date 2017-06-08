@@ -24,6 +24,7 @@ import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussio
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadImageUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
@@ -102,6 +103,7 @@ public class ResolutionDiscussionModule {
                                                        GenerateHostUseCase generateHostUseCase,
                                                        ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
                                                        UploadImageUseCase uploadImageUseCase,
+                                                       UploadVideoUseCase uploadVideoUseCase,
                                                        CreatePictureUseCase createPictureUseCase,
                                                        ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase) {
         return new SendDiscussionUseCase(
@@ -110,6 +112,7 @@ public class ResolutionDiscussionModule {
                 generateHostUseCase,
                 replyDiscussionValidationUseCase,
                 uploadImageUseCase,
+                uploadVideoUseCase,
                 createPictureUseCase,
                 replyDiscussionSubmitUseCase
         );
@@ -146,6 +149,17 @@ public class ResolutionDiscussionModule {
                                                  UploadImageRepository uploadImageRepository) {
         return new UploadImageUseCase(
                 threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDiscussionScope
+    @Provides
+    UploadVideoUseCase provideUploadVideoUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 UploadImageRepository uploadImageRepository) {
+        return new UploadVideoUseCase(threadExecutor,
                 postExecutionThread,
                 uploadImageRepository
         );

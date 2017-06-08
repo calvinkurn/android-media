@@ -1,14 +1,11 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.CreatePictureModel;
@@ -55,6 +52,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
     private final GenerateHostUseCase generateHostUseCase;
     private final ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase;
     private final UploadImageUseCase uploadImageUseCase;
+    private final UploadVideoUseCase uploadVideoUseCase;
     private final CreatePictureUseCase createPictureUseCase;
     private final ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
 
@@ -63,6 +61,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                                  GenerateHostUseCase generateHostUseCase,
                                  ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
                                  UploadImageUseCase uploadImageUseCase,
+                                 UploadVideoUseCase uploadVideoUseCase,
                                  CreatePictureUseCase createPictureUseCase,
                                  ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase) {
 
@@ -70,6 +69,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         this.generateHostUseCase = generateHostUseCase;
         this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
+        this.uploadVideoUseCase = uploadVideoUseCase;
         this.createPictureUseCase = createPictureUseCase;
         this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
     }
@@ -136,6 +136,17 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
 
                     }
                 });
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        this.generateHostUseCase.unsubscribe();
+        this.replyDiscussionValidationUseCase.unsubscribe();
+        this.uploadImageUseCase.unsubscribe();
+        this.uploadVideoUseCase.unsubscribe();
+        this.createPictureUseCase.unsubscribe();
+        this.replyDiscussionSubmitUseCase.unsubscribe();
     }
 
     private Observable<RequestParams> createResolutionPicture(RequestParams createPictureParam,
@@ -215,8 +226,14 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                 .flatMap(new Func1<AttachmentViewModel, Observable<UploadImageModel>>() {
                     @Override
                     public Observable<UploadImageModel> call(AttachmentViewModel attachment) {
-                        uploadFileParam.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
-                        return uploadImageUseCase.createObservable(uploadFileParam);
+                        if (attachment.getFileType() == AttachmentViewModel.FILE_VIDEO) {
+                            uploadFileParam.putString(UploadVideoUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
+                            uploadFileParam.putString(UploadVideoUseCase.PARAM_FILE_NAME, attachment.getFileLoc().substring(attachment.getFileLoc().lastIndexOf("/")+1));
+                            return uploadVideoUseCase.createObservable(uploadFileParam);
+                        } else {
+                            uploadFileParam.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
+                            return uploadImageUseCase.createObservable(uploadFileParam);
+                        }
                     }
                 }).toList()
                 .flatMap(new Func1<List<UploadImageModel>, Observable<RequestParams>>() {
