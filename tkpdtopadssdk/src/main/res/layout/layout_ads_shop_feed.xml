@@ -49,7 +49,9 @@
                     tools:text="town_fashion"
                     android:textColor="@color/black_70"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="normal"
+                    android:lineSpacingExtra="4sp"/>
 
                 <TextView
                     android:id="@+id/shop_subtitle"
@@ -58,8 +60,10 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     tools:text="kacamata kualitas premium / line @towns_fashion"
-                    android:textColor="@color/black_36"
-                    android:textSize="12sp" />
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="normal"
+                    android:textColor="@color/black_38"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -111,6 +115,10 @@
             android:drawableLeft="@drawable/ic_add_black_24dp"
             android:gravity="center"
             android:text="@string/favoritkan"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:lineSpacingExtra="5sp"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

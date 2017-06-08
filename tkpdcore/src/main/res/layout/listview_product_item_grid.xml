@@ -59,11 +59,12 @@
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:minHeight="@dimen/wishlish_button_size"
-        style="@style/MediumText"
         android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
         android:textColor="@color/black_70"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:lineSpacingExtra="5sp" />
 
     <TextView
         android:id="@+id/price"
@@ -76,11 +77,12 @@
         android:layout_marginTop="2dp"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
-        style="@style/MediumText"
         android:text="Rp 3.121.500"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
         android:textColor="@color/orange_red"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:lineSpacingExtra="5sp" />
 
 
     <LinearLayout
@@ -137,7 +139,10 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/black_54"
             android:text="ORIGINAL-ZONE"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="5sp" />
 
         <TextView
             android:id="@+id/location"
@@ -147,9 +152,12 @@
             android:drawableLeft="@drawable/ic_place_black_24dp"
             android:gravity="center_vertical"
             android:minHeight="25dp"
-            android:textColor="@color/black_70"
+            android:textColor="@color/black_38"
             android:text="Jakarta"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="5sp"/>
 
     </LinearLayout>
 
