@@ -48,10 +48,12 @@ public class RideHistoryEntity {
     @SerializedName("create_time")
     @Expose
     String requestTime;
-
     @SerializedName("rating")
     @Expose
     RatingEntity rating;
+    @SerializedName("help_url")
+    @Expose
+    String helpUrl;
 
     public RideHistoryEntity() {
     }
@@ -110,5 +112,9 @@ public class RideHistoryEntity {
 
     public RatingEntity getRating() {
         return rating;
+    }
+
+    public String getHelpUrl() {
+        return helpUrl;
     }
 }

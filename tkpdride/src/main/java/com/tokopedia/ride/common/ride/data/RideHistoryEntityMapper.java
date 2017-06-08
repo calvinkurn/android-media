@@ -54,6 +54,7 @@ public class RideHistoryEntityMapper {
             rideHistory.setDiscountAmount(entity.getDiscountAmount());
             rideHistory.setRequestTime(entity.getRequestTime());
             rideHistory.setRating(ratingEntityMapper.transform(entity.getRating()));
+            rideHistory.setHelpUrl(entity.getHelpUrl());
         }
         return rideHistory;
     }

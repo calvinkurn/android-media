@@ -8,14 +8,13 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alvarisi on 4/11/17.
  */
 
-public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFactory>, Parcelable{
+public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFactory>, Parcelable {
     private String requestId;
     private String requestTime;
     private String driverCarDisplay;
@@ -34,6 +33,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private float discount;
     private float cashback;
     private Rating rating;
+    private String helpUrl;
 
     public RideHistoryViewModel() {
     }
@@ -60,6 +60,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         discount = in.readFloat();
         cashback = in.readFloat();
         rating = in.readParcelable(Rating.class.getClassLoader());
+        helpUrl = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -239,6 +240,14 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.cashback = cashback;
     }
 
+    public String getHelpUrl() {
+        return helpUrl;
+    }
+
+    public void setHelpUrl(String helpUrl) {
+        this.helpUrl = helpUrl;
+    }
+
     public static String transformToDisplayStatus(String status) {
         switch (status) {
             case "arriving":
@@ -312,5 +321,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeFloat(discount);
         parcel.writeFloat(cashback);
         parcel.writeParcelable(rating, i);
+        parcel.writeString(helpUrl);
     }
 }

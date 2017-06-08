@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryDetailActivity extends BaseActivity implements RideHistoryDetailFragment.OnFragmentInteractionListener {
+public class RideHistoryDetailActivity extends BaseActivity implements RideHistoryDetailFragment.OnFragmentInteractionListener, FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    private RideHistoryViewModel rideHistory;
 
     public static Intent getCallingIntent(Activity activity, RideHistoryViewModel rideHistory) {
         Intent intent = new Intent(activity, RideHistoryDetailActivity.class);
@@ -28,7 +28,7 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history_detail);
         setupToolbar();
-        RideHistoryViewModel rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
+        rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory));
     }
 
@@ -51,11 +51,6 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
@@ -64,5 +59,41 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setTitle(int resId) {
+        getSupportActionBar().setTitle(resId);
+    }
+
+    @Override
+    public void showHelpWebview(String helpUrl) {
+        setTitle(R.string.title_ride);
+        replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(helpUrl));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if ((getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment)
+                || (getFragmentManager().findFragmentById(R.id.fl_container) instanceof FragmentGeneralWebView)) {
+            setTitle(R.string.help_toolbar_title);
+            replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory));
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onWebViewSuccessLoad() {
+
+    }
+
+    @Override
+    public void onWebViewErrorLoad() {
+
+    }
+
+    @Override
+    public void onWebViewProgressLoad() {
+
     }
 }
