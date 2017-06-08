@@ -36,6 +36,11 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     }
 
     @Override
+    protected boolean isStatusShown() {
+        return false;
+    }
+
+    @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
         TopAdsEmptyAdDataBinder emptyViewDefaultBinder = super.getEmptyViewDefaultBinder();
         emptyViewDefaultBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_negative_empty));

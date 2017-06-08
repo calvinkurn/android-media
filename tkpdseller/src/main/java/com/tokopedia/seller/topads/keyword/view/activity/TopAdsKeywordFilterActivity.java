@@ -28,21 +28,26 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
 
     private GroupAd currentGroupAd;
 
+    private boolean showStatus;
+
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
         selectedPosition = extras.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
+        showStatus = extras.getBoolean(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, true);
     }
 
     @Override
     protected List<Fragment> getFilterContentList() {
         List<Fragment> filterContentFragmentList = new ArrayList<>();
-        TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsKeywordFilterStatusFragment.createInstance(selectedFilterStatus);
-        topAdsFilterStatusFragment.setActive(true);
-        filterContentFragmentList.add(topAdsFilterStatusFragment);
-        TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(currentGroupAd);
+        if (showStatus) {
+            TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsKeywordFilterStatusFragment.createInstance(selectedFilterStatus);
+            topAdsFilterStatusFragment.setActive(true);
+            filterContentFragmentList.add(topAdsFilterStatusFragment);
+        }
+        TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(currentGroupAd, showStatus ? 1 : 0);
         topAdsFilterGroupNameFragment.setActive(currentGroupAd != null);
         filterContentFragmentList.add(topAdsFilterGroupNameFragment);
         return filterContentFragmentList;
@@ -54,6 +59,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedFilterStatus);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, currentGroupAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, showStatus);
         return intent;
     }
 
@@ -68,14 +74,14 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
     }
 
     @Override
-    public void notifySelect(GroupAd groupAd) {
-        getCurrentFragment(1, TopAdsKeywordGroupsFragment.class).setActive(true);
-        topAdsFilterListFragment.setActive(1, true);
+    public void notifySelect(GroupAd groupAd, int position) {
+        getCurrentFragment(position, TopAdsKeywordGroupsFragment.class).setActive(true);
+        topAdsFilterListFragment.setActive(position, true);
     }
 
     @Override
-    public void resetSelection() {
-        getCurrentFragment(1, TopAdsKeywordGroupsFragment.class).setActive(false);
-        topAdsFilterListFragment.setActive(1, false);
+    public void resetSelection(int position) {
+        getCurrentFragment(position, TopAdsKeywordGroupsFragment.class).setActive(false);
+        topAdsFilterListFragment.setActive(position, false);
     }
 }

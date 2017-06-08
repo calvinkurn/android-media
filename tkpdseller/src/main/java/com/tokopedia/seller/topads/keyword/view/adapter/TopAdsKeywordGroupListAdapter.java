@@ -9,10 +9,8 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
-import java.util.List;
-
 /**
- * Created by normansyahputa on 5/26/17.
+ * @author normansyahputa on 5/26/17.
  */
 
 public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd> {
@@ -67,6 +65,6 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd
     }
 
     public interface Listener {
-        void notifySelect(GroupAd groupAd);
+        void notifySelect(GroupAd groupAd, int position);
     }
 }
