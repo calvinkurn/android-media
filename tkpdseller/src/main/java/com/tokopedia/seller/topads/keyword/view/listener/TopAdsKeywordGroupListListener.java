@@ -7,5 +7,5 @@ import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAd
  */
 
 public interface TopAdsKeywordGroupListListener extends TopAdsKeywordGroupListAdapter.Listener {
-    void resetSelection();
+    void resetSelection(int position);
 }
