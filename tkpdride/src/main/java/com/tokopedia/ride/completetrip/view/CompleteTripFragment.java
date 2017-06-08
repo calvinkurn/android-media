@@ -27,7 +27,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.review.var.Const;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -35,10 +39,14 @@ import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
+import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,6 +124,16 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         return fragment;
     }
 
+    public static CompleteTripFragment newInstanceFromNotif(String requestId, DriverVehicleAddressViewModel viewModel) {
+        CompleteTripFragment fragment = new CompleteTripFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
+        bundle.putParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL, viewModel);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_complete_trip;
@@ -180,7 +198,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                         vehiclePictImageView.setImageDrawable(roundedBitmapDrawable);
                     }
                 });
-
 
         rateConfirmationButton.setEnabled(false);
         rateStarRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -364,6 +381,35 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void hideRatingLayout() {
         ratingLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRatingLayout() {
+        ratingLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public RequestParams getRideHistoryParam() {
+        RequestParams requestParams = RequestParams.create();
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_REQUEST_ID, requestId);
+        return requestParams;
+    }
+
+    @Override
+    public void clearRideNotificationIfExists() {
+        RidePushNotificationBuildAndShow.cancelActiveNotification(getActivity());
+    }
+
+    @Override
+    public boolean isCameFromPushNotif() {
+        return getArguments().getBoolean(Constants.EXTRA_FROM_PUSH, false);
     }
 
     private String getRateStars() {

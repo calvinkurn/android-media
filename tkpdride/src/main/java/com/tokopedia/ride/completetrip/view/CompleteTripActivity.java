@@ -49,7 +49,11 @@ public class CompleteTripActivity extends BaseActivity {
 
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         DriverVehicleAddressViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
-        addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
+        if (getIntent().getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
+            addFragment(R.id.container, CompleteTripFragment.newInstanceFromNotif(requestId, viewModel));
+        } else {
+            addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
+        }
     }
 
     private void clearActiveRequest() {

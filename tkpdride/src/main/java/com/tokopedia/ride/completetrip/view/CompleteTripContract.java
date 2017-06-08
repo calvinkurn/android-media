@@ -34,6 +34,14 @@ public interface CompleteTripContract {
         void showRatingErrorLayout();
 
         void hideRatingLayout();
+
+        void showRatingLayout();
+
+        boolean isCameFromPushNotif();
+
+        RequestParams getRideHistoryParam();
+
+        void clearRideNotificationIfExists();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -27,6 +27,7 @@ import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.view.CompleteTripContract;
 import com.tokopedia.ride.completetrip.view.CompleteTripPresenter;
+import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 
 import java.util.concurrent.TimeUnit;
@@ -183,11 +184,35 @@ public class CompleteTripDependencyInjection {
         GetReceiptUseCase getReceiptUseCase = injection.provideGetReceiptUseCase(token, userId);
         GetRideRequestDetailUseCase getRideRequestDetailUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
         GiveDriverRatingUseCase giveDriverRatingUseCase = injection.provideGiveDriverRatingUseCase(token, userId);
-        return new CompleteTripPresenter(getReceiptUseCase, getRideRequestDetailUseCase, giveDriverRatingUseCase);
+        GetSingleRideHistoryUseCase getSingleRideHistoryUseCase = injection.provideGetSingleRideHistoryUseCase(token, userId);
+        return new CompleteTripPresenter(getReceiptUseCase, getRideRequestDetailUseCase, giveDriverRatingUseCase, getSingleRideHistoryUseCase);
     }
 
     private GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
         return new GetRideRequestDetailUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+    private GetSingleRideHistoryUseCase provideGetSingleRideHistoryUseCase(String token, String userId) {
+        return new GetSingleRideHistoryUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(

@@ -328,7 +328,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="35dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone">
 
                     <include
                         layout="@layout/layout_rate_trip"
@@ -393,8 +394,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"
-            android:background="#AA000000" />
+            android:background="#AA000000"
+            android:clickable="true" />
 
 
         <LinearLayout

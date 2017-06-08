@@ -1,9 +1,12 @@
 package com.tokopedia.ride.completetrip.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
+import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 
 import rx.Subscriber;
@@ -17,17 +20,21 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     private GetReceiptUseCase getReceiptUseCase;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
+    private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
 
     public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase,
                                  GetRideRequestDetailUseCase getRideRequestDetailUseCase,
-                                 GiveDriverRatingUseCase giveDriverRatingUseCase) {
+                                 GiveDriverRatingUseCase giveDriverRatingUseCase,
+                                 GetSingleRideHistoryUseCase getSingleRideHistoryUseCase) {
         this.getReceiptUseCase = getReceiptUseCase;
         this.getRideRequestDetailUseCase = getRideRequestDetailUseCase;
         this.giveDriverRatingUseCase = giveDriverRatingUseCase;
+        this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
     }
 
     @Override
     public void actionGetReceipt() {
+        getView().clearRideNotificationIfExists();
         getView().showGetReceiptLoading();
         getView().hideReceiptLayout();
         getReceiptUseCase.execute(getView().getReceiptParam(), new Subscriber<Receipt>() {
@@ -50,6 +57,36 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                 if (isViewAttached()) {
                     getView().showReceiptLayout();
                     getView().renderReceipt(receipt);
+                    if (getView().isCameFromPushNotif()) {
+                        actionCheckIfAlreadySendRating();
+                    } else {
+                        getView().showRatingLayout();
+                    }
+                }
+            }
+        });
+    }
+
+    private void actionCheckIfAlreadySendRating() {
+        getSingleRideHistoryUseCase.execute(getView().getRideHistoryParam(), new Subscriber<RideHistory>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(RideHistory rideHistory) {
+                if (isViewAttached()) {
+                    if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED) &&
+                            rideHistory.getRating() != null &&
+                            !rideHistory.getRating().getStar().equalsIgnoreCase("0")) {
+                        getView().showRatingLayout();
+                    }
                 }
             }
         });
@@ -68,7 +105,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideGetReceiptLoading();
                     getView().showRatingErrorLayout();
                 }
@@ -91,6 +128,8 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     public void detachView() {
         getRideRequestDetailUseCase.unsubscribe();
         getReceiptUseCase.unsubscribe();
+        getSingleRideHistoryUseCase.unsubscribe();
+        giveDriverRatingUseCase.unsubscribe();
         super.detachView();
     }
 }
