@@ -59,7 +59,7 @@ public class DrawerInjector {
                                                LocalCacheHandler drawerCache) {
 
         return ((TkpdCoreRouter) activity.getApplication()).getDrawer(activity,
-                sessionHandler, drawerCache);
+                sessionHandler, drawerCache, new GlobalCacheManager());
     }
 
     public static DrawerDataManager getDrawerDataManager(Context context,

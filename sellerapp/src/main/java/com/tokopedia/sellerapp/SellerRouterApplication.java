@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
@@ -115,7 +116,10 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public DrawerHelper getDrawer(AppCompatActivity activity, SessionHandler sessionHandler, LocalCacheHandler drawerCache) {
+    public DrawerHelper getDrawer(AppCompatActivity activity,
+                                  SessionHandler sessionHandler,
+                                  LocalCacheHandler drawerCache,
+                                  GlobalCacheManager globalCacheManager) {
         return DrawerSellerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 

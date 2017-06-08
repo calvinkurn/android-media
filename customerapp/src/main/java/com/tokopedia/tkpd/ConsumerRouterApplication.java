@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -77,8 +77,9 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public DrawerHelper getDrawer(AppCompatActivity activity,
                                   SessionHandler sessionHandler,
-                                  LocalCacheHandler drawerCache) {
-        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache);
+                                  LocalCacheHandler drawerCache,
+                                  GlobalCacheManager globalCacheManager) {
+        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache, globalCacheManager);
     }
 
     @Override

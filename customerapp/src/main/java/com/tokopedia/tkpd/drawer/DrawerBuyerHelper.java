@@ -18,7 +18,9 @@ import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
@@ -65,13 +67,16 @@ public class DrawerBuyerHelper extends DrawerHelper
     private View footerShadow;
 
     private SessionHandler sessionHandler;
+    private GlobalCacheManager globalCacheManager;
 
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
-                             LocalCacheHandler drawerCache) {
+                             LocalCacheHandler drawerCache,
+                             GlobalCacheManager globalCacheManager) {
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
+        this.globalCacheManager = globalCacheManager;
         shopName = (TextView) activity.findViewById(R.id.label);
         shopLabel = (TextView) activity.findViewById(R.id.sublabel);
         shopIcon = (ImageView) activity.findViewById(R.id.icon);
@@ -81,8 +86,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     public static DrawerBuyerHelper createInstance(Activity activity,
                                                    SessionHandler sessionHandler,
-                                                   LocalCacheHandler drawerCache) {
-        return new DrawerBuyerHelper(activity, sessionHandler, drawerCache);
+                                                   LocalCacheHandler drawerCache,
+                                                   GlobalCacheManager globalCacheManager) {
+        return new DrawerBuyerHelper(activity, sessionHandler, drawerCache, globalCacheManager);
     }
 
     @Override
@@ -320,6 +326,7 @@ public class DrawerBuyerHelper extends DrawerHelper
             shopLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                     onGoToCreateShop();
                 }
             });
