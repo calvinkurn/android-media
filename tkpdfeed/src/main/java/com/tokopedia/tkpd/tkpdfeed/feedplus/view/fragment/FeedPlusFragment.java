@@ -135,6 +135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -327,9 +328,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         finishLoading();
+        adapter.clearData();
         adapter.removeEmpty();
         if (listFeed.size() == 0) {
             adapter.showEmpty();
+            topAdsRecyclerAdapter.unsetEndlessScrollListener();
         } else {
             adapter.setList(listFeed);
         }
@@ -388,16 +391,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowRetryGetFeed() {
-        finishLoading();
-        adapter.removeEmpty();
         adapter.showRetry();
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onShowAddFeedMore() {
-        finishLoading();
-        adapter.removeEmpty();
         adapter.showAddFeed();
     }
 
@@ -419,12 +417,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFeed() {
-
     }
 
     @Override
     public void onRetryClicked() {
         adapter.removeRetry();
+        topAdsRecyclerAdapter.showLoading();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+        topAdsRecyclerAdapter.setEndlessScrollListener();
         presenter.fetchNextPage();
     }
 
@@ -460,6 +460,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(Data dataShop) {
         Log.d(TAG, "onAddFavorite " + dataShop.getShop().getName());
+//        presenter.favoriteShop();
     }
 
     @Override

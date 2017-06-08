@@ -106,11 +106,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         }
     }
 
-    public void onItemRangeChanged(int positionStart, int itemCount) {
-        observerType = ObserverType.ITEM_RANGE_CHANGE;
-
-    }
-
     @Override
     public void initPresenter() {
         presenter.attachView(this);

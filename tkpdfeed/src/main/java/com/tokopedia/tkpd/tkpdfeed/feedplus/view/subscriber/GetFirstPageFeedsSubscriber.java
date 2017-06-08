@@ -58,7 +58,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         for (DataFeedDomain domain : dataFeedDomainList) {
             switch (domain.getContent().getType()) {
                 case TYPE_NEW_PRODUCT:
-                    listFeed.add(convertToActivityViewModel(domain));
+                    ActivityCardViewModel model = convertToActivityViewModel(domain);
+                    if (model.getListProduct() != null && model.getListProduct().size() > 0) {
+                        listFeed.add(model);
+                    }
                     break;
                 case TYPE_PROMOTION:
                     listFeed.add(convertToPromoViewModel(domain));

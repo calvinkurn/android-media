@@ -112,7 +112,7 @@ dependencies {
 
 
     compile project(':tkpdcore')
-    compile getTopAdsSdk()
+    compile project(':tkpdtopadssdk')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

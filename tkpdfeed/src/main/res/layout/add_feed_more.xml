@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_vs"
     android:layout_marginTop="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/margin_small"
     android:background="@drawable/cards_ui_2">
 
     <android.support.v4.widget.Space
@@ -52,4 +53,7 @@
         android:backgroundTint="@color/green_500"
         android:textColor="@color/white"
         android:gravity="center"/>
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_info" />
 </LinearLayout>

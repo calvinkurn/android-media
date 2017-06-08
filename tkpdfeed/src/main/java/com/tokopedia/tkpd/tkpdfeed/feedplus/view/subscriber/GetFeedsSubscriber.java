@@ -23,7 +23,9 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetFeed();
+        viewListener.shouldLoadTopAds(false);
+        viewListener.onShowRetryGetFeed();
+        viewListener.hideTopAdsAdapterLoading();
     }
 
     @Override
@@ -41,7 +43,8 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 //            if(feedResult.isHasNext())
 //                viewListener.onShowRetryGetFeed();
 //            else {
-//                viewListener.onShowAddFeedMore();
+//
+//       viewListener.onShowAddFeedMore();
 //            }
 //        }
 
