@@ -26,7 +26,6 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int VIEW_CHILD = 101;
 
     public interface CategoryListener {
-        void onFilterSelected(int position, FilterViewModel filterViewModel);
 
         void onFilterExpanded(int position, FilterViewModel filterViewModel);
 
@@ -40,6 +39,18 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
         public ParentViewHolder(View itemView) {
             super(itemView);
             this.title = (TextView) itemView.findViewById(R.id.text);
+
+            title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (filterViewModel.getListChild().get(getAdapterPosition()).isExpanded()) {
+                        collapseGroup(getAdapterPosition());
+                    } else {
+                        expandGroup(getAdapterPosition());
+                    }
+                    listener.onFilterExpanded(getAdapterPosition(), filterViewModel);
+                }
+            });
         }
     }
 
@@ -50,6 +61,14 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
         public ChildViewHolder(View itemView) {
             super(itemView);
             this.checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onFilterSelected(filterViewModel.getPosition(),
+                            filterViewModel.getListChild().get(getAdapterPosition()).getName());
+                }
+            });
         }
     }
 
@@ -102,31 +121,14 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     private void bindChildViewHolder(ChildViewHolder holder, final int position) {
         holder.checkBox.setText(filterViewModel.getListChild().get(position).getName());
         holder.checkBox.setChecked(filterViewModel.getListChild().get(position).isSelected());
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onFilterSelected(filterViewModel.getPosition(), filterViewModel.getListChild().get(position).getName());
-            }
-        });
 
     }
 
     private void bindParentViewHolder(ParentViewHolder holder, final int position) {
         holder.title.setText(filterViewModel.getListChild().get(position).getName());
 
-        holder.title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (filterViewModel.getListChild().get(position).isExpanded()) {
-                    collapseGroup(position);
-                } else {
-                    expandGroup(position);
-                }
-                listener.onFilterExpanded(position, filterViewModel);
-            }
-        });
-
     }
+
 
     private void expandGroup(int position) {
         filterViewModel.getListChild().get(position).setExpanded(true);

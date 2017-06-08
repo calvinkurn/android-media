@@ -21,7 +21,7 @@ import java.util.List;
 
 public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView productAvatar;
         TextView productName;
@@ -40,7 +40,14 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
             deadline = (TextView) itemView.findViewById(R.id.deadline);
             mainView = itemView.findViewById(R.id.opportunity_view);
 
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    list.get(getAdapterPosition()).setPosition(getAdapterPosition());
+                    listener.goToDetail(list.get(getAdapterPosition()));
 
+                }
+            });
 
         }
     }
@@ -93,14 +100,7 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         holder.productName.setText(list.get(position).getOrderProducts().get(0).getProductName());
         holder.productPrice.setText(list.get(position).getOrderDetail().getDetailOpenAmountIdr());
         holder.deadline.setText(list.get(position).getOrderDeadline().getDeadlineProcess());
-        holder.mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.get(position).setPosition(position);
-                listener.goToDetail(list.get(position));
 
-            }
-        });
     }
 
     @Override

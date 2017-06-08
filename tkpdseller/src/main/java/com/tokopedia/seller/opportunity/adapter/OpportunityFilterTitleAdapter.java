@@ -37,6 +37,21 @@ public class OpportunityFilterTitleAdapter extends RecyclerView.Adapter<Opportun
             filterTitle = (TextView) itemView.findViewById(R.id.title_filter);
             redDot = (ImageView) itemView.findViewById(R.id.red_circle);
             mainView = itemView.findViewById(R.id.main_view);
+
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (FilterViewModel item : list) {
+                        if (item.isSelected()) {
+                            item.setSelected(false);
+                            notifyItemChanged(item.getPosition());
+                        }
+                    }
+                    list.get(getAdapterPosition()).setSelected(true);
+                    notifyItemChanged(getAdapterPosition());
+                    listener.onTitleClicked(getAdapterPosition());
+                }
+            });
         }
     }
 
@@ -72,17 +87,7 @@ public class OpportunityFilterTitleAdapter extends RecyclerView.Adapter<Opportun
             holder.redDot.setVisibility(View.INVISIBLE);
 
         holder.filterTitle.setText(list.get(position).getName());
-        holder.mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (FilterViewModel item : list) {
-                    item.setSelected(false);
-                }
-                list.get(position).setSelected(true);
-                notifyDataSetChanged();
-                listener.onTitleClicked(position);
-            }
-        });
+
     }
 
     @Override

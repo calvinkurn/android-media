@@ -128,16 +128,14 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         }
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
         OpportunityFilterTitleFragment fragment =
                 OpportunityFilterTitleFragment.createInstance(listFilter);
         fragmentTransaction.replace(R.id.filter, fragment);
 
         listFragment = new ArrayList<>();
-        for (int i = 0; i < listFilter.size(); i++) {
-            listFilter.get(i).setPosition(i);
-            listFragment.add(OpportunityFilterFragment.createInstance(listFilter.get(i)));
-        }
+        listFilter.get(0).setPosition(0);
+        listFragment.add(OpportunityFilterFragment.createInstance(listFilter.get(0)));
+
         fragmentTransaction.replace(R.id.container, listFragment.get(0));
 
         fragmentTransaction.commit();
@@ -234,10 +232,19 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     @Override
     public void onTitleClicked(int pos) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (listFragment.get(pos) instanceof FilterListener)
+
+        if (listFragment.size() > pos &&
+                listFragment.get(pos) != null
+                && listFragment.get(pos) instanceof FilterListener) {
             ((FilterListener) listFragment.get(pos)).updateData(listFilter.get(pos));
+        } else {
+            listFilter.get(pos).setPosition(pos);
+            listFragment.add(OpportunityFilterFragment.createInstance(listFilter.get(pos)));
+        }
+
         fragmentTransaction.replace(R.id.container, listFragment.get(pos));
         fragmentTransaction.commit();
+
     }
 
     @Override
@@ -250,25 +257,6 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private void updateFilterTitleFragment() {
         ((OpportunityFilterTitleFragment) getFragmentManager().findFragmentById(R.id.filter))
                 .updateData(listFilter);
-    }
-
-    @Override
-    public void onFilterSelected(int position, FilterViewModel selectedFilter) {
-        CommonUtils.dumper("NISNIS isSelected " + selectedFilter.getListChild().size()
-                + " " + selectedFilter.isSelected());
-
-        boolean isActive = false;
-        listFilter.set(selectedFilter.getPosition(), selectedFilter);
-        for (OptionViewModel optionViewModel : selectedFilter.getListChild()) {
-            if (optionViewModel.isSelected()) {
-                isActive = true;
-                break;
-            }
-        }
-
-        listFilter.get(selectedFilter.getPosition()).setActive(isActive);
-        updateFilterTitleFragment();
-
     }
 
     @Override

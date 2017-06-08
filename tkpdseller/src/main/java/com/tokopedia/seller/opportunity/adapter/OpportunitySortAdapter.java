@@ -35,6 +35,18 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
             this.checkImage = (ImageView) itemView.findViewById(R.id.check);
             this.title = (TextView) itemView.findViewById(R.id.title);
             this.mainView = itemView.findViewById(R.id.main);
+
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    list.get(getAdapterPosition()).setSelected(
+                            checkImage.getVisibility() == View.VISIBLE);
+                    notifyDataSetChanged();
+                    listener.onItemSelected(getAdapterPosition(),
+                            list.get(getAdapterPosition()).getValue(),
+                            list.get(getAdapterPosition()).getKey());
+                }
+            });
         }
     }
 
@@ -60,17 +72,7 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
 
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.title.setText(list.get(position).getTitle());
-
         holder.checkImage.setVisibility(list.get(position).isSelected() ? View.VISIBLE : View.INVISIBLE);
-        holder.mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.get(position).setSelected(holder.checkImage.getVisibility() == View.VISIBLE);
-                notifyDataSetChanged();
-                listener.onItemSelected(position, list.get(position).getValue(), list.get(position).getKey());
-            }
-        });
-
     }
 
     @Override
