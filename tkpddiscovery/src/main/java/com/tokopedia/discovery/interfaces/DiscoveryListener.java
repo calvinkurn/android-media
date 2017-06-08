@@ -16,6 +16,7 @@ public interface DiscoveryListener {
     int TOPADS = -111;
     int SEARCH_SUGGESTION = -112;
     int DELETE_SUGGESTION = -113;
+    int OS_BANNER = -116;
 
     int SHOW_SEARCH = -113;
     int SHOW_CATEGORY = -114;
@@ -29,6 +30,7 @@ public interface DiscoveryListener {
     String CATEGORYHEADER = "CATEGORYHEADER";
     String TOPADS_STRING = "TOPADS";
     String DYNAMICATTRIBUTE = "DYNAMICATTRIBUTE";
+    String OSBANNER = "OSBANNER";
 
     void onComplete(int type, Pair<String, ? extends ObjContainer> data);
     void onFailed(int type, Pair<String, ? extends ObjContainer> data);

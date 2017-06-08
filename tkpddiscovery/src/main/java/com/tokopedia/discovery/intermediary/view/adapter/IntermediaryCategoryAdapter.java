@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 
 import java.util.List;

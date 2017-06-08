@@ -12,13 +12,18 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
+import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -49,6 +54,8 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.ANDROID_DEVICE;
+
 
 /**
  * Created by noiz354 on 3/17/16.
@@ -63,6 +70,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     TopAdsService topAdsService;
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
+    MojitoService mojitoService;
     CompositeSubscription compositeSubscription;
     Gson gson = new GsonBuilder().create();
     GlobalCacheManager cacheManager;
@@ -83,6 +91,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        mojitoService = new MojitoService();
         cacheManager = new GlobalCacheManager();
         mojitoSimpleService = new MojitoSimpleService();
     }
@@ -219,7 +228,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     public Observable<BrowseProductModel> getProductObservable(HashMap<String, String> data) {
         Map<String, String> param = MapNulRemover.removeNull(data);
-        return Observable.zip(hadesService.getApi().getCategories(data.get(BrowseApi.SC)),
+        return Observable.zip(hadesService.getApi().getCategories(ANDROID_DEVICE,data.get(BrowseApi.SC)),
                 discoveryService.getApi().browseProducts(param), new Func2<Response<CategoryHadesModel>, Response<BrowseProductModel>, BrowseProductModel>() {
                     @Override
                     public BrowseProductModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
@@ -420,5 +429,42 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                         discoveryListener.onSuccess(DiscoveryListener.DYNAMIC_ATTRIBUTE, pair);
                     }
                 }));
+    }
+
+    @Override
+    public void getOSBanner(final String keyword) {
+        getCompositeSubscription().add(mojitoService.getApi().getOSBanner(keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<Response<BannerOfficialStoreModel>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Response<BannerOfficialStoreModel> modelResponse) {
+                                modelResponse.body().setKeyword(keyword);
+
+                                Pair<String, BannerOfficialStoreModel.BannerOfficialStoreContainer> pair =
+                                        new Pair<>(
+                                                DiscoveryListener.OSBANNER,
+                                                new BannerOfficialStoreModel.BannerOfficialStoreContainer(
+                                                        modelResponse.body()
+                                                )
+                                        );
+
+                                discoveryListener.onSuccess(DiscoveryListener.OS_BANNER, pair);
+                            }
+                        }
+                )
+        );
     }
 }
