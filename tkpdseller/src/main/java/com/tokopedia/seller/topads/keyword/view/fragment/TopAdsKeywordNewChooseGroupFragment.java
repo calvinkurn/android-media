@@ -22,6 +22,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
@@ -292,7 +293,9 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         switch (requestCode) {
             case ADD_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    getActivity().setResult(Activity.RESULT_OK);
+                    Intent intent = new Intent();
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }
                 break;

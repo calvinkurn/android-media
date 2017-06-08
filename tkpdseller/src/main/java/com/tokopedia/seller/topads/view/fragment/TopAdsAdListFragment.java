@@ -25,7 +25,6 @@ import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -53,7 +52,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final String EXTRA_STATUS = "EXTRA_STATUS";
     protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
 
-    protected static final int REQUEST_CODE_AD_STATUS = 2;
+    protected static final int REQUEST_CODE_AD_CHANGE = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
@@ -160,13 +159,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            if (startDate == null || endDate == null) {
-                return;
-            }
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        if (intent != null && (requestCode == REQUEST_CODE_AD_ADD || requestCode == REQUEST_CODE_AD_CHANGE)) {
+            boolean adChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
-            if (adStatusChanged || adDeleted) {
+            if (adChanged || adDeleted) {
                 searchAd(START_PAGE);
                 setResultAdListChanged();
             }

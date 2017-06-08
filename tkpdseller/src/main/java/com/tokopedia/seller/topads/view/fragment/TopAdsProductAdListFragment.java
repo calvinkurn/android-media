@@ -11,7 +11,6 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
@@ -71,7 +70,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         if (ad instanceof ProductAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+            startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
@@ -94,7 +93,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
             groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
-            searchAd();
+            searchAd(START_PAGE);
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
+import android.support.annotation.StyleRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -36,6 +37,7 @@ public class SpinnerTextView extends BaseCustomView {
     private AutoCompleteTextView textAutoComplete;
 
     private String hintText;
+    private @StyleRes int hintTextAppearance;
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
@@ -72,6 +74,7 @@ public class SpinnerTextView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerTextView);
         try {
+            hintTextAppearance = styledAttributes.getResourceId(R.styleable.SpinnerTextView_spinner_hint_appearence, 0);
             hintText = styledAttributes.getString(R.styleable.SpinnerTextView_spinner_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerTextView_spinner_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_entries);
@@ -94,6 +97,7 @@ public class SpinnerTextView extends BaseCustomView {
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
+        textInputLayout.setHintTextAppearance(hintTextAppearance);
         invalidate();
         requestLayout();
     }

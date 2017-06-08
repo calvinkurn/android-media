@@ -122,6 +122,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         showLoading();
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
+            adId = adFromIntent.getId();
             adFromIntent = null;
         } else {
             refreshAd();
@@ -313,5 +314,21 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         if (presenter != null) {
             presenter.unSubscribe();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        adId = savedInstanceState.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        adFromIntent = null;
     }
 }

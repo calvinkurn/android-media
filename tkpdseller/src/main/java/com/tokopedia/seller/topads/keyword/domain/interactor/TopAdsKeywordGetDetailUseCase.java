@@ -54,7 +54,7 @@ public class TopAdsKeywordGetDetailUseCase extends UseCase<KeywordDetailDomain> 
         requestParams.putString(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
         requestParams.putString(TopAdsNetworkConstant.PARAM_START_DATE, startDateText);
         requestParams.putString(TopAdsNetworkConstant.PARAM_END_DATE, endDateText);
-        requestParams.putString(TopAdsNetworkConstant.PARAM_AD_ID, adId);
+        requestParams.putString(TopAdsNetworkConstant.PARAM_KEYWORD_AD_ID, adId);
         return requestParams;
     }
 }
