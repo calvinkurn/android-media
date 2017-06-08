@@ -14,6 +14,7 @@ import com.tokopedia.tkpd.R;
 public class RedirectCreateShopActivity extends TActivity {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    private static final String MARKET_URL = "market://details?id=";
 
     @Override
     public String getScreenName() {
@@ -30,7 +31,7 @@ public class RedirectCreateShopActivity extends TActivity {
                     @Override
                     public void onClick(View view) {
                         UnifyTracking.eventDownloadFromSwitcher();
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + TOP_SELLER_APPLICATION_PACKAGE)));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL + TOP_SELLER_APPLICATION_PACKAGE)));
                     }
                 });
     }

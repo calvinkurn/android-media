@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2.data.factory;
 
 import android.content.Context;
 
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
@@ -16,24 +17,28 @@ public class ProfileSourceFactory {
 
     public static final String KEY_PROFILE_DATA = "KEY_PROFILE_DATA";
 
-    private Context context;
-    private PeopleService peopleService;
-    private ProfileMapper profileMapper;
-    private GlobalCacheManager peopleCache;
+    private final Context context;
+    private final PeopleService peopleService;
+    private final ProfileMapper profileMapper;
+    private final GlobalCacheManager peopleCache;
+    private final AnalyticsCacheHandler analyticsCacheHandler;
+
 
     public ProfileSourceFactory(Context context,
                                 PeopleService peopleService,
                                 ProfileMapper profileMapper,
-                                GlobalCacheManager peopleCache) {
+                                GlobalCacheManager peopleCache,
+                                AnalyticsCacheHandler analyticsCacheHandler) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
+        this.analyticsCacheHandler = analyticsCacheHandler;
     }
 
     public CloudProfileSource createCloudPeopleSource() {
         return new CloudProfileSource(context, peopleService,
-                profileMapper, peopleCache);
+                profileMapper, peopleCache, analyticsCacheHandler);
     }
 
     public LocalProfileSource createLocalPeopleSource() {

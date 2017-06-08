@@ -248,11 +248,6 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
-
-    }
-
-    @Override
     public boolean isOpened() {
         return drawerLayout.isDrawerOpen(GravityCompat.START);
     }

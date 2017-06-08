@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -72,7 +73,8 @@ public class DrawerInjector {
                 context,
                 new PeopleService(),
                 new ProfileMapper(),
-                profileCache
+                profileCache,
+                new AnalyticsCacheHandler()
         );
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);

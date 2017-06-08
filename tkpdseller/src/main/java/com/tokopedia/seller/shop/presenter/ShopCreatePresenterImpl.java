@@ -16,6 +16,8 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -66,6 +68,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     private Subscription nameSubscription;
     private QueryListener domainListener;
     private QueryListener nameListener;
+    private GlobalCacheManager drawerCache;
 
     /**
      * DATA USED INSIDE PRESENTER
@@ -76,6 +79,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     public ShopCreatePresenterImpl(ShopCreateView view) {
         super(view);
         myShopActService = new MyShopActService();
+        drawerCache = new GlobalCacheManager();
     }
 
     @Override
@@ -582,7 +586,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     private void saveCache(String shopID) {
         SessionHandler session = new SessionHandler(view.getMainContext());
         session.setLoginSession(session.getLoginID(), session.getLoginName(), shopID, SessionHandler.isMsisdnVerified());
-        LocalCacheHandler.clearCache(view.getMainContext(), "USER_INFO");
+        drawerCache.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
     }
 
 }

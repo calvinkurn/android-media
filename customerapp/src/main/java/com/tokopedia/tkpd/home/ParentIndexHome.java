@@ -34,6 +34,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
@@ -220,13 +221,20 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         cacheHandler = new AnalyticsCacheHandler();
 
-        if (TextUtils.isEmpty(cacheHandler.isUserDataCached())) {
-            if (SessionHandler.isV4Login(this)) {
-                drawerDataManager.getProfile();
-            }
-        } else {
-            setMoengageUserAttributes();
-        }
+//        if (TextUtils.isEmpty(cacheHandler.isUserDataCached())) {
+//            if (SessionHandler.isV4Login(this)) {
+//                drawerDataManager.getProfile();
+//            }
+//        } else {
+//            setMoengageUserAttributes();
+//        }
+    }
+
+    @Override
+    public void onGetProfile(DrawerProfile profile) {
+        super.onGetProfile(profile);
+
+        setMoengageUserAttributes();
     }
 
     @Override

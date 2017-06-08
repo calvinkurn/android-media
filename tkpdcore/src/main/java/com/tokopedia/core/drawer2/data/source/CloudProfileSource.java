@@ -3,6 +3,7 @@ package com.tokopedia.core.drawer2.data.source;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -21,19 +22,22 @@ import rx.functions.Action1;
 
 public class CloudProfileSource {
 
-    private Context context;
-    private PeopleService peopleService;
-    private ProfileMapper profileMapper;
-    private GlobalCacheManager peopleCache;
+    private final AnalyticsCacheHandler analyticsCacheHandler;
+    private final Context context;
+    private final PeopleService peopleService;
+    private final ProfileMapper profileMapper;
+    private final GlobalCacheManager peopleCache;
 
     public CloudProfileSource(Context context,
                               PeopleService peopleService,
                               ProfileMapper profileMapper,
-                              GlobalCacheManager peopleCache) {
+                              GlobalCacheManager peopleCache,
+                              AnalyticsCacheHandler analyticsCacheHandler) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
+        this.analyticsCacheHandler = analyticsCacheHandler;
     }
 
     public Observable<ProfileModel> getProfile(TKPDMapParam<String, Object> parameters) {
@@ -42,7 +46,6 @@ public class CloudProfileSource {
                 .map(profileMapper)
                 .doOnNext(setToCache());
     }
-
     private Action1<ProfileModel> setToCache() {
         return new Action1<ProfileModel>() {
             @Override
@@ -54,6 +57,8 @@ public class CloudProfileSource {
                             }.getType()));
                     peopleCache.setCacheDuration(18000);
                     peopleCache.store();
+
+                    analyticsCacheHandler.setUserDataCache(profileModel.getProfileData());
                 }
             }
         };

@@ -68,8 +68,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
 //    public abstract ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick();
 
-    public abstract void setEnabled(boolean isEnabled);
-
     @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
@@ -158,4 +156,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     }
 
     public abstract void setExpand();
+
+    public void setEnabled(boolean isEnabled) {
+        if (isEnabled) {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        } else {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
 }
