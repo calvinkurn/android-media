@@ -57,6 +57,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
     private static final String TAG = DiscoverySearchView.class.getSimpleName();
+    private static final String LOCALE_INDONESIA = "in_ID";
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -314,7 +315,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         //intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak an item name or number");    // user hint
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);    // setting recognition model, optimized for short phrases – search queries
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "in_ID");  //This is priority for Indonesian language
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LOCALE_INDONESIA);  //This is priority for Indonesian language
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);    // quantity of results we want to receive
         if (mContext instanceof Activity) {
             ((Activity) mContext).startActivityForResult(intent, REQUEST_VOICE);

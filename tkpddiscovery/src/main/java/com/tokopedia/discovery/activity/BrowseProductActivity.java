@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -400,10 +401,17 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_SORT && resultCode == RESULT_OK) {
             browsePresenter.handleResultData(requestCode, data);
             BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
             setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
+        } else if (requestCode == DiscoverySearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            if (results != null && results.size() > 0) {
+                discoverySearchView.setQuery(results.get(0), false);
+            }
+
         }
     }
 
