@@ -76,14 +76,11 @@ public class ActionShopInfoRetrofit {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    onActionToggleFavListener.onFailure(context.getString(R.string.msg_network_error));
-                }
+                onActionToggleFavListener.onFailure(context.getString(R.string.msg_network_error));
             }
 
             @Override
             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                tkpdResponseResponse.body().getStringData();
                 if (tkpdResponseResponse.isSuccessful())
                     if (!tkpdResponseResponse.body().isError()) {
                         onActionToggleFavListener.onSuccess();
