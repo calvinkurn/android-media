@@ -27,7 +27,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -117,7 +116,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private HeaderInfoView headerInfoView;
     private DetailInfoView detailInfoView;
     private PictureView pictureView;
-    private ManageView manageView;
     private ShopInfoViewV2 shopInfoView;
     private OtherProductsView otherProductsView;
     private RatingTalkCourierView ratingTalkCourierView;
@@ -205,7 +203,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
         detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
-        manageView = (ManageView) view.findViewById(R.id.view_manage);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
@@ -429,7 +426,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.shopInfoView.renderData(successResult);
         this.otherProductsView.renderData(successResult);
         this.newShopView.renderData(successResult);
-        //this.buttonShareView.renderVideoData(successResult);
         this.videoDescriptionLayout.renderData(successResult);
         this.priceSimulationView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
@@ -475,18 +471,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onProductShopFaveClicked(String shopId) {
         presenter.requestFaveShop(context, shopId);
-    }
-
-    @Override
-    public void onSuccessToEtalase() {
-
-        //manageView.hideToEtalase();
-    }
-
-    @Override
-    public void onSuccessToWarehouse() {
-
-        //manageView.hideToWareHouse();
     }
 
     @Override
@@ -737,6 +721,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else if (item.getItemId() == R.id.action_report) {
             presenter.reportProduct(context);
             return true;
+        } else if (item.getItemId() == R.id.action_warehouse) {
+            presenter.requestMoveToWarehouse(context, productData.getInfo().getProductId());
+            return true;
+        } else if (item.getItemId() == R.id.action_etalase) {
+            presenter.requestMoveToEtalase(context, productData.getInfo().getProductId());
         }
         return super.onOptionsItemSelected(item);
     }
