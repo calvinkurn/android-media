@@ -25,6 +25,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_activity_card;
 
+    View container;
     TextView action;
     TextView shopName;
 
@@ -51,6 +52,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         shareButton = itemView.findViewById(R.id.share_button);
         buyButton = itemView.findViewById(R.id.buy_button);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+        container = itemView.findViewById(R.id.container);
 
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
@@ -141,6 +143,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             }
         });
 
+//        if(activityCardViewModel.getListProduct() == null || activityCardViewModel.getListProduct().size() == 0){
+//            container.setVisibility(View.GONE);
+//        }
     }
 
     public void setFooter(final ActivityCardViewModel viewModel) {

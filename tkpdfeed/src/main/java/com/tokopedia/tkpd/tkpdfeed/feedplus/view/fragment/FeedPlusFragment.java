@@ -328,9 +328,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         finishLoading();
+        adapter.clearData();
         adapter.removeEmpty();
         if (listFeed.size() == 0) {
             adapter.showEmpty();
+            topAdsRecyclerAdapter.unsetEndlessScrollListener();
         } else {
             adapter.setList(listFeed);
         }
