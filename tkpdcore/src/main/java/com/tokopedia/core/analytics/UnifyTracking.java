@@ -1670,7 +1670,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE_GM_SWITCHER,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+                label
         ).getEvent());
     }
 

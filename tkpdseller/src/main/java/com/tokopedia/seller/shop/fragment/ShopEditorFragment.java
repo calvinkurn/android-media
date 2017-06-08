@@ -80,10 +80,10 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                     .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
             if (launchIntent != null) {
-                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_APP);
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                 getActivity().startActivity(launchIntent);
             } else if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.Category.SWITCHER);
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
                 ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
             }
         }
