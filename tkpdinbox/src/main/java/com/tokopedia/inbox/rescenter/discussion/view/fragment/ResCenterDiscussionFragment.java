@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -452,6 +453,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*
         if (requestCode == ImageUploadHandler.REQUEST_CODE) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
@@ -469,11 +471,26 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                     }
                     break;
             }
+        }
+        */
+        if (requestCode == ImageUploadHandler.REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
+                        startActivityForResult(
+                                GalleryActivity.createIntent(getActivity()),
+                                REQUEST_CODE_GALLERY
+                        );
+                    } else {
+                        onFailedAddAttachment();
+                    }
+                    break;
+            }
         } else if (requestCode == REQUEST_CODE_GALLERY){
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
                     MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-                    onAddImageAttachment(item.getRealPath());
+                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
                 } else {
                     onFailedAddAttachment();
                 }
@@ -481,14 +498,25 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         }
     }
 
+    private int getTypeFile(MediaItem item) {
+        if (item.isVideo()) {
+            return AttachmentViewModel.FILE_VIDEO;
+        } else if (item.isImage()) {
+            return AttachmentViewModel.FILE_IMAGE;
+        } else {
+            return AttachmentViewModel.UNKNOWN;
+        }
+    }
+
     private void onFailedAddAttachment() {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.failed_upload_image));
     }
 
-    private void onAddImageAttachment(String fileLoc) {
+    private void onAddImageAttachment(String fileLoc, int typeFile) {
         attachmentList.setVisibility(View.VISIBLE);
         AttachmentViewModel attachment = new AttachmentViewModel();
         attachment.setFileLoc(fileLoc);
+        attachment.setFileType(typeFile);
         attachmentAdapter.addImage(attachment);
     }
 

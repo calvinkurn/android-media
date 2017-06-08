@@ -45,7 +45,8 @@ public class MediaItem implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
-                cursor.getLong(cursor.getColumnIndex("duration")));
+                cursor.getLong(cursor.getColumnIndex("duration"))
+        );
     }
 
     public boolean isImage() {

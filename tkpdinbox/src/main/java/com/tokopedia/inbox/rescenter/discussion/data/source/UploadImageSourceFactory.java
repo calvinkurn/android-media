@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 
 /**
  * Created by nisie on 4/3/17.
@@ -22,6 +23,7 @@ public class UploadImageSourceFactory {
     private final ResCenterActApi resCenterActApi;
     private final GenerateHostMapper generateHostMapper;
     private final UploadImageMapper uploadImageMapper;
+    private final UploadVideoMapper uploadVideoMapper;
     private final CreatePictureMapper createPictureMapper;
     private final SubmitImageMapper submitImageMapper;
 
@@ -30,6 +32,7 @@ public class UploadImageSourceFactory {
                                     ResCenterActApi resCenterActApi,
                                     GenerateHostMapper generateHostMapper,
                                     UploadImageMapper uploadImageMapper,
+                                    UploadVideoMapper uploadVideoMapper,
                                     CreatePictureMapper createPictureMapper,
                                     SubmitImageMapper submitImageMapper) {
         this.context = context;
@@ -38,6 +41,7 @@ public class UploadImageSourceFactory {
 
         this.generateHostMapper = generateHostMapper;
         this.uploadImageMapper = uploadImageMapper;
+        this.uploadVideoMapper = uploadVideoMapper;
         this.createPictureMapper = createPictureMapper;
         this.submitImageMapper = submitImageMapper;
     }
@@ -56,5 +60,9 @@ public class UploadImageSourceFactory {
 
     public CloudSubmitImageDataSource createCloudSubmitImageDataStore(){
         return new CloudSubmitImageDataSource(context, resCenterActApi, submitImageMapper);
+    }
+
+    public CloudUploadVideoDataSource createCloudUploadVideoDataStore() {
+        return new CloudUploadVideoDataSource(context, resCenterActApi, uploadVideoMapper);
     }
 }

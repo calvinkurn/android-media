@@ -34,6 +34,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
@@ -321,6 +322,7 @@ public class ResolutionDetailModule {
                                                              ResCenterActApi resCenterActApi,
                                                              GenerateHostMapper generateHostMapper,
                                                              UploadImageMapper uploadImageMapper,
+                                                             UploadVideoMapper uploadVideoMapper,
                                                              CreatePictureMapper createPictureMapper,
                                                              SubmitImageMapper submitImageMapper) {
         return new UploadImageSourceFactory(
@@ -329,6 +331,7 @@ public class ResolutionDetailModule {
                 resCenterActApi,
                 generateHostMapper,
                 uploadImageMapper,
+                uploadVideoMapper,
                 createPictureMapper,
                 submitImageMapper
         );
@@ -350,6 +353,12 @@ public class ResolutionDetailModule {
     @Provides
     UploadImageMapper provideUploadImageMapper() {
         return new UploadImageMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadVideoMapper provideUploadVideoMapper() {
+        return new UploadVideoMapper();
     }
 
     @ResolutionDetailScope
