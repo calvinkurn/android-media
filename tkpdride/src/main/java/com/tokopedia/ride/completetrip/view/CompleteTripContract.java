@@ -42,6 +42,10 @@ public interface CompleteTripContract {
         RequestParams getRideHistoryParam();
 
         void clearRideNotificationIfExists();
+
+        void showRatingResultLayout(int star);
+
+        String getRateStars();
     }
 
     interface Presenter extends CustomerPresenter<View> {

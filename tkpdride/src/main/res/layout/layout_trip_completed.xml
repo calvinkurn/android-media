@@ -337,6 +337,57 @@
                         android:layout_height="wrap_content" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rating_result_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="35dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="10dp"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey" />
+
+                    <TextView
+                        android:id="@+id/rate_result_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/complete_trip_you_rate"
+                        android:textAllCaps="true"
+                        android:textColor="@color/grey_700"
+                        android:textSize="14sp" />
+
+
+                    <RatingBar
+                        android:id="@+id/rb_rate_star_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rate_result_label"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:clickable="false"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:rating="0"
+                        android:scaleX=".75"
+                        android:scaleY=".75"
+                        android:stepSize="1"
+                        android:theme="@style/RatingBar" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/grey" />
+                </RelativeLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

@@ -30,7 +30,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -105,6 +104,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     Button rateConfirmationButton;
     @BindView(R2.id.rating_layout)
     RelativeLayout ratingLayout;
+    @BindView(R2.id.rating_result_layout)
+    RelativeLayout ratingResultLayout;
+    @BindView(R2.id.rb_rate_star_result)
+    RatingBar ratingBarResult;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
@@ -412,11 +415,18 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         return getArguments().getBoolean(Constants.EXTRA_FROM_PUSH, false);
     }
 
-    private String getRateStars() {
+    @Override
+    public String getRateStars() {
         return String.valueOf(Float.floatToIntBits(rateStarRatingBar.getRating()));
     }
 
     private String getRateComment() {
         return rateCommentEditText.getText().toString().trim();
+    }
+
+    @Override
+    public void showRatingResultLayout(int star) {
+        ratingResultLayout.setVisibility(View.VISIBLE);
+        ratingBarResult.setRating(star);
     }
 }
