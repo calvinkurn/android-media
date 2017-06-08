@@ -328,7 +328,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void onErrorFirstTime(String errorMessage) {
         finishLoadingList();
         finishRefresh();
-            enableView();
 
         if (adapter.getList().size() == 0 && errorMessage.equals("")) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), onRetryFirstTime());
@@ -363,12 +362,16 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             adapter.showEmptyFull(true);
         }
 
-        enableView();
         if (filterData.getListFilter() == null
-                && filterData.getListSortingType() == null)
+                && filterData.getListSortingType() == null) {
             filterData = opportunityFilterViewModel;
-        setFilter();
-        setSort();
+            setFilter();
+            setSort();
+        }
+
+        enableView();
+
+
     }
 
     private void enableView() {
