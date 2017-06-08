@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -21,6 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 
@@ -41,6 +41,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     private MenuItem searchItem;
 
     private int totalGroupAd;
+    private MenuItem filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +96,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
-        if (totalGroupAd > 0) {
-            MenuItem filter = menu.findItem(R.id.menu_filter);
-            filter.setVisible(true);
-        }
+
+        filter = menu.findItem(R.id.menu_filter);
         searchItem = menu.findItem(R.id.menu_search);
+
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -116,7 +116,25 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
         keywordListTablayout.attachSearchView(searchView);
+
+        filter.setVisible(false);
+        searchItem.setVisible(false);
+        searchView.setVisibility(View.GONE);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void validateMenuItem() {
+        TopAdsBaseListFragment currentFragment = getCurrentFragment();
+        if (currentFragment != null && currentFragment.hasDataFromServer()) {
+            filter.setVisible(true);
+            searchItem.setVisible(true);
+            searchView.setVisibility(View.VISIBLE);
+        } else {
+            filter.setVisible(false);
+            searchItem.setVisible(false);
+            searchView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -128,11 +146,19 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     }
 
     private AdListMenuListener getTopAdsBaseKeywordListFragment() {
-        Fragment registeredFragment = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+        Fragment registeredFragment = getCurrentFragment();
         if (registeredFragment != null && registeredFragment.isVisible()) {
             if (registeredFragment instanceof AdListMenuListener) {
                 return ((AdListMenuListener) registeredFragment);
             }
+        }
+        return null;
+    }
+
+    private TopAdsBaseListFragment getCurrentFragment() {
+        Fragment registeredFragment = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+        if (registeredFragment != null && registeredFragment instanceof TopAdsBaseListFragment) {
+            return (TopAdsBaseListFragment) registeredFragment;
         }
         return null;
     }
@@ -163,10 +189,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void removeListener() {
+        searchView.setOnQueryTextListener(null);
         searchView.setQuery("", false);
         searchView.clearFocus();
         searchView.setIconified(true);
-        searchView.setOnQueryTextListener(null);
         searchItem.collapseActionView();
     }
 

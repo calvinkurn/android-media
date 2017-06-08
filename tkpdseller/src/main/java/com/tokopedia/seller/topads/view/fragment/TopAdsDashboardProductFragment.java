@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,12 +22,14 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardProductPresente
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
+    public static final String GTM_KEYWORD = "GTM_KEYWORD";
     private LabelView groupSummaryLabelView;
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
 
     private int totalProductAd;
     private int totalGroupAd;
+    private boolean showKeyword;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -70,8 +72,17 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 onKeywordLabelClicked();
             }
         });
+    }
 
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD)) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null) {
+            showKeyword = TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD);
+        } else if (savedInstanceState.containsKey(GTM_KEYWORD)) {
+            showKeyword = savedInstanceState.getBoolean(GTM_KEYWORD);
+        }
+        if (showKeyword) {
             keywordLabelView.setVisibility(View.VISIBLE);
         } else {
             keywordLabelView.setVisibility(View.GONE);
@@ -161,6 +172,12 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 loadData();
             }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(GTM_KEYWORD, showKeyword);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -24,6 +25,8 @@ import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -179,4 +182,29 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         outState.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
         outState.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
     }
+
+    @Override
+    protected void showViewList(@NonNull List list) {
+        super.showViewList(list);
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    public void onLoadSearchError() {
+        super.onLoadSearchError();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
 }

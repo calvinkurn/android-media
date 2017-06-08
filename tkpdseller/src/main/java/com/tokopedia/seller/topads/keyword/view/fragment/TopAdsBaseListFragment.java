@@ -55,6 +55,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
+    private boolean hasData;
 
     public TopAdsBaseListFragment() {
         // Required empty public constructor
@@ -194,6 +195,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
                 showViewEmptyList();
             }
         } else {
+            hasData = true;
             showViewList(list);
         }
     }
@@ -281,5 +283,9 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         outState.putInt(KEY_STATUS, status);
         outState.putInt(KEY_PAGE, page);
         outState.putInt(KEY_TOTAL_ITEM, totalItem);
+    }
+
+    public boolean hasDataFromServer() {
+        return hasData;
     }
 }
