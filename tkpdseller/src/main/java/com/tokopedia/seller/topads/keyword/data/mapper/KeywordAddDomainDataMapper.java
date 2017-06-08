@@ -26,8 +26,7 @@ public class KeywordAddDomainDataMapper
 
     public static final String DEFAULT_TOGGLE = "1";
     public static final String DEFAULT_STATUS = "1";
-    public static final String DEFAULT_SOURCE_POS = "dashboard_user_add_keyword_positive";
-    public static final String DEFAULT_SOURCE_NEG = "dashboard_user_add_keyword_negative";
+    public static final String DEFAULT_SOURCE = "seller_app";
 
     @Inject
     public KeywordAddDomainDataMapper() {
@@ -80,9 +79,7 @@ public class KeywordAddDomainDataMapper
             datum.setShopId(domainModel.getShopId());
             datum.setToggle(DEFAULT_TOGGLE);
             datum.setStatus(DEFAULT_STATUS);
-            datum.setSource(KeywordTypeMapper.isKeywordPositive(keywordTypeId)?
-                    DEFAULT_SOURCE_POS:
-                    DEFAULT_SOURCE_NEG);
+            datum.setSource(DEFAULT_SOURCE);
             datumList.add(datum);
         }
         addKeywordRequest.setData(datumList);
