@@ -8,6 +8,8 @@ public class HotListModel {
 
     private String id = "";
     private String imageUrl = "";
+    private String imageUrlSquare = "";
+    private String imageUrlBanner = "";
     private String title = "";
     private String url = "";
 
@@ -41,5 +43,21 @@ public class HotListModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getImageUrlSquare() {
+        return imageUrlSquare;
+    }
+
+    public void setImageUrlSquare(String imageUrlSquare) {
+        this.imageUrlSquare = imageUrlSquare;
+    }
+
+    public String getImageUrlBanner() {
+        return imageUrlBanner;
+    }
+
+    public void setImageUrlBanner(String imageUrlBanner) {
+        this.imageUrlBanner = imageUrlBanner;
     }
 }

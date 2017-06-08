@@ -23,6 +23,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
@@ -36,6 +37,8 @@ public class FragmentBannerWebView extends Fragment {
 
     private ProgressBar progressBar;
     private TkpdWebView webview;
+    private static final String EXTRA_URL = "url";
+    private static final String EXTRA_OVERRIDE_URL = "override_url";
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -93,13 +96,18 @@ public class FragmentBannerWebView extends Fragment {
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        args.putString("url", url);
+        args.putString(EXTRA_URL, url);
+        Uri uri = Uri.parse(url);
+        if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
+            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+        }
         fragment.setArguments(args);
         return fragment;
     }
 
     private boolean overrideUrl(String url) {
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER)) {
+        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
+                FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 
             if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
                     || Uri.parse(url).getHost().contains("m.tokopedia.com"))
@@ -123,6 +131,9 @@ public class FragmentBannerWebView extends Fragment {
                     case DeepLinkChecker.SHOP:
                         ((BannerWebView) getActivity()).openShop(url);
                         return true;
+                    case DeepLinkChecker.HOME:
+                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                        return true;
                     default:
                         return false;
                 }
@@ -145,7 +156,7 @@ public class FragmentBannerWebView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
-        String url = getArguments().getString("url", "http://blog.tokopedia.com");
+        String url = getArguments().getString(EXTRA_URL, "http://blog.tokopedia.com");
         webview = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
@@ -186,8 +197,7 @@ public class FragmentBannerWebView extends Fragment {
     private void optimizeWebView() {
         if (Build.VERSION.SDK_INT >= 19) {
             webview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        }
-        else {
+        } else {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }

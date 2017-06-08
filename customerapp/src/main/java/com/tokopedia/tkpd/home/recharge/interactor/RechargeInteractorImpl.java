@@ -482,7 +482,13 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 .filter(new Func1<Operator, Boolean>() {
                     @Override
                     public Boolean call(Operator operator) {
-                        return operator.getAttributes().getPrefix().contains(prefix);
+                        String prefixTemp = prefix.substring(0, 4);
+                        if (operator.getAttributes().getPrefix().contains(prefixTemp)) {
+                            return true;
+                        } else {
+                            prefixTemp = prefix.substring(0, 3);
+                            return operator.getAttributes().getPrefix().contains(prefixTemp);
+                        }
                     }
                 })
                 .toList();
