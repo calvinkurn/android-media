@@ -25,13 +25,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -142,7 +140,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                         digitalModuleRouter.instanceIntentCartDigitalProductWithBundle(bundle),
                         IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
                 );
-            } else if (uri.getScheme().equals("tokopedia")) {
+            } else if (uri.getScheme().equals("toko")) {
                 String id = "";
                 String key = "";
                 if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))) {
