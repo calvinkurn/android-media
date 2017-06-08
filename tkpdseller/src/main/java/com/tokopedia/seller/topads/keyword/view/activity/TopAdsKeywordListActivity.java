@@ -100,10 +100,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         filter = menu.findItem(R.id.menu_filter);
         searchItem = menu.findItem(R.id.menu_search);
 
-//        if (totalGroupAd > 0) {
-//            MenuItem filter = menu.findItem(R.id.menu_filter);
-//            filter.setVisible(true);
-//        }
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -120,6 +116,11 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
         keywordListTablayout.attachSearchView(searchView);
+
+        filter.setVisible(false);
+        searchItem.setVisible(false);
+        searchView.setVisibility(View.GONE);
+
         return super.onCreateOptionsMenu(menu);
     }
 
