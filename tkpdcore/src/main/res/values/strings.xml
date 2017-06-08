@@ -424,7 +424,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
-    <string name="title_copy_prod">Salin</string>
+    <string name="title_copy_prod">Duplikat</string>
     <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
@@ -662,7 +662,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_no_result">Tidak ada hasil</string>
     <string name="title_qty">Qty:</string>
     <string name="title_add_notes">Tambahkan Catatan</string>
-    <string name="title_edit_to_add_notes">Edit untuk tambahkan catatan</string>
+    <string name="title_edit_to_add_notes">Pilih ubah untuk tambahkan catatan</string>
     <string name="title_buy_from">Beli dari</string>
     <string name="title_total">Total</string>
     <string name="title_details_info">Informasi Detil</string>
@@ -1320,8 +1320,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_action_add_note">Tambah Catatan</string>
     <string name="title_action_save_bank_account">Simpan Rekening Bank</string>
     <string name="title_action_save_address">Simpan Alamat</string>
-    <string name="title_action_save_shipping">Simpan Peng
-        iriman</string>
+    <string name="title_action_save_shipping">Simpan Pengiriman</string>
     <string name="title_action_save_note">Simpan Catatan</string>
     <string name="event_register">event : Successful Register</string>
     <string name="bundle_wishlist">BUNDLE_WISHLIST</string>

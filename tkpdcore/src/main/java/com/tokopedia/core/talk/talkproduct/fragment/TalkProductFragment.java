@@ -107,7 +107,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (SessionHandler.isV4Login(getActivity()) && !isShopOwner.equals("1"))
+        if (SessionHandler.isV4Login(getActivity()) && isShopOwner != null && !isShopOwner.equals("1"))
             inflater.inflate(R.menu.talk_product, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

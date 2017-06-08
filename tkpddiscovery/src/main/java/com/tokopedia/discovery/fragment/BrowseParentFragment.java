@@ -29,7 +29,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -125,6 +126,17 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void setDefaultGridTypeFromNetwork(Integer viewType) {
         ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
+    public void setOfficialStoreBanner(BannerOfficialStoreModel model) {
+        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
+            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
+                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
+                productFragment.showOfficialStoreBanner(model);
+                break;
+            }
+        }
     }
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {

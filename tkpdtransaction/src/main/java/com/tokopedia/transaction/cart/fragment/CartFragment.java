@@ -161,6 +161,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView donasiTitle;
     @BindView(R2.id.donasi_info)
     ImageView donasiInfo;
+    @BindView(R2.id.layout_cart_fragment)
+    RelativeLayout layoutCartFragment;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -845,6 +847,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layoutCartFragment.setVisibility(View.GONE);
                 navigateToActivity(
                         BrowseProductRouter.getDefaultBrowseIntent(getActivity())
                 );

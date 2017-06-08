@@ -19,7 +19,6 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
     }
 
-
     @Override
     public void getIntermediaryCategory(String categoryId) {
         getIntermediaryCategoryUseCase.setCategoryId(categoryId);
@@ -56,6 +55,15 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 }
                 getView().renderHeader(domainModel.getHeaderModel());
                 getView().updateDepartementId(domainModel.getDepartementId());
+                if (domainModel.getBannerModelList().size()>0) {
+                    getView().renderBanner(domainModel.getBannerModelList());
+                }
+                if (domainModel.getVideoModel()!=null && domainModel.getVideoModel().getVideoUrl()!=null) {
+                    getView().renderVideo(domainModel.getVideoModel());
+                }
+                if (domainModel.getBrandModelList()!=null && domainModel.getBrandModelList().size()>0) {
+                    getView().renderBrands(domainModel.getBrandModelList());
+                }
                 getView().backToTop();
             } else {
                 getView().skipIntermediaryPage();

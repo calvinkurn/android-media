@@ -126,7 +126,7 @@ public class SessionHandler {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
-        editor.putString(USER_DATA,null);
+        editor.putString(USER_DATA, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -592,6 +592,11 @@ public class SessionHandler {
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TOKEN_TYPE, "");
+    }
+
+    public String getUUID() {
+        return new LocalCacheHandler(context, LOGIN_UUID_KEY)
+                .getString(UUID_KEY, DEFAULT_UUID_VALUE);
     }
 
     public interface onLogoutListener {
