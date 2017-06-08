@@ -420,10 +420,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRetryClicked() {
         adapter.removeRetry();
-//        topAdsRecyclerAdapter.showLoading();
+        topAdsRecyclerAdapter.showLoading();
         topAdsRecyclerAdapter.shouldLoadAds(true);
         topAdsRecyclerAdapter.setEndlessScrollListener();
-        topAdsRecyclerAdapter.notifyItemRemoved(topAdsRecyclerAdapter.getItemCount());
         presenter.fetchNextPage();
     }
 

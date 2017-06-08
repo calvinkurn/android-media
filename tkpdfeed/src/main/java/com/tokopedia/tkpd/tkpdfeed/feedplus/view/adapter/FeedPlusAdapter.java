@@ -92,8 +92,9 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void removeRetry(){
-        int positionStart = getItemCount();
+        int index = this.list.indexOf(retryModel);
         this.list.remove(retryModel);
+        notifyItemRemoved(index);
     }
 
     public void showLoading() {
