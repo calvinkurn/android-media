@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public interface RideHomeMapContract {
 
         void onMapDragStopped();
 
-        void renderTripRoute(List<List<LatLng>> routes);
+        void renderTripPolyline(List<OverviewPolyline> overviewPolylines);
 
         void setSourceLocation(PlacePassViewModel location);
 

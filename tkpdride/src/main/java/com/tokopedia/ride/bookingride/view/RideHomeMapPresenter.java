@@ -347,11 +347,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
             @Override
             public void onNext(List<OverviewPolyline> overviewPolylines) {
                 if (isViewAttached() && !isUnsubscribed()) {
-                    List<List<LatLng>> routes = new ArrayList<>();
-                    for (OverviewPolyline route : overviewPolylines) {
-                        routes.add(PolyUtil.decode(route.getOverviewPolyline()));
-                    }
-                    getView().renderTripRoute(routes);
+                    getView().renderTripPolyline(overviewPolylines);
                 }
             }
         });
@@ -373,7 +369,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     for (String route : strings) {
                         routes.add(PolyUtil.decode(route));
                     }
-                    getView().renderTripRoute(routes);
+                    getView().renderTripPolyline(routes);
                 }
             }
         });*/

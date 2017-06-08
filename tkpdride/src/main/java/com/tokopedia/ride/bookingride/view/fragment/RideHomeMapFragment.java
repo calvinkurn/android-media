@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +36,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SessionRouter;
@@ -53,7 +52,9 @@ import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -421,6 +422,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         void showMessageInBottomContainer(String message, String btnText);
 
         SlidingUpPanelLayout.PanelState getPanelState();
+
+        int getBottomViewLocation();
     }
 
     private void setInitialVariable() {
@@ -611,11 +614,15 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
 
     @Override
-    public void renderTripRoute(List<List<LatLng>> routes) {
+    public void renderTripPolyline(List<OverviewPolyline> overviewPolylines) {
         if (mGoogleMap == null) {
             return;
         }
 
+        List<List<LatLng>> routes = new ArrayList<>();
+        for (OverviewPolyline route : overviewPolylines) {
+            routes.add(PolyUtil.decode(route.getOverviewPolyline()));
+        }
 
         mGoogleMap.clear();
 
@@ -646,7 +653,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
         builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
+        if (overviewPolylines.size() > 0) {
+            builder.include(new LatLng(
+                    overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
+                    overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
+            ));
+
+            builder.include(new LatLng(
+                    overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
+                    overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
+            ));
+        }
+        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int topYAxis = mSrcDestLayout.getBottom();
+        int bottomYAxis = mListener.getBottomViewLocation();
+        int heightPixels = bottomYAxis - topYAxis;
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                widthPixels, heightPixels,
+                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        );
     }
 
     public BitmapDescriptor getMarkerIcon(int resourceId) {

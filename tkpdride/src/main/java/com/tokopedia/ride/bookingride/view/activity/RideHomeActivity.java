@@ -429,6 +429,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public int getBottomViewLocation() {
+        return mBottomContainer.getTop();
+    }
+
+    @Override
     public void onMinimumTimeEstCalculated(String timeEst) {
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
