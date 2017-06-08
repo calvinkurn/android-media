@@ -11,14 +11,17 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
+import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -46,6 +49,8 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.ANDROID_DEVICE;
 
 
 /**
@@ -217,7 +222,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     public Observable<BrowseProductModel> getProductObservable(HashMap<String, String> data) {
         Map<String, String> param = MapNulRemover.removeNull(data);
-        return Observable.zip(hadesService.getApi().getCategories(data.get(BrowseApi.SC)),
+        return Observable.zip(hadesService.getApi().getCategories(ANDROID_DEVICE,data.get(BrowseApi.SC)),
                 discoveryService.getApi().browseProducts(param), new Func2<Response<CategoryHadesModel>, Response<BrowseProductModel>, BrowseProductModel>() {
                     @Override
                     public BrowseProductModel call(Response<CategoryHadesModel> categoryHadesModelResponse,

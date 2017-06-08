@@ -13,7 +13,7 @@ import com.tokopedia.core.discovery.interfaces.Convert;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
