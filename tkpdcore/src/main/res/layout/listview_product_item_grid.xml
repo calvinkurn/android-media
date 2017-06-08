@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:textColor="@color/warm_grey"
-        android:textSize="@dimen/fontvvvs"
+        android:textSize="@dimen/fontvvs"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:visibility="gone"/>
