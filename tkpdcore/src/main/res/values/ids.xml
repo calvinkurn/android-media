@@ -146,6 +146,17 @@
     <item name="category_view_all" type="id"/>
     <item name="top_ads_view" type="id"/>
     <item name="nested_intermediary" type="id"/>
+    <item name="banner_container" type="id"/>
+    <item name="view_pager_intermediary" type="id"/>
+    <item name="indicator_intermediary" type="id"/>
+    <item name="card_video_intermediary" type="id"/>
+    <item name="card_official_intermediary" type="id"/>
+    <item name="rv_official_intermediary" type="id"/>
+    <item name="header_container" type="id"/>
+    <item name="intermediary_video_title" type="id"/>
+    <item name="intermediary_video_desc" type="id"/>
+
+
     <item name="fragmentv2list" type="id"/>
     <item name="topads" type="id"/>
     <item name="include_no_result" type="id"/>
