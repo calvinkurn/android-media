@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -219,6 +220,13 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         });
         snackbarRetry.showRetrySnackbar();
         getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAdEmpty() {
+        hideLoading();
+        CommonUtils.UniversalToast(getActivity(),getString(R.string.error_data_not_found));
+        getActivity().finish();
     }
 
     @Override
