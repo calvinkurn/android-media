@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -29,8 +31,9 @@ public class TopAdsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
 
     public static RequestParams createRequestParams(String keywordName){
         RequestParams params = RequestParams.create();
-        if (keywordName != null && !keywordName.isEmpty())
+        if (!TextUtils.isEmpty(keywordName)) {
             params.putString(KEYWORD_NAME, keywordName);
+        }
         return params;
     }
 

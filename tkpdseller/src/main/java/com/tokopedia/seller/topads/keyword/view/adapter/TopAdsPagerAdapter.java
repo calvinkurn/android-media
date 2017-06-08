@@ -15,9 +15,10 @@ import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNegativeLi
 
 public class TopAdsPagerAdapter extends FragmentStatePagerAdapter {
 
-    public static final int POSITIF = 0;
-    public static final int NEGATIVE = 1;
-    SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<Fragment>();
+    private static final int POSITIVE = 0;
+    private static final int NEGATIVE = 1;
+    private static final int PAGE_SIZE = 2;
+    private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<Fragment>();
     private String[] title;
 
     public TopAdsPagerAdapter(FragmentManager fm, String[] title) {
@@ -28,7 +29,7 @@ public class TopAdsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case POSITIF:
+            case POSITIVE:
                 return TopAdsKeywordListFragment.createInstance();
             default:
             case NEGATIVE:
@@ -39,8 +40,8 @@ public class TopAdsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case POSITIF:
-                return title[POSITIF];
+            case POSITIVE:
+                return title[POSITIVE];
             default:
             case NEGATIVE:
                 return title[NEGATIVE];
@@ -66,6 +67,6 @@ public class TopAdsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return PAGE_SIZE;
     }
 }

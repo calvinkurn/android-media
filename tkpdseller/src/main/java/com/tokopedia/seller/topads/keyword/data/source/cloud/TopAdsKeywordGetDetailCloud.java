@@ -2,11 +2,9 @@ package com.tokopedia.seller.topads.keyword.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.KeywordDetailData;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.data.source.cloud.api.KeywordApi;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;

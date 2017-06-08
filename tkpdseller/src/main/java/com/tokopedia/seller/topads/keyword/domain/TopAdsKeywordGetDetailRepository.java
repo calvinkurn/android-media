@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.keyword.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.KeywordDetailData;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 
 import java.util.List;

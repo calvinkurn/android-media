@@ -27,7 +27,7 @@ import java.util.List;
  *         just move to new architecture.
  */
 public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
-	protected TopAdsFilterListFragment topAdsFilterListFragment;
+    protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     protected int selectedPosition = 0;
     Fragment currentContentFragment;
@@ -60,8 +60,12 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
         topAdsFilterListFragment = TopAdsFilterListFragment.createInstance(getFilterTitleItemList(), selectedPosition);
         topAdsFilterListFragment.setCallback(this);
         currentContentFragment = filterContentFragmentList.get(selectedPosition);
-        getSupportFragmentManager().beginTransaction().add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
-        getSupportFragmentManager().beginTransaction().add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName())
+                .commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName())
+                .commit();
     }
 
     @Override
