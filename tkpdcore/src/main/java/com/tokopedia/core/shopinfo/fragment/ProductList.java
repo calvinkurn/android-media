@@ -366,12 +366,6 @@ public class ProductList extends V2BaseFragment {
             etalaseNameList.add(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
             etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
         }
-        String selectedId = getArguments().getString(ETALASE_ID_BUNDLE);
-        if (selectedId != null) {
-            int index = etalaseIdList.indexOf(selectedId);
-
-        }
-
     }
 
     @Override
@@ -546,12 +540,22 @@ public class ProductList extends V2BaseFragment {
             public void onSuccess(EtalaseModel model) {
                 etalaseModel = model;
                 updateEtalaseNameList();
+                int index = -1;
                 if (getArguments().getString(ETALASE_ID_BUNDLE) != null) {
-                    productShopParam.setSelectedEtalase(etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE)));
-                } else {
-                    productShopParam.setSelectedEtalase(etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase))));
+                    index = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                } else if(getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
+                    for(int i = 0; i < etalaseNameList.size(); i++) {
+                        if(etalaseNameList.get(i).equalsIgnoreCase(
+                                getActivity().getIntent().getExtras().getString(
+                                        ETALASE_NAME, getString(R.string.title_all_etalase)
+                                )
+                        )) {
+                            index = i;
+                            break;
+                        }
+                    }
                 }
-                adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
+                adapter.setSelectedEtalasePos(index);
                 adapter.notifyDataSetChanged();
             }
 
@@ -695,6 +699,12 @@ public class ProductList extends V2BaseFragment {
             facadeShopProd.unsubscribeGetShopProduct();
             facadeShopProd.getShopProduct(getShopProductParam);
         }
+    }
+
+    public void refreshProductListByKeyword(String keyword) {
+        holder.searchView.setQuery(keyword, false);
+        this.productShopParam.setKeyword(keyword);
+        refreshProductList(this.productShopParam);
     }
 
     private void getProductNextPage() {

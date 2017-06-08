@@ -130,6 +130,8 @@ public class ShopInfoActivity extends BaseActivity
     public static String SHOP_FAVORITE = "shop_favorite";
     public static String SHOP_COVER = "shop_cover";
     public static String SHOP_AD_KEY = "shop_ad_key";
+    public static String ETALASE_NAME = "etalase_name";
+    public static String KEYWORD = "keyword";
     private final int REQ_RELOAD = 100;
     private ViewHolder holder;
     private com.tokopedia.core.shopinfo.models.shopmodel.ShopModel shopModel;
@@ -568,6 +570,18 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent = getIntent();
         if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
             actionFirstLaunched(intent.getExtras());
+        }
+
+        // switch to product tab if ETALASE_NAME not empty
+        if(intent.getStringExtra(ETALASE_NAME) != null) {
+            holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
+        }
+
+        if(intent.getStringExtra(KEYWORD) != null) {
+            ProductList productListFragment = (ProductList) adapter.getItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0);
+            productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
+
+            holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
     }
 

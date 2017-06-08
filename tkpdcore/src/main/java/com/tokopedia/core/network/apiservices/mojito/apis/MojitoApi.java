@@ -2,7 +2,9 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.home.Brands;
+import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -26,6 +28,7 @@ public interface MojitoApi {
 
     String DEVICE = "device";
     String ID = "id";
+    String CATEGORY_ID = "categoryId";
 
     //api requirement add static header
     @Headers({
@@ -38,6 +41,11 @@ public interface MojitoApi {
             @Query(DEVICE) String device
     );
 
+    @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
+    Observable<Response<MojitoBrandsModel>> getBrandsCategory(
+            @Path(CATEGORY_ID) String categoryID
+    );
+
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
             @Path("userId") String userId,
@@ -45,6 +53,11 @@ public interface MojitoApi {
             @Query("page") int page,
             @Query("count") int count,
             @Header("X-Device") String device);
+
+    @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
+    Observable<Response<BannerOfficialStoreModel>> getOSBanner(
+            @Query("keywords") String keyword
+    );
 
     @GET(TkpdBaseURL.Mojito.PATH_CHECK_WISHLIST)
     Observable<Response<WishlistCheckResult>> checkWishlist(
