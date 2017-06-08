@@ -62,7 +62,6 @@ public class TokoCashWebViewActivity extends BasePresenterActivity implements Ba
 
     @Override
     public void onSuccessResult(String successResult) {
-        Toast.makeText(this, successResult, Toast.LENGTH_SHORT).show();
     }
 
     @Override

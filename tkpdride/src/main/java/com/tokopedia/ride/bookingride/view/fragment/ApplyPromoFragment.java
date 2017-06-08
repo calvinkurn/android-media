@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -193,7 +192,6 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onFailedApplyPromo(ApplyPromo applyPromo) {
-        Toast.makeText(getActivity(), "failed", Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
