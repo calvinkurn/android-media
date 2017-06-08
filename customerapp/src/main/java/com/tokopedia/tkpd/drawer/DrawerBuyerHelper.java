@@ -375,14 +375,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         return null;
     }
 
-    @Override
-    public void setEnabled(boolean isEnabled) {
-        if (isEnabled) {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        } else {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }
-    }
+
 
     @Override
     public void onItemClicked(DrawerItem item) {
