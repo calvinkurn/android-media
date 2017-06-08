@@ -165,7 +165,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                 isShopFavorite = false;
                 favoriteButton.setSelected(false);
                 favoriteButton.setClickable(true);
-                favoriteText.setText(getContext().getString(R.string.favoritkan));
+                favoriteText.setText(getContext().getString(R.string.fave));
                 favoriteText
                         .setCompoundDrawablesWithIntrinsicBounds(
                                 R.drawable.ic_add_black_24dp, 0, 0, 0);

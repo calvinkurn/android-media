@@ -55,11 +55,6 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToGMSubscribe(Context context) {
-        throw new RuntimeException("consumer dont have gm subscribe !!!");
-    }
-
-    @Override
     public void gotToProductDetail(Context context) {
         Intent intent = ProductInfoActivity.createInstance(context);
         context.startActivity(intent);

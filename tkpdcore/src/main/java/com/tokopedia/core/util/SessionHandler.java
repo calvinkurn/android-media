@@ -48,9 +48,6 @@ public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
-    public static final String PHONE_NUMBER = "PHONE_NUMBER";
-    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    public static final String TEMP_NAME = "TEMP_NAME";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
     private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";

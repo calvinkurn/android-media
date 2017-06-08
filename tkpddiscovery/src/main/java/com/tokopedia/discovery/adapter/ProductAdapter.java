@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -42,14 +41,9 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.customview.RatingView;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
@@ -65,6 +59,7 @@ import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -81,6 +76,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
+
+//import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+//import com.tokopedia.core.product.customview.RatingView;
+//import com.tokopedia.core.product.fragment.ProductDetailFragment;
 
 
 /**
@@ -824,6 +823,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ((ProductItem) data.get(position)).setProductAlreadyWishlist(isWishlist);
             notifyItemChanged(position);
         }
+
     }
 
     public static class ViewHolderProductitem extends RecyclerView.ViewHolder {
@@ -966,7 +966,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             Bundle bundle = new Bundle();
             Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            bundle.putInt(ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION, position);
+            bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, position);
             intent.putExtras(bundle);
             fragmentBrowseProductView.navigateToActivityRequest(intent, ProductFragment.GOTO_PRODUCT_DETAIL);
         }

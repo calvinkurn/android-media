@@ -85,6 +85,9 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+
 /**
  * ProductDetailFragment
  * Created by Angga.Prasetiyo on 22/10/2015.
@@ -99,8 +102,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_CODE_LOGIN = 561;
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
-    public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
-    public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
 
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
@@ -514,6 +515,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
         }
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
+                getActivity().getIntent().getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1));
+        resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, status == STATUS_IN_WISHLIST);
+        getActivity().setResult(Activity.RESULT_CANCELED, resultIntent);
 
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -20,9 +21,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -54,8 +52,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ReportFragmentListener,
         ProductInfoResultReceiver.Receiver,
         ICatalogActionFragment {
-    private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
-    private Bundle mExtras;
 
     private TkpdProgressDialog progressDialog;
 

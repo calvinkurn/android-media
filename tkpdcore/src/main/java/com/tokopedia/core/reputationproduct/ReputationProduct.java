@@ -2,6 +2,9 @@ package com.tokopedia.core.reputationproduct;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -15,7 +18,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.review.fragment.ProductReviewFragment;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 
 import java.util.ArrayList;
 import java.util.List;
