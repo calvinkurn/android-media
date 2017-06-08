@@ -435,7 +435,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                             }
 
                             getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude());
-                            getView().renderDestinationMarker(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLatitude());
+                            getView().renderDestinationMarker(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude());
                             if (overviewPolylines.size() > 0) {
                                 latLngs.add(new LatLng(
                                         overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
