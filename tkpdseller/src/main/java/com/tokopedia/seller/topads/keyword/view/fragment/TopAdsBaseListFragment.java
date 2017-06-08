@@ -166,6 +166,9 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
 
     protected void searchAd(int page) {
         this.page = page;
+        if (startDate == null || endDate == null) {
+            return;
+        }
         searchAd();
     }
 

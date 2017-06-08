@@ -54,11 +54,11 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
 
     @Override
     public void onCreateAd() {
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override
     public void onItemClicked(Ad ad) {
-        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_STATUS);
+        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 }
