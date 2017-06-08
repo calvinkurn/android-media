@@ -41,6 +41,10 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
         if (searchView == null)
             return;
 
+        if (listener != null) {
+            listener.validateMenuItem();
+        }
+
         isProcessing = true;
 
         // get previous position
@@ -112,5 +116,7 @@ public class KeywordListListener extends TabLayout.TabLayoutOnPageChangeListener
         void addListener();
 
         void expand();
+
+        void validateMenuItem();
     }
 }
