@@ -48,15 +48,13 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-
-    private SnackbarRetry snackBarRetry;
-    private ProgressDialog progressDialog;
-    private RecyclerView.OnScrollListener onScrollListener;
-
     protected int status;
     protected int page;
     protected int totalItem;
     protected boolean searchMode;
+    private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
+    private RecyclerView.OnScrollListener onScrollListener;
 
     public TopAdsBaseListFragment() {
         // Required empty public constructor
@@ -144,7 +142,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewDefaultBinder());
-        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter, R.drawable.ic_top_ads_keyword_empty);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
@@ -236,7 +234,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         }
     }
 
-    private void hideLoading() {
+    protected void hideLoading() {
         swipeToRefresh.setEnabled(true);
         adapter.showLoading(false);
         adapter.showLoadingFull(false);

@@ -89,8 +89,10 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            if (startDate == null || endDate == null) {
+                return;
+            }
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();

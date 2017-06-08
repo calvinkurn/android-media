@@ -67,8 +67,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected String keyword;
 
     private CoordinatorLayout.Behavior appBarBehaviour;
-    private boolean adsStatusChanged;
-    private boolean updateEmptyDefault;
     private int scrollFlags;
     @Px
     private int tempTopPaddingRecycleView;
@@ -162,38 +160,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            if (startDate == null || endDate == null) {
+                return;
+            }
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
             if (adStatusChanged || adDeleted) {
                 searchAd(START_PAGE);
                 setResultAdListChanged();
             }
-            if (adDeleted && status <= 0 && TextUtils.isEmpty(keyword)) {
-                updateEmptyDefault = true;
-            }
-        } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null) {
-            adsStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-        } else if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
+        } else if (requestCode == REQUEST_CODE_AD_FILTER) {
             searchMode = true;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adsStatusChanged) {
-            page = START_PAGE;
-            adapter.clearData();
-            adapter.showLoadingFull(true);
-            searchAd(START_PAGE);
-            setResultAdListChanged();
-            adsStatusChanged = false;
-        }
-        if (updateEmptyDefault) {
-            showViewSearchNoResult();
-            updateEmptyDefault = false;
         }
     }
 

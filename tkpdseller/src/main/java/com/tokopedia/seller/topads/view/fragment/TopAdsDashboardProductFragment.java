@@ -153,6 +153,9 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            if (startDate == null || endDate == null) {
+                return;
+            }
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 loadData();

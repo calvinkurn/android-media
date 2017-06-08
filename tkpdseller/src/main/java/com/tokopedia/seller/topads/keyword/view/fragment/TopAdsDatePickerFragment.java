@@ -60,7 +60,6 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        loadDateFromPresenter();
         if (datePickerResultListener != null) {
             datePickerResultListener.onActivityResult(requestCode, resultCode, intent);
         }
@@ -68,9 +67,11 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     @Override
     public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
-        loadDateFromPresenter();
         datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
         datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
+        if (startDate == null || endDate == null) {
+            return;
+        }
         loadData();
     }
 

@@ -36,10 +36,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
     protected int filterStatus;
     protected GroupAd groupAd;
+    protected int selectedPosition;
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private KeywordListListener.Listener keywordAdListener;
-    private int selectedPosition;
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
@@ -128,12 +128,17 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         }
     }
 
+    protected boolean isStatusShown() {
+        return true;
+    }
+
     @Override
     public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, isStatusShown());
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
     }
 

@@ -50,7 +50,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected Ad ad;
     protected String adId;
     private Ad adFromIntent;
-    private boolean adStatusChanged = false;
 
     protected abstract void refreshAd();
 
@@ -109,19 +108,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        // check if the request code is the same
-        if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
-            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adStatusChanged) {
-            refreshAd();
+        if (requestCode == REQUEST_CODE_AD_EDIT) {
             setResultAdDetailChanged();
-            adStatusChanged = false;
+            if (startDate == null || endDate == null) {
+                return;
+            }
+            refreshAd();
         }
     }
 
