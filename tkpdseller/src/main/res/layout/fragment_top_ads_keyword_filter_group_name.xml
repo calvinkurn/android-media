@@ -15,16 +15,13 @@
 
         <EditText
             android:id="@+id/group_filter_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/EditText.GreenHighlight"
             android:hint="@string/top_ads_keyword_search_group"
             android:imeOptions="actionSearch"
             android:maxLines="1"
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
-            android:singleLine="true"
-            android:textColor="@color/wholesale_color"
-            android:textSize="@dimen/font_medium" />
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/group_filter_search_icon"

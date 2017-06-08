@@ -146,6 +146,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     protected void initView(View view) {
         super.initView(view);
         swipeToRefresh.setEnabled(false);
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     @Override
@@ -216,6 +217,12 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     @Override
     public void setCallback(TopAdsFilterContentFragment.Callback callback) {
         this.callback = callback;
+    }
+
+    @Override
+    protected void hideLoading() {
+        super.hideLoading();
+        swipeToRefresh.setEnabled(false);
     }
 
     @Override
