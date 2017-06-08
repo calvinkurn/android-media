@@ -43,7 +43,11 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
     @Override
     public void fetchHomeCategoryMenu(boolean isFromRetry) {
         Subscriber<Response<String>> subscriber = getSubcribption();
-        homeMenuInteractor.fetchHomeCategoryMenuFromNetwork(subscriber);
+        if (dbManager.isExpired(System.currentTimeMillis())) {
+            homeMenuInteractor.fetchHomeCategoryMenuFromNetwork(subscriber);
+        } else {
+            homeMenuInteractor.fetchHomeCategoryMenuFromDb(this);
+        }
     }
 
     @Override
