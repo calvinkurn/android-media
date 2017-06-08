@@ -687,7 +687,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onPause() {
         super.onPause();
         presenter.onPause();
-        isRouteAlreadyDrawed = false;
+        isRouteAlreadyDrawed = true;
     }
 
     @Override
