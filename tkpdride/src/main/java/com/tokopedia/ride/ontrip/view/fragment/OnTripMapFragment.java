@@ -348,7 +348,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
         if (checkLocationPermission()) return;
-        mGoogleMap.setPadding(0, 0, 400, 0);
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
@@ -750,8 +749,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             builder.include(latLng);
         }
         int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+        int heightPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+        if (bottomContainer.getVisibility() == View.VISIBLE){
+            int topYAxis = mSrcDestLayout.getBottom();
+            int bottomYAxis = bottomContainer.getTop();
+            heightPixels = bottomYAxis - topYAxis;
+        }
+
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
-                widthPixels, widthPixels,
+                widthPixels, heightPixels,
                 getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
         );
     }
