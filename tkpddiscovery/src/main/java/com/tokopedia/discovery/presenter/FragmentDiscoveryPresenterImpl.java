@@ -301,6 +301,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        if (browseProductModel.getCategoryData() != null) {
+            view.addCategoryHeader(browseProductModel.getCategoryData());
+        }
+
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
             view.onCallProductServiceResult(productItems, pagingHandlerModel);
             return;
@@ -331,9 +335,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             } else {
                                 item.setProductAlreadyWishlist(false);
                             }
-                        }
-                        if (browseProductModel.getCategoryData() != null) {
-                            view.addCategoryHeader(browseProductModel.getCategoryData());
                         }
                         view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }
