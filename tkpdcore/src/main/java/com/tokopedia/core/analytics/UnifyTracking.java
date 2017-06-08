@@ -1688,7 +1688,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.OPENSHOP_SWITCHER,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+                label
         ).getEvent());
     }
 
