@@ -1,18 +1,10 @@
 package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.LoadMoreDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionSubmitUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadImageUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
@@ -34,36 +26,18 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
     private SendDiscussionUseCase sendDiscussionUseCase;
-    private ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase;
-    private GenerateHostUseCase generateHostUseCase;
-    private UploadImageUseCase uploadImageUseCase;
-    private UploadVideoUseCase uploadVideoUseCase;
-    private CreatePictureUseCase createPictureUseCase;
-    private ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
-
     private SendReplyDiscussionParam pass;
-    private Context context;
 
     @Inject
     public ResCenterDiscussionPresenterImpl(ResCenterDiscussionView viewListener,
                                             GetResCenterDiscussionUseCase getDiscussionUseCase,
                                             LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
                                             SendDiscussionUseCase sendDiscussionUseCase,
-                                            ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
-                                            GenerateHostUseCase generateHostUseCase,
-                                            UploadImageUseCase uploadImageUseCase,
-                                            CreatePictureUseCase createPictureUseCase,
-                                            ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
                                             SendReplyDiscussionParam sendReplyDiscussionParam) {
         this.viewListener = viewListener;
         this.getDiscussionUseCase = getDiscussionUseCase;
         this.loadMoreUseCase = loadMoreDiscussionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
-        this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
-        this.generateHostUseCase = generateHostUseCase;
-        this.uploadImageUseCase = uploadImageUseCase;
-        this.createPictureUseCase = createPictureUseCase;
-        this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
         this.pass = sendReplyDiscussionParam;
     }
 
@@ -128,11 +102,6 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         loadMoreUseCase.unsubscribe();
         getDiscussionUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
-        generateHostUseCase.unsubscribe();
-        uploadImageUseCase.unsubscribe();
-        replyDiscussionValidationUseCase.unsubscribe();
-        createPictureUseCase.unsubscribe();
-        replyDiscussionSubmitUseCase.unsubscribe();
     }
 
     @Override

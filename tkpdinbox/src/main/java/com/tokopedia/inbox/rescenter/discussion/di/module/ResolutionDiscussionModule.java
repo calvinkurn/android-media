@@ -1,20 +1,9 @@
 package com.tokopedia.inbox.rescenter.discussion.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.discussion.di.scope.ResolutionDiscussionScope;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
@@ -52,22 +41,12 @@ public class ResolutionDiscussionModule {
             GetResCenterDiscussionUseCase getDiscussionUseCase,
             LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
             SendDiscussionUseCase sendDiscussionUseCase,
-            ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
-            GenerateHostUseCase generateHostUseCase,
-            UploadImageUseCase uploadImageUseCase,
-            CreatePictureUseCase createPictureUseCase,
-            ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
             SendReplyDiscussionParam sendReplyDiscussionParam) {
         return new ResCenterDiscussionPresenterImpl(
                 viewListener,
                 getDiscussionUseCase,
                 loadMoreDiscussionUseCase,
                 sendDiscussionUseCase,
-                replyDiscussionValidationUseCase,
-                generateHostUseCase,
-                uploadImageUseCase,
-                createPictureUseCase,
-                replyDiscussionSubmitUseCase,
                 sendReplyDiscussionParam
         );
     }
