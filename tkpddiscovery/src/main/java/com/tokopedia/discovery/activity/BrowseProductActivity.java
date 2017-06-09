@@ -62,6 +62,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
@@ -410,6 +411,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     RecognizerIntent.EXTRA_RESULTS);
             if (results != null && results.size() > 0) {
                 discoverySearchView.setQuery(results.get(0), false);
+                sendVoiceSearchGTM(results.get(0));
             }
 
         }
@@ -589,6 +591,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
             UnifyTracking.eventDiscoverySearch(keyword);
+        }
+    }
+
+    private void sendVoiceSearchGTM(String keyword) {
+        if (keyword != null &&
+                !TextUtils.isEmpty(keyword)) {
+            UnifyTracking.eventDiscoveryVoiceSearch(keyword);
         }
     }
 
