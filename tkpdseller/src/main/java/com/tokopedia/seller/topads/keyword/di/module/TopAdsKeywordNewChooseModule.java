@@ -24,7 +24,7 @@ public class TopAdsKeywordNewChooseModule {
 
     @TopAdsKeywordScope
     @Provides
-    TopAdsManagementApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
+    TopAdsManagementApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit) {
         return retrofit.create(TopAdsManagementApi.class);
     }
 
@@ -39,9 +39,7 @@ public class TopAdsKeywordNewChooseModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordListPresenterImpl provideTopAdsKeywordListPresenter(
-            KeywordDashboardUseCase keywordDashboardUseCase
-    ) {
+            KeywordDashboardUseCase keywordDashboardUseCase) {
         return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase);
     }
-
 }

@@ -36,7 +36,6 @@ import javax.inject.Inject;
 public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
         implements TopAdsEmptyAdDataBinder.Callback {
 
-    protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
@@ -124,10 +123,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
-        } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD) {
-            if (resultCode == Activity.RESULT_OK) {
-                onSearch(null);
-            }
+            searchAd(START_PAGE);
         }
     }
 
@@ -147,12 +143,12 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onCreateAd() {
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override
     public void onItemClicked(Ad ad) {
-        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_STATUS);
+        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 
     @Override
@@ -194,4 +190,21 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             keywordAdListener.validateMenuItem();
         }
     }
+
+    @Override
+    public void onLoadSearchError() {
+        super.onLoadSearchError();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
 }

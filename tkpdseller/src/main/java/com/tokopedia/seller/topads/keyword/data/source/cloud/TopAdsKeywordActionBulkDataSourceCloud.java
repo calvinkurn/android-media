@@ -29,22 +29,22 @@ public class TopAdsKeywordActionBulkDataSourceCloud {
         this.keywordApi = keywordApi;
     }
 
-
     public Observable<PageDataResponse<DataBulkKeyword>> actionBulk(RequestParams requestParams) {
         DataRequest<DataBulkKeyword> dataRequest = createDataRequest(requestParams);
         return keywordApi.actionBulkKeyword(dataRequest).map(new GetData<PageDataResponse<DataBulkKeyword>>());
     }
 
     private DataRequest<DataBulkKeyword> createDataRequest(RequestParams requestParams) {
-        DataBulkKeyword dataBulkKeyword = new DataBulkKeyword();
-        dataBulkKeyword.setShopId(requestParams.getString(TopAdsNetworkConstant.PARAM_SHOP_ID, ""));
-        dataBulkKeyword.setAction(requestParams.getString(TopAdsNetworkConstant.PARAM_ACTION, ""));
-
-        List<Keyword> keywords = new ArrayList<>();
         Keyword keyword = new Keyword();
         keyword.setGroupId(requestParams.getString(TopAdsNetworkConstant.PARAM_GROUP_ID, ""));
         keyword.setKeywordId(requestParams.getString(TopAdsNetworkConstant.PARAM_KEYWORD_AD_ID, ""));
+
+        List<Keyword> keywords = new ArrayList<>();
         keywords.add(keyword);
+
+        DataBulkKeyword dataBulkKeyword = new DataBulkKeyword();
+        dataBulkKeyword.setShopId(requestParams.getString(TopAdsNetworkConstant.PARAM_SHOP_ID, ""));
+        dataBulkKeyword.setAction(requestParams.getString(TopAdsNetworkConstant.PARAM_ACTION, ""));
         dataBulkKeyword.setKeyword(keywords);
         return new DataRequest<>(dataBulkKeyword);
     }

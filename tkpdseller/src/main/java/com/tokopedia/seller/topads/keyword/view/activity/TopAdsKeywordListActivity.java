@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -99,10 +100,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         filter = menu.findItem(R.id.menu_filter);
         searchItem = menu.findItem(R.id.menu_search);
 
-//        if (totalGroupAd > 0) {
-//            MenuItem filter = menu.findItem(R.id.menu_filter);
-//            filter.setVisible(true);
-//        }
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -119,6 +116,11 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
         keywordListTablayout.attachSearchView(searchView);
+
+        filter.setVisible(false);
+        searchItem.setVisible(false);
+        searchView.setVisibility(View.GONE);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -127,9 +129,11 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         if (currentFragment != null && currentFragment.hasDataFromServer()) {
             filter.setVisible(true);
             searchItem.setVisible(true);
+            searchView.setVisibility(View.VISIBLE);
         } else {
             filter.setVisible(false);
             searchItem.setVisible(false);
+            searchView.setVisibility(View.GONE);
         }
     }
 
@@ -185,10 +189,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void removeListener() {
+        searchView.setOnQueryTextListener(null);
         searchView.setQuery("", false);
         searchView.clearFocus();
         searchView.setIconified(true);
-        searchView.setOnQueryTextListener(null);
         searchItem.collapseActionView();
     }
 

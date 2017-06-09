@@ -38,7 +38,6 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         promoPriceUsedContainer = (LinearLayout) itemView.findViewById(R.id.promo_price_used_container);
         keywordTypeDescription = (TextView) itemView.findViewById(R.id.title_keyword_type_description);
         statusActiveContainer = (LinearLayout) itemView.findViewById(R.id.status_active_container);
-
     }
 
     private String getString(@StringRes int stringRes) {
@@ -49,21 +48,18 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         return itemView.getContext().getString(stringRes, value);
     }
 
-
     public void bindObject(final KeywordAd keywordAd) {
         if (keywordAd != null && keywordAd instanceof NegativeKeywordAd) {
             promoPriceUsedContainer.setVisibility(View.GONE);
             pricePromoPerClick.setVisibility(View.GONE);
             statusActiveContainer.setVisibility(View.GONE);
         }
-
         keywordTypeDescription.setText(keywordAd.getKeywordTypeDesc());
         titleProduct.setText(keywordAd.getKeywordTag());
         statusActive.setText(keywordAd.getStatusDesc());
         pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, keywordAd.getPriceBidFmt()));
         promoPriceUsed.setText(keywordAd.getStatTotalSpent());
         groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, keywordAd.getGroupName()));
-
         switch (keywordAd.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);

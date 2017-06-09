@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.keyword.data.mapper;
 
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.data.model.KeywordDetailData;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
 
@@ -23,9 +22,11 @@ public class TopAdsKeywordDetailMapperToDomain implements Func1<PageDataResponse
 
     @Override
     public KeywordDetailDomain call(PageDataResponse<List<Datum>> listPageDataResponse) {
-        if(listPageDataResponse!= null && listPageDataResponse.getData() != null && listPageDataResponse.getData().size() > 0){
+        if (listPageDataResponse != null &&
+                listPageDataResponse.getData() != null &&
+                listPageDataResponse.getData().size() > 0) {
             return mapDataToDomain(listPageDataResponse.getData());
-        }else{
+        } else {
             throw new NullPointerException("data is null");
         }
     }

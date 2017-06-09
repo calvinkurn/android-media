@@ -66,7 +66,6 @@ public class KeywordAddDomainDataMapper
      */
 
     public static AddKeywordRequest convertDomainToRequestData(AddKeywordDomainModel addKeywordDomainModel){
-        AddKeywordRequest addKeywordRequest = new AddKeywordRequest();
         List<AddKeywordDomainModelDatum> domainModelList = addKeywordDomainModel.getAddKeywordDomainModelDatumList();
         List<KeywordAddRequestDatum> datumList = new ArrayList<>();
         for (int i = 0, sizei = domainModelList.size(); i<sizei;i++){
@@ -82,6 +81,7 @@ public class KeywordAddDomainDataMapper
             datum.setSource(DEFAULT_SOURCE);
             datumList.add(datum);
         }
+        AddKeywordRequest addKeywordRequest = new AddKeywordRequest();
         addKeywordRequest.setData(datumList);
         return addKeywordRequest;
     }
