@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class TkpdResponse {
 
+    public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
+
     private boolean isNullData;
     private boolean isError;
     private String status;
