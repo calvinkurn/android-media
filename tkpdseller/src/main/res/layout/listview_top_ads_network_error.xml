@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@color/tkpd_bg_color"
+    android:background="@android:color/white"
     android:padding="@dimen/padding_small">
 
     <!-- Untuk onRetry satu halaman -->

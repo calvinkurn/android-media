@@ -21,8 +21,7 @@ public class TopAdsWhiteRetryDataBinder extends TopAdsRetryDataBinder {
     public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
         RetryDataBinder.ViewHolder viewHolder = super.newViewHolder(parent);
         Context context = viewHolder.itemView.getContext();
-        viewHolder.itemView.setBackgroundColor(
-                ContextCompat.getColor(context, com.tokopedia.core.R.color.white) );
+        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white) );
         return viewHolder;
     }
 

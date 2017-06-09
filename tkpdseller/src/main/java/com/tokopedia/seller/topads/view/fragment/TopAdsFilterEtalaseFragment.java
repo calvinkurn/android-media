@@ -12,6 +12,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
 import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.view.model.RadioButtonItem;
@@ -49,13 +50,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = new SessionHandler(getActivity()).getShopID();
-//        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
-//            @Override
-//            public void onRetryCliked() {
-//                presenter.populateEtalaseList(shopId);
-//            }
-//        });
-        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
+        RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

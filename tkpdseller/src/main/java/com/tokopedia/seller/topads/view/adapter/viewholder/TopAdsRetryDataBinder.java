@@ -26,10 +26,6 @@ public class TopAdsRetryDataBinder extends RetryDataBinder {
         this.errorDrawableRes = errorDrawableRes;
     }
 
-    public void setErrorDrawableRes(int errorDrawableRes) {
-        this.errorDrawableRes = errorDrawableRes;
-    }
-
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_network_error, null);
