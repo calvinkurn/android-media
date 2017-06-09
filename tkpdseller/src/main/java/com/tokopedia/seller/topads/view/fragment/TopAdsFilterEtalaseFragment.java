@@ -13,7 +13,6 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
 import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;

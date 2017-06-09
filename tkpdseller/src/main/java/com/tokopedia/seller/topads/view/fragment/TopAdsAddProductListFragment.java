@@ -39,7 +39,6 @@ import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;

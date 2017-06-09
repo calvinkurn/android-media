@@ -22,8 +22,7 @@ import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryPickerLevelAdapter(this);
-        RetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
+        RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
