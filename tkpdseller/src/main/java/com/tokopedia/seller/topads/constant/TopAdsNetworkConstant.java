@@ -44,6 +44,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_IS_PROMOTED = "is_promoted";
     public static final String PARAM_KEYWORD_AD_ID = "keyword_id";
     public static final String PARAM_ACTION = "action";
+    public static final String PARAM_ITEM_ID = "item_id";
 
     public static final String VALUE_SOURCE_ANDROID = "android";
     public static final String VALUE_TOGGLE_ON = "on";

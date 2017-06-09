@@ -4,8 +4,8 @@ import android.net.Uri;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.tkpd.deeplink.DeeplinkUTMUtils;
 
 
 /**

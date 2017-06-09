@@ -17,13 +17,24 @@ import static com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragm
 
 public class TopAdsGroupNewPromoActivity extends TActivity {
 
+    // from deeplink
+    String itemId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_new_promo);
+        initFromIntent();
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsGroupNewPromoFragment.createInstance(), TopAdsGroupNewPromoFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsGroupNewPromoFragment.createInstance(itemId), TopAdsGroupNewPromoFragment.class.getSimpleName())
                 .commit();
+    }
+
+    private void initFromIntent (){
+        Intent intent = getIntent();
+        if (intent != null) {
+            itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
+        }
     }
 
     @Override
@@ -45,6 +56,18 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            //coming from deeplink
+            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+            this.startActivity(intent);
+            this.finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }

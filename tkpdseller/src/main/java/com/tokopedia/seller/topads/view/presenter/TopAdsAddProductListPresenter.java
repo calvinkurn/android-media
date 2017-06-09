@@ -4,12 +4,13 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.domain.model.ProductListDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
+import com.tokopedia.seller.topads.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
@@ -35,7 +36,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
             NO_NETWORK_CALL = -1;
 
     private SessionHandler sessionHandler;
-    private TopAdsDefaultParamUseCase topAdsDefaultParamUseCase;
+    private TopAdsProductListUseCase topAdsProductListUseCase;
     private Map<String, String> params;
     private TopAdsSearchProductView view;
     private int page;
@@ -66,8 +67,8 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         this.sessionHandler = sessionHandler;
     }
 
-    public void setTopAdsDefaultParamUseCase(TopAdsDefaultParamUseCase topAdsDefaultParamUseCase) {
-        this.topAdsDefaultParamUseCase = topAdsDefaultParamUseCase;
+    public void setTopAdsProductListUseCase(TopAdsProductListUseCase topAdsProductListUseCase) {
+        this.topAdsProductListUseCase = topAdsProductListUseCase;
     }
 
     public void setErrorNetworkListener(DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener) {
@@ -129,7 +130,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     public void loadMore() {
         if (isHitNetwork()) {
             fillParam(sessionHandler);
-            topAdsDefaultParamUseCase.execute(params,
+            topAdsProductListUseCase.execute(params,
                     new DefaultErrorSubscriber<ProductListDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {
@@ -166,7 +167,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     public void searchProduct() {
         if (isHitNetwork()) {
             fillParam(sessionHandler);
-            topAdsDefaultParamUseCase.execute(params,
+            topAdsProductListUseCase.execute(params,
                     new DefaultErrorSubscriber<ProductListDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {
@@ -226,7 +227,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         = new PromotedTopAdsAddProductModel(
                         productDomain.getName(),
                         productDomain.getGroupName(),
-                        convertModelFromDomainToView(productDomain)
+                        TopAdsProductModelMapper.convertModelFromDomainToView(productDomain)
                 );
                 typeBasedModels.add(promotedTopAdsAddProductModel);
             } else {
@@ -235,7 +236,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         = new NonPromotedTopAdsAddProductModel(
                         productDomain.getName(),
                         (groupName == null || groupName.isEmpty()) ? null : groupName,
-                        convertModelFromDomainToView(productDomain)
+                        TopAdsProductModelMapper.convertModelFromDomainToView(productDomain)
                 );
                 typeBasedModels.add(nonPromotedTopAdsAddProductModel);
             }
@@ -247,21 +248,6 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         return typeBasedModels;
     }
 
-    private TopAdsProductViewModel convertModelFromDomainToView(
-            ProductDomain productDomain
-    ) {
-        TopAdsProductViewModel pd
-                = new TopAdsProductViewModel();
-        pd.setAdId(productDomain.getAdId());
-        pd.setGroupName(productDomain.getGroupName());
-        pd.setId(productDomain.getId());
-        pd.setImageUrl(productDomain.getImageUrl());
-        pd.setName(productDomain.getName());
-        pd.setPromoted(productDomain.isPromoted());
-
-        return pd;
-    }
-
     @Override
     public void attachView(TopAdsSearchProductView view) {
         super.attachView(view);
@@ -270,7 +256,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     @Override
     public void detachView() {
         super.detachView();
-        topAdsDefaultParamUseCase.unsubscribe();
+        topAdsProductListUseCase.unsubscribe();
     }
 
     public void putSelectedEtalaseId(int etalaseId){

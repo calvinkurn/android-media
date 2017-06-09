@@ -40,7 +40,12 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
-                topAdsDetailViewListener.onAdLoaded(pageDataResponse.getData().get(0));
+                List<ProductAd> productAds = pageDataResponse.getData();
+                if (productAds== null || productAds.size() == 0) {
+                    topAdsDetailViewListener.onAdEmpty();
+                } else {
+                    topAdsDetailViewListener.onAdLoaded(productAds.get(0));
+                }
             }
 
             @Override
