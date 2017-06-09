@@ -214,10 +214,13 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getHistory(parameters)
-                .map(new Func1<RideHistoryEntity, RideHistory>() {
+                .map(new Func1<List<RideHistoryEntity>, RideHistory>() {
                     @Override
-                    public RideHistory call(RideHistoryEntity rideHistoryEntity) {
-                        return rideHistoryEntityMapper.transform(rideHistoryEntity);
+                    public RideHistory call(List<RideHistoryEntity> rideHistoryEntities) {
+                        if (rideHistoryEntities.size() > 0) {
+                            return rideHistoryEntityMapper.transform(rideHistoryEntities.get(0));
+                        }
+                        return null;
                     }
                 });
     }

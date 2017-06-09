@@ -87,7 +87,7 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
-    public Observable<RideHistoryEntity> getHistory(TKPDMapParam<String, Object> parameters) {
+    public Observable<List<RideHistoryEntity>> getHistory(TKPDMapParam<String, Object> parameters) {
         return null;
     }
 

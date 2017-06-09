@@ -28,8 +28,8 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history_detail);
         setupToolbar();
-        rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
-        replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory));
+        rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
+        replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory.getRequestId()));
     }
 
     private void setupToolbar() {
@@ -69,6 +69,11 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     public void showHelpWebview(String helpUrl) {
         setTitle(R.string.title_ride);
         replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(helpUrl));
+    }
+
+    @Override
+    public void rideHistoryUpdated(RideHistoryViewModel viewModel) {
+        this.rideHistory = viewModel;
     }
 
     @Override

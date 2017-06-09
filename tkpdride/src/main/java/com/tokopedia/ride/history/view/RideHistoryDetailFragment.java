@@ -12,6 +12,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,22 +24,30 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
+import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
+import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+
 public class RideHistoryDetailFragment extends BaseFragment implements RideHistoryDetailContract.View {
     private OnFragmentInteractionListener mListener;
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    private static final String EXTRA_RIDE_HISTORY = "EXTRA_RIDE_HISTORY";
     private RideHistoryViewModel rideHistory;
+    private String requestId;
 
     @BindView(R2.id.iv_google_map)
     AppCompatImageView mapImageView;
@@ -101,7 +110,15 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public static RideHistoryDetailFragment newInstance(RideHistoryViewModel rideHistory) {
         RideHistoryDetailFragment fragment = new RideHistoryDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_REQUEST_ID, rideHistory);
+        args.putParcelable(EXTRA_RIDE_HISTORY, rideHistory);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static RideHistoryDetailFragment newInstance(String requestId) {
+        RideHistoryDetailFragment fragment = new RideHistoryDetailFragment();
+        Bundle args = new Bundle();
+        args.putString(EXTRA_REQUEST_ID, requestId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -110,7 +127,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            rideHistory = getArguments().getParcelable(EXTRA_REQUEST_ID);
+            rideHistory = getArguments().getParcelable(EXTRA_RIDE_HISTORY);
+            if (rideHistory != null) {
+                requestId = rideHistory.getRequestId();
+            } else {
+                requestId = getArguments().getString(EXTRA_REQUEST_ID);
+            }
         }
     }
 
@@ -181,7 +203,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
-    public void renderHistory() {
+    public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
         System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
 
         requestTimeTextView.setText(rideHistory.getRequestTime());
@@ -258,6 +280,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     public interface OnFragmentInteractionListener {
         void showHelpWebview(String helpUrl);
+
+        void rideHistoryUpdated(RideHistoryViewModel viewModel);
     }
 
     @Override
@@ -286,12 +310,13 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GiveDriverRatingUseCase.PARAM_COMMENT, getRateComment());
         requestParams.putString(GiveDriverRatingUseCase.PARAM_REQUEST_ID, rideHistory.getRequestId());
-        requestParams.putString(GiveDriverRatingUseCase.PARAM_STARS, getRateStars());
+        requestParams.putInt(GiveDriverRatingUseCase.PARAM_STARS, getRateStars());
         return requestParams;
     }
 
-    private String getRateStars() {
-        return String.valueOf(Math.round(rateStarRatingBar.getRating()));
+    @Override
+    public int getRateStars() {
+        return Math.round(rateStarRatingBar.getRating());
     }
 
     private String getRateComment() {
@@ -333,9 +358,43 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
-    public void renderSuccessfullGiveRating() {
+    public void renderSuccessfullGiveRating(int star) {
         ratingResult.setVisibility(View.VISIBLE);
-        ratingResult.setRating(Float.parseFloat(getRateStars()));
+        ratingResult.setRating(star);
+    }
+
+    @Override
+    public RequestParams getSingleHistoryParam() {
+        RequestParams requestParams = RequestParams.create();
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetSingleRideHistoryUseCase.PARAM_REQUEST_ID, requestId);
+        return requestParams;
+    }
+
+    @Override
+    public void showErrorLayout() {
+        NetworkErrorHelper.showEmptyState(getActivity(), topLayout, getRetryListener());
+    }
+
+    @Override
+    public String getMapKey() {
+        return getString(R.string.GOOGLE_API_KEY);
+    }
+
+    @Override
+    public String getMapSize() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.thirty_two_dp);
+        int height = getResources().getDimensionPixelSize(R.dimen.history_map_height);
+
+        return width + "x" + height;
     }
 
     @Override
@@ -363,5 +422,11 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
         mPresenter.actionSendRating();
+    }
+
+    @Override
+    public void setHistoryViewModelData(RideHistoryViewModel viewModel) {
+        this.rideHistory = viewModel;
+        mListener.rideHistoryUpdated(viewModel);
     }
 }

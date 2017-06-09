@@ -1,5 +1,7 @@
 package com.tokopedia.ride.history.view;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -58,48 +60,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                     ArrayList<Visitable> histories = new ArrayList<>();
                     String mapSize = getView().getMapImageSize();
                     for (RideHistory rideHistory : rideHistories) {
-                        RideHistoryViewModel viewModel = new RideHistoryViewModel();
-                        viewModel.setDriverCarDisplay(String.format("%s %s %s",
-                                rideHistory.getVehicle().getMake(),
-                                rideHistory.getVehicle().getVehicleModel(),
-                                rideHistory.getVehicle().getLicensePlate())
-                        );
-                        viewModel.setStatus(rideHistory.getStatus());
-                        viewModel.setFare(String.format("%s %s",
-                                rideHistory.getPayment().getCurrency(),
-                                rideHistory.getPayment().getTotalAmount())
-                        );
-                        viewModel.setTotalFare(String.format("%s %s",
-                                rideHistory.getPayment().getCurrency(),
-                                rideHistory.getPayment().getTotalAmount())
-                        );
-                        viewModel.setRequestTime(rideHistory.getRequestTime());
-                        viewModel.setRequestId(rideHistory.getRequestId());
-                        viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
-                        viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
-                        viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
-
-                        if (rideHistory.getVehicle() != null) {
-                            viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
-                        }
-
-                        LocationLatLng pickupObject = rideHistory.getPickup();
-                        if (pickupObject != null) {
-                            viewModel.setStartLatitude(pickupObject.getLatitude());
-                            viewModel.setStartLongitude(pickupObject.getLongitude());
-                            viewModel.setStartAddress(pickupObject.getAddress());
-                        }
-
-                        LocationLatLng destObject = rideHistory.getDestination();
-                        if (destObject != null) {
-                            viewModel.setEndLatitude(destObject.getLatitude());
-                            viewModel.setEndLongitude(destObject.getLongitude());
-                            viewModel.setEndAddress(destObject.getAddress());
-                        }
-
-                        viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
-                        viewModel.setRating(rideHistory.getRating());
-                        viewModel.setHelpUrl(rideHistory.getHelpUrl());
+                        RideHistoryViewModel viewModel = getRideHistoryViewModel(mapSize, rideHistory);
 
                         histories.add(viewModel);
                     }
@@ -114,6 +75,53 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                 }
             }
         });
+    }
+
+    @NonNull
+    private RideHistoryViewModel getRideHistoryViewModel(String mapSize, RideHistory rideHistory) {
+        RideHistoryViewModel viewModel = new RideHistoryViewModel();
+        viewModel.setDriverCarDisplay(String.format("%s %s %s",
+                rideHistory.getVehicle().getMake(),
+                rideHistory.getVehicle().getVehicleModel(),
+                rideHistory.getVehicle().getLicensePlate())
+        );
+        viewModel.setStatus(rideHistory.getStatus());
+        viewModel.setFare(String.format("%s %s",
+                rideHistory.getPayment().getCurrency(),
+                rideHistory.getPayment().getTotalAmount())
+        );
+        viewModel.setTotalFare(String.format("%s %s",
+                rideHistory.getPayment().getCurrency(),
+                rideHistory.getPayment().getTotalAmount())
+        );
+        viewModel.setRequestTime(rideHistory.getRequestTime());
+        viewModel.setRequestId(rideHistory.getRequestId());
+        viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
+        viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
+        viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
+
+        if (rideHistory.getVehicle() != null) {
+            viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
+        }
+
+        LocationLatLng pickupObject = rideHistory.getPickup();
+        if (pickupObject != null) {
+            viewModel.setStartLatitude(pickupObject.getLatitude());
+            viewModel.setStartLongitude(pickupObject.getLongitude());
+            viewModel.setStartAddress(pickupObject.getAddress());
+        }
+
+        LocationLatLng destObject = rideHistory.getDestination();
+        if (destObject != null) {
+            viewModel.setEndLatitude(destObject.getLatitude());
+            viewModel.setEndLongitude(destObject.getLongitude());
+            viewModel.setEndAddress(destObject.getAddress());
+        }
+
+        viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
+        viewModel.setRating(rideHistory.getRating());
+        viewModel.setHelpUrl(rideHistory.getHelpUrl());
+        return viewModel;
     }
 
     private String getMapImageUrl(double startlatitude, double startLongitude, double endLatitude, double endLongitude, String mapSize) {
