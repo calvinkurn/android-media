@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -21,7 +20,9 @@ import android.widget.ImageView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -305,10 +306,14 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-        startActivityForResult(
-                GalleryActivity.createIntent(getActivity()),
-                REQUEST_CODE_GALLERY
-        );
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+            startActivityForResult(
+                    GalleryActivity.createIntent(getActivity()),
+                    REQUEST_CODE_GALLERY
+            );
+        } else {
+            uploadImageDialog.actionImagePicker();
+        }
     }
 
     private void addTemporaryMessage() {
@@ -453,48 +458,47 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
-        if (requestCode == ImageUploadHandler.REQUEST_CODE) {
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                        onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    } else {
-                        onFailedAddAttachment();
-                    }
-                    break;
-                case Activity.RESULT_OK:
-                    if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                        onAddImageAttachment(uploadImageDialog.getCameraFileloc());
-                    } else {
-                        onFailedAddAttachment();
-                    }
-                    break;
-            }
+        switch (requestCode) {
+            case ImageUploadHandler.REQUEST_CODE:
+                handleDefaultOldUploadImageHandlerResult(resultCode, data);
+                break;
+            case REQUEST_CODE_GALLERY:
+                handleNewGalleryResult(resultCode, data);
+                break;
+            default:
+                break;
         }
-        */
-        if (requestCode == ImageUploadHandler.REQUEST_CODE) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                        startActivityForResult(
-                                GalleryActivity.createIntent(getActivity()),
-                                REQUEST_CODE_GALLERY
-                        );
-                    } else {
-                        onFailedAddAttachment();
-                    }
-                    break;
+    }
+
+    private void handleNewGalleryResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
+                MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+                onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+            } else {
+                onFailedAddAttachment();
             }
-        } else if (requestCode == REQUEST_CODE_GALLERY){
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
-                    MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+        } else {
+            onFailedAddAttachment();
+        }
+    }
+
+    private void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
+        switch (resultCode) {
+            case GalleryBrowser.RESULT_CODE:
+                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
+                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL), AttachmentViewModel.FILE_IMAGE);
                 } else {
                     onFailedAddAttachment();
                 }
-            }
+                break;
+            case Activity.RESULT_OK:
+                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
+                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(), AttachmentViewModel.FILE_IMAGE);
+                } else {
+                    onFailedAddAttachment();
+                }
+                break;
         }
     }
 
