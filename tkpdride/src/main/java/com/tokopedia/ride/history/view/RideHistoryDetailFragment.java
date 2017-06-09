@@ -3,7 +3,6 @@ package com.tokopedia.ride.history.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -258,7 +257,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+        void showHelpWebview(String helpUrl);
     }
 
     @Override
@@ -356,7 +355,9 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
-        startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
+        mListener.showHelpWebview(rideHistory.getHelpUrl());
+        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
+        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 
     @OnClick(R2.id.rate_confirmation)

@@ -1,9 +1,6 @@
 package com.tokopedia.ride.history.view;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.PolyUtil;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
@@ -102,6 +99,8 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
 
                         viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
                         viewModel.setRating(rideHistory.getRating());
+                        viewModel.setHelpUrl(rideHistory.getHelpUrl());
+
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();

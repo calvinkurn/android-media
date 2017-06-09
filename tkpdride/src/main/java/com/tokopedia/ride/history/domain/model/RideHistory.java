@@ -26,6 +26,7 @@ public class RideHistory implements Parcelable {
     private float cashbackAmount;
     private float discountAmount;
     private Rating rating;
+    private String helpUrl;
 
 
     protected RideHistory(Parcel in) {
@@ -42,6 +43,7 @@ public class RideHistory implements Parcelable {
         cashbackAmount = in.readFloat();
         discountAmount = in.readFloat();
         rating = in.readParcelable(Rating.class.getClassLoader());
+        helpUrl = in.readString();
     }
 
     public static final Creator<RideHistory> CREATOR = new Creator<RideHistory>() {
@@ -152,6 +154,14 @@ public class RideHistory implements Parcelable {
         this.discountAmount = discountAmount;
     }
 
+    public String getHelpUrl() {
+        return helpUrl;
+    }
+
+    public void setHelpUrl(String helpUrl) {
+        this.helpUrl = helpUrl;
+    }
+
     public RideHistory() {
 
     }
@@ -184,5 +194,6 @@ public class RideHistory implements Parcelable {
         parcel.writeFloat(cashbackAmount);
         parcel.writeFloat(discountAmount);
         parcel.writeParcelable(rating, i);
+        parcel.writeString(helpUrl);
     }
 }
