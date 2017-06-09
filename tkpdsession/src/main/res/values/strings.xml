@@ -54,4 +54,6 @@
     <string name="button_change_email">Ubah Email</string>
     <string name="title_new_email">Email Baru</string>
     <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
+    <string name="tokocash">TokoCash</string>
+    <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel,TokoCash akan diaktifkan</string>
 </resources>
