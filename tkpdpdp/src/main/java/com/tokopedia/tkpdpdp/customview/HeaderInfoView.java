@@ -22,25 +22,24 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindString;
-import butterknife.BindView;
-
-
 /**
  * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private TextView tvName;
-    private TextView cashbackTextView;
-    private TextView tvPrice;
-    private LinearLayout cashbackHolder;
-    private static final String TAG = HeaderInfoView.class.getSimpleName();
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
     private static final String WEEK_TIMER_FORMAT = "%dw : ";
     private static final String DAY_TIMER_FORMAT = "%dd : ";
     private static final String HOUR_MIN_SEC_TIMER_FORMAT = "%02dh : %02dm : %02ds";
 
+    private TextView tvName;
+    private TextView cashbackTextView;
+    private TextView tvPrice;
+    private LinearLayout cashbackHolder;
+    private TextView textOriginalPrice;
+    private TextView textDiscount;
+    private LinearLayout linearDiscountTimerHolder;
+    private TextView textDiscountTimer;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -63,6 +62,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvPrice = (TextView) findViewById(R.id.tv_price);
         cashbackTextView = (TextView) findViewById(R.id.label_cashback);
         cashbackHolder = (LinearLayout) findViewById(R.id.cashback_holder);
+        textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
+        textDiscount = (TextView) findViewById(R.id.text_discount);
+        linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
+        textDiscountTimer = (TextView) findViewById(R.id.text_discount_timer);
 
     }
 
@@ -104,23 +107,28 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     public void renderProductCampaign(final ProductCampaign data) {
         if(data != null && data.getOriginalPrice() != null) {
-            textOriginalPrice.setText(String.format(labelPriceWithIdr, data.getOriginalPrice()));
+            textOriginalPrice.setText(String.format(
+                            getContext().getString(R.string.label_price_with_idr),
+                            data.getOriginalPrice()
+            ));
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
-            textDiscount.setText(String.format(discount,data.getPercentageAmount()));
+            textDiscount.setText(String.format(
+                    getContext().getString(R.string.label_discount),
+                    data.getPercentageAmount()
+            ));
 
             try {
-                cashbackHolder.setVisibility(VISIBLE);
                 textDiscount.setVisibility(VISIBLE);
                 textOriginalPrice.setVisibility(VISIBLE);
-                linearDiscountTimerHolder.setVisibility(VISIBLE);
 
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
                 Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
                 long delta = sf.parse(data.getEndDate()).getTime() - now.getTimeInMillis();
                 textDiscountTimer.setText(getCountdownText(delta));
+                linearDiscountTimerHolder.setVisibility(VISIBLE);
 
                 new CountDownTimer(delta, 1000) {
                     @Override
@@ -130,21 +138,21 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
                     @Override
                     public void onFinish() {
-                        hideProductCampaign(data);
+                        hideProductCampaign(data, true);
                     }
                 }.start();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                hideProductCampaign(data);
+                hideProductCampaign(data, false);
             }
         }
     }
 
-    private void hideProductCampaign(ProductCampaign data) {
+    private void hideProductCampaign(ProductCampaign data, boolean revertPrice) {
         linearDiscountTimerHolder.setVisibility(GONE);
         textDiscount.setVisibility(GONE);
         textOriginalPrice.setVisibility(GONE);
-        tvPrice.setText(data.getOriginalPrice());
+        if(revertPrice) tvPrice.setText(data.getOriginalPrice());
     }
 
     private String getCountdownText(long millisUntilFinished) {
