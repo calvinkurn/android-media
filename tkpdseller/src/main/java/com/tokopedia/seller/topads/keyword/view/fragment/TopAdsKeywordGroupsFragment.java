@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
@@ -268,5 +269,12 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
         groupFilterSearch.setText("");
         recyclerView.setVisibility(View.VISIBLE);
         hideThings.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        NoResultDataBinder emptyViewDefaultBinder = super.getEmptyViewDefaultBinder();
+        emptyViewDefaultBinder.setDrawableAsset(R.drawable.ic_top_ads_keyword_empty);
+        return emptyViewDefaultBinder;
     }
 }
