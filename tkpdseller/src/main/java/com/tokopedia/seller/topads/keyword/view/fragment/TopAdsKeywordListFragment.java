@@ -39,6 +39,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
+    private boolean hasData;
+
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private KeywordListListener.Listener keywordAdListener;
@@ -186,6 +188,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
+        hasData = true;
         if (keywordAdListener != null) {
             keywordAdListener.validateMenuItem();
         }
@@ -194,6 +197,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     public void onLoadSearchError() {
         super.onLoadSearchError();
+        hasData = false;
         if (keywordAdListener != null) {
             keywordAdListener.validateMenuItem();
         }
@@ -205,6 +209,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         if (keywordAdListener != null) {
             keywordAdListener.validateMenuItem();
         }
+    }
+
+    public boolean hasDataFromServer() {
+        return hasData;
     }
 
 }
