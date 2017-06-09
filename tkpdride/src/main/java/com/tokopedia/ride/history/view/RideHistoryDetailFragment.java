@@ -292,7 +292,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     private String getRateStars() {
-        return String.valueOf(Float.floatToIntBits(rateStarRatingBar.getRating()));
+        return String.valueOf(Math.round(rateStarRatingBar.getRating()));
     }
 
     private String getRateComment() {

@@ -417,7 +417,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @Override
     public String getRateStars() {
-        return String.valueOf(Float.floatToIntBits(rateStarRatingBar.getRating()));
+        return String.valueOf(Math.round(rateStarRatingBar.getRating()));
     }
 
     private String getRateComment() {
