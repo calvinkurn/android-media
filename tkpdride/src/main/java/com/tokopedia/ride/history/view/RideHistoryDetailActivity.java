@@ -67,7 +67,7 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
 
     @Override
     public void showHelpWebview(String helpUrl) {
-        setTitle(R.string.title_ride);
+        setTitle(R.string.help_toolbar_title);
         replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(helpUrl));
     }
 
@@ -80,7 +80,7 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     public void onBackPressed() {
         if ((getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment)
                 || (getFragmentManager().findFragmentById(R.id.fl_container) instanceof FragmentGeneralWebView)) {
-            setTitle(R.string.help_toolbar_title);
+            setTitle(R.string.trip_detail_toolbar_title);
             replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory));
         } else {
             super.onBackPressed();
