@@ -24,6 +24,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
@@ -35,7 +36,6 @@ import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 
 import java.util.List;
 
@@ -278,7 +278,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     private RetryDataBinder getRetryDataBinder(DataBindAdapter dataBindAdapter) {
-        RetryDataBinder retryDataBinder = new TopAdsRetryDataBinder(dataBindAdapter);
+        RetryDataBinder retryDataBinder = new BaseRetryDataBinder(dataBindAdapter);
         retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

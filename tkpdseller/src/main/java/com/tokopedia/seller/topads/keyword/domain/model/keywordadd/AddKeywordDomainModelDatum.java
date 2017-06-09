@@ -3,12 +3,13 @@ package com.tokopedia.seller.topads.keyword.domain.model.keywordadd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 
 /**
- * Created by Test on 5/26/2017.
+ * @author Hendry on 5/26/2017.
  */
 
 public class AddKeywordDomainModelDatum {
     private String keywordTag;
-    private @KeywordTypeDef int keyWordTypeId;
+    @KeywordTypeDef
+    private int keyWordTypeId;
     private String groupId;
     private String shopId;
 

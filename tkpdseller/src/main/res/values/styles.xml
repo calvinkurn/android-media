@@ -212,6 +212,10 @@
         <item name="android:background">@drawable/border_background_bottom</item>
     </style>
 
+    <style name="LabelLayoutWithBorderTop" parent="LabelLayout">
+        <item name="android:background">@drawable/border_background_top</item>
+    </style>
+
     <style name="LabelLayoutInnerExpandable" parent="LabelLayout">
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
@@ -286,6 +290,8 @@
     </style>
 
     <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
+        <item name="android:textColorHint">@color/black_fifty_four_percent</item>
+
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
         <item name="colorControlHighlight">@color/font_top_ads_green</item>

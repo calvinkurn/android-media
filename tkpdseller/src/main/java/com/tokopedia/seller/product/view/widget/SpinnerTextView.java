@@ -2,19 +2,16 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Parcelable;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.BaseCustomView;
@@ -85,7 +82,6 @@ public class SpinnerTextView extends BaseCustomView {
         } finally {
             styledAttributes.recycle();
         }
-        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
     @Override
@@ -97,7 +93,10 @@ public class SpinnerTextView extends BaseCustomView {
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
-        textInputLayout.setHintTextAppearance(hintTextAppearance);
+        if (hintTextAppearance!= 0) {
+            textInputLayout.setHintTextAppearance(hintTextAppearance);
+        }
+        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         invalidate();
         requestLayout();
     }

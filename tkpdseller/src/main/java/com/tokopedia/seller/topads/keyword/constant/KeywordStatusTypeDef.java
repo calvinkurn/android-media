@@ -13,5 +13,5 @@ import static com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef.
 public @interface KeywordStatusTypeDef {
     int KEYWORD_STATUS_ALL = 0;
     int KEYWORD_STATUS_ACTIVE = 1;
-    int KEYWORD_STATUS_INACTIVE = 2;
+    int KEYWORD_STATUS_INACTIVE = 3;
 }

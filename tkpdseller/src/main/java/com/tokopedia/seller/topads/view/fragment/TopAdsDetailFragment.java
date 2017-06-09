@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -122,6 +123,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         showLoading();
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
+            adId = adFromIntent.getId();
             adFromIntent = null;
         } else {
             refreshAd();
@@ -187,6 +189,13 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         });
         snackbarRetry.showRetrySnackbar();
         getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAdEmpty() {
+        hideLoading();
+        CommonUtils.UniversalToast(getActivity(),getString(R.string.error_data_not_found));
+        getActivity().finish();
     }
 
     @Override
@@ -313,5 +322,21 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         if (presenter != null) {
             presenter.unSubscribe();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        adId = savedInstanceState.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        adFromIntent = null;
     }
 }

@@ -54,7 +54,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+            startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
@@ -88,7 +88,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            searchAd();
+            searchAd(START_PAGE);
         }
     }
 

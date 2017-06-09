@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -25,6 +26,8 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -33,10 +36,11 @@ import javax.inject.Inject;
 public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
         implements TopAdsEmptyAdDataBinder.Callback {
 
-    protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
     protected int filterStatus;
     protected GroupAd groupAd;
     protected int selectedPosition;
+    private boolean hasData;
+
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private KeywordListListener.Listener keywordAdListener;
@@ -86,6 +90,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
         emptyGroupAdsDataBinder.setCallback(this);
+        hasData = false;
         return emptyGroupAdsDataBinder;
     }
 
@@ -121,10 +126,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
-        } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD) {
-            if (resultCode == Activity.RESULT_OK) {
-                onSearch(null);
-            }
+            searchAd(START_PAGE);
         }
     }
 
@@ -144,12 +146,12 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onCreateAd() {
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_CREATE_KEYWORD, isPositive());
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override
     public void onItemClicked(Ad ad) {
-        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_STATUS);
+        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), (KeywordAd) ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 
     @Override
@@ -183,4 +185,35 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         outState.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
         outState.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, filterStatus);
     }
+
+    @Override
+    protected void showViewList(@NonNull List list) {
+        super.showViewList(list);
+        hasData = true;
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    public void onLoadSearchError() {
+        super.onLoadSearchError();
+        hasData = false;
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        if (keywordAdListener != null) {
+            keywordAdListener.validateMenuItem();
+        }
+    }
+
+    public boolean hasDataFromServer() {
+        return hasData;
+    }
+
 }
