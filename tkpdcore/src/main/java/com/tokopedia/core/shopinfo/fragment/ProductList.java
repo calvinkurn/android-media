@@ -29,6 +29,7 @@ import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -405,11 +406,9 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onProductClick(int pos) {
-                getActivity().startActivity(
-                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                getActivity(), getProductDataToPass(pos)
-                        )
-                );
+                ((PdpRouter) (getActivity())
+                        .getApplication())
+                        .goToProductDetail(getActivity(), getProductDataToPass(pos));
             }
         };
     }

@@ -23,8 +23,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ContainerAds;
@@ -117,8 +117,9 @@ public class BucketListImageScroll {
                     Intent intent = null;
                     if (VI == 2) {
                         TopAdsUtil.clickTopAdsAction(context, ProductClickUrl.get(pos));
-                        intent = new Intent(context, ProductInfoActivity.class);
-                        bundle.putString("product_id", ID.get(pos));
+                        intent = ProductDetailRouter
+                                .createInstanceProductDetailInfoActivity(context, ID.get(pos));
+
                         bundle.putString("ad_key", Key.get(pos));
                         bundle.putString("ad_r", Referrer.get(pos));
 						bundle.putString("src", adSrc);
