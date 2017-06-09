@@ -2,19 +2,16 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Parcelable;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.BaseCustomView;
@@ -25,6 +22,8 @@ import com.tokopedia.seller.product.utils.ConverterUtils;
  */
 
 public class SpinnerTextView extends BaseCustomView {
+
+    private int hintTextColor;
 
     public interface OnItemChangeListener {
 
@@ -82,10 +81,11 @@ public class SpinnerTextView extends BaseCustomView {
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
             textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
                     getResources().getDimension(R.dimen.font_medium));
+            hintTextColor = styledAttributes.getColor(R.styleable.SpinnerTextView_spinner_hint_text_color,
+                    0);
         } finally {
             styledAttributes.recycle();
         }
-        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
     @Override
@@ -97,7 +97,13 @@ public class SpinnerTextView extends BaseCustomView {
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
-        textInputLayout.setHintTextAppearance(hintTextAppearance);
+        if (hintTextAppearance!= 0) {
+            textInputLayout.setHintTextAppearance(hintTextAppearance);
+        }
+        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        if (hintTextColor!= 0) {
+            textAutoComplete.setHintTextColor(hintTextColor);
+        }
         invalidate();
         requestLayout();
     }

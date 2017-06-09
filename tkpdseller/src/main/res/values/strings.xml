@@ -593,6 +593,7 @@
     <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus kata kunci ini?</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
+    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
     <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]>, <![CDATA[<i><b>Trend</b></i>]]> Pakaian Wanita</string>

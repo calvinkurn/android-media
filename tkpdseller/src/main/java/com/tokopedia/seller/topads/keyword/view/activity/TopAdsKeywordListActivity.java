@@ -21,6 +21,7 @@ import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordListFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 
@@ -125,7 +126,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     }
 
     public void validateMenuItem() {
-        TopAdsBaseListFragment currentFragment = getCurrentFragment();
+        TopAdsKeywordListFragment currentFragment = getCurrentFragment();
         if (currentFragment != null && currentFragment.hasDataFromServer()) {
             filter.setVisible(true);
             searchItem.setVisible(true);
@@ -155,10 +156,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         return null;
     }
 
-    private TopAdsBaseListFragment getCurrentFragment() {
+    private TopAdsKeywordListFragment getCurrentFragment() {
         Fragment registeredFragment = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
         if (registeredFragment != null && registeredFragment instanceof TopAdsBaseListFragment) {
-            return (TopAdsBaseListFragment) registeredFragment;
+            return (TopAdsKeywordListFragment) registeredFragment;
         }
         return null;
     }
