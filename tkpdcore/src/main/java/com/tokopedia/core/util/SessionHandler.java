@@ -236,6 +236,13 @@ public class SessionHandler {
         return domain;
     }
 
+    public void setShopId(String shopId) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, SHOP_ID, shopId);
+        editor.apply();
+    }
+
     public static String getShopID(Context context) {
         String shop_id = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);

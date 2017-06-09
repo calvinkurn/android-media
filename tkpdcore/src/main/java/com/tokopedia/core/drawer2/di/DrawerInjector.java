@@ -74,7 +74,8 @@ public class DrawerInjector {
                 new PeopleService(),
                 new ProfileMapper(),
                 profileCache,
-                new AnalyticsCacheHandler()
+                new AnalyticsCacheHandler(),
+                sessionHandler
         );
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
