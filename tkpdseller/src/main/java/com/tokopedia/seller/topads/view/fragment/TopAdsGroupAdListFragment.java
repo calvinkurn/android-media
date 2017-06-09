@@ -1,11 +1,12 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenter;
@@ -29,7 +30,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsGroupAdListPresenterImpl(context, this);
+        presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
-    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
+    protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_title_promo_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_text));
@@ -49,16 +50,16 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
-    public void onClicked(Ad ad) {
+    public void onItemClicked(Ad ad) {
         if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+            startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
     @Override
-    protected void goToFilter() {
+    public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
@@ -70,9 +71,15 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         startActivity(intent);
     }
 
+    @Override
     public void onEmptyButtonClicked() {
+        onCreateAd();
+    }
+
+    @Override
+    public void onCreateAd() {
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
-        this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+        startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
 
     @Override
@@ -81,8 +88,13 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            searchAd();
+            searchAd(START_PAGE);
         }
+    }
+
+    // use for showcase
+    public View getDateView(){
+        return getView().findViewById(R.id.date_label_view);
     }
 
 }

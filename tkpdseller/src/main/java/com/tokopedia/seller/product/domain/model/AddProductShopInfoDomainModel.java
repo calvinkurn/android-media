@@ -7,6 +7,15 @@ package com.tokopedia.seller.product.domain.model;
 public class AddProductShopInfoDomainModel {
     private boolean isGoldMerchant;
     private boolean isFreeReturn;
+    private String shopId;
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
 
     public boolean isGoldMerchant() {
         return isGoldMerchant;

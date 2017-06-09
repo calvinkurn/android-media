@@ -30,7 +30,9 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
     @Override
     public void fetchCategoryLevelOne() {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         getView().hideRetryEmpty();
         getView().showLoadingDialog();
         RequestParams requestParam = FetchCategoryWithParentChildUseCase.generateLevelOne();
@@ -39,14 +41,18 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
     @Override
     public void fetchCategoryChild(long categoryId) {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         RequestParams requestParam = FetchCategoryWithParentChildUseCase.generateFromParent(categoryId);
         fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryChildSubscriber(categoryId));
     }
 
     @Override
     public void fetchCategoryFromSelected(long initSelected) {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         getView().hideRetryEmpty();
         RequestParams requestParam = FetchCategoryFromSelectedUseCase.generateParam(initSelected);
         fetchCategoryFromSelectedUseCase.execute(requestParam, new FetchCategoryFromSelectedSubscriber());
@@ -72,7 +78,9 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
         }
 
         @Override
@@ -91,7 +99,9 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             fetchCategoryLevelOne();
         }
 
@@ -111,7 +121,9 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().dismissLoadingDialog();
             getView().showRetryEmpty();
         }

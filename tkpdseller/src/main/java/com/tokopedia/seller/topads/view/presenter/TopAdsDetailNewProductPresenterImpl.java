@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.utils.ViewUtils;
@@ -23,8 +24,9 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
 
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
-                                               TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase) {
-        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase);
+                                               TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
+                                               TopAdsProductListUseCase topAdsProductListUseCase) {
+        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }
 

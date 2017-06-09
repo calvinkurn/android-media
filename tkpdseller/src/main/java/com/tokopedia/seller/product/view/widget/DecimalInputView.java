@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.BaseCustomView;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
 import java.text.DecimalFormat;
@@ -23,7 +24,7 @@ import java.text.DecimalFormat;
  * Created by nathan on 04/05/17.
  */
 
-public class DecimalInputView extends FrameLayout {
+public class DecimalInputView extends BaseCustomView {
 
     private static final String DECIMAL_FORMAT = "#.##";
     private static final String DEFAULT_VALUE = "0";
@@ -153,36 +154,6 @@ public class DecimalInputView extends FrameLayout {
 
     public EditText getEditText() {
         return editText;
-    }
-
-    @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
-    }
-
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.initChildrenStates();
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
-        }
-        return ss;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
-        }
     }
 
     public void setMaxLength(int maxLengthInput) {

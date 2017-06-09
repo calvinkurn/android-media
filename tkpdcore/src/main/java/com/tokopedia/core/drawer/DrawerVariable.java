@@ -22,7 +22,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -412,7 +411,9 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                startIntent(EtalaseShopEditor.class);
+                if(context.getApplication() instanceof TkpdCoreRouter){
+                    ((TkpdCoreRouter)context.getApplication()).goToManageEtalase(context);
+                }
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
