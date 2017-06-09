@@ -1,12 +1,13 @@
 package com.tokopedia.seller.topads.di;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
+import com.tokopedia.seller.topads.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
@@ -14,13 +15,17 @@ import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.seller.topads.data.repository.TopAdsProductAdsRepositoryImpl;
+import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
+import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenterImpl;
@@ -31,9 +36,11 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenterI
 
 public class TopAdsDetailNewGroupDI {
 
-    public static TopAdsDetailNewGroupPresenter createPresenter(Context context) {
-        JobExecutor threadExecutor = new JobExecutor();
-        UIThread postExecutionThread = new UIThread();
+    public static TopAdsDetailNewGroupPresenter createPresenter(BaseActivity context) {
+        AppComponent component = context.getApplicationComponent();
+
+        ThreadExecutor threadExecutor = component.threadExecutor();
+        PostExecutionThread postExecutionThread = component.postExecutionThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
@@ -47,6 +54,9 @@ public class TopAdsDetailNewGroupDI {
         TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi,
                 topAdsSearchGroupMapper, topAdsDetailGroupMapper, topAdsDetailGroupDomainMapper);
         TopAdsProductAdFactory topAdsShopAdFactory = new TopAdsProductAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper, topAdsBulkActionMapper);
+        SearchProductEOFMapper searchProductEOFMapper = new SearchProductEOFMapper();
+        CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource = new CloudTopAdsSearchProductDataSource(context, topAdsManagementService,searchProductEOFMapper);
+        TopAdsSearchProductRepository topAdsSearchProductRepository = new TopAdsSearchProductRepositoryImpl(context, cloudTopAdsSearchProductDataSource);
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
         TopAdsProductAdsRepository topAdsProductAdsRepository = new TopAdsProductAdsRepositoryImpl(topAdsShopAdFactory);
@@ -56,9 +66,10 @@ public class TopAdsDetailNewGroupDI {
 
         TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase = new TopAdsCreateNewGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase = new TopAdsCreateDetailProductListUseCase(threadExecutor,postExecutionThread, topAdsProductAdsRepository );
+        TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(threadExecutor,postExecutionThread,topAdsSearchProductRepository);
 
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
-                topAdsSaveDetailGroupUseCase,topAdsCreateDetailProductListUseCase);
+                topAdsSaveDetailGroupUseCase,topAdsCreateDetailProductListUseCase, topAdsProductListUseCase);
     }
 }
 

@@ -147,8 +147,8 @@ public class ProductAddModule {
     // FOR SHOP_INFO
     @ProductAddScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource){
-        return new ShopInfoRepositoryImpl(shopInfoDataSource);
+    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource){
+        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
     @ProductAddScope

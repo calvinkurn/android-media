@@ -31,14 +31,14 @@ import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepository
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
@@ -60,7 +60,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     SessionHandler sessionHandler;
 
-    TopAdsDefaultParamUseCase topAdsDefaultParamUseCase;
+    TopAdsProductListUseCase topAdsProductListUseCase;
     private AddProductListInterface addProductListInterface;
     private ImageHandler imageHandler;
     private RecyclerView topAdsAddProductList;
@@ -98,7 +98,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         super.onResume();
         inject();
         topAdsAddProductListPresenter.setSessionHandler(sessionHandler);
-        topAdsAddProductListPresenter.setTopAdsDefaultParamUseCase(topAdsDefaultParamUseCase);
+        topAdsAddProductListPresenter.setTopAdsProductListUseCase(topAdsProductListUseCase);
         topAdsAddProductListPresenter.setErrorNetworkListener(this);
         gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
         setupRecyclerView();
@@ -213,7 +213,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     protected void initialVar() {
         totalItem = Integer.MAX_VALUE;
         topAdsProductListAdapter = new TopAdsAddProductListAdapter();
-        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(topAdsProductListAdapter);
+        RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(topAdsProductListAdapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
@@ -305,8 +305,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 topAdsSearchProductService,
                 searchProductMapper
         );
-        topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(cloudTopAdsSeachProductDataSource);
-        topAdsDefaultParamUseCase = new TopAdsDefaultParamUseCase(
+        topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(getActivity(), cloudTopAdsSeachProductDataSource);
+        topAdsProductListUseCase = new TopAdsProductListUseCase(
                 new JobExecutor(), new UIThread(), topAdsSeachProductRepository
         );
         //[END] This is for dependent component

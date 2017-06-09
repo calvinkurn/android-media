@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,11 @@ public class TokoCashHeaderView extends RelativeLayout {
     private static final String TOKO_CASH_URL = "url";
     private TextView tokoCashAmount;
     private TextView tokoCashButton;
+    private ActionListener actionListener;
+
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
+    }
 
     public TokoCashHeaderView(Context context) {
         super(context);
@@ -42,12 +48,13 @@ public class TokoCashHeaderView extends RelativeLayout {
 
     public void renderData(final TopCashItem tokoCashData) {
         String tokoCashRedirectUrl = tokoCashData.getData().getRedirectUrl();
-        String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData);
-        if(tokoCashData.getData().getLink().equals(1)) {
+        final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData);
+        if (tokoCashData.getData().getLink().equals(1)) {
             setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getData().getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
-            tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashActionRedirectUrl));
+            // tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashActionRedirectUrl));
+            tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
         } else {
             tokoCashButton.setOnClickListener(onActivationClickedListener(
                     tokoCashActionRedirectUrl
@@ -56,8 +63,19 @@ public class TokoCashHeaderView extends RelativeLayout {
         }
     }
 
+    @NonNull
+    private OnClickListener getTopUpClickedListenerHarcodedToNative(
+            final String tokoCashActionRedirectUrl) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onTopUpTokoCashClicked();
+            }
+        };
+    }
+
     private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
-        if(tokoCashData.getData().getAction() == null) return "";
+        if (tokoCashData.getData().getAction() == null) return "";
         else return tokoCashData.getData().getAction().getRedirectUrl();
     }
 
@@ -94,9 +112,9 @@ public class TokoCashHeaderView extends RelativeLayout {
     private void openTokoCashWebView(String redirectURL) {
         Bundle bundle = new Bundle();
         bundle.putString(TOKO_CASH_URL, redirectURL);
-        if(getContext() instanceof Activity){
-            if(((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter)((Activity) getContext()).getApplication())
+        if (getContext() instanceof Activity) {
+            if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
                         .goToWallet(getContext(), bundle);
             }
         }
@@ -109,6 +127,12 @@ public class TokoCashHeaderView extends RelativeLayout {
                 openTokoCashWebView(redirectUrl);
             }
         };
+    }
+
+    public interface ActionListener {
+        void onTopUpTokoCashClicked();
+
+        void onActivationTokoCashClicked();
     }
 
 }

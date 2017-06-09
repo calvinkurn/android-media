@@ -280,7 +280,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private void showEditPriceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
                 R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.title_product_confirmation_change_wholesale_price);
+        builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
         builder.setMessage(R.string.product_confirmation_change_wholesale_price);
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -593,7 +593,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             return;
         }

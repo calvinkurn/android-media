@@ -15,10 +15,10 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class LabelSwitch extends FrameLayout {
-    TextView titleTextView;
-    TextView switchTextView;
-    SwitchCompat switchStatus;
+public class LabelSwitch extends BaseCustomView {
+    private TextView titleTextView;
+    private TextView switchTextView;
+    private SwitchCompat switchStatus;
 
     private CompoundButton.OnCheckedChangeListener listener;
     private String titleText;

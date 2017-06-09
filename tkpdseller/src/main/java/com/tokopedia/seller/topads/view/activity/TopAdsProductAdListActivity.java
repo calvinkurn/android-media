@@ -1,13 +1,10 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -34,7 +31,7 @@ public class TopAdsProductAdListActivity extends TActivity
         super.onCreate(savedInstanceState);
         GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
         inflateView(R.layout.activity_top_ads_payment_credit);
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsProductAdListFragment.createInstance(groupAd), TopAdsProductAdListFragment.class.getSimpleName())
                 .commit();
     }
@@ -54,7 +51,7 @@ public class TopAdsProductAdListActivity extends TActivity
             return;
         }
         final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                (TopAdsProductAdListFragment) getFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
+                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
         if (topAdsProductAdListFragment == null) {
             return;
         }
@@ -88,25 +85,25 @@ public class TopAdsProductAdListActivity extends TActivity
             recyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    View dateView = topAdsProductAdListFragment.getDateView();
+                    if (dateView != null) {
+                        dateView.setVisibility(View.VISIBLE);
+                        showCaseList.add(
+                                new ShowCaseObject(
+                                        dateView,
+                                        getString(R.string.topads_showcase_product_list_title_3),
+                                        getString(R.string.topads_showcase_product_list_desc_3)));
+                    }
+
                     View itemView = topAdsProductAdListFragment.getItemRecyclerView();
                     if (itemView != null) {
                         showCaseList.add(
                                 new ShowCaseObject(
                                         itemView,
-                                        getString(R.string.topads_showcase_product_list_title_3),
-                                        getString(R.string.topads_showcase_product_list_desc_3),
+                                        getString(R.string.topads_showcase_product_list_title_4),
+                                        getString(R.string.topads_showcase_product_list_desc_4),
                                         ShowCaseContentPosition.UNDEFINED,
                                         Color.WHITE));
-                    }
-
-                    FloatingActionButton fab = topAdsProductAdListFragment.getFab();
-                    if (fab != null) {
-                        fab.show();
-                        showCaseList.add(
-                                new ShowCaseObject(
-                                        fab,
-                                        getString(R.string.topads_showcase_product_list_title_4),
-                                        getString(R.string.topads_showcase_product_list_desc_4)));
                     }
 
                     showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
