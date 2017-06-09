@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * @author normansyahputa on 3/27/17.
  */
 
-public class EmptySeparatorModel extends TypeBasedModel implements Parcelable {
+public class EmptySeparatorModel implements Parcelable, TypeBasedModel {
     public static final int TYPE = 12118412;
     public static final Parcelable.Creator<EmptySeparatorModel> CREATOR = new Parcelable.Creator<EmptySeparatorModel>() {
         @Override
@@ -23,12 +23,7 @@ public class EmptySeparatorModel extends TypeBasedModel implements Parcelable {
         }
     };
 
-    public EmptySeparatorModel() {
-        super(TYPE);
-    }
-
     protected EmptySeparatorModel(Parcel in) {
-        this();
     }
 
     @Override
@@ -38,5 +33,10 @@ public class EmptySeparatorModel extends TypeBasedModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

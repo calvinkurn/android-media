@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * @author normansyahputa on 4/12/17.
  */
 
-public class AddUrlVideoModel extends TypeBasedModel implements Parcelable {
+public class AddUrlVideoModel implements Parcelable, TypeBasedModel {
     public static final int TYPE = 19129244;
     public static final Parcelable.Creator<AddUrlVideoModel> CREATOR = new Parcelable.Creator<AddUrlVideoModel>() {
         @Override
@@ -29,11 +29,9 @@ public class AddUrlVideoModel extends TypeBasedModel implements Parcelable {
     private String videoId;
 
     public AddUrlVideoModel() {
-        super(TYPE);
     }
 
     protected AddUrlVideoModel(Parcel in) {
-        this();
         this.snippetTitle = in.readString();
         this.snippetDescription = in.readString();
         this.thumbnailUrl = in.readString();
@@ -126,5 +124,10 @@ public class AddUrlVideoModel extends TypeBasedModel implements Parcelable {
         dest.writeInt(this.width);
         dest.writeInt(this.height);
         dest.writeString(this.videoId);
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

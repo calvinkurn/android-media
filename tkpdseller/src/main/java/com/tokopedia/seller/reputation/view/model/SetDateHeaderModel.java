@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * Created by normansyahputa on 3/17/17.
  */
 
-public class SetDateHeaderModel extends TypeBasedModel implements Parcelable {
+public class SetDateHeaderModel implements Parcelable, TypeBasedModel {
     public static final int TYPE = 1292832;
     public static final Parcelable.Creator<SetDateHeaderModel> CREATOR = new Parcelable.Creator<SetDateHeaderModel>() {
         @Override
@@ -28,7 +28,7 @@ public class SetDateHeaderModel extends TypeBasedModel implements Parcelable {
     long eDate;
 
     public SetDateHeaderModel() {
-        super(TYPE);
+
     }
 
     protected SetDateHeaderModel(Parcel in) {
@@ -82,5 +82,10 @@ public class SetDateHeaderModel extends TypeBasedModel implements Parcelable {
         dest.writeString(this.endDate);
         dest.writeLong(this.sDate);
         dest.writeLong(this.eDate);
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

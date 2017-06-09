@@ -18,6 +18,9 @@ public class TotalAd {
     @SerializedName("total_product_group_ad")
     @Expose
     private int totalProductGroupAd;
+    @SerializedName("total_keyword")
+    @Expose
+    private int totalKeyword;
 
     public int getTotalShopAd() {
         return totalShopAd;
@@ -41,5 +44,13 @@ public class TotalAd {
 
     public void setTotalProductGroupAd(int totalProductGroupAd) {
         this.totalProductGroupAd = totalProductGroupAd;
+    }
+
+    public int getTotalKeyword() {
+        return totalKeyword;
+    }
+
+    public void setTotalKeyword(int totalKeyword) {
+        this.totalKeyword = totalKeyword;
     }
 }

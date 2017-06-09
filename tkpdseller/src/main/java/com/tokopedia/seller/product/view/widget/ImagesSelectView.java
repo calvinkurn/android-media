@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.BaseCustomView;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 
@@ -25,7 +26,7 @@ import java.util.List;
  * Created by Hendry on 4/7/2017.
  */
 
-public class ImagesSelectView extends FrameLayout {
+public class ImagesSelectView extends BaseCustomView {
 
     private static final String SAVED_IMAGES = "saved_images";
     public static final String SAVED = "ss";

@@ -38,7 +38,7 @@ import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
@@ -213,7 +213,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     protected void initialVar() {
         totalItem = Integer.MAX_VALUE;
         topAdsProductListAdapter = new TopAdsAddProductListAdapter();
-        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(topAdsProductListAdapter);
+        RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(topAdsProductListAdapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

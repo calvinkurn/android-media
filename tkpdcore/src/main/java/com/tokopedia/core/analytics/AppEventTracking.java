@@ -461,6 +461,8 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
     }
 
     interface MOENGAGE {

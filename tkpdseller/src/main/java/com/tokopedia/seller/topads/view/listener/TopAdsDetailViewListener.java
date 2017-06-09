@@ -1,11 +1,12 @@
 package com.tokopedia.seller.topads.view.listener;
 
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 12/30/16.
  */
-public interface TopAdsDetailViewListener {
+public interface TopAdsDetailViewListener extends CustomerView {
 
     void onAdLoaded(Ad ad);
 
