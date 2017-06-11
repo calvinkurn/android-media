@@ -64,7 +64,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
                 .asBitmap()
                 .fitCenter()
                 .dontAnimate()
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.cabs_uber_ic)
                 .into(productImageImageView);
     }
 
