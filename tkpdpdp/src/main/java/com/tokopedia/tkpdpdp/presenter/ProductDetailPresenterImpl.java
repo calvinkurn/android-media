@@ -287,6 +287,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
+                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
                         }
 
                         @Override
