@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
  */
 
 public interface TopAdsKeywordEditDetailView extends CustomerView {
-    void showError(String detail);
+    void showError(Throwable detail);
 
     void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel);
 }
