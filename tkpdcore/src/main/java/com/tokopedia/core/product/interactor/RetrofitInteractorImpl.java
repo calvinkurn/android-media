@@ -110,7 +110,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-            }b
+            }
 
             @Override
             public void onNext(final Response<TkpdResponse> response) {

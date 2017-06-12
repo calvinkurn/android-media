@@ -526,6 +526,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 }
                 report.setVisible(true);
                 report.setEnabled(true);
+                warehouse.setVisible(false);
+                warehouse.setEnabled(false);
+                etalase.setVisible(false);
+                etalase.setEnabled(false);
             } else {
                 menuShare.setVisible(false);
                 menuShare.setEnabled(false);
@@ -533,22 +537,22 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 menuCart.setEnabled(false);
                 report.setVisible(false);
                 report.setEnabled(false);
-            }
-            switch (productData.getInfo().getProductStatus()) {
-                case "1":
-                    etalase.setVisible(false);
-                    etalase.setEnabled(false);
-                    break;
-                case "3":
-                    warehouse.setVisible(false);
-                    warehouse.setEnabled(false);
-                    break;
-                case "-1":
-                    etalase.setVisible(false);
-                    etalase.setEnabled(false);
-                    warehouse.setVisible(false);
-                    warehouse.setEnabled(false);
-                    break;
+                switch (productData.getInfo().getProductStatus()) {
+                    case "1":
+                        etalase.setVisible(false);
+                        etalase.setEnabled(false);
+                        break;
+                    case "3":
+                        warehouse.setVisible(false);
+                        warehouse.setEnabled(false);
+                        break;
+                    case "-1":
+                        etalase.setVisible(false);
+                        etalase.setEnabled(false);
+                        warehouse.setVisible(false);
+                        warehouse.setEnabled(false);
+                        break;
+                }
             }
         } else {
             menuShare.setVisible(false);
