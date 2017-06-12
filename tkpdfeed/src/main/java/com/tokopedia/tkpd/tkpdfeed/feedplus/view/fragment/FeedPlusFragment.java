@@ -304,7 +304,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         infoBottomSheet.show();
     }
 
-    @Overrideg
+    @Override
     public void onFavoritedClicked(int adapterPosition) {
         adapter.getItemViewType(adapterPosition);
         PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
