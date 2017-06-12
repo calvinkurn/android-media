@@ -40,6 +40,8 @@ import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -266,89 +268,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
     }
 
-    private Uri simplifyUrl(String url) {
-        Uri afUri = Uri.parse(url);
-        String newUri = afUri.getQueryParameter("af_dp");
-        Map<String, String> maps = splitQuery(afUri);
-        for (Map.Entry<String, String> imap : maps.entrySet()) {
-            switch (imap.getKey()) {
-                case "utm_source":
-                    newUri += "&utm_source=" + imap.getValue();
-                    break;
-                case "utm_medium":
-                    newUri += "&utm_medium=" + imap.getValue();
-                    break;
-                case "utm_term":
-                    newUri += "&utm_term=" + imap.getValue();
-                    break;
-                case "utm_content":
-                    newUri += "&utm_content=" + imap.getValue();
-                    break;
-                case "utm_campaign":
-                    newUri += "&utm_campaign=" + imap.getValue();
-                    break;
-                case "gclid":
-                    newUri += "&gclid=" + imap.getValue();
-                    break;
-            }
-        }
-        return Uri.parse(newUri);
-    }
-
     @Override
     public void sendCampaignGTM(String campaignUri, String screenName) {
-        if (!isValidCampaignUrl(Uri.parse(campaignUri))) {
+        if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
             return;
         }
-        Campaign campaign = convertUrlCampaign(Uri.parse(campaignUri));
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(campaign);
         UnifyTracking.eventCampaign(campaignUri);
-    }
-
-    private Map<String, String> splitQuery(Uri url) {
-        Map<String, String> queryPairs = new LinkedHashMap<>();
-        String query = url.getQuery();
-        if (!TextUtils.isEmpty(query)) {
-            String[] pairs = query.split("&|\\?");
-            for (String pair : pairs) {
-                int indexKey = pair.indexOf("=");
-                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
-                    try {
-                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
-                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return queryPairs;
-    }
-
-    private boolean isValidCampaignUrl(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
-        return maps.containsKey("utm_source") &&
-                maps.containsKey("utm_medium") &&
-                maps.containsKey("utm_campaign");
-    }
-
-    private Campaign convertUrlCampaign(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
-        Campaign campaign = new Campaign();
-        campaign.setUtmSource(maps.get("utm_source") != null ?
-                maps.get("utm_source") : "");
-        campaign.setUtmMedium(maps.get("utm_medium") != null ?
-                maps.get("utm_medium") : "");
-        campaign.setUtmCampaign(maps.get("utm_campaign") != null ?
-                maps.get("utm_campaign") : "");
-        campaign.setUtmContent(maps.get("utm_content") != null ?
-                maps.get("utm_content") : "");
-        campaign.setUtmTerm(maps.get("utm_term") != null ?
-                maps.get("utm_term") : "");
-        campaign.setGclid(maps.get("gclid") != null ?
-                maps.get("gclid") : "");
-        return campaign;
     }
 
     private boolean isExcludedUrl(Uri uriData) {
@@ -421,8 +349,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
-        if (isValidCampaignUrl(uriData)) {
-            Map<String, String> maps = splitQuery(uriData);
+        if (DeeplinkUTMUtils.isValidCampaignUrl(uriData)) {
+            Map<String, String> maps = DeeplinkUTMUtils.splitQuery(uriData);
             if (maps.get("utm_source") != null) {
                 bundle.putString(RechargeRouter.ARG_UTM_SOURCE, maps.get("utm_source"));
             }
@@ -652,7 +580,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (map.size() > 0) {
                     if (map.get("link") != null) {
                         String oriUri = map.get("link");
-                        processDeepLinkAction(simplifyUrl(oriUri));
+                        processDeepLinkAction(DeeplinkUTMUtils.simplifyUrl(oriUri));
                     }
                 }
             }

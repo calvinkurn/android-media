@@ -191,6 +191,17 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(simpleTarget);
+    }
+
     public static void loadImage2(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -206,6 +217,14 @@ public class ImageHandler {
                     .error(resId)
                     .into(imageview);
         }
+    }
+
+    public static void loadImageAndCache(ImageView imageview, String url) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .into(imageview);
     }
 
     public static void loadImageCover2(ImageView imageview, String url) {
@@ -466,6 +485,14 @@ public class ImageHandler {
 
 
     public static void loadImageFromFile(Context context, ImageView imageView, File file) {
+
+        Glide.with(context)
+                .load(file)
+                .centerCrop()
+                .into(imageView);
+    }
+
+    public static void loadImageFromFileFitCenter(Context context, ImageView imageView, File file) {
 
         Glide.with(context)
                 .load(file)

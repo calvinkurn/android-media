@@ -26,10 +26,9 @@
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
-
-        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".instoped.InstopedActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_top_ads_dashboard"
@@ -81,7 +80,7 @@
         <activity
             android:name=".topads.view.activity.TopAdsDetailShopActivity"
             android:label="@string/title_shop_ad_detail"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailProductActivity"
             android:label="@string/title_product_ad_detail"
@@ -115,14 +114,26 @@
             android:label="@string/title_group_ad_edit"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
             android:name=".lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
-
         <activity
             android:name=".myproduct.ManageProduct"
             android:label="@string/title_activity_manage_product"
@@ -131,10 +142,10 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".myproduct.ProductActivity"
+            android:name=".product.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
+            android:theme="@style/BasicThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -160,52 +171,86 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".myproduct.ProductSocMedActivity"
-            android:label="Add Product Social Media"
+            android:name=".product.view.activity.ProductEditActivity"
+            android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-
-        <service
-            android:name=".myproduct.service.ProductService"
-            android:exported="false" />
-
+            android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
-            android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait" />
+            android:name=".product.view.activity.ProductDraftAddActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsStatisticShopActivity"
             android:label="@string/title_activity_statistic"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
+            android:label="@string/gm_home_title"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.activity.GmProductActivity"
+            android:label="@string/gmsubscribe_current_product_selector"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
+            android:label="@string/gmsubscribe_checkout_title"
+            android:screenOrientation="portrait"/>
+            android:name=".product.view.activity.ProductDraftEditActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductDuplicateActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductScoringDetailActivity"
+            android:label="@string/title_activity_product_score"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.CategoryPickerActivity"
+            android:label="@string/title_activity_category_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.EtalasePickerActivity"
+            android:label="@string/title_activity_etalase_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.CatalogPickerActivity"
+            android:exported="true"
+            android:label="@string/title_activity_catalog_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.YoutubeAddVideoActivity"
+            android:label="@string/product_label_video"
+            android:theme="@style/BasicThemeActionBar" />
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".topads.view.activity.TopAdsAddProductListActivity"
-            android:label="@string/title_activity_top_ads_list"
-            android:theme="@style/Theme.Tokopedia3"/>
-
         <activity
             android:name=".reputation.view.activity.SellerReputationActivity"
             android:label="@string/title_activity_reputation"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
 
         <service
-            android:name="com.tokopedia.seller.selling.SellingService"
-            android:exported="false"/>
-
-        <service android:name=".shop.ShopEditService"
-            android:exported="false"/>
+            android:name=".selling.SellingService"
+            android:exported="false" />
+        <service
+            android:name=".shop.ShopEditService"
+            android:exported="false" />
+        <service
+            android:name=".product.view.service.UploadProductService"
+            android:exported="false" />
     </application>
 
 </manifest>

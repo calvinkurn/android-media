@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -18,12 +19,15 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -48,11 +52,6 @@ public class ConsumerRouterApplication extends MainApplication implements
         Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToGMSubscribe(Context context) {
-        throw new RuntimeException("consumer dont have gm subscribe !!!");
     }
 
     @Override
@@ -105,6 +104,17 @@ public class ConsumerRouterApplication extends MainApplication implements
 
 
     @Override
+    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(url);
+        paymentPassData.setQueryString(parameter);
+        paymentPassData.setCallbackSuccessUrl(callbackUrl);
+        paymentPassData.setPaymentId(String.valueOf(paymentId));
+        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
+        context.startActivity(intent);
+    }
+
+    @Override
     public Fragment getRechargeCategoryFragment() {
         Bundle bundle = new Bundle();
         return RechargeCategoryFragment.newInstance(bundle);
@@ -143,7 +153,7 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductActivity.moveToEditFragment(context, isEdit, productId);
+        return ProductEditActivity.createInstance(context, productId);
     }
 
     @Override
@@ -163,6 +173,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onLogout(AppComponent appComponent) {
+        TkpdSellerLogout.onLogOut(appComponent);
     }
 
     @Override

@@ -69,15 +69,15 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        String mulaiDari = getContext().getString(R.string.mulaiDari);
+        String startFrom = getContext().getString(R.string.mulaiDari);
         if (data.getInfo().getProductInstallments()
                 != null && data.getInfo().getProductInstallments().size() > 0) {
             installmentLayout.setVisibility(VISIBLE);
 
             String installmentMinPercentage = data.getInfo().getInstallmentMinPercentage();
-            String bunga = getContext().getString(R.string.bunga);
+            String interest = getContext().getString(R.string.bunga);
             String installmentMinPrice = data.getInfo().getInstallmentMinPrice();
-            String installment = bunga + " " + installmentMinPercentage + " " + mulaiDari
+            String installment = interest + " " + installmentMinPercentage + " " + startFrom
                     + " " + installmentMinPrice;
             tvInstallment.setText(installment);
             isInstallment = true;
@@ -94,7 +94,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         if (data.getWholesalePrice() != null && data.getWholesalePrice().size() > 0) {
             wholesaleLayout.setVisibility(VISIBLE);
             String wholseSaleMinPrice = data.getInfo().getWholseSaleMinPrice();
-            String wholeSale = mulaiDari + wholseSaleMinPrice;
+            String wholeSale = startFrom + wholseSaleMinPrice;
             tvWholesale.setText(wholeSale);
             isWholesale = true;
             wholesaleLayout.setOnClickListener(new OnClickListener() {

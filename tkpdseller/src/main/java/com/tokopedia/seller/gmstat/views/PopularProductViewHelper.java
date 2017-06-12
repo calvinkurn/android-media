@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -8,11 +9,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -58,7 +59,8 @@ public class PopularProductViewHelper {
     }
 
     public void moveToAddProduct() {
-        ProductActivity.moveToAddProduct(itemView.getContext());
+        Intent intent = new Intent(itemView.getContext(), ProductAddActivity.class);
+        itemView.getContext().startActivity(intent);
     }
 
     public void gotoProductDetail() {

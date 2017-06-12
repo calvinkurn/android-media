@@ -56,6 +56,8 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class PreviewProductImageDetail extends TActivity {
 
+    public static final String FILELOC = "fileloc";
+    public static final String IMG_POSITION = "img_pos";
     private TouchViewPager vpImage;
     private Button tvDownload;
     private ImageView closeButton;
@@ -77,8 +79,8 @@ public class PreviewProductImageDetail extends TActivity {
 
         if (getIntent().getExtras() != null) {
             extras = getIntent().getExtras();
-            fileLocations = extras.getStringArrayList("fileloc");
-            position = extras.getInt("img_pos");
+            fileLocations = extras.getStringArrayList(FILELOC);
+            position = extras.getInt(IMG_POSITION);
         } else {
             fileLocations = new ArrayList<>();
         }

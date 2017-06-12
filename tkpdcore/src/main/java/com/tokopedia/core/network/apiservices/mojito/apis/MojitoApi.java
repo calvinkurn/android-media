@@ -2,7 +2,9 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.home.Brands;
+import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 
 import retrofit2.Response;
@@ -37,5 +39,16 @@ public interface MojitoApi {
             @Path("userId") String userId,
             @Query("q") String query,
             @Query("page") int page,
-            @Query("count") int count);
+            @Query("count") int count,
+            @Header("X-Device") String device);
+
+    @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
+    Observable<Response<BannerOfficialStoreModel>> getOSBanner(
+            @Query("keywords") String keyword
+    );
+
+    @GET(TkpdBaseURL.Mojito.PATH_CHECK_WISHLIST)
+    Observable<Response<WishlistCheckResult>> checkWishlist(
+            @Path("userId") String userId,
+            @Path("listId") String listId);
 }

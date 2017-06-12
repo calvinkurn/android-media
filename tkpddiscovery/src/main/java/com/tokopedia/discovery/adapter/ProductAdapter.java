@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -15,8 +14,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +30,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.core.InfoTopAds;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.discovery.old.BucketListImageScroll;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
-import com.tokopedia.core.home.adapter.ProductFeedAdapter;
-import com.tokopedia.core.home.model.HorizontalProductList;
-import com.tokopedia.core.home.model.ViewHolderProductTopAds;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
@@ -49,20 +43,29 @@ import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
-import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
-import com.tokopedia.discovery.presenter.BrowseView;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import org.parceler.Parcels;
 
@@ -71,9 +74,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
+
+//import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+//import com.tokopedia.core.product.customview.RatingView;
+//import com.tokopedia.core.product.fragment.ProductDetailFragment;
 
 
 /**
@@ -81,23 +87,26 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.G
  */
 public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static final String DATA_LIST = "DATA_LIST";
-    public static final String TOPADS_COUNTER = "TOPADS_COUNTER";
     public static final String ADAPTER_PAGING = "ADAPTER_PAGING";
     private static final String TAG = ProductAdapter.class.getSimpleName();
     public static final int ROWS_OF_PRODUCT = 12;
     //    private static final int PRODUCT_GRIDVIEW = 151_458;
     PagingHandler.PagingHandlerModel pagingHandlerModel;
     int page = 1;
-    private int topAddsCounter = 0;
     private String source = "search";
     private String category = "";
+    private FragmentBrowseProductView fragmentBrowseProductView;
 
-    public int getTopAddsCounter() {
-        return topAddsCounter + 1; // + 1 because it will indexed as 0
-    }
 
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
+        this(context, data, null);
+    }
+
+    public ProductAdapter(Context context, List<RecyclerViewItem> data,
+                          FragmentBrowseProductView fragmentBrowseProductView) {
+
         super(context, data);
+        this.fragmentBrowseProductView = fragmentBrowseProductView;
         Log.d(TAG, "ProductAdapter data " + data.size());
         if (context != null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
@@ -119,18 +128,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
-                        R.layout.listview_product_item_list,
-                        parent, false), source, category);
+                return new ViewHolderProductitem(context,
+                        LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false),
+                        source, category, fragmentBrowseProductView);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
-                        R.layout.listview_product_item_grid, parent, false), source, category);
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-            case TkpdState.RecyclerView.VIEW_TOP_ADS:
-                return ProductFeedAdapter.createViewTopAds(parent);
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
-                return onCreateTopAds4ViewHolder(parent);
+                return new ViewHolderProductitem(context,
+                        LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false),
+                        source, category, fragmentBrowseProductView);
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
                 return onCreateBannerHotList(parent);
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
@@ -139,6 +144,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateRevampCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                return OsBannerAdapter.onCreateBannerOfficialStore(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -149,34 +156,35 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         if (!checkAvailableData(position)) {
             return;
         }
-
-        switch (getItemViewType(position)) {
-            case TkpdState.RecyclerView.VIEW_PRODUCT:
-            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
-            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                ViewHolderProductitem itemHolder = (ViewHolderProductitem) holder;
-                itemHolder.bindData((ProductItem) data.get(position), itemHolder);
-                break;
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-                bindTopAdsListViewHolder((ViewHolderProductTopAds) holder, position);
-                break;
-            case TkpdState.RecyclerView.VIEW_TOP_ADS:
-                bindTopAdsViewHolder((ViewHolderProductTopAds) holder, position);
-                break;
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
-                ((TopAds4ViewHolder) holder).bind((HorizontalProductList) data.get(position));
-                break;
-            case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
-                ((BannerHotListViewHolder) holder).bind((HotListBannerModel) data.get(position));
-                break;
-            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
-                ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
-                break;
-            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
-                ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
+        Log.d(TAG, "onBindViewHolder Product Adapter getItemViewType " + getItemViewType(position));
+        try {
+            switch (getItemViewType(position)) {
+                case TkpdState.RecyclerView.VIEW_PRODUCT:
+                case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
+                    ViewHolderProductitem itemHolder = (ViewHolderProductitem) holder;
+                    itemHolder.bindData((ProductItem) data.get(position), itemHolder, position);
+                    break;
+                case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
+                    ((BannerHotListViewHolder) holder).bind((HotListBannerModel) data.get(position));
+                    break;
+                case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+                    ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
+                    break;
+                case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+                    ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
+                    break;
+                case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                    ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
+                    break;
+                case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                    ((OsBannerAdapter.BannerOsViewHolder) holder).bind((OsBannerAdapter.OsBannerViewModel) data.get(position));
+                    break;
+                default:
+                    super.onBindViewHolder(holder, position);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -209,26 +217,60 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void resetPaging() {
         page = 1;
-        topAddsCounter = 0;
     }
 
 
     //[START] This is banner HotList
 
 
-    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_empty_hotlist, parent, false);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.include_no_result);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        linearLayout.setLayoutParams(lp);
-        ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
-        return new RecyclerView.ViewHolder(view) {
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_state, parent, false);
+        return new TopAdsEmptyStateViewHolder(view);
+    }
+
+    public static class TopAdsEmptyStateViewHolder extends RecyclerView.ViewHolder implements
+            TopAdsItemClickListener {
+        @BindView(R2.id.topads)
+        TopAdsView topAdsView;
+        private Context context;
+
+        public TopAdsEmptyStateViewHolder(View itemView) {
+            super(itemView);
+            context = itemView.getContext();
+            ButterKnife.bind(this, itemView);
+            Config topAdsconfig = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(context))
+                    .setUserId(SessionHandler.getLoginID(context))
+                    .setEndpoint(Endpoint.PRODUCT)
+                    .withPreferedCategory()
+                    .build();
+            topAdsView.setConfig(topAdsconfig);
+            topAdsView.setAdsItemClickListener(this);
+        }
+
+        public void loadTopAds() {
+            topAdsView.loadTopAds();
+        }
+
+        @Override
+        public void onProductItemClicked(Product product) {
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
+                    product.getId());
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onShopItemClicked(Shop shop) {
+            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+            Intent intent = new Intent(context, ShopInfoActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+
+        }
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {
@@ -326,82 +368,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     //[END] This is banner HotList
 
 
-    //[START] This is for top ads
-    private void bindTopAdsListViewHolder(ViewHolderProductTopAds holder, int position) {
-        LinearLayoutManager manager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        holder.listTopAdProduct.setLayoutManager(manager);
-
-        HorizontalProductList horizontalProductList = (HorizontalProductList) data.get(position);
-        TopAdsListRecyclerViewAdapter topAdsList = new TopAdsListRecyclerViewAdapter(horizontalProductList.getListProduct(), context, source);
-        holder.listTopAdProduct.setAdapter(topAdsList);
-        topAdsList.notifyDataSetChanged();
-    }
-
-    private void bindTopAdsViewHolder(ViewHolderProductTopAds holder, int position) {
-        GridLayoutManager manager = new GridLayoutManager(context, 2);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (position == 0) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-            }
-        });
-        holder.listTopAdProduct.setLayoutManager(manager);
-        HorizontalProductList horizontalProductList = (HorizontalProductList) data.get(position);
-        TopAdsRecyclerViewAdapter adapter = new TopAdsRecyclerViewAdapter(context, horizontalProductList.getListProduct(), source);
-        holder.listTopAdProduct.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
-
-    private TopAds4ViewHolder onCreateTopAds4ViewHolder(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.top_ads_four_layout, parent, false);
-        return new TopAds4ViewHolder(inflate);
-    }
-
-    public static class TopAds4ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.main_content)
-        LinearLayout mainContent;
-
-        @BindView(R2.id.titlePromote)
-        TextView titlePromote;
-
-        @BindView(R2.id.info_topads)
-        ImageView infoTopAds;
-
-        @BindView(R2.id.top_ads_linearlayout)
-        LinearLayout topAdsRecyclerView;
-
-        public TopAds4ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void bind(final HorizontalProductList horizontalProductList) {
-            final Context context = itemView.getContext();
-            BucketListImageScroll bucketListImageScroll = new BucketListImageScroll(context);
-            bucketListImageScroll.setContain(horizontalProductList);
-            if (context != null && context instanceof BrowseView) {
-                String adSrc = ((BrowseView) context).getBrowseProductActivityModel().getAdSrc();
-                bucketListImageScroll.setAdSrc(adSrc);
-            } else {
-                bucketListImageScroll.setAdSrc(TopAdsApi.SRC_BROWSE_PRODUCT);
-            }
-            bucketListImageScroll.setAdapter(topAdsRecyclerView);
-            infoTopAds.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    InfoTopAds infoTopAds = new InfoTopAds();
-                    Activity activity = (Activity) context;
-                    infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
-                }
-            });
-        }
-    }
-
     private DefaultCategoryHeaderViewHolder onCreateDefaultCategoryHeader(ViewGroup parent) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
         return new DefaultCategoryHeaderViewHolder(inflate);
@@ -438,7 +404,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
                             GridLayoutManager.VERTICAL, false));
             defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(
-                    categoryHeaderModel.context,R.drawable.divider300));
+                    categoryHeaderModel.context, R.drawable.divider300));
             categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,
                     categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
@@ -449,7 +415,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     public void onClick(View v) {
                         UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
-                                .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
+                                .subList(6, categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
                         categoryHeaderModel.isUsedUnactiveChildren = false;
                         hideLayout.setVisibility(View.VISIBLE);
@@ -519,9 +485,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             revampCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 3,
                             GridLayoutManager.VERTICAL, false));
-            categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth, categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
+            ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                     categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
             titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
@@ -532,7 +498,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     public void onClick(View v) {
                         UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
-                                .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
+                                .subList(9, categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
                         categoryHeaderModel.isUsedUnactiveChildren = false;
                         hideLayout.setVisibility(View.VISIBLE);
@@ -594,13 +560,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-            case TkpdState.RecyclerView.VIEW_TOP_ADS:
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
-            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
                 return recyclerViewItem.getType();
             default:
                 return -1;
@@ -618,22 +582,26 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isHotListBanner(int position) {
-        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
+        if (checkDataSize(position))
+            return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
+        return false;
     }
 
     public boolean isCategoryHeader(int position) {
-        return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
-                || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
+        if (checkDataSize(position))
+            return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
+                    || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
+        return false;
     }
 
     public boolean isEmptySearch(int position) {
-        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
+        if (checkDataSize(position))
+            return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
+        return false;
     }
 
-    public boolean isTopAds(int position) {
-        if (position > data.size())
-            return false;
-        return ProductFeedAdapter.isTopAds(data.get(position)) || data.get(position).getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_4;
+    public boolean isOfficialStoreBanner(int position) {
+        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
     }
 
     /**
@@ -642,7 +610,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      */
     public void addAll(boolean reload, List<RecyclerViewItem> datas) {
         addAll(false, reload, datas);
-
     }
 
     /**
@@ -651,14 +618,22 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @param datas     just another data.
      */
     public void addAll(boolean withClear, boolean reload, List<RecyclerViewItem> datas) {
+        int positionStart = getItemCount();
+        int itemCount = datas.size();
         if (withClear) {
             this.data.clear();
             resetPaging();
+            positionStart = 0;
         }
         this.data.addAll(datas);
         if (reload)
-            notifyItemInserted(datas.size());
+            notifyItemRangeInserted(positionStart, itemCount);
     }
+
+    public void addAll(List<RecyclerViewItem> datas) {
+        this.data.addAll(datas);
+    }
+
 
     // SETTER AND GETTER BELOW
 
@@ -686,62 +661,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         this.page++;
     }
 
-    public int addTopAds(List<ProductItem> listProduct, int page) {
-        Log.d(TAG, "masuk sini list add size " + listProduct.size());
-        boolean productIsEmpty = false;
-        if (data != null && data.size() == 0) {
-            setIsLoading(false);
-            notifyDataSetChanged();
-            productIsEmpty = true;
-        }
-        boolean isHeader = checkIfOffset();
-        if (listProduct != null && listProduct.size() > 0) {
-            int i = page - 1;
-            int posTop = (i * 12) + topAddsCounter + (isHeader ? 1 : 0);
-            topAddsCounter++;
-            Log.d(TAG, "ukuran data : " + data.size() + " : posTop " + posTop);
-            HorizontalProductList horizontalProductListTop = new HorizontalProductList(listProduct);
-            if (context != null && context instanceof BrowseProductActivity) {
-                BrowseProductRouter.GridType gridType = ((BrowseProductActivity) context).getGridType();
-                switch (gridType) {
-                    case GRID_1:
-                        horizontalProductListTop.setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
-                        break;
-                    default:
-                        horizontalProductListTop.setType(TkpdState.RecyclerView.VIEW_TOP_ADS);
-                        break;
-                }
-            } else {
-                horizontalProductListTop.setType(TkpdState.RecyclerView.VIEW_TOP_ADS);
-            }
-
-            if (data.size() > 1) {
-                try {
-                    data.add(posTop, horizontalProductListTop);
-                } catch (Exception e) {
-                    data.add(data.size(), horizontalProductListTop);
-                }
-            } else {
-                data.add(horizontalProductListTop);
-            }
-            if (productIsEmpty) {
-                setSearchNotFound();
-            }
-            notifyItemInserted(posTop);
-            return posTop;
-        }
-        return 0;
-    }
 
     protected boolean checkIfOffset() {
         return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
-        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
-                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER));
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE));
     }
 
     public void setSearchNotFound() {
         data.add(new EmptySearchItem());
-        notifyDataSetChanged();
     }
 
     public void addHotListHeader(HotListBannerModel hotListBannerModel) {
@@ -754,6 +683,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addCategoryRevampHeader(CategoryHeaderRevampModel categoryHeaderModel) {
         data.add(0, categoryHeaderModel);
+    }
+
+    public void addOfficialStoreBanner(OsBannerAdapter.OsBannerViewModel bannerModel) {
+        data.add(0, bannerModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
@@ -792,7 +725,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private CategoryHeaderModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_HEADER);
-
         }
 
         public Data getCategoryHeader() {
@@ -812,11 +744,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.categoryWidth = categoryWidth;
             this.listener = listener;
             this.scrollListener = scrollListener;
-            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>6) {
+            if (categoryHeader.getChild() != null && categoryHeader.getChild().size() > 6) {
                 activeChildren.addAll(categoryHeader.getChild()
-                        .subList(0,6));
+                        .subList(0, 6));
                 isUsedUnactiveChildren = true;
-            } else if (categoryHeader.getChild()!=null) {
+            } else if (categoryHeader.getChild() != null) {
                 activeChildren.addAll(categoryHeader.getChild());
             }
             this.totalProduct = totalProduct;
@@ -855,11 +787,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.categoryWidth = categoryWidth;
             this.listener = listener;
             this.scrollListener = scrollListener;
-            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>9) {
+            if (categoryHeader.getChild() != null && categoryHeader.getChild().size() > 9) {
                 activeChildren.addAll(categoryHeader.getChild()
-                        .subList(0,9));
+                        .subList(0, 9));
                 isUsedUnactiveChildren = true;
-            } else if (categoryHeader.getChild()!=null){
+            } else if (categoryHeader.getChild() != null) {
                 activeChildren.addAll(categoryHeader.getChild());
             }
             this.totalProduct = totalProduct;
@@ -876,14 +808,20 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public void saveAdapterPaging(Bundle bundle) {
-        bundle.putInt(TOPADS_COUNTER, topAddsCounter);
         bundle.putInt(ADAPTER_PAGING, page);
     }
 
     public void restoreAdapterPaging(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             page = savedInstanceState.getInt(ADAPTER_PAGING, 1);
-            topAddsCounter = savedInstanceState.getInt(TOPADS_COUNTER, 0);
+        }
+
+    }
+
+    public void updateWishlistStatus(boolean isWishlist, int position) {
+        if (!data.isEmpty() && data.get(position) instanceof ProductItem) {
+            ((ProductItem) data.get(position)).setProductAlreadyWishlist(isWishlist);
+            notifyItemChanged(position);
         }
 
     }
@@ -903,27 +841,42 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         TextView location;
         @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
+        @BindView(R2.id.wishlist_button)
+        ImageView wishlistButton;
+        @BindView(R2.id.wishlist_button_container)
+        RelativeLayout wishlistButtonContainer;
+        @BindView(R2.id.container)
+        View container;
+        @BindView(R2.id.rating)
+        ImageView rating;
+        @BindView(R2.id.review_count)
+        TextView reviewCount;
 
         private Context context;
         private String source = "";
         private String categoryId = "";
         private ProductItem data;
+        private final FragmentBrowseProductView fragmentBrowseProductView;
 
-        public ViewHolderProductitem(Context context, View itemView, String source, String categoryId) {
+        public ViewHolderProductitem(Context context, View itemView, String source, String categoryId,
+                                     FragmentBrowseProductView fragmentBrowseProductView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.context = context;
             this.source = source;
             this.categoryId = categoryId;
+            this.fragmentBrowseProductView = fragmentBrowseProductView;
         }
 
-        public ViewHolderProductitem(Context context, View itemView) {
+        public ViewHolderProductitem(Context context, View itemView,
+                                     FragmentBrowseProductView fragmentBrowseProductView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.context = context;
+            this.fragmentBrowseProductView = fragmentBrowseProductView;
         }
 
-        public void bindData(ProductItem data, ViewHolderProductitem viewHolder) {
+        public void bindData(final ProductItem data, ViewHolderProductitem viewHolder, final int position) {
             this.data = data;
             if (data.getSpannedName() != null)
                 title.setText(data.getSpannedName());
@@ -965,40 +918,58 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     labelContainer.addView(view);
                 }
             }
+            if (data.getIsTopAds()) {
+                wishlistButtonContainer.setVisibility(View.GONE);
+            } else {
+                wishlistButtonContainer.setVisibility(View.VISIBLE);
+            }
+            if (data.isProductAlreadyWishlist()) {
+                wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
+            } else {
+                wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
+            }
+            wishlistButtonContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragmentBrowseProductView.onWishlistButtonClick(data, position);
+                }
+            });
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClicked(position);
+                }
+            });
+
+            if (TextUtils.isEmpty(data.getRating()) || ("0").equals(data.getReviewCount())) {
+                rating.setVisibility(View.GONE);
+                reviewCount.setVisibility(View.GONE);
+            } else {
+                float rateAmount = Float.parseFloat(data.getRating());
+                rating.setVisibility(View.VISIBLE);
+                reviewCount.setVisibility(View.VISIBLE);
+                rating.setImageResource(
+                        RatingView.getRatingDrawable(getStarCount(rateAmount))
+                );
+                reviewCount.setText("(" + data.getReviewCount() + ")");
+            }
         }
 
-        @OnClick(R2.id.container)
-        public void onClick() {
+        private int getStarCount(float rating) {
+            return Math.round(rating / 20f);
+        }
+
+        private void onItemClicked(int position) {
             if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                 UnifyTracking.eventProductOnCategory(categoryId);
             }
             Bundle bundle = new Bundle();
             Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, position);
             intent.putExtras(bundle);
-            context.startActivity(intent);
+            fragmentBrowseProductView.navigateToActivityRequest(intent, ProductFragment.GOTO_PRODUCT_DETAIL);
         }
-
-    }
-
-    public static class ViewHolderProductGrid extends RecyclerView.ViewHolder {
-
-        public ImageView productImage;
-
-        public ViewHolderProductGrid(View itemLayoutView) {
-            super(itemLayoutView);
-            productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
-        }
-
-        public void bindData(ProductItem data) {
-            ImageHandler.loadImageFitCenter(itemView.getContext(), productImage, data.imgUri);
-        }
-
-        public static RecyclerView.ViewHolder createView(ViewGroup parent) {
-            View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_product_item_grid, parent, false);
-            return new ViewHolderProductGrid(itemLayoutView);
-        }
-
     }
 
     public interface ScrollListener {

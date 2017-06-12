@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxtalk.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -63,6 +64,14 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
+    public static Fragment createInstance(String nav, Boolean forceUnread) {
+        Bundle bundle = new Bundle();
+        InboxTalkFragment fragment = new InboxTalkFragment();
+        bundle.putString("nav", nav);
+        bundle.putBoolean("unread", forceUnread);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public void onErrorAction(Bundle resultData, int resultCode) {
         adapter.onErrorAction(resultData, resultCode);
@@ -88,6 +97,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onCreate(savedInstanceState);
         items = new ArrayList<>();
         adapter = InboxTalkAdapter.createAdapter(getActivity(), this, items, false, true, presenter);
+
     }
 
     @Override
@@ -96,9 +106,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         displayLoading(true);
         requestFromCache();
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
     }
 
     @Override
@@ -252,7 +268,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
             refresh.finishRefresh();
             items.clear();
         }
-        refresh.setPullEnabled(true);
         items.addAll(list);
         if (!(getActivity() instanceof InboxTalkActivity))
             adapter.setEnableAction(false);
@@ -275,12 +290,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         if (page == 1) {
             refresh.finishRefresh();
             if (items.size() > 0) {
-                refresh.setPullEnabled(true);
                 removeLoadingFooter();
                 adapter.notifyDataSetChanged();
                 NetworkErrorHelper.showSnackbar(getActivity());
             } else {
-                refresh.setPullEnabled(false);
                 displayView(false);
                 if (error.length() <= 0) {
                     NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryListener());
@@ -289,7 +302,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                 }
             }
         } else {
-            refresh.setPullEnabled(false);
             removeLoadingFooter();
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), retrySnackbarListener());
             adapter.setEnableAction(false);
@@ -336,7 +348,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
 //        if (pagingHandler.getPage() == 1) {
 //            refresh.finishRefresh();
 //            items.clear();
@@ -351,7 +362,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void onCacheResponse(List<InboxTalk> list, int isUnread) {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
         items.addAll(list);
         adapter.notifyDataSetChanged();
         displayLoading(false);
@@ -365,7 +375,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     private void request() {
         floatingActionButton.setEnabled(false);
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.getInboxTalk(getActivity(), getParam());
     }
 
@@ -373,7 +382,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     private void firstRequest() {
         floatingActionButton.setEnabled(false);
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.refreshInboxTalk(getActivity(), getParam());
     }
 
@@ -381,7 +389,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void cancelRequest() {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
     }
 
     @Override
@@ -476,4 +483,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         }
 
     }
+
+
 }

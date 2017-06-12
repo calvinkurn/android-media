@@ -26,6 +26,8 @@ public class ProductDetailRouter {
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
     public static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     public static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
+    public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+    public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
 
     public static Intent createInstanceProductDetailInfoActivity(Context context, ProductPass data) {
         Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);

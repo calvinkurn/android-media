@@ -92,8 +92,6 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVariable();
-        setRetainInstance(true);
-        setUserVisibleHint(true);
         if (isFirstTime && isDataEmpty()) {
             presenter.getReputationFromCache(getProductID(), NAV);
         }
@@ -420,6 +418,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
         if(advanceReview!=null ){
             displayLoading(false);
             enableFilterStats();
+            recyclerList.clear();
             recyclerList.addAll(listReputation);
             ratingStatsUtils.setModelToView(advanceReview);
             adapter.notifyDataSetChanged();

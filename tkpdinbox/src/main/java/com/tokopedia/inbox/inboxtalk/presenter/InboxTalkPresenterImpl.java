@@ -136,41 +136,42 @@ public class InboxTalkPresenterImpl implements InboxTalkPresenter {
 
     @Override
     public void getInboxTalkFromCache(Map<String, String> param) {
-        cacheInteractor.getInboxTalkFromCache(param.get("nav"), new InboxTalkCacheInteractor.GetInboxTalkListener() {
-            @Override
-            public void onError(String error) {
-                view.onCacheNoResult();
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-                view.onCacheNoResult();
-            }
-
-            @Override
-            public void onTimeout() {
-                view.onCacheNoResult();
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                if (result != null) {
-                    InboxTalkListModel model = facade.parseList(result);
-//                    PagingHandler.PagingHandlerModel paging = facade.parsePaging(result);
-                    NewPagingHandler.PagingBean paging = facade.parsePaging(result);
-                    nextPage = paging.getNextPage();
-                    if (nextPage != null && !nextPage.equals("0") && !nextPage.equals("")) {
-                        view.setLoadingFooter();
-                    } else {
-                        nextPage = "0";
-                        view.removeLoadingFooter();
+        cacheInteractor.getInboxTalkFromCache(param.get("nav"),
+                new InboxTalkCacheInteractor.GetInboxTalkListener() {
+                    @Override
+                    public void onError(String error) {
+                        view.onCacheNoResult();
                     }
-                    view.onCacheResponse(model.getList(), model.getIsUnread());
-                } else {
-                    view.onCacheNoResult();
-                }
-            }
-        });
+
+                    @Override
+                    public void onThrowable(Throwable e) {
+                        view.onCacheNoResult();
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        view.onCacheNoResult();
+                    }
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        if (result != null) {
+                            InboxTalkListModel model = facade.parseList(result);
+//                    PagingHandler.PagingHandlerModel paging = facade.parsePaging(result);
+                            NewPagingHandler.PagingBean paging = facade.parsePaging(result);
+                            nextPage = paging.getNextPage();
+                            if (nextPage != null && !nextPage.equals("0") && !nextPage.equals("")) {
+                                view.setLoadingFooter();
+                            } else {
+                                nextPage = "0";
+                                view.removeLoadingFooter();
+                            }
+                            view.onCacheResponse(model.getList(), model.getIsUnread());
+                        } else {
+                            view.onCacheNoResult();
+                        }
+                    }
+                });
     }
 
 

@@ -8,6 +8,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -56,8 +57,6 @@ public interface BrowseView {
 
     void sendChangeGridBroadcast(BrowseProductRouter.GridType gridType);
     void renderUpperCategoryLevel(SimpleCategory simpleCategory);
-
-    void renderCategoriesHeader(Data categoryHeader);
 
     int getCurrentSuggestionTab();
     void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId);

@@ -83,7 +83,7 @@ public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
     }
 
 
-    private int getRatingDrawable(int param) {
+    public static int getRatingDrawable(int param) {
         switch (param) {
             case 0:
                 return R.drawable.ic_star_none;

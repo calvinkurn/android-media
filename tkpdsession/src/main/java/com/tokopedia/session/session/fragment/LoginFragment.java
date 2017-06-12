@@ -49,27 +49,27 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
-import com.tokopedia.core.session.presenter.*;
-import com.tokopedia.session.activation.activity.ActivationActivity;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.register.activity.SmartLockActivity;
-import com.tokopedia.session.session.google.GoogleActivity;
-import com.tokopedia.session.session.model.LoginModel;
+import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
+import com.tokopedia.session.session.google.GoogleActivity;
+import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.LoginView;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
@@ -714,6 +714,7 @@ LoginFragment extends Fragment implements LoginView {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
                 startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                getActivity().finish();
             }
         }
         switch (type) {
@@ -780,6 +781,8 @@ LoginFragment extends Fragment implements LoginView {
                     Bundle lbundle = new Bundle();
                     lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
                     startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                    getActivity().finish();
+
                 }
                 break;
             case 200:

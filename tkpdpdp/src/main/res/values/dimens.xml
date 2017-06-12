@@ -31,6 +31,7 @@
     <dimen name="padding_vl">40dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
 
     <dimen name="half_screen">160dp</dimen>
     <dimen name="half_screen_pad">160dp</dimen>

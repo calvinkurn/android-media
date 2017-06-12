@@ -10,28 +10,25 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.di.qualifier.GlobalAuth;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -41,7 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
@@ -53,7 +49,9 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
@@ -68,7 +66,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_DIRECTORY_VALUE;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 /**
@@ -163,16 +160,20 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderTopAds() {
-        topAdsView.setAdsItemClickListener(this);
-        topAdsView.setAdsListener(this);
-        topAdsView.setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()));
-
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
         params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
-        topAdsView.setTopAdsParams(params);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .topAdsParams(params)
+                .build();
+
+        topAdsView.setAdsItemClickListener(this);
+        topAdsView.setAdsListener(this);
+        topAdsView.setConfig(config);
         topAdsView.loadTopAds();
     }
 
@@ -293,6 +294,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         departmentId = id;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+    }
+
     private void showErrorEmptyState() {
         NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
                         .getFrameLayout(),
@@ -361,7 +368,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onAddFavorite(Shop shop) {
+    public void onAddFavorite(Data shopData) {
         //TODO: this listener not used in this sprint
     }
 
