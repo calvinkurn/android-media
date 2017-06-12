@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private static final String WEEK_TIMER_FORMAT = "%dw : ";
     private static final String DAY_TIMER_FORMAT = "%dd : ";
