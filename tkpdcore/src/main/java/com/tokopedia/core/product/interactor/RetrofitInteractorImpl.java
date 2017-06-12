@@ -58,6 +58,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.network.retrofit.response.TkpdResponse.TOO_MANY_REQUEST;
+
 /**
  * RetrofitInteractorImpl
  * Created by Angga.Prasetiyo on 02/12/2015.
@@ -124,6 +126,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     } else {
                         if (response.body().getStatus().equals("REQUEST_DENIED"))
                             listener.onError("");
+                        else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                            listener.onError(response.body().getErrorMessageJoined());
+                        }
                         else if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
