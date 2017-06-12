@@ -34,7 +34,6 @@ import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
@@ -279,8 +278,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     public interface OnFragmentInteractionListener {
-        void showHelpWebview(String helpUrl);
-
+        //void showHelpWebview(String helpUrl);
         void rideHistoryUpdated(RideHistoryViewModel viewModel);
     }
 
@@ -412,12 +410,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         };
     }
 
-    @OnClick(R2.id.layout_need_help)
-    public void actionNeedHelpClicked() {
-        mListener.showHelpWebview(rideHistory.getHelpUrl());
-        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
-        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
-    }
+//    @OnClick(R2.id.layout_need_help)
+//    public void actionNeedHelpClicked() {
+//        mListener.showHelpWebview(rideHistory.getHelpUrl());
+//        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
+//        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
+//    }
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {

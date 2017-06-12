@@ -29,7 +29,8 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         setContentView(R.layout.activity_ride_history_detail);
         setupToolbar();
         rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
-        replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory.getRequestId()));
+        replaceFragment(R.id.top_container, RideHistoryDetailFragment.newInstance(rideHistory));
+        replaceFragment(R.id.fl_need_help_web_view, FragmentGeneralWebView.createInstance(rideHistory.getHelpUrl()));
     }
 
     private void setupToolbar() {
@@ -66,26 +67,10 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     }
 
     @Override
-    public void showHelpWebview(String helpUrl) {
-        setTitle(R.string.help_toolbar_title);
-        replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(helpUrl));
-    }
-
-    @Override
     public void rideHistoryUpdated(RideHistoryViewModel viewModel) {
         this.rideHistory = viewModel;
     }
 
-    @Override
-    public void onBackPressed() {
-        if ((getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment)
-                || (getFragmentManager().findFragmentById(R.id.fl_container) instanceof FragmentGeneralWebView)) {
-            setTitle(R.string.trip_detail_toolbar_title);
-            replaceFragment(R.id.fl_container, RideHistoryDetailFragment.newInstance(rideHistory));
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public void onWebViewSuccessLoad() {

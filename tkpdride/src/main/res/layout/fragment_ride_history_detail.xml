@@ -359,36 +359,7 @@
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <LinearLayout
-            android:id="@+id/layout_need_help"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:padding="12dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/need_help"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:text="@string/link_click_here"
-                android:textColor="@color/colorGreen" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@id/layout_need_help"
-            android:background="@color/grey_300" />
     </RelativeLayout>
 
     <ProgressBar
