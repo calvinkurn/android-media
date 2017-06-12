@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@+id/ride_history_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -230,29 +231,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl_driver_detail_cpntainer"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp"
-                    android:paddingBottom="10dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/grey_200"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp">
 
-                    <View
-                        android:id="@+id/v_line_below_driver"
+
+                    <TextView
+                        android:id="@+id/tv_payment_details"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/grey_300" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center"
+                        android:text="@string/label_payment_details"
+                        android:textAllCaps="true"
+                        android:textColor="@color/grey_700"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_label_total_fare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/v_line_below_driver"
+                        android:layout_below="@+id/tv_payment_details"
                         android:drawablePadding="10dp"
                         android:gravity="center"
                         android:text="@string/total_fare"
-                        android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_total_fare_value"
@@ -260,10 +268,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@+id/v_line_below_driver"
+                        android:layout_below="@+id/tv_payment_details"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_label_discount"
@@ -273,8 +281,8 @@
                         android:layout_marginTop="9dp"
                         android:gravity="center"
                         android:text="@string/label_discount"
-                        android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_discount"
@@ -285,7 +293,7 @@
                         android:paddingTop="8dp"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_label_cashback"
@@ -295,8 +303,8 @@
                         android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="@string/label_cashback"
-                        android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_cashback"
@@ -307,7 +315,7 @@
                         android:paddingTop="8dp"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                     <View
                         android:id="@+id/fare_sep"
@@ -325,10 +333,11 @@
                         android:layout_below="@id/fare_sep"
                         android:drawableLeft="@drawable/ic_tokocash_icon"
                         android:drawablePadding="10dp"
+                        android:drawableTint="@color/grey_800"
                         android:gravity="center"
                         android:text="@string/complete_trip_tokocash_charged"
-                        android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_total_charged"
@@ -338,7 +347,7 @@
                         android:layout_below="@id/fare_sep"
                         android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 
@@ -347,8 +356,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rl_payment_details"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp"
                     android:visibility="gone">
 
                     <include
@@ -359,36 +366,7 @@
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <LinearLayout
-            android:id="@+id/layout_need_help"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:padding="12dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/need_help"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:text="@string/link_click_here"
-                android:textColor="@color/colorGreen" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@id/layout_need_help"
-            android:background="@color/grey_300" />
     </RelativeLayout>
 
     <ProgressBar
@@ -398,7 +376,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

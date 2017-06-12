@@ -120,6 +120,7 @@
     <string name="complete_trip_submit">SUBMIT</string>
     <string name="complete_trip_rating_successfully">Rating Successfully sent</string>
     <string name="complete_trip_you_rate">You rate</string>
+    <string name="label_payment_details">Payment Details</string>
     <string name="ontrip_marker_driver">Driver</string>
     <string name="ontrip_rider_canceled_request_message">Rider Canceled Request</string>
     <string name="ride_home_map_go_to_pin">GO TO PIN</string>

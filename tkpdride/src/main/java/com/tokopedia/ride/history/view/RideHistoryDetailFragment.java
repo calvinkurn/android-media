@@ -12,6 +12,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +35,6 @@ import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
@@ -209,9 +209,15 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         requestTimeTextView.setText(rideHistory.getRequestTime());
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
-        driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         setPickupLocationText(rideHistory.getStartAddress());
         setDestinationLocation(rideHistory.getEndAddress());
+
+        if (TextUtils.isEmpty(rideHistory.getDriverName())) {
+            driverNameTextView.setVisibility(View.GONE);
+        } else {
+            driverNameTextView.setVisibility(View.VISIBLE);
+            driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
+        }
 
         totalChargedTexView.setText(rideHistory.getFare());
         rideFareTextView.setText(rideHistory.getFare());
@@ -279,8 +285,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     public interface OnFragmentInteractionListener {
-        void showHelpWebview(String helpUrl);
-
+        //void showHelpWebview(String helpUrl);
         void rideHistoryUpdated(RideHistoryViewModel viewModel);
     }
 
@@ -412,12 +417,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         };
     }
 
-    @OnClick(R2.id.layout_need_help)
-    public void actionNeedHelpClicked() {
-        mListener.showHelpWebview(rideHistory.getHelpUrl());
-        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
-        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
-    }
+//    @OnClick(R2.id.layout_need_help)
+//    public void actionNeedHelpClicked() {
+//        mListener.showHelpWebview(rideHistory.getHelpUrl());
+//        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
+//        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
+//    }
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
