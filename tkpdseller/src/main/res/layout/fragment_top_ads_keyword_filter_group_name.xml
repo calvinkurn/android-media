@@ -22,20 +22,22 @@
             android:layout_gravity="center_vertical"
             android:hint="@string/top_ads_keyword_search_group"
             android:imeOptions="actionSearch"
+            android:background="@drawable/background_edittext_line"
             android:maxLines="1"
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
             android:singleLine="true"
             android:textColor="@drawable/color_state_topads_disable_text"
             android:textColorHighlight="@android:color/transparent"
-            android:textSize="16sp"
-            app:backgroundTint="@color/font_top_ads_green" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/group_filter_search_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:paddingBottom="5dp"
             android:src="@drawable/ic_group_magnifier" />
 
         <View
