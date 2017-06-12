@@ -259,7 +259,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
                                       @Override
                                       public void updateDrawState(TextPaint ds) {
-                                          ds.setUnderlineText(true);
                                           ds.setColor(MethodChecker.getColor(getActivity(),
                                                   com.tokopedia.core.R.color.tkpd_main_green));
                                       }
