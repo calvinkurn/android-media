@@ -601,7 +601,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isOfficialStoreBanner(int position) {
-        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
+        if(checkDataSize(position)) {
+            return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
+        }
+
+        return false;
     }
 
     /**
