@@ -64,6 +64,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             switchDisplay(list.get(0));
         }
         adapter.setList(list);
+        adapter.setPosition(getAdapterPosition());
     }
 
     @Override

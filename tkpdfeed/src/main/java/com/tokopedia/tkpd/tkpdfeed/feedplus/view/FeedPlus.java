@@ -76,6 +76,8 @@ public interface FeedPlus{
         void shouldLoadTopAds(boolean loadTopAds);
 
         void hideTopAdsAdapterLoading();
+
+        String getString(int msg_network_error);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

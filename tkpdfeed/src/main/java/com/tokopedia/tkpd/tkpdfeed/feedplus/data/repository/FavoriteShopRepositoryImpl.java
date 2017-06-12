@@ -18,7 +18,7 @@ public class FavoriteShopRepositoryImpl implements FavoriteShopRepository{
     }
 
     @Override
-    public Observable<String> doFavoriteShop(RequestParams requestParams){
+    public Observable<Boolean> doFavoriteShop(RequestParams requestParams){
         return factory.createCloudDoFavoriteShop().favoriteShop(requestParams.getParameters());
     }
 }

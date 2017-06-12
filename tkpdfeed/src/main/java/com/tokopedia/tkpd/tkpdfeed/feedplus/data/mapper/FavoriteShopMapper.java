@@ -11,19 +11,19 @@ import rx.functions.Func1;
  * Created by stevenfredian on 5/26/17.
  */
 
-public class FavoriteShopMapper implements Func1<Response<TkpdResponse>, String> {
+public class FavoriteShopMapper implements Func1<Response<TkpdResponse>, Boolean> {
 
     @Override
-    public String call(Response<TkpdResponse> tkpdResponseResponse) {
+    public Boolean call(Response<TkpdResponse> tkpdResponseResponse) {
         if (tkpdResponseResponse.isSuccessful())
             if (!tkpdResponseResponse.body().isError()) {
-                return "sukses";
+                return true;
             } else {
                 String errorMessage = tkpdResponseResponse.body().getErrorMessages().toString();
-                return errorMessage;
+                return false;
             }
         else {
-            return "gagal";
+            return false;
         }
     }
 }
