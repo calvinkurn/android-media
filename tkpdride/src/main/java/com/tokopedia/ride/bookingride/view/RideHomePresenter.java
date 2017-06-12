@@ -14,10 +14,10 @@ import rx.Subscriber;
  */
 
 public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View> implements RideHomeContract.Presenter {
-    private GetCurrentRideRequestUseCase mGetCurrentRideRequestUseCase;
+    private GetCurrentRideRequestUseCase getCurrentRideRequestUseCase;
 
     public RideHomePresenter(GetCurrentRideRequestUseCase getCurrentRideRequestUseCase) {
-        this.mGetCurrentRideRequestUseCase = getCurrentRideRequestUseCase;
+        this.getCurrentRideRequestUseCase = getCurrentRideRequestUseCase;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
     @Override
     public void actionCheckPendingRequestIfAny() {
         getView().showCheckPendingRequestLoading();
-        mGetCurrentRideRequestUseCase.execute(getView().getCurrentRideRequestParam(), new Subscriber<RideRequest>() {
+        getCurrentRideRequestUseCase.execute(getView().getCurrentRideRequestParam(), new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
 
@@ -127,7 +127,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
 
     @Override
     public void onDestroy() {
-        mGetCurrentRideRequestUseCase.unsubscribe();
+        getCurrentRideRequestUseCase.unsubscribe();
     }
 
 

@@ -269,7 +269,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
 
         if (receipt.getCashback() > 0) {
-            cashbackValueTextView.setText(receipt.getCashback() + "");
+            cashbackValueTextView.setText(String.valueOf(receipt.getCashback()));
             cashbackLableTextView.setVisibility(View.VISIBLE);
             cashbackValueTextView.setVisibility(View.VISIBLE);
         } else {
@@ -278,7 +278,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
 
         if (receipt.getDiscount() > 0) {
-            discountValueTextView.setText("- " + receipt.getDiscount());
+            discountValueTextView.setText(String.format("- %s", String.valueOf(receipt.getDiscount())));
             discountValueTextView.setVisibility(View.VISIBLE);
             discountLabelTextView.setVisibility(View.VISIBLE);
         } else {

@@ -17,6 +17,13 @@ import rx.functions.Func1;
  */
 
 public class GetOverviewPolylineUseCase extends UseCase<List<OverviewPolyline>> {
+    public static final String PARAM_ORIGIN = "origin";
+    public static final String PARAM_DESTINATION = "destination";
+    public static final String PARAM_SENSOR = "sensor";
+    public static final String PARAM_TRAFFIC_MODEL = "traffic_model";
+    public static final String PARAM_MODE = "mode";
+    public static final String PARAM_DEPARTURE_TIME = "departure_time";
+    public static final String PARAM_WAYPOINTS = "waypoints";
     private final PlaceRepository placeRepository;
 
     public GetOverviewPolylineUseCase(ThreadExecutor threadExecutor,

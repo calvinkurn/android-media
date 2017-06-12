@@ -140,7 +140,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                         digitalModuleRouter.instanceIntentCartDigitalProductWithBundle(bundle),
                         IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
                 );
-            } else if (uri.getScheme().equals("tokopedia")) {
+            } else if (uri.getScheme().equals("tokopedoa")) {
                 String id = "";
                 String key = "";
                 if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))) {
@@ -214,13 +214,17 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                     (Uri.encode(url)),
                     getActivity()
             );
+            clearCache(webview);
+            webview.loadAuthUrlWithFlags(url);
+        }else {
+            clearCache(webview);
+            webview.loadUrl(url);
         }
 
         Log.d(TAG, "InterruptDialog after seamless = " + url);
 
         progressBar.setIndeterminate(true);
-        clearCache(webview);
-        webview.loadAuthUrlWithFlags(url);
+
         webview.setWebViewClient(new InterruptConfirmationWebClient());
         webview.setWebChromeClient(new MyWebViewClient());
         WebSettings webSettings = webview.getSettings();

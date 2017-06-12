@@ -172,7 +172,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
             if (!TextUtils.isEmpty(peopleAddressPaging.getNextUrl()) && !String.valueOf(peopleAddressPaging.getNextUrl()).equalsIgnoreCase("0")) {
                 peopleAddressPaging.setPage(page);
                 setActiveMarketplaceSource();
-                mPresenter.actionGetPeopleAddresses(true);
+                presenter.actionGetPeopleAddresses(true);
             }
         }*/
     }

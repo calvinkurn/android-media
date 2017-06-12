@@ -343,7 +343,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS) {
+        if (requestCode == RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE) {
             RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (fragment != null) {
                 fragment.handleLocationAlertResult(resultCode);

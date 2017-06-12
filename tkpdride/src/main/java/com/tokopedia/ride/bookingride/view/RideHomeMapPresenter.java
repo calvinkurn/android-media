@@ -22,8 +22,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.PolyUtil;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
@@ -36,7 +34,6 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -181,7 +178,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS);
+                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }

@@ -60,6 +60,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
@@ -106,6 +107,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
+    private static final String SMS_INTENT_KEY = "sms";
 
 
     OnTripMapContract.Presenter presenter;
@@ -352,23 +354,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
-
-//        if (confirmBookingViewModel != null) {
-//            presenter.getOverViewPolyLine(
-//                    confirmBookingViewModel.getSource().getLatitude(),
-//                    confirmBookingViewModel.getSource().getLongitude(),
-//                    confirmBookingViewModel.getDestination().getLatitude(),
-//                    confirmBookingViewModel.getDestination().getLongitude()
-//            );
-//        } else {
-//            presenter.getOverViewPolyLine(
-//                    rideConfiguration.getActiveSource().getLatitude(),
-//                    rideConfiguration.getActiveSource().getLongitude(),
-//                    rideConfiguration.getActiveDestination().getLatitude(),
-//                    rideConfiguration.getActiveDestination().getLongitude()
-//            );
-//        }
-
     }
 
     @Override
@@ -377,23 +362,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return null;
         } else {
             RequestParams requestParams = RequestParams.create();
-            requestParams.putString("origin", String.format("%s,%s",
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                     source.getLatitude(),
                     source.getLongitude()
             ));
-            requestParams.putString("destination", String.format("%s,%s",
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                     destination.getLatitude(),
                     destination.getLongitude()
             ));
-            requestParams.putString("sensor", "false");
-            requestParams.putString("traffic_model", "best_guess");
-            requestParams.putString("mode", "driving");
-
-
-            requestParams.putString("departure_time", (int) (System.currentTimeMillis() / 1000) + "");
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_SENSOR, "false");
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
 
             if (driverlat != 0 && driverLon != 0) {
-                requestParams.putString("waypoints", String.format("%s,%s",
+                requestParams.putString(GetOverviewPolylineUseCase.PARAM_WAYPOINTS, String.format("%s,%s",
                         driverlat,
                         driverLon
                 ));
@@ -407,20 +390,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("origin", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                 latitude,
                 longitude
         ));
-        requestParams.putString("destination", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destination.getLatitude(),
                 destination.getLongitude()
         ));
-        requestParams.putString("sensor", "false");
-        requestParams.putString("traffic_model", "best_guess");
-        requestParams.putString("mode", "driving");
-
-
-        requestParams.putString("departure_time", (int) (System.currentTimeMillis() / 1000) + "");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_SENSOR, "false");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
 
         return requestParams;
     }
@@ -612,7 +593,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderRiderCanceledRequest(RideRequest result) {
-        Toast.makeText(getActivity(), "Rider Canceled Request", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.ontrip_rider_canceled_request_message, Toast.LENGTH_SHORT).show();
         PlacePassViewModel source = new PlacePassViewModel();
 //        source.setType(PlacePassViewModel.TYPE.OTHER);
         source.setTitle(result.getPickup().getAddressName());
@@ -745,13 +726,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void zoomMapFitByPolyline(List<LatLng> latLngs) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng latLng : latLngs){
+        for (LatLng latLng : latLngs) {
             builder.include(latLng);
         }
         int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 
         int heightPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-        if (bottomContainer.getVisibility() == View.VISIBLE){
+        if (bottomContainer.getVisibility() == View.VISIBLE) {
             int topYAxis = mSrcDestLayout.getBottom();
             int bottomYAxis = bottomContainer.getTop();
             heightPixels = bottomYAxis - topYAxis;
@@ -779,7 +760,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mDriverMarker.remove();
         }
 
-
         if (confirmBookingViewModel != null) {
             markerId = R.drawable.car_map_icon;
             markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
@@ -791,12 +771,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
                     .icon(getCarMapIcon(markerId))
                     .rotation(result.getLocation().getBearing())
-                    .title("Driver");
+                    .title(getString(R.string.ontrip_marker_driver));
         } else {
             options = new MarkerOptions()
                     .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
                     .rotation(result.getLocation().getBearing())
-                    .title("Driver");
+                    .title(getString(R.string.ontrip_marker_driver));
         }
 
         mDriverMarker = mGoogleMap.addMarker(options);
@@ -1161,7 +1141,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void openSmsIntent(String smsNumber) {
         if (!TextUtils.isEmpty(smsNumber)) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.fromParts("sms", smsNumber, null))
+                    Uri.fromParts(SMS_INTENT_KEY, smsNumber, null))
             );
         }
     }
@@ -1248,7 +1228,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
                 .icon(getCarMapIcon(drawable))
                 .rotation(result.getLocation().getBearing())
-                .title("Driver");
+                .title(getString(R.string.ontrip_marker_driver));
 
         if (mGoogleMap != null) {
             mDriverMarker = mGoogleMap.addMarker(options);

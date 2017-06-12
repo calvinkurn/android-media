@@ -138,7 +138,7 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS);
+                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }

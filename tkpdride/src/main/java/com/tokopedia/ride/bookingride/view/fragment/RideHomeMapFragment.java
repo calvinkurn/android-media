@@ -17,14 +17,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -63,61 +61,76 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 
 public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
-    public static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
+    private static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
 
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
     public static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
-    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 1008;
+    public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 1008;
 
-    private static final float DEFAUL_MAP_ZOOM = 14;
+    private static final float DEFAULT_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
+    private static final String DEFAULT_EMPTY_VALUE = "";
+    private static final String DEFAULT_EMPTY_MARKER = "--";
 
-    RideHomeMapContract.Presenter mPresenter;
+    private RideHomeMapContract.Presenter presenter;
 
     @BindView(R2.id.toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
     @BindView(R2.id.mapview)
     MapView mapView;
     @BindView(R2.id.crux_cabs_source)
-    TextView tvSource;
+    TextView sourceTextView;
     @BindView(R2.id.crux_cabs_destination)
-    TextView tvDestination;
+    TextView destinationTextView;
     @BindView(R2.id.layout_src_destination)
-    View mSrcDestLayout;
+    View sourceDestinationPickerLayout;
     @BindView(R2.id.iv_my_location_button)
     ImageView myLocationButton;
     @BindView(R2.id.marker_time)
-    ImageView mMarkerTimeBackgroundImage;
+    ImageView markerTimeBackgroundImageView;
     @BindView(R2.id.tv_marker_pickup_eta)
-    TextView mMarkerTimeTextView;
+    TextView markerTimeTextView;
     @BindView(R2.id.layout_marker_time)
-    RelativeLayout mMarkerTimeLayout;
+    RelativeLayout markerTimeLayout;
     @BindView(R2.id.iv_android_center_marker)
-    ImageView mMarkerImageView;
+    ImageView markerTimeImageView;
     @BindView(R2.id.iv_android_center_marker_cross)
-    ImageView mMarkerCenterCrossImage;
+    ImageView markerTimeCrossImageView;
     @BindView(R2.id.crux_cabs_source_container)
-    RelativeLayout mSourceLayout;
+    RelativeLayout sourcePickerLayout;
     @BindView(R2.id.layout_destination)
-    RelativeLayout mDestinationLayout;
+    RelativeLayout destinationLayoout;
     @BindView(R2.id.tw_map_wrapper)
     TouchableWrapperLayout mapWrapperLayout;
     @BindView((R2.id.destination_clear))
-    ImageView mDestinationClearIcon;
+    ImageView destinationClearImageView;
 
     private PlacePassViewModel source, destination;
 
-    boolean isAlreadySelectDestination;
-    boolean isDisableSelectLocation;
+    private boolean isAlreadySelectDestination;
+    private boolean isDisableSelectLocation;
 
-    GoogleMap mGoogleMap;
+    private GoogleMap googleMap;
+    private OnFragmentInteractionListener interactionListener;
+    private int toolBarHeightinPx;
 
-    private OnFragmentInteractionListener mListener;
-    private int mToolBarHeightinPx;
+    public interface OnFragmentInteractionListener {
+        void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
+
+        void animateBottomPanelOnMapDragging();
+
+        void animateBottomPanelOnMapStopped();
+
+        void showMessageInBottomContainer(String message, String btnText);
+
+        SlidingUpPanelLayout.PanelState getPanelState();
+
+        int getBottomViewLocation();
+    }
 
     public RideHomeMapFragment() {
     }
@@ -161,8 +174,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             ex.printStackTrace();
         }
         mapView.getMapAsync(this);
-        mPresenter.attachView(this);
-        mPresenter.initialize();
+        presenter.attachView(this);
+        presenter.initialize();
     }
 
     @Override
@@ -188,9 +201,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setupToolbar() {
-        if (mToolbar != null) {
-            mToolbar.setTitle(getString(R.string.toolbar_title_booking));
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.toolbar_title_booking));
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
         }
@@ -206,7 +219,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mMarkerTimeBackgroundImage.setImageResource(R.drawable.avd_ride_marker);
+            markerTimeBackgroundImageView.setImageResource(R.drawable.avd_ride_marker);
         }
     }
 
@@ -219,7 +232,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -230,7 +243,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -240,7 +253,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        interactionListener = null;
     }
 
     @Override
@@ -278,14 +291,14 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
+        this.googleMap = googleMap;
         setMapViewListener();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (mGoogleMap != null && source != null) {
+        if (googleMap != null && source != null) {
             moveMapToLocation(source.getLatitude(), source.getLongitude());
         }
     }
@@ -300,10 +313,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
             return;
         }
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
-//        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
+//        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 //            @Override
 //            public void onCameraChange(CameraPosition cameraPosition) {
 //
@@ -311,24 +324,24 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 //        });
 //        mapView.se
 //
-//        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+//        googleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
 //            @Override
 //            public void onCameraMoveStarted(int i) {
 //                if (i == REASON_GESTURE) {
-//                    mPresenter.onMapMoveCameraStarted();
+//                    presenter.onMapMoveCameraStarted();
 //                }
 //            }
 //        });
 //
-//        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+//        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
 //            @Override
 //            public void onCameraIdle() {
-//                mPresenter.onMapMoveCameraIdle();
+//                presenter.onMapMoveCameraIdle();
 //            }
 //        });
 
         if (source != null && destination != null) {
-            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+            presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
         } else if (source != null) {
             moveMapToLocation(source.getLatitude(), source.getLongitude());
@@ -337,28 +350,27 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onMapDragStarted() {
-
         //set source as go to pin
         //add validation if user already pick destination
         if (!isAlreadySelectDestination) {
-            setSourceLocationText("GO TO PIN");
+            setSourceLocationText(getString(R.string.ride_home_map_go_to_pin));
         }
-        mMarkerTimeTextView.setText("--");
+        markerTimeTextView.setText(DEFAULT_EMPTY_MARKER);
 
         //animate marker to lift up
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
-        mMarkerImageView.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
-        mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
         */
         //animate toolbar and source destination layout
-        if (mListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-            mToolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
-            mSrcDestLayout.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+        if (interactionListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            toolbar.animate().translationY(-toolBarHeightinPx).setDuration(300);
+            sourceDestinationPickerLayout.animate().translationY(-toolBarHeightinPx).setDuration(300);
         }
 
-        mListener.animateBottomPanelOnMapDragging();
+        interactionListener.animateBottomPanelOnMapDragging();
     }
 
     @Override
@@ -366,23 +378,23 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //set address based on current address and refresh the product list
         //add validation if user already pick destination
         if (!isAlreadySelectDestination) {
-            double latitude = mGoogleMap.getCameraPosition().target.latitude;
-            double longitude = mGoogleMap.getCameraPosition().target.longitude;
-            mPresenter.actionMapDragStopped(latitude, longitude);
+            double latitude = googleMap.getCameraPosition().target.latitude;
+            double longitude = googleMap.getCameraPosition().target.longitude;
+            presenter.actionMapDragStopped(latitude, longitude);
         }
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        mMarkerImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
         */
 
         //animate toolbar and source destination layout
-        mToolbar.animate().translationY(0).setDuration(300);
-        mSrcDestLayout.animate().translationY(0).setDuration(300);
+        toolbar.animate().translationY(0).setDuration(300);
+        sourceDestinationPickerLayout.animate().translationY(0).setDuration(300);
 
-        mListener.animateBottomPanelOnMapStopped();
+        interactionListener.animateBottomPanelOnMapStopped();
     }
 
     public void disablePickLocation() {
@@ -399,39 +411,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
      * @param resultCode
      */
     public void handleLocationAlertResult(int resultCode) {
-        mPresenter.handleEnableLocationDialogResult(resultCode);
+        presenter.handleEnableLocationDialogResult(resultCode);
     }
 
     @Override
     public void onLayoutDrag() {
-        mPresenter.onMapMoveCameraStarted();
+        presenter.onMapMoveCameraStarted();
     }
 
     @Override
     public void onLayoutIdle() {
-        mPresenter.onMapMoveCameraIdle();
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
-
-        void animateBottomPanelOnMapDragging();
-
-        void animateBottomPanelOnMapStopped();
-
-        void showMessageInBottomContainer(String message, String btnText);
-
-        SlidingUpPanelLayout.PanelState getPanelState();
-
-        int getBottomViewLocation();
+        presenter.onMapMoveCameraIdle();
     }
 
     private void setInitialVariable() {
-        mPresenter = BookingRideDependencyInjection.createPresenter(
+        presenter = BookingRideDependencyInjection.createPresenter(
                 getActivity().getApplicationContext()
         );
 
-        mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+        toolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
         if (isLaunchedWithLocation()) {
             source = getArguments().getParcelable(EXTRA_SOURCE);
@@ -447,8 +445,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case LOGIN_REQUEST_CODE:
-                    Toast.makeText(getActivity(), "User Logged In", Toast.LENGTH_SHORT).show();
-                    mPresenter.initialize();
+                    presenter.initialize();
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     source = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
@@ -476,22 +473,22 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private void proccessToRenderRideProduct() {
         startMarkerAnimation();
-        mListener.onSourceAndDestinationChanged(source, destination);
+        interactionListener.onSourceAndDestinationChanged(source, destination);
         if (source != null && destination != null) {
-            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+            presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
         }
     }
 
     @Override
     public void showMessage(String message, String btnText) {
-        mListener.showMessageInBottomContainer(message, btnText);
+        interactionListener.showMessageInBottomContainer(message, btnText);
     }
 
     @Override
     public void moveMapToLocation(double latitude, double longitude) {
-        if (mGoogleMap != null) {
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
+        if (googleMap != null) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
         }
     }
 
@@ -518,7 +515,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mapView.onResume();
         super.onResume();
         if (source != null && destination != null) {
-            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+            presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
         }
     }
@@ -543,7 +540,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_green);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
-        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, mDestinationLayout);
+        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, sourcePickerLayout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
     }
 
@@ -554,7 +551,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
-        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, mDestinationLayout);
+        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayoout);
 
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
     }
@@ -566,13 +563,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         isAlreadySelectDestination = false;
 
         //update map
-        if (mGoogleMap != null) {
-            mGoogleMap.clear();
+        if (googleMap != null) {
+            googleMap.clear();
             moveMapToLocation(source.getLatitude(), source.getLongitude());
         }
         showMarkerCenter();
 
-        setDestinationLocationText("");
+        setDestinationLocationText(DEFAULT_EMPTY_VALUE);
         proccessToRenderRideProduct();
 
     }
@@ -590,32 +587,32 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void setSourceLocationText(String address) {
-        tvSource.setText(address);
+        sourceTextView.setText(address);
     }
 
     @Override
     public void setDestinationLocationText(String address) {
         if (address != null && address.length() > 0) {
-            tvDestination.setText(address);
-            mDestinationClearIcon.setVisibility(View.VISIBLE);
+            destinationTextView.setText(address);
+            destinationClearImageView.setVisibility(View.VISIBLE);
         } else {
-            tvDestination.setText("");
-            mDestinationClearIcon.setVisibility(View.GONE);
+            destinationTextView.setText(DEFAULT_EMPTY_VALUE);
+            destinationClearImageView.setVisibility(View.GONE);
         }
     }
 
     private void startMarkerAnimation() {
-        mMarkerTimeTextView.setText("--");
+        markerTimeTextView.setText(DEFAULT_EMPTY_MARKER);
 
-        if (mMarkerTimeBackgroundImage.getDrawable() instanceof Animatable) {
-            ((Animatable) mMarkerTimeBackgroundImage.getDrawable()).start();
+        if (markerTimeBackgroundImageView.getDrawable() instanceof Animatable) {
+            ((Animatable) markerTimeBackgroundImageView.getDrawable()).start();
         }
     }
 
 
     @Override
     public void renderTripPolyline(List<OverviewPolyline> overviewPolylines) {
-        if (mGoogleMap == null) {
+        if (googleMap == null) {
             return;
         }
 
@@ -624,13 +621,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             routes.add(PolyUtil.decode(route.getOverviewPolyline()));
         }
 
-        mGoogleMap.clear();
+        googleMap.clear();
 
         for (List<LatLng> route : routes) {
             if (route.size() > 1) {
-                RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+                RouteMapAnimator.getInstance().animateRoute(googleMap, route);
             }
-//            mGoogleMap.addPolyline(new PolylineOptions()
+//            googleMap.addPolyline(new PolylineOptions()
 //                    .addAll(route)
 //                    .width(10)
 //                    .color(Color.BLACK)
@@ -639,12 +636,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
 
         //add markers on source and destination
-        mGoogleMap.addMarker(new MarkerOptions()
+        googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(source.getLatitude(), source.getLongitude()))
                 .icon(getMarkerIcon(R.drawable.marker_green))
                 .title(source.getAddress()));
 
-        mGoogleMap.addMarker(new MarkerOptions()
+        googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
                 .icon(getMarkerIcon(R.drawable.marker_red))
                 .title(destination.getAddress()));
@@ -665,10 +662,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             ));
         }
         int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int topYAxis = mSrcDestLayout.getBottom();
-        int bottomYAxis = mListener.getBottomViewLocation();
+        int topYAxis = sourceDestinationPickerLayout.getBottom();
+        int bottomYAxis = interactionListener.getBottomViewLocation();
         int heightPixels = bottomYAxis - topYAxis;
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
                 widthPixels, heightPixels,
                 getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
         );
@@ -682,25 +679,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @OnClick(R2.id.iv_my_location_button)
     public void actionMyLocationButtonClicked() {
-        mPresenter.actionMyLocation();
+        presenter.actionMyLocation();
     }
 
     @Override
     public void hideMarkerCenter() {
-        mMarkerTimeBackgroundImage.setVisibility(View.GONE);
-        mMarkerTimeTextView.setVisibility(View.GONE);
-        mMarkerTimeLayout.setVisibility(View.GONE);
-        mMarkerImageView.setVisibility(View.GONE);
-        mMarkerCenterCrossImage.setVisibility(View.GONE);
+        markerTimeBackgroundImageView.setVisibility(View.GONE);
+        markerTimeTextView.setVisibility(View.GONE);
+        markerTimeLayout.setVisibility(View.GONE);
+        markerTimeImageView.setVisibility(View.GONE);
+        markerTimeCrossImageView.setVisibility(View.GONE);
     }
 
     @Override
     public void showMarkerCenter() {
-        mMarkerTimeBackgroundImage.setVisibility(View.VISIBLE);
-        mMarkerTimeTextView.setVisibility(View.VISIBLE);
-        mMarkerTimeLayout.setVisibility(View.VISIBLE);
-        mMarkerImageView.setVisibility(View.VISIBLE);
-        mMarkerCenterCrossImage.setVisibility(View.GONE);
+        markerTimeBackgroundImageView.setVisibility(View.VISIBLE);
+        markerTimeTextView.setVisibility(View.VISIBLE);
+        markerTimeLayout.setVisibility(View.VISIBLE);
+        markerTimeImageView.setVisibility(View.VISIBLE);
+        markerTimeCrossImageView.setVisibility(View.GONE);
     }
 
     @Override
@@ -709,12 +706,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         shake.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.red_500));
+                destinationTextView.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.red_500));
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.pdp_rating_color_new));
+                destinationTextView.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.pdp_rating_color_new));
             }
 
             @Override
@@ -723,7 +720,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             }
         });
 
-        tvDestination.startAnimation(shake);
+        destinationTextView.startAnimation(shake);
     }
 
     @Override
@@ -741,18 +738,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     public void setMarkerText(String timeEst) {
-        mMarkerTimeTextView.setText(timeEst);
+        markerTimeTextView.setText(timeEst);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPresenter.detachView();
-    }
-
-    public static float convertDpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return Math.round(px);
+        presenter.detachView();
     }
 }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -54,6 +55,15 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     private BackButtonListener backButtonListener;
     private OnUpdatedByPushNotification onUpdatedByPushNotification;
     private BroadcastReceiver mReceiver;
+
+
+    public interface BackButtonListener {
+        void onBackPressed();
+
+        boolean canGoBack();
+
+        boolean isAnyPendingRequest();
+    }
 
     public static Intent getCallingIntent(Activity activity, ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = new Intent(activity, OnTripActivity.class);
@@ -175,7 +185,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
                 onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
                 addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
             } else {
-                Toast.makeText(this, "Invalid Request", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, ErrorNetMessage.MESSAGE_ERROR_DEFAULT, Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -185,7 +195,6 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         OnTripActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
-
 
     private void addFragment(int containerViewId, Fragment fragment, String tag) {
         if (!isFinishing()) {
@@ -228,10 +237,6 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             Intent intent = getIntent();
             setResult(APP_HOME_RESULT_CODE, intent);
             finish();
-//            Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//            finish();
         } else {
             finish();
         }
@@ -251,14 +256,6 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_RIDE_ONTRIP;
-    }
-
-    public interface BackButtonListener {
-        void onBackPressed();
-
-        boolean canGoBack();
-
-        boolean isAnyPendingRequest();
     }
 
 

@@ -87,9 +87,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetRideProductUseCase getRideProductUseCase;
     private RideRequest activeRideRequest;
 
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+    private Location currentLocation;
     private CompositeSubscription subscription;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
@@ -106,7 +106,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         this.getRideRequestUseCase = getRideRequestUseCase;
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getRideProductUseCase = getRideProductUseCase;
-        subscription = new CompositeSubscription();
+        this.subscription = new CompositeSubscription();
     }
 
 
@@ -206,9 +206,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void createRideRequest(RequestParams requestParams) {
-        if (mCurrentLocation != null) {
-            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
-            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
+        if (currentLocation != null) {
+            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LATITUDE, currentLocation.getLatitude());
+            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LONGITUDE, currentLocation.getLongitude());
         }
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
@@ -516,7 +516,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override
@@ -562,8 +562,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                             latLngs
                                     );
                                 }
-
-
                             }
                         } else {
                             if (routes.size() > 0) {
@@ -636,9 +634,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         if (isViewAttached()) {
 
                             RequestParams requestParams = getView().getCurrentRequestParams(getView().getRequestId());
-                            if (mCurrentLocation != null) {
-                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
-                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
+                            if (currentLocation != null) {
+                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LATITUDE, currentLocation.getLatitude());
+                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LONGITUDE, currentLocation.getLongitude());
                             }
                             return getRideRequestUseCase.createObservable(requestParams);
                         }
@@ -812,8 +810,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionGoToCurrentLocation() {
-        if (mCurrentLocation != null) {
-            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        if (currentLocation != null) {
+            getView().moveMapToLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
         }
     }
 
@@ -832,20 +830,20 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void initializeLocationService() {
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getView().getActivity())
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(getView().getActivity())
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
-                                mCurrentLocation = getFuzedLocation();
+                                currentLocation = getFuzedLocation();
                                 startLocationUpdates();
                             } else {
                                 checkLocationSettings();
@@ -868,7 +866,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     .build();
         }
 
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
     /**
@@ -876,10 +874,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
      */
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
+                .addLocationRequest(locationRequest);
 
         PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                LocationServices.SettingsApi.checkLocationSettings(googleApiClient,
                         builder.build());
 
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
@@ -892,7 +890,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        mCurrentLocation = getFuzedLocation();
+                        currentLocation = getFuzedLocation();
                         startLocationUpdates();
 
                         break;
@@ -902,7 +900,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS);
+                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }
@@ -918,7 +916,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         });
     }
 
-    public Location getFuzedLocation() {
+    private Location getFuzedLocation() {
         if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
                 && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -926,7 +924,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             return null;
         }
 
-        return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        return LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
     }
 
     private void startLocationUpdates() {
@@ -936,10 +934,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 != PackageManager.PERMISSION_GRANTED)) {
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new LocationListener() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                mCurrentLocation = location;
+                currentLocation = location;
             }
         });
     }

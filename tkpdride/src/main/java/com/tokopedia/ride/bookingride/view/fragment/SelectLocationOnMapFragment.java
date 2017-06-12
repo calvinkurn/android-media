@@ -182,7 +182,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @Override
     public void onStart() {
         super.onStart();/*
-        if (mGoogleMap != null && source != null) {
+        if (googleMap != null && source != null) {
             moveMapToLocation(source.getLatitude(), source.getLongitude());
         }*/
     }
@@ -214,19 +214,19 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
 
-//        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+//        googleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
 //            @Override
 //            public void onCameraMoveStarted(int i) {
 //                if (i == REASON_GESTURE) {
-//                    mPresenter.onMapMoveCameraStarted();
+//                    presenter.onMapMoveCameraStarted();
 //                }
 //            }
 //        });
 //
-//        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+//        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
 //            @Override
 //            public void onCameraIdle() {
-//                mPresenter.onMapMoveCameraIdle();
+//                presenter.onMapMoveCameraIdle();
 //            }
 //        });
     }
