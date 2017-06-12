@@ -12,6 +12,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -208,9 +209,15 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         requestTimeTextView.setText(rideHistory.getRequestTime());
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
-        driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         setPickupLocationText(rideHistory.getStartAddress());
         setDestinationLocation(rideHistory.getEndAddress());
+
+        if (TextUtils.isEmpty(rideHistory.getDriverName())) {
+            driverNameTextView.setVisibility(View.GONE);
+        } else {
+            driverNameTextView.setVisibility(View.VISIBLE);
+            driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
+        }
 
         totalChargedTexView.setText(rideHistory.getFare());
         rideFareTextView.setText(rideHistory.getFare());
