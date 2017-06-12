@@ -77,7 +77,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     }
 
     public void renderTempData(ProductPass productPass) {
-        tvName.setText(productPass.getProductName());
+        tvName.setText(MethodChecker.fromHtml(productPass.getProductName()));
         tvPrice.setText(productPass.getProductPrice());
         setVisibility(VISIBLE);
     }
