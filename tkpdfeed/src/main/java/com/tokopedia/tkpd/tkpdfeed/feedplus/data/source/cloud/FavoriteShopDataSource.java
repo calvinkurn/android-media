@@ -24,7 +24,7 @@ public class FavoriteShopDataSource {
         this.mapper = mapper;
     }
 
-    public Observable<String> favoriteShop(TKPDMapParam<String, Object> parameters) {
+    public Observable<Boolean> favoriteShop(TKPDMapParam<String, Object> parameters) {
         return service.getApi().actionFavoriteShop(parameters).map(mapper);
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -11,6 +12,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseC
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import javax.inject.Inject;
 
@@ -72,14 +74,14 @@ public class FeedPlusPresenter
                 new GetFeedsSubscriber(viewListener));
     }
 
-    public void favoriteShop(PromotedShopViewModel promotedShopViewModel, final int adapterPosition) {
+    public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
         RequestParams params = RequestParams.create();
         AuthUtil.generateParamsNetwork2(viewListener.getActivity(), params.getParameters());
-        params.putString(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShopId());
-        params.putString(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShopDomain());
-        params.putString(FavoriteShopUseCase.PARAM_SRC, promotedShopViewModel.getSrc());
-        params.putString(FavoriteShopUseCase.PARAM_AD_KEY, promotedShopViewModel.getAdKey());
-        doFavoriteShopUseCase.execute(params, new Subscriber<String>() {
+        params.putString(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShop().getId());
+        params.putString(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShop().getDomain());
+        params.putString(FavoriteShopUseCase.PARAM_SRC, FavoriteShopUseCase.DEFAULT_VALUE_SRC);
+        params.putString(FavoriteShopUseCase.PARAM_AD_KEY, promotedShopViewModel.getAdRefKey());
+        doFavoriteShopUseCase.execute(params, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -91,8 +93,20 @@ public class FeedPlusPresenter
             }
 
             @Override
-            public void onNext(String s) {
-                viewListener.showSnackbar(s);
+            public void onNext(Boolean isSuccess) {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                if(isSuccess){
+                    stringBuilder.append(promotedShopViewModel.getShop().getName());
+                    if(promotedShopViewModel.isFavorit()) {
+                        stringBuilder.append(" dihapus dari toko favorit");
+                    }else {
+                        stringBuilder.append(" berhasil difavoritkan");
+                    }
+                }else {
+                    stringBuilder.append(viewListener.getString(R.string.msg_network_error));
+                }
+                viewListener.showSnackbar(stringBuilder.toString());
                 viewListener.updateFavorite(adapterPosition);
             }
         });

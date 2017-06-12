@@ -10,5 +10,5 @@ import rx.Observable;
 
 public interface FavoriteShopRepository {
 
-    Observable<String> doFavoriteShop(RequestParams requestParams);
+    Observable<Boolean> doFavoriteShop(RequestParams requestParams);
 }

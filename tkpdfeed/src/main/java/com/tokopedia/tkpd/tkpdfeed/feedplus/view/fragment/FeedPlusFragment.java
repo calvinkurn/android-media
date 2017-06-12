@@ -59,11 +59,14 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +80,8 @@ import javax.inject.Inject;
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener,
+        TopAdsFavShopClickListener{
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -136,6 +140,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setFavShopClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -299,11 +304,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         infoBottomSheet.show();
     }
 
-    @Override
+    @Overrideg
     public void onFavoritedClicked(int adapterPosition) {
         adapter.getItemViewType(adapterPosition);
         PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
-        presenter.favoriteShop(promotedShopViewModel, adapterPosition);
+//        presenter.favoriteShop(promotedShopViewModel, adapterPosition);
     }
 
     @Override
@@ -313,9 +318,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
-        promotedShopViewModel.setFavorited(!promotedShopViewModel.isFavorited());
-        adapter.notifyItemChanged(adapterPosition);
+        Object item = ((TopAdsViewModel)topAdsRecyclerAdapter.getPlacer().getItem(adapterPosition)).getList().get(0);
+        if(item instanceof ShopFeedViewModel){
+            ShopFeedViewModel castedItem = ((ShopFeedViewModel) item);
+            Data currentData = castedItem.getData();
+            boolean currentStatus = currentData.isFavorit();
+            currentData.setFavorit(!currentStatus);
+            topAdsRecyclerAdapter.notifyItemChanged(adapterPosition);
+        }
     }
 
     @Override
@@ -460,7 +470,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(Data dataShop) {
         Log.d(TAG, "onAddFavorite " + dataShop.getShop().getName());
-//        presenter.favoriteShop();
+
     }
 
     @Override
@@ -471,5 +481,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         hideTopAdsAdapterLoading();
+    }
+
+    @Override
+    public void onAddShopFavorite(int position, Data data) {
+        presenter.favoriteShop(data, position);
     }
 }
