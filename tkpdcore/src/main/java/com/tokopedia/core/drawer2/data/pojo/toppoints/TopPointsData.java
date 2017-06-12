@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class TopPointsData {
 
+    @SerializedName("active")
+    @Expose
+    private boolean isActive;
     @SerializedName("loyalty_point")
     @Expose
     private LoyaltyPoint loyaltyPoint;
@@ -32,4 +35,11 @@ public class TopPointsData {
         this.uri = uri;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

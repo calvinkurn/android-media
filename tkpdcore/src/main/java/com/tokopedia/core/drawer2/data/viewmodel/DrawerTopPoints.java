@@ -5,6 +5,7 @@ package com.tokopedia.core.drawer2.data.viewmodel;
  */
 
 public class DrawerTopPoints {
+    private boolean isActive;
     private String topPoints;
     private String topPointsUrl;
 
@@ -29,5 +30,11 @@ public class DrawerTopPoints {
         this.topPointsUrl = topPointsUrl;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
