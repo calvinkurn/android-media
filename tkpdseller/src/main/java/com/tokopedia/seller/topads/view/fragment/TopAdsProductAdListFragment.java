@@ -1,16 +1,16 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
@@ -46,7 +46,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsProductAdListPresenterImpl(context, this);
+        presenter = new TopAdsProductAdListPresenterImpl(getActivity(), this);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     }
 
     @Override
-    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
+    protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_product_title_promo_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_text));
@@ -66,16 +66,16 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     }
 
     @Override
-    public void onClicked(Ad ad) {
-        if(ad instanceof ProductAd){
+    public void onItemClicked(Ad ad) {
+        if (ad instanceof ProductAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+            startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
     @Override
-    protected void goToFilter() {
+    public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
@@ -93,7 +93,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
             groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
-            searchAd();
+            searchAd(START_PAGE);
         }
     }
 
@@ -104,8 +104,12 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     public void onEmptyButtonClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
-        this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+        onCreateAd();
     }
 
+    @Override
+    public void onCreateAd() {
+        Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
+        this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+    }
 }

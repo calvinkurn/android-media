@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +54,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         void actionShowComplain(OrderData orderData);
 
         void actionCopyResiNumber(String resiNumber);
+
+        void actionCancelReplacement(OrderData orderData);
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
@@ -163,6 +166,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         switch (instanceType) {
             case TxListFragment.INSTANCE_STATUS:
                 switch (Integer.parseInt(item.getOrderDetail().getDetailOrderStatus())) {
+//                    case TkpdState.OrderStatusState.ORDER_OPPORTUNITY:
+//                        if (item.getOrderButton().getButtonCancelReplacement().equals("1"))
+//                            holder.btnOverflow.setVisibility(View.VISIBLE);
                     case TkpdState.OrderStatusState.ORDER_SHIPPING:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_TRACKER_INVALID:
@@ -207,6 +213,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 break;
             case TxListFragment.INSTANCE_STATUS:
                 switch (Integer.parseInt(item.getOrderDetail().getDetailOrderStatus())) {
+//                    case TkpdState.OrderStatusState.ORDER_OPPORTUNITY:
+//                            MenuID = R.menu.order_status_menu_cancel_replacement;
+//                        break;
                     case TkpdState.OrderStatusState.ORDER_SHIPPING:
                     case TkpdState.OrderStatusState.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
@@ -284,6 +293,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_show_complain) {
                 actionListener.actionShowComplain(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_cancel_replacement) {
+                actionListener.actionCancelReplacement(orderData);
                 return true;
             } else {
                 return false;

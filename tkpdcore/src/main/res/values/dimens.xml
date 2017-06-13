@@ -28,6 +28,7 @@
     <dimen name="padding_vvs">3dp</dimen>
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_small">10dp</dimen>
+    <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
@@ -194,6 +195,9 @@
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="wishlish_button_size">38dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
+    <dimen name="shop_item_preview_width">36dp</dimen>
+    <dimen name="shop_item_preview_height">41dp</dimen>
+    <dimen name="shop_list_reputation_view_height">13dp</dimen>
 
     <dimen name="intermediary_brand">86dp</dimen>
     <dimen name="intermediary_card">100dp</dimen>

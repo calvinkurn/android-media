@@ -77,6 +77,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
         @Override
         public void onError(Throwable e) {
+            if (!isViewAttached()) {
+                return;
+            }
             checkViewAttached();
         }
 
@@ -110,6 +113,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(e));
                     }
 
@@ -225,6 +231,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         getView().onErrorLoadCatalog(ViewUtils.getErrorMessage(e));
                     }
 
@@ -248,6 +257,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         getView().onErrorLoadRecommendationCategory(ViewUtils.getErrorMessage(e));
                     }
 
@@ -281,7 +293,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
             @Override
             public void onError(Throwable e) {
-                checkViewAttached();
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().onErrorLoadScoringProduct(ViewUtils.getErrorMessage(e));
             }
 
@@ -341,7 +355,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
         }
 
@@ -378,8 +394,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
         @Override
         public void onError(Throwable e) {
-
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().onErrorStoreProductAndAddToDraft(ViewUtils.getErrorMessage(e));
         }
 

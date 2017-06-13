@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -14,8 +15,11 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresente
 
 public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopAdsDetailNewProductPresenter> {
 
-    public static Fragment createInstance() {
+    public static Fragment createInstance(String itemId) {
         Fragment fragment = new TopAdsDetailNewProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+        fragment.setArguments(bundle);
         return fragment;
     }
 

@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '24.2.1'
+    supportLibraryVersion = '25.0.0'
     playServiceVersion = '9.0.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -17,6 +17,7 @@ ext {
     tkpdDigitalVersion = '1.+'
     tkpdTopAdsSDKVersion = '1.+'
     tkpdPaymentVersion = '1.+'
+    tkpdPdpVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 15
     targetSdkVersion = 24
@@ -149,12 +150,13 @@ ext {
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}"
+            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
+            tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
-            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.10"
+            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 
 }

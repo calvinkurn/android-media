@@ -17,5 +17,5 @@ public abstract class ProductViewHolder {
 
     public abstract void onSaveInstanceState(Bundle savedInstanceState);
 
-    public abstract void onRestoreInstanceState(Bundle savedInstanceState);
+    public abstract void onViewStateRestored(Bundle savedInstanceState);
 }

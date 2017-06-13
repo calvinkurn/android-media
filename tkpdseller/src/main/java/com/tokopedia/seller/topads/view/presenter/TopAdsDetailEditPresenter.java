@@ -11,4 +11,6 @@ public interface TopAdsDetailEditPresenter<T extends TopAdsDetailEditView> exten
 
     void getDetailAd(String adId);
 
+    void getProductDetail(String productId);
+
 }

@@ -2,10 +2,12 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsFilterActivity;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsProductFilterStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,6 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
 public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
 
     private int selectedFilterStatus;
@@ -25,9 +26,9 @@ public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
     }
 
     @Override
-    protected List<TopAdsFilterContentFragment> getFilterContentList() {
-        List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
-        TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsFilterStatusFragment.createInstance(selectedFilterStatus);
+    protected List<Fragment> getFilterContentList() {
+        List<Fragment> filterContentFragmentList = new ArrayList<>();
+        TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsProductFilterStatusFragment.createInstance(selectedFilterStatus);
         topAdsFilterStatusFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
         return filterContentFragmentList;

@@ -10,6 +10,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
 public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
@@ -53,5 +54,10 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
         if (detailAd !=  null) {
             presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
         }
+    }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        // no op
     }
 }

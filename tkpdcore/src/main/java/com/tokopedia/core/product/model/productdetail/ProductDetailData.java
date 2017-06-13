@@ -46,6 +46,7 @@ public class ProductDetailData implements Parcelable{
     public ProductDetailData() {
     }
 
+
     public ProductInfo getInfo() {
         return info;
     }
@@ -179,7 +180,7 @@ public class ProductDetailData implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductDetailData> CREATOR = new Parcelable.Creator<ProductDetailData>() {
+    public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {
         @Override
         public ProductDetailData createFromParcel(Parcel in) {
             return new ProductDetailData(in);

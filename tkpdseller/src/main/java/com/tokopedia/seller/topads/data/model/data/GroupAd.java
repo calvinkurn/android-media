@@ -5,13 +5,27 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.view.model.StateTypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class GroupAd implements Ad, Parcelable {
+public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
 
+    public static final int TYPE = 19294123;
+    public static final Creator<GroupAd> CREATOR = new Creator<GroupAd>() {
+        @Override
+        public GroupAd createFromParcel(Parcel source) {
+            return new GroupAd(source);
+        }
+
+        @Override
+        public GroupAd[] newArray(int size) {
+            return new GroupAd[size];
+        }
+    };
     @SerializedName("group_id")
     @Expose
     private long id;
@@ -51,7 +65,6 @@ public class GroupAd implements Ad, Parcelable {
     @SerializedName("group_end_time")
     @Expose
     private String endTime;
-
     @SerializedName("stat_avg_click")
     @Expose
     private String statAvgClick;
@@ -79,22 +92,77 @@ public class GroupAd implements Ad, Parcelable {
     @SerializedName("label_of")
     @Expose
     private String labelOf;
-
     @SerializedName("group_name")
     @Expose
     private String name;
-
     @SerializedName("group_moderated")
     @Expose
     private int adModerated;
     @SerializedName("group_moderated_reason")
     @Expose
     private String adModeratedReason;
-
     @SerializedName("total_item")
     @Expose
     private int totalItem;
+    @SerializedName("positive_count")
+    @Expose
+    private int positiveCount;
+    @SerializedName("negative_count")
+    @Expose
 
+    private int negativeCount;
+
+    public GroupAd() {
+
+    }
+
+    protected GroupAd(Parcel in) {
+        this();
+        this.id = in.readLong();
+        this.status = in.readInt();
+        this.statusDesc = in.readString();
+        this.statusToogle = in.readInt();
+        this.priceBidFmt = in.readString();
+        this.priceDailyFmt = in.readString();
+        this.priceDailySpentFmt = in.readString();
+        this.priceDailyBar = in.readString();
+        this.editable = in.readInt();
+        this.startDate = in.readString();
+        this.startTime = in.readString();
+        this.endDate = in.readString();
+        this.endTime = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.labelEdit = in.readString();
+        this.labelPerClick = in.readString();
+        this.labelOf = in.readString();
+        this.name = in.readString();
+        this.adModerated = in.readInt();
+        this.adModeratedReason = in.readString();
+        this.totalItem = in.readInt();
+        this.positiveCount = in.readInt();
+        this.negativeCount = in.readInt();
+    }
+
+    public int getPositiveCount() {
+        return positiveCount;
+    }
+
+    public void setPositiveCount(int positiveCount) {
+        this.positiveCount = positiveCount;
+    }
+
+    public int getNegativeCount() {
+        return negativeCount;
+    }
+
+    public void setNegativeCount(int negativeCount) {
+        this.negativeCount = negativeCount;
+    }
 
     @Override
     public String getPriceDailySpentFmt() {
@@ -104,6 +172,10 @@ public class GroupAd implements Ad, Parcelable {
     @Override
     public String getId() {
         return String.valueOf(id);
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
@@ -210,6 +282,10 @@ public class GroupAd implements Ad, Parcelable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getAdModerated() {
         return adModerated;
     }
@@ -220,9 +296,6 @@ public class GroupAd implements Ad, Parcelable {
 
     public int getTotalItem() {
         return totalItem;
-    }
-
-    public GroupAd() {
     }
 
     @Override
@@ -258,46 +331,31 @@ public class GroupAd implements Ad, Parcelable {
         dest.writeInt(this.adModerated);
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
+        dest.writeInt(this.positiveCount);
+        dest.writeInt(this.negativeCount);
     }
 
-    protected GroupAd(Parcel in) {
-        this.id = in.readLong();
-        this.status = in.readInt();
-        this.statusDesc = in.readString();
-        this.statusToogle = in.readInt();
-        this.priceBidFmt = in.readString();
-        this.priceDailyFmt = in.readString();
-        this.priceDailySpentFmt = in.readString();
-        this.priceDailyBar = in.readString();
-        this.editable = in.readInt();
-        this.startDate = in.readString();
-        this.startTime = in.readString();
-        this.endDate = in.readString();
-        this.endTime = in.readString();
-        this.statAvgClick = in.readString();
-        this.statTotalSpent = in.readString();
-        this.statTotalImpression = in.readString();
-        this.statTotalClick = in.readString();
-        this.statTotalCtr = in.readString();
-        this.statTotalConversion = in.readString();
-        this.labelEdit = in.readString();
-        this.labelPerClick = in.readString();
-        this.labelOf = in.readString();
-        this.name = in.readString();
-        this.adModerated = in.readInt();
-        this.adModeratedReason = in.readString();
-        this.totalItem = in.readInt();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupAd groupAd = (GroupAd) o;
+
+        if (id != groupAd.id) return false;
+        return name != null ? name.equals(groupAd.name) : groupAd.name == null;
+
     }
 
-    public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {
-        @Override
-        public GroupAd createFromParcel(Parcel source) {
-            return new GroupAd(source);
-        }
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 
-        @Override
-        public GroupAd[] newArray(int size) {
-            return new GroupAd[size];
-        }
-    };
+    @Override
+    public int getType() {
+        return TYPE;
+    }
 }

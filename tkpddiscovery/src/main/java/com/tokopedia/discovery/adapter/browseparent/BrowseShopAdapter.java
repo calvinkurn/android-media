@@ -7,6 +7,7 @@
 
 package com.tokopedia.discovery.adapter.browseparent;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +24,15 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.discovery.fragment.ShopFragment;
+import com.tokopedia.discovery.view.ShopView;
 
 import java.util.List;
 
@@ -40,10 +46,15 @@ import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_T
  */
 public class BrowseShopAdapter extends ProductAdapter {
 
+    private final ShopView shopView;
+    private BrowseProductRouter.GridType gridType;
+    private int lastItemClickedPosition = -1;
 
-
-    public BrowseShopAdapter(Context context, List<RecyclerViewItem> data) {
+    public BrowseShopAdapter(Context context,
+                             List<RecyclerViewItem> data,
+                             ShopView shopView) {
         super(context, data);
+        this.shopView = shopView;
     }
 
     @Override
@@ -67,12 +78,39 @@ public class BrowseShopAdapter extends ProductAdapter {
         }
     }
 
-    public static ShopViewHolder createViewShop(ViewGroup parent) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false);
+    public ShopViewHolder createViewShop(ViewGroup parent) {
+        int layoutResId;
+        switch (gridType) {
+            case GRID_1:
+                layoutResId = R.layout.layout_item_shop_list;
+                break;
+            case GRID_2:
+            case GRID_3:
+            default:
+                layoutResId = R.layout.layout_item_shop;
+                break;
+        }
+
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         return new ShopViewHolder(itemLayoutView);
     }
 
-    public static class ShopViewHolder extends RecyclerView.ViewHolder{
+    public void setViewType(BrowseProductRouter.GridType gridType) {
+        this.gridType = gridType;
+    }
+
+    public void updateShopIsFavorited(boolean isFavorited, int position) {
+        if (!data.isEmpty() && data.get(position) instanceof ShopModel) {
+            ((ShopModel) data.get(position)).setFavorited(isFavorited);
+            notifyItemChanged(position);
+        }
+    }
+
+    public int getLastItemClickedPosition() {
+        return lastItemClickedPosition;
+    }
+
+    public class ShopViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R2.id.shop_1)
         LinearLayout mainContent;
@@ -83,17 +121,32 @@ public class BrowseShopAdapter extends ProductAdapter {
         @BindView(R2.id.item_shop_gold)
         ImageView itemShopBadge;
 
-        @BindView(R2.id.item_shop_lucky)
-        ImageView itemShopLucky;
-
         @BindView(R2.id.item_shop_name)
         TextView itemShopName;
 
-        @BindView(R2.id.item_shop_bought)
-        TextView itemShopBought;
+        @BindView(R2.id.reputation_view)
+        ImageView reputationView;
 
-        @BindView(R2.id.item_shop_count_fav)
-        TextView itemShopCountFav;
+        @BindView(R2.id.shop_location)
+        TextView shopLocation;
+
+        @BindView(R2.id.shop_item_preview_1)
+        ImageView itemPreview1;
+
+        @BindView(R2.id.shop_item_preview_2)
+        ImageView itemPreview2;
+
+        @BindView(R2.id.shop_item_preview_3)
+        ImageView itemPreview3;
+
+        @BindView(R2.id.shop_list_favorite_button)
+        View favoriteButton;
+
+        @BindView(R2.id.shop_list_favorite_button_text)
+        TextView favoriteButtonText;
+
+        @BindView(R2.id.shop_list_favorite_button_icon)
+        ImageView favoriteButtonIcon;
 
         public ShopViewHolder(View itemView) {
             super(itemView);
@@ -106,35 +159,98 @@ public class BrowseShopAdapter extends ProductAdapter {
             }
         }
 
-        public void bindData(final Context context, final ShopModel shopModel, int position){
+        public void bindData(final Context context, final ShopModel shopModel, final int position){
             ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
-            itemShopBought.setText(shopModel.getTotalTransaction() + " " + context.getString(R.string.title_total_tx));
-            itemShopCountFav.setText(shopModel.getNumberOfFavorite() + " " + context.getString(R.string.title_favorite));
             itemShopName.setText(shopModel.getShopName());
-            if (shopModel.getIsGold() != null){
-                LuckyShopImage.loadImage(itemShopLucky, shopModel.getLuckyImage());
-            }
             if(shopModel.isOfficial() || shopModel.getIsGold().equals("1")){
                 itemShopBadge.setVisibility(View.VISIBLE);
                 if(shopModel.isOfficial()) {
-                    itemShopBought.setVisibility(View.GONE);
                     itemShopBadge.setImageResource(R.drawable.ic_badge_official);
                 } else if(shopModel.getIsGold().equals("1")){
                     itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
                 }
             } else {
-                itemShopBought.setVisibility(View.VISIBLE);
                 itemShopBadge.setVisibility(View.GONE);
             }
             mainContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    lastItemClickedPosition = position;
+                    shopView.startShopInfoActivity(shopModel.getShopId());
                 }
             });
+            shopLocation.setText(shopModel.getLocation());
+            ImageHandler.LoadImage(reputationView, shopModel.getReputationImageUrl());
+
+            try{
+                itemPreview1.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview1, shopModel.getProductImages().get(0));
+            } catch (NullPointerException|IndexOutOfBoundsException e) {
+                itemPreview1.setVisibility(View.INVISIBLE);
+            }
+
+            try{
+                itemPreview2.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview2, shopModel.getProductImages().get(1));
+            } catch (NullPointerException|IndexOutOfBoundsException e) {
+                itemPreview2.setVisibility(View.INVISIBLE);
+            }
+
+            try{
+                itemPreview3.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview3, shopModel.getProductImages().get(2));
+            } catch (NullPointerException|IndexOutOfBoundsException e) {
+                itemPreview3.setVisibility(View.INVISIBLE);
+            }
+
+            adjustFavoriteButtonAppearance(context, shopModel.isFavorited());
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favoriteButton.setEnabled(false);
+                    final ActionShopInfoRetrofit favoriteAction
+                            = new ActionShopInfoRetrofit(context, shopModel.getShopId(), shopModel.getShopDomain(), "");
+
+                    favoriteAction.setOnActionToggleFavListener(new ActionShopInfoRetrofit.OnActionToggleFavListener() {
+                        @Override
+                        public void onSuccess() {
+                            toggleIsFavoritedState(shopModel);
+                            adjustFavoriteButtonAppearance(context, shopModel.isFavorited());
+                            favoriteButton.setEnabled(true);
+                            shopView.showToggleFavoriteSuccess(shopModel.getShopName(), shopModel.isFavorited());
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            favoriteButton.setEnabled(true);
+                            shopView.showErrorMessage(error);
+                        }
+                    });
+                    favoriteAction.actionToggleFav();
+                }
+            });
+        }
+
+        private void toggleIsFavoritedState(ShopModel shopModel) {
+            if (shopModel.isFavorited()) {
+                shopModel.setFavorited(false);
+            } else {
+                shopModel.setFavorited(true);
+            }
+        }
+
+        public void adjustFavoriteButtonAppearance(Context context, boolean isFavorited) {
+            if (isFavorited) {
+                favoriteButton.setBackgroundResource(R.drawable.white_button_rounded);
+                favoriteButtonText.setText("Favorit");
+                favoriteButtonText.setTextColor(context.getResources().getColor(R.color.black_54));
+                favoriteButtonIcon.setImageResource(R.drawable.shop_list_favorite_check);
+            } else {
+                favoriteButton.setBackgroundResource(R.drawable.green_button_rounded);
+                favoriteButtonText.setText("Favoritkan");
+                favoriteButtonText.setTextColor(context.getResources().getColor(R.color.white));
+                favoriteButtonIcon.setImageResource(R.drawable.ic_add);
+            }
         }
     }
 

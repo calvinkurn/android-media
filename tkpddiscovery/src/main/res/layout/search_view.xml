@@ -53,6 +53,7 @@
                 style="@style/MSV_ImageButton"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:tint="@color/grey"
                 android:src="@drawable/ic_keyboard_voice_black" />
 
             <ImageButton

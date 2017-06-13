@@ -33,6 +33,9 @@ public class ProductScoringDetailPresenterImpl extends ProductScoringDetailPrese
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().dismissProgress();
                 getView().onErrorGetScoringProduct();
             }
