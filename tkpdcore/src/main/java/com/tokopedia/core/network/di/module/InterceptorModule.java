@@ -8,6 +8,7 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.core.TkpdV4ResponseError;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -15,6 +16,8 @@ import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
+import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -65,6 +68,13 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
+    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor() {
+        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        return new TopAdsAuthInterceptor(oAuthString);
+    }
+
+    @ApplicationScope
+    @Provides
     public FingerprintInterceptor provideFingerprintInterceptor() {
         return new FingerprintInterceptor();
     }
@@ -94,6 +104,13 @@ public class InterceptorModule {
     @Provides
     TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor(){
         return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
+    }
+
+    @TopAdsQualifier
+    @ApplicationScope
+    @Provides
+    TkpdErrorResponseInterceptor provideTopAdsErrorResponseInterceptor(){
+        return new TkpdErrorResponseInterceptor(TopAdsResponseError.class);
     }
 
 }

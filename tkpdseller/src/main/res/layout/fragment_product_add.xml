@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainview"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/add_product_view"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        android:background="@android:color/white">
+        <include layout="@layout/partial_product_score" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/partial_product_score" />
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <include layout="@layout/partial_product_info" />
+
+            <include layout="@layout/partial_product_image" />
+
+            <include layout="@layout/partial_product_detail" />
+
+            <include layout="@layout/partial_product_additional_info" />
+
+            <Button
+                android:id="@+id/button_save_and_add"
+                style="@style/Button.Submit.White"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="@dimen/product_margin_cards"
+                android:text="@string/product_label_save_and_add"
+                android:textColor="@color/black_fifty_four_percent" />
 
-                <include layout="@layout/partial_product_info" />
+            <Button
+                android:id="@+id/button_save"
+                style="@style/Button.Submit.Green"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:text="@string/product_label_save" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-                <include layout="@layout/partial_product_image" />
-
-                <include layout="@layout/partial_product_detail" />
-
-                <include layout="@layout/partial_product_additional_info" />
-
-                <Button
-                    android:id="@+id/button_save_and_add"
-                    style="@style/Button.Submit.White"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/product_margin_cards"
-                    android:text="@string/product_label_save_and_add"
-                    android:textColor="@color/black_fifty_four_percent" />
-
-                <Button
-                    android:id="@+id/button_save"
-                    style="@style/Button.Submit.Green"
-                    android:layout_width="match_parent"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="@string/product_label_save" />
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

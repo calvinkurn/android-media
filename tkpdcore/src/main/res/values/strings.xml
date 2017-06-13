@@ -819,10 +819,9 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_shop_detail_favorited">Yang Memfavoritkan</string>
 
     <!-- Error String -->
-    <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="error_max_address">Anda hanya dapat menambahkan sampai 3 alamat </string>
     <string name="error_min_3_character">Nama terlalu pendek, minimal 3 karakter.</string>
-    <string name="title_activity_payment_editor">Pembayaran</string>
+
     <string name="title_activity_manage_shop_address">Pengaturan Alamat Toko</string>
     <string name="title_activity_shop_address_form">Alamat Toko</string>
     <string name="title_activity_people">Profil</string>
@@ -1943,6 +1942,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
+    <string name="error_data_not_found">Data tidak ditemukan.</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 </resources>

@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
  * Created by normansyahputa on 3/30/17.
  */
 
-public class EmptyListModel extends TypeBasedModel implements Parcelable {
+public class EmptyListModel implements Parcelable, TypeBasedModel {
     public static final int TYPE = 128912;
     public static final Parcelable.Creator<EmptyListModel> CREATOR = new Parcelable.Creator<EmptyListModel>() {
         @Override
@@ -26,11 +26,9 @@ public class EmptyListModel extends TypeBasedModel implements Parcelable {
     private boolean isEmptyShop;
 
     public EmptyListModel() {
-        super(TYPE);
     }
 
     protected EmptyListModel(Parcel in) {
-        this();
         this.setDateHeaderModel = in.readParcelable(SetDateHeaderModel.class.getClassLoader());
         this.isEmptyShop = in.readByte() != 0;
     }
@@ -60,5 +58,10 @@ public class EmptyListModel extends TypeBasedModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.setDateHeaderModel, flags);
         dest.writeByte(this.isEmptyShop ? (byte) 1 : (byte) 0);
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

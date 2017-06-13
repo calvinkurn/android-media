@@ -21,6 +21,9 @@ public class LayoutRow {
     private String mUrl;
     @SerializedName("Weight")
     private Long mWeight;
+    @SerializedName("applinks")
+    private String appLinks;
+
 
     public String getAdditionalInfo() {
         return mAdditionalInfo;
@@ -86,4 +89,7 @@ public class LayoutRow {
         mWeight = weight;
     }
 
+    public String getAppLinks() {
+        return appLinks;
+    }
 }

@@ -22,7 +22,7 @@ import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CategoryPickerFragmentListener){
+        if (context instanceof CategoryPickerFragmentListener) {
             this.listener = (CategoryPickerFragmentListener) context;
         } else {
             throw new RuntimeException("Activity must implement CategoryPickerFragmentListener");
@@ -99,7 +99,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryPickerLevelAdapter(this);
-        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
@@ -111,7 +111,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     private void initVar() {
-        if (selectedCategoryId == INIT_UNSELECTED){
+        if (selectedCategoryId == INIT_UNSELECTED) {
             presenter.fetchCategoryLevelOne();
         } else {
             presenter.fetchCategoryFromSelected(selectedCategoryId);

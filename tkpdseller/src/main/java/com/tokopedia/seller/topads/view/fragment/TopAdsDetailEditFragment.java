@@ -74,6 +74,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private Date startDate;
     private Date endDate;
 
+    String itemIdToAdd;
+
     protected TopAdsDetailAdViewModel detailAd;
 
     @Override
@@ -110,6 +112,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     protected void setupArguments(Bundle bundle) {
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
         name = bundle.getString(TopAdsExtraConstant.EXTRA_NAME);
+        itemIdToAdd = bundle.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null && !TextUtils.isEmpty(itemIdToAdd)) {
+            presenter.getProductDetail(itemIdToAdd);
+        }
     }
 
     @Override

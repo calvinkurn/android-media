@@ -168,6 +168,12 @@
         <attr name="spinner_entries" format="reference"/>
         <attr name="spinner_values" format="reference"/>
         <attr name="spinner_enabled" format="boolean"/>
+        <attr name="spinner_text_size" format="dimension"/>
+        <attr name="spinner_hint_text_color" format="color"/>
+        <attr name="spinner_hint_appearence" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="DefaultValueSpinnerTextView">
+        <attr name="default_value" format="string"/>
     </declare-styleable>
     <declare-styleable name="SpinnerCounterInputView">
         <attr name="spinner_decimal_max_length" format="integer"/>
@@ -181,6 +187,12 @@
         <attr name="spinner_decimal_enabled" format="boolean"/>
         <attr name="spinner_decimal_spinner_width" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="TkpdTextInputLayout">
+        <attr name="success_focus_color" format="color" />
+        <attr name="success_leave_color" format="color" />
+        <attr name="success_text_appearance" format="reference" />
+        <attr name="prefix_string" format="string" />
+    </declare-styleable>
 
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />
@@ -191,6 +203,11 @@
         <attr name="feature_img" format="reference"/>
         <attr name="feature_title" format="string"/>
         <attr name="feature_desc" format="string"/>
+    </declare-styleable>
+
+    <!-- william chart tooltip -->
+    <declare-styleable name="TooltipPointerAttrs">
+        <attr name="tooltip_pointer_color" format="reference|color"/>
     </declare-styleable>
 
 </resources>
