@@ -348,7 +348,8 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVED_GROUP_ID, chosenId);
-        outState.putString(SAVED_GROUP_NAME, autoCompleteChooseGroup.getText().toString());
+        outState.putString(SAVED_GROUP_NAME, autoCompleteChooseGroup.getText() == null? "" :
+                autoCompleteChooseGroup.getText().toString());
         outState.putInt(SAVED_KEYWORD_COUNT, keywordCount);
         outState.putInt(SAVED_SPINNER_POS, spinnerKeywordType.getSpinnerPosition());
     }
