@@ -78,6 +78,8 @@ public interface FeedPlus{
         void hideTopAdsAdapterLoading();
 
         String getString(int msg_network_error);
+
+        int getColor(int black);
     }
 
     public interface Presenter extends CustomerPresenter<View>{
