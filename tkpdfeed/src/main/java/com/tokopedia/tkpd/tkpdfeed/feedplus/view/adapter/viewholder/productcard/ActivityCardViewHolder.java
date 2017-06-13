@@ -203,11 +203,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String titleText = viewModel.getHeader().getShopName()
-                            + viewModel.getActionText();
                     viewListener.onShareButtonClicked(
                             viewModel.getShareUrl(),
-                            titleText,
+                            viewModel.getHeader().getShopName(),
                             "",
                             viewModel.getShareLinkDescription()
                     );

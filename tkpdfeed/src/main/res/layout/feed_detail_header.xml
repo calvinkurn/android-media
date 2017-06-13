@@ -4,7 +4,7 @@
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/cards_ui_2"
+    android:background="@drawable/cards_ui"
     android:padding="@dimen/padding_small">
 
     <ImageView

@@ -10,11 +10,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-
-import butterknife.BindView;
 
 /**
  * @author by nisie on 5/18/17.
@@ -34,6 +31,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
     public TextView wholesale;
     public TextView preorder;
     public ImageView freeReturn;
+    public View mainView;
 
     private final FeedPlusDetail.View viewListener;
 
@@ -48,6 +46,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         wholesale = (TextView) itemView.findViewById(R.id.wholesale);
         preorder = (TextView) itemView.findViewById(R.id.preorder);
         freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
+        mainView = itemView.findViewById(R.id.main_view);
         this.viewListener = viewListener;
     }
 
@@ -57,9 +56,9 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         ImageHandler.LoadImage(productImage, feedDetailViewModel.getImageSource());
 
         if (feedDetailViewModel.isWishlist()) {
-            ImageHandler.loadImageWithId(wishlist, R.drawable.ic_faved);
+            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist_faved);
         } else {
-            ImageHandler.loadImageWithId(wishlist, R.drawable.ic_fav);
+            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist);
 
         }
         productName.setText(MethodChecker.fromHtml(feedDetailViewModel.getName()));
@@ -98,6 +97,13 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
                         getAdapterPosition(),
                         feedDetailViewModel.getProductId(),
                         feedDetailViewModel.isWishlist());
+            }
+        });
+
+        mainView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToProductDetail(feedDetailViewModel.getProductId());
             }
         });
     }

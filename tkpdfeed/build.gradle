@@ -111,7 +111,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile project(':tkpdcore')
+    compile getTkpdCore()
     compile getTopAdsSdk()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
