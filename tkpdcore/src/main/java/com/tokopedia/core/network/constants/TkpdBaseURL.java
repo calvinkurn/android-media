@@ -42,6 +42,8 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
+
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -755,5 +757,14 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
+    }
+
+    public static class Replacement {
+        public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
+        public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/list";
+        public static final String PATH_GET_CATEGORY = "v4/order/replacement/category";
+
+        public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
+        public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
     }
 }

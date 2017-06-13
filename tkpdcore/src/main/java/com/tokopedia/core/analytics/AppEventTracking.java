@@ -400,6 +400,7 @@ public interface AppEventTracking {
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
+        String OPPORTUNIT_LIST = "Peluang";
     }
 
     interface SOCIAL_MEDIA {

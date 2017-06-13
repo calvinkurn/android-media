@@ -58,7 +58,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
 
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
-
     }
 
     public void initializeDatabase() {
