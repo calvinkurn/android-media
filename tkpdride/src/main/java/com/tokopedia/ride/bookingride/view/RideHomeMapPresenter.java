@@ -211,6 +211,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                 } catch (IOException e) {
                     e.printStackTrace();
                     subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+
+                    //if address not found and destination not selected keep looking for address using current current location
+                    if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
+                        mRenderProductListBasedOnLocationUpdates = true;
+                    }
                 }
             }
         }).onErrorReturn(new Func1<Throwable, String>() {
