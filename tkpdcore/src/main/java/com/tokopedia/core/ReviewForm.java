@@ -2,7 +2,6 @@ package com.tokopedia.core;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SpinnerWithImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
@@ -160,11 +159,9 @@ public class ReviewForm extends TActivity {
 		mProductLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Bundle bundle = new Bundle();
-				Intent intent = new Intent(ReviewForm.this, ProductInfoActivity.class);
-				bundle.putString("product_id", mProdID);
-				intent.putExtras(bundle);
-				startActivity(intent);
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(ReviewForm.this, mProdID);
+                startActivity(intent);
 			}
 		});
 

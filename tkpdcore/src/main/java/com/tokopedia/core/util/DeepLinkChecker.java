@@ -10,10 +10,10 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.List;
@@ -241,7 +241,7 @@ public class DeepLinkChecker {
             bundle.putString("product_key", getLinkSegment(url).get(1));
         }
         bundle.putString("url", url);
-        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
         intent.putExtras(bundle);
         intent.setData(Uri.parse(url));
         context.startActivity(intent);

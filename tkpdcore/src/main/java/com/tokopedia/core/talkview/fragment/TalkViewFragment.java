@@ -33,7 +33,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
 import com.tokopedia.core.talkview.inbox.model.TalkDetail;
@@ -511,10 +511,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(getActivity(), ProductInfoActivity.class);
-                bundle.putString("product_id", productID);
-                intent.putExtras(bundle);
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(getActivity(), productID);
                 startActivity(intent);
             }
         };

@@ -18,8 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -206,7 +206,7 @@ public class ShareSocmedHandler {
                 context.startActivity(intent);
                 return 1;
             } else if (div.length == 2) {
-                Intent intent = new Intent(context, ProductInfoActivity.class);
+                Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
                 Bundle bundle = new Bundle();
                 bundle.putString("shop_domain", div[0]);
                 bundle.putString("product_key", div[1]);

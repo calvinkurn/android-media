@@ -45,7 +45,6 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.review.var.Const;
@@ -82,6 +81,9 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 public class ShopInfoActivity extends BaseActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener,
         ProductList.ProductListCallback {
+
+    public static final String SHOP_STATUS_IS_FAVORITED = "shopIsFavorited";
+    public static final String FAVORITE_STATUS_UPDATED = "favoriteStatusUpdated";
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final String FORMAT_UTF_8 = "UTF-8";
@@ -325,8 +327,10 @@ public class ShopInfoActivity extends BaseActivity
             @Override
             public void onSuccess() {
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
+                updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
                 holder.favorite.clearAnimation();
+                showToggleFavoriteSuccess(shopModel.info.shopName, shopModel.info.shopAlreadyFavorited != 0);
             }
 
             @Override
@@ -335,6 +339,25 @@ public class ShopInfoActivity extends BaseActivity
                 NetworkErrorHelper.showSnackbar(ShopInfoActivity.this, error);
             }
         };
+    }
+
+    public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
+        String message;
+        if (favorited) {
+            message = getResources().getString(R.string.add_favorite_success_message)
+                    .replace("$1", shopName);
+        } else {
+            message = getResources().getString(R.string.remove_favorite_success_message)
+                    .replace("$1", shopName);
+        }
+        SnackbarManager.make(this, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void updateIsFavoritedIntent(boolean shopAlreadyFavorited) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(SHOP_STATUS_IS_FAVORITED, shopAlreadyFavorited);
+        resultIntent.putExtra(FAVORITE_STATUS_UPDATED, true);
+        setResult(RESULT_CANCELED, resultIntent);
     }
 
     private GetShopInfoRetrofit.OnGetShopInfoListener onGetShopInfoRetro() {
@@ -866,10 +889,8 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public void OnProductInfoPageRedirected(String productId) {
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(this, ProductInfoActivity.class);
-        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
-        intent.putExtras(bundle);
+        Intent intent = ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(this, productId);
         startActivity(intent);
     }
 
