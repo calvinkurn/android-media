@@ -62,6 +62,8 @@ public class ProductListDelegate {
         public TextView textDiscount;
         @BindString(R2.string.label_discount)
         public String discount;
+        @BindString(R2.string.label_price_with_idr)
+        public String priceLabel;
 
         public VHolder(View itemView) {
             super(itemView);
@@ -105,7 +107,9 @@ public class ProductListDelegate {
 
         if (item.shopProductCampaign != null && item.shopProductCampaign.getDiscountedPrice() != null) {
             vholder.price.setTextColor(ContextCompat.getColor(context, R.color.bright_red));
-            vholder.textOriginalPrice.setText(item.shopProductCampaign.getDiscountedPrice());
+            vholder.textOriginalPrice.setText(String.format(
+                    vholder.priceLabel, item.shopProductCampaign.getOriginalPrice()
+            ));
             vholder.textOriginalPrice.setPaintFlags(
                     vholder.textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
