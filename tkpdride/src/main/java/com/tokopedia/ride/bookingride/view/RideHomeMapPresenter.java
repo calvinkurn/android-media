@@ -459,7 +459,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void onResume() {
-        if (!getView().isLaunchedWithLocation()) {
+        if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
             mRenderProductListBasedOnLocationUpdates = true;
         }
     }
