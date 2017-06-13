@@ -37,6 +37,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -90,12 +91,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Inject
     FeedPlusPresenter presenter;
 
-    private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
-    private List<Visitable> list;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
@@ -307,8 +306,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onFavoritedClicked(int adapterPosition) {
         adapter.getItemViewType(adapterPosition);
-        PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
-//        presenter.favoriteShop(promotedShopViewModel, adapterPosition);
     }
 
     @Override
@@ -418,6 +415,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void hideTopAdsAdapterLoading() {
         topAdsRecyclerAdapter.hideLoading();
+    }
+
+    @Override
+    public int getColor(int color) {
+        return MethodChecker.getColor(getActivity(), color);
     }
 
     @Override

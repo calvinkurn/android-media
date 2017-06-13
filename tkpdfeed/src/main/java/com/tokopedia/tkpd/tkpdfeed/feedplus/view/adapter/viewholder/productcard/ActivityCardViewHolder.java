@@ -1,9 +1,17 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +24,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
 /**
  * @author by nisie on 5/16/17.
@@ -26,9 +35,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public static final int LAYOUT = R.layout.list_feed_activity_card;
 
     View container;
-    TextView action;
-    TextView shopName;
-
+    TextView title;
+    View header;
     ImageView shopAvatar;
     ImageView goldMerchantBadge;
     ImageView officialStoreBadge;
@@ -43,8 +51,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public ActivityCardViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
 
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
-        action = (TextView) itemView.findViewById(R.id.action);
+        header = itemView.findViewById(R.id.header);
+        title = (TextView) itemView.findViewById(R.id.title);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
         officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
@@ -104,8 +112,57 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     }
 
     public void setHeader(final ActivityCardViewModel activityCardViewModel) {
-        shopName.setText(MethodChecker.fromHtml(activityCardViewModel.getHeader().getShopName()));
-        action.setText(MethodChecker.fromHtml(activityCardViewModel.getActionText()));
+
+        String shopNameString = String.valueOf(MethodChecker.fromHtml(activityCardViewModel.getHeader().getShopName()));
+        String actionString = String.valueOf(MethodChecker.fromHtml(activityCardViewModel.getActionText()));
+
+        StringBuilder titleText = new StringBuilder();
+        titleText.append(shopNameString)
+                        .append(" ")
+                        .append(actionString);
+        SpannableString actionSpanString = new SpannableString(titleText);
+
+        ClickableSpan goToFeedDetail = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(viewListener.getColor(R.color.black_70));
+            }
+        };
+
+        ClickableSpan goToShopDetail = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onGoToShopDetail(
+                        activityCardViewModel.getHeader().getShopId(),
+                        activityCardViewModel.getHeader().getUrl());
+
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setTypeface(Typeface.DEFAULT_BOLD);
+                ds.setColor(viewListener.getColor(R.color.black));
+            }
+        };
+
+        actionSpanString.setSpan(goToFeedDetail, titleText.indexOf(actionString)
+                , titleText.indexOf(actionString)+actionString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        actionSpanString.setSpan(goToShopDetail, titleText.indexOf(shopNameString)
+                , titleText.indexOf(shopNameString)+shopNameString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        title.setText(actionSpanString);
+        title.setMovementMethod(LinkMovementMethod.getInstance());
+
+
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
         if (activityCardViewModel.getHeader().isGoldMerchant())
@@ -113,8 +170,10 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        if (activityCardViewModel.getHeader().isOfficialStore())
+        if (activityCardViewModel.getHeader().isOfficialStore()) {
             officialStoreBadge.setVisibility(View.VISIBLE);
+            goldMerchantBadge.setVisibility(View.GONE);
+        }
         else
             officialStoreBadge.setVisibility(View.GONE);
 
@@ -128,24 +187,13 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                         activityCardViewModel.getHeader().getUrl());
             }
         });
-        action.setOnClickListener(new View.OnClickListener() {
+
+        header.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
-        shopName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToShopDetail(
-                        activityCardViewModel.getHeader().getShopId(),
-                        activityCardViewModel.getHeader().getUrl());
-            }
-        });
-
-//        if(activityCardViewModel.getListProduct() == null || activityCardViewModel.getListProduct().size() == 0){
-//            container.setVisibility(View.GONE);
-//        }
     }
 
     public void setFooter(final ActivityCardViewModel viewModel) {

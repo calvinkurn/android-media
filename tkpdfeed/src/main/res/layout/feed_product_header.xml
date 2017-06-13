@@ -38,34 +38,26 @@
         tools:visibility="gone" />
 
     <TextView
-        android:id="@+id/shop_name"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/official_store"
+        android:maxLines="2"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_toEndOf="@id/official_store"
         android:layout_toRightOf="@id/official_store"
-        android:textStyle="bold"
         tools:text="MaroonVape " />
 
-    <TextView
-        android:id="@+id/action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/official_store"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_toEndOf="@id/shop_name"
-        android:layout_toRightOf="@id/shop_name"
-        tools:text="MaroonVape supwpaiwiasdasdasdasdasioi " />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shop_name"
+        android:layout_below="@id/title"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_toRightOf="@id/shop_avatar"
         android:textSize="@dimen/fontvs"
+        android:textColor="@color/black"
         tools:text="4 hours ago" />
 
 </RelativeLayout>

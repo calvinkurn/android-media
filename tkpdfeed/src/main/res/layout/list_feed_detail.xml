@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/product_name"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:layout_toEndOf="@id/product_image"
         android:layout_toRightOf="@id/product_image"
         android:fontFamily="sans-serif-medium"
@@ -62,6 +63,7 @@
         android:layout_below="@id/product_price"
         android:layout_toEndOf="@id/product_image"
         android:layout_toRightOf="@id/product_image"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:numStars="5"
         android:isIndicator="true"
         android:rating="4" />
