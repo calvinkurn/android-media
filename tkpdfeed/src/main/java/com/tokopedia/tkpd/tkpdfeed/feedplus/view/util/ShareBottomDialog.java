@@ -120,17 +120,14 @@ public class ShareBottomDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("text/plain");
-                if (shareModel.getTitle() != null
-                        && !shareModel.getTitle().equals(""))
-                    share.putExtra(Intent.EXTRA_SUBJECT, shareModel.getContentMessage());
 
-                if (shareModel.getUrl() != null
-                        && !shareModel.getUrl().equals(""))
-                    share.putExtra(Intent.EXTRA_TEXT, shareModel.getUrl());
+                String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
 
-                activity.startActivity(Intent.createChooser(share, "Share link!"));
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("sms_body",shareText);
+                activity.startActivity(smsIntent);
+
             }
         };
     }
@@ -155,16 +152,18 @@ public class ShareBottomDialog {
     }
 
     private void shareToApp(String appName) {
-        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-        whatsappIntent.setType("text/plain");
-        whatsappIntent.setPackage(appName);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.setPackage(appName);
+
+        String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
 
         if (shareModel.getUrl() != null
                 && !shareModel.getUrl().equals(""))
-            whatsappIntent.putExtra(Intent.EXTRA_TEXT, shareModel.getUrl());
+            intent.putExtra(Intent.EXTRA_TEXT, shareText);
 
         try {
-            activity.startActivity(whatsappIntent);
+            activity.startActivity(intent);
         } catch (android.content.ActivityNotFoundException ex) {
 
             Toast.makeText(activity,

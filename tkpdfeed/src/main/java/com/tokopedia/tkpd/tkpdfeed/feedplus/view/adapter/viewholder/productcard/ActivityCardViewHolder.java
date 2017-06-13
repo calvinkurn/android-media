@@ -143,9 +143,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             }
         });
 
-//        if(activityCardViewModel.getListProduct() == null || activityCardViewModel.getListProduct().size() == 0){
-//            container.setVisibility(View.GONE);
-//        }
     }
 
     public void setFooter(final ActivityCardViewModel viewModel) {
@@ -155,11 +152,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String titleText = viewModel.getHeader().getShopName()
-                            + viewModel.getActionText();
                     viewListener.onShareButtonClicked(
                             viewModel.getShareUrl(),
-                            titleText,
+                            viewModel.getHeader().getShopName(),
                             "",
                             viewModel.getShareLinkDescription()
                     );

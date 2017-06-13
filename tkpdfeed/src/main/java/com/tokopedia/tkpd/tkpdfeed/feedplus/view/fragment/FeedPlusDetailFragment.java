@@ -20,6 +20,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
@@ -286,6 +287,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             adapter.notifyItemChanged(adapterPosition);
         }
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    @Override
+    public void onGoToProductDetail(int productId) {
+        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
+        startActivity(intent);
     }
 
     private void dismissLoadingProgress() {
