@@ -45,7 +45,6 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.review.var.Const;
@@ -886,10 +885,8 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public void OnProductInfoPageRedirected(String productId) {
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(this, ProductInfoActivity.class);
-        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
-        intent.putExtras(bundle);
+        Intent intent = ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(this, productId);
         startActivity(intent);
     }
 

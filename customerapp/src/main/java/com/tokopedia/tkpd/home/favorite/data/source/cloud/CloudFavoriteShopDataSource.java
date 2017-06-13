@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.utils.HttpResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -71,19 +72,23 @@ public class CloudFavoriteShopDataSource {
         return new Action1<Response<String>>() {
             @Override
             public void call(Response<String> stringResponse) {
-                String valueString
-                        = new GlobalCacheManager().getValueString(TkpdCache.Key.TOP_ADS_SHOP);
-                TopAdsHome topAdsResponse = gson.fromJson(valueString, TopAdsHome.class);
-                for (TopAdsHome.Data data : topAdsResponse.getData()) {
-                    if (data.shop.id.equalsIgnoreCase(shopId)) {
-                        data.isSelected = true;
+                try {
+                    String valueString
+                            = new GlobalCacheManager().getValueString(TkpdCache.Key.TOP_ADS_SHOP);
+                    TopAdsHome topAdsResponse = gson.fromJson(valueString, TopAdsHome.class);
+                    for (TopAdsHome.Data data : topAdsResponse.getData()) {
+                        if (data.shop.id.equalsIgnoreCase(shopId)) {
+                            data.isSelected = true;
+                        }
                     }
+                    String topadsShopUpdated = gson.toJson(topAdsResponse);
+                    new GlobalCacheManager()
+                            .setKey(TkpdCache.Key.TOP_ADS_SHOP)
+                            .setValue(topadsShopUpdated)
+                            .store();
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
-                String topadsShopUpdated = gson.toJson(topAdsResponse);
-                new GlobalCacheManager()
-                        .setKey(TkpdCache.Key.TOP_ADS_SHOP)
-                        .setValue(topadsShopUpdated)
-                        .store();
 
             }
         };
