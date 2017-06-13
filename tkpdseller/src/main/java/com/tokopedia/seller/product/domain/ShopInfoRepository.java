@@ -10,7 +10,6 @@ import rx.Observable;
  */
 
 public interface ShopInfoRepository {
-    Observable<ShopModel> getShopInfo();
-    Observable<ShopModel> getShopInfoFromNetwork();
     Observable<AddProductShopInfoDomainModel> getAddProductShopInfo();
+    String getShopId();
 }

@@ -17,10 +17,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
-import com.tokopedia.core.fragment.FragmentSettingShop;
 import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -76,7 +76,8 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
                     getString(R.string.title_activity_manage_general_desc),
                     getString(R.string.title_activity_manage_general_about)};
             adapter.addFragment(FragmentSettingPeople.newInstance());
-            adapter.addFragment(FragmentSettingShop.newInstance());
+            Fragment fragmentShopSettings = SellerRouter.getFragmentShopSettings(this);
+            adapter.addFragment(fragmentShopSettings);
             adapter.addFragment(SettingsFragment.newInstance());
             adapter.addFragment(AboutFragment.newInstance());
         }

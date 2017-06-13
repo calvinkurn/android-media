@@ -60,6 +60,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    private static final String TOKOCASH = "TokoCash";
+
     public interface PhoneVerificationFragmentListener {
         void onSkipVerification();
 
@@ -263,8 +265,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                                                   com.tokopedia.core.R.color.tkpd_main_green));
                                       }
                                   }
-                , getString(R.string.tokocash_phone_verification).indexOf("TokoCash")
-                , getString(R.string.tokocash_phone_verification).indexOf("TokoCash") + 8
+                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH)
+                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH) + 8
                 , 0);
 
         tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);

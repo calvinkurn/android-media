@@ -17,6 +17,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
@@ -57,6 +58,8 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     protected String choosenId;
     private ProgressDialog progressDialog;
 
+    protected String itemIdToAdd;
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -95,7 +98,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        if (arguments!= null) {
+            itemIdToAdd = arguments.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
+        }
     }
 
     @Override
@@ -145,6 +150,14 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
             }
         });
         inputChooseGroup.setAdapter(adapterChooseGroup);
+        inputChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean isFocus) {
+                if(isFocus){
+                    presenter.searchGroupName("");
+                }
+            }
+        });
         inputChooseGroup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -158,6 +171,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if(inputChooseGroup.isPerformingCompletion()){
+                    return;
+                }
                 presenter.searchGroupName(editable.toString());
             }
         });
@@ -224,7 +240,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
-        adapterChooseGroup.getFilter().filter(inputChooseGroup.getText());
+        inputChooseGroup.showDropDownFilter();
     }
 
     @Override

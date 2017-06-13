@@ -2,11 +2,14 @@ package com.tokopedia.seller.topads.data.factory;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsGroupAdsDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
+
+import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -19,7 +22,8 @@ public class TopAdsGroupAdFactory {
     private TopAdsDetailGroupMapper topAdsDetailGroupMapper;
     private TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper;
 
-    public TopAdsGroupAdFactory(Context context, TopAdsManagementApi topAdsManagementApi,
+    @Inject
+    public TopAdsGroupAdFactory(@ActivityContext Context context, TopAdsManagementApi topAdsManagementApi,
                                 TopAdsSearchGroupMapper topAdsSearchGroupMapper,
                                 TopAdsDetailGroupMapper topAdsDetailGroupMapper,
                                 TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper) {

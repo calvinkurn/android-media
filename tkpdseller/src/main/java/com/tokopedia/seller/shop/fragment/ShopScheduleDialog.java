@@ -17,11 +17,10 @@ import android.widget.EditText;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.shop.model.ShopScheduleModel;
 import com.tokopedia.core.shop.model.shopData.ClosedDetail;
 import com.tokopedia.core.shop.model.shopData.ClosedScheduleDetail;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.core.util.MethodChecker;
 

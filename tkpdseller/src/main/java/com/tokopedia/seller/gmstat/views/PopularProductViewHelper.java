@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
@@ -67,8 +67,10 @@ public class PopularProductViewHelper {
         if (getPopularProduct == null)
             return;
 
-        itemView.getContext().startActivity(ProductInfoActivity.createInstance(
-                itemView.getContext(), getPopularProduct.getProductId() + ""));
+        itemView.getContext().startActivity(ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(
+                        itemView.getContext(),
+                        getPopularProduct.getProductId() + ""));
 
         // analytic below : https://phab.tokopedia.com/T18496
         clickGMStat();

@@ -7,25 +7,23 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsFilterAdapter;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
 public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
 
-    public interface Callback {
-
-        void onItemSelected(int position);
-
-    }
+    private TopAdsFilterAdapter adapter;
+    private RecyclerView recyclerView;
+    private ArrayList<FilterTitleItem> filterTitleItemList;
+    private Callback callback;
+    private int selectedItem;
 
     public static TopAdsFilterListFragment createInstance(ArrayList<FilterTitleItem> filterTitleItemList, int selectedPosition) {
         TopAdsFilterListFragment fragment = new TopAdsFilterListFragment();
@@ -35,12 +33,6 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    private TopAdsFilterAdapter adapter;
-    private RecyclerView recyclerView;
-    private ArrayList<FilterTitleItem> filterTitleItemList;
-    private Callback callback;
-    private int selectedItem;
 
     public void setCallback(Callback callback) {
         this.callback = callback;
@@ -98,7 +90,6 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
         return R.layout.fragment_top_ads_filter_list;
     }
 
-
     @Override
     protected void initView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -120,7 +111,6 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     protected void initialVar() {
 
     }
-
 
     @Override
     protected void setActionVar() {
@@ -148,5 +138,11 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     public int getCurrentPosition() {
         return selectedItem;
+    }
+
+    public interface Callback {
+
+        void onItemSelected(int position);
+
     }
 }

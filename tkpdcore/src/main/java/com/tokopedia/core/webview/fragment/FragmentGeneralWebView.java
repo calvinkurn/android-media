@@ -29,6 +29,7 @@ import com.tokopedia.core.home.fragment.FragmentBannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 
 
@@ -175,7 +176,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement DetailFragmentInteractionListener");
         }
     }
 

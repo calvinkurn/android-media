@@ -2,10 +2,10 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 import com.tokopedia.tkpd.home.interactor.HomeMenuInteractor;

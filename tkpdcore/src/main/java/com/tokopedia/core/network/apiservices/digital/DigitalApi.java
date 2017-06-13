@@ -15,6 +15,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -27,7 +28,12 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
     Observable<Response<TkpdDigitalResponse>> getStatus(@QueryMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY)
+    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY + "/{categoryId}")
+    Observable<Response<TkpdDigitalResponse>> getCategory(
+            @Path("categoryId") String categoryId, @QueryMap Map<String, String> params
+    );
+
+    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
     Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.DigitalApi.PATH_OPERATOR)

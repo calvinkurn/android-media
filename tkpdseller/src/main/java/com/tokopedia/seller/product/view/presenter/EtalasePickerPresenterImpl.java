@@ -25,7 +25,9 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
     }
 
     public void fetchFirstPageEtalaseData() {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         getView().clearEtalaseList();
         getView().dismissListRetry();
         getView().showListLoading();
@@ -34,7 +36,9 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
     @Override
     public void addNewEtalase(String newEtalaseName) {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         getView().showLoadingDialog();
         RequestParams requestParam = AddNewEtalaseUseCase.generateRequestParam(newEtalaseName);
         addNewEtalaseUseCase.execute(requestParam, new AddNewEtalaseSubscribe(newEtalaseName));
@@ -42,7 +46,9 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
     @Override
     public void fetchNextPageEtalaseData(int page) {
-        checkViewAttached();
+        if (!isViewAttached()) {
+            return;
+        }
         getView().showNextListLoading();
         RequestParams requestParam = FetchMyEtalaseUseCase.generateRequestParam(page);
         fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseNextPageDataSubscriber());
@@ -56,14 +62,18 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().dismissListLoading();
             getView().showListRetry();
         }
 
         @Override
         public void onNext(MyEtalaseDomainModel etalases) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().dismissListLoading();
             getView().renderEtalaseList(MyEtalaseDomainToView.map(etalases));
         }
@@ -72,7 +82,9 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
     private class FetchEtalaseNextPageDataSubscriber extends FetchEtalaseDataSubscriber {
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().dismissListLoading();
             getView().showError(e);
         }
@@ -92,7 +104,9 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().dismissLoadingDialog();
             if (e instanceof ResponseErrorListStringException){
                 getView().showError(e);

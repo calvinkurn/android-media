@@ -514,6 +514,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryVoiceSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.VOICE_SEARCH,
+                label
+        ).getEvent());
+    }
+
     public static void eventCartAbandon(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.BACK_CLICK,

@@ -179,10 +179,8 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
             @Override
             public void onNext(String string) {
-                if (!string.equals("")) {
-                    topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
-                            , getSubscriberSearchGroupName());
-                }
+                topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
+                        , getSubscriberSearchGroupName());
             }
         };
     }

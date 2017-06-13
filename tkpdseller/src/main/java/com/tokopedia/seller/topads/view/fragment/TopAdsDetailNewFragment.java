@@ -1,6 +1,8 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -50,6 +52,12 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
             addProductText.setText(R.string.label_top_ads_add_product);
             submitButton.setEnabled(false);
         }
+    }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        topAdsProductList.add(topAdsProductViewModel);
+        updateSelectedProductCount();
     }
 
     @Override

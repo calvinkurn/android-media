@@ -13,12 +13,13 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
+import com.tokopedia.seller.lib.williamchart.tooltip.TooltipWithDynamicPointer;
 import com.tokopedia.seller.topads.data.model.data.Cell;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticPresenterImpl;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
@@ -39,7 +40,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     private GrossGraphChartConfig grossGraphChartConfig;
     private List<Cell> cells;
     private String[] mLabels;
-    private ArrayList<String> mLabelDisplay = new ArrayList<>();
+    private ArrayList<TooltipModel> mLabelDisplay = new ArrayList<>();
     private float[] mValues;
 
     public TopAdsStatisticFragment() {
@@ -110,20 +111,12 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                 indexToDisplay.add((j * 10) - 1);
             }
 
-            //inflating layout tooltip
-            @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lolipop;
-            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-            if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-                layoutTooltip = R.layout.gm_stat_tooltip;
-            }
-
             if (grossGraphChartConfig == null) {
                 grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
             }
             contentGraph.addDataDisplayDots(mLabelDisplay);
-            Tooltip tooltip = new Tooltip(getActivity(),
-                    layoutTooltip,
-                    R.id.gm_stat_tooltip_textview);
+            TooltipWithDynamicPointer tooltip = new TooltipWithDynamicPointer(getActivity(),
+                    R.layout.item_tooltip_topads, R.id.tooltip_value, R.id.tooltip_title, R.id.tooltip_pointer);
             grossGraphChartConfig
                     .setmLabels(mLabels)
                     .setmValues(mValues, new XRenderer.XRendererListener() {
@@ -195,8 +188,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             String[] labels = new String[cells.size()];
             for (int i = 0; i < cells.size(); i++) {
                 Cell cell = cells.get(i);
-                SimpleDateFormat formatterLabel = new SimpleDateFormat("dd MMM");
-                String label = formatterLabel.format(cell.getDate());
+                String label = getDate(cell);
                 labels[i] = label;
             }
             return labels;
@@ -205,7 +197,10 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
         }
     }
 
-    ;
+    private String getDate(Cell cell) {
+        SimpleDateFormat formatterLabel = new SimpleDateFormat("dd MMM");
+        return formatterLabel.format(cell.getDate());
+    }
 
     protected float[] generateValues() {
         if (cells != null && cells.size() > 0) {
@@ -222,13 +217,14 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     }
 
 
-    private ArrayList<String> generateLabelDisplay() {
+    private ArrayList<TooltipModel> generateLabelDisplay() {
         if (cells != null && cells.size() > 0) {
-            ArrayList<String> valuesDisplay = new ArrayList<>();
+            ArrayList<TooltipModel> valuesDisplay = new ArrayList<>();
             for (int i = 0; i < cells.size(); i++) {
                 Cell cell = cells.get(i);
                 String value = getValueDisplay(cell);
-                valuesDisplay.add(value);
+                String title = getDate(cell);
+                valuesDisplay.add(new TooltipModel(title, value));
             }
             return valuesDisplay;
         } else {

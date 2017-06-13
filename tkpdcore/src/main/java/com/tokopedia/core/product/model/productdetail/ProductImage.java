@@ -122,7 +122,7 @@ public class ProductImage implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductImage> CREATOR = new Parcelable.Creator<ProductImage>() {
+    public static final Creator<ProductImage> CREATOR = new Creator<ProductImage>() {
         @Override
         public ProductImage createFromParcel(Parcel in) {
             return new ProductImage(in);
