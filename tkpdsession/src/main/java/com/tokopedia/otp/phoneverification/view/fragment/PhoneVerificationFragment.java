@@ -266,7 +266,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                                       }
                                   }
                 , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH)
-                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH) + 8
+                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH) + TOKOCASH.length()
                 , 0);
 
         tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);
