@@ -634,11 +634,11 @@ public class DrawerVariableSeller extends DrawerVariable {
         } else {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
+            model.data.add(model.inboxMenu);// inbox
+            model.data.add(model.shopMenu);// penjualan
             model.data.add(model.gmSubscribeMenu);
             model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT, false));
             model.data.add(model.topAdsMenu);
-            model.data.add(model.inboxMenu);
-            model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
                     false));
             model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contactus, TkpdState.DrawerPosition.CONTACT_US, false));
