@@ -23,12 +23,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
 
     TextView tvName;
     TextView tvPrice;
-    TextView tvViewed;
-    TextView tvBrought;
     TextView cashbackTextView;
     LinearLayout cashbackHolder;
-    TextView titleViewed;
-    TextView titleSold;
 
     @Override
     protected void initView(Context context) {
@@ -38,12 +34,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
 
         tvName = (TextView) findViewById(R.id.tv_name);
         tvPrice = (TextView) findViewById(R.id.tv_price);
-        tvViewed = (TextView) findViewById(R.id.tv_viewed);
-        tvBrought = (TextView) findViewById(R.id.tv_brought);
         cashbackTextView = (TextView) findViewById(R.id.label_cashback);
         cashbackHolder = (LinearLayout) findViewById(R.id.cashback_holder);
-        titleViewed = (TextView) findViewById(R.id.title_viewed);
-        titleSold = (TextView) findViewById(R.id.title_sold);
     }
 
     public HeaderInfoView(Context context) {
@@ -72,13 +64,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
     @Override
     protected void setViewListener() {
         setVisibility(INVISIBLE);
-        tvBrought.setVisibility(GONE);
-        tvViewed.setVisibility(GONE);
-        titleViewed.setVisibility(GONE);
-        titleSold.setVisibility(GONE);
         cashbackHolder.setVisibility(GONE);
-        tvBrought.setText("");
-        tvViewed.setText("");
     }
 
     @Override

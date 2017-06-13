@@ -623,6 +623,7 @@
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="label_manage_your_shop">Kelola Toko Anda</string>
 
+    <!-- OPPORTUNITY -->
     <string name="same_day">Same Day</string>
     <string name="next_day">Next Day</string>
     <string name="reguler">Reguler</string>
@@ -645,4 +646,6 @@
     <string name="action_sort">Urutkan</string>
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+
 </resources>
