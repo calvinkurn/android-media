@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
@@ -17,8 +18,11 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
 
-    public static TopAdsGroupNewPromoFragment createInstance() {
+    public static TopAdsGroupNewPromoFragment createInstance(String itemIdToAdd) {
         TopAdsGroupNewPromoFragment fragment = new TopAdsGroupNewPromoFragment();
+        Bundle args = new Bundle();
+        args.putString(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
+        fragment.setupArguments(args);
         return fragment;
     }
 
@@ -46,12 +50,14 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     protected void onSubmitFormNewGroup(String groupName) {
         TopAdsDetailNewGroupActivity.startNewGroup(getActivity(),
                 REQUEST_CODE_AD_STATUS,
-                groupName);
+                groupName,
+                itemIdToAdd);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
         Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -64,7 +70,8 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
                         getActivity(),
                         REQUEST_CODE_AD_STATUS,
                         choosenId,
-                        groupName
+                        groupName,
+                        itemIdToAdd
                 );
             }
 

@@ -33,7 +33,8 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
-        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
+        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS,
+                KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
         selectedPosition = extras.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
         showStatus = extras.getBoolean(TopAdsExtraConstant.EXTRA_FILTER_SHOW_STATUS, true);

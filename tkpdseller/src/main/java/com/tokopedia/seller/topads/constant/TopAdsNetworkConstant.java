@@ -44,6 +44,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_IS_PROMOTED = "is_promoted";
     public static final String PARAM_KEYWORD_AD_ID = "keyword_id";
     public static final String PARAM_ACTION = "action";
+    public static final String PARAM_ITEM_ID = "item_id";
 
     public static final String VALUE_SOURCE_ANDROID = "android";
     public static final String VALUE_TOGGLE_ON = "on";
@@ -53,6 +54,8 @@ public class TopAdsNetworkConstant {
     public static final String ACTION_BULK_OFF_AD = "toggle_off";
     public static final String ACTION_BULK_ON_AD = "toggle_on";
     public static final String ACTION_BULK_MOVE_AD = "move_group";
+
+    public static final String SOURCE_DASHBOARD_USER_MAIN = "dashboard_user_main";
 
     public static final int TYPE_PRODUCT_STAT = 1;
     public static final int TYPE_PRODUCT_SHOP = 2;

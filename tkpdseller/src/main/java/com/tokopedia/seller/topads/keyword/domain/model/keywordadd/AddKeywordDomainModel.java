@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.keyword.domain.model.keywordadd;
 import java.util.List;
 
 /**
- * Created by Test on 5/26/2017.
+ * @author Hendry on 5/26/2017.
  */
 
 public class AddKeywordDomainModel {

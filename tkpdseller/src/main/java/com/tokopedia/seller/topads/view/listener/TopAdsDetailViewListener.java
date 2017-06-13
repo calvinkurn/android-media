@@ -10,6 +10,8 @@ public interface TopAdsDetailViewListener extends CustomerView {
 
     void onAdLoaded(Ad ad);
 
+    void onAdEmpty();
+
     void onLoadAdError();
 
     void onTurnOnAdSuccess();

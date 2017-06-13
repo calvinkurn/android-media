@@ -142,7 +142,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewDefaultBinder());
-        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter, R.drawable.ic_top_ads_keyword_empty);
+        RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

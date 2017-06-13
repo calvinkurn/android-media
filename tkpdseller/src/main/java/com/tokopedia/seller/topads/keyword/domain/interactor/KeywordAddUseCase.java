@@ -51,7 +51,8 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
 
         String shopId = shopInfoRepository.getShopId();
         List<AddKeywordDomainModelDatum> addKeywordDomainModelDatumList = new ArrayList<>();
-        for (int i=0, sizei = keywordList.size(); i< sizei; i++) {
+        int size = keywordList.size();
+        for (int i = 0; i < size; i++) {
             AddKeywordDomainModelDatum addKeywordDomainModelDatum = new AddKeywordDomainModelDatum(
                     keywordList.get(i),
                     keywordType,
