@@ -351,7 +351,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             return;
         }

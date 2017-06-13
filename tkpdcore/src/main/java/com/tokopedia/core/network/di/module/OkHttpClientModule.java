@@ -11,6 +11,8 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
+import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -20,6 +22,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import javax.inject.Named;
@@ -114,6 +117,24 @@ public class OkHttpClientModule {
         return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 okHttpRetryPolicy,
+                chuckInterceptor,
+                debugInterceptor);
+    }
+
+    @TopAdsAuth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                      TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                                      OkHttpRetryPolicy okHttpRetryPolicy,
+                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
+                                                       ChuckInterceptor chuckInterceptor,
+                                                      DebugInterceptor debugInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
+                topAdsAuthInterceptor,
+                okHttpRetryPolicy,
+                errorResponseInterceptor,
                 chuckInterceptor,
                 debugInterceptor);
     }

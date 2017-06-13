@@ -28,6 +28,9 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         getView().showError(e);
                     }
 

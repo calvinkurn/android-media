@@ -72,11 +72,11 @@ public final class YoutubeVideoLinkUtils {
     }
 
     public void fillExceptionString(Context context) {
-        videoNotFound = context.getString(R.string.video_not_found);
-        invalidVideoUrl = context.getString(R.string.invalid_video_url);
-        videoNotFound = context.getString(R.string.video_not_found);
-        videoAdultWarn = context.getString(R.string.video_adult_warn);
-        errorNoVideoUrlName = context.getString(R.string.error_no_video_url_name);
+        videoNotFound = context.getString(R.string.product_video_not_found);
+        invalidVideoUrl = context.getString(R.string.product_invalid_video_url);
+        videoNotFound = context.getString(R.string.product_video_not_found);
+        videoAdultWarn = context.getString(R.string.product_video_adult_warn);
+        errorNoVideoUrlName = context.getString(R.string.product_error_no_video_url_name);
     }
 
     public synchronized void checkIfVideoExists(YoutubeResponse youtubeResponse, String videoId) {

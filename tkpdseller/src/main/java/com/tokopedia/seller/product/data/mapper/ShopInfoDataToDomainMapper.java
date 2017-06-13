@@ -10,17 +10,18 @@ import rx.functions.Func1;
  */
 
 public class ShopInfoDataToDomainMapper implements Func1<ShopModel, AddProductShopInfoDomainModel> {
-    @Override
-    public AddProductShopInfoDomainModel call(ShopModel shopModel) {
-        return mapDomainModel(shopModel);
-    }
-
     public static AddProductShopInfoDomainModel mapDomainModel(ShopModel shopModel) {
         AddProductShopInfoDomainModel domainModel = new AddProductShopInfoDomainModel();
 
+        domainModel.setShopId(shopModel.info.shopId);
         domainModel.setGoldMerchant( shopModel.info.shopIsGold == 1 );
         domainModel.setFreeReturn( shopModel.info.isFreeReturns() );
         return domainModel;
+    }
+
+    @Override
+    public AddProductShopInfoDomainModel call(ShopModel shopModel) {
+        return mapDomainModel(shopModel);
     }
 
 }

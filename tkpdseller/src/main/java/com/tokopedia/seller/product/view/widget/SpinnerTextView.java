@@ -2,26 +2,28 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Parcelable;
+import android.support.annotation.StyleRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.BaseCustomView;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
 /**
  * Created by nathan on 04/05/17.
  */
 
-public class SpinnerTextView extends FrameLayout {
+public class SpinnerTextView extends BaseCustomView {
+
+    private int hintTextColor;
 
     public interface OnItemChangeListener {
 
@@ -29,13 +31,16 @@ public class SpinnerTextView extends FrameLayout {
 
     }
 
+    private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
 
     private String hintText;
+    private @StyleRes int hintTextAppearance;
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
+    private float textSize;
     private boolean enabled;
     private AdapterView.OnItemClickListener onItemClickListener;
 
@@ -68,11 +73,16 @@ public class SpinnerTextView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerTextView);
         try {
+            hintTextAppearance = styledAttributes.getResourceId(R.styleable.SpinnerTextView_spinner_hint_appearence, 0);
             hintText = styledAttributes.getString(R.styleable.SpinnerTextView_spinner_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerTextView_spinner_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
+            textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
+                    getResources().getDimension(R.dimen.font_medium));
+            hintTextColor = styledAttributes.getColor(R.styleable.SpinnerTextView_spinner_hint_text_color,
+                    0);
         } finally {
             styledAttributes.recycle();
         }
@@ -86,6 +96,13 @@ public class SpinnerTextView extends FrameLayout {
         }
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+        }
+        if (hintTextAppearance!= 0) {
+            textInputLayout.setHintTextAppearance(hintTextAppearance);
+        }
+        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        if (hintTextColor!= 0) {
+            textAutoComplete.setHintTextColor(hintTextColor);
         }
         invalidate();
         requestLayout();
@@ -105,13 +122,18 @@ public class SpinnerTextView extends FrameLayout {
         textAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                selectionIndex = position;
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(adapterView, view, position, id);
                 }
-                selectionIndex = position;
                 updateOnItemChanged(position);
             }
         });
+    }
+
+    private void resetPosition() {
+        selectionIndex = DEFAULT_INDEX_NOT_SELECTED;
+        textAutoComplete.setText("");
     }
 
     @Override
@@ -139,7 +161,7 @@ public class SpinnerTextView extends FrameLayout {
     }
 
     public String getSpinnerValue() {
-        if (values == null) {
+        if (values == null || selectionIndex < 0) {
             return null;
         }
         return values[selectionIndex].toString();
@@ -169,15 +191,32 @@ public class SpinnerTextView extends FrameLayout {
 
     public void setSpinnerValue(String value) {
         if (TextUtils.isEmpty(value)) {
+            resetPosition();
             return;
         }
         for (int i = 0; i < values.length; i++) {
             String tempValue = values[i].toString();
             if (tempValue.equalsIgnoreCase(value)) {
                 setSpinnerPosition(i);
-                break;
+                return;
             }
         }
+        resetPosition();
+    }
+
+    public void setSpinnerValueByEntries(String entri){
+        if (TextUtils.isEmpty(entri)) {
+            resetPosition();
+            return;
+        }
+        for (int i = 0; i < entries.length; i++) {
+            String tempValue = entries[i].toString();
+            if (tempValue.equalsIgnoreCase(entri)) {
+                setSpinnerPosition(i);
+                return;
+            }
+        }
+        resetPosition();
     }
 
     public void setError(String error) {
@@ -189,42 +228,14 @@ public class SpinnerTextView extends FrameLayout {
             this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
-            textAutoComplete.setText(entries[selectionIndex]);
-            updateOnItemChanged(selectionIndex);
+            if (selectionIndex >= 0) {
+                textAutoComplete.setText(entries[selectionIndex]);
+                updateOnItemChanged(selectionIndex);
+            }
         }
     }
 
     public EditText getEditText() {
         return textAutoComplete;
-    }
-
-    @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
-    }
-
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.initChildrenStates();
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
-        }
-        return ss;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
-        }
     }
 }

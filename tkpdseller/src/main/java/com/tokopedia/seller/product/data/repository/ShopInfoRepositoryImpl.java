@@ -1,6 +1,9 @@
 package com.tokopedia.seller.product.data.repository;
 
+import android.content.Context;
+
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.data.mapper.ShopInfoDataToDomainMapper;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
@@ -16,24 +19,23 @@ import rx.Observable;
 
 public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     private final ShopInfoDataSource shopInfoDataSource;
+    private Context context;
 
     @Inject
-    public ShopInfoRepositoryImpl(ShopInfoDataSource shopInfoDataSource) {
+    public ShopInfoRepositoryImpl(Context context, ShopInfoDataSource shopInfoDataSource) {
         this.shopInfoDataSource = shopInfoDataSource;
-    }
-
-    @Override
-    public Observable<ShopModel> getShopInfo() {
-        return shopInfoDataSource.getShopInfo();
-    }
-
-    @Override
-    public Observable<ShopModel> getShopInfoFromNetwork() {
-        return shopInfoDataSource.getShopInfoFromNetwork();
+        this.context = context;
     }
 
     @Override
     public Observable<AddProductShopInfoDomainModel> getAddProductShopInfo() {
         return shopInfoDataSource.getShopInfo().map(new ShopInfoDataToDomainMapper());
     }
+
+    @Override
+    public String getShopId() {
+        return SessionHandler.getShopID(context);
+    }
+
+
 }

@@ -44,6 +44,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     public static final String KEY_CURRENCY_TYPE = "KEY_CURRENCY_TYPE";
     private final Locale dollarLocale = Locale.US;
     private final Locale idrLocale = new Locale("in", "ID");
+    OnDismissListener onDismissListener;
     private WholeSaleDialogListener listener;
     private CounterInputView maxWholeSale;
     private CounterInputView minWholeSale;
@@ -59,15 +60,6 @@ public class AddWholeSaleDialog extends DialogFragment {
     private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
 
-    OnDismissListener onDismissListener;
-    public interface OnDismissListener{
-        void onDismiss();
-    }
-
-    public void setOnDismissListener(OnDismissListener onDismissListener) {
-        this.onDismissListener = onDismissListener;
-    }
-
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
             @CurrencyTypeDef int currencyType,
@@ -81,6 +73,10 @@ public class AddWholeSaleDialog extends DialogFragment {
         bundle.putInt(KEY_CURRENCY_TYPE, currencyType);
         addWholeSaleDialog.setArguments(bundle);
         return addWholeSaleDialog;
+    }
+
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
     }
 
     @Override
@@ -111,7 +107,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.add_whole_sale_dialog_layout, container, false);
         determineFormatter();
         title = (TextView) view.findViewById(R.id.string_picker_dialog_title);
-        title.setText(R.string.add_whole_sale_title);
+        title.setText(R.string.product_add_whole_sale_title);
         minWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_whole_sale);
         maxWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_maximum_whole_sale);
         wholesalePrice = (DecimalInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
@@ -231,14 +227,14 @@ public class AddWholeSaleDialog extends DialogFragment {
          * less than minimum is not allowed, equal and larger is a must.
          */
         if (maxQuantity < minQuantityRaw) {
-            maxWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
+            maxWholeSale.setError(getString(R.string.product_quantity_range_is_not_valid));
             isErrorReturn = true;
             return;
         }
 
         if (finalIsFirsttime) {
             if (maxQuantity <= minWholeSale.getDoubleValue()) {
-                maxWholeSale.setError(getString(R.string.prompt_larger));
+                maxWholeSale.setError(getString(R.string.product_prompt_larger));
                 isErrorReturn = true;
                 return;
             }
@@ -251,13 +247,13 @@ public class AddWholeSaleDialog extends DialogFragment {
 
     protected boolean validateMinQuantity(double minQuantity) {
         if (minQuantity <= 0) {
-            minWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
+            minWholeSale.setError(getString(R.string.product_quantity_range_is_not_valid));
             minWholeSale.updateMinusButtonState(false);
             return isErrorReturn = true;
         }
 
         if (minQuantity >= maxWholeSale.getDoubleValue()) {
-            minWholeSale.setError(getString(R.string.prompt_lesser));
+            minWholeSale.setError(getString(R.string.product_prompt_lesser));
             return isErrorReturn = true;
         }
 
@@ -294,14 +290,14 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
 
         if (currencyValue >= baseValue.getQtyPrice()) {
-            wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_fix_price));
+            wholesalePrice.setError(getString(R.string.product_price_should_be_cheaper_than_fix_price));
             isErrorReturn = true;
             return;
         }
 
         if (previousValue != null) {
             if (currencyValue >= previousValue.getQtyPrice()) {
-                wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_previous_wholesale_price));
+                wholesalePrice.setError(getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
                 isErrorReturn = true;
                 return;
             }
@@ -344,10 +340,6 @@ public class AddWholeSaleDialog extends DialogFragment {
         return value.replace(",", "");
     }
 
-    public interface WholeSaleDialogListener {
-        void addWholesaleItem(WholesaleModel item);
-    }
-
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
@@ -355,5 +347,13 @@ public class AddWholeSaleDialog extends DialogFragment {
             onDismissListener.onDismiss();
             onDismissListener = null;
         }
+    }
+
+    public interface OnDismissListener {
+        void onDismiss();
+    }
+
+    public interface WholeSaleDialogListener {
+        void addWholesaleItem(WholesaleModel item);
     }
 }

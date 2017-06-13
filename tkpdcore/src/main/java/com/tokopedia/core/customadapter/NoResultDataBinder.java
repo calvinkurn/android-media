@@ -1,5 +1,6 @@
 package com.tokopedia.core.customadapter;
 
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,20 +23,11 @@ import butterknife.ButterKnife;
 public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder> {
 
     protected boolean isFullScreen = false;
+    @DrawableRes
+    private int drawableAsset = R.drawable.status_no_result;
 
     public NoResultDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.no_result_image)
-        ImageView emptyImage;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-        }
     }
 
     @Override
@@ -51,8 +43,17 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
     @Override
     public void bindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.loadImageWithId(holder.emptyImage, R.drawable.status_no_result);
+        ImageHandler.loadImageWithId(holder.emptyImage, getDrawableAsset());
 
+    }
+
+    @DrawableRes
+    public int getDrawableAsset() {
+        return drawableAsset;
+    }
+
+    public void setDrawableAsset(@DrawableRes int drawableAsset) {
+        this.drawableAsset = drawableAsset;
     }
 
     @Override
@@ -63,5 +64,16 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     public void setIsFullScreen(boolean isFullScreen) {
         this.isFullScreen = isFullScreen;
         notifyDataSetChanged();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R2.id.no_result_image)
+        ImageView emptyImage;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+        }
     }
 }
