@@ -77,5 +77,7 @@ public interface RideHomeMapContract {
         void handleEnableLocationDialogResult(int resultCode);
 
         void actionMapDragStopped(double latitude, double longitude);
+
+        void onResume();
     }
 }

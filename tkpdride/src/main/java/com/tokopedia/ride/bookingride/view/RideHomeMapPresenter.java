@@ -449,4 +449,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         mGetUberProductsUseCase.unsubscribe();
         super.detachView();
     }
+
+    @Override
+    public void onResume() {
+        if (!getView().isLaunchedWithLocation()) {
+            mRenderProductListBasedOnLocationUpdates = true;
+        }
+    }
 }
