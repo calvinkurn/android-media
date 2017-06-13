@@ -23,6 +23,8 @@ public interface UberProductContract {
 
         void renderProductList(List<Visitable> datas);
 
+        List<Visitable> getProductList();
+
         void showAdsBadges(String message);
 
         void hideAdsBadges();

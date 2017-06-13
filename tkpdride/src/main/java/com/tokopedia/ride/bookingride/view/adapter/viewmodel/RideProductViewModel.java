@@ -212,4 +212,18 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     public int hashCode() {
         return productId != null ? productId.hashCode() : 0;
     }
+
+    public static RideProductViewModel copy(RideProductViewModel orig) {
+        Parcel p = Parcel.obtain();
+        orig.writeToParcel(p, 0);
+        p.setDataPosition(0);
+        RideProductViewModel copy = null;
+        try {
+            copy = (RideProductViewModel) orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return copy;
+    }
+
 }

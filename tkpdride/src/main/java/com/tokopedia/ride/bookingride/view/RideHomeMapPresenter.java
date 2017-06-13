@@ -197,6 +197,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private void setSourceAsCurrentLocation() {
         if (mCurrentLocation == null) return;
 
+        if (getView() == null) return;
+
         getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
         //set source as current location

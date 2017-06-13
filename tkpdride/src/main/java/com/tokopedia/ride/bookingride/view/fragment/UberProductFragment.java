@@ -215,6 +215,15 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         mAdapter.setElement(datas);
     }
 
+    @Override
+    public List<Visitable> getProductList() {
+        if (mAdapter == null) {
+            return null;
+        }
+
+        return mAdapter.getElements();
+    }
+
     @OnClick(R2.id.crux_cabs_ad_cross)
     public void actionCloseAdsButtonClicked() {
         hideAdsBadges();

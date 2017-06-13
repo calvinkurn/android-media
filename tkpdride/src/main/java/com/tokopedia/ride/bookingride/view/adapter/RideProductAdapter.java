@@ -47,7 +47,7 @@ public class RideProductAdapter extends RecyclerView.Adapter<AbstractViewHolder>
     @Override
     public int getItemViewType(int position) {
 //        if(mVisitables!= null && mVisitables.get(position) != null) {
-            return mVisitables.get(position).type(typeFactory);
+        return mVisitables.get(position).type(typeFactory);
 //        }
 //        return 0;
     }
@@ -68,11 +68,6 @@ public class RideProductAdapter extends RecyclerView.Adapter<AbstractViewHolder>
             mVisitables.add(position, visitable);
             notifyDataSetChanged();
         }
-    }
-
-    public void removeItem(Visitable visitable) {
-        mVisitables.remove(visitable);
-        notifyDataSetChanged();
     }
 
     public void clearData() {

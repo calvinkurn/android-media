@@ -82,8 +82,27 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void actionGetRideProducts(final PlacePassViewModel source, final PlacePassViewModel destination) {
-        getView().showProgress();
-        getView().hideProductList();
+        //getView().showProgress();
+        //getView().hideProductList();
+
+        //format existing list to not show time and price when updating
+        List<Visitable> existingProductList = getView().getProductList();
+        if (existingProductList != null && existingProductList.size() > 0) {
+            List<Visitable> updatedList = new ArrayList<>();
+            for (Visitable visitable : existingProductList) {
+                if (visitable instanceof RideProductViewModel) {
+                    RideProductViewModel rideProductViewModel = RideProductViewModel.copy((RideProductViewModel) visitable);
+                    rideProductViewModel.setTimeEstimate(" --");
+                    if (rideProductViewModel.getProductPriceFmt() != null && destination != null) {
+                        rideProductViewModel.setProductPriceFmt("--");
+                    }
+                    updatedList.add(rideProductViewModel);
+                }
+            }
+
+            getView().renderProductList(updatedList);
+        }
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
         requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
@@ -164,8 +183,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     i
             );
         }
-
-
     }
 
     private void actionGetFareProduct2(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates) {
