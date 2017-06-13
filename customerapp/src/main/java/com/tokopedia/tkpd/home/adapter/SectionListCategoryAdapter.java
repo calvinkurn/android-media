@@ -10,8 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import java.util.ArrayList;
 
@@ -50,25 +52,30 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
         holder.tvTitle.setText(singleItem.getName());
 
-        ImageHandler.LoadImage(holder.itemImage,singleItem.getImageUrl());
+        ImageHandler.LoadImage(holder.itemImage, singleItem.getImageUrl());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
-                    categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
-                } else {
-                    gimmicClickedListener.onGimmicClicked(singleItem);
-                }
-            }
-        });
+                                           @Override
+                                           public void onClick(View v) {
+                                               if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
+                                                   categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
+                                               } else {
+                                                   if (CategoryItemModel.TYPE.DIGITAL.equals(singleItem.getType())) {
+                                                       gimmicClickedListener.onDigitalCategoryClicked(singleItem);
+                                                   } else {
+                                                       gimmicClickedListener.onGimmicClicked(singleItem);
 
-        if(i % 2 != 0 ){
+                                                   }
+                                               }
+                                           }
+                                       }
+        );
+
+        if (i % 2 != 0) {
             holder.sparator.setVisibility(View.GONE);
         } else {
             holder.sparator.setVisibility(View.VISIBLE);
         }
-
     }
 
 
@@ -114,6 +121,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
     public interface OnGimmicClickedListener {
         void onGimmicClicked(CategoryItemModel categoryItemModel);
-    }
 
+        void onDigitalCategoryClicked(CategoryItemModel itemModel);
+    }
 }

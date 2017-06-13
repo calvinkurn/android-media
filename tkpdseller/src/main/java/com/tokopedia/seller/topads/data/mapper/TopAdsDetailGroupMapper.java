@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.data.mapper;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -11,6 +13,11 @@ import rx.functions.Func1;
  */
 
 public class TopAdsDetailGroupMapper implements Func1<Response<DataResponse<DataResponseCreateGroup>>, DataResponseCreateGroup> {
+
+    @Inject
+    public TopAdsDetailGroupMapper() {
+    }
+
     @Override
     public DataResponseCreateGroup call(Response<DataResponse<DataResponseCreateGroup>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);

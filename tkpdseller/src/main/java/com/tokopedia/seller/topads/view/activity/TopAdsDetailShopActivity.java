@@ -1,13 +1,12 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailShopFragment;
 
 public class TopAdsDetailShopActivity extends TActivity {
@@ -25,11 +24,11 @@ public class TopAdsDetailShopActivity extends TActivity {
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
 
-        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if(fragment == null){
             fragment = TopAdsDetailShopFragment.createInstance(ad, adId);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, fragment, TAG)
                 .commit();
     }

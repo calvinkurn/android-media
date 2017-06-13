@@ -41,7 +41,7 @@ public class RechargePresenterImpl implements RechargePresenter,
         this.context = context;
         this.cacheHandlerPhoneBook = new LocalCacheHandler(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
         this.cacheHandlerLastOrder = new LocalCacheHandler(
-                this.context,RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
+                this.context, RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
         );
     }
 
@@ -53,7 +53,7 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public void fetchRecentNumbers(int categoryId) {
-        dbInteractor.getRecentData(categoryId,this);
+        dbInteractor.getRecentData(categoryId, this);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public void getListOperatorFromCategory(int categoryId) {
-        dbInteractor.getListProductForOperator(this,categoryId);
+        dbInteractor.getListProductForOperator(this, categoryId);
     }
 
     @Override
@@ -105,6 +105,22 @@ public class RechargePresenterImpl implements RechargePresenter,
             return null;
         }
     }
+
+    @Override
+    public boolean isAlreadyHaveLastOrderDataOnCacheByCategoryId(int categoryId) {
+        if (isAlreadyHaveLastOrderDataOnCache()) {
+            String temp = cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+            try {
+                LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
+                return (lastOrder.getData().getId() == categoryId);
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 
     @Override
     public void saveLastInputToCache(String key, String userLastInput) {
@@ -177,11 +193,11 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccessFetchProducts(List<Product> listProduct) {
         List<Integer> operatorIds = new ArrayList<>();
-        for (Product prod: listProduct) {
+        for (Product prod : listProduct) {
             if (!operatorIds.contains(prod.getRelationships().getOperator().getData().getId()))
                 operatorIds.add(prod.getRelationships().getOperator().getData().getId());
         }
-        dbInteractor.getOperatorListByIds(operatorIds,this);
+        dbInteractor.getOperatorListByIds(operatorIds, this);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,18 +14,19 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -43,7 +44,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private FloatingActionButton fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -82,26 +82,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         super.initView();
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
-        fabSpeedDial = (FloatingActionButton) findViewById(R.id.top_ads_dashboard_fab);
         datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         topadsDashList = new TopAdsDashboardTabListener(viewPager);
-        topadsDashList.setTopAdsDashboardList(new TopAdsDashboardTabListener.TopAdsDashboardList() {
-            @Override
-            public void onSelected(int positon) {
-                switch (positon) {
-                    case 0:
-                        fabSpeedDial.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                    default:
-                        fabSpeedDial.setVisibility(View.GONE);
-                        break;
-                }
-            }
-        });
         tabLayout.setOnTabSelectedListener(topadsDashList);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_product));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_store));
@@ -113,15 +98,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
-        fabSpeedDial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getCurrentFragment() != null && getCurrentFragment() instanceof TopAdsDashboardProductFragment) {
-                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
-                    getCurrentFragment().startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
-                }
-            }
-        });
     }
 
     Fragment getCurrentFragment() {
@@ -141,7 +117,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(dashboardProductFragment);
         fragmentList.add(dashboardShopFragment);
-        return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
+        return new TopAdsDashboardPagerAdapter(getSupportFragmentManager(), fragmentList);
     }
 
     @Override
@@ -187,6 +163,25 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     }
 
     @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            //coming from deeplink
+            if (getApplication() instanceof TkpdCoreRouter) {
+                TkpdCoreRouter router = (TkpdCoreRouter) getApplication();
+                try {
+                    Intent intent = new Intent(this, router.getHomeClass(this));
+                    this.startActivity(intent);
+                    this.finish();
+                    return;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDashboardActivity.class.getName();
         if (ShowCasePreference.hasShown(this, showCaseTag)) {
@@ -219,7 +214,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         viewPager.post(new Runnable() {
             @Override
             public void run() {
-                if (isFinishing()) {
+                if (isFinishing() ) {
                     return;
                 }
                 View depositView = dashboardProductFragment.getDepositView();
@@ -256,12 +251,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                             0,
                             scrollView));
                 }
-
-                showCaseList.add(new ShowCaseObject(
-                        fabSpeedDial,
-                        getString(R.string.topads_showcase_home_title_6),
-                        getString(R.string.topads_showcase_home_desc_6)));
-
                 showCaseDialog.show(TopAdsDashboardActivity.this, showCaseTag, showCaseList);
             }
         });

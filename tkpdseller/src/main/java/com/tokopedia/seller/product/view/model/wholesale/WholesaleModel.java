@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 /**
  * @author normansyahputa on 4/20/17.
  */
-public class WholesaleModel extends TypeBasedModel implements Parcelable {
+public class WholesaleModel implements Parcelable, TypeBasedModel {
     public static final int TYPE = 1212834;
     public static final Parcelable.Creator<WholesaleModel> CREATOR = new Parcelable.Creator<WholesaleModel>() {
         @Override
@@ -30,18 +30,16 @@ public class WholesaleModel extends TypeBasedModel implements Parcelable {
     private int level;
 
     public WholesaleModel() {
-        super(TYPE);
+
     }
 
     public WholesaleModel(int quantityOne, int quantityTwo, double wholeSalePrice) {
-        super(TYPE);
         this.qtyOne = quantityOne;
         this.qtyTwo = quantityTwo;
         this.qtyPrice = wholeSalePrice;
     }
 
     protected WholesaleModel(Parcel in) {
-        super(TYPE);
         this.qtyOne = in.readInt();
         this.qtyTwo = in.readInt();
         this.qtyPrice = in.readDouble();
@@ -117,5 +115,10 @@ public class WholesaleModel extends TypeBasedModel implements Parcelable {
         temp = Double.doubleToLongBits(qtyPrice);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.lib.williamchart.util;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -16,7 +17,8 @@ public final class KMNumbers {
     public static final String SUFFIXES = "KMGTPE";
     public static final String COMMA = ",";
     public static final String DOT = ".";
-    private static final Locale locale = new Locale("in","ID");
+    private static final Locale locale = new Locale("in", "ID");
+    public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
     static {
         suffixes.put(1000L, "Rb");
@@ -25,12 +27,12 @@ public final class KMNumbers {
         suffixes.put(1000000000000L, "T");
     }
 
-    public static void overrideSuffixes(long digit, String suffix){
+    public static void overrideSuffixes(long digit, String suffix) {
         suffixes.put(digit, suffix);
     }
 
     public static String formatNumbers(Long number) {
-        if (number >= 100000 || number<0){
+        if (number >= 100000 || number < 0) {
             return formatNumbersBiggerThanHundredThousand(number);
         }
 
@@ -49,7 +51,7 @@ public final class KMNumbers {
     }
 
     public static String formatNumbers(Float number) {
-        if (number >= 100000 || number<0){
+        if (number >= 100000 || number < 0) {
             return formatNumbersBiggerThanHundredThousand(number);
         }
 
@@ -68,7 +70,8 @@ public final class KMNumbers {
     }
 
     private static String formatNumbersBiggerThanHundredThousand(Long number) {
-        if (number == Long.MIN_VALUE) return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
+        if (number == Long.MIN_VALUE)
+            return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
         if (number < 0) return "-" + formatNumbersBiggerThanHundredThousand(-number);
         if (number < 10000) return Long.toString(number);
 
@@ -82,7 +85,8 @@ public final class KMNumbers {
     }
 
     private static String formatNumbersBiggerThanHundredThousand(Float number) {
-        if (number == Long.MIN_VALUE) return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
+        if (number == Long.MIN_VALUE)
+            return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
         if (number < 0) return "-" + formatNumbersBiggerThanHundredThousand(-number);
         if (number < 10000) return Float.toString(number);
 
@@ -95,7 +99,7 @@ public final class KMNumbers {
         return formatString(v) + suffix;
     }
 
-    public static String formatString(Double number){
+    public static String formatString(Double number) {
         return String.format(locale, FORMAT_DOUBLE, number);
     }
 
@@ -105,5 +109,34 @@ public final class KMNumbers {
 
     private static String formatString(Float number, Integer exp) {
         return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.floorEntry((long) Math.round(number)).getValue());
+    }
+
+
+    /**
+     * used to formating value display of YAxis chart at topads fitur
+     *
+     * @param number
+     * @return
+     */
+    public static String formatNumbersTopAds(Long number) {
+        if (number >= 100000 || number < 0) {
+            return formatNumbersBiggerThanHundredThousand(number);
+        }
+
+        if (number < 10000) return formatStringTopAds(number);
+
+        int exp = (int) (Math.log(number) / Math.log(1000));
+        String result = formatString(number, exp);
+        return result;
+    }
+
+    /**
+     * used to formating number to currency format
+     *
+     * @param number
+     * @return
+     */
+    private static String formatStringTopAds(Long number) {
+        return numberFormat.format(number);
     }
 }

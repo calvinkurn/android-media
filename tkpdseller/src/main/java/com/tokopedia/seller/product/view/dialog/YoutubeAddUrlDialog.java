@@ -34,8 +34,8 @@ public class YoutubeAddUrlDialog extends TextPickerDialog {
 
         textInput.setMaxLines(1);
         textInput.setSingleLine(true);
-        stringPickerTitle.setText(R.string.youtube_add_url_title);
-        textInputLayout.setHint(getString(R.string.url_video));
+        stringPickerTitle.setText(R.string.product_youtube_add_url_title);
+        textInputLayout.setHint(getString(R.string.product_url_video));
         textInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

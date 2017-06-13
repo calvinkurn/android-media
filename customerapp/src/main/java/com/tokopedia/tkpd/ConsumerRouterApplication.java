@@ -14,11 +14,13 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -27,6 +29,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -104,6 +107,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goToManageEtalase(Context context) {
+        Intent intent = new Intent(context, EtalaseShopEditor.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void clearEtalaseCache() {
         AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
     }
@@ -146,6 +155,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
+        return DigitalProductActivity.newInstance(this, passData);
     }
 
     @Override

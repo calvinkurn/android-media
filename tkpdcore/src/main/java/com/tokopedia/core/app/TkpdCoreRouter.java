@@ -27,6 +27,8 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
+    void goToManageEtalase(Context context);
+
     void clearEtalaseCache();
 
     Intent goToEditProduct(Context context, boolean isEdit, String productId);

@@ -34,7 +34,7 @@ public class TopAdsGroupAdListActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_group_ad_list);
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsGroupAdListFragment.createInstance(), TopAdsGroupAdListFragment.class.getSimpleName())
                 .commit();
     }
@@ -54,7 +54,7 @@ public class TopAdsGroupAdListActivity extends TActivity
             return;
         }
         final TopAdsGroupAdListFragment topAdsGroupAdListFragment =
-                (TopAdsGroupAdListFragment) getFragmentManager().findFragmentByTag(TopAdsGroupAdListFragment.class.getSimpleName());
+                (TopAdsGroupAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsGroupAdListFragment.class.getSimpleName());
         if (topAdsGroupAdListFragment == null) {
             return;
         }
@@ -87,25 +87,25 @@ public class TopAdsGroupAdListActivity extends TActivity
             recyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    View dateView = topAdsGroupAdListFragment.getDateView();
+                    if (dateView != null) {
+                        dateView.setVisibility(View.VISIBLE);
+                        showCaseList.add(
+                                new ShowCaseObject(
+                                        dateView,
+                                        getString(R.string.topads_showcase_group_list_title_3),
+                                        getString(R.string.topads_showcase_group_list_desc_3)));
+                    }
+
                     View itemView = topAdsGroupAdListFragment.getItemRecyclerView();
                     if (itemView != null) {
                         showCaseList.add(
                                 new ShowCaseObject(
                                         itemView,
-                                        getString(R.string.topads_showcase_group_list_title_3),
-                                        getString(R.string.topads_showcase_group_list_desc_3),
+                                        getString(R.string.topads_showcase_group_list_title_4),
+                                        getString(R.string.topads_showcase_group_list_desc_4),
                                         ShowCaseContentPosition.UNDEFINED,
                                         Color.WHITE));
-                    }
-
-                    FloatingActionButton fab = topAdsGroupAdListFragment.getFab();
-                    if (fab != null) {
-                        fab.show();
-                        showCaseList.add(
-                                new ShowCaseObject(
-                                        fab,
-                                        getString(R.string.topads_showcase_group_list_title_4),
-                                        getString(R.string.topads_showcase_group_list_desc_4)));
                     }
 
                     showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
