@@ -62,6 +62,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
@@ -386,6 +387,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
+        items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
         return items;
     }
 
@@ -410,6 +412,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     RecognizerIntent.EXTRA_RESULTS);
             if (results != null && results.size() > 0) {
                 discoverySearchView.setQuery(results.get(0), false);
+                sendVoiceSearchGTM(results.get(0));
             }
 
         }
@@ -532,9 +535,21 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId) {
         gridIcon = gridIconResId;
         gridTitleRes = gridTitleResId;
-        if (isBottomBarItemReady(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION)) {
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setTitle(getString(gridTitleResId));
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setDrawable(gridIconResId);
+
+        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                fragmentManager.findFragmentById(R.id.container);
+        boolean isShopFragment = parentFragment.getActiveFragment() instanceof ShopFragment;
+
+        int viewTypeItemPosition;
+        if (isShopFragment) {
+            viewTypeItemPosition = 1;
+        } else {
+            viewTypeItemPosition = BOTTOM_BAR_GRID_TYPE_ITEM_POSITION;
+        }
+
+        if (isBottomBarItemReady(viewTypeItemPosition)) {
+            bottomNavigation.getItem(viewTypeItemPosition).setTitle(getString(gridTitleResId));
+            bottomNavigation.getItem(viewTypeItemPosition).setDrawable(gridIconResId);
             bottomNavigation.refresh();
         }
     }
@@ -589,6 +604,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
             UnifyTracking.eventDiscoverySearch(keyword);
+        }
+    }
+
+    private void sendVoiceSearchGTM(String keyword) {
+        if (keyword != null &&
+                !TextUtils.isEmpty(keyword)) {
+            UnifyTracking.eventDiscoveryVoiceSearch(keyword);
         }
     }
 

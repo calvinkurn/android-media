@@ -1928,6 +1928,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
+    <string name="title_activity_snapshot">Snapshot</string>
 
     <!-- Marketing Campaign Official Store START-->
     <string name="title_discount_timer">Promo berakhir dalam:</string>
@@ -1952,4 +1953,8 @@ di Tokopedia Sekarang!</string>
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
+    <string name="title_opportunity_list">Peluang</string>
+    <string name="accept_replacement">Ambil Peluang</string>
+    <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
+    <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 </resources>

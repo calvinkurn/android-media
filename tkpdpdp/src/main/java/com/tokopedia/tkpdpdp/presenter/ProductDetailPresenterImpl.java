@@ -73,6 +73,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
+
 /**
  * ProductDetailPresenterImpl
  * Created by ANGGA on 11/2/2015.
@@ -542,15 +546,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 report.setVisible(false);
                 report.setEnabled(false);
                 switch (productData.getInfo().getProductStatus()) {
-                    case "1":
+                    case PRD_STATE_ACTIVE:
                         etalase.setVisible(false);
                         etalase.setEnabled(false);
                         break;
-                    case "3":
+                    case PRD_STATE_WAREHOUSE:
                         warehouse.setVisible(false);
                         warehouse.setEnabled(false);
                         break;
-                    case "-1":
+                    case PRD_STATE_PENDING:
                         etalase.setVisible(false);
                         etalase.setEnabled(false);
                         warehouse.setVisible(false);

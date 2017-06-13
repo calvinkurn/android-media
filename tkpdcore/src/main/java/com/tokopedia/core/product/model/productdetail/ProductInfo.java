@@ -15,6 +15,10 @@ import java.util.List;
 public class ProductInfo implements Parcelable {
     private static final String TAG = ProductInfo.class.getSimpleName();
 
+    public static final String PRD_STATE_ACTIVE = "1";
+    public static final String PRD_STATE_PENDING = "-1";
+    public static final String PRD_STATE_WAREHOUSE = "3";
+
     @SerializedName("product_weight_unit")
     @Expose
     private String productWeightUnit;
@@ -371,6 +375,10 @@ public class ProductInfo implements Parcelable {
         } else {
             productInstallments = null;
         }
+        wholseSaleMinPrice = in.readString();
+        wholeSaleMinQuantity = in.readString();
+        installmentMinPercentage = in.readString();
+        installmentMinPrice = in.readString();
     }
 
     @Override
