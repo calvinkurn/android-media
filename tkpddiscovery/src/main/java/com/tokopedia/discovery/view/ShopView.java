@@ -21,4 +21,10 @@ public interface ShopView extends BaseView {
     void setLoading(boolean isLoading);
     void setEmptyState();
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
+
+    void startShopInfoActivity(String shopId);
+
+    void showErrorMessage(String error);
+
+    void showToggleFavoriteSuccess(String shopName, boolean favorited);
 }
