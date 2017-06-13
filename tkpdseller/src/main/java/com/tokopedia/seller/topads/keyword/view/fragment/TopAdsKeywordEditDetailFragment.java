@@ -17,6 +17,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
@@ -115,7 +116,18 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected void settingTopAdsCostPerClick(View view) {
         topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
-        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick);
+        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
+            @Override
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                String errorMessage = com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    topAdsCostPerClick.setError(errorMessage);
+                } else {
+                    topAdsCostPerClick.setError(null);
+                }
+            }
+        };
         topAdsCostPerClick.addTextChangedListener(textWatcher);
     }
 
@@ -163,9 +175,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showError(String detail) {
+    public void showError(Throwable detail) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), detail);
+        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
     }
 
     @Override
