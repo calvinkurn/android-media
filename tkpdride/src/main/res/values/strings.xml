@@ -124,4 +124,6 @@
     <string name="ontrip_marker_driver">Driver</string>
     <string name="ontrip_rider_canceled_request_message">Rider Canceled Request</string>
     <string name="ride_home_map_go_to_pin">GO TO PIN</string>
+    <string name="ride_home_map_dest_zero_error">Destination location is invalid, try again.</string>
+    <string name="ride_home_map_pickup_zero_error">Pickup location is invalid, try again.</string>
 </resources>

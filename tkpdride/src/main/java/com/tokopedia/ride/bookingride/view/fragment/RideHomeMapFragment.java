@@ -448,17 +448,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     presenter.initialize();
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
-                    source = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setSourceLocationText(String.valueOf(source.getTitle()));
-                    proccessToRenderRideProduct();
-                    if (!isAlreadySelectDestination) {
-                        moveMapToLocation(source.getLatitude(), source.getLongitude());
+                    PlacePassViewModel sourceTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    if (sourceTemp.getLatitude() == 0.0 || sourceTemp.getLongitude() == 0.0) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_pickup_zero_error));
+                    } else {
+                        source = sourceTemp;
+                        setSourceLocationText(String.valueOf(source.getTitle()));
+                        proccessToRenderRideProduct();
+                        if (!isAlreadySelectDestination) {
+                            moveMapToLocation(source.getLatitude(), source.getLongitude());
+                        }
                     }
+
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
+                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
                     } else {
                         destination = destinationTemp;
                         setDestinationLocationText(String.valueOf(destination.getTitle()));
