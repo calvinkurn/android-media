@@ -1946,4 +1946,6 @@ di Tokopedia Sekarang!</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
     <string name="title_opportunity_list">Peluang</string>
     <string name="accept_replacement">Ambil Peluang</string>
+    <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
+    <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 </resources>
