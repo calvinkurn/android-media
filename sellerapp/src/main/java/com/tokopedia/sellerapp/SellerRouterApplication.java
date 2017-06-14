@@ -25,6 +25,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -60,6 +61,12 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ManageProduct.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void goToManageEtalase(Context context) {
+        Intent intent = new Intent(context, EtalaseShopEditor.class);
         startActivity(intent);
     }
 

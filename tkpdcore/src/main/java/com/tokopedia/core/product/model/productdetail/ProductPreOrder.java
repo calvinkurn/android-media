@@ -92,8 +92,8 @@ public class ProductPreOrder implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductPreOrder> CREATOR =
-            new Parcelable.Creator<ProductPreOrder>() {
+    public static final Creator<ProductPreOrder> CREATOR =
+            new Creator<ProductPreOrder>() {
                 @Override
                 public ProductPreOrder createFromParcel(Parcel in) {
                     return new ProductPreOrder(in);

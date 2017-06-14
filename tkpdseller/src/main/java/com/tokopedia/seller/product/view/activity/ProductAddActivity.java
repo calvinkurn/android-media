@@ -24,8 +24,8 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -362,7 +362,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     public void startUploadProductWithShare(long productId) {
         startService(UploadProductService.getIntent(this, productId));
-        startActivity(ProductInfoActivity.createInstance(this));
+        startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
     }
 
@@ -377,7 +377,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     public void startUploadProductAndAddWithShare(Long productId) {
         startService(UploadProductService.getIntent(this, productId));
         start(this);
-        startActivity(ProductInfoActivity.createInstance(this));
+        startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
     }
 

@@ -275,7 +275,7 @@ public class ProductRating implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductRating> CREATOR = new Parcelable.Creator<ProductRating>() {
+    public static final Creator<ProductRating> CREATOR = new Creator<ProductRating>() {
         @Override
         public ProductRating createFromParcel(Parcel in) {
             return new ProductRating(in);
