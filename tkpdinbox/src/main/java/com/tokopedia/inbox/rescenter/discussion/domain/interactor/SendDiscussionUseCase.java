@@ -52,7 +52,6 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
     private final GenerateHostUseCase generateHostUseCase;
     private final ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase;
     private final UploadImageUseCase uploadImageUseCase;
-    private final UploadVideoUseCase uploadVideoUseCase;
     private final CreatePictureUseCase createPictureUseCase;
     private final ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
 
@@ -61,7 +60,6 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                                  GenerateHostUseCase generateHostUseCase,
                                  ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
                                  UploadImageUseCase uploadImageUseCase,
-                                 UploadVideoUseCase uploadVideoUseCase,
                                  CreatePictureUseCase createPictureUseCase,
                                  ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase) {
 
@@ -69,7 +67,6 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         this.generateHostUseCase = generateHostUseCase;
         this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
-        this.uploadVideoUseCase = uploadVideoUseCase;
         this.createPictureUseCase = createPictureUseCase;
         this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
     }
@@ -144,7 +141,6 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         this.generateHostUseCase.unsubscribe();
         this.replyDiscussionValidationUseCase.unsubscribe();
         this.uploadImageUseCase.unsubscribe();
-        this.uploadVideoUseCase.unsubscribe();
         this.createPictureUseCase.unsubscribe();
         this.replyDiscussionSubmitUseCase.unsubscribe();
     }
@@ -226,14 +222,8 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                 .flatMap(new Func1<AttachmentViewModel, Observable<UploadImageModel>>() {
                     @Override
                     public Observable<UploadImageModel> call(AttachmentViewModel attachment) {
-                        if (attachment.getFileType() == AttachmentViewModel.FILE_VIDEO) {
-                            uploadFileParam.putString(UploadVideoUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
-                            uploadFileParam.putString(UploadVideoUseCase.PARAM_FILE_NAME, attachment.getFileLoc().substring(attachment.getFileLoc().lastIndexOf("/")+1));
-                            return uploadVideoUseCase.createObservable(uploadFileParam);
-                        } else {
-                            uploadFileParam.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
-                            return uploadImageUseCase.createObservable(uploadFileParam);
-                        }
+                        uploadFileParam.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
+                        return uploadImageUseCase.createObservable(uploadFileParam);
                     }
                 }).toList()
                 .flatMap(new Func1<List<UploadImageModel>, Observable<RequestParams>>() {

@@ -39,7 +39,8 @@ public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadIm
 
     private UploadImageData mappingEntityDomain(UploadImageEntity entity) {
         UploadImageData data = new UploadImageData();
-        data.setImageUrl(entity.getFilePath());
+        data.setPicObj(entity.getPicObj());
+        data.setPicSrc(entity.getPicSrc());
         return data;
     }
 }

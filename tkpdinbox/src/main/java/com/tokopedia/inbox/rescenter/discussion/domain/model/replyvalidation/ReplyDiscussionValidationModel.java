@@ -10,6 +10,8 @@ public class ReplyDiscussionValidationModel {
     private String messageError;
     private ReplyDiscussionData replyDiscussionData;
     private int responseCode;
+    private String postKey;
+    private String token;
 
     public boolean isSuccess() {
         return success;
@@ -41,5 +43,21 @@ public class ReplyDiscussionValidationModel {
 
     public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
+    }
+
+    public String getPostKey() {
+        return postKey;
+    }
+
+    public void setPostKey(String postKey) {
+        this.postKey = postKey;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
