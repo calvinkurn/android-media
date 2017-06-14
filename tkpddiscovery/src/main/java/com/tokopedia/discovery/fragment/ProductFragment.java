@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -81,7 +82,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -208,9 +209,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if (!productAdapter.checkHasNext()) {
-            topAdsRecyclerAdapter.hideLoading();
-        }
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
 
@@ -309,7 +307,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -318,7 +315,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
@@ -359,7 +355,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ProductFragmentListener) {
+        if(context instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) context;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -369,7 +365,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof ProductFragmentListener) {
+        if(activity instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) activity;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -414,7 +410,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -448,11 +443,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             params.getParam().putAll(networkParam.extraFilter);
         }
         return params;
-    }
-
-    @Override
-    public void onInfoClicked() {
-
     }
 
     @Override
@@ -657,9 +647,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 topAdsRecyclerAdapter.setHasHeader(true);
                 productAdapter.addOfficialStoreBanner(new OsBannerAdapter.OsBannerViewModel(model));
                 productAdapter.notifyDataSetChanged();
-                topAdsRecyclerAdapter.notifyDataSetChanged();
                 backToTop();
-
                 UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
             }
         }

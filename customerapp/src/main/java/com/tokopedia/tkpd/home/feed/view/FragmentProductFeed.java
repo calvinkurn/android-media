@@ -74,7 +74,7 @@ import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
         DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener,
-        TopAdsInfoClickListener, TopAdsItemClickListener {
+        TopAdsItemClickListener {
 
     private static final String TAG = "FragmentProductFeed";
 
@@ -225,7 +225,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showLoadMoreFeed(List<RecyclerViewItem> dataFeedList) {
-        topAdsRecyclerAdapter.hideLoading();
         adapter.addNextPage(dataFeedList);
     }
 
@@ -268,7 +267,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             topAdsRecyclerAdapter.reset();
             topAdsRecyclerAdapter.shouldLoadAds(dataFeedList.size() > 1);
             adapter.setData(dataFeedList);
-            topAdsRecyclerAdapter.hideLoading();
         }
     }
 
@@ -395,15 +393,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setConfig(config);
-    }
-
-    @Override
-    public void onInfoClicked() {
-
     }
 
     @Override
