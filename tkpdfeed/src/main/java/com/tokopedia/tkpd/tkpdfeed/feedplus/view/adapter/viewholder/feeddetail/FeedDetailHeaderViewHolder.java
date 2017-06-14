@@ -1,6 +1,12 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,7 +49,38 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     @Override
     public void bind(final FeedDetailHeaderViewModel viewModel) {
 
-        shopName.setText(MethodChecker.fromHtml(viewModel.getShopName()));
+        String shopNameString = String.valueOf(MethodChecker.fromHtml(viewModel.getShopName()));
+        String actionString = String.valueOf(MethodChecker.fromHtml(viewModel.getActionText()));
+
+        StringBuilder titleText = new StringBuilder();
+        titleText.append(shopNameString)
+                .append(" ")
+                .append(actionString);
+        SpannableString actionSpanString = new SpannableString(titleText);
+
+        ClickableSpan goToShopDetail = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onGoToShopDetail(
+                        viewModel.getShopId());
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setTypeface(Typeface.DEFAULT_BOLD);
+                ds.setColor(viewListener.getColor(R.color.black));
+            }
+        };
+
+        actionSpanString.setSpan(goToShopDetail, titleText.indexOf(shopNameString)
+                , titleText.indexOf(shopNameString) + shopNameString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        shopName.setText(actionSpanString);
+        shopName.setMovementMethod(LinkMovementMethod.getInstance());
+
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
         if (viewModel.isGoldMerchant())

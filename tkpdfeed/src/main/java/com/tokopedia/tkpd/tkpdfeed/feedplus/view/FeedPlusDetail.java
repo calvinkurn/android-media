@@ -45,6 +45,8 @@ public interface FeedPlusDetail {
         void onSuccessRemoveWishlist(int productId);
 
         void onGoToProductDetail(int productId);
+
+        int getColor(int resId);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

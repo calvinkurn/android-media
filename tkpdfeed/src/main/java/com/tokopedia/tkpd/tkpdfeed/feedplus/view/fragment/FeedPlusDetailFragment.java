@@ -22,6 +22,7 @@ import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -293,6 +294,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onGoToProductDetail(int productId) {
         Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
         startActivity(intent);
+    }
+
+    @Override
+    public int getColor(int resId) {
+        return MethodChecker.getColor(getActivity(), resId);
     }
 
     private void dismissLoadingProgress() {

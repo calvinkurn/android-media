@@ -20,14 +20,6 @@ public class ProductCardHeaderViewModel {
     private String time;
     private boolean isOfficialStore;
 
-    public ProductCardHeaderViewModel() {
-        this.shopName = "Nisie shop";
-        this.shopAvatar = "https://imagerouter.tokopedia.com/img/100-square/shops-1/2016/8/5/1205649/1205649_620e3ec4-9a94-4210-bac4-f31ab1d1b9f5.jpg";
-        this.isGoldMerchant = true;
-        this.isOfficialStore = false;
-        this.time = "2017-05-17T15:10:53+07:00";
-    }
-
     public ProductCardHeaderViewModel(Integer shopId,
                                       String url,
                                       String shopName,

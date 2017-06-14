@@ -53,6 +53,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -82,7 +83,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener,
-        TopAdsFavShopClickListener{
+        TopAdsFavShopClickListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -315,8 +316,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        Object item = ((TopAdsViewModel)topAdsRecyclerAdapter.getPlacer().getItem(adapterPosition)).getList().get(0);
-        if(item instanceof ShopFeedViewModel){
+        Object item = ((TopAdsViewModel) topAdsRecyclerAdapter.getPlacer().getItem(adapterPosition)).getList().get(0);
+        if (item instanceof ShopFeedViewModel) {
             ShopFeedViewModel castedItem = ((ShopFeedViewModel) item);
             Data currentData = castedItem.getData();
             boolean currentStatus = currentData.isFavorit();
@@ -337,7 +338,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         adapter.clearData();
         adapter.removeEmpty();
-        if (listFeed.size() == 0) {
+        if ((listFeed.size() == 0) ||
+                (listFeed.size() == 1 && listFeed.get(0) instanceof PromoCardViewModel)) {
             adapter.showEmpty();
             topAdsRecyclerAdapter.unsetEndlessScrollListener();
         } else {
