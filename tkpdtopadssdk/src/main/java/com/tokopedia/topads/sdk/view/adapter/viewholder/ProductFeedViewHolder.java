@@ -29,7 +29,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
         View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_product_feed;
+    public static final int LAYOUT = R.layout.layout_ads_product_feed_plus;
     private static final String TAG = ProductFeedViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;

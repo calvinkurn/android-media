@@ -1,26 +1,30 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
+package com.tokopedia.topads.sdk.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.customwidget.SquareImageView;
-import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.domain.model.ImageProduct;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.SquareImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 5/17/17.
  */
 
-public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapter.ViewHolder>{
+public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapter.ViewHolder> {
 
-    ArrayList<ProductFeedViewModel> list;
+    List<ImageProduct> list;
+    ImageLoader imageLoader;
+    private int MAX_SIZE = 3;
 
     public PromotedShopAdapter() {
+        this.list = new ArrayList<>();
     }
 
     @Override
@@ -32,7 +36,10 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
 
     @Override
     public void onBindViewHolder(PromotedShopAdapter.ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.imageView, list.get(position).getImageSource());
+        if (imageLoader == null) {
+            imageLoader = new ImageLoader(holder.imageView.getContext());
+        }
+        imageLoader.loadImage(list.get(position).getImageUrl(), holder.imageView);
     }
 
     @Override
@@ -40,16 +47,19 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
         return list.size();
     }
 
-    public void setList(ArrayList<ProductFeedViewModel> list) {
-        this.list = list;
+    public void setList(List<ImageProduct> list) {
+        this.list.clear();
+        for (int i = 0; i < MAX_SIZE; i++) {
+            this.list.add(list.get(i));
+        }
         notifyDataSetChanged();
     }
 
-    public ArrayList<ProductFeedViewModel> getList() {
+    public List<ImageProduct> getList() {
         return list;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public SquareImageView imageView;
 
