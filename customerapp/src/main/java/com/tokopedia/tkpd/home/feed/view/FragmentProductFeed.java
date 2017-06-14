@@ -100,7 +100,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private Unbinder unbinder;
     private RetryHandler retryHandler;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private static final String TOPADS_ITEM = "4";
+    private static final String TOPADS_ITEM = "2";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
