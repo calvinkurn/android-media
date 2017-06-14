@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.ride.data.source.cloud;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
+import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
@@ -122,5 +123,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters) {
         return mRideApi.sendRating(requestId, parameters);
+    }
+
+    @Override
+    public Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.cancelReasons(parameters);
     }
 }

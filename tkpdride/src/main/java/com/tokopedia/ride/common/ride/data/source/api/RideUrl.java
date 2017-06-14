@@ -25,4 +25,5 @@ public interface RideUrl {
     String REQUEST_CURRENT = "/uber/request/current";
     String RIDE_ADDRESS = "/user/address";
     String RIDE_RATING = "/uber/rating";
+    String CANCEL_REASONS = "/uber/cancel/reasons";
 }

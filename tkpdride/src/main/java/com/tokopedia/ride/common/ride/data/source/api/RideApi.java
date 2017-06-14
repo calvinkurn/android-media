@@ -2,6 +2,7 @@ package com.tokopedia.ride.common.ride.data.source.api;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
+import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
@@ -80,8 +81,10 @@ public interface RideApi {
     @GET(RideUrl.PRODUCT)
     Observable<ProductEntity> getProduct(@QueryMap TKPDMapParam<String, Object> params);
 
-
     @POST(RideUrl.RIDE_RATING)
     @FormUrlEncoded
     Observable<String> sendRating(@Query("request_id") String requestId, @FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(RideUrl.CANCEL_REASONS)
+    Observable<CancelReasonsResponseEntity> cancelReasons(@QueryMap TKPDMapParam<String, Object> parameters);
 }

@@ -5,6 +5,7 @@ import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -17,6 +18,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
+import com.tokopedia.ride.common.ride.domain.model.CancelReasons;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
@@ -272,5 +274,19 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<String> sendRating(String requestId, TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .sendRating(requestId, parameters);
+    }
+
+    @Override
+    public Observable<CancelReasons> getCancelReasons(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getCancelReasons(parameters)
+                .map(new Func1<CancelReasonsResponseEntity, CancelReasons>() {
+                    @Override
+                    public CancelReasons call(CancelReasonsResponseEntity cancelReasonsResponseEntity) {
+                        CancelReasons cancelReasons = new CancelReasons();
+                        cancelReasons.setReasons(cancelReasonsResponseEntity.getReasons());
+                        return cancelReasons;
+                    }
+                });
     }
 }
