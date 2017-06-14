@@ -96,6 +96,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     if (rideProductViewModel.getProductPriceFmt() != null && destination != null) {
                         rideProductViewModel.setProductPriceFmt("--");
                     }
+                    rideProductViewModel.setEnabled(false);
                     updatedList.add(rideProductViewModel);
                 }
             }
