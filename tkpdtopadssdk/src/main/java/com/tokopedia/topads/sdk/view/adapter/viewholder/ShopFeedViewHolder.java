@@ -103,7 +103,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         data = element.getData();
         Shop shop = data.getShop();
         if(shop!=null){
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
+            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
                     shopImage);
             if(shop.getImageProduct()!=null){
                 generateThumbnailImages(shop.getImageProduct());
