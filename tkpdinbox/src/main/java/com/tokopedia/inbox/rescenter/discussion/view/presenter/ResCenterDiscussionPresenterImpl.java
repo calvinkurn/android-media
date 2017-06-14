@@ -4,7 +4,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.LoadMoreDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
@@ -26,6 +28,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
     private SendDiscussionUseCase sendDiscussionUseCase;
+    private SendDiscussionV2UseCase sendDiscussionV2UseCase;
     private SendReplyDiscussionParam pass;
 
     @Inject
@@ -33,11 +36,13 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
                                             GetResCenterDiscussionUseCase getDiscussionUseCase,
                                             LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
                                             SendDiscussionUseCase sendDiscussionUseCase,
+                                            SendDiscussionV2UseCase sendDiscussionV2UseCase,
                                             SendReplyDiscussionParam sendReplyDiscussionParam) {
         this.viewListener = viewListener;
         this.getDiscussionUseCase = getDiscussionUseCase;
         this.loadMoreUseCase = loadMoreDiscussionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
+        this.sendDiscussionV2UseCase = sendDiscussionV2UseCase;
         this.pass = sendReplyDiscussionParam;
     }
 
@@ -65,6 +70,32 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
             sendDiscussionUseCase.execute(getSendReplyRequestParams(),
                     new ReplyDiscussionSubscriber(viewListener));
         }
+    }
+
+    @Override
+    public void sendReplySupportVideo() {
+        viewListener.setViewEnabled(false);
+        viewListener.showLoadingProgress();
+        if (isValid()) {
+            sendDiscussionV2UseCase.setActionDiscussionModel(getSendReplyParams());
+            sendDiscussionV2UseCase.execute(
+                    RequestParams.EMPTY,
+                    new ReplyDiscussionSubscriber(viewListener)
+            );
+        }
+    }
+
+    private ActionDiscussionModel getSendReplyParams() {
+        ActionDiscussionModel params = new ActionDiscussionModel();
+        params.setMessage(pass.getMessage());
+        params.setResolutionId(pass.getResolutionId());
+        params.setFlagReceived(pass.getFlagReceived());
+
+        if (pass.getAttachment() != null && pass.getAttachment().size() > 0) {
+            params.setHasAttachment(true);
+            params.setAttachment(pass.getAttachment());
+        }
+        return params;
     }
 
     private RequestParams getSendReplyRequestParams() {

@@ -245,7 +245,11 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                 presenter.setAttachment(attachmentAdapter.getList());
                 presenter.setResolutionId(getResolutionID());
                 presenter.setFlagReceived(getFlagReceived());
-                presenter.sendReply();
+                if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+                    presenter.sendReplySupportVideo();
+                } else {
+                    presenter.sendReply();
+                }
             }
         });
 
