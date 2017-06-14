@@ -233,6 +233,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void actionRetry() {
         if (source != null) {
             hideErrorMessageLayout();
+            showProgress();
             mPresenter.actionGetRideProducts(source, destination);
         } else {
             //open a dialog to enter source location

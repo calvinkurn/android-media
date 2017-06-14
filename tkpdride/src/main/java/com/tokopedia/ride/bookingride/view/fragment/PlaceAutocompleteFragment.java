@@ -201,6 +201,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel address) {
+        CommonUtils.closeKeyboard(getActivity(), mAutocompleteEditText.getWindowToken());
         mPresenter.onPlaceSelected(address);
     }
 
