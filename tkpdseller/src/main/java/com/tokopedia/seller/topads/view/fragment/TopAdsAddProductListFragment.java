@@ -485,7 +485,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         topAdsProductListAdapter.showLoading(false);
 
         // hide buttom sheet helper
-        addProductListInterface.hideFooterViewHolder();
         addProductListInterface.hideBottom();
 
         if (topAdsProductListAdapter != null
