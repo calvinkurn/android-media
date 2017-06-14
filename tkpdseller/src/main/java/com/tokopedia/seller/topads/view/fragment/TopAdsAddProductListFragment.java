@@ -289,9 +289,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     protected void searchProductNetworkCall() {
-        if (addProductListInterface != null) {
-            addProductListInterface.showNextButton();
-        }
         topAdsAddProductListPresenter.searchProduct();
     }
 
@@ -487,6 +484,21 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         refreshHandler.setRefreshing(false);
         topAdsProductListAdapter.showLoading(false);
 
+        // hide buttom sheet helper
+        addProductListInterface.hideFooterViewHolder();
+        addProductListInterface.hideBottom();
+
+        if (topAdsProductListAdapter != null
+                && topAdsProductListAdapter.getDataSize() <= 0) {
+            if (addProductListInterface != null) {
+                addProductListInterface.dismissNextButton();
+            }
+        } else {
+            if (addProductListInterface != null) {
+                addProductListInterface.showNextButton();
+            }
+        }
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -522,13 +534,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                                         }
                                     }, getActivity());
                             break;
-                    }
-
-                    if (topAdsProductListAdapter != null
-                            && topAdsProductListAdapter.getDataSize() <= 0) {
-                        if (addProductListInterface != null) {
-                            addProductListInterface.dismissNextButton();
-                        }
                     }
                 }
             }
@@ -574,5 +579,12 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     public void resetEmptyViewHolder() {
         topAdsProductListAdapter.resetEmptyShown();
+    }
+
+    @Override
+    public void showBottom() {
+        // hide buttom sheet helper
+        addProductListInterface.showNextButton();
+        addProductListInterface.showBottom();
     }
 }
