@@ -206,7 +206,7 @@
 
                     <RatingBar
                         android:id="@+id/rb_rating_result"
-                        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                        style="@style/avgRatingBarSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -220,7 +220,6 @@
                         android:scaleX=".75"
                         android:scaleY=".75"
                         android:stepSize="1"
-                        android:theme="@style/RatingBar"
                         android:visibility="gone"
                         tools:rating="3" />
                 </RelativeLayout>

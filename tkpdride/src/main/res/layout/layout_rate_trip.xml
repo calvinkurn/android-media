@@ -31,7 +31,7 @@
             android:scaleX=".75"
             android:scaleY=".75"
             android:stepSize="1"
-            android:theme="@style/RatingBar" />
+            style="@style/avgRatingBarMedium" />
     </LinearLayout>
 
     <LinearLayout
