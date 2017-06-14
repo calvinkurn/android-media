@@ -182,13 +182,14 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_detail"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_fav"
         app:layout_anchor="@id/appbar"
+        app:borderWidth="0dp"
         app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>
