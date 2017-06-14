@@ -647,13 +647,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             source = confirmBookingViewModel.getSource();
             destination = confirmBookingViewModel.getDestination();
         }
-
         Intent intent = getActivity().getIntent();
         if (source != null && destination != null) {
             intent.putExtra(OnTripActivity.EXTRA_PLACE_SOURCE, source);
             intent.putExtra(OnTripActivity.EXTRA_PLACE_DESTINATION, destination);
         }
-        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE, intent);
+        intent.putExtra(OnTripActivity.EXTRA_REQUEST_ID, getRequestId());
+
+        getActivity().setResult(OnTripActivity.RIDE_HOME_AFTER_CANCEL_RESULT_CODE, intent);
         getActivity().finish();
     }
 

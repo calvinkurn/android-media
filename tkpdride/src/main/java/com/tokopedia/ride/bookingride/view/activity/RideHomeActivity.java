@@ -67,6 +67,7 @@ import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
+import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
@@ -361,6 +362,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                     }
                     initFragmentWithPlace(source, destionation);
                     break;
+                case OnTripActivity.RIDE_HOME_AFTER_CANCEL_RESULT_CODE:
+                    PlacePassViewModel sourcePass = null, destPass = null;
+                    if (data != null) {
+                        sourcePass = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_SOURCE);
+                        destPass = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_DESTINATION);
+                    }
+                    initFragmentWithPlace(sourcePass, destPass);
+                    actionStartSendReasonPage(data.getStringExtra(OnTripActivity.EXTRA_REQUEST_ID));
+                    break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
                     //message on confirm booking fragment
                     if (data != null) {
@@ -392,6 +402,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                     break;
             }
         }
+    }
+
+    private void actionStartSendReasonPage(String requestId) {
+        startActivity(SendCancelReasonActivity.getCallingIntent(this, requestId));
     }
 
     @Override

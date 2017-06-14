@@ -42,7 +42,6 @@
         <activity
             android:name=".bookingride.view.activity.ApplyPromoActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-
         <activity
             android:name=".history.view.RideHistoryNeedHelpActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
@@ -62,6 +61,9 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".ontrip.view.SendCancelReasonActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
     </application>
 
 </manifest>

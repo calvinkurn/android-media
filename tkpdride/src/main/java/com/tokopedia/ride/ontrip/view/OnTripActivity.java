@@ -41,12 +41,14 @@ import rx.Observable;
 public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PLACE_SOURCE = "EXTRA_PLACE_SOURCE";
     public static final String EXTRA_PLACE_DESTINATION = "EXTRA_PLACE_DESTINATION";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     public static String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     public static String EXTRA_FAILED_MESSAGE = "EXTRA_FAILED_MESSAGE";
     public static final int RIDE_HOME_RESULT_CODE = 11;
     public static final int RIDE_BOOKING_RESULT_CODE = 12;
     public static final int APP_HOME_RESULT_CODE = 13;
+    public static final int RIDE_HOME_AFTER_CANCEL_RESULT_CODE = 14;
 
     public static final String TASK_TAG_PERIODIC = "periodic_task";
 

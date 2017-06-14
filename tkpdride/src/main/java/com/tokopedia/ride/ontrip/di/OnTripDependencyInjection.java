@@ -33,10 +33,12 @@ import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetCancelReasonsUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
+import com.tokopedia.ride.ontrip.view.SendCancelReasonPresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -93,11 +95,13 @@ public class OnTripDependencyInjection {
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return logInterceptor;
     }
+
     private ChuckInterceptor provideChuckInterceptor() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
         return new ChuckInterceptor(MainApplication.getAppContext())
                 .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
     }
+
     private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
@@ -244,6 +248,16 @@ public class OnTripDependencyInjection {
         return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase, getRideReuquestUseCase, getFareEstimateUseCase, getRideProductUseCase);
     }
 
+    public static SendCancelReasonPresenter createSendCancelReasonPresenter(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        OnTripDependencyInjection injection = new OnTripDependencyInjection();
+        String userId = sessionHandler.getLoginID();
+
+        GetCancelReasonsUseCase getCancelReasonsUseCase = injection.provideGetCancelReasonsUseCase(token, userId);
+        return new SendCancelReasonPresenter(getCancelReasonsUseCase);
+    }
+
     private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId) {
         return new GetRideRequestMapUseCase(
                 provideThreadExecutor(),
@@ -302,6 +316,30 @@ public class OnTripDependencyInjection {
 
     private GetRideProductUseCase provideGetRideProductUseCase(String token, String userId) {
         return new GetRideProductUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GetCancelReasonsUseCase provideGetCancelReasonsUseCase(String token, String userId) {
+        return new GetCancelReasonsUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(
