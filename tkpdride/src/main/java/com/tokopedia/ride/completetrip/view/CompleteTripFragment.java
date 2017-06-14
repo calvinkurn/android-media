@@ -319,7 +319,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
 
-    @OnClick(R2.id.tv_sign_up_uber)
+    @OnClick(R2.id.uber_signup_layout)
     public void actionSignupClicked() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
