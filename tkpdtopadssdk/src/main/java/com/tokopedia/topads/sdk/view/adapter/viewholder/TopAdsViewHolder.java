@@ -7,15 +7,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
@@ -67,14 +65,19 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             switchDisplay(list.get(0));
         }
         adapter.setList(list);
+        adapter.setPosition(getAdapterPosition());
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-            Activity activity = (Activity) context;
-            infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            if(clickListener != null){
+                clickListener.onInfoClicked();
+            }else {
+                TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
+                Activity activity = (Activity) context;
+                infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            }
         }
     }
 
@@ -90,7 +93,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
-                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);
@@ -99,5 +103,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
+    }
+
+    public void setClickListener(TopAdsInfoClickListener adsInfoClickListener) {
+        clickListener = adsInfoClickListener;
     }
 }

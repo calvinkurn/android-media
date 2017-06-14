@@ -9,17 +9,14 @@
 
     <TextView
         android:id="@id/title_promote"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/margin_small"
         android:paddingRight="@dimen/margin_small"
         android:text="@string/title_promote"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:layout_weight="1"
-        android:textColor="@color/black_38"
-        android:textSize="@dimen/font_small" />
+        android:textColor="@color/label_color"
+        android:textSize="@dimen/abc_text_size_small_material" />
 
     <ImageView
         android:id="@id/info_topads"
@@ -28,6 +25,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/product_grid_padding"
-        android:src="@drawable/ic_info" />
+        android:src="@drawable/icon_info"
+        android:tint="@color/tkpd_dark_gray" />
 </LinearLayout>

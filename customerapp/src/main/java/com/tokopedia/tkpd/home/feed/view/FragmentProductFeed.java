@@ -390,8 +390,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.SHOP)
-                .displayMode(DisplayMode.FEED)
+                .setEndpoint(Endpoint.PRODUCT)
                 .topAdsParams(generateTopAdsParams())
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
