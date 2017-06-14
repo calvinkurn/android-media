@@ -7,7 +7,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -39,6 +41,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode displayMode;
+    private TopAdsInfoClickListener clickListener;
     private TextView textHeader;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
