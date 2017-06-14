@@ -32,6 +32,7 @@ public class ShareBottomDialog {
 
     private static final int SNACKBAR_DURATION = 3500;
     private static final int SHARE_GOOGLE_REQUEST_CODE = 123;
+    private static final String CHECK_NOW = " cek sekarang di :\n";
     private final Activity activity;
     private final BottomSheetDialog dialog;
     private final GridView appGrid;
@@ -156,7 +157,7 @@ public class ShareBottomDialog {
         intent.setType("text/plain");
         intent.setPackage(appName);
 
-        String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
+        String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
 
         if (shareModel.getUrl() != null
                 && !shareModel.getUrl().equals(""))
@@ -190,9 +191,11 @@ public class ShareBottomDialog {
 
                 builder.setType("text/plain");
 
+                String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+
                 if (shareModel.getContentMessage() != null
                         && !shareModel.getContentMessage().equals(""))
-                    builder.setText(shareModel.getContentMessage());
+                    builder.setText(shareText);
 
                 if (shareModel.getUrl() != null && !shareModel.getUrl().equals(""))
                     builder.setContentUrl(Uri.parse(shareModel.getUrl()));

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="125dp"
     android:orientation="vertical">
 
     <com.tokopedia.core.customwidget.SquareImageView
@@ -75,7 +75,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_above="@id/separator"
         android:layout_toRightOf="@id/product_image">
 
@@ -88,6 +88,7 @@
             android:padding="@dimen/padding_vs"
             android:textColor="@color/white"
             android:textSize="@dimen/fontvvs"
+            tools:visibility="gone"
             tools:text="Cashback 4%" />
 
         <TextView
@@ -99,18 +100,20 @@
             android:background="@drawable/cards_ui"
             android:padding="@dimen/padding_vs"
             android:text="@string/wholesale"
+            tools:visibility="gone"
             android:textSize="@dimen/fontvvs" />
 
         <TextView
             android:id="@+id/preorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_toRightOf="@id/wholesale"
             android:background="@drawable/cards_ui"
             android:padding="@dimen/padding_vs"
             android:text="@string/preorder"
-            android:textSize="@dimen/fontvvs" />
+            android:textSize="@dimen/fontvvs"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <ImageView
             android:id="@+id/free_return"

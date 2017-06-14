@@ -17,11 +17,11 @@ public class TimeConverter {
 
     public static String generateTime(String postTime) {
         try {
-            SimpleDateFormat sdfHour = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
             SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMMM", Locale.ENGLISH);
             SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
             Date postDate = sdf.parse(postTime);
             Date currentTime = new Date();
 
