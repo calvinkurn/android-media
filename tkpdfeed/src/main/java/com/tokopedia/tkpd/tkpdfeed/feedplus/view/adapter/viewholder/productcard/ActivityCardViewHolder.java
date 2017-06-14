@@ -206,7 +206,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                     viewListener.onShareButtonClicked(
                             viewModel.getShareUrl(),
                             viewModel.getHeader().getShopName(),
-                            "",
+                            viewModel.getHeader().getShopAvatar(),
                             viewModel.getShareLinkDescription()
                     );
                 }
