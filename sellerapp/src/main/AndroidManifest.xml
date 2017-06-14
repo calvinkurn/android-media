@@ -102,6 +102,16 @@
                     android:host="www.tokopedia.com"
                     android:pathPattern="topads"
                     android:scheme="https"/>
+
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern="/topads/*"
+                    android:scheme="https"/>
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern="topads/*"
+                    android:scheme="https"/>
+
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPattern="/topads/manage"
