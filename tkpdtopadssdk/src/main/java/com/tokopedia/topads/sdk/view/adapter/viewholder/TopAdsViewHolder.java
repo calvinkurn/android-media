@@ -3,10 +3,12 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -92,6 +94,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
+                ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
+                imageView.setImageResource(R.drawable.icon_info);
+                imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);

@@ -32,7 +32,9 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.SquareImageView;
+import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
+import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
@@ -45,7 +47,7 @@ import java.util.List;
 public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_shop_feed;
+    public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
     private final int clickPosition;
 
@@ -61,8 +63,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     private Data data;
     private Context context;
     private ImageLoader imageLoader;
-    private LinearLayout imageContainerBig;
-    private LinearLayout imageContainerSmall;
+    RecyclerView recyclerView;
+    PromotedShopAdapter adapter;
 
     public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
@@ -74,14 +76,33 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
         favTxt = (TextView) itemView.findViewById(R.id.fav_text);
-        imageContainerBig = (LinearLayout) itemView.findViewById(R.id.image_container_big);
-        imageContainerSmall = (LinearLayout) itemView.findViewById(R.id.image_container_small);
         container = (LinearLayout) itemView.findViewById(R.id.container);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         container.setOnClickListener(this);
         header = itemView.findViewById(R.id.header);
         header.setOnClickListener(this);
         favBtn.setOnClickListener(this);
         this.clickPosition = clickPosition;
+
+        SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                new SpannedGridLayoutManager.GridSpanLookup() {
+                    @Override
+                    public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                        // Conditions for 2x2 items
+                        if (position % 6 == 0 || position % 6 == 4) {
+                            return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                        } else {
+                            return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                        }
+                    }
+                },
+                3, // number of columns
+                1f // how big is default item
+        );
+
+        recyclerView.setLayoutManager(manager);
+        adapter = new PromotedShopAdapter();
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -101,6 +122,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @Override
     public void bind(ShopFeedViewModel element) {
         data = element.getData();
+
         Shop shop = data.getShop();
         if(shop!=null){
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
@@ -130,19 +152,20 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
-        imageContainerBig.removeAllViews();
-        imageContainerSmall.removeAllViews();
-        for (int i = 0; i < 3; i++) {
-            ImageProduct imgProduct = imageProducts.get(i);
-            View view = LayoutInflater.from(context).inflate(R.layout.layout_shop_product_image_big, null);
-            SquareImageView imageView = (SquareImageView) view.findViewById(R.id.image);
-            if(i==0) {
-                imageContainerBig.addView(view);
-            } else {
-                imageContainerSmall.addView(view);
-            }
-            imageLoader.loadImage(imgProduct.getImageUrl(), imageView);
-        }
+//        imageContainerBig.removeAllViews();
+//        imageContainerSmall.removeAllViews();
+//        for (int i = 0; i < 3; i++) {
+//            ImageProduct imgProduct = imageProducts.get(i);
+//            View view = LayoutInflater.from(context).inflate(R.layout.layout_shop_product_image_big, null);
+//            SquareImageView imageView = (SquareImageView) view.findViewById(R.id.image);
+//            if(i==0) {
+//                imageContainerBig.addView(view);
+//            } else {
+//                imageContainerSmall.addView(view);
+//            }
+//            imageLoader.loadImage(imgProduct.getImageUrl(), imageView);
+//        }
+        adapter.setList(imageProducts);
     }
 
     private void setFavorite(boolean isFavorite){

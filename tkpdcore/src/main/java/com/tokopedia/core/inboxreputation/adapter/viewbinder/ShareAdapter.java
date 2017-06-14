@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.model.ShareItem;
-import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -62,9 +61,10 @@ public class ShareAdapter extends BaseAdapter {
         final ShareItem info = shareItems.get(position);
 
         if (info.getIcon() != null) {
-            MethodChecker.setBackground(holder.label, info.getIcon());
+            holder.icon.setBackgroundDrawable(info.getIcon());
+        } else {
+//                loadIcon();
         }
-
         holder.label.setText(info.getName());
 
         convertView.setOnClickListener(shareItems.get(position).getOnClickListener());
