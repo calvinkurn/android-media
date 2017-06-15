@@ -59,10 +59,38 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_product_list_header_featured_product_title"
+        android:paddingTop="17dp"
+        android:paddingBottom="17dp"
+        android:paddingLeft="12dp"
+        android:gravity="start"
+        android:textColor="@color/black_70"
+        android:textSize="14sp"
+        style="@style/MediumText"
+        android:background="@color/white"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/featured_product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_product_list_header_product_title"
+        android:paddingTop="17dp"
+        android:paddingBottom="17dp"
+        android:paddingLeft="12dp"
+        android:gravity="start"
+        android:textColor="@color/black_70"
+        android:textSize="14sp"
+        style="@style/MediumText"
+        android:background="@color/white"
+        />
 
 </LinearLayout>
