@@ -106,7 +106,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initView(view);
         tempTopPaddingRecycleView = recyclerView.getPaddingTop();
         tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
-        fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_filter);
+        fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -353,5 +353,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         status = savedInstanceState.getInt(EXTRA_STATUS);
         keyword = savedInstanceState.getString(EXTRA_KEYWORD);
+    }
+
+    public View getFab() {
+        return fabAdd;
     }
 }
