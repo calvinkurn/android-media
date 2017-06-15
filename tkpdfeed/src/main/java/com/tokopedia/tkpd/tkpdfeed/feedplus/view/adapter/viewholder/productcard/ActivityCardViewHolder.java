@@ -1,17 +1,23 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +51,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     View buyButton;
     RecyclerView recyclerView;
 
+    private final static String ADD_STRING = "tambah";
+    private final static String EDIT_STRING = "ubah";
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
 
@@ -150,14 +158,23 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setTypeface(Typeface.DEFAULT_BOLD);
-                ds.setColor(viewListener.getColor(R.color.black));
+                ds.setColor(viewListener.getColor(R.color.black_70));
             }
         };
 
-        actionSpanString.setSpan(goToFeedDetail, titleText.indexOf(actionString)
-                , titleText.indexOf(actionString)+actionString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        actionSpanString.setSpan(goToShopDetail, titleText.indexOf(shopNameString)
-                , titleText.indexOf(shopNameString)+shopNameString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
+
+//        goldMerchantBadgeDrawable(0, 0, viewListener.getResources().getDimensionPixelOffset(R.dimen.badge_size),
+//                viewListener.getResources().getDimensionPixelOffset(R.dimen.badge_size));
+
+        SpannableString ss = new SpannableString("abc");
+        ImageSpan goldMerchantSpan = new ImageSpan(getDrawableSpan(goldMerchantBadge));
+        ImageSpan officialStoreSpan = new ImageSpan(getDrawableSpan(officialStoreBadge));
+
+        setSpan(actionSpanString, goToFeedDetail, titleText, actionString);
+        setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
+        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
+        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
 
         title.setText(actionSpanString);
         title.setMovementMethod(LinkMovementMethod.getInstance());
@@ -166,16 +183,24 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
         if (activityCardViewModel.getHeader().isGoldMerchant())
-            goldMerchantBadge.setVisibility(View.VISIBLE);
-        else
-            goldMerchantBadge.setVisibility(View.GONE);
-
+            title.setCompoundDrawables(getDrawableSpan(goldMerchantBadge), null, null, null);
+//            setSpan(actionSpanString, goldMerchantSpan, titleText, "");
+//            goldMerchantBadge.setVisibility(View.VISIBLE);
+//        else
+//            goldMerchantBadge.setVisibility(View.GONE);
+//
         if (activityCardViewModel.getHeader().isOfficialStore()) {
-            officialStoreBadge.setVisibility(View.VISIBLE);
-            goldMerchantBadge.setVisibility(View.GONE);
+            title.setCompoundDrawables(getDrawableSpan(officialStoreBadge), null, null, null);
         }
-        else
-            officialStoreBadge.setVisibility(View.GONE);
+//            setSpan(actionSpanString, officialStoreSpan, titleText, "");}
+//            officialStoreBadge.setVisibility(View.VISIBLE);
+//            goldMerchantBadge.setVisibility(View.GONE);
+//        }
+//        else
+//            officialStoreBadge.setVisibility(View.GONE);
+
+        goldMerchantBadge.setVisibility(View.GONE);
+        officialStoreBadge.setVisibility(View.GONE);
 
         time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getTime()));
 
@@ -194,6 +219,22 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
+    }
+
+    private Drawable getDrawableSpan(ImageView imageView) {
+        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.badge_size);
+        Drawable drawable = imageView.getDrawable();
+        drawable.setBounds(0, 0, size, size);
+        return drawable;
+    }
+
+    private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {
+        if(object instanceof ImageSpan){
+            actionSpanString.setSpan(object, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }else if(titleText.toString().contains(stringEdited)){
+            actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
+                    , titleText.indexOf(stringEdited)+stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     public void setFooter(final ActivityCardViewModel viewModel) {
