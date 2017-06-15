@@ -41,7 +41,6 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
         officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
-
         shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
         this.viewListener = viewListener;
     }
@@ -88,9 +87,10 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        if (viewModel.isOfficialStore())
+        if (viewModel.isOfficialStore()) {
             officialStoreBadge.setVisibility(View.VISIBLE);
-        else
+            goldMerchantBadge.setVisibility(View.GONE);
+        } else
             officialStoreBadge.setVisibility(View.GONE);
 
         shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
@@ -98,6 +98,13 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewListener.onGoToShopDetail(viewModel.getShopId());
+            }
+        });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 viewListener.onGoToShopDetail(viewModel.getShopId());
             }
         });

@@ -14,49 +14,56 @@
         android:layout_marginRight="@dimen/margin_small"
         android:background="@drawable/cards_ui_2"
         tools:src="@drawable/ic_check_green_24dp" />
-
-    <ImageView
-        android:id="@+id/gold_merchant"
-        android:layout_width="@dimen/ic_badge_size"
-        android:layout_height="@dimen/ic_badge_size"
-        android:layout_alignTop="@id/shop_avatar"
-        android:layout_toEndOf="@id/shop_avatar"
-        android:layout_marginTop="2dp"
-        android:visibility="visible"
-        android:layout_toRightOf="@id/shop_avatar"
-        android:src="@drawable/ic_shop_gold" />
-
-    <ImageView
-        android:id="@+id/official_store"
-        android:layout_width="@dimen/ic_badge_size"
-        android:layout_height="@dimen/ic_badge_size"
-        android:layout_alignTop="@id/shop_avatar"
-        android:layout_toEndOf="@id/gold_merchant"
-        android:layout_toRightOf="@id/gold_merchant"
-        android:layout_marginTop="2dp"
-        tools:visibility="gone"
-        android:src="@drawable/ic_official" />
-
-    <TextView
-        android:id="@+id/shop_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/gold_merchant"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:textColor="@color/black_70"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
-        android:lineSpacingExtra="4sp"
-        android:layout_toEndOf="@id/official_store"
-        android:layout_toRightOf="@id/official_store"
-        tools:text="Marowiajjfawioi ubah 1 produk " />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/shop_avatar"
+        android:layout_toEndOf="@+id/shop_avatar"
+        android:id="@+id/linearLayout">
+
+        <ImageView
+            android:id="@+id/gold_merchant"
+            android:layout_width="@dimen/ic_badge_size"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_shop_gold"
+            android:visibility="visible"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/shop_avatar"
+            android:layout_toEndOf="@+id/shop_avatar" />
+
+        <ImageView
+            android:id="@+id/official_store"
+            android:layout_width="@dimen/ic_badge_size"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_official"
+            tools:visibility="visible"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/gold_merchant"
+            android:layout_toEndOf="@+id/gold_merchant" />
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/black_70"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:lineSpacingExtra="4sp"
+            android:layout_toEndOf="@id/official_store"
+            android:layout_toRightOf="@id/official_store"
+            tools:text="Marowiajjfawioi ubah 1 produk " />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/shop_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shop_name"
-        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_below="@id/linearLayout"
         android:textColor="@color/grey_500"
         android:layout_toRightOf="@id/shop_avatar"
         android:textSize="@dimen/fontvs"
