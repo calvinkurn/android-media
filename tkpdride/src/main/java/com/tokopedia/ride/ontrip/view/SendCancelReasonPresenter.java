@@ -43,7 +43,9 @@ public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelRea
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
+                    getView().showMainLayout();
                     getView().hideLoading();
+                    getView().showErrorGetReasons();
                 }
             }
 

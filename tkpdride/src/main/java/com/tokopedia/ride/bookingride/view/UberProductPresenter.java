@@ -33,7 +33,7 @@ import rx.schedulers.Schedulers;
 public class UberProductPresenter extends BaseDaggerPresenter<UberProductContract.View> implements UberProductContract.Presenter {
     private final String VALID_CURRENCY = "IDR";
 
-    private RideProductViewModelMapper mProductViewModelMapper;
+    private RideProductViewModelMapper productViewModelMapper;
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPromoUseCase getPromoUseCase;
@@ -41,8 +41,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase,
                                 GetFareEstimateUseCase getFareEstimateUseCase,
                                 GetPromoUseCase getPromoUseCase) {
-        getProductAndEstimatedUseCase = getUberProductsUseCase;
-        mProductViewModelMapper = new RideProductViewModelMapper();
+        this.getProductAndEstimatedUseCase = getUberProductsUseCase;
+        this.productViewModelMapper = new RideProductViewModelMapper();
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getPromoUseCase = getPromoUseCase;
     }
@@ -63,8 +63,9 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached())
+                if (isViewAttached()) {
                     getView().hideAdsBadges();
+                }
             }
 
             @Override
@@ -129,7 +130,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onNext(List<ProductEstimate> productEstimates) {
                 if (isViewAttached() && !isUnsubscribed()) {
-                    List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
+                    List<Visitable> productsList = productViewModelMapper.transform(productEstimates);
                     if (productsList.size() == 0) {
                         getView().hideProgress();
                         getView().hideProductList();
@@ -206,7 +207,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     new Func2<ProductEstimate, FareEstimate, RideProductViewModel>() {
                         @Override
                         public RideProductViewModel call(ProductEstimate productEstimate, FareEstimate fareEstimate) {
-                            return mProductViewModelMapper.transformRide(productEstimate, fareEstimate);
+                            return productViewModelMapper.transformRide(productEstimate, fareEstimate);
                         }
                     })
                     .onErrorReturn(new Func1<Throwable, RideProductViewModel>() {
@@ -299,7 +300,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 if (isViewAttached() && !isUnsubscribed()) {
                     getView().hideErrorMessage();
                     getView().showProductList();
-                    getView().renderFareProduct(mProductViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
+                    getView().renderFareProduct(productViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
                 }
             }
         });

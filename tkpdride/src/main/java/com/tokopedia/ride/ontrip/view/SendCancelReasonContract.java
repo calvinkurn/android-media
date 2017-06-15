@@ -34,6 +34,8 @@ public interface SendCancelReasonContract {
         String getSelectedReason();
 
         void showReasonEmptyError();
+
+        void showErrorGetReasons();
     }
 
     interface Presenter extends CustomerPresenter<View>{

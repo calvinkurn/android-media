@@ -54,8 +54,10 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -236,7 +238,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
                     getView().failedToRequestRide(getView().getResourceString(R.string.error_invalid_fare_id));
                 } else {
-                    getView().showFailedRideRequestMessage(e.getMessage());
+                    if (e instanceof UnknownHostException) {
+                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_no_connection));
+                    } else if (e instanceof SocketTimeoutException) {
+                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_timeout));
+                    } else {
+                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_default));
+                    }
                     getView().failedToRequestRide(e.getMessage());
                 }
             }
@@ -265,7 +273,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                getView().showMessage(e.getMessage());
+                e.printStackTrace();
+                if (isViewAttached()){
+                    if (e instanceof UnknownHostException) {
+                        getView().showMessage(getView().getActivity().getString(R.string.error_no_connection));
+                    } else if (e instanceof SocketTimeoutException) {
+                        getView().showMessage(getView().getActivity().getString(R.string.error_timeout));
+                    } else {
+                        getView().showMessage(getView().getActivity().getString(R.string.error_default));
+                    }
+                }
             }
 
             @Override

@@ -198,4 +198,14 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void showErrorGetReasons() {
+        NetworkErrorHelper.showEmptyState(this, mainLayout, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.initialize();
+            }
+        });
+    }
 }

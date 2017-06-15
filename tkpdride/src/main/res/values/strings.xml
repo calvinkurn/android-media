@@ -129,4 +129,9 @@
     <string name="send_cancel_reason_why_are_you_cancelling">Why are you cancelling?</string>
     <string name="send_cancel_reason_toolbar_title">Cancel Reason</string>
     <string name="send_cancel_selected_reason_error">You must pick a reason</string>
+
+
+    <string name="error_no_connection">No internet connection</string>
+    <string name="error_timeout">Connection timeout, Please try again in a few moments</string>
+    <string name="error_default">Error occurred, try again in a few moments</string>
 </resources>
