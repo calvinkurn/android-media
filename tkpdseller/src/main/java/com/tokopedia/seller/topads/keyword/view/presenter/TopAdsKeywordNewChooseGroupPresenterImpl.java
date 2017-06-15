@@ -79,7 +79,7 @@ public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewCh
 
             @Override
             public void onError(Throwable e) {
-                getView().onGetGroupAdListError();
+                getView().onGetGroupAdListError(e);
             }
 
             @Override
