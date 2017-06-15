@@ -576,7 +576,8 @@ public class ProductList extends V2BaseFragment {
                 removeLoading();
                 switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
-                        if (productShopParam.getPage() == 1 && productModel.list.size() == 0) {
+                        if (productShopParam.getPage() == 1 && productModel.list != null
+                                && productModel.list.isEmpty()) {
 
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override

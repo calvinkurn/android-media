@@ -14,7 +14,7 @@
         android:ellipsize="end"
         android:paddingBottom="@dimen/margin_vs"
         android:layout_marginRight="80dp"
-        android:text="Product Name"
+        tools:text="Product Name"
         android:textColor="#b3000000"
         android:textAllCaps="true"
         android:textSize="@dimen/text_size_xlarge"
@@ -36,7 +36,7 @@
             android:id="@id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rp 0,00,-"
+            tools:text="Rp 0,00,-"
             android:textColor="@color/price_pdp"
             android:textSize="@dimen/font_large"
             tools:ignore="HardcodedText" />

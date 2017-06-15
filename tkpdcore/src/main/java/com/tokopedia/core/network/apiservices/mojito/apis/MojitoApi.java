@@ -28,6 +28,7 @@ public interface MojitoApi {
 
     String DEVICE = "device";
     String ID = "id";
+    String PID = "pid";
     String CATEGORY_ID = "categoryId";
 
     //api requirement add static header
@@ -71,6 +72,6 @@ public interface MojitoApi {
 
     @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_PRODUCT)
     Observable<Response<ShopProductCampaignResponse>> getProductCampaigns(
-            @Query("pid") String ids
+            @Query(PID) String ids
     );
 }

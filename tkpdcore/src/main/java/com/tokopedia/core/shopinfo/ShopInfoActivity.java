@@ -313,7 +313,11 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public boolean isOfficialStore() {
-        return shopModel.info.shopIsOfficial == 1;
+        if(shopModel != null && shopModel.info != null) {
+            return shopModel.info.shopIsOfficial == 1;
+        }
+
+        return false;
     }
 
     private void clearVariable() {
