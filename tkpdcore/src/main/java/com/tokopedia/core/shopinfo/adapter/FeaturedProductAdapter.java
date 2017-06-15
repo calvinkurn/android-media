@@ -22,6 +22,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -87,6 +88,7 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
         public void bindData(final ProductItem data, final int position) {
             wishlistButtonContainer.setVisibility(View.GONE);
             title.setText("Ini Adalah Nama Produk Unggulan yang ke-" + Integer.toString(position));
+            ImageHandler.loadImageThumbs(MainApplication.getAppContext(), productImage, "https://ecs7.tokopedia.net/img/product-1/2016/8/19/1240175/1240175_d305ead4-1581-462a-bdad-ce0f2860701e.jpg");
         }
     }
 }
