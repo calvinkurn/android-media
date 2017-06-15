@@ -582,7 +582,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void showBottom() {
-        // hide bottom sheet helper
         addProductListInterface.showNextButton();
         addProductListInterface.showBottom();
     }
