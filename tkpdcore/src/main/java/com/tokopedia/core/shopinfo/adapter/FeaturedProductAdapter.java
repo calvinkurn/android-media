@@ -66,10 +66,6 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
         TextView price;
         @BindView(R2.id.label_container)
         FlowLayout labelContainer;
-        @BindView(R2.id.shop_name)
-        TextView shopName;
-        @BindView(R2.id.location)
-        TextView location;
         @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
         @BindView(R2.id.wishlist_button)
@@ -78,10 +74,6 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
         RelativeLayout wishlistButtonContainer;
         @BindView(R2.id.container)
         View container;
-        @BindView(R2.id.rating)
-        ImageView rating;
-        @BindView(R2.id.review_count)
-        TextView reviewCount;
 
         private String source = "";
         private String categoryId = "";
@@ -94,7 +86,7 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
 
         public void bindData(final ProductItem data, final int position) {
             wishlistButtonContainer.setVisibility(View.GONE);
-            shopName.setText(Integer.toString(position));
+            title.setText("Ini Adalah Nama Produk Unggulan yang ke-" + Integer.toString(position));
         }
     }
 }
