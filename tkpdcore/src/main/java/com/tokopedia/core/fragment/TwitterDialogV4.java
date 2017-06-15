@@ -81,7 +81,6 @@ public class TwitterDialogV4 extends DialogFragment{
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //check if the login was successful and the access token returned
             //this test depend of your API
-            System.out.println(url);
             if (url.contains("oauth://tokopedia?oauth_token")) {
                 //save your token
                 saveAccessToken(url);
@@ -113,7 +112,6 @@ public class TwitterDialogV4 extends DialogFragment{
         sanitizer.parseUrl(url);
         oauth_token = sanitizer.getValue("oauth_token");
         oauth_verifier = sanitizer.getValue("oauth_verifier");
-        System.out.println(oauth_token);
         new getOauthData ().execute();
 
 
@@ -225,7 +223,6 @@ public class TwitterDialogV4 extends DialogFragment{
         protected Boolean doInBackground(Void... args) {
             AccessToken accessToken;
             try {
-                System.out.println(oauth_verifier);
                 accessToken = twitter.getOAuthAccessToken(requestToken, oauth_verifier);
                 final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TWITTER_OAUTH", 0);
                 final SharedPreferences.Editor edit = sharedPreferences.edit();
@@ -234,9 +231,7 @@ public class TwitterDialogV4 extends DialogFragment{
                 edit.putString("TWITTER_OAUTH_VERIFIER", oauth_verifier);
                 edit.putBoolean("TWITTER_IS_LOGIN", true);
                 edit.commit();
-                System.out.println("screet: "+accessToken.getTokenSecret());
             } catch (TwitterException e) {
-                System.out.println(e.getMessage());
                 e.printStackTrace();
             }
 			/*ImageView iv = (ImageView) getView().findViewById(R.shopId.twitter);

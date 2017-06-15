@@ -170,7 +170,6 @@ public class CommonUtils {
 		File pictureFile = getOutputMediaFile(context, PicName);
 		String path = "";
 		if (pictureFile == null) {
-			System.out.println("Magic null");
 			return null;
 		}
 		try {
@@ -179,12 +178,9 @@ public class CommonUtils {
 			addImageToGallery(pictureFile.getPath(), context);
 			path = pictureFile.getPath();
 			fos.close();
-			System.out.println("Magic close");
 		} catch (FileNotFoundException e) {
-			System.out.println("Magic not found");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("Magic IOE");
 			e.printStackTrace();
 		}
 		return path;

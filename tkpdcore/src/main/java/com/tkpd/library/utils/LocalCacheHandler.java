@@ -42,8 +42,6 @@ public class LocalCacheHandler {
                 if (temp.length() > 0) {
                     editor.putString(key, temp);
                 }
-            } else {
-                System.out.println("Magic Checked as null");
             }
         } catch (Exception e) {
             e.printStackTrace();
