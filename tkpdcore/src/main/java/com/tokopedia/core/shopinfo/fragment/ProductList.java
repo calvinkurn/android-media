@@ -32,6 +32,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.adapter.FeaturedProductAdapter;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
@@ -68,6 +69,7 @@ public class ProductList extends V2BaseFragment {
     private List<String> etalaseIdList = new ArrayList<>();
     private ShopProductListAdapter adapter;
     private SimpleSpinnerAdapter etalaseAdapter;
+    private FeaturedProductAdapter featuredProductAdapter;
     private GetShopProductParam productShopParam;
     private String shopId;
     private String shopDomain;
@@ -192,6 +194,7 @@ public class ProductList extends V2BaseFragment {
         adapter.setListType(productShopParam.getListState());
         adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
         adapter.setEtalaseAdapter(etalaseAdapter);
+        adapter.setFeaturedProductAdapter(featuredProductAdapter);
         configSearchView();
     }
 
@@ -330,11 +333,16 @@ public class ProductList extends V2BaseFragment {
     private void initAdapter() {
         adapter = ShopProductListAdapter.createAdapter(productModel);
         initEtalaseAdapter();
+        initFeaturedProductAdapter();
     }
 
     private void initEtalaseAdapter() {
         initEtalaseList();
         etalaseAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), etalaseNameList);
+    }
+
+    private void initFeaturedProductAdapter() {
+        featuredProductAdapter = new FeaturedProductAdapter();
     }
 
     private void initEtalaseList() {

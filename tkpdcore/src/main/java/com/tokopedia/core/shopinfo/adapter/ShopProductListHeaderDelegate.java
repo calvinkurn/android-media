@@ -1,5 +1,6 @@
 package com.tokopedia.core.shopinfo.adapter;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,6 +12,7 @@ import android.widget.Spinner;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 
 /**
  * Created by Tkpd_Eka on 11/2/2015.
@@ -27,6 +29,7 @@ public class ShopProductListHeaderDelegate {
     private ProductHeaderListListener listener;
     private SpinnerInteractionListener spinnerInteractionListener;
     private SimpleSpinnerAdapter etalaseAdapter;
+    private FeaturedProductAdapter featuredProductAdapter;
     private int spinnerLastPos = 0;
     // if selection == -1, no selection request
     private int spinnerSelectedPos = -1;
@@ -41,17 +44,23 @@ public class ShopProductListHeaderDelegate {
         public ImageView toggle;
         public Spinner etalase;
         public View filterClick;
+        public RecyclerView featuredProductList;
 
         public VHolder(View itemView) {
             super(itemView);
             toggle = (ImageView) itemView.findViewById(R.id.toggle_view);
             filterClick = itemView.findViewById(R.id.btn_filter_sort);
             etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
+            featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
         }
     }
 
     public void setEtalaseAdapter(SimpleSpinnerAdapter etalaseAdapter){
         this.etalaseAdapter = etalaseAdapter;
+    }
+
+    public void setFeaturedProductAdapter(FeaturedProductAdapter featuredProductAdapter) {
+        this.featuredProductAdapter = featuredProductAdapter;
     }
 
     public void setSelectedEtalase(int pos){
@@ -82,6 +91,17 @@ public class ShopProductListHeaderDelegate {
         vholder.toggle.setImageResource(toggleIcon);
         if(hasSelection(spinnerSelectedPos))
             vholder.etalase.setSelection(spinnerSelectedPos);
+
+        if (vholder.featuredProductList.getLayoutManager() == null) {
+            vholder.featuredProductList.setLayoutManager(
+                    new LinearLayoutManager(MainApplication.getAppContext(),
+                            LinearLayoutManager.HORIZONTAL, false)
+            );
+        }
+
+        if (vholder.featuredProductList.getAdapter() == null) {
+            vholder.featuredProductList.setAdapter(featuredProductAdapter);
+        }
     }
 
     private boolean hasSelection(int spinnerSelectedPos) {
