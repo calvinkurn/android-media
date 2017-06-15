@@ -46,6 +46,8 @@ public interface CompleteTripContract {
         void showRatingResultLayout(int star);
 
         String getRateStars();
+
+        void closePage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

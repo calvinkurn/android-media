@@ -1,8 +1,10 @@
 package com.tokopedia.ride.completetrip.view;
 
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -113,6 +115,11 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
     private Receipt receipt;
+    private OnFragmentInteractionListener interactionListener;
+
+    public interface OnFragmentInteractionListener {
+        void actionSuccessRatingSubmited();
+    }
 
     public CompleteTripFragment() {
         // Required empty public constructor
@@ -224,6 +231,26 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 }
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement " + OnFragmentInteractionListener.class.getSimpleName());
+        }
+    }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement " + OnFragmentInteractionListener.class.getSimpleName());
+        }
     }
 
     @Override
@@ -418,6 +445,11 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public String getRateStars() {
         return String.valueOf(Math.round(rateStarRatingBar.getRating()));
+    }
+
+    @Override
+    public void closePage() {
+        interactionListener.actionSuccessRatingSubmited();
     }
 
     private String getRateComment() {

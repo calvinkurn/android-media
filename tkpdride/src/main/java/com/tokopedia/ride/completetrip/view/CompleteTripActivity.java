@@ -15,10 +15,11 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
-public class CompleteTripActivity extends BaseActivity {
+public class CompleteTripActivity extends BaseActivity implements CompleteTripFragment.OnFragmentInteractionListener {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_DRIVER_VEHICLE = "EXTRA_DRIVER_VEHICLE";
 
@@ -93,6 +94,10 @@ public class CompleteTripActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        actionBackToBookingScreen();
+    }
+
+    private void actionBackToBookingScreen() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
         Intent homeIntent = HomeRouter.getHomeActivity(getApplicationContext());
         homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
@@ -102,5 +107,10 @@ public class CompleteTripActivity extends BaseActivity {
         taskStackBuilder.addNextIntent(destination);
         taskStackBuilder.startActivities();
         finish();
+    }
+
+    @Override
+    public void actionSuccessRatingSubmited() {
+        actionBackToBookingScreen();
     }
 }

@@ -120,6 +120,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().hideGetReceiptLoading();
                     getView().showReceiptLayout();
                     getView().hideRatingLayout();
+                    getView().closePage();
                 }
             }
         });

@@ -119,7 +119,7 @@
     <string name="complete_trip_write_comments">Write comments...</string>
     <string name="complete_trip_submit">SUBMIT</string>
     <string name="complete_trip_rating_successfully">Rating Successfully sent</string>
-    <string name="complete_trip_you_rate">You rate</string>
+    <string name="complete_trip_you_rate">You rated</string>
     <string name="label_payment_details">Payment Details</string>
     <string name="ontrip_marker_driver">Driver</string>
     <string name="ontrip_rider_canceled_request_message">Rider Canceled Request</string>
