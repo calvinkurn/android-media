@@ -277,7 +277,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(0);
                         }
-                        getOfficialStoreBanner(p.q);
+                        // only get official store banner when search result is not empty
+                        if(browseProductModel.result.products != null
+                                && browseProductModel.result.products.length != 0) {
+                            getOfficialStoreBanner(p.q);
+                        }
                     }
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
