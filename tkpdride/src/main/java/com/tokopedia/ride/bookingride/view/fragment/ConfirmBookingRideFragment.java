@@ -69,7 +69,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashLabelTextView;
     @BindView(R2.id.iv_seat_arrow_down)
     ImageView seatArrowDownImageView;
-
     @BindView(R2.id.toko_cash_activation_layout)
     LinearLayout tokoCashActivationLayout;
     @BindView(R2.id.tv_activation_label)

@@ -15,7 +15,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
@@ -51,9 +50,9 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         DriverVehicleAddressViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
         if (getIntent().getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
-            addFragment(R.id.container, CompleteTripFragment.newInstanceFromNotif(requestId, viewModel));
+            replaceFragment(R.id.container, CompleteTripFragment.newInstanceFromNotif(requestId, viewModel));
         } else {
-            addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
+            replaceFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
         }
     }
 
@@ -63,10 +62,10 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
         configuration.clearActiveProductName();
     }
 
-    private void addFragment(int containerViewId, Fragment fragment) {
+    private void replaceFragment(int containerViewId, Fragment fragment) {
         if (!isFinishing()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-            fragmentTransaction.add(containerViewId, fragment);
+            fragmentTransaction.replace(containerViewId, fragment);
             fragmentTransaction.commit();
         }
     }

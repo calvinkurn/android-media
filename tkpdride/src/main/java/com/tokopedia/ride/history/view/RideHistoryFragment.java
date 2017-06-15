@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
@@ -44,6 +45,8 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     RecyclerView listRidesRecyclerView;
     @BindView(R2.id.sw_refresh_layout)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R2.id.progress_bar)
+    ProgressBar progressBar;
 
     RideHistoryAdapter adapter;
 
@@ -96,7 +99,6 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
-        System.out.println("Vishal onHistoryClicked = " + viewModel.getStartAddress());
         mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 
@@ -177,8 +179,27 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         int width = metrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.thirty_two_dp);
         int height = getResources().getDimensionPixelSize(R.dimen.history_map_height);
 
-        String size = width + "x" + height;
-        return size;
+        return String.format("%dx%d", width, height);
+    }
+
+    @Override
+    public void showMainLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMainLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMainLayout() {
+        refreshLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMainLayout() {
+        refreshLayout.setVisibility(View.GONE);
     }
 
     @NonNull

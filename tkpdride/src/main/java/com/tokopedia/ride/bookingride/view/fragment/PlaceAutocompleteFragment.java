@@ -58,7 +58,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
-    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private PeopleAddressPaging peopleAddressPaging;
     private boolean isMarketPlaceSource;
 
@@ -157,13 +157,13 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mAutoCompleteRecylerView.setLayoutManager(layoutManager);
         mAutoCompleteRecylerView.setHasFixedSize(true);
 
-        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 actionOnLoadMoreDetected(page + 1);
             }
         };
-        mAutoCompleteRecylerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
+        mAutoCompleteRecylerView.addOnScrollListener(endlessRecyclerViewScrollListener);
         mAutoCompleteRecylerView.setAdapter(mAdapter);
     }
 

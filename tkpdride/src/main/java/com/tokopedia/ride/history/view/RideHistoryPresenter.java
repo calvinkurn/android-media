@@ -37,6 +37,8 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
 
     private void actionGetHistoriesData() {
         getView().disableRefreshLayout();
+        getView().showMainLoading();
+        getView().hideMainLayout();
         mGetRideHistoriesUseCase.execute(getView().getHistoriesParam(), new Subscriber<List<RideHistory>>() {
             @Override
             public void onCompleted() {
@@ -47,7 +49,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showFailedGetHistoriesMessage();
+                    getView().hideMainLoading();
                     getView().enableRefreshLayout();
                     getView().setRefreshLayoutToFalse();
                     getView().showRetryLayout();
@@ -57,6 +59,8 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
             @Override
             public void onNext(List<RideHistory> rideHistories) {
                 if (isViewAttached()) {
+                    getView().showMainLayout();
+                    getView().hideMainLoading();
                     ArrayList<Visitable> histories = new ArrayList<>();
                     String mapSize = getView().getMapImageSize();
                     for (RideHistory rideHistory : rideHistories) {

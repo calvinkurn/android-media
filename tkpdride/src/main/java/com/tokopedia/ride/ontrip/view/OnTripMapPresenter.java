@@ -188,8 +188,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideRequestLoadingLayout();
-                    getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().failedToRequestRide(e.getMessage());
+                    String error;
+                    if (e instanceof UnknownHostException) {
+                        error = getView().getActivity().getString(R.string.error_no_connection);
+                    } else if (e instanceof SocketTimeoutException) {
+                        error = getView().getActivity().getString(R.string.error_timeout);
+                    } else {
+                        error = getView().getActivity().getString(R.string.error_default);
+                    }
+                    getView().failedToRequestRide(error);
                 }
             }
 
@@ -238,14 +245,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
                     getView().failedToRequestRide(getView().getResourceString(R.string.error_invalid_fare_id));
                 } else {
+                    String error;
                     if (e instanceof UnknownHostException) {
-                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_no_connection));
+                        error = getView().getActivity().getString(R.string.error_no_connection);
                     } else if (e instanceof SocketTimeoutException) {
-                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_timeout));
+                        error = getView().getActivity().getString(R.string.error_timeout);
                     } else {
-                        getView().showFailedRideRequestMessage(getView().getActivity().getString(R.string.error_default));
+                        error = e.getMessage();
                     }
-                    getView().failedToRequestRide(e.getMessage());
+                    getView().failedToRequestRide(error);
                 }
             }
 
@@ -274,7 +282,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     if (e instanceof UnknownHostException) {
                         getView().showMessage(getView().getActivity().getString(R.string.error_no_connection));
                     } else if (e instanceof SocketTimeoutException) {
@@ -976,7 +984,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionYesCancelBtnClicked() {
-        if (!TextUtils.isEmpty(getView().getRequestId())){
+        if (!TextUtils.isEmpty(getView().getRequestId())) {
             getView().actionNavigateToCancelReasonPage(getView().getRequestId());
         }
     }
