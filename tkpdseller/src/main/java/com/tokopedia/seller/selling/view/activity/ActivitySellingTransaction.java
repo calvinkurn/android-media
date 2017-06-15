@@ -211,11 +211,11 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
+            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
 
-        hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
     }
 
 
@@ -257,7 +257,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
                 }
-                hideTickerOpportunity(position);
+                initSellerTicker();
             }
 
             @Override
@@ -271,8 +271,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     public void hideTickerOpportunity(int position) {
         if (position == 5) {
             sellerTickerView.setVisibility(View.GONE);
-        } else {
-            sellerTickerView.setVisibility(View.VISIBLE);
         }
     }
 
