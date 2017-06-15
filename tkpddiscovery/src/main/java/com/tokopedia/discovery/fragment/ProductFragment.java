@@ -63,6 +63,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
@@ -82,7 +83,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -218,8 +219,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             TrackingUtils.eventLocaSearched(browseModel.q);
 
         }
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
@@ -322,8 +321,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
         productAdapter.notifyDataSetChanged();
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
@@ -336,17 +333,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void displayTopAds() {
-        //TODO implement on next
-//        productAdapter.setSearchNotFound();
-    }
-
-    @Override
     public void setupAdapter() {
         if (productAdapter != null) {
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
+        productAdapter.setTopAdsListener(this);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -651,5 +643,22 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
             }
         }
+    }
+
+    @Override
+    public void displayEmptyResult() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        productAdapter.setSearchNotFound();
+        productAdapter.setIsLoading(false);
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        topAdsRecyclerAdapter.hideLoading();
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        topAdsRecyclerAdapter.hideLoading();
     }
 }
