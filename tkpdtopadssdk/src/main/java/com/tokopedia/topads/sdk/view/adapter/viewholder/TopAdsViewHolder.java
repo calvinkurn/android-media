@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -32,6 +35,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
+    private View container;
 
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
@@ -52,6 +56,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
+        container = itemView.findViewById(R.id.container);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -97,6 +102,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
                 imageView.setImageResource(R.drawable.icon_info);
                 imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)container.getLayoutParams();
+                params.setMargins(0, params.topMargin, 0, 0);
+                container.setLayoutParams(params);
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);
