@@ -49,12 +49,13 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private GridLayoutManager.SpanSizeLookup spanSizeLookup;
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private TopAdsPlacer placer;
+    private int itemTreshold = 5;
     private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
         @Override
         public void onLoadMore(int page, int totalItemsCount) {
             if (loadMore)
                 return;
-            if (loadListener != null) {
+            if (loadListener != null && placer.getItems().size() > itemTreshold) {
                 showLoading();
                 loadListener.onLoad(placer.getPage(), totalItemsCount);
             }
