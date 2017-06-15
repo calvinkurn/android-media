@@ -43,7 +43,7 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.listview_product_item_grid, parent, false));
+                .inflate(R.layout.featured_product_item, parent, false));
     }
 
     @Override
