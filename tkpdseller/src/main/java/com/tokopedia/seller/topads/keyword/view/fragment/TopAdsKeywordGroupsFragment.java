@@ -187,16 +187,17 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     public void onGetGroupAdListError(Throwable e) {
+        if (adapter == null) {
+            return;
+        }
         adapter.showLoading(false);
         // failed first time, show retry fullscreen
         if (adapter.getDataSize() == 0) {
             adapter.showRetryFull(true);
-        }
-        // failed to fetch when load more, show snackbar
-        else if (adapter.getDataSize() > 0) {
+        } else if (adapter.getDataSize() > 0) {
+            // failed to fetch when load more, show snackbar
             String errorMessage = ViewUtils.getGeneralErrorMessage(getContext(), e);
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    errorMessage);
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
     }
 
