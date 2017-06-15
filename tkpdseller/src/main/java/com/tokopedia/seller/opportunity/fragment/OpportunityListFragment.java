@@ -48,6 +48,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
+
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final String ARGS_PARAM = "ARGS_PARAM";
 
@@ -81,25 +82,30 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null
                 && savedInstanceState.getParcelable(ARGS_FILTER_DATA) != null) {
             filterData = savedInstanceState.getParcelable(ARGS_FILTER_DATA);
-            opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
         } else {
             filterData = new OpportunityFilterViewModel();
-            opportunityParam = new GetOpportunityListParam();
         }
+
+        if (savedInstanceState != null
+                && savedInstanceState.getParcelable(ARGS_PARAM) != null)
+            opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
+        else
+            opportunityParam = new GetOpportunityListParam();
     }
 
     @Override
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
-        presenter.initOpportunityForFirstTime(
-                opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
-                opportunityParam.getListFilter()
-        );
+            presenter.initOpportunityForFirstTime(
+                    opportunityParam.getQuery(),
+                    opportunityParam.getKeySort(),
+                    opportunityParam.getSort(),
+                    opportunityParam.getListFilter()
+            );
     }
 
     @Override
@@ -483,10 +489,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putParcelable(ARGS_FILTER_DATA, filterData);
         outState.putParcelable(ARGS_PARAM, opportunityParam);
-        super.onSaveInstanceState(outState);
     }
-
-
 }
