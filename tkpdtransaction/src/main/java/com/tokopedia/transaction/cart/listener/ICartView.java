@@ -100,4 +100,5 @@ public interface ICartView extends IBaseView {
     void trackingCartCancelEvent();
 
     LocalCacheHandler getLocalCacheHandlerNotificationData();
+
 }

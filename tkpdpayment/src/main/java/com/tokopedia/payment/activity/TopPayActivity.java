@@ -26,7 +26,7 @@ import com.tokopedia.payment.webview.ScroogeWebView;
 
 public class TopPayActivity extends Activity implements ITopPayView {
 
-    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+    public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;

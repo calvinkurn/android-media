@@ -53,9 +53,11 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -78,6 +80,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
@@ -96,7 +99,8 @@ import butterknife.ButterKnife;
  */
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
-        TopPayBroadcastReceiver.ActionTopPayListener, TopAdsItemClickListener {
+        TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
+    private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -239,7 +243,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void initialVar() {
         topPayBroadcastReceiver = new TopPayBroadcastReceiver(this);
         getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
-                TopPayBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
+                TopPayBroadcastReceiver.ACTION_TOP_PAY
         ));
     }
 
@@ -688,9 +692,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
-        navigateToActivityRequest(
-                TopPayActivity.createInstance(getActivity(), data), TopPayActivity.REQUEST_CODE
-        );
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(data.getRedirectUrl());
+        paymentPassData.setTransactionId(data.getParameter().getTransactionId());
+        paymentPassData.setPaymentId(data.getParameter().getTransactionId());
+        paymentPassData.setCallbackSuccessUrl(data.getCallbackUrl());
+        paymentPassData.setCallbackFailedUrl(data.getCallbackUrl());
+        paymentPassData.setQueryString(data.getQueryString());
+        navigateToActivityRequest
+                (
+                        com.tokopedia.payment.activity.TopPayActivity.createInstance
+                                (getActivity(), paymentPassData),
+                        com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE);
     }
 
     @Override
@@ -707,6 +720,66 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onGetParameterTopPayOngoing(String message) {
+        showProgressLoading();
+    }
+
+    @Override
+    public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
+        presenter.processCheckoutAnalytics(
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
+                data.getParameter().getGatewayName()
+        );
+        presenter.clearNotificationCart();
+        try {
+            presenter.processPaymentAnalytics(
+                    new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA), data
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        hideProgressLoading();
+        showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
+        navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+        CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+        closeView();
+    }
+
+    @Override
+    public void onGetThanksTopPayFailed(String message, final String paymentId) {
+        hideProgressLoading();
+        presenter.processCheckoutAnalytics(
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
+                ANALYTICS_GATEWAY_PAYMENT_FAILED
+        );
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        closeView();
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onGetThanksTopPayNotValid(String message, final String paymentId) {
+        hideProgressLoading();
+        showToastMessage(message);
+    }
+
+    @Override
+    public void onGetThanksTopPayNoConnection(String message, final String paymentId) {
+        hideProgressLoading();
+        NetworkErrorHelper.showDialog(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.processValidationPayment(paymentId);
+                    }
+                });
+    }
+
+    @Override
+    public void onGetThanksTopPayOngoing(String message, String paymentId) {
         showProgressLoading();
     }
 
@@ -732,6 +805,31 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } else if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             presenter.processGetCartData();
+        } else if (requestCode == com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(),
+                            getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+                    );
+                    break;
+                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
+                    presenter.processValidationPayment(
+                            ((PaymentPassData) data.getParcelableExtra(
+                                    com.tokopedia.payment.activity
+                                            .TopPayActivity.EXTRA_PARAMETER_TOP_PAY_DATA
+                            )).getPaymentId()
+                    );
+                    break;
+                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
+                    presenter.processValidationPayment(
+                            ((PaymentPassData) data.getParcelableExtra(
+                                    com.tokopedia.payment.activity
+                                            .TopPayActivity.EXTRA_PARAMETER_TOP_PAY_DATA
+                            )).getPaymentId()
+                    );
+                    break;
+            }
         }
     }
 
