@@ -67,7 +67,6 @@ import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
-import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
@@ -115,6 +114,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
+    }
+
+    public static Intent getCallingIntentForClearTop(Activity activity) {
+        Intent intent = new Intent(activity, RideHomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     @DeepLink({Constants.Applinks.RIDE, Constants.Applinks.RIDE_DETAIL})

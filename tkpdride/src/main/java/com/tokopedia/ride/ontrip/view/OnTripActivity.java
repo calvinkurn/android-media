@@ -153,7 +153,12 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_trip);
         confirmBookingViewModel = getIntent().getParcelableExtra(EXTRA_CONFIRM_BOOKING);
-        OnTripActivityPermissionsDispatcher.initFragmentWithCheck(this);
+
+        //this checks if activity recreates with confirmviewbooking model, we will finish this activity
+        if (savedInstanceState == null) {
+            OnTripActivityPermissionsDispatcher.initFragmentWithCheck(this);
+        }
+
         setupToolbar();
         mReceiver = new BroadcastReceiver() {
             @Override
