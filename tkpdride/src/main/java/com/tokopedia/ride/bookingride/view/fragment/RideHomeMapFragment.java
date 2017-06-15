@@ -375,6 +375,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onMapDragStopped() {
+        if (googleMap == null) return;
         //set address based on current address and refresh the product list
         //add validation if user already pick destination
         if (!isAlreadySelectDestination) {

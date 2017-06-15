@@ -70,7 +70,7 @@ public class GooglePlacePickerActivity extends BaseActivity
     @Override
     public void onSelectLocationOnMapSelected() {
         CommonUtils.hideKeyboard(this, getCurrentFocus());
-        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(getIntent().getIntExtra(EXTRA_SOURCE, 0)));
+        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(getIntent().getIntExtra(EXTRA_MARKER_ID, 0)));
     }
 
     @Override
