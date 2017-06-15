@@ -1700,7 +1700,7 @@ di Tokopedia Sekarang!</string>
 
 
     <!--recharge related string-->
-    <string name="instant_payment">Bayar instan dengan saldo</string>
+    <string name="instant_payment">Bayar instan</string>
     <string name="title_button_pay">Bayar</string>
     <string name="topup_saldo">Isi Saldo</string>
     <!--end recharge related string-->
