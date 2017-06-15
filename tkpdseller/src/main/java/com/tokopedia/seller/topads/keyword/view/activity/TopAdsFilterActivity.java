@@ -114,11 +114,7 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
 
     @Override
     public void onStatusChanged(boolean active) {
-        topAdsFilterListFragment.setActive(selectedPosition = getSelectionPosition(), active);
-    }
-
-    protected int getSelectionPosition() {
-        return topAdsFilterListFragment.getCurrentPosition();
+        topAdsFilterListFragment.setActive(selectedPosition, active);
     }
 
     @Override

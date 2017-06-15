@@ -592,6 +592,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
     }
 
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        browsePresenter.setDefaultGridTypeFromNetwork(viewType);
+    }
+
     public void removeEmptyState() {
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
         NetworkErrorHelper.removeEmptyState(container);
@@ -649,6 +654,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
+            browsePresenter.retrieveLastGridConfig(departementId);
         }
     }
 

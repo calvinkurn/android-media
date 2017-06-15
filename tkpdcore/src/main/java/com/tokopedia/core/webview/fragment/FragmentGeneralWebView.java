@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -214,7 +215,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         return false;
     }
-
 
     public interface OnFragmentInteractionListener {
 

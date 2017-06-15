@@ -54,7 +54,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_picture_product;
+        return R.layout.view_picture_product_pdp;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     protected void initView(Context context) {
         super.initView(context);
         vpImage = (ViewPager) findViewById(R.id.view_pager);
-        indicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        indicator = (CirclePageIndicator) findViewById(R.id.indicator_picture);
         errorProductContainer = (LinearLayout) findViewById(R.id.error_product_container);
         errorProductTitle = (TextView) findViewById(R.id.error_product_title);
         errorProductSubitle = (TextView) findViewById(R.id.error_product_subtitle);
