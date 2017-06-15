@@ -151,6 +151,21 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tokocash_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_54"
+        android:lineSpacingExtra="9sp"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/padding_small"
+        android:layout_gravity="center_horizontal"
+        tools:text="Dengan memverifikasi nomor ponsel, \nTokoCash akan diaktifkan"
+        />
+
+    <TextView
         android:id="@+id/verify_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"

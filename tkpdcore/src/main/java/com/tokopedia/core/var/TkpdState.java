@@ -79,6 +79,7 @@ public class TkpdState {
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
+        public static final int SHOP_OPPORTUNITY_LIST = 52;
     }
 
     public class Application {
@@ -133,6 +134,7 @@ public class TkpdState {
         public static final int ORDER_DELIVERED = 600;
         public static final int ORDER_DELIVERY_FAILURE = 630;
         public static final int ORDER_CONFLICTED = 601;
+        public static final int ORDER_OPPORTUNITY = 11;
     }
 
     public class BrowseProdState {

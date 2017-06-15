@@ -14,11 +14,27 @@ public class ProductCashback implements Parcelable{
     @SerializedName("product_cashback")
     @Expose
     private String productCashback;
+    @SerializedName("product_cashback_value")
+    @Expose
+    private String productCashbackValue;
 
     protected ProductCashback(Parcel in) {
         productCashback = in.readString();
+        productCashbackValue = in.readString();
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productCashback);
+        dest.writeString(productCashbackValue);
+    }
+
+    @SuppressWarnings("unused")
     public static final Creator<ProductCashback> CREATOR = new Creator<ProductCashback>() {
         @Override
         public ProductCashback createFromParcel(Parcel in) {
@@ -31,21 +47,19 @@ public class ProductCashback implements Parcelable{
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productCashback);
+    public String getProductCashback() {
+        return productCashback;
     }
 
     public void setProductCashback(String productCashback) {
         this.productCashback = productCashback;
     }
 
-    public String getProductCashback() {
-        return productCashback;
+    public String getProductCashbackValue() {
+        return productCashbackValue;
+    }
+
+    public void setProductCashbackValue(String productCashbackValue) {
+        this.productCashbackValue = productCashbackValue;
     }
 }

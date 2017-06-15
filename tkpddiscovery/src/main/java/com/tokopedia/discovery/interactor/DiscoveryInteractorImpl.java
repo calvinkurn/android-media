@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
@@ -16,6 +17,7 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
@@ -30,6 +32,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
@@ -39,6 +42,7 @@ import com.tokopedia.discovery.model.ErrorContainer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -61,6 +65,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     private static final String TAG = DiscoveryInteractorImpl.class.getSimpleName();
     DiscoveryService discoveryService;
     DiscoveryListener discoveryListener;
+    TomeService tomeService;
     HotListService hotListService;
     TopAdsService topAdsService;
     HadesService hadesService;
@@ -81,6 +86,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     public DiscoveryInteractorImpl() {
         discoveryService = new DiscoveryService();
+        tomeService = new TomeService();
         hotListService = new HotListService();
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
@@ -311,6 +317,25 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     public void getShops(HashMap<String, String> data) {
         Log.d(TAG, "getShops2 data " + data.toString());
         getCompositeSubscription().add(discoveryService.getApi().browseShops(MapNulRemover.removeNull(data)).subscribeOn(Schedulers.io())
+                .map(new Func1<Response<BrowseShopModel>, Response<BrowseShopModel>>() {
+                    @Override
+                    public Response<BrowseShopModel> call(Response<BrowseShopModel> browseShopModelResponse) {
+                        if(SessionHandler.isV4Login(MainApplication.getAppContext())
+                                && !isShopListEmpty(browseShopModelResponse)) {
+
+                            Map<String, Boolean> favoriteShopMap =
+                                    getFavoriteShopMap(browseShopModelResponse);
+
+                            for (BrowseShopModel.Shops shop : browseShopModelResponse.body().result.shops) {
+                                shop.isFavorited = favoriteShopMap.get(shop.shopId) != null;
+                            }
+
+                            return browseShopModelResponse;
+                        } else {
+                            return browseShopModelResponse;
+                        }
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
@@ -346,6 +371,33 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                             }
                         }
                 ));
+    }
+
+    private Map<String, Boolean> getFavoriteShopMap(Response<BrowseShopModel> browseShopModelResponse) {
+        StringBuilder shopListQuery = new StringBuilder();
+
+        for (BrowseShopModel.Shops shop : browseShopModelResponse.body().result.shops) {
+            shopListQuery.append(shop.shopId).append(",");
+        }
+        shopListQuery.deleteCharAt(shopListQuery.length() - 1);
+
+        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+
+        List<String> favoritedShopIds =
+                tomeService.getApi().checkIsShopFavorited(userId, shopListQuery.toString())
+                        .toBlocking().first().body().getShopIds();
+
+        Map<String, Boolean> favoriteShopMap = new HashMap<>();
+
+        for (String id : favoritedShopIds) {
+            favoriteShopMap.put(id, true);
+        }
+
+        return favoriteShopMap;
+    }
+
+    private boolean isShopListEmpty(Response<BrowseShopModel> browseShopModelResponse) {
+        return browseShopModelResponse.body().result.shops.length == 0;
     }
 
     @Override
