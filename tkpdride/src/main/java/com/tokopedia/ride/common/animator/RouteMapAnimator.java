@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 public class RouteMapAnimator {
-    public static final float POLYLINE_WIDTH_IN_DP = 2.5f;
+    public static final float POLYLINE_WIDTH_IN_DP = 2.0f;
 
     private static RouteMapAnimator mapAnimator;
 
