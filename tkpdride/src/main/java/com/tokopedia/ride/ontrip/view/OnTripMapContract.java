@@ -186,6 +186,8 @@ public interface OnTripMapContract {
         RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude);
 
         void zoomMapFitByPolyline(List<LatLng> latLngs);
+
+        void actionNavigateToCancelReasonPage(String requestId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -226,5 +228,7 @@ public interface OnTripMapContract {
         void onResume();
 
         void onPause();
+
+        void actionYesCancelBtnClicked();
     }
 }

@@ -14,6 +14,7 @@ import rx.Observable;
 
 public class CancelRideRequestUseCase extends UseCase<String> {
     public static final String PARAM_REQUEST_ID = "request_id";
+    public static final String PARAM_REASON = "reason";
     private BookingRideRepository bookingRideRepository;
 
     public CancelRideRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, BookingRideRepository bookingRideRepository) {

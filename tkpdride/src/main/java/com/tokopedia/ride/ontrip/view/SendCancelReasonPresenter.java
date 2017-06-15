@@ -1,6 +1,9 @@
 package com.tokopedia.ride.ontrip.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetCancelReasonsUseCase;
 
 import java.util.List;
@@ -13,8 +16,12 @@ import rx.Subscriber;
 
 public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelReasonContract.View> implements SendCancelReasonContract.Presenter {
     private GetCancelReasonsUseCase getCancelReasonsUseCase;
-    public SendCancelReasonPresenter(GetCancelReasonsUseCase getCancelReasonsUseCase) {
+    private CancelRideRequestUseCase cancelRideRequestUseCase;
+
+    public SendCancelReasonPresenter(GetCancelReasonsUseCase getCancelReasonsUseCase,
+                                     CancelRideRequestUseCase cancelRideRequestUseCase) {
         this.getCancelReasonsUseCase = getCancelReasonsUseCase;
+        this.cancelRideRequestUseCase = cancelRideRequestUseCase;
     }
 
     @Override
@@ -35,14 +42,14 @@ public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelRea
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideLoading();
                 }
             }
 
             @Override
             public void onNext(List<String> reasons) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().showMainLayout();
                     getView().hideLoading();
                     getView().renderReasons(reasons);
@@ -53,8 +60,33 @@ public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelRea
 
     @Override
     public void submitReasons() {
+        if (TextUtils.isEmpty(getView().getSelectedReason())){
+            getView().showReasonEmptyError();
+            return;
+        }
+        getView().showLoading();
+        getView().hideMainLayout();
+        cancelRideRequestUseCase.execute(getView().getCancelParams(), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideLoading();
+                    getView().showMainLayout();
+                    getView().showErrorCancelRequest();
+                }
+            }
+
+            @Override
+            public void onNext(String s) {
+                if (isViewAttached()) {
+                    getView().onSuccessCancelRequest();
+                }
+            }
+        });
     }
-
-
 }

@@ -78,6 +78,7 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
+import com.tokopedia.ride.ontrip.view.SendCancelReasonActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
@@ -99,6 +100,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
+    private static final int REQUEST_CODE_CANCEL_REASON = 1007;
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
@@ -480,6 +482,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
                     getActivity().finish();
                 }
+                break;
+            case REQUEST_CODE_CANCEL_REASON:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+                    getActivity().finish();
+                }
+                break;
+            default:
         }
     }
 
@@ -652,9 +662,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             intent.putExtra(OnTripActivity.EXTRA_PLACE_SOURCE, source);
             intent.putExtra(OnTripActivity.EXTRA_PLACE_DESTINATION, destination);
         }
-        intent.putExtra(OnTripActivity.EXTRA_REQUEST_ID, getRequestId());
 
-        getActivity().setResult(OnTripActivity.RIDE_HOME_AFTER_CANCEL_RESULT_CODE, intent);
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE, intent);
         getActivity().finish();
     }
 
@@ -1061,7 +1070,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void actionYesCancelBtnClicked() {
         hideCancelPanel();
         hideFindingUberNotification();
-        presenter.actionCancelRide();
+        presenter.actionYesCancelBtnClicked();
     }
 
     @OnClick(R2.id.btn_no)
@@ -1322,5 +1331,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void actionNavigateToCancelReasonPage(String requestId) {
+        Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId);
+        startActivityForResult(intent, REQUEST_CODE_CANCEL_REASON);
     }
 }

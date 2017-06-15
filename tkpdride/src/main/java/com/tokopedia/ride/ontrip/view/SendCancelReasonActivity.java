@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -15,8 +17,10 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
+import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.adapter.CancelReasonAdapter;
 
 import java.util.List;
@@ -34,6 +38,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     private TextView submitButtonTextView;
     private Toolbar toolbar;
     private String selectedReason;
+    private String requestId;
 
     public static Intent getCallingIntent(Activity activity, String requestId) {
         Intent intent = new Intent(activity, SendCancelReasonActivity.class);
@@ -45,6 +50,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_cancel_reason);
+        requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         setupUiVariable();
         setupViewListener();
         presenter = OnTripDependencyInjection.createSendCancelReasonPresenter(this);
@@ -71,7 +77,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
                 toolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();
         }
     }
@@ -121,6 +127,41 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     }
 
     @Override
+    public RequestParams getCancelParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(CancelRideRequestUseCase.PARAM_REQUEST_ID, requestId);
+        requestParams.putString(CancelRideRequestUseCase.PARAM_REASON, selectedReason);
+        return requestParams;
+    }
+
+    @Override
+    public void showErrorCancelRequest() {
+        NetworkErrorHelper.showEmptyState(this, mainLayout, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.submitReasons();
+            }
+        });
+    }
+
+    @Override
+    public void onSuccessCancelRequest() {
+        Intent intent = getIntent();
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    public String getSelectedReason() {
+        return selectedReason;
+    }
+
+    @Override
+    public void showReasonEmptyError() {
+        Snackbar.make(getWindow().getDecorView().getRootView(), R.string.send_cancel_selected_reason_error, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onItemClicked(String reason) {
         adapter.setSelectedReason(reason);
         adapter.setReasons(this.reasons);
@@ -144,6 +185,17 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             submitButtonTextView.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
         } else {
             submitButtonTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 }

@@ -255,7 +255,8 @@ public class OnTripDependencyInjection {
         String userId = sessionHandler.getLoginID();
 
         GetCancelReasonsUseCase getCancelReasonsUseCase = injection.provideGetCancelReasonsUseCase(token, userId);
-        return new SendCancelReasonPresenter(getCancelReasonsUseCase);
+        CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
+        return new SendCancelReasonPresenter(getCancelReasonsUseCase, cancelRideRequestUseCase);
     }
 
     private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId) {

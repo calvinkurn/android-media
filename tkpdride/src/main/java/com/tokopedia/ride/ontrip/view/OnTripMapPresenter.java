@@ -957,4 +957,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         RxUtils.unsubscribeIfNotNull(subscription);
     }
 
+    @Override
+    public void actionYesCancelBtnClicked() {
+        if (!TextUtils.isEmpty(getView().getRequestId())){
+            getView().actionNavigateToCancelReasonPage(getView().getRequestId());
+        }
+    }
+
 }

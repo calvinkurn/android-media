@@ -24,6 +24,16 @@ public interface SendCancelReasonContract {
         void hideMainLayout();
 
         void showMainLayout();
+
+        RequestParams getCancelParams();
+
+        void showErrorCancelRequest();
+
+        void onSuccessCancelRequest();
+
+        String getSelectedReason();
+
+        void showReasonEmptyError();
     }
 
     interface Presenter extends CustomerPresenter<View>{

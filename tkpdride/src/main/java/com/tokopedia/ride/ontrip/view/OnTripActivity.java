@@ -48,7 +48,6 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public static final int RIDE_HOME_RESULT_CODE = 11;
     public static final int RIDE_BOOKING_RESULT_CODE = 12;
     public static final int APP_HOME_RESULT_CODE = 13;
-    public static final int RIDE_HOME_AFTER_CANCEL_RESULT_CODE = 14;
 
     public static final String TASK_TAG_PERIODIC = "periodic_task";
 
