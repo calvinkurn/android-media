@@ -17,7 +17,9 @@ import android.widget.ImageView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
@@ -158,12 +160,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_keyword_filter_group_name;
     }
@@ -188,8 +184,18 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void onGetGroupAdListError() {
-
+    public void onGetGroupAdListError(Throwable e) {
+        adapter.showLoading(false);
+        // failed first time, show retry fullscreen
+        if (adapter.getDataSize() == 0) {
+            adapter.showRetryFull(true);
+        }
+        // failed to fetch when load more, show snackbar
+        else if (adapter.getDataSize() > 0) {
+            String errorMessage = ViewUtils.getGeneralErrorMessage(getContext(), e);
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    errorMessage);
+        }
     }
 
     @Override
@@ -225,6 +231,12 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     @Override
     public void setCallback(TopAdsFilterContentFragment.Callback callback) {
         this.callback = callback;
+    }
+
+    @Override
+    protected void searchAd() {
+        super.searchAd();
+        topAdsKeywordNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
     }
 
     @Override
