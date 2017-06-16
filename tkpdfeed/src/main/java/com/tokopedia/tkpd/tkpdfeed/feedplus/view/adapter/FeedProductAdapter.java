@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -71,14 +74,20 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
 
-        if(getItemCount()==1){
+        if (getItemCount() == 1) {
             holder.productName.setEllipsize(TextUtils.TruncateAt.END);
             holder.productName.setMaxLines(1);
+            RelativeLayout.LayoutParams lp =
+                    new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 5, 0, 0);
+            holder.productImage.setLayoutParams(lp);
         }
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.LoadImage(holder.productImage, getItemCount()>1? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
+        ImageHandler.LoadImage(holder.productImage, getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
 
         if (list.size() > 6 && position == 5) {
             holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
