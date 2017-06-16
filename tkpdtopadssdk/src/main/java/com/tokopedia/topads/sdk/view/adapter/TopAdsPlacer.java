@@ -44,6 +44,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
     private boolean isFeed = false;
+    private boolean mNeedsPlacement;
     private boolean shouldLoadAds = true; //default load ads
     private TopAdsFavShopClickListener favShopClickListener;
 
@@ -92,6 +93,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
+        if(mNeedsPlacement)
+            return;
+        mNeedsPlacement = true;
         observerType = ObserverType.CHANGE;
         if (hasHeader)
             headerPlaced = false;
@@ -201,6 +205,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = getItemCount();
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
+        mNeedsPlacement = false;
     }
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
@@ -225,6 +230,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
         headerPlaced = true;
+        mNeedsPlacement = false;
     }
 
     @Override
