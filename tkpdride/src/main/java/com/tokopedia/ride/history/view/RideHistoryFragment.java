@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
@@ -40,7 +41,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 public class RideHistoryFragment extends BaseFragment implements ItemClickListener, RideHistoryContract.View {
 
     @BindView(R2.id.container)
-    FrameLayout containerFrameLayout;
+    RelativeLayout containerFrameLayout;
     @BindView(R2.id.rv_list_rides)
     RecyclerView listRidesRecyclerView;
     @BindView(R2.id.sw_refresh_layout)
