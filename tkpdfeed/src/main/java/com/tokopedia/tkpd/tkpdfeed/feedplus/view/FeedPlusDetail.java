@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -47,6 +48,8 @@ public interface FeedPlusDetail {
         void onGoToProductDetail(int productId);
 
         int getColor(int resId);
+
+        Resources getResources();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
