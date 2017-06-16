@@ -34,6 +34,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -110,6 +111,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -139,6 +141,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
     private VideoData videoData;
+    private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -682,6 +685,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
+        presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
     }
 
     @Override
@@ -861,6 +865,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 })
                 .setActionTextColor(getResources().getColor(R.color.tkpd_main_green ))
                 .show();
+    }
+
+    @Override
+    public void showProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
+        headerInfoView.renderProductCampaign(this.productCampaign);
     }
 
     private void destroyVideoLayout() {
