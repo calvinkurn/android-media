@@ -64,7 +64,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
     @Override
     public void getOpportunity(@Nullable String query,
-                               @Nullable String key_sort,
+                               @Nullable String keySort,
                                @Nullable String sort,
                                @Nullable ArrayList<FilterPass> listFilter) {
         viewListener.showLoadingList();
@@ -72,7 +72,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         getOpportunityUseCase.execute(GetOpportunityUseCase.getRequestParam(
                 viewListener.getPage(),
                 query,
-                key_sort,
+                keySort,
                 sort,
                 listFilter
         ), new GetOpportunitySubscriber(viewListener));
@@ -88,7 +88,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
     @Override
     public void initOpportunityForFirstTime(@Nullable String query,
-                                            @Nullable String key_sort,
+                                            @Nullable String keySort,
                                             @Nullable String sort,
                                             @Nullable ArrayList<FilterPass> listFilter) {
         viewListener.showLoadingList();
@@ -97,7 +97,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
                 GetOpportunityFirstTimeUseCase.getRequestParam(
                         1,
                         query,
-                        key_sort,
+                        keySort,
                         sort,
                         listFilter,
                         sessionHandler.getShopID()),

@@ -100,12 +100,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
-            presenter.initOpportunityForFirstTime(
-                    opportunityParam.getQuery(),
-                    opportunityParam.getKeySort(),
-                    opportunityParam.getSort(),
-                    opportunityParam.getListFilter()
-            );
+        presenter.initOpportunityForFirstTime(
+                opportunityParam.getQuery(),
+                opportunityParam.getKeySort(),
+                opportunityParam.getSort(),
+                opportunityParam.getListFilter()
+        );
     }
 
     @Override
@@ -461,20 +461,21 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     private void setOpportunitySortData(Intent data) {
-        String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
-        String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
-        int position = data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION);
+        if (filterData != null && filterData.getListSortingType() != null) {
+            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
+            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
+            int position = data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION);
 
-        for (int i = 0; i < filterData.getListSortingType().size(); i++) {
-            if (i != position)
-                filterData.getListSortingType().get(i).setSelected(false);
-            else {
-                filterData.getListSortingType().get(i).setSelected(true);
+            for (int i = 0; i < filterData.getListSortingType().size(); i++) {
+                if (i != position)
+                    filterData.getListSortingType().get(i).setSelected(false);
+                else {
+                    filterData.getListSortingType().get(i).setSelected(true);
+                }
             }
+            opportunityParam.setSort(keySort, paramSort);
+            resetOpportunityList();
         }
-
-        opportunityParam.setSort(keySort, paramSort);
-        resetOpportunityList();
 
     }
 

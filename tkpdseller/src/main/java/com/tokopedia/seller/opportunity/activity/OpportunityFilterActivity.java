@@ -41,7 +41,6 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         implements OpportunityFilterTitleAdapter.FilterListener,
         OpportunityFilterAdapter.CategoryListener {
 
-
     public interface FilterTitleListener {
         void updateData(ArrayList<FilterViewModel> listFilter);
     }

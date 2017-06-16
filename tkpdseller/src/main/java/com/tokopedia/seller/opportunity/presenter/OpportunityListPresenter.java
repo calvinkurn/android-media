@@ -12,14 +12,14 @@ import java.util.ArrayList;
 
 public interface OpportunityListPresenter {
     void getOpportunity(@Nullable String query,
-                        @Nullable String key_sort,
+                        @Nullable String keySort,
                         @Nullable String sort,
                         @Nullable ArrayList<FilterPass> listFilter);
 
     void unsubscribeObservable();
 
     void initOpportunityForFirstTime(@Nullable String query,
-                                     @Nullable String key_sort,
+                                     @Nullable String keySort,
                                      @Nullable String sort,
                                      @Nullable ArrayList<FilterPass> listFilter);
 }
