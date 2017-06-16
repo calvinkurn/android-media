@@ -5,7 +5,7 @@
     android:padding="@dimen/padding_vs"
     android:layout_marginTop="@dimen/margin_small"
     android:layout_marginBottom="@dimen/margin_small"
-    android:background="@drawable/cards_ui_2">
+    android:background="@drawable/cards_ui_feed">
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"

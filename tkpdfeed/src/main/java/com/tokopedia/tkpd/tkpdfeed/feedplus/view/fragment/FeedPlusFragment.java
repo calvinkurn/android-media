@@ -491,4 +491,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onAddShopFavorite(int position, Data data) {
         presenter.favoriteShop(data, position);
     }
+
+    public void scrollToTop() {
+        if(recyclerView != null) recyclerView.smoothScrollToPosition(0);
+    }
 }
