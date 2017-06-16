@@ -63,6 +63,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         }
         productName.setText(MethodChecker.fromHtml(feedDetailViewModel.getName()));
         productPrice.setText(feedDetailViewModel.getPrice());
+
         if(feedDetailViewModel.getRating() > 0) {
             productRating.setRating(feedDetailViewModel.getRating());
             productRating.setVisibility(View.VISIBLE);

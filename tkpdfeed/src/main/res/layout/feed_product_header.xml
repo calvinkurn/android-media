@@ -17,48 +17,24 @@
         tools:src="@drawable/ic_check_green_24dp" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/shop_avatar"
         android:layout_toEndOf="@+id/shop_avatar"
-        android:id="@+id/linearLayout">
-
-        <ImageView
-            android:id="@+id/gold_merchant"
-            android:layout_width="@dimen/ic_badge_size"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_shop_gold"
-            android:visibility="visible"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/shop_avatar"
-            android:layout_toEndOf="@+id/shop_avatar" />
-
-        <ImageView
-            android:id="@+id/official_store"
-            android:layout_width="@dimen/ic_badge_size"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_official"
-            tools:visibility="visible"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/gold_merchant"
-            android:layout_toEndOf="@+id/gold_merchant" />
+        android:layout_toRightOf="@+id/shop_avatar">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:textColor="@color/black_54"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:lineSpacingExtra="4sp"
             android:drawablePadding="@dimen/padding_vs"
-            android:layout_toEndOf="@id/official_store"
-            android:layout_toRightOf="@id/official_store"
-            tools:text="Marowiajjfawioi ubah 1 produk " />
+            android:layout_gravity="top"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/black_54"
+            android:textStyle="normal"
+            tools:text="Marowiajjfawlaksjdlaksjdlakjsdlaksjdlaksjdlioi ubah 1 produk " />
 
     </LinearLayout>
 
@@ -67,12 +43,12 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontvs"
-        android:textColor="@color/black"
-        android:alpha="0.38"
-        tools:text="4 hours ago"
         android:layout_below="@+id/linearLayout"
+        android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:layout_toEndOf="@+id/shop_avatar" />
+        android:alpha="0.38"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontvs"
+        tools:text="4 hours ago" />
 
 </RelativeLayout>
