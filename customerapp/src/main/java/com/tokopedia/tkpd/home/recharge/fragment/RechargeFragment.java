@@ -263,7 +263,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         initListener();
         CategoryAttributes categoryAttributes = category.getAttributes();
 
@@ -533,7 +532,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     }
                 }
             }
-
         }
     }
 
@@ -793,7 +791,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             renderLastOrder();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+                && !TextUtils.isEmpty(lastClientNumberTyped)
+                && lastOperatorSelected.equals(selectedOperatorId) ) {
             rechargeEditText.setText(lastClientNumberTyped);
             handlingAppearanceFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
