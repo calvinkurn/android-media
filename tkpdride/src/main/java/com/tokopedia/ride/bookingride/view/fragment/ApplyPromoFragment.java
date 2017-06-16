@@ -318,7 +318,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onItemClicked(String promoCode) {
-        promoEditText.setText(promoCode);
+        promoEditText.setText(promoCode.toUpperCase());
         presenter.actionApplyPromo();
     }
 
