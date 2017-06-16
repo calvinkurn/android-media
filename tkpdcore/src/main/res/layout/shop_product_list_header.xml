@@ -60,6 +60,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/featured_product_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/shop_product_list_header_featured_product_title"

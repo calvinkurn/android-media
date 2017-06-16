@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
@@ -45,6 +46,7 @@ public class ShopProductListHeaderDelegate {
         public Spinner etalase;
         public View filterClick;
         public RecyclerView featuredProductList;
+        public TextView featuredProductTitle;
 
         public VHolder(View itemView) {
             super(itemView);
@@ -52,6 +54,7 @@ public class ShopProductListHeaderDelegate {
             filterClick = itemView.findViewById(R.id.btn_filter_sort);
             etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
             featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
+            featuredProductTitle = (TextView) itemView.findViewById(R.id.featured_product_title);
         }
     }
 
@@ -91,6 +94,14 @@ public class ShopProductListHeaderDelegate {
         vholder.toggle.setImageResource(toggleIcon);
         if(hasSelection(spinnerSelectedPos))
             vholder.etalase.setSelection(spinnerSelectedPos);
+
+        if (featuredProductAdapter.getItemCount() > 0) {
+            vholder.featuredProductTitle.setVisibility(View.VISIBLE);
+            vholder.featuredProductList.setVisibility(View.VISIBLE);
+        } else {
+            vholder.featuredProductTitle.setVisibility(View.GONE);
+            vholder.featuredProductList.setVisibility(View.GONE);
+        }
 
         if (vholder.featuredProductList.getLayoutManager() == null) {
             vholder.featuredProductList.setLayoutManager(
