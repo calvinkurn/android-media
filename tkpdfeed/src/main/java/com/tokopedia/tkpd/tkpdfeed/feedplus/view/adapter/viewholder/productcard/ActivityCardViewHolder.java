@@ -124,7 +124,12 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         String actionString = String.valueOf(MethodChecker.fromHtml(activityCardViewModel.getActionText()));
 
         StringBuilder titleText = new StringBuilder();
-        titleText.append(shopNameString)
+
+        if (activityCardViewModel.getHeader().isGoldMerchant() || activityCardViewModel.getHeader().isOfficialStore())
+            titleText.append("  ");
+
+        titleText
+                .append(shopNameString)
                 .append(" ")
                 .append(actionString);
         SpannableString actionSpanString = new SpannableString(titleText);
@@ -177,9 +182,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             setBadge(actionSpanString, R.drawable.ic_shop_gold);
         } else if (activityCardViewModel.getHeader().isOfficialStore()) {
             setBadge(actionSpanString, R.drawable.ic_badge_official);
-        } else
-            title.setText(actionSpanString);
+        }
 
+        title.setText(actionSpanString);
         title.setMovementMethod(LinkMovementMethod.getInstance());
 
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
@@ -208,9 +213,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
         ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
-        SpannableString text = new SpannableString("  " + actionSpanString);
-        text.setSpan(is, 0, 1, 0);
-        title.setText(text);
+        actionSpanString.setSpan(is, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {

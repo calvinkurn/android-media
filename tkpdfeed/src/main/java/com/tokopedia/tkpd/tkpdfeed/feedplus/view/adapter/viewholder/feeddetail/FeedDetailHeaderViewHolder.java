@@ -23,6 +23,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 
 import static com.tokopedia.core.R.id.title;
+import static com.tokopedia.core.R.id.view;
 
 /**
  * @author by nisie on 5/19/17.
@@ -53,6 +54,10 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         String actionString = String.valueOf(MethodChecker.fromHtml(viewModel.getActionText()));
 
         StringBuilder titleText = new StringBuilder();
+
+        if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
+            titleText.append("  ");
+
         titleText.append(shopNameString)
                 .append(" ")
                 .append(actionString);
@@ -69,8 +74,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setTypeface(Typeface.DEFAULT_BOLD);
-                ds.setColor(viewListener.getColor(R.color.black));
+                ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
@@ -78,16 +83,15 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
                 , titleText.indexOf(shopNameString) + shopNameString.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
         if (viewModel.isGoldMerchant()) {
             setBadge(actionSpanString, R.drawable.ic_shop_gold);
         } else if (viewModel.isOfficialStore()) {
             setBadge(actionSpanString, R.drawable.ic_badge_official);
-        } else
-            shopName.setText(actionSpanString);
+        }
 
+        shopName.setText(actionSpanString);
         shopName.setMovementMethod(LinkMovementMethod.getInstance());
 
         shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
@@ -112,9 +116,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
         ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
-        SpannableString text = new SpannableString("  " + actionSpanString);
-        text.setSpan(is, 0, 1, 0);
-        shopName.setText(text);
+        actionSpanString.setSpan(is, 0, 1, 0);
     }
 
 
