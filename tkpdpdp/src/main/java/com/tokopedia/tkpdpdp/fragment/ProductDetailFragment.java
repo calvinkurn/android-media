@@ -614,8 +614,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
-        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                message.replace("\n"," "),
+                Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        TextView tv = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setMaxLines(7);
+        snackbar.show();
     }
 
     @Override
