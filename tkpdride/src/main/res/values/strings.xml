@@ -134,4 +134,5 @@
     <string name="error_no_connection">No internet connection</string>
     <string name="error_timeout">Connection timeout, Please try again in a few moments</string>
     <string name="error_default">Error occurred, try again in a few moments</string>
+    <string name="error_cannot_cancel">Sorry! cancel booking is not allowed after trip start.</string>
 </resources>

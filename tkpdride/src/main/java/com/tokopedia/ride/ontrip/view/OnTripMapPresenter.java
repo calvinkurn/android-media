@@ -984,9 +984,21 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionYesCancelBtnClicked() {
+        if (activeRideRequest != null && activeRideRequest.getStatus().equalsIgnoreCase(RideStatus.IN_PROGRESS)) {
+            getView().showMessage(getView().getActivity().getString(R.string.error_cannot_cancel));
+            return;
+        }
+
         if (!TextUtils.isEmpty(getView().getRequestId())) {
             getView().actionNavigateToCancelReasonPage(getView().getRequestId());
         }
     }
 
+    @Override
+    public String getRideStatus() {
+        if (activeRideRequest == null) {
+            return null;
+        }
+        return activeRideRequest.getStatus();
+    }
 }

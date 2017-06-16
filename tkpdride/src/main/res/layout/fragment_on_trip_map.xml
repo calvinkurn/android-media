@@ -263,21 +263,26 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AA000000"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
+            android:layout_centerInParent="true"
+            android:background="@drawable/material_card"
             android:orientation="vertical">
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center_horizontal"
                 android:text="@string/popup_cancel_ride_title"
                 android:textColor="@color/black"
@@ -287,9 +292,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -306,39 +309,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="-"
+                    android:text=""
                     android:textColor="@color/red_500"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/btn_yes"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/button_rounded_grey"
-                android:gravity="center"
-                android:text="@string/ontrip_cancel_yes"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/btn_no"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/button_rounded_grey"
-                android:gravity="center"
-                android:text="@string/ontrip_cancel_no"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/btn_no"
+                    android:layout_width="80dp"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/button_rounded_grey"
+                    android:gravity="center"
+                    android:text="@string/ontrip_cancel_no"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/btn_yes"
+                    android:layout_width="80dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/orange_button_rounded"
+                    android:gravity="center"
+                    android:text="@string/ontrip_cancel_yes"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

@@ -230,5 +230,7 @@ public interface OnTripMapContract {
         void onPause();
 
         void actionYesCancelBtnClicked();
+
+        String getRideStatus();
     }
 }

@@ -51,7 +51,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -67,6 +66,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
@@ -944,58 +944,26 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return;
         }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isBackButtonHandleByFragment = false;
-                isBlackOverlayShow = false;
-                Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.bottom_down);
-                cancelPanelLayout.startAnimation(bottomDown);
-                cancelPanelLayout.setVisibility(View.GONE);
-            }
-        }, 200);
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0xBB000000,
-                0x00000000);
-        backgroundColorAnimator.setDuration(500);
-        backgroundColorAnimator.start();
+        cancelPanelLayout.animate().alpha(0.0f).setDuration(500);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                blockTranslucentView.setVisibility(View.GONE);
-                cancelButton.setVisibility(View.VISIBLE);
+                //check if trip is in process then only make it visible
+                if (presenter.getRideStatus().equalsIgnoreCase(RideStatus.PROCESSING)) {
+                    cancelButton.setVisibility(View.VISIBLE);
+                }
             }
         }, 500);
     }
 
     public void showCancelPanel() {
+        isBackButtonHandleByFragment = true;
+
         cancelButton.setVisibility(View.GONE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isBackButtonHandleByFragment = true;
-                isBlackOverlayShow = true;
-                Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.bottom_up);
-
-                cancelPanelLayout.startAnimation(bottomUp);
-                cancelButton.setVisibility(View.GONE);
-                cancelPanelLayout.setVisibility(View.VISIBLE);
-            }
-        }, 500);
-
-        blockTranslucentView.setVisibility(View.VISIBLE);
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0x00000000,
-                0xBB000000);
-        backgroundColorAnimator.setDuration(500);
-        backgroundColorAnimator.start();
+        cancelPanelLayout.setVisibility(View.VISIBLE);
+        cancelPanelLayout.setAlpha(0.0f);
+        cancelPanelLayout.animate().alpha(1.0f).setDuration(500);
 
         cancellationFeeTextView.setText(getCancellationFee());
     }
