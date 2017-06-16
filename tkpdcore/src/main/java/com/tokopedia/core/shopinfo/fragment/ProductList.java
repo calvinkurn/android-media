@@ -29,11 +29,13 @@ import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.FeaturedProductAdapter;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
+import com.tokopedia.core.shopinfo.facades.GetFeaturedProductRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
@@ -75,6 +77,7 @@ public class ProductList extends V2BaseFragment {
     private String shopDomain;
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
+    private GetFeaturedProductRetrofit facadeFeaturedProduct;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
 
     private ProductListCallback callback;
@@ -128,6 +131,7 @@ public class ProductList extends V2BaseFragment {
         }
         if (productShopParam.getPage() == 1) {
             getProductNextPage();
+            facadeFeaturedProduct.getFeaturedProduct();
         }
     }
 
@@ -462,6 +466,8 @@ public class ProductList extends V2BaseFragment {
         facadeShopInfo.setOnGetShopEtalase(onGetEtalaseListener());
         facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain);
         facadeShopProd.setOnGetShopProductListener(onGetShopProductListener());
+        facadeFeaturedProduct = new GetFeaturedProductRetrofit(getActivity(), shopId);
+        facadeFeaturedProduct.setOnGetFeaturedProductListener(onGetFeaturedProductListener());
     }
 
     private GetShopProductRetrofit.OnGetShopProductListener onGetShopProductListener() {
@@ -516,6 +522,20 @@ public class ProductList extends V2BaseFragment {
                     default:
                         break;
                 }
+            }
+        };
+    }
+
+    private GetFeaturedProductRetrofit.OnGetFeaturedProductListener onGetFeaturedProductListener() {
+        return new GetFeaturedProductRetrofit.OnGetFeaturedProductListener() {
+            @Override
+            public void onSuccess(List<FeaturedProductItem> featuredProductItemList) {
+                featuredProductAdapter.setDataList(featuredProductItemList);
+            }
+
+            @Override
+            public void onFailure(int connectionTypeError, String message) {
+                NetworkErrorHelper.showSnackbar(getActivity(), message);
             }
         };
     }

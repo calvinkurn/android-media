@@ -25,12 +25,16 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,23 +43,30 @@ import butterknife.ButterKnife;
  * Created by HenryPri on 15/06/17.
  */
 
-public class FeaturedProductAdapter extends RecyclerView.Adapter {
+public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProductAdapter.ViewHolder> {
+
+    private List<FeaturedProductItem> dataList = new ArrayList<>();
+
+    public void setDataList(List<FeaturedProductItem> featuredProductItemList) {
+        dataList.clear();
+        dataList.addAll(featuredProductItemList);
+        notifyDataSetChanged();
+    }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.featured_product_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.bindData(null, position);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bindData(dataList.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return dataList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -76,19 +87,16 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter {
         @BindView(R2.id.container)
         View container;
 
-        private String source = "";
-        private String categoryId = "";
-        private ProductItem data;
-
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindData(final ProductItem data, final int position) {
+        public void bindData(final FeaturedProductItem data, final int position) {
             wishlistButtonContainer.setVisibility(View.GONE);
-            title.setText("Ini Adalah Nama Produk Unggulan yang ke-" + Integer.toString(position));
-            ImageHandler.loadImageThumbs(MainApplication.getAppContext(), productImage, "https://ecs7.tokopedia.net/img/product-1/2016/8/19/1240175/1240175_d305ead4-1581-462a-bdad-ce0f2860701e.jpg");
+            title.setText(data.getName());
+            ImageHandler.loadImageThumbs(MainApplication.getAppContext(), productImage, data.getImageUri());
+            price.setText(data.getPrice());
         }
     }
 }
