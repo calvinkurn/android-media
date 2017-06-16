@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -248,7 +250,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-            indicator.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     mViewPager.setCurrentItem(tab.getPosition());
@@ -262,7 +264,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
                 @Override
                 public void onTabReselected(TabLayout.Tab tab) {
-
+                    Fragment fragment = adapter.getFragmentForPosition(tab.getPosition());
+                    if(fragment != null && fragment instanceof FeedPlusFragment){
+                        ((FeedPlusFragment)fragment).scrollToTop();
+                    }
                 }
             });
             // indicator.setupWithViewPager(mViewPager);
@@ -345,6 +350,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
         public PagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);
         }
@@ -354,27 +361,39 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             if (SessionHandler.isV4Login(ParentIndexHome.this)) {
 
                 if (getPageTitle(position).equals(content.get(0))) {
-                    return FragmentIndexCategory.newInstance();
+                    Fragment fragment = FragmentIndexCategory.newInstance();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(1))) {
 //                    return new FragmentProductFeed();
-                    return new FeedPlusFragment();
+                    Fragment fragment = new FeedPlusFragment();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(2))) {
-                    return new FragmentFavorite();
+                    Fragment fragment = new FragmentFavorite();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
 
                 if (getPageTitle(position).equals(content.get(3))) {
-                    return new FragmentHotListV2();
+                    Fragment fragment = new FragmentHotListV2();
+                    registeredFragments.put(position, fragment);
+                    return fragment;
                 }
             } else {
                 switch (position) {
                     case 0:
-                        return FragmentIndexCategory.newInstance();
+                        Fragment fragment = FragmentIndexCategory.newInstance();
+                        registeredFragments.put(position, fragment);
+                        return fragment;
                     case 1:
-                        return new FragmentHotListV2();
+                        fragment = new FragmentHotListV2();
+                        registeredFragments.put(position, fragment);
+                        return fragment;
                 }
             }
             return null;
@@ -393,6 +412,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         @Override
         public int getCount() {
             return ParentIndexHome.this.content.size();
+        }
+
+        public @Nullable Fragment getFragmentForPosition(int position)
+        {
+            return registeredFragments.get(position);
         }
     }
 
