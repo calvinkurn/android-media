@@ -55,7 +55,7 @@ public class InboxTalkCacheInteractorImpl implements InboxTalkCacheInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.print(e);
+
                     }
 
                     @Override

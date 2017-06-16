@@ -149,4 +149,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topadsKeywordDetailPresenter.unSubscribe();
+    }
 }

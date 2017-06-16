@@ -15,7 +15,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.KeroInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 
@@ -70,10 +69,11 @@ public abstract class KeroService<T> {
     private void addInterceptors(OkHttpClient.Builder client) {
         Interceptor authInterceptor = new KeroInterceptor(getKeyAuth());
         client.interceptors().add(authInterceptor);
-
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        client.interceptors().add(logInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            client.interceptors().add(logInterceptor);
+        }
     }
 
     private void addRetrofitFactory(Gson gson, Retrofit.Builder retrofit) {

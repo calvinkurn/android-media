@@ -290,6 +290,8 @@
     </style>
 
     <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
+        <item name="android:textColorHint">@color/black_fifty_four_percent</item>
+
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
         <item name="colorControlHighlight">@color/font_top_ads_green</item>
@@ -314,7 +316,8 @@
     </style>
 
     <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
-        <item name="android:drawableRight">@drawable/ic_close_green_wpadding</item>
+        <item name="android:drawableRight">@drawable/ic_close_green</item>
+        <item name="android:drawableEnd">@drawable/ic_close_green</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:completionThreshold">1</item>
         <item name="android:inputType">textNoSuggestions</item>

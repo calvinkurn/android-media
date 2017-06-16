@@ -148,7 +148,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
         cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
         if (isFromCategory()) {
-            retrieveLastGridConfig(browseModel.getParentDepartement());
+            retrieveLastGridConfig(browseModel.getDepartmentId());
         }
         if (SessionHandler.isV4Login(context)) {
             String userId = SessionHandler.getLoginID(context);
@@ -345,9 +345,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
         isCustomGridType = true;
 
-        if (isFromCategory()) {
-            saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
-        }
+                if (isFromCategory()) {
+                    saveLastGridConfig(browseModel.getDepartmentId(), gridType.toString());
+                }
 
         browseView.sendChangeGridBroadcast(gridType);
         browseView.changeBottomBarGridIcon(gridIcon, gridTitleResId);
@@ -597,12 +597,14 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
     }
 
-    private void retrieveLastGridConfig(final String rootDepartmentId) {
+    @Override
+    public void retrieveLastGridConfig(final String departmentId) {
+        isCustomGridType = false;
         Subscription subscription = Observable
                 .create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
-                        String config = cacheGridType.getString(rootDepartmentId);
+                        String config = cacheGridType.getString(departmentId);
                         subscriber.onNext(config);
                     }
                 })
@@ -649,6 +651,45 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     }
                 });
         getCompositeSubscription().add(subscription);
+    }
+
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        changeGridTypeIfNeeded(viewType);
+    }
+
+    private void changeGridTypeIfNeeded(Integer viewType) {
+        if (!isFromCategory() || isCustomGridType) {
+            return;
+        }
+
+        int gridIcon;
+        int gridTitleRes;
+
+        switch (viewType) {
+            case Data.GRID_2_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_2;
+                gridIcon = R.drawable.ic_grid_default;
+                gridTitleRes = R.string.grid;
+                break;
+            case Data.GRID_1_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_3;
+                gridIcon = R.drawable.ic_grid_box;
+                gridTitleRes = R.string.grid;
+                break;
+            case Data.LIST_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_1;
+                gridIcon = R.drawable.ic_list;
+                gridTitleRes = R.string.list;
+                break;
+            default:
+                this.gridType = BrowseProductRouter.GridType.GRID_2;
+                gridIcon = R.drawable.ic_grid_default;
+                gridTitleRes = R.string.grid;
+        }
+
+        browseView.sendChangeGridBroadcast(gridType);
+        browseView.changeBottomBarGridIcon(gridIcon, gridTitleRes);
     }
 
     private CompositeSubscription getCompositeSubscription() {

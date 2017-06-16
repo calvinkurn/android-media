@@ -37,7 +37,6 @@ public class TransactionHideFilter {
 						FilterContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 					}
 				}
-//				System.out.println("Magic is set " + FilterContent.getHeight());
 				animOpen = new TranslateAnimation(0, 0, FilterContent.getHeight(), 0);
 				animClose = new TranslateAnimation(0, 0, 0, FilterContent.getHeight());
 				AnimationListener listen = new AnimationListener() {

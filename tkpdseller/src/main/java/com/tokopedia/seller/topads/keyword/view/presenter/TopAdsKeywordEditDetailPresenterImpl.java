@@ -43,11 +43,7 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
         @Override
         public void onError(Throwable e) {
             if (isViewAttached()) {
-                if (e instanceof ResponseErrorException) {
-                    getView().showError(((ResponseErrorException)e).getErrorList().get(0).getDetail());
-                } else {
-                    getView().showError(e.getLocalizedMessage());
-                }
+                getView().showError(e);
             }
         }
 

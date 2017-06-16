@@ -90,6 +90,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
         emptyGroupAdsDataBinder.setCallback(this);
+        hasData = false;
         return emptyGroupAdsDataBinder;
     }
 

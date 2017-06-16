@@ -267,6 +267,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
+
+        if(successResult.getShopInfo().getShopIsOfficial()==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
+        }
+
     }
 
     @Override
