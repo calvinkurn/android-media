@@ -325,6 +325,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_promo">Promosi</string>
     <string name="title_promote">Promoted</string>
     <string name="title_sold_out">Gudangkan</string>
+    <string name="title_sold_out_action">Produk telah digudangkan</string>
+    <string name="title_move_etalase">Produk telah dipindahkan ke etalase</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
     <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
@@ -345,6 +347,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_share_product">Gagal membagikan produk</string>
     <string name="success_share_review">Sukses membagikan ulasan</string>
     <string name="error_share_review">Gagal membagikan ulasan</string>
+    <string name="download">Download</string>
     <!-- Strings related product info -->
 
 
@@ -1927,10 +1930,16 @@ di Tokopedia Sekarang!</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
     <string name="title_activity_snapshot">Snapshot</string>
 
+    <!-- Marketing Campaign Official Store START-->
+    <string name="title_discount_timer">Promo berakhir dalam:</string>
+    <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
+    <string name="label_discount">%1$d%%OFF</string>
+    <string name="label_price_with_idr">Rp %1$s</string>
+    <!-- Marketing Campaign Official Store END-->
+
     <!-- String related to Official Store START -->
     <string name="os_home_title_product">Produk</string>
     <string name="os_view_all_product">Lihat Semua Barang</string>
-
     <string name="title_official_store">Official Store</string>
     <!-- String related to Official Store END -->
 

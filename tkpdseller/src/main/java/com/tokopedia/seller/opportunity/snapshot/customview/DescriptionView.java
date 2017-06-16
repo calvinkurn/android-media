@@ -8,16 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.product.customview.DescriptionTextView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
-
-import butterknife.BindView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.customview.DescriptionTextView;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
  * Created by hangnadi on 3/1/17.
@@ -54,7 +51,7 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_description_product_info;
+        return R.layout.view_description_product_snapshot;
     }
 
     @Override

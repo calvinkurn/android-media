@@ -73,9 +73,9 @@ import java.util.Locale;
 
 import butterknife.BindView;
 
-import static com.tokopedia.core.product.fragment.ProductDetailFragment.WIHSLIST_STATUS_IS_WISHLIST;
-import static com.tokopedia.core.product.fragment.ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -295,9 +295,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
-            int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
+        if (data != null && requestCode
+                == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
+            int position = data.getIntExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist
+                    = data.getBooleanExtra(ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST, false);
             if (productAdapter != null && position != -1) {
                 productAdapter.updateWishlistStatus(isWishlist, position);
             }

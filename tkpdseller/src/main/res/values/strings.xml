@@ -614,7 +614,7 @@
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
     <string name="top_ads_keyword_please_use">Gunakan Kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai</string>
-    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci \nnegatif agar tidak tampil pada pencarian yang tidak sesuai</string>
+    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
 
@@ -623,6 +623,7 @@
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="label_manage_your_shop">Kelola Toko Anda</string>
 
+    <!-- OPPORTUNITY -->
     <string name="same_day">Same Day</string>
     <string name="next_day">Next Day</string>
     <string name="reguler">Reguler</string>
@@ -645,4 +646,6 @@
     <string name="action_sort">Urutkan</string>
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+
 </resources>

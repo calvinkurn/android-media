@@ -11,7 +11,7 @@
 
         <com.tokopedia.seller.product.view.widget.SpinnerAutoComplete
             android:id="@+id/edit_text_spinner"
-            style="@style/EditText"
+            style="@style/EditText.GreenHighlight"
             android:layout_width="match_parent"
             android:focusable="false"
             android:inputType="none"

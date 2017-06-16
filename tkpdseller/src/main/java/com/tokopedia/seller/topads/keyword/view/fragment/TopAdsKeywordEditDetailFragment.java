@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
@@ -26,6 +28,8 @@ import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetai
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -43,6 +47,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected PrefixEditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
     protected ProgressDialog progressDialog;
+    protected TextInputLayout textInputLayoutCostPerClick;
 
     private KeywordAd keywordAd;
 
@@ -115,7 +120,20 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected void settingTopAdsCostPerClick(View view) {
         topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
-        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick);
+        textInputLayoutCostPerClick = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
+        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
+            @Override
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                String errorMessage =
+                        com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    textInputLayoutCostPerClick.setError(errorMessage);
+                } else {
+                    textInputLayoutCostPerClick.setError(null);
+                }
+            }
+        };
         topAdsCostPerClick.addTextChangedListener(textWatcher);
     }
 
@@ -141,7 +159,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     public String getTopAdsCostPerClick() {
-        return topAdsCostPerClick.getTextWithoutPrefix().toString();
+        return topAdsCostPerClick.getTextWithoutPrefix();
     }
 
     @Override
@@ -163,9 +181,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showError(String detail) {
+    public void showError(Throwable detail) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), detail);
+        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
     }
 
     @Override

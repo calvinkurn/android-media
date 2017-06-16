@@ -207,6 +207,24 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserFullName(SessionHandler.getLoginName(context));
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
+        authEvent.setShopId(SessionHandler.getShopID(context));
+        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+
+        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
+
+        eventAuthenticate(authEvent);
+        sendScreen(screenName);
+
+        return this;
+    }
+
+    @Override
+    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType) {
+        Authenticated authEvent = new Authenticated();
+        authEvent.setUserFullName(SessionHandler.getLoginName(context));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
+        authEvent.setShopId(shopID);
+        authEvent.setShopType(shopType);
         authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
@@ -221,7 +239,9 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
         GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar()
+                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType()
         ));
 
         return this;

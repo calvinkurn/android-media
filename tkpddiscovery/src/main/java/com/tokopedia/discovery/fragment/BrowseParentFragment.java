@@ -124,6 +124,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
     public void setOfficialStoreBanner(BannerOfficialStoreModel model) {
         for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {

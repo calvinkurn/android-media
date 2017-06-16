@@ -83,7 +83,7 @@ public class EtalaseData implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<EtalaseData> CREATOR = new Parcelable.Creator<EtalaseData>() {
+    public static final Creator<EtalaseData> CREATOR = new Creator<EtalaseData>() {
         @Override
         public EtalaseData createFromParcel(Parcel in) {
             return new EtalaseData(in);

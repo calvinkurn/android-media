@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotProductListener;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotProductImpl;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotProductPresenter;

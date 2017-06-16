@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
@@ -18,9 +17,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.review.fragment.ProductReviewFragment;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 
 import java.util.ArrayList;
 import java.util.List;
