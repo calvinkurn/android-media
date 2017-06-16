@@ -6,9 +6,10 @@
 
     <ImageView
         android:id="@+id/user_ava"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
+        android:layout_width="@dimen/feed_user_ava"
+        android:layout_height="@dimen/feed_user_ava"
         android:background="@drawable/cards_ui_2"
+        android:backgroundTint="@color/colorGray"
         android:src="@drawable/ic_new_logo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>

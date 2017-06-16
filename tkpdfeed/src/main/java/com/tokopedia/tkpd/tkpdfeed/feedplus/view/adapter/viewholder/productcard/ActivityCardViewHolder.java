@@ -19,6 +19,8 @@ import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -138,6 +140,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
@@ -154,17 +157,21 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setTypeface(Typeface.DEFAULT_BOLD);
                 ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
         ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
+        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
 
         setSpan(actionSpanString, goToFeedDetail, titleText, actionString);
         setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
         setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
         setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
+
+        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
+        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
         if (activityCardViewModel.getHeader().isGoldMerchant()) {
             setBadge(actionSpanString, R.drawable.ic_badge_official);
@@ -176,7 +183,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         title.setMovementMethod(LinkMovementMethod.getInstance());
 
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
-
 
         time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getTime()));
 

@@ -2,9 +2,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.util;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
@@ -23,6 +27,9 @@ import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ShareFeedAdapter;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 5/18/17.
@@ -35,14 +42,14 @@ public class ShareBottomDialog {
     private static final String CHECK_NOW = " cek sekarang di :\n";
     private final Activity activity;
     private final BottomSheetDialog dialog;
-    private final GridView appGrid;
-    private final View cancelButton;
+    private final RecyclerView appGrid;
     private final CallbackManager callbackManager;
     private final Fragment fragment;
     private final android.support.v4.app.Fragment fragmentV4;
 
     private ShareModel shareModel;
-    private ShareAdapter adapter;
+    private ShareFeedAdapter adapter;
+    private ArrayList<ShareItem> list;
 
     public ShareBottomDialog(Activity activity,
                              CallbackManager callbackManager) {
@@ -51,9 +58,9 @@ public class ShareBottomDialog {
         this.fragmentV4 = null;
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_review_dialog);
-        appGrid = (GridView) this.dialog.findViewById(R.id.grid);
-        cancelButton = this.dialog.findViewById(R.id.cancel_but);
+        this.dialog.setContentView(R.layout.share_feed_dialog);
+        appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
+        initVar(activity);
         initAdapter();
         setListener();
         setShareList();
@@ -65,9 +72,9 @@ public class ShareBottomDialog {
         this.activity = fragment.getActivity();
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_review_dialog);
-        appGrid = (GridView) this.dialog.findViewById(R.id.grid);
-        cancelButton = this.dialog.findViewById(R.id.cancel_but);
+        this.dialog.setContentView(R.layout.share_feed_dialog);
+        appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
+        initVar(fragment.getActivity());
         initAdapter();
         setListener();
         setShareList();
@@ -79,12 +86,34 @@ public class ShareBottomDialog {
         this.activity = fragment.getActivity();
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_review_dialog);
-        appGrid = (GridView) this.dialog.findViewById(R.id.grid);
-        cancelButton = this.dialog.findViewById(R.id.cancel_but);
+        this.dialog.setContentView(R.layout.share_feed_dialog);
+        appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
+        initVar(fragment.getActivity());
         initAdapter();
         setListener();
         setShareList();
+    }
+
+    private void initVar(Context context) {
+        GridLayoutManager layoutManager = new GridLayoutManager(context, 12);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+//                if(position<4){
+//                    return position%4 + 1;
+//                }else {
+//                    return (position/4)%4 + 1;
+//                }
+                if(position<4){
+                    return 3;
+                }else {
+                    return 3;
+                }
+            }
+        });
+        appGrid.setLayoutManager(layoutManager);
+
+        list = new ArrayList<>();
     }
 
     public void setShareModel(ShareModel shareModel) {
@@ -92,29 +121,27 @@ public class ShareBottomDialog {
     }
 
     private void initAdapter() {
-        if (appGrid != null) {
-            appGrid.setNumColumns(4);
-        }
-        adapter = new ShareAdapter(activity);
+        adapter = new ShareFeedAdapter();
         appGrid.setAdapter(adapter);
     }
 
     protected void setShareList() {
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_googleplus), "Google+", shareGoogle()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_facebook), "Facebook", shareFb()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_line), "Line", shareLine()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_whatsapp), "Whatsapp", shareWhatsapp()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_twitter), "Twitter", shareTwitter()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_sms), "SMS", shareSMS()));
-        adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_link), "Copy Link", shareCopyLink()));
-        adapter.notifyDataSetChanged();
+        adapter.setList(list);
     }
 
     private View.OnClickListener shareSMS() {
@@ -212,12 +239,6 @@ public class ShareBottomDialog {
     }
 
     private void setListener() {
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissDialog();
-            }
-        });
     }
 
     protected View.OnClickListener shareCopyLink() {
