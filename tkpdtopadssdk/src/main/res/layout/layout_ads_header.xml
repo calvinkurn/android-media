@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_small"
+        android:paddingRight="@dimen/padding_vs"
         android:text="@string/title_promote"
         android:textColor="@color/label_color"
         android:textSize="@dimen/abc_text_size_small_material" />

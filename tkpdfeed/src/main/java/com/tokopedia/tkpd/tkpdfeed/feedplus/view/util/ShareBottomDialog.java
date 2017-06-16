@@ -107,7 +107,7 @@ public class ShareBottomDialog {
                 if(position<4){
                     return 3;
                 }else {
-                    return 4;
+                    return 3;
                 }
             }
         });

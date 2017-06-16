@@ -18,6 +18,8 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -141,6 +143,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
@@ -157,24 +160,21 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setTypeface(Typeface.DEFAULT_BOLD);
                 ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
         ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
-
-//        goldMerchantBadgeDrawable(0, 0, viewListener.getResources().getDimensionPixelOffset(R.dimen.badge_size),
-//                viewListener.getResources().getDimensionPixelOffset(R.dimen.badge_size));
-
-        SpannableString ss = new SpannableString("abc");
-        ImageSpan goldMerchantSpan = new ImageSpan(getDrawableSpan(goldMerchantBadge));
-        ImageSpan officialStoreSpan = new ImageSpan(getDrawableSpan(officialStoreBadge));
+        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
 
         setSpan(actionSpanString, goToFeedDetail, titleText, actionString);
         setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
         setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
         setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
+
+        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
+        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
         title.setText(actionSpanString);
         title.setMovementMethod(LinkMovementMethod.getInstance());
@@ -182,23 +182,12 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
-        if (activityCardViewModel.getHeader().isGoldMerchant())
+        if (activityCardViewModel.getHeader().isGoldMerchant()) {
             title.setCompoundDrawables(getDrawableSpan(goldMerchantBadge), null, null, null);
-//            setSpan(actionSpanString, goldMerchantSpan, titleText, "");
-//            goldMerchantBadge.setVisibility(View.VISIBLE);
-//        else
-//            goldMerchantBadge.setVisibility(View.GONE);
-//
+        }
         if (activityCardViewModel.getHeader().isOfficialStore()) {
             title.setCompoundDrawables(getDrawableSpan(officialStoreBadge), null, null, null);
         }
-//            setSpan(actionSpanString, officialStoreSpan, titleText, "");}
-//            officialStoreBadge.setVisibility(View.VISIBLE);
-//            goldMerchantBadge.setVisibility(View.GONE);
-//        }
-//        else
-//            officialStoreBadge.setVisibility(View.GONE);
-
         goldMerchantBadge.setVisibility(View.GONE);
         officialStoreBadge.setVisibility(View.GONE);
 
