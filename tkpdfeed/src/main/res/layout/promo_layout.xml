@@ -3,8 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_small"
-    android:layout_marginTop="@dimen/margin_small"
-    android:background="@drawable/cards_ui_feed">
+    android:layout_marginTop="@dimen/margin_sm"
+    android:background="@drawable/cards_feed_plus">
 
 
     <include layout="@layout/promo_header"/>
