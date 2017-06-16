@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.domain.interactor;
 
+import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -23,7 +23,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 5/26/17.
  */
 
-public class TopAdsKeywordGetDetailUseCase extends UseCase<KeywordDetailDomain> {
+public class TopAdsKeywordGetDetailUseCase extends CompositeUseCase<KeywordDetailDomain> {
 
     private final TopAdsKeywordGetDetailRepository topAdsKeywordGetDetailRepository;
     private final TopAdsKeywordDetailMapperToDomain topAdsKeywordDetailMapperToDomain;
