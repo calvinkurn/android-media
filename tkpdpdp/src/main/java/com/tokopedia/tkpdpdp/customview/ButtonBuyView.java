@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
@@ -15,11 +16,14 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
+
 /**
  * @author by Angga.Prasetiyo on 02/11/2015.
  */
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private TextView tvBuy;
+    private FrameLayout container;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -53,15 +57,15 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     protected void initView(Context context) {
         super.initView(context);
         tvBuy = (TextView) findViewById(R.id.tv_buy);
-
+        container = (FrameLayout) findViewById(R.id.container);
     }
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         if (data.getShopInfo().getShopIsOwner() == 1 || data.getShopInfo().getShopStatus() != 1
-                || (data.getInfo().getProductStatus().equals("3") & data.getShopInfo().getShopStatus() == 1)
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             tvBuy.setText(getContext().getString(R.string.title_promo));
+            container.setBackgroundResource(R.drawable.btn_promote_green);
             setOnClickListener(new PromoteClick(data));
         } else {
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
@@ -73,9 +77,15 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             } else {
                 tvBuy.setText(getContext().getString(R.string.title_buy));
             }
+            container.setBackgroundResource(R.drawable.btn_buy);
             setOnClickListener(new ClickBuy(data));
         }
-        setVisibility(VISIBLE);
+
+        if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))) {
+            setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
     }
 
     private class PromoteClick implements OnClickListener {

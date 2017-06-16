@@ -54,7 +54,7 @@ public interface ProductDetailView extends ViewListener {
     void onProductReviewClicked(@NonNull Bundle bundle);
 
     /**
-     * Pada saat promosikan produk diklik
+     * Pada saat promosikan produk bdiklik
      *
      * @param productData product data model
      */
