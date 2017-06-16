@@ -119,7 +119,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ShopInfoViewV2 shopInfoView;
     private OtherProductsView otherProductsView;
     private RatingTalkCourierView ratingTalkCourierView;
-    private ErrorShopView errorShopView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
@@ -206,8 +205,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-
-        errorShopView = (ErrorShopView) view.findViewById(R.id.view_error_shop);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -236,7 +233,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void setViewListener() {
-        errorShopView.setListener(this);
         headerInfoView.setListener(this);
         pictureView.setListener(this);
         buttonBuyView.setListener(this);
@@ -415,7 +411,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
         this.productData = successResult;
-        this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
