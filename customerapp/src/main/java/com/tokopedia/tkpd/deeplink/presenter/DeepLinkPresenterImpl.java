@@ -306,7 +306,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        CommonUtils.dumper("wvlogin URL links main app " + getUrl(uriData.toString()));
         String url = encodeUrl(uriData.toString());
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
             openWebView(Uri.parse(url), uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));

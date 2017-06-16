@@ -161,7 +161,6 @@ public class FragmentBannerWebView extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        CommonUtils.dumper("wvlogin seamless home URL "+url+" auth URL "+URLGenerator.generateURLSessionLogin(url, getActivity()));
         webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
         webview.setWebViewClient(new MyWebClient());
         webview.setWebChromeClient(new MyWebViewClient());
