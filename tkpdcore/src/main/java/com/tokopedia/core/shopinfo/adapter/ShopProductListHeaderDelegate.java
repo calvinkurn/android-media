@@ -47,6 +47,7 @@ public class ShopProductListHeaderDelegate {
         public View filterClick;
         public RecyclerView featuredProductList;
         public TextView featuredProductTitle;
+        public TextView productSectionTitle;
 
         public VHolder(View itemView) {
             super(itemView);
@@ -55,6 +56,7 @@ public class ShopProductListHeaderDelegate {
             etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
             featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
             featuredProductTitle = (TextView) itemView.findViewById(R.id.featured_product_title);
+            productSectionTitle = (TextView) itemView.findViewById(R.id.product_section_title);
         }
     }
 
@@ -98,9 +100,11 @@ public class ShopProductListHeaderDelegate {
         if (featuredProductAdapter.getItemCount() > 0) {
             vholder.featuredProductTitle.setVisibility(View.VISIBLE);
             vholder.featuredProductList.setVisibility(View.VISIBLE);
+            vholder.productSectionTitle.setVisibility(View.VISIBLE);
         } else {
             vholder.featuredProductTitle.setVisibility(View.GONE);
             vholder.featuredProductList.setVisibility(View.GONE);
+            vholder.productSectionTitle.setVisibility(View.GONE);
         }
 
         if (vholder.featuredProductList.getLayoutManager() == null) {
