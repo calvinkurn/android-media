@@ -62,7 +62,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        if (data.getShopInfo().getShopIsOwner() == 1 || data.getShopInfo().getShopStatus() != 1
+        if (data.getShopInfo().getShopIsOwner() == 1
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             tvBuy.setText(getContext().getString(R.string.title_promo));
             container.setBackgroundResource(R.drawable.btn_promote_green);
@@ -81,7 +81,8 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             setOnClickListener(new ClickBuy(data));
         }
 
-        if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))) {
+        if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))
+                || data.getShopInfo().getShopStatus() != 1) {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);
