@@ -195,7 +195,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             compositeSubscription.clear();
                             ArrayList<Visitable> addresses = new ArrayList<>();
                             for (RideAddress rideAddress : rideAddresses) {
-                                if (!TextUtils.isEmpty(rideAddress.getLongitude()) && !TextUtils.isEmpty(rideAddress.getLatitude())) {
+                                if (isValidStringLatLng(rideAddress)) {
                                     PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
                                     address.setAddress(String.valueOf(rideAddress.getAddressDescription()));
                                     address.setTitle(String.valueOf(rideAddress.getAddressName()));
@@ -221,6 +221,13 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         }
                     }
                 });
+    }
+
+    private boolean isValidStringLatLng(RideAddress rideAddress) {
+        return !TextUtils.isEmpty(rideAddress.getLongitude())
+                && !TextUtils.isEmpty(rideAddress.getLatitude())
+                && !rideAddress.getLatitude().equalsIgnoreCase("0")
+                && !rideAddress.getLongitude().equalsIgnoreCase("0");
     }
 
     @Override
