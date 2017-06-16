@@ -53,7 +53,7 @@
             android:maxLines="2"
             tools:text="kacamata kualitas premium / line @towns_fashion"
             android:textColor="@color/black_36"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_size_xsmall"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:lineSpacingExtra="3sp"
@@ -62,7 +62,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/margin_small"
@@ -84,7 +84,7 @@
             android:drawableLeft="@drawable/ic_add_black_24dp"
             android:gravity="center"
             android:text="@string/favoritkan"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_size_s_medium"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
             android:textColor="@color/white"
