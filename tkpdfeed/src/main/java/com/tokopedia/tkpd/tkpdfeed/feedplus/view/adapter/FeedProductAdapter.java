@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,12 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
+
+        if(getItemCount()==1){
+            holder.productName.setEllipsize(TextUtils.TruncateAt.END);
+            holder.productName.setMaxLines(1);
+        }
+
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, getItemCount()>1? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
