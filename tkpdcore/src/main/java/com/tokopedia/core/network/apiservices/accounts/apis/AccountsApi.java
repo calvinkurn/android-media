@@ -127,4 +127,7 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
     Call<String> makeLoginsynchronous(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(TkpdBaseURL.Accounts.PATH_GET_INFO)
+    Observable<Response<String>> getUserInfo(@QueryMap Map<String, Object> params);
 }

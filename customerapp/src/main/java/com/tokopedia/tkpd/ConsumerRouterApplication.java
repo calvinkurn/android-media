@@ -23,6 +23,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -187,6 +188,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
