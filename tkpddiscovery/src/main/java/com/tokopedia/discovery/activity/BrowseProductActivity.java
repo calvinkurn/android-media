@@ -409,8 +409,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 case REQUEST_SORT:
                 case DynamicFilterView.REQUEST_CODE:
                     browsePresenter.handleResultData(requestCode, data);
-                    BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
-                    setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
+                    BrowseParentFragment parentFragment = (BrowseParentFragment)
+                            fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
+                    setFragment(BrowseParentFragment.newInstance(browsePresenter
+                            .getBrowseProductActivityModel(), parentFragment.getActiveTab()),
+                            BrowseParentFragment.FRAGMENT_TAG);
                     break;
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(
