@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/ll_wrapper"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small"
-    android:layout_marginBottom="@dimen/margin_vs">
+    android:paddingTop="@dimen/padding_small">
 
     <TextView
         android:layout_width="match_parent"
@@ -43,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:text="Descriptions"
                 android:textColor="@color/black_70"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
+                android:longClickable="false"
                 android:textSize="@dimen/fonts"
                 android:autoLink="all" />
 
