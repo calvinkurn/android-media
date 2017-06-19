@@ -223,10 +223,14 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         @Override
         public void onNext(DataFeed dataFeed) {
             if (isViewAttached()) {
-                ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                setPagging(productFeedViewModel.getPagingHandlerModel());
-                getView().showLoadMoreFeed(productFeedViewModel.getData());
-                doCheckLoadMore();
+                if(dataFeed.getFeed().isValid()) {
+                    ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
+                    setPagging(productFeedViewModel.getPagingHandlerModel());
+                    getView().showLoadMoreFeed(productFeedViewModel.getData());
+                    doCheckLoadMore();
+                } else {
+                    getView().showRetryLoadMore();
+                }
             }
         }
     }
