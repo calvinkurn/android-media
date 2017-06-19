@@ -91,12 +91,12 @@
             <RelativeLayout
                 android:id="@+id/crux_cabs_auto_detect_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="5dp"
                 android:background="@android:color/white"
                 android:foreground="?attr/selectableItemBackground"
                 android:paddingBottom="5dp"
@@ -105,13 +105,11 @@
 
                 <ImageView
                     android:id="@+id/auto_detect_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/arrow_location" />
 
                 <TextView
@@ -137,11 +135,11 @@
             <RelativeLayout
                 android:id="@+id/set_location_on_map_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/crux_cabs_auto_detect_container"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="5dp"
                 android:background="@android:color/white"
                 android:foreground="?attr/selectableItemBackground"
                 android:paddingBottom="5dp"
@@ -150,12 +148,12 @@
 
                 <ImageView
                     android:id="@+id/set_location_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:src="@drawable/ic_open_map" />
 
