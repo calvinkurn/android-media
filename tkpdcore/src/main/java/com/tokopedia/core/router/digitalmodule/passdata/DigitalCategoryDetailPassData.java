@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 5/10/17.
  */
 public class DigitalCategoryDetailPassData implements Parcelable {
+    public static final String PARAM_CATEGORY_ID = "category_id";
     private String categoryId;
     private String url;
     private String appLinks;
