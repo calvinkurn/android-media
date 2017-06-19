@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.home;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -33,6 +35,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
@@ -57,6 +60,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
+import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +103,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+
+    @DeepLink(Constants.Applinks.HOME)
+    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     public ViewPager getViewPager() {
         return mViewPager;

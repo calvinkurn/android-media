@@ -24,6 +24,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
@@ -113,7 +114,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
             @Override
             public void onEmptyButtonClicked() {
-                
+
             }
         });
         addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
@@ -141,7 +142,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                 showRemoveVideoConfirmation(index);
             }
         });
-        addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
+        addUrlVideoAdapter.setVideoSameWarn(getString(R.string.product_video_same_warn));
         addUrlVideoAdapter.setRetryView(getRetryDataBinder(addUrlVideoAdapter));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -157,8 +158,8 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.title_video_delete_confirmation);
-        builder.setMessage(R.string.video_delete_confirmation);
+        builder.setTitle(R.string.product_title_confirmation_delete_video);
+        builder.setMessage(R.string.product_confirmation_delete_video);
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -236,7 +237,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     private void setVideoSubtitle(int from, int max) {
         ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setSubtitle(String.format(getString(R.string.from_to_video), from, max));
+                .setSubtitle(String.format(getString(R.string.product_from_to_video), from, max));
     }
 
     private void setVideoSubtitle() {
@@ -256,7 +257,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void showMaxRows() {
-        showMessageErrorRaw(getString(R.string.couldn_t_add_videos));
+        showMessageErrorRaw(getString(R.string.product_could_not_add_videos));
     }
 
     public void showMenuButton() {
@@ -278,7 +279,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     private RetryDataBinder getRetryDataBinder(DataBindAdapter dataBindAdapter) {
-        RetryDataBinder retryDataBinder = new TopAdsRetryDataBinder(dataBindAdapter);
+        RetryDataBinder retryDataBinder = new BaseRetryDataBinder(dataBindAdapter);
         retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

@@ -161,6 +161,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView donasiTitle;
     @BindView(R2.id.donasi_info)
     ImageView donasiInfo;
+    @BindView(R2.id.layout_cart_fragment)
+    RelativeLayout layoutCartFragment;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;

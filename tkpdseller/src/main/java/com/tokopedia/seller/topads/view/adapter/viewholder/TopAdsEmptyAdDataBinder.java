@@ -12,6 +12,8 @@ import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
 
+import javax.annotation.Resource;
+
 /**
  * Created by Nisie on 2/26/16.
  */
@@ -35,10 +37,10 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
     }
 
     public static class EmptyViewHolder extends ViewHolder {
-        TextView emptyTitleTextView;
-        TextView emptyContentTextView;
-        TextView emptyContentItemTextView;
-        Button emptyButtonItemButton;
+        private TextView emptyTitleTextView;
+        private TextView emptyContentTextView;
+        private TextView emptyContentItemTextView;
+        private Button emptyButtonItemButton;
 
         public EmptyViewHolder(View view) {
             super(view);
@@ -71,13 +73,18 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_empty_ad_list, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(getEmptyLayout(), null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
         return new EmptyViewHolder(view);
+    }
+
+    @Resource
+    protected int getEmptyLayout() {
+        return R.layout.listview_top_ads_empty_ad_list;
     }
 
     @Override

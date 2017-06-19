@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.BaseNetworkController;
 import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -158,20 +159,6 @@ public class ShopNetworkController extends BaseNetworkController {
         public String shopId;
         public String shopDomain;
         public int showAll;
-    }
-
-    public static class MessageErrorException extends RuntimeException {
-
-        public MessageErrorException(String message) {
-            super(message);
-        }
-    }
-
-    public static class ManyRequestErrorException extends RuntimeException {
-
-        public ManyRequestErrorException(String message) {
-            super(message);
-        }
     }
 
     public static class RequestParamFactory {

@@ -2,11 +2,9 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,19 +18,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.network.entity.categoriesHades.CuratedProduct;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.intermediary.domain.model.BadgeModel;
 import com.tokopedia.discovery.intermediary.domain.model.LabelModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
@@ -41,7 +30,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by alifa on 3/30/17.

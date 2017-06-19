@@ -2,6 +2,8 @@ package com.tokopedia.core.network.entity.discovery;
 
 import com.tokopedia.core.var.RecyclerViewItem;
 
+import java.util.List;
+
 /**
  * @author kulomady on 11/26/16.
  */
@@ -15,7 +17,12 @@ public class ShopModel extends RecyclerViewItem {
     String shopId;
     String isGold;
     String luckyImage;
+    String location;
+    String reputationImageUrl;
+    String shopDomain;
+    List<String> productImages;
     boolean isOfficial;
+    boolean isFavorited;
 
     public ShopModel() {
         setType(SHOP_MODEL_TYPE);
@@ -31,6 +38,11 @@ public class ShopModel extends RecyclerViewItem {
         isGold = shop.shopGoldShop;
         luckyImage = shop.shopLucky;
         isOfficial = shop.isOfficial;
+        isFavorited = shop.isFavorited;
+        location = shop.shopLocation;
+        reputationImageUrl = shop.reputationImageUri;
+        shopDomain = shop.shopDomain;
+        productImages = shop.productImages;
     }
 
     public String getShopImage() {
@@ -61,8 +73,32 @@ public class ShopModel extends RecyclerViewItem {
         return luckyImage;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public String getReputationImageUrl() {
+        return reputationImageUrl;
+    }
+
+    public String getShopDomain() {
+        return shopDomain;
+    }
+
+    public List<String> getProductImages() {
+        return productImages;
+    }
+
     public boolean isOfficial() {
         return isOfficial;
+    }
+
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        isFavorited = favorited;
     }
 
     @Override
@@ -80,7 +116,12 @@ public class ShopModel extends RecyclerViewItem {
         dest.writeString(this.shopId);
         dest.writeString(this.isGold);
         dest.writeString(this.luckyImage);
+        dest.writeString(this.location);
+        dest.writeString(this.reputationImageUrl);
+        dest.writeString(this.shopDomain);
+        dest.writeStringList(this.productImages);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFavorited ? (byte) 1 : (byte) 0);
     }
 
     protected ShopModel(android.os.Parcel in) {
@@ -92,7 +133,12 @@ public class ShopModel extends RecyclerViewItem {
         this.shopId = in.readString();
         this.isGold = in.readString();
         this.luckyImage = in.readString();
+        this.location = in.readString();
+        this.reputationImageUrl = in.readString();
+        this.shopDomain = in.readString();
+        in.readStringList(this.productImages);
         this.isOfficial = in.readByte() != 0;
+        this.isFavorited = in.readByte() != 0;
     }
 
     public static final Creator<ShopModel> CREATOR = new Creator<ShopModel>() {

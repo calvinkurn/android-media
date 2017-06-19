@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.session.base.BaseImpl;
-import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 /**
  * Created by Toped18 on 5/19/2016.

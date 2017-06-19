@@ -17,12 +17,12 @@
             android:label="@string/title_activity_forgot_password"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".register.view.activity.RegisterEmailActivity"
             android:label="@string/title_activity_register"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".activation.view.activity.ActivationActivity"
@@ -56,6 +56,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".login.view.ReloginActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" />
+
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait" />
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />
@@ -85,9 +93,10 @@
             android:theme="@style/DialogTheme" />
 
 
-        <activity android:name=".google.GoogleSignInActivity"
-            android:theme="@style/DialogTheme"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".google.GoogleSignInActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme" />
 
     </application>
 

@@ -19,14 +19,14 @@ import java.util.List;
 
 public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
 
+    private static final int DEFAULT_CHECKED_POSITION = -1;
     private static final int VIEW_DATA = 100;
 
     private List<DataCredit> data;
     private int checkedPosition;
 
-    public void setData(List<DataCredit> data) {
-        this.data = data;
-        notifyDataSetChanged();
+    public int getCheckedPosition() {
+        return checkedPosition;
     }
 
     public void setCheckedPosition(int checkedPosition) {
@@ -35,7 +35,16 @@ public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
 
     public TopAdsCreditAdapter() {
         data = new ArrayList<>();
-        checkedPosition = 0;
+        checkedPosition = DEFAULT_CHECKED_POSITION;
+    }
+
+    public boolean isChecked() {
+        return checkedPosition >= 0;
+    }
+
+    public void setData(List<DataCredit> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @Override

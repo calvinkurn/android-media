@@ -232,8 +232,8 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
+    compile project(':tkpdpdp')
     compile project(':tkpdfeed')
-
     compile getTopAdsSdk()
 
 //    compile rootProject.ext.tkpdDependencies.discovery

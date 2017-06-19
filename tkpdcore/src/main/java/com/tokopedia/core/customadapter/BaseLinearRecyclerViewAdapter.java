@@ -11,15 +11,12 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
     public static final int VIEW_LOADING = 999;
     public static final int VIEW_RETRY = 888;
     public static final int VIEW_EMPTY = 777;
-
-    private LoadingDataBinder loadingView;
-    private RetryDataBinder retryView;
-    private NoResultDataBinder emptyView;
-
     protected int loading = 0;
     protected int retry = 0;
     protected int empty = 0;
-
+    private LoadingDataBinder loadingView;
+    private RetryDataBinder retryView;
+    private NoResultDataBinder emptyView;
     private RetryDataBinder.OnRetryListener listener;
 
     public BaseLinearRecyclerViewAdapter() {
@@ -133,6 +130,8 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
 
     public void showEmptyFull(boolean isEmpty) {
         if (isEmpty) {
+            retry = 0;
+            loading = 0;
             empty = 1;
         } else {
             empty = 0;
@@ -143,7 +142,9 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
 
     public void showLoadingFull(boolean isLoading) {
         if (isLoading) {
+            retry = 0;
             loading = 1;
+            empty = 0;
         } else {
             loading = 0;
         }
@@ -154,6 +155,8 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
     public void showRetryFull(boolean isRetry) {
         if (isRetry) {
             retry = 1;
+            loading = 0;
+            empty = 0;
         } else {
             retry = 0;
         }

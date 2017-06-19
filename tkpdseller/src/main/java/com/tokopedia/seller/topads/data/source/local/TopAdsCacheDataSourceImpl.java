@@ -1,9 +1,12 @@
 package com.tokopedia.seller.topads.data.source.local;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,7 +57,10 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     public Date getStartDate(Date defaultDate) {
         Date date = defaultDate;
         try {
-            date = new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(localCacheHandler.getString(PARAM_START_DATE));
+            String tempDate = localCacheHandler.getString(PARAM_START_DATE);
+            if (!TextUtils.isEmpty(tempDate)) {
+                date = new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(tempDate);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +71,10 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     public Date getEndDate(Date defaultDate) {
         Date date = defaultDate;
         try {
-            date = new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(localCacheHandler.getString(PARAM_END_DATE));
+            String tempDate = localCacheHandler.getString(PARAM_END_DATE);
+            if (!TextUtils.isEmpty(tempDate)) {
+                date = new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(tempDate);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,13 +1,17 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,19 +23,22 @@ public class TopAdsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
     public static final String KEYWORD_NAME = "KEYWORD_NAME";
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
+    @Inject
     public TopAdsSearchGroupAdsNameUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
         super(threadExecutor, postExecutionThread);
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }
 
+    public static RequestParams createRequestParams(String keywordName){
+        RequestParams params = RequestParams.create();
+        if (!TextUtils.isEmpty(keywordName)) {
+            params.putString(KEYWORD_NAME, keywordName);
+        }
+        return params;
+    }
+
     @Override
     public Observable<List<GroupAd>> createObservable(RequestParams requestParams) {
         return topAdsGroupAdsRepository.searchGroupAds(requestParams.getString(KEYWORD_NAME, ""));
-    }
-
-    public static RequestParams createRequestParams(String keywordName){
-        RequestParams params = RequestParams.create();
-        params.putString(KEYWORD_NAME, keywordName);
-        return params;
     }
 }

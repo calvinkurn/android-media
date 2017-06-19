@@ -72,4 +72,9 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
             presenter.saveAd((TopAdsDetailGroupViewModel) detailAd);
         }
     }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        // no op, overridden in child
+    }
 }

@@ -90,7 +90,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ShopListViewHolder.LAYOUT) {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopFeedViewHolder.LAYOUT) {
-            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else {

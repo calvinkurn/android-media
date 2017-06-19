@@ -42,6 +42,7 @@ import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.model.ProductModel;
 import com.tokopedia.discovery.util.PagingHandlerUtil;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -55,6 +56,8 @@ import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+//import com.tokopedia.core.product.fragment.ProductDetailFragment;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -301,6 +304,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        if (browseProductModel.getCategoryData() != null) {
+            view.addCategoryHeader(browseProductModel.getCategoryData());
+        }
+
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
             view.onCallProductServiceResult(productItems, pagingHandlerModel);
             return;
@@ -331,9 +338,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             } else {
                                 item.setProductAlreadyWishlist(false);
                             }
-                        }
-                        if (browseProductModel.getCategoryData() != null) {
-                            view.addCategoryHeader(browseProductModel.getCategoryData());
                         }
                         view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }

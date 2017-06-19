@@ -13,48 +13,34 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.data.model.data.Summary;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
-import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
+
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static final int REQUEST_CODE_ADD_KREDIT = TopAdsDashboardFragment.class.hashCode();
-
-    public interface Callback {
-
-        void onLoadDataError();
-
-        void onLoadDataSuccess();
-
-        void onCreditAdded();
-
-        void startShowCase();
-    }
-
-    SwipeToRefresh swipeToRefresh;
-
-    ImageView shopIconImageView;
-    TextView shopTitleTextView;
-    TextView depositDescTextView;
-    ImageView addDepositButton;
-
-    View dateRangeLayout;
-    TextView rangeDateDescTextView;
-
-    TopAdsStatisticLabelView impressionStatisticLabelView;
-    TopAdsStatisticLabelView clickStatisticLabelView;
-    TopAdsStatisticLabelView ctrStatisticLabelView;
-    TopAdsStatisticLabelView conversionStatisticLabelView;
-    TopAdsStatisticLabelView averageStatisticLabelView;
-    TopAdsStatisticLabelView costStatisticLabelView;
-
+    private static final int REQUEST_CODE_ADD_CREDIT = 1;
+    private SwipeToRefresh swipeToRefresh;
+    private ImageView shopIconImageView;
+    private TextView shopTitleTextView;
+    private TextView depositDescTextView;
+    private ImageView addDepositButton;
+    private DateLabelView dateLabelView;
+    private TopAdsStatisticLabelView impressionStatisticLabelView;
+    private TopAdsStatisticLabelView clickStatisticLabelView;
+    private TopAdsStatisticLabelView ctrStatisticLabelView;
+    private TopAdsStatisticLabelView conversionStatisticLabelView;
+    private TopAdsStatisticLabelView averageStatisticLabelView;
+    private TopAdsStatisticLabelView costStatisticLabelView;
     private Callback callback;
 
     public void setCallback(Callback callback) {
@@ -80,14 +66,13 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
                 goToAddCredit();
             }
         });
-        dateRangeLayout = view.findViewById(R.id.layout_date);
-        dateRangeLayout.setOnClickListener(new View.OnClickListener() {
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onDateLayoutClicked();
             }
         });
-        rangeDateDescTextView = (TextView) view.findViewById(R.id.text_view_range_date);
         impressionStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_impression);
         clickStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_click);
         ctrStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_ctr);
@@ -144,9 +129,9 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         });
     }
 
-    public void loadData() {
+    protected void loadData() {
         swipeToRefresh.setRefreshing(true);
-        rangeDateDescTextView.setText(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+        dateLabelView.setDate(startDate, endDate);
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
@@ -282,13 +267,13 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     void goToAddCredit() {
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_ADD_KREDIT);
+        startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT) {
+        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_CREDIT) {
             if (callback != null) {
                 callback.onCreditAdded();
             }
@@ -305,5 +290,16 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
+    }
+
+    public interface Callback {
+
+        void onLoadDataError();
+
+        void onLoadDataSuccess();
+
+        void onCreditAdded();
+
+        void startShowCase();
     }
 }

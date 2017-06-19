@@ -8,6 +8,8 @@ import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.apiservices.search.SearchService;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.data.repository.IntermediaryRepositoryImpl;
@@ -30,8 +32,11 @@ public class IntermediaryDependencyInjector {
         HadesApi hadesApi = hadesService.getApi();
         AceSearchService aceSearchService = new AceSearchService();
         SearchApi searchApi = aceSearchService.getApi();
+        MojitoService mojitoService = new MojitoService();
+        MojitoApi mojitoApi = mojitoService.getApi();
         IntermediaryCategoryMapper mapper = new IntermediaryCategoryMapper();
-        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,hadesApi,searchApi,mapper);
+        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,hadesApi,
+                searchApi,mojitoApi,mapper);
 
         IntermediaryRepository repository = new IntermediaryRepositoryImpl(dataSource);
 

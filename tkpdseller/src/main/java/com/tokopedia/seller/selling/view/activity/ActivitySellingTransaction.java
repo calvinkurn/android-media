@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -35,12 +36,16 @@ import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -67,6 +72,42 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     DownloadResultReceiver mReceiver;
 
     FragmentManager fragmentManager;
+
+    @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
+    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_SHIPMENT)
+    public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_STATUS)
+    public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.SELLER_HISTORY)
+    public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
@@ -100,7 +141,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initSellerTicker() {
         GTMContainer gtmContainer = GTMContainer.newInstance(this);
 
-        if(gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")){
+        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
             String message = gtmContainer.getString("ticker_text_sales_rich");
             showTickerGTM(message);
         } else {
@@ -115,15 +156,14 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         initSellerTicker();
     }
 
-    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
-    {
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
         int start = strBuilder.getSpanStart(span);
         int end = strBuilder.getSpanEnd(span);
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
                 Log.d("Seller Page", "URL Clicked" + span);
-                if(span.getURL().equals("com.tokopedia.sellerapp")){
+                if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {
                     openLink(span.getURL());
@@ -140,7 +180,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No application can handle this request."
-                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+                    + " Please install a webbrowser", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -165,7 +205,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             CharSequence sequence = MethodChecker.fromHtml(message);
             SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
             URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-            for(URLSpan span : urls) {
+            for (URLSpan span : urls) {
                 makeLinkClickable(strBuilder, span);
             }
             sellerTickerView.setText(strBuilder);
@@ -174,6 +214,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
+
+        hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
     }
 
 
@@ -182,7 +224,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 getString(R.string.title_tab_new_order),
                 getString(R.string.title_shipping_confirmation),
                 getString(R.string.title_shipping_status),
-                getString(R.string.title_transaction_list)};
+                getString(R.string.title_transaction_list),
+                getString(R.string.title_opportunity_list)};
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         fragmentList = new ArrayList<>();
@@ -193,6 +236,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
+        fragmentList.add(OpportunityListFragment.newInstance());
+
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
     }
@@ -212,6 +257,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
                 }
+                hideTickerOpportunity(position);
             }
 
             @Override
@@ -222,30 +268,39 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
     }
 
+    public void hideTickerOpportunity(int position) {
+        if (position == 5) {
+            sellerTickerView.setVisibility(View.GONE);
+        } else {
+            sellerTickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void openTab() {
         try {
             mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
             setDrawerPosition(getIntent().getExtras().getInt("tab"));
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
     }
 
     private void setDrawerPosition(int position) {
         switch (position) {
-            case 1:
+            case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
-            case 2:
+            case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
-            case 3:
+            case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
-            case 4:
+            case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                break;
+            case 5:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:
                 break;
@@ -357,7 +412,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
             }
             return true;
-        }else {
+        } else {
             return super.onCreateOptionsMenu(menu);
         }
     }
@@ -415,6 +470,16 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         @Override
         public int getCount() {
             return fragmentList.size();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }

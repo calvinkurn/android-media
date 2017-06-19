@@ -6,20 +6,15 @@ import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.LabelLoader;
-import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -29,7 +24,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
         View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_product_feed_plus;
+    public static final int LAYOUT = R.layout.layout_ads_product_feed;
     private static final String TAG = ProductFeedViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;

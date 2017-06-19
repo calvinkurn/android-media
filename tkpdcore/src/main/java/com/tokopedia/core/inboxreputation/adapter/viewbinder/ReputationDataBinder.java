@@ -32,8 +32,8 @@ import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReput
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmentPresenter;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
@@ -405,7 +405,12 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductInfoActivity.createInstance(context, inboxReputationDetail.getInboxReputationDetailItemList().get(position).getProductId());
+                String productId
+                        = inboxReputationDetail.getInboxReputationDetailItemList()
+                        .get(position)
+                        .getProductId();
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(context, productId);
                 context.startActivity(intent);
             }
         };
