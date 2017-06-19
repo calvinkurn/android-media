@@ -347,20 +347,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
         CommonUtils.dumper("wvlogin opened product");
-        context.finish();
-        context.startActivity(ProductDetailRouter.createInstanceProductDetailInfoActivity(context, ProductPass.Builder.aProductPass()
-                .setProductKey(linkSegment.get(1))
-                .setShopDomain(linkSegment.get(0))
-                .setProductUri(uriData.toString())
-                .build()));
-//        Fragment fragment = ProductDetailRouter.instanceDeeplink(
-//                context,
-//                ProductPass.Builder.aProductPass()
-//                        .setProductKey(linkSegment.get(1))
-//                        .setShopDomain(linkSegment.get(0))
-//                        .setProductUri(uriData.toString())
-//                        .build());
-//        viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
+        Fragment fragment = ProductDetailRouter.instanceDeeplink(
+                context,
+                ProductPass.Builder.aProductPass()
+                        .setProductKey(linkSegment.get(1))
+                        .setShopDomain(linkSegment.get(0))
+                        .setProductUri(uriData.toString())
+                        .build());
+        viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
+        viewListener.hideActionBar();
     }
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {

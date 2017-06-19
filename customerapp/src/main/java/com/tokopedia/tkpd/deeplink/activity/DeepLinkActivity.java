@@ -129,6 +129,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
 
     }
@@ -174,6 +179,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         fragmentTransaction.replace(R.id.main_view, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
 
     @Override
