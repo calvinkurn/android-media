@@ -45,6 +45,10 @@ public interface RideHomeContract {
         void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle);
 
         void showDialogDriverCancelled();
+
+        void hideMainLayout();
+
+        void showMainLayout();
     }
 
     interface Presenter extends CustomerPresenter<View> {

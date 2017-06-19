@@ -29,7 +29,6 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 } else {
                     getView().actionInflateInitialToolbar();
                     actionCheckPendingRequestIfAny();
-                    getView().inflateMapAndProductFragment();
                 }
             } else {
                 getView().showVerificationPhoneNumberPage();
@@ -44,6 +43,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
     @Override
     public void actionCheckPendingRequestIfAny() {
         getView().showCheckPendingRequestLoading();
+        getView().hideMainLayout();
         getCurrentRideRequestUseCase.execute(getView().getCurrentRideRequestParam(), new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
@@ -55,7 +55,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 e.printStackTrace();
                 if (isViewAttached()) {
 //                    getView().hideCheckPendingRequestLoading();
+                    getView().showMainLayout();
                     getView().hideCheckPendingRequestLoading();
+                    getView().inflateMapAndProductFragment();
 //                    if (e instanceof UnprocessableEntityHttpException) {
 //                        getView().hideCheckPendingRequestLoading();
 //                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
@@ -77,14 +79,17 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 if (isViewAttached()) {
                     if (rideRequest != null) {
                         getView().hideCheckPendingRequestLoading();
+
                         switch (rideRequest.getStatus()) {
                             case RideStatus.ACCEPTED:
                             case RideStatus.ARRIVING:
                             case RideStatus.IN_PROGRESS:
                             case RideStatus.PROCESSING:
+                                getView().showMainLayout();
                                 getView().actionNavigateToOnTripScreen(rideRequest);
                                 break;
                             case RideStatus.DRIVER_CANCELED:
+                                getView().showMainLayout();
                                 // if user didnt see about driver canceled his ride
                                 if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())) {
                                     getView().showDialogDriverCancelled();
@@ -109,7 +114,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                     driverAndVehicle.setAddress(rideRequestAddress);
                                     getView().navigateToCompleteTripScreen(rideRequest.getRequestId(), driverAndVehicle);
                                 } else {
-                                    //getView().inflateMapAndProductFragment();
+                                    getView().showMainLayout();
+                                    getView().hideCheckPendingRequestLoading();
+                                    getView().inflateMapAndProductFragment();
                                 }
                                 break;
                             default:
@@ -117,8 +124,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                         }
 
                     } else {
+                        getView().showMainLayout();
                         getView().hideCheckPendingRequestLoading();
-                        //getView().inflateMapAndProductFragment();
+                        getView().inflateMapAndProductFragment();
                     }
                 }
             }
