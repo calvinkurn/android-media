@@ -22,8 +22,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
+import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -156,10 +158,16 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseCatalogAdapter.setIsErrorState(true);
-        browseCatalogAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+//        browseCatalogAdapter.setIsErrorState(true);
+//        browseCatalogAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+//            @Override
+//            public void onRetryCliked() {
+//                presenter.loadMore(getActivity());
+//            }
+//        });
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 presenter.loadMore(getActivity());
             }
         });

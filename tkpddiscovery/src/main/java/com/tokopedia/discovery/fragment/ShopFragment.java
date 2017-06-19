@@ -112,10 +112,16 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseShopAdapter.setIsErrorState(true);
-        browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+//        browseShopAdapter.setIsErrorState(true);
+//        browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+//            @Override
+//            public void onRetryCliked() {
+//                presenter.loadMore(getActivity());
+//            }
+//        });
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 presenter.loadMore(getActivity());
             }
         });
