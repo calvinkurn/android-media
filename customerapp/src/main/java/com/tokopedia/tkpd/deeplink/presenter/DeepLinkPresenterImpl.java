@@ -306,7 +306,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
         String url = encodeUrl(uriData.toString());
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
             openWebView(Uri.parse(url), uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
@@ -320,7 +319,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()), allowingOverriding);
+        Fragment fragment = FragmentGeneralWebView.createInstance(encodedUri.toString(), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 

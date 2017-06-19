@@ -71,7 +71,6 @@ public class ImageHandler {
 		if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
 		if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
 		if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-		System.out.println(rotationAngle);
 		Matrix matrix = new Matrix();
 		matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
 		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -127,7 +126,6 @@ public class ImageHandler {
                     && (halfWidth / inSampleSize) > 480) {
                 inSampleSize = inSampleSize * 2;
             }
-            System.out.println("Magic H" + (halfHeight / inSampleSize) + " W " + (halfWidth / inSampleSize));
         }
         return inSampleSize;
     }

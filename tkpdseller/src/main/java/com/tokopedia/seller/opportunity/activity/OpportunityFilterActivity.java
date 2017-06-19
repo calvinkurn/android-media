@@ -12,15 +12,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputation;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterTitleAdapter;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterTitleFragment;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterPassModel;
 import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
@@ -44,6 +49,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         void updateData(FilterViewModel viewModel);
     }
 
+    public static final String CACHE_OPPORTUNITY_FILTER = "CACHE_OPPORTUNITY_FILTER";
     public static final String PARAM_FILTER_VIEW_MODEL = "PARAM_FILTER_VIEW_MODEL";
     public static final String PARAM_SELECTED_FILTER = "PARAM_SELECTED_FILTER";
 
@@ -52,6 +58,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private List<Fragment> listFragment;
     private ArrayList<FilterViewModel> listFilter;
     private ArrayList<FilterPass> listPass;
+    private OpportunityFilterPassModel filterPassModel;
+    private GlobalCacheManager cacheManager;
 
     public static Intent createIntent(Context context, ArrayList<FilterViewModel> data) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
@@ -129,7 +137,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         OpportunityFilterTitleFragment fragment =
-                OpportunityFilterTitleFragment.createInstance(listFilter);
+                (OpportunityFilterTitleFragment) getFragmentManager().findFragmentById(R.id.filter);
+        if (fragment == null)
+            fragment = OpportunityFilterTitleFragment.createInstance(listFilter);
         fragmentTransaction.replace(R.id.filter, fragment);
 
         listFragment = new ArrayList<>();
@@ -162,8 +172,10 @@ public class OpportunityFilterActivity extends BasePresenterActivity
             if (filter.isActive()) {
                 filter.setActive(false);
                 resetOption(filter.getListChild());
-                ((FilterListener) listFragment.get(filter.getPosition()))
-                        .updateData(listFilter.get(filter.getPosition()));
+                if (filter.getPosition() < listFragment.size()) {
+                    ((FilterListener) listFragment.get(filter.getPosition()))
+                            .updateData(listFilter.get(filter.getPosition()));
+                }
             }
         }
     }
@@ -182,11 +194,16 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filterPassModel = new OpportunityFilterPassModel();
+                filterPassModel.setListFilter(listFilter);
+                filterPassModel.setListPass(getSelectedFilterList());
+
+                cacheManager.setValue(CacheUtil.convertModelToString(filterPassModel,
+                        new TypeToken<OpportunityFilterPassModel>() {
+                        }.getType()));
+                cacheManager.store();
+
                 Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(PARAM_SELECTED_FILTER, getSelectedFilterList());
-                bundle.putParcelableArrayList(PARAM_FILTER_VIEW_MODEL, listFilter);
-                intent.putExtras(bundle);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
@@ -217,6 +234,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     protected void initVar() {
+        cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(CACHE_OPPORTUNITY_FILTER);
     }
 
     @Override
@@ -261,16 +280,11 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     public void onFilterExpanded(int position, FilterViewModel filterViewModel) {
-        CommonUtils.dumper("NISNIS isExpanded" + filterViewModel.getListChild().size());
-
         listFilter.set(filterViewModel.getPosition(), filterViewModel);
-
     }
 
     @Override
     public void onFilterSelected(int selectedFilterPosition, String selectedOption) {
-        CommonUtils.dumper("NISNIS isSelected " + selectedOption);
-
         setSelected(selectedOption, listFilter.get(selectedFilterPosition).getListChild());
         listFilter.get(selectedFilterPosition).setActive(checkIsActive(listFilter.get(selectedFilterPosition).getListChild()));
         updateFilterTitleFragment();
