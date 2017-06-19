@@ -328,18 +328,18 @@
                     android:layout_width="80dp"
                     android:layout_height="36dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/button_rounded_grey"
+                    android:background="@drawable/rounded_bg_promo_card"
                     android:gravity="center"
                     android:text="@string/ontrip_cancel_no"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/btn_yes"
                     android:layout_width="80dp"
                     android:layout_height="36dp"
-                    android:background="@drawable/orange_button_rounded"
+                    android:background="@drawable/button_rounded_grey"
                     android:gravity="center"
                     android:text="@string/ontrip_cancel_yes"
                     android:textAllCaps="true"

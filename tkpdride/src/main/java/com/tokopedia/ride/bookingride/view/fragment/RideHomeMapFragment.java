@@ -71,7 +71,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 1008;
 
     private static final float DEFAULT_MAP_ZOOM = 14;
-    private static final float SELECT_SOURCE_MAP_ZOOM = 18;
+    private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
@@ -130,6 +130,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         SlidingUpPanelLayout.PanelState getPanelState();
 
         int getBottomViewLocation();
+
+        void collapseBottomPanel();
     }
 
     public RideHomeMapFragment() {
@@ -454,6 +456,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_pickup_zero_error));
                     } else {
                         source = sourceTemp;
+                        interactionListener.collapseBottomPanel();
                         setSourceLocationText(String.valueOf(source.getTitle()));
                         proccessToRenderRideProduct();
                         if (!isAlreadySelectDestination) {
@@ -470,6 +473,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
                     } else {
                         destination = destinationTemp;
+                        interactionListener.collapseBottomPanel();
                         setDestinationLocationText(String.valueOf(destination.getTitle()));
                         proccessToRenderRideProduct();
                         isAlreadySelectDestination = true;
@@ -558,11 +562,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void actionDestinationButtonClicked() {
         if (isDisableSelectLocation)
             return;
+
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayoout);
-
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
     }
 

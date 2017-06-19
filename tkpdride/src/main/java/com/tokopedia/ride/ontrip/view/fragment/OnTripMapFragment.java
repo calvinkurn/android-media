@@ -110,7 +110,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final float DEFAUL_MAP_ZOOM = 14;
-    private static final float SELECT_SOURCE_MAP_ZOOM = 18;
+    private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
 
 

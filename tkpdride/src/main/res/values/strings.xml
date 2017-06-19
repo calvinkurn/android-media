@@ -27,7 +27,7 @@
     <string name="share_ride_description">Follow my Uber trip by vising below link</string>
     <string name="toolbar_title_booking">Booking Ride</string>
     <string name="booking_ride_menu_your_trips">Your Trips</string>
-    <string name="popup_cancel_ride_title">Are you sure to cancel your booking ?</string>
+    <string name="popup_cancel_ride_title">Are you sure you want to cancel ?</string>
     <string name="broadcast_call_driver">com.tokopedia.tkpd.calldriver</string>
     <string name="broadcast_share_eta">com.tokopedia.tkpd.shareeta</string>
     <string name="create_request_failed_tos_confirmation">User doenst accept TOS</string>
@@ -87,8 +87,8 @@
     <string name="ride_push_in_progress">Trip Started</string>
     <string name="ride_push_track_ride">Track Your Ride</string>
     <string name="title_fetching_ride">Fetching Ride Details</string>
-    <string name="ontrip_cancel_yes">Yes</string>
-    <string name="ontrip_cancel_no">No</string>
+    <string name="ontrip_cancel_yes">YES</string>
+    <string name="ontrip_cancel_no">NO</string>
     <string name="confirm_remove_promo">Are you sure to remove promo code ?</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
@@ -129,8 +129,6 @@
     <string name="send_cancel_reason_why_are_you_cancelling">Why are you cancelling?</string>
     <string name="send_cancel_reason_toolbar_title">Cancel Reason</string>
     <string name="send_cancel_selected_reason_error">You must pick a reason</string>
-
-
     <string name="error_no_connection">No internet connection</string>
     <string name="error_timeout">Connection timeout, Please try again in a few moments</string>
     <string name="error_default">Error occurred, try again in a few moments</string>

@@ -135,7 +135,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
 
         StringBuffer urlBuffer = new StringBuffer("https://maps.googleapis.com/maps/api/staticmap?size=").append(mapSize);
         urlBuffer.append("&markers=color:green|label:S|").append(startlatitude + "," + startLongitude)
-                .append("&zoom=13")
+                //.append("&zoom=13")
                 .append("&key=").append(getView().getMapKey());
 
 
