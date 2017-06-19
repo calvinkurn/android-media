@@ -212,7 +212,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
-        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
+        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
         actionSpanString.setSpan(is, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
