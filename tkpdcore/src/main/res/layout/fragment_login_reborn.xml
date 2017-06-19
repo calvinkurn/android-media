@@ -35,6 +35,7 @@
                     android:maxLines="1"
                     android:inputType="textEmailAddress"
                     android:imeOptions="actionNext"
+                    android:textColor="@color/black_70"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -48,12 +49,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
+
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black_70" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -68,14 +70,16 @@
             <TextView
                 android:id="@+id/accounts_sign_in"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:background="@color/deep_orange_500"
+                android:layout_height="@dimen/btn_height"
+                android:background="@drawable/green_button_rounded_unify"
                 android:gravity="center"
                 android:padding="@dimen/padding_small"
                 android:text="Masuk"
                 android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:textStyle="bold"
+                />
+
             <TextView
                 android:id="@+id/forgot_pass"
                 android:layout_width="match_parent"
@@ -84,7 +88,39 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:background="@drawable/selectable_white_background"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="@string/title_forgot_password" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/black_12"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black_38"
+                    android:text="@string/or" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/black_12"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -94,9 +130,9 @@
         android:padding="@dimen/padding_med"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_300"
-        android:textColor="@color/grey_500"
-        android:text="Belum punya akun? Daftar Sekarang !!"
+        android:background="@color/grey_100"
+        android:textColor="@color/black_38"
+        android:text="@string/register_text_login"
         android:gravity="center"
         android:layout_alignParentBottom="true"/>
 
