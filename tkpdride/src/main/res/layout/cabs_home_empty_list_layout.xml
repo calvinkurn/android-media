@@ -23,6 +23,7 @@
             android:layout_marginRight="20dp"
             android:gravity="center"
             android:textSize="14sp"
+            android:textColor="@color/red_600"
             tools:text="Error Description" />
     </LinearLayout>
 
