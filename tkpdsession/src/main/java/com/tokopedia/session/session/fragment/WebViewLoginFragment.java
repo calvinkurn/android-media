@@ -108,8 +108,8 @@ public class WebViewLoginFragment extends DialogFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //check if the login was successful and the access token returned
             //this test depend of your API
-            parseUrl(url);
-            return false;
+            return parseUrl(url);
+
         }
 
         @Override
@@ -137,7 +137,7 @@ public class WebViewLoginFragment extends DialogFragment {
         }
     }
 
-    private void parseUrl(String url) {
+    private boolean parseUrl(String url) {
         Log.d("steven check " , url);
         Uri uri = Uri.parse(url);
         String protocol = uri.getScheme();
@@ -157,7 +157,9 @@ public class WebViewLoginFragment extends DialogFragment {
             intent.putExtra("bundle",bundle);
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             dismiss();
+            return true;
         }
+        return false;
     }
 
     @Override

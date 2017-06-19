@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,11 +31,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.intermediary.Child;
-import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -62,6 +63,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
@@ -71,8 +73,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 
-import static com.tokopedia.core.product.fragment.ProductDetailFragment.WIHSLIST_STATUS_IS_WISHLIST;
-import static com.tokopedia.core.product.fragment.ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
 
 /**
@@ -81,7 +81,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener, TopAdsListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -208,9 +208,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if (!productAdapter.checkHasNext()) {
-            topAdsRecyclerAdapter.hideLoading();
-        }
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
 
@@ -220,8 +217,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             TrackingUtils.eventLocaSearched(browseModel.q);
 
         }
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
@@ -251,7 +246,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void updateWishListStatus(boolean isWishlist, int position) {
-        productAdapter.updateWishlistStatus(isWishlist, position);
+        if (productAdapter != null) productAdapter.updateWishlistStatus(isWishlist, position);
     }
 
     @Override
@@ -298,9 +293,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
-            int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
+        if (data != null && requestCode
+                == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
+            int position = data.getIntExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist
+                    = data.getBooleanExtra(ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST, false);
             if (productAdapter != null && position != -1) {
                 productAdapter.updateWishlistStatus(isWishlist, position);
             }
@@ -309,7 +306,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -318,7 +314,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
@@ -326,8 +321,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
         productAdapter.notifyDataSetChanged();
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
@@ -340,17 +333,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void displayTopAds() {
-        //TODO implement on next
-//        productAdapter.setSearchNotFound();
-    }
-
-    @Override
     public void setupAdapter() {
         if (productAdapter != null) {
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
+        productAdapter.setTopAdsListener(this);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -359,7 +347,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ProductFragmentListener) {
+        if(context instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) context;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -369,7 +357,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof ProductFragmentListener) {
+        if(activity instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) activity;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -414,7 +402,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -448,11 +435,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             params.getParam().putAll(networkParam.extraFilter);
         }
         return params;
-    }
-
-    @Override
-    public void onInfoClicked() {
-
     }
 
     @Override
@@ -657,11 +639,26 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 topAdsRecyclerAdapter.setHasHeader(true);
                 productAdapter.addOfficialStoreBanner(new OsBannerAdapter.OsBannerViewModel(model));
                 productAdapter.notifyDataSetChanged();
-                topAdsRecyclerAdapter.notifyDataSetChanged();
                 backToTop();
-
                 UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
             }
         }
+    }
+
+    @Override
+    public void displayEmptyResult() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        productAdapter.setSearchNotFound();
+        productAdapter.setIsLoading(false);
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        topAdsRecyclerAdapter.hideLoading();
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        topAdsRecyclerAdapter.hideLoading();
     }
 }

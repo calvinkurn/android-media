@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -32,17 +33,16 @@ import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.intermediary.Child;
-import com.tokopedia.core.network.entity.intermediary.Data;
-import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.discovery.BuildConfig;
-import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
@@ -62,6 +62,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
@@ -386,6 +387,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
+        items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
         return items;
     }
 
@@ -401,10 +403,18 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_SORT && resultCode == RESULT_OK) {
             browsePresenter.handleResultData(requestCode, data);
             BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
             setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
+        } else if (requestCode == DiscoverySearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            if (results != null && results.size() > 0) {
+                discoverySearchView.setQuery(results.get(0), false);
+                sendVoiceSearchGTM(results.get(0));
+            }
+
         }
     }
 
@@ -525,9 +535,21 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId) {
         gridIcon = gridIconResId;
         gridTitleRes = gridTitleResId;
-        if (isBottomBarItemReady(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION)) {
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setTitle(getString(gridTitleResId));
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setDrawable(gridIconResId);
+
+        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                fragmentManager.findFragmentById(R.id.container);
+        boolean isShopFragment = parentFragment.getActiveFragment() instanceof ShopFragment;
+
+        int viewTypeItemPosition;
+        if (isShopFragment) {
+            viewTypeItemPosition = 1;
+        } else {
+            viewTypeItemPosition = BOTTOM_BAR_GRID_TYPE_ITEM_POSITION;
+        }
+
+        if (isBottomBarItemReady(viewTypeItemPosition)) {
+            bottomNavigation.getItem(viewTypeItemPosition).setTitle(getString(gridTitleResId));
+            bottomNavigation.getItem(viewTypeItemPosition).setDrawable(gridIconResId);
             bottomNavigation.refresh();
         }
     }
@@ -570,6 +592,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
     }
 
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        browsePresenter.setDefaultGridTypeFromNetwork(viewType);
+    }
+
     public void removeEmptyState() {
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
         NetworkErrorHelper.removeEmptyState(container);
@@ -582,6 +609,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
             UnifyTracking.eventDiscoverySearch(keyword);
+        }
+    }
+
+    private void sendVoiceSearchGTM(String keyword) {
+        if (keyword != null &&
+                !TextUtils.isEmpty(keyword)) {
+            UnifyTracking.eventDiscoveryVoiceSearch(keyword);
         }
     }
 
@@ -620,6 +654,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
+            browsePresenter.retrieveLastGridConfig(departementId);
         }
     }
 

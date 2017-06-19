@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
@@ -68,7 +70,7 @@ public class ProductWholesalePrice implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductWholesalePrice> CREATOR = new Parcelable.Creator<ProductWholesalePrice>() {
+    public static final Creator<ProductWholesalePrice> CREATOR = new Creator<ProductWholesalePrice>() {
         @Override
         public ProductWholesalePrice createFromParcel(Parcel in) {
             return new ProductWholesalePrice(in);
@@ -119,5 +121,14 @@ public class ProductWholesalePrice implements Parcelable {
             productWholesalePrice.setWholesaleMax(wholesaleMax);
             return productWholesalePrice;
         }
+    }
+
+    public static class WholesaleComparator implements Comparator<ProductWholesalePrice> {
+
+        @Override
+        public int compare(ProductWholesalePrice o1, ProductWholesalePrice o2) {
+            return o1.wholesalePrice.compareTo(o2.wholesalePrice);
+        }
+
     }
 }

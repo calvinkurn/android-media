@@ -67,13 +67,11 @@ public class DatePickerUtil {
     public void SetMaxYear(int maxyear) {
         c = Calendar.getInstance();
         MaxYear = c.get(Calendar.YEAR) - maxyear;
-        System.out.println(MaxYear + " " + c.get(Calendar.YEAR) + " " + maxyear);
     }
 
     public void SetMinYear(int minyear) {
         c = Calendar.getInstance();
         MinYear = c.get(Calendar.YEAR) - minyear;
-        System.out.println(MinYear + " " + c.get(Calendar.YEAR) + " " + minyear);
     }
 
     public void setMaxDate(long maxDate) {

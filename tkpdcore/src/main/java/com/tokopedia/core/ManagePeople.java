@@ -41,7 +41,7 @@ public class ManagePeople extends TkpdActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_manage_shop);
+        inflateView(R.layout.activity_manage_people);
 
 
         Name.add(getString(R.string.title_personal_profile));

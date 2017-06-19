@@ -21,6 +21,7 @@ import java.util.List;
 class HomeCategoryMenuMapper {
 
     private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
     private final HomeCategoryMenuModelDb homeCategoryMenuModelDb;
 
     HomeCategoryMenuMapper(HomeCategoryMenuModelDb homeCategoryMenuModelDb) {
@@ -63,8 +64,10 @@ class HomeCategoryMenuMapper {
 
             if (isCategoryItemMarketPlace(layoutRow)) {
                 new CategoryItemMarketPlaceMapper(layoutRow, categoryItemModel).invoke();
-            } else {
+            } else if (isCategoryItemDigital(layoutRow)) {
                 new CategoryItemDigitalMapper(layoutRow, categoryItemModel).invoke();
+            } else {
+                new CategoryItemDefaultMapper(layoutRow, categoryItemModel).invoke();
             }
             listCategoryItemModels.add(categoryItemModel);
 
@@ -74,6 +77,10 @@ class HomeCategoryMenuMapper {
 
     private boolean isCategoryItemMarketPlace(LayoutRow aLayoutRow) {
         return MARKETPLACE.equalsIgnoreCase(aLayoutRow.getType());
+    }
+
+    private boolean isCategoryItemDigital(LayoutRow aLayoutRow) {
+        return DIGITAL.equalsIgnoreCase(aLayoutRow.getType());
     }
 
 
@@ -92,8 +99,10 @@ class HomeCategoryMenuMapper {
         }
 
         void invoke() {
+            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setRedirectValue(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setType(CategoryItemModel.TYPE.CATEGORY);
+            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
         }
     }
 
@@ -107,8 +116,27 @@ class HomeCategoryMenuMapper {
         }
 
         void invoke() {
+            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
-            mCategoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
+            mCategoryItemModel.setType(CategoryItemModel.TYPE.DIGITAL);
+            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
+        }
+    }
+
+    private class CategoryItemDefaultMapper {
+        private LayoutRow layoutRow;
+        private CategoryItemModel categoryItemModel;
+
+        CategoryItemDefaultMapper(LayoutRow layoutRow, CategoryItemModel categoryItemModel) {
+            this.layoutRow = layoutRow;
+            this.categoryItemModel = categoryItemModel;
+        }
+
+        void invoke() {
+            categoryItemModel.setCategoryId(String.valueOf(layoutRow.getCategoryId()));
+            categoryItemModel.setRedirectValue(layoutRow.getUrl());
+            categoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
+            categoryItemModel.setAppLinks(layoutRow.getAppLinks());
         }
     }
 }

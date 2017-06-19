@@ -153,6 +153,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unSubscribe();
+        topadsKeywordDetailPresenter.unSubscribe();
     }
 }

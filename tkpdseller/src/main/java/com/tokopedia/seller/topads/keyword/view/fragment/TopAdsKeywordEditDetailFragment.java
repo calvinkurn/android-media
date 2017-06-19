@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetail
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
+import org.w3c.dom.Text;
+
 import javax.inject.Inject;
 
 /**
@@ -44,6 +47,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected PrefixEditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
     protected ProgressDialog progressDialog;
+    protected TextInputLayout textInputLayoutCostPerClick;
 
     private KeywordAd keywordAd;
 
@@ -116,15 +120,17 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected void settingTopAdsCostPerClick(View view) {
         topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
+        textInputLayoutCostPerClick = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
         CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
-                String errorMessage = com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                String errorMessage =
+                        com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
-                    topAdsCostPerClick.setError(errorMessage);
+                    textInputLayoutCostPerClick.setError(errorMessage);
                 } else {
-                    topAdsCostPerClick.setError(null);
+                    textInputLayoutCostPerClick.setError(null);
                 }
             }
         };
@@ -177,9 +183,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void showError(Throwable detail) {
         hideLoading();
-        if(getActivity() != null && isAdded()){
-            NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
-        }
+        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), detail));
     }
 
     @Override

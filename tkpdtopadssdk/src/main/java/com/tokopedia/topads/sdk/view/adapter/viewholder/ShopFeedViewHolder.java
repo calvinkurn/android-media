@@ -47,6 +47,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_shop_feed;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
+    private final int clickPosition;
 
 
     private LocalAdsClickListener itemClickListener;
@@ -56,13 +57,14 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     private TextView favTxt;
     private LinearLayout favBtn;
     private LinearLayout container;
+    private View header;
     private Data data;
     private Context context;
     private ImageLoader imageLoader;
     private LinearLayout imageContainerBig;
     private LinearLayout imageContainerSmall;
 
-    public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
+    public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
@@ -76,7 +78,10 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         imageContainerSmall = (LinearLayout) itemView.findViewById(R.id.image_container_small);
         container = (LinearLayout) itemView.findViewById(R.id.container);
         container.setOnClickListener(this);
+        header = itemView.findViewById(R.id.header);
+        header.setOnClickListener(this);
         favBtn.setOnClickListener(this);
+        this.clickPosition = clickPosition;
     }
 
     @Override
@@ -84,11 +89,9 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         int id = v.getId();
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
-                itemClickListener.onAddFavorite(getAdapterPosition(), data);
-                data.setFavorit(true);
-                setFavorite(data.isFavorit());
-            } else if (id == R.id.container){
-                itemClickListener.onShopItemClicked(getAdapterPosition(), data);
+                itemClickListener.onAddFavorite(clickPosition, data);
+            } else if (id == R.id.container || id == R.id.header){
+                itemClickListener.onShopItemClicked(clickPosition, data);
             }
         }
     }
@@ -98,7 +101,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         data = element.getData();
         Shop shop = data.getShop();
         if(shop!=null){
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
+            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
                     shopImage);
             if(shop.getImageProduct()!=null){
                 generateThumbnailImages(shop.getImageProduct());
@@ -141,19 +144,20 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     }
 
     private void setFavorite(boolean isFavorite){
+        String text;
         if (isFavorite) {
             favBtn.setSelected(true);
-            favBtn.setClickable(false);
-            favTxt.setText(context.getString(R.string.favorite));
+            text = context.getString(R.string.favorited);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favBtn.setSelected(false);
-            favBtn.setClickable(true);
-            favTxt.setText(context.getString(R.string.favoritkan));
+            text = context.getString(R.string.favoritkan);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
+
+        favTxt.setText(text);
     }
 
     private Spanned spannedBadgeString(Spanned text, int drawable){

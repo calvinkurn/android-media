@@ -29,6 +29,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListL
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
 import com.tokopedia.seller.topads.view.model.Ad;
 
@@ -127,6 +128,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
+        groupFilterImage.setImageResource(R.drawable.ic_group_magnifier);
         hideThings = view.findViewById(R.id.hide_things);
         hideThings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,16 +187,17 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     public void onGetGroupAdListError(Throwable e) {
+        if (adapter == null) {
+            return;
+        }
         adapter.showLoading(false);
         // failed first time, show retry fullscreen
         if (adapter.getDataSize() == 0) {
             adapter.showRetryFull(true);
-        }
-        // failed to fetch when load more, show snackbar
-        else if (adapter.getDataSize() > 0) {
+        } else if (adapter.getDataSize() > 0) {
+            // failed to fetch when load more, show snackbar
             String errorMessage = ViewUtils.getGeneralErrorMessage(getContext(), e);
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    errorMessage);
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
     }
 
@@ -285,8 +288,8 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        NoResultDataBinder emptyViewDefaultBinder = super.getEmptyViewDefaultBinder();
-        emptyViewDefaultBinder.setDrawableAsset(R.drawable.ic_top_ads_keyword_empty);
-        return emptyViewDefaultBinder;
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
+        return emptyGroupAdsDataBinder;
     }
 }

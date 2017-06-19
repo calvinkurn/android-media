@@ -62,7 +62,7 @@ public class Paging implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Paging> CREATOR = new Parcelable.Creator<Paging>() {
+    public static final Creator<Paging> CREATOR = new Creator<Paging>() {
         @Override
         public Paging createFromParcel(Parcel in) {
             return new Paging(in);

@@ -484,7 +484,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         refreshHandler.setRefreshing(false);
         topAdsProductListAdapter.showLoading(false);
 
-        // hide buttom sheet helper
+        // hide bottom sheet helper
         addProductListInterface.hideBottom();
 
         if (topAdsProductListAdapter != null
@@ -582,7 +582,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void showBottom() {
-        // hide buttom sheet helper
         addProductListInterface.showNextButton();
         addProductListInterface.showBottom();
     }

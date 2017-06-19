@@ -11,6 +11,7 @@
     android:paddingStart="@dimen/topads_detail_padding_item">
 
     <FrameLayout
+        android:layout_marginTop="13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/top_ads_filter_item_min_height">

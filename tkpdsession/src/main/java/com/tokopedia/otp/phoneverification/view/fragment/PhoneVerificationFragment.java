@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -30,11 +31,13 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenterImpl;
@@ -57,6 +60,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    private static final String TOKOCASH = "TokoCash";
+
     public interface PhoneVerificationFragmentListener {
         void onSkipVerification();
 
@@ -78,6 +83,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     TextView requestOtpCallButton;
     View inputOtpView;
     EditText otpEditText;
+    TextView tokocashText;
 
     CountDownTimer countDownTimer;
     IncomingSmsReceiver smsReceiver;
@@ -114,7 +120,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         countdownText = (TextView) view.findViewById(R.id.countdown_text);
         inputOtpView = view.findViewById(R.id.input_otp_view);
         otpEditText = (EditText) view.findViewById(R.id.input_otp);
-
+        tokocashText = (TextView) view.findViewById(R.id.tokocash_text);
     }
 
     @Override
@@ -244,6 +250,26 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 , 0);
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
+
+        Spannable tokoCashSpannable = new SpannableString(getString(R.string.tokocash_phone_verification));
+
+        tokoCashSpannable.setSpan(new ClickableSpan() {
+                                      @Override
+                                      public void onClick(View view) {
+
+                                      }
+
+                                      @Override
+                                      public void updateDrawState(TextPaint ds) {
+                                          ds.setColor(MethodChecker.getColor(getActivity(),
+                                                  com.tokopedia.core.R.color.tkpd_main_green));
+                                      }
+                                  }
+                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH)
+                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH) + TOKOCASH.length()
+                , 0);
+
+        tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);
     }
 
 
@@ -318,6 +344,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                     getActivity().setResult(Activity.RESULT_CANCELED);
                     getActivity().finish();
                 }
+            }
+        });
+
+        tokocashText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(TokoCashWebViewActivity.getIntentCall(getActivity()));
             }
         });
 

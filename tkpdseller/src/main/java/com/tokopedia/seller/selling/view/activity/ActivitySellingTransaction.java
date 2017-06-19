@@ -45,6 +45,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -133,7 +134,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(5);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
 
@@ -210,9 +211,11 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
+            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
+
     }
 
 
@@ -221,7 +224,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 getString(R.string.title_tab_new_order),
                 getString(R.string.title_shipping_confirmation),
                 getString(R.string.title_shipping_status),
-                getString(R.string.title_transaction_list)};
+                getString(R.string.title_transaction_list),
+                getString(R.string.title_opportunity_list)};
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         fragmentList = new ArrayList<>();
@@ -232,6 +236,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
+        fragmentList.add(OpportunityListFragment.newInstance());
+
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
     }
@@ -251,6 +257,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
                 }
+                initSellerTicker();
             }
 
             @Override
@@ -261,14 +268,18 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
     }
 
+    public void hideTickerOpportunity(int position) {
+        if (position == 5) {
+            sellerTickerView.setVisibility(View.GONE);
+        }
+    }
+
     private void openTab() {
         try {
             mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
             setDrawerPosition(getIntent().getExtras().getInt("tab"));
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
     }
 
@@ -285,6 +296,9 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 break;
             case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                break;
+            case 5:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:
                 break;
