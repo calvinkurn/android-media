@@ -44,6 +44,7 @@ import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
+import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
@@ -76,10 +77,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID+".LAYOUT";
+    public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".LAYOUT";
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
     public static final int REQUEST_SORT = 121;
-    private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID+".SEARCH";
+    private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SEARCH";
     private static final int BOTTOM_BAR_GRID_TYPE_ITEM_POSITION = 2;
 
     private int gridIcon = R.drawable.ic_grid_default;
@@ -403,18 +404,23 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SORT && resultCode == RESULT_OK) {
-            browsePresenter.handleResultData(requestCode, data);
-            BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
-            setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
-        } else if (requestCode == DiscoverySearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
-            List<String> results = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-            if (results != null && results.size() > 0) {
-                discoverySearchView.setQuery(results.get(0), false);
-                sendVoiceSearchGTM(results.get(0));
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_SORT:
+                case DynamicFilterView.REQUEST_CODE:
+                    browsePresenter.handleResultData(requestCode, data);
+                    BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
+                    setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
+                    break;
+                case DiscoverySearchView.REQUEST_VOICE:
+                    List<String> results = data.getStringArrayListExtra(
+                            RecognizerIntent.EXTRA_RESULTS);
+                    if (results != null && results.size() > 0) {
+                        discoverySearchView.setQuery(results.get(0), false);
+                        sendVoiceSearchGTM(results.get(0));
+                    }
+                    break;
             }
-
         }
     }
 
@@ -523,7 +529,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void renderUpperCategoryLevel(SimpleCategory simpleCategory) {
         browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
-        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(),true);
+        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(), true);
     }
 
     @Override
@@ -636,10 +642,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
-        if (departementId!=null) {
+        if (departementId != null) {
             getBrowseProductActivityModel().setQ("");
             String toolbarTitle;
-            if (name!=null) {
+            if (name != null) {
                 toolbarTitle = name;
             } else {
                 toolbarTitle = getString(R.string.title_activity_browse_category);
@@ -661,14 +667,14 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void renderLowerCategoryLevel(Child child) {
         browsePresenter.onRenderLowerCategoryLevel(
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
-        getIntent().putExtra(EXTRA_TITLE,child.getName());
-        renderNewCategoryLevel(child.getId(),child.getName(),false);
+        getIntent().putExtra(EXTRA_TITLE, child.getName());
+        renderNewCategoryLevel(child.getId(), child.getName(), false);
     }
 
     @Override
     public void onBackPressed() {
         if (discoverySearchView.isSearchOpen()) {
-            if(discoverySearchView.isFinishOnClose()){
+            if (discoverySearchView.isFinishOnClose()) {
                 finish();
             } else {
                 discoverySearchView.closeSearch();
@@ -680,7 +686,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public String getDepartmentId() {
-        if(browsePresenter != null) {
+        if (browsePresenter != null) {
             return browsePresenter.getBrowseProductActivityModel().getDepartmentId();
         }
 
