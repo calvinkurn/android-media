@@ -19,6 +19,9 @@ public class FeaturedProductItem {
     @SerializedName("image_uri")
     String imageUri;
 
+    @SerializedName("product_id")
+    String productId;
+
     public String getName() {
         return name;
     }
@@ -33,5 +36,9 @@ public class FeaturedProductItem {
 
     public String getImageUri() {
         return imageUri;
+    }
+
+    public String getProductId() {
+        return productId;
     }
 }

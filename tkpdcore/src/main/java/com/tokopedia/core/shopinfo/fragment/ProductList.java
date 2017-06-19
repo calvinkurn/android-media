@@ -703,7 +703,7 @@ public class ProductList extends V2BaseFragment {
     private ProductPass getFeaturedProductDataToPass(FeaturedProductItem featuredProductItem) {
         return ProductPass.Builder.aProductPass()
                 .setProductPrice(featuredProductItem.getPrice())
-                .setProductId("")
+                .setProductId(featuredProductItem.getProductId())
                 .setProductName(featuredProductItem.getName())
                 .setProductImage(featuredProductItem.getImageUri())
                 .build();
