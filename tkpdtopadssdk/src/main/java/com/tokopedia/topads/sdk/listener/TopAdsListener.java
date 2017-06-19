@@ -6,6 +6,8 @@ package com.tokopedia.topads.sdk.listener;
 
 public interface TopAdsListener {
 
+    void onTopAdsLoading();
+
     void onTopAdsLoaded();
 
     void onTopAdsFailToLoad(int errorCode, String message);

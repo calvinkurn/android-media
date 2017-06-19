@@ -277,17 +277,18 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(0);
                         }
-                        if(browseProductModel.result.products.length>0) {
+                        if (browseProductModel.result.products.length > 0) {
                             getOfficialStoreBanner(p.q);
                         }
                     }
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
-                    if(browseProductModel.getCategoryData().getIsRevamp() && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
+                    if (browseProductModel.getCategoryData() != null
+                            && browseProductModel.getCategoryData().getIsRevamp()
+                            && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         view.showTabLayout(false);
                     }
-                    view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }

@@ -349,7 +349,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ProductFragmentListener) {
+        if (context instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) context;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -359,7 +359,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity instanceof ProductFragmentListener) {
+        if (activity instanceof ProductFragmentListener) {
             mListener = (ProductFragmentListener) activity;
         } else {
             throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
@@ -404,6 +404,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -441,9 +442,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
-        getActivity().startActivity(intent);
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        navigateToActivityRequest(intent, ProductFragment.GOTO_PRODUCT_DETAIL);
     }
 
     @Override
@@ -655,12 +663,23 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public void onTopAdsLoading() {
+        ((BrowseProductActivity) getActivity()).showLoading(true);
+    }
+
+    @Override
     public void onTopAdsLoaded() {
         topAdsRecyclerAdapter.hideLoading();
+        if (isAdded() && getActivity() != null) {
+            ((BrowseProductActivity) getActivity()).showLoading(false);
+        }
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         topAdsRecyclerAdapter.hideLoading();
+        if (isAdded() && getActivity() != null) {
+            ((BrowseProductActivity) getActivity()).showLoading(false);
+        }
     }
 }
