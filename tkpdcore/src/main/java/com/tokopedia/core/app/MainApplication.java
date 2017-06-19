@@ -303,7 +303,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
-        TrackingUtils.enableDebugging(true);
+        TrackingUtils.enableDebugging(isDebug());
     }
 
 

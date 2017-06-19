@@ -13,7 +13,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -88,7 +87,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
  */
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
-    CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
+        CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
@@ -199,20 +198,20 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderHeader(HeaderModel headerModel) {
-        ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
+        ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
         titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
-        viewAllCategory.setText("Lihat Produk "+headerModel.getCategoryName()+" Lainnya");
+        viewAllCategory.setText("Lihat Produk " + headerModel.getCategoryName() + " Lainnya");
     }
 
     @Override
     public void renderTopAds() {
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
-        params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
-        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
+        params.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
@@ -229,11 +228,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void renderCategoryChildren(final List<ChildCategoryModel> childCategoryModelList) {
 
-        if (childCategoryModelList!=null && childCategoryModelList.size()>9) {
+        if (childCategoryModelList != null && childCategoryModelList.size() > 9) {
             activeChildren.addAll(childCategoryModelList
-                    .subList(0,9));
+                    .subList(0, 9));
             isUsedUnactiveChildren = true;
-        } else if (childCategoryModelList!=null){
+        } else if (childCategoryModelList != null) {
             activeChildren.addAll(childCategoryModelList);
         }
 
@@ -242,7 +241,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         revampCategoriesRecyclerView.setLayoutManager(
                 new NonScrollGridLayoutManager(getActivity(), 3,
                         GridLayoutManager.VERTICAL, false));
-        categoryAdapter = new IntermediaryCategoryAdapter(  getCategoryWidth(),activeChildren,this);
+        categoryAdapter = new IntermediaryCategoryAdapter(getCategoryWidth(), activeChildren, this);
         revampCategoriesRecyclerView.setAdapter(categoryAdapter);
         if (isUsedUnactiveChildren) {
             expandLayout.setVisibility(View.VISIBLE);
@@ -251,23 +250,26 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 public void onClick(View v) {
                     UnifyTracking.eventShowMoreCategory(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
-                            .subList(9,childCategoryModelList.size()));
+                            .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
                     isUsedUnactiveChildren = false;
                     hideLayout.setVisibility(View.VISIBLE);
 
                 }
             });
-            hideLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    categoryAdapter.hideExpandable();
-                    expandLayout.setVisibility(View.VISIBLE);
-                    isUsedUnactiveChildren = true;
-                    hideLayout.setVisibility(View.GONE);
-                    revampCategoriesRecyclerView.scrollToPosition(0);
-                }
-            });
+            if (hideLayout != null) {
+                hideLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (categoryAdapter != null) categoryAdapter.hideExpandable();
+                        if (expandLayout != null) expandLayout.setVisibility(View.VISIBLE);
+                        isUsedUnactiveChildren = true;
+                        if (hideLayout != null) hideLayout.setVisibility(View.GONE);
+                        if (revampCategoriesRecyclerView != null)
+                            revampCategoriesRecyclerView.scrollToPosition(0);
+                    }
+                });
+            }
         }
     }
 
@@ -275,7 +277,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList) {
         curationRecyclerView.setHasFixedSize(true);
         curationRecyclerView.setNestedScrollingEnabled(false);
-        curationAdapter = new CurationAdapter(getActivity(),this);
+        curationAdapter = new CurationAdapter(getActivity(), this);
         curationAdapter.setHomeMenuWidth(getCategoryWidth());
         curationRecyclerView.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -292,14 +294,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         cardViewHotList.setVisibility(View.VISIBLE);
 
         HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,
-                getCategoryWidth(),getActivity(),departmentId);
+                getCategoryWidth(), getActivity(), departmentId);
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
-        gridLayoutManager = new NonScrollGridLayoutManager(getActivity(), 2,  GridLayoutManager.VERTICAL, false);
+        gridLayoutManager = new NonScrollGridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
         hotListRecyclerView.setLayoutManager(gridLayoutManager);
-        hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),R.drawable.divider300));
+        hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider300));
         hotListRecyclerView.setAdapter(hotListItemAdapter);
     }
 
@@ -307,7 +309,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
-        bannerPagerAdapter = new BannerPagerAdapter(getActivity(),bannerModelList);
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
@@ -322,7 +324,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         bannerViewPager.setLayoutParams(param);
         headerContainer.setVisibility(View.GONE);
-        if (bannerModelList.size()==1) bannerIndicator.setVisibility(View.GONE);
+        if (bannerModelList.size() == 1) bannerIndicator.setVisibility(View.GONE);
         startSlide();
     }
 
@@ -368,7 +370,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
 
     private void stopSlide() {
-        if (bannerHandler!=null && incrementPage!=null) bannerHandler.removeCallbacks(incrementPage);
+        if (bannerHandler != null && incrementPage != null)
+            bannerHandler.removeCallbacks(incrementPage);
     }
 
     private void startSlide() {
@@ -381,10 +384,10 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         cardViewVideo.setVisibility(View.VISIBLE);
         videoTitle.setText(videoModel.getTitle());
         videoDesc.setText(videoModel.getDescription());
-        if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
+        if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-                placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -399,21 +402,21 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         brandsRecyclerView.setLayoutManager(
                 new NonScrollGridLayoutManager(getActivity(), 3,
                         GridLayoutManager.VERTICAL, false));
-        brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),R.drawable.divider300));
-        brandsAdapter = new IntermediaryBrandsAdapter(  getCategoryWidth(),brandModels,this);
+        brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider300));
+        brandsAdapter = new IntermediaryBrandsAdapter(getCategoryWidth(), brandModels, this);
         brandsRecyclerView.setAdapter(brandsAdapter);
     }
 
     @Override
     public void showLoading() {
-        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() != null) {
             ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void hideLoading() {
-        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() != null) {
             ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
         }
     }
@@ -433,7 +436,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                     BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                     ((IntermediaryActivity) getActivity()).getCategoryName()
             );
-            getActivity().overridePendingTransition(0,0);
+            getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
         }
     }
@@ -461,12 +464,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     private void showErrorEmptyState() {
-        NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
+        NetworkErrorHelper.showEmptyState(getActivity(), ((IntermediaryActivity) getActivity())
                         .getFrameLayout(),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                       presenter.getIntermediaryCategory(departmentId);
+                        presenter.getIntermediaryCategory(departmentId);
                     }
                 });
     }
@@ -497,7 +500,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 Integer.toString(productModel.getId()));
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(departmentId,
-                curatedName,productModel.getName());
+                curatedName, productModel.getName());
     }
 
     @Override
@@ -548,7 +551,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 child.getCategoryName()
         );
-        UnifyTracking.eventLevelCategoryIntermediary(departmentId,child.getCategoryId());
+        UnifyTracking.eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
     }
 
     public String getDepartmentId() {

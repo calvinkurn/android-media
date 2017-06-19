@@ -10,9 +10,11 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -34,6 +36,8 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER;
 
 /**
  * Created by nisie on 3/1/17.
@@ -69,6 +73,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private GetOpportunityListParam opportunityParam;
     private OpportunityFilterViewModel filterData;
+    private OpportunityFilterPassModel opportunityFilterPassModel;
 
     public static Fragment newInstance() {
         return new OpportunityListFragment();
@@ -253,6 +258,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     protected void initialVar() {
         pagingHandler = new PagingHandler();
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -308,7 +314,17 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), filterData.getListFilter());
+
+                opportunityFilterPassModel = new OpportunityFilterPassModel();
+                opportunityFilterPassModel.setListFilter(filterData.getListFilter());
+
+                cacheManager.setKey(CACHE_OPPORTUNITY_FILTER);
+                cacheManager.setValue(CacheUtil.convertModelToString(opportunityFilterPassModel,
+                        new TypeToken<OpportunityFilterPassModel>() {
+                        }.getType()));
+                cacheManager.store();
+
+                Intent intent = OpportunityFilterActivity.createIntent(getActivity());
                 startActivityForResult(intent, REQUEST_FILTER);
             }
         });
@@ -444,11 +460,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     private void setOpportunityFilterData() {
-        if (cacheManager == null)
-            cacheManager = new GlobalCacheManager();
 
-        OpportunityFilterPassModel opportunityFilterPassModel =
-                cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
+        opportunityFilterPassModel =
+                cacheManager.getConvertObjData(CACHE_OPPORTUNITY_FILTER,
                         OpportunityFilterPassModel.class);
         filterData.setListFilter(opportunityFilterPassModel.getListFilter());
 
@@ -485,6 +499,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onDestroyView();
         presenter.unsubscribeObservable();
         cacheHandler = null;
+        cacheManager.delete(CACHE_OPPORTUNITY_FILTER);
         cacheManager = null;
     }
 
