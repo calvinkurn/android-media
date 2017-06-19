@@ -272,6 +272,16 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void hideMainLayout() {
+        mainLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMainLayout() {
+        mainLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void actionNavigateToOnTripScreen(RideRequest rideRequest) {
         Intent intent = OnTripActivity.getCallingIntent(this, rideRequest);
         startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
