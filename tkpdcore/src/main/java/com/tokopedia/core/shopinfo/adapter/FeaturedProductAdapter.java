@@ -1,15 +1,6 @@
 package com.tokopedia.core.shopinfo.adapter;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +12,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
-import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +28,12 @@ import butterknife.ButterKnife;
 
 public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProductAdapter.ViewHolder> {
 
+    private OnItemClickListener onItemClickListener;
+
+    public FeaturedProductAdapter(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     private List<FeaturedProductItem> dataList = new ArrayList<>();
 
     public void setDataList(List<FeaturedProductItem> featuredProductItemList) {
@@ -53,10 +42,23 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
         notifyDataSetChanged();
     }
 
+    public FeaturedProductItem getItem(int pos) {
+        if (isDataAvailableAtPosition(pos)) {
+            return dataList.get(pos);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isDataAvailableAtPosition(int pos) {
+        return !dataList.isEmpty() && pos < dataList.size();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.featured_product_item, parent, false));
+                .inflate(R.layout.featured_product_item, parent, false),
+                onItemClickListener);
     }
 
     @Override
@@ -87,8 +89,11 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
         @BindView(R2.id.container)
         View container;
 
-        public ViewHolder(View itemView) {
+        private final OnItemClickListener onItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
+            this.onItemClickListener = onItemClickListener;
             ButterKnife.bind(this, itemView);
         }
 
@@ -97,6 +102,20 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
             title.setText(data.getName());
             ImageHandler.loadImageThumbs(MainApplication.getAppContext(), productImage, data.getImageUri());
             price.setText(data.getPrice());
+            container.setOnClickListener(getContainerClickListener(position));
         }
+
+        private View.OnClickListener getContainerClickListener(final int position) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onClick(position);
+                }
+            };
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onClick(int position);
     }
 }

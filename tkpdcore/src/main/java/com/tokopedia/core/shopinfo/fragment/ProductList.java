@@ -346,7 +346,15 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void initFeaturedProductAdapter() {
-        featuredProductAdapter = new FeaturedProductAdapter();
+        featuredProductAdapter = new FeaturedProductAdapter(new FeaturedProductAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                FeaturedProductItem productItem = featuredProductAdapter.getItem(position);
+                if (productItem != null) {
+                    launchProductDetail(getFeaturedProductDataToPass(productItem));
+                }
+            }
+        });
     }
 
     private void initEtalaseList() {
@@ -410,11 +418,15 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onProductClick(int pos) {
-                ((PdpRouter) (getActivity())
-                        .getApplication())
-                        .goToProductDetail(getActivity(), getProductDataToPass(pos));
+                launchProductDetail(getProductDataToPass(pos));
             }
         };
+    }
+
+    private void launchProductDetail(ProductPass productPass) {
+        ((PdpRouter) (getActivity())
+                .getApplication())
+                .goToProductDetail(getActivity(), productPass);
     }
 
     private void actionChangeEtalase(int pos) {
@@ -685,6 +697,15 @@ public class ProductList extends V2BaseFragment {
                 .setProductId(productModel.list.get(position).productId)
                 .setProductName(productModel.list.get(position).productName)
                 .setProductImage(productModel.list.get(position).productImage)
+                .build();
+    }
+
+    private ProductPass getFeaturedProductDataToPass(FeaturedProductItem featuredProductItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(featuredProductItem.getPrice())
+                .setProductId("")
+                .setProductName(featuredProductItem.getName())
+                .setProductImage(featuredProductItem.getImageUri())
                 .build();
     }
 
