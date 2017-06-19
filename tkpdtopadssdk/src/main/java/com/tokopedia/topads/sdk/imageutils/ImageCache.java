@@ -622,7 +622,7 @@ public class ImageCache {
         if (Utils.hasGingerbread()) {
             return Environment.isExternalStorageRemovable();
         }
-        return true;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     /**

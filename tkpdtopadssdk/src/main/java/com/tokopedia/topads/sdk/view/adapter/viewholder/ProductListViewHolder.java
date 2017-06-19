@@ -79,7 +79,12 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         Shop shop = data.getShop();
         if (shop != null) {
             shopLocation.setText(shop.getLocation());
-            shopName.setText(shop.getName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                shopName.setText(Html.fromHtml(shop.getName(),
+                        Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                shopName.setText(Html.fromHtml(shop.getName()));
+            }
             if (shop.getBadges() != null) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
             }
