@@ -77,6 +77,7 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageEtalase(Context context) {
         Intent intent = new Intent(context, EtalaseShopEditor.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
