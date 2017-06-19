@@ -61,25 +61,24 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private OpportunityFilterPassModel filterPassModel;
     private GlobalCacheManager cacheManager;
 
-    public static Intent createIntent(Context context, ArrayList<FilterViewModel> data) {
+    public static Intent createIntent(Context context) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(PARAM_FILTER_VIEW_MODEL, data);
-        intent.putExtras(bundle);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        cacheManager = new GlobalCacheManager();
+
         if (savedInstanceState != null) {
             listFilter = savedInstanceState.getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
             listPass = savedInstanceState.getParcelableArrayList(PARAM_SELECTED_FILTER);
-        } else if (getIntent().getExtras() != null &&
-                getIntent().getExtras().getParcelableArrayList(PARAM_FILTER_VIEW_MODEL) != null) {
-            listFilter = getIntent().getExtras().getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
-            listPass = new ArrayList<>();
         } else {
-            listFilter = new ArrayList<>();
+            OpportunityFilterPassModel opportunityFilterPassModel =
+                    cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
+                            OpportunityFilterPassModel.class);
+
+            listFilter = opportunityFilterPassModel.getListFilter();
             listPass = new ArrayList<>();
         }
         super.onCreate(savedInstanceState);
@@ -198,6 +197,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 filterPassModel.setListFilter(listFilter);
                 filterPassModel.setListPass(getSelectedFilterList());
 
+                cacheManager.setKey(CACHE_OPPORTUNITY_FILTER);
                 cacheManager.setValue(CacheUtil.convertModelToString(filterPassModel,
                         new TypeToken<OpportunityFilterPassModel>() {
                         }.getType()));
@@ -234,8 +234,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     protected void initVar() {
-        cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(CACHE_OPPORTUNITY_FILTER);
+
     }
 
     @Override
