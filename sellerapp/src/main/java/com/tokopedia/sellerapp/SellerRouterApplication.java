@@ -17,6 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -49,8 +50,8 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -119,6 +120,12 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
