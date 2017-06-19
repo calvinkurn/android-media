@@ -501,11 +501,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onTopAdsLoading() {
-        showLoading();
-    }
-
-    @Override
     public void onTopAdsLoaded() {
         hideLoading();
         topAdsView.setVisibility(View.VISIBLE);

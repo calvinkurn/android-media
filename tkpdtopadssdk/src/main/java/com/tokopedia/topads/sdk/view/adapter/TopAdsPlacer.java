@@ -172,9 +172,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     public void loadTopAds() {
         presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
         presenter.loadTopAds();
-        if (topAdsListener != null) {
-            topAdsListener.onTopAdsLoading();
-        }
     }
 
     @Override

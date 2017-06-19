@@ -663,11 +663,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onTopAdsLoading() {
-        ((BrowseProductActivity) getActivity()).showLoading(true);
-    }
-
-    @Override
     public void onTopAdsLoaded() {
         topAdsRecyclerAdapter.hideLoading();
         if (isAdded() && getActivity() != null) {

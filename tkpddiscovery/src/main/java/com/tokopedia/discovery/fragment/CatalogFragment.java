@@ -368,11 +368,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void onTopAdsLoading() {
-        setLoading(true);
-    }
-
-    @Override
     public void onTopAdsLoaded() {
         setLoading(false);
     }
