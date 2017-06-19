@@ -148,6 +148,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             > digitalProductView;
 
     private LocalCacheHandler cacheHandlerLastInputClientNumber;
+    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private ActionListener actionListener;
 
@@ -611,6 +612,29 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onProductDetailLinkClicked(String url) {
         startActivity(DigitalWebActivity.newInstance(getActivity(), url));
+    }
+
+    @Override
+    public boolean isRecentInstantCheckoutUsed(String categoryId) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+        );
+    }
+
+
+    @Override
+    public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        cacheHandlerRecentInstantCheckoutUsed.putBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+        );
     }
 
     @Override

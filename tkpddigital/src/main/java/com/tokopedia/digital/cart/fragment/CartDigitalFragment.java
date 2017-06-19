@@ -326,17 +326,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName()+" - "+cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName() + " - " + cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
 
     }
 
-    private void sendGTMAnalytics(String ec, String el, boolean analyticsKind){
+    private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
 
         UnifyTracking.eventViewCheckoutPage(ec, el);
 
-        if(analyticsKind){
+        if (analyticsKind) {
             UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
-        }{
+        }
+        {
             UnifyTracking.eventClickBeliWidget(ec, el);
         }
     }
@@ -612,7 +613,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName()+" - "+cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName() + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain());
         presenter.processToCheckout();
     }
 

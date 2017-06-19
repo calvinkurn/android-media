@@ -47,6 +47,7 @@ public class TkpdCache {
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET = "DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET";
+    public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
 
 
     public static void clearAllCache(Context context) {
@@ -189,6 +190,7 @@ public class TkpdCache {
         public static final String DIGITAL_CLIENT_NUMBER_CATEGORY = "DIGITAL_CLIENT_NUMBER_CATEGORY_";
         public static final String DIGITAL_OPERATOR_ID_CATEGORY = "DIGITAL_OPERATOR_ID_CATEGORY_";
         public static final String DIGITAL_PRODUCT_ID_CATEGORY = "DIGITAL_PRODUCT_ID_CATEGORY_";
+        public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
     }
 
 }
