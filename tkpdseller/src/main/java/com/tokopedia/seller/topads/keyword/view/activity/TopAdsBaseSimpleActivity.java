@@ -1,9 +1,14 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -13,11 +18,18 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasComponent<AppComponent> {
+public abstract class TopAdsBaseSimpleActivity extends BaseActivity implements HasComponent<AppComponent> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(com.tokopedia.core.R.style.Theme_Tokopedia3);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.green_600));
+        }
+
+        setContentView(R.layout.activity_toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -25,17 +37,11 @@ public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasC
     }
 
     private void setupFragment(Bundle savedinstancestate) {
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.parent_view, getFragment(savedinstancestate), getTagFragment())
-                .commit();
-    }
-
-    protected Fragment getFragment(Bundle savedinstancestate) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if(fragment == null){
-            fragment = getNewFragment(savedinstancestate);
+        if (savedinstancestate == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.parent_view, getNewFragment(), getTagFragment())
+                    .commit();
         }
-        return fragment;
     }
 
     @Override
@@ -53,8 +59,10 @@ public abstract class TopAdsBaseSimpleActivity extends TActivity implements HasC
         return super.onOptionsItemSelected(item);
     }
 
-    protected abstract Fragment getNewFragment(Bundle savedinstancestate);
+    @NonNull
+    protected abstract Fragment getNewFragment();
 
+    @NonNull
     protected abstract String getTagFragment();
 
 }

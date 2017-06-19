@@ -51,7 +51,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends TopAdsBaseSimpleActivit
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         boolean isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
         return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive);
     }

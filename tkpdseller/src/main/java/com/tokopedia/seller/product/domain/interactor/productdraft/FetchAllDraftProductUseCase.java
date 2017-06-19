@@ -15,25 +15,22 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class FetchDraftProductUseCase extends UseCase<UploadProductInputDomainModel> {
-
-    public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
+public class FetchAllDraftProductUseCase extends UseCase<List<UploadProductInputDomainModel>> {
     private ProductDraftRepository productDraftRepository;
 
-    public FetchDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                    ProductDraftRepository productDraftRepository) {
+    public FetchAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                       ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;
     }
 
     @Override
-    public Observable<UploadProductInputDomainModel> createObservable(RequestParams requestParams) {
-        return productDraftRepository.getDraft(requestParams.getLong(DRAFT_PRODUCT_ID, 0));
+    public Observable<List<UploadProductInputDomainModel>> createObservable(RequestParams requestParams) {
+        return productDraftRepository.getAllDraft();
     }
 
     public static RequestParams createRequestParams(String draftProductId){
         RequestParams requestParams = RequestParams.create();
-        requestParams.putLong(DRAFT_PRODUCT_ID, Long.parseLong(draftProductId));
         return requestParams;
     }
 
