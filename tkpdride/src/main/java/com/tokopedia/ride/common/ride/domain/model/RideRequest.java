@@ -9,7 +9,7 @@ import com.tokopedia.ride.history.domain.model.Payment;
  * Created by alvarisi on 3/24/17.
  */
 
-public class RideRequest implements Parcelable {
+public class RideRequest implements Parcelable{
     private String requestId;
     private String productId;
     private String status;
@@ -22,6 +22,7 @@ public class RideRequest implements Parcelable {
     private boolean shared;
     private Payment payment;
     private int pollWait;
+    private String cancelChargeTimestamp;
 
     public RideRequest() {
     }
@@ -37,8 +38,9 @@ public class RideRequest implements Parcelable {
         destination = in.readParcelable(LocationLatLng.class.getClassLoader());
         surgeMultiplier = in.readDouble();
         shared = in.readByte() != 0;
-        payment = in.readParcelable(Driver.class.getClassLoader());
+        payment = in.readParcelable(Payment.class.getClassLoader());
         pollWait = in.readInt();
+        cancelChargeTimestamp = in.readString();
     }
 
     public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
@@ -150,6 +152,14 @@ public class RideRequest implements Parcelable {
         this.pollWait = pollWait;
     }
 
+    public String getCancelChargeTimestamp() {
+        return cancelChargeTimestamp;
+    }
+
+    public void setCancelChargeTimestamp(String cancelChargeTimestamp) {
+        this.cancelChargeTimestamp = cancelChargeTimestamp;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -169,5 +179,6 @@ public class RideRequest implements Parcelable {
         parcel.writeByte((byte) (shared ? 1 : 0));
         parcel.writeParcelable(payment, i);
         parcel.writeInt(pollWait);
+        parcel.writeString(cancelChargeTimestamp);
     }
 }

@@ -164,7 +164,7 @@ public class RidePushNotificationBuildAndShow {
         remoteView.setTextViewText(R.id.tv_cab_name, String.format("%s %s", rideRequest.getVehicle().getMake(), rideRequest.getVehicle().getVehicleModel()));
         remoteView.setTextViewText(R.id.tv_cab_number, rideRequest.getVehicle().getLicensePlate());
         remoteView.setTextViewText(R.id.tv_driver_name, rideRequest.getDriver().getName());
-        remoteView.setTextViewText(R.id.tv_driver_star, String.format("%s star", rideRequest.getDriver().getRating()));
+        remoteView.setTextViewText(R.id.tv_driver_star, String.format("%s", rideRequest.getDriver().getRating()));
         remoteView.setTextViewText(R.id.tv_eta, String.format(String.format("%s will pick you up in %s minutes.",
                 rideRequest.getDriver().getName(),
                 String.valueOf(Math.round(rideRequest.getPickup().getEta())))

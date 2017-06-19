@@ -39,6 +39,7 @@ public class RideRequestEntityMapper {
             rideRequest.setShared(entity.isShared());
             rideRequest.setPayment(transform(entity.getPayment()));
             rideRequest.setPollWait(entity.getPollWait());
+            rideRequest.setCancelChargeTimestamp(entity.getCancelChargeTimestamp());
         }
         return rideRequest;
     }
