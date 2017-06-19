@@ -519,14 +519,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductDetailRetry() {
-        if(productPass !=null && !productPass.getProductName().isEmpty()){
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    initializationErrorListener()).showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getActivity().findViewById(R.id.root_view),
-                    initializationErrorListener());
-        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                initializationErrorListener()).showRetrySnackbar();
 
     }
 
