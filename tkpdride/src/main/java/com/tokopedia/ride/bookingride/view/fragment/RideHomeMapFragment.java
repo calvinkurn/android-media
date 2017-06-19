@@ -88,8 +88,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     TextView destinationTextView;
     @BindView(R2.id.layout_src_destination)
     View sourceDestinationPickerLayout;
-    @BindView(R2.id.iv_my_location_button)
-    ImageView myLocationButton;
     @BindView(R2.id.marker_time)
     ImageView markerTimeBackgroundImageView;
     @BindView(R2.id.tv_marker_pickup_eta)

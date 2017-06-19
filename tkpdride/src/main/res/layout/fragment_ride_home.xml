@@ -99,19 +99,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="68dp" />
 
-            <ImageView
+
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/iv_my_location_button"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/layout_src_destination"
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/my_location_arrow_shadow"
                 android:src="@drawable/my_location_arrow"
-                android:visibility="visible" />
+                android:tint="@color/grey_700"
+                android:visibility="visible"
+                app:backgroundTint="@android:color/white"
+                app:fabSize="mini" />
 
         </RelativeLayout>
     </LinearLayout>
