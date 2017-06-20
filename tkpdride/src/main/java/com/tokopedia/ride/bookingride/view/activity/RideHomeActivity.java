@@ -4,10 +4,15 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,6 +116,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private boolean isSeatPanelShowed;
 
     RideHomeContract.Presenter mPresenter;
+    private boolean inBackground;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
@@ -179,6 +185,51 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (inBackground) {
+            inBackground = false;
+            try {
+                RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+                if (fragment != null) {
+                    fragment.appResumedFromBackground();
+                }
+            } catch (Exception e) {
+                //do nothing
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isApplicationBroughtToBackground(this)) {
+            inBackground = true;
+        }
+    }
+
+    public static boolean isApplicationBroughtToBackground(final Activity activity) {
+        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+
+        // Check the top Activity against the list of Activities contained in the Application's package.
+        if (!tasks.isEmpty()) {
+            ComponentName topActivity = tasks.get(0).topActivity;
+            try {
+                PackageInfo pi = activity.getPackageManager().getPackageInfo(activity.getPackageName(), PackageManager.GET_ACTIVITIES);
+                for (ActivityInfo activityInfo : pi.activities) {
+                    if (topActivity.getClassName().equals(activityInfo.name)) {
+                        return false;
+                    }
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                return false; // Never happens.
+            }
+        }
+        return true;
     }
 
     @Override

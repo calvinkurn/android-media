@@ -525,7 +525,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onResume() {
         mapView.onResume();
         super.onResume();
-        presenter.onResume();
         if (source != null && destination != null) {
             presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
@@ -757,5 +756,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    public void appResumedFromBackground() {
+        presenter.appResumedFromBackground();
     }
 }
