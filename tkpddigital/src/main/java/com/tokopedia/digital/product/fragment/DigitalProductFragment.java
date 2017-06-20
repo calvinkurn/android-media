@@ -635,6 +635,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         cacheHandlerRecentInstantCheckoutUsed.putBoolean(
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
+        cacheHandlerRecentInstantCheckoutUsed.applyEditor();
     }
 
     @Override
