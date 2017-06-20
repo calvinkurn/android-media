@@ -248,7 +248,7 @@
 
         <activity
             android:name=".product.view.activity.ProductDraftListActivity"
-            android:label="@string/title_activity_edit_product"
+            android:label="@string/title_activity_draft_product"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
