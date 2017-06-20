@@ -624,6 +624,7 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     private void createProductMenu() {
         model.productMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
+        model.productMenu.list.add(new DrawerItem("Draft Produk", 0, 0, TkpdState.DrawerPosition.DRAFT_PRODUCT, true));
     }
 
     private void createInboxMenu() {
