@@ -68,7 +68,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         tvDesc.setText(productDescription == null
                 || productDescription.equals("")
                 || productDescription.equals("0")
-                ? getResources().getString(R.string.no_description_pdp) : productDescription.);
+                ? getResources().getString(R.string.no_description_pdp) : productDescription);
         tvDesc.setAutoLinkMask(0);
         Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
         descriptionContainer.setVisibility(View.VISIBLE);
