@@ -50,6 +50,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
@@ -67,6 +68,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     private static final String IS_GM_SUBSCRIBE_OPENED = "IS_GM_SUBSCRIBE_OPENED";
+    private static final String IS_PRODUCT_OPENED = "IS_PRODUCT_OPENED";
     public AppCompatActivity context;
     private NetworkInteractor networkInteractor;
     private ViewHolder holder;
@@ -300,6 +302,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
                 Cache.putBoolean(IS_GM_SUBSCRIBE_OPENED, isExpand);
                 break;
+            case TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND:
+                Cache.putBoolean(IS_PRODUCT_OPENED, isExpand);
+                break;
             default:
                 break;
         }
@@ -325,6 +330,9 @@ public class DrawerVariableSeller extends DrawerVariable {
         Boolean isFinish = true;
         Intent intent;
         switch (((DrawerItem) model.data.get(position)).id) {
+            case TkpdState.DrawerPosition.DRAFT_PRODUCT:
+                context.startActivity(new Intent(context, ProductDraftListActivity.class));
+                break;
             case TkpdState.DrawerPosition.SELLER_INDEX_HOME:
                 context.startActivity(new Intent(context, SellerHomeActivity.class));
                 break;
@@ -491,6 +499,9 @@ public class DrawerVariableSeller extends DrawerVariable {
         }
         if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
+        }
+        if (Cache.getBoolean(IS_PRODUCT_OPENED, false)) {
+            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND));
         }
     }
 
