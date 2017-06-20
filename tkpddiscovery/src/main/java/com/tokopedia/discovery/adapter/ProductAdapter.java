@@ -36,6 +36,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.intermediary.Child;
@@ -893,31 +894,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 shopName.setText(MethodChecker.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
-            viewHolder.badgesContainer.removeAllViews();
-            if (data.getBadges() != null) {
-                for (Badge badges : data.getBadges()) {
-                    LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
-                }
-            }
-            viewHolder.labelContainer.removeAllViews();
-            if (data.getLabels() != null) {
-                for (Label label : data.getLabels()) {
-                    View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
-                    TextView labelText = (TextView) view.findViewById(R.id.label);
-                    labelText.setText(label.getTitle());
-                    if (!label.getColor().toLowerCase().equals("#ffffff")) {
-                        labelText.setBackgroundResource(R.drawable.bg_label);
-                        labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
-                        ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            labelText.setBackgroundTintList(tint);
-                        } else {
-                            ViewCompat.setBackgroundTintList(labelText, tint);
-                        }
-                    }
-                    labelContainer.addView(view);
-                }
-            }
+
+            IndicatorViewHelper.renderBadgesView(context, viewHolder.badgesContainer, data.getBadges());
+            IndicatorViewHelper.renderLabelsView(context, viewHolder.labelContainer, data.getLabels());
+
             if (data.getIsTopAds()) {
                 wishlistButtonContainer.setVisibility(View.GONE);
             } else {

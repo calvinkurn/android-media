@@ -1,12 +1,12 @@
 package com.tokopedia.core.shopinfo.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -14,6 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.FlowLayout;
+import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
 
 import java.util.ArrayList;
@@ -82,27 +83,28 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
         FlowLayout labelContainer;
         @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
-        @BindView(R2.id.wishlist_button)
-        ImageView wishlistButton;
-        @BindView(R2.id.wishlist_button_container)
-        RelativeLayout wishlistButtonContainer;
         @BindView(R2.id.container)
         View container;
 
         private final OnItemClickListener onItemClickListener;
+        private Context context;
 
         public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             this.onItemClickListener = onItemClickListener;
+            this.context = MainApplication.getAppContext();
             ButterKnife.bind(this, itemView);
         }
 
         public void bindData(final FeaturedProductItem data, final int position) {
-            wishlistButtonContainer.setVisibility(View.GONE);
             title.setText(data.getName());
-            ImageHandler.loadImageThumbs(MainApplication.getAppContext(), productImage, data.getImageUri());
+            ImageHandler.loadImageThumbs(context, productImage, data.getImageUri());
             price.setText(data.getPrice());
+
             container.setOnClickListener(getContainerClickListener(position));
+
+            IndicatorViewHelper.renderBadgesView(context, badgesContainer, data.getBadges());
+            IndicatorViewHelper.renderLabelsView(context, labelContainer, data.getLabels());
         }
 
         private View.OnClickListener getContainerClickListener(final int position) {

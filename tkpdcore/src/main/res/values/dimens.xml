@@ -202,4 +202,5 @@
     <dimen name="intermediary_brand">86dp</dimen>
     <dimen name="intermediary_card">100dp</dimen>
     <dimen name="featured_product_item_image_size">205dp</dimen>
+    <dimen name="product_item_title_min_height">38dp</dimen>
 </resources>

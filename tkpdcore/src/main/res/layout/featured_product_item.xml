@@ -29,28 +29,6 @@
             android:scaleType="centerCrop" />
     </android.support.v7.widget.CardView>
 
-    <RelativeLayout
-        android:id="@id/wishlist_button_container"
-        android:layout_width="@dimen/wishlish_button_size"
-        android:layout_height="@dimen/wishlish_button_size"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="-5dp"
-        android:layout_marginRight="-5dp"
-        android:background="@drawable/circle_white"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@id/wishlist_button"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_marginLeft="8dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_wishlist"
-            />
-
-    </RelativeLayout>
-
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -61,7 +39,7 @@
         android:maxLines="2"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
-        android:minHeight="@dimen/wishlish_button_size"
+        android:minHeight="@dimen/product_item_title_min_height"
         style="@style/MediumText"
         android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/black_70"
