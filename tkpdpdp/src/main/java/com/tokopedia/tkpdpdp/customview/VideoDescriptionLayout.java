@@ -80,7 +80,9 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     public void renderData(@NonNull ProductDetailData data) {
         description = data.getInfo().getProductDescription() == null ? "" :
                 data.getInfo().getProductDescription();
-        container.setOnClickListener(new VideoDescriptionLayout.ClickToggle());
+        ClickToggle clickToggleDescription = new VideoDescriptionLayout.ClickToggle();
+        container.setOnClickListener(clickToggleDescription);
+        tvDesc.setOnClickListener(clickToggleDescription);
         tvDesc.setText(description == null
                 || description.equals("")
                 || description.equals("0")
