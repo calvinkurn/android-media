@@ -289,18 +289,20 @@
                 android:textSize="14sp" />
 
             <LinearLayout
+                android:id="@+id/cancellation_charges_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancellation Fee:"
+                    android:text="@string/ontrip_cancellation_fee"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

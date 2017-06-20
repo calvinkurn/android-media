@@ -151,6 +151,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     ImageView myLocationBtn;
     @BindView(R2.id.tv_canellation_charges)
     TextView cancellationFeeTextView;
+    @BindView(R2.id.cancellation_charges_layout)
+    LinearLayout cancellationChargesLayout;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -421,6 +423,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
         showCancelPanel();
+        presenter.actionCancelButtonClicked();
+    }
+
+    @Override
+    public void showCancellationLayout() {
+        cancellationChargesLayout.setVisibility(View.VISIBLE);
+        cancellationFeeTextView.setText(getCancellationFee());
     }
 
     @Override
@@ -866,6 +875,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void actionCancelRide() {
         showCancelPanel();
+        presenter.actionCancelButtonClicked();
+
+
     }
 
     @Override
@@ -965,7 +977,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         cancelPanelLayout.setAlpha(0.0f);
         cancelPanelLayout.animate().alpha(1.0f).setDuration(500);
 
-        cancellationFeeTextView.setText(getCancellationFee());
     }
 
     @Override
@@ -1312,8 +1323,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void actionNavigateToCancelReasonPage(String requestId) {
-        Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId);
+    public void actionNavigateToCancelReasonPage(String requestId, String timestamp) {
+        Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId, timestamp);
         startActivityForResult(intent, REQUEST_CODE_CANCEL_REASON);
     }
 }
