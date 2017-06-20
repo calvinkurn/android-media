@@ -178,6 +178,8 @@ dependencies {
     }
     compile rootProject.ext.debugToolsDependencies.stetho
 
+    compile "com.facebook.react:react-native:+"
+
 }
 
 apply plugin: 'com.google.gms.google-services'
