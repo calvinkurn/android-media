@@ -21,7 +21,7 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
  * Created by zulfikarrahman on 12/16/16.
  */
 
-public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProductAdListPresenter> implements TopAdsEmptyAdDataBinder.Callback {
+public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProductAdListPresenter, Ad> implements TopAdsEmptyAdDataBinder.Callback {
 
     private long groupId;
     private GroupAd groupAd;

@@ -42,7 +42,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsBaseListFragment<T> implements
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> extends TopAdsBaseListFragment<T,U> implements
         AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
 
     public interface OnAdListFragmentListener {

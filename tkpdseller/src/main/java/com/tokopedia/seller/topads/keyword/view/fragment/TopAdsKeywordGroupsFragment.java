@@ -41,7 +41,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter>
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";

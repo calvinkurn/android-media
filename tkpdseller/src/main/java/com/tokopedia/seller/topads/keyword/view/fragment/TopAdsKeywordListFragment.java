@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,7 +34,7 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl, Ad>
         implements TopAdsEmptyAdDataBinder.Callback {
 
     protected int filterStatus;
