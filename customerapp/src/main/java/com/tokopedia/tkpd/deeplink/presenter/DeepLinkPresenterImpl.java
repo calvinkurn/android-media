@@ -311,11 +311,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        String url = encodeUrl(uriData.toString());
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(Uri.parse(url), uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
+            openWebView(uriData, uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
         } else {
-            openWebView(Uri.parse(url), false);
+            openWebView(uriData, false);
         }
     }
 
