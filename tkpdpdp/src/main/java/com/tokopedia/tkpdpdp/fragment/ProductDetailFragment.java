@@ -497,6 +497,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
         }
+        fabWishlist.setVisibility(View.VISIBLE);
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,

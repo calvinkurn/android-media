@@ -191,6 +191,7 @@
         android:src="@drawable/ic_fav"
         app:layout_anchor="@id/appbar"
         app:borderWidth="0dp"
+        android:visibility="gone"
         app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>
