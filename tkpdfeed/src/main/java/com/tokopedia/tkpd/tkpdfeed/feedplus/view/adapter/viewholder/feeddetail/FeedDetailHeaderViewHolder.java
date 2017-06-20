@@ -9,7 +9,9 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +40,9 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     TextView shopName;
     ImageView shopAvatar;
     TextView shopSlogan;
+
+    private final static String ADD_STRING = "tambah";
+    private final static String EDIT_STRING = "ubah";
 
     public FeedDetailHeaderViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
@@ -79,9 +84,16 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
             }
         };
 
-        actionSpanString.setSpan(goToShopDetail, titleText.indexOf(shopNameString)
-                , titleText.indexOf(shopNameString) + shopNameString.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
+        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
+
+        setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
+        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
+        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
+
+        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
+        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
+
 
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
@@ -111,11 +123,21 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         });
     }
 
+    private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {
+        if (object instanceof ImageSpan) {
+            actionSpanString.setSpan(object, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (titleText.toString().contains(stringEdited)) {
+            actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
+                    , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+
     private void setBadge(SpannableString actionSpanString, int resId) {
         int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
-        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
+        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
         actionSpanString.setSpan(is, 0, 1, 0);
     }
 
