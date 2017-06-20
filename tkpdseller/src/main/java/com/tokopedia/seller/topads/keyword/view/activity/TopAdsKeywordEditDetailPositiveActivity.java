@@ -22,7 +22,7 @@ public class TopAdsKeywordEditDetailPositiveActivity extends TopAdsBaseSimpleAct
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         return TopAdsKeywordEditDetailPositiveFragment.createInstance(keywordAd);
     }

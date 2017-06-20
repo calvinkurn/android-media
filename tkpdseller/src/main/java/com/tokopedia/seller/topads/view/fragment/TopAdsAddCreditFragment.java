@@ -38,38 +38,13 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
         presenter = new TopAdsAddCreditPresenterImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
     }
 
     @Override

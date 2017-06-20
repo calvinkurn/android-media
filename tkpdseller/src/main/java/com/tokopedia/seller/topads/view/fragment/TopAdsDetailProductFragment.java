@@ -63,17 +63,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof TopAdsDetailProductFragmentListener) {
-            listener = (TopAdsDetailProductFragmentListener) activity;
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void initialListener(Context context) {
+        super.initialListener(context);
         if (context instanceof TopAdsDetailProductFragmentListener) {
             listener = (TopAdsDetailProductFragmentListener) context;
         }
@@ -239,15 +230,15 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        state.putParcelable(PRODUCT_AD_PARCELABLE, Parcels.wrap(productAd));
-        super.onSaveState(state);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(PRODUCT_AD_PARCELABLE, Parcels.wrap(productAd));
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        super.onRestoreState(savedState);
-        productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
+    public void onRestoreState(Bundle savedInstanceState) {
+        super.onRestoreState(savedInstanceState);
+        productAd = Parcels.unwrap(savedInstanceState.getParcelable(PRODUCT_AD_PARCELABLE));
         onAdLoaded(productAd);
     }
 

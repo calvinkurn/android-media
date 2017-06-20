@@ -7,14 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
@@ -47,9 +46,22 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private TopAdsInfoClickListener adsInfoClickListener;
     private OnLoadListener loadListener;
     private boolean loadMore = false;
+    private boolean unsetListener = false;
     private GridLayoutManager.SpanSizeLookup spanSizeLookup;
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private TopAdsPlacer placer;
+    private int itemTreshold = 5;
+    private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount) {
+            if (loadMore)
+                return;
+            if (loadListener != null && !unsetListener && placer.getItems().size() > itemTreshold) {
+                showLoading();
+                loadListener.onLoad(placer.getPage(), totalItemsCount);
+            }
+        }
+    };
 
     public TopAdsRecyclerAdapter(
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
@@ -79,6 +91,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
+                positionStart = placer.getPositionStart(positionStart);
+                for (int i = positionStart; i < (positionStart + itemCount); i++) {
+                    placer.getItems().remove(i);
+                }
                 notifyItemRangeRemoved(positionStart, itemCount);
             }
 
@@ -105,13 +121,14 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 break;
         }
+        hideLoading();
     }
 
     public void setConfig(Config config) {
         placer.setConfig(config);
     }
 
-    public Config getConfig(){
+    public Config getConfig() {
         return placer.getConfig();
     }
 
@@ -139,22 +156,31 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         placer.setTopAdsListener(topAdsListener);
     }
 
+
+    public void setFavShopClickListener(TopAdsFavShopClickListener favShopClickListener) {
+        placer.setFavShopClickListener(favShopClickListener);
+    }
+
+
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
         setLayoutManager(this.recyclerView.getLayoutManager());
-        this.recyclerView.addOnScrollListener(new EndlessScrollRecycleListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (loadMore)
-                    return;
-                showLoading();
-                if (loadListener != null) {
-                    loadListener.onLoad(placer.getPage(), totalItemsCount);
-                }
-            }
-        });
+        setEndlessScrollListener();
+    }
+
+    public void setEndlessScrollListenerVisibleThreshold(int threshold){
+        this.endlessScrollListener.setVisibleThreshold(threshold);
+    }
+
+    public void unsetEndlessScrollListener(){
+        unsetListener = true;
+        recyclerView.removeOnScrollListener(endlessScrollListener);
+    }
+
+    public void setEndlessScrollListener(){
+        unsetListener = false;
+        recyclerView.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
@@ -206,6 +232,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             TopAdsViewModel adsViewModel = (TopAdsViewModel) placer.getItem(position);
             topAdsViewHolder.setDisplayMode(placer.getDisplayMode());
             topAdsViewHolder.bind(adsViewModel);
+            if (adsInfoClickListener != null){
+                topAdsViewHolder.setClickListener(adsInfoClickListener);
+            }
         } else if (originalPos == LoadingViewModel.LOADING_POSITION_TYPE) {
             return;
         } else {
@@ -220,10 +249,15 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemViewType(final int position) {
         int viewType = placer.getItem(position).type(typeFactory);
-        if (viewType == TopAdsAdapterTypeFactory.CLIENT_ADAPTER_VIEW_TYPE) {
-            return mOriginalAdapter.getItemViewType(getOriginalPosition(position));
+        try {
+            if (viewType == TopAdsAdapterTypeFactory.CLIENT_ADAPTER_VIEW_TYPE) {
+                viewType = mOriginalAdapter.getItemViewType(getOriginalPosition(position));
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+        } finally {
+            return viewType;
         }
-        return viewType;
     }
 
     @Override
@@ -246,7 +280,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             this.recyclerView.setLayoutManager(gridLayoutManager);
         } else if (layoutManager instanceof LinearLayoutManager) {
-            if(getConfig().getDisplayMode() == DisplayMode.FEED){
+            if (getConfig().getDisplayMode() == DisplayMode.FEED) {
                 placer.setDisplayMode(getConfig().getDisplayMode());
             } else {
                 placer.setDisplayMode(DisplayMode.LIST);
@@ -261,10 +295,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void reset() {
+        loadMore = false;
         placer.reset();
         if (this.recyclerView != null) this.recyclerView.removeAllViews();
         notifyDataSetChanged();
-
+        endlessScrollListener.resetState();
     }
 
     public void showLoading() {
@@ -288,7 +323,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public void shouldLoadAds(boolean loadAds){
+    public void shouldLoadAds(boolean loadAds) {
         placer.setShouldLoadAds(loadAds);
     }
 
@@ -298,4 +333,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
+    public TopAdsPlacer getPlacer() {
+        return placer;
+    }
 }

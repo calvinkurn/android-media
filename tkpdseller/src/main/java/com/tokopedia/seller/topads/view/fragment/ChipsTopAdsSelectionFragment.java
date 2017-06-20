@@ -52,7 +52,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
             Log.d("MNORMANSYAH", "map empty " + mapEmpty);
             if (!isActivityInterfaceEmpty() && mapEmpty) {
                 addProductListInterface.disableNextButton();
-                addProductListInterface.hideBottomBecauseEmpty();
+                addProductListInterface.hideBottom();
             }
         }
     };
@@ -156,7 +156,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
         if (!isActivityInterfaceEmpty() && isMapEmpty()) {
             addProductListInterface.disableNextButton();
-            addProductListInterface.hideBottomBecauseEmpty();
+            addProductListInterface.hideBottom();
         }
     }
 

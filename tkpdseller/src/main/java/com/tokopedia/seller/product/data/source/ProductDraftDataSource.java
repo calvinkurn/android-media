@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.db.ProductDraftDataManager;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,6 +27,10 @@ public class ProductDraftDataSource {
 
     public Observable<String> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
+    }
+
+    public Observable<List<ProductDraftDataBase>> getAllDraft() {
+        return productDraftDataManager.getAllDraft();
     }
 
     public Observable<Boolean> clearAllDraft() {

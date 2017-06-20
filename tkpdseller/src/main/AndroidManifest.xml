@@ -247,6 +247,12 @@
             android:theme="@style/BasicThemeActionBar" />
 
         <activity
+            android:name=".product.view.activity.ProductDraftListActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".opportunity.activity.OpportunitySortActivity"
             android:label="@string/title_sort_but"
             android:screenOrientation="portrait" />

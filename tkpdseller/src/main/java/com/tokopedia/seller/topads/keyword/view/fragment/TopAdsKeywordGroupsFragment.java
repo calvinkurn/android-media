@@ -17,7 +17,9 @@ import android.widget.ImageView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
@@ -39,7 +41,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter>
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";
@@ -103,10 +105,10 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        super.initialListener(activity);
-        if (activity != null && activity instanceof TopAdsKeywordGroupListListener) {
-            groupListAdapterListener = (TopAdsKeywordGroupListListener) activity;
+    protected void initialListener(Context context) {
+        super.initialListener(context);
+        if (context != null && context instanceof TopAdsKeywordGroupListListener) {
+            groupListAdapterListener = (TopAdsKeywordGroupListListener) context;
         }
     }
 
@@ -160,12 +162,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_keyword_filter_group_name;
     }
@@ -190,8 +186,19 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    public void onGetGroupAdListError() {
-
+    public void onGetGroupAdListError(Throwable e) {
+        if (adapter == null) {
+            return;
+        }
+        adapter.showLoading(false);
+        // failed first time, show retry fullscreen
+        if (adapter.getDataSize() == 0) {
+            adapter.showRetryFull(true);
+        } else if (adapter.getDataSize() > 0) {
+            // failed to fetch when load more, show snackbar
+            String errorMessage = ViewUtils.getGeneralErrorMessage(getContext(), e);
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
@@ -227,6 +234,12 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     @Override
     public void setCallback(TopAdsFilterContentFragment.Callback callback) {
         this.callback = callback;
+    }
+
+    @Override
+    protected void searchAd() {
+        super.searchAd();
+        topAdsKeywordNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
     }
 
     @Override

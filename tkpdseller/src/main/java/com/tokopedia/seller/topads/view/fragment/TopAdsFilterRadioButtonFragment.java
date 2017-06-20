@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -74,12 +75,15 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
     }
 
     @Override
-    public void onSaveState(Bundle bundle) {
-        bundle.putInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedAdapterPosition);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedAdapterPosition);
     }
 
     @Override
-    public void onRestoreState(Bundle bundle) {
-        selectedAdapterPosition = bundle.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION);
+    public void onRestoreState(Bundle savedInstanceState) {
+        super.onRestoreState(savedInstanceState);
+        selectedAdapterPosition = savedInstanceState.getInt(
+                TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION);
     }
 }

@@ -39,28 +39,8 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
-    }
-
-    @Override
-    public void onSaveState(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle bundle) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
     }
 
     @Override
@@ -72,11 +52,6 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new TopAdsFilterAdapter();
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
     }
 
     @Override

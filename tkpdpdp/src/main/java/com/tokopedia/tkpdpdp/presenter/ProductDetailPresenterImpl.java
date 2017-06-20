@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -33,6 +34,8 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -293,6 +296,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
+                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
                         }
 
                         @Override
@@ -624,18 +628,29 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
+        if(value != null) outState.putParcelable(key, value);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
+        ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
+
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
             }
+        }
+
+        if(productCampaign != null) {
+            viewListener.showProductCampaign(productCampaign);
         }
     }
 
@@ -767,6 +782,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
+                        getProductCampaign(context, data.getInfo().getProductId().toString());
                     }
 
                     @Override
@@ -846,5 +862,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (productDetailData.getShopInfo().getShopIsGold() == 1) {
             requestVideo(context, productDetailData.getInfo().getProductId().toString());
         }
+    }
+
+    public void getProductCampaign(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductCampaign(context, id,
+                new RetrofitInteractor.ProductCampaignListener() {
+                    @Override
+                    public void onSucccess(ProductCampaign productCampaign) {
+                        viewListener.showProductCampaign(productCampaign);
+                    }
+
+                    @Override
+                    public void onError(String error) { }
+                }
+        );
     }
 }

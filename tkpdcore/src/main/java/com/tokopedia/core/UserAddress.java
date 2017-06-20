@@ -57,11 +57,10 @@ public class UserAddress extends TActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				System.out.println("Longclicked the " + AddressName.get(arg2));
 				//Intent intent = new Intent(UserAddress.this, ProfileEditAddress.class);
 				Bundle bundle = new Bundle();
 				bundle.putInt("page", 1);
-			//	startActivityForResult(intent, 2);
+				//	startActivityForResult(intent, 2);
 				return true;
 			}
 		});
@@ -116,7 +115,6 @@ public class UserAddress extends TActivity {
 		
 		@Override
 		protected void onPostExecute(String response) {
-			System.out.println(response);
 			try {
 				JSONObject json = new JSONObject(response);
 				if (!json.isNull("result")) {
@@ -126,7 +124,6 @@ public class UserAddress extends TActivity {
 					
 					for (int i = 0; i< DataArray.length(); i++) {
 						JSONObject DataDetail = new JSONObject(DataArray.getString(i));
-						System.out.println(DataDetail);
 						AddressName.add(DataDetail.getString("address_name"));
 					
 					}

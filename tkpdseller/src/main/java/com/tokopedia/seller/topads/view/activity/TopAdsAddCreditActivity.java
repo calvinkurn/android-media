@@ -13,7 +13,7 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsAddCreditFragment;
 public class TopAdsAddCreditActivity extends TopAdsBaseSimpleActivity {
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         return TopAdsAddCreditFragment.createInstance();
     }
 

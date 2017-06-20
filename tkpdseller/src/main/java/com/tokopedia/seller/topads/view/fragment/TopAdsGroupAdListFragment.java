@@ -20,7 +20,7 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter> implements TopAdsEmptyAdDataBinder.Callback {
+public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter, Ad> implements TopAdsEmptyAdDataBinder.Callback {
 
     public static Fragment createInstance() {
         TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();

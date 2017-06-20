@@ -5,6 +5,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -37,6 +39,12 @@ public class ProductDraftDataManager {
             throw new RuntimeException("Product draft not found in database");
         }
         return Observable.just(productDraftDatabase.getData());
+    }
+
+    public Observable<List<ProductDraftDataBase>> getAllDraft() {
+        return Observable.just( new Select()
+                        .from(ProductDraftDataBase.class)
+                        .queryList());
     }
 
     public Observable<Boolean> clearAllDraft(){

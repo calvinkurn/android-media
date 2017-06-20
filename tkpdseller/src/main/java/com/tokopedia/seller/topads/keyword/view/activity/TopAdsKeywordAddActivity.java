@@ -75,7 +75,7 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         String groupId = getIntent().getStringExtra(EXTRA_GROUP_ID);
         String groupName = getIntent().getStringExtra(EXTRA_GROUP_NAME);
         int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);

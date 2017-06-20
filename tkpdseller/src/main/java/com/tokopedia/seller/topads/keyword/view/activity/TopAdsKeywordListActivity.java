@@ -1,11 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -24,6 +26,15 @@ import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordListFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
+import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.seller.util.ShowCaseDialogFactory;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
+
+import java.util.ArrayList;
 
 /**
  * Created by nathan on 5/15/17.
@@ -31,7 +42,9 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 
 public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
-        KeywordListListener.Listener {
+        KeywordListListener.Listener,
+        TopAdsAdListFragment.OnAdListFragmentListener{
+    private ShowCaseDialog showCaseDialog;
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
@@ -205,5 +218,109 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     public void expand() {
         searchItem.expandActionView();
+    }
+
+    boolean isShowingShowCase = false;
+
+    @Override
+    public void startShowCase() {
+        final String showCaseTag = TopAdsKeywordListActivity.class.getName();
+        if (ShowCasePreference.hasShown(this, showCaseTag)){
+            return;
+        }
+        if (showCaseDialog != null || isShowingShowCase) {
+            return;
+        }
+        isShowingShowCase = true;
+
+        viewPager.setCurrentItem(0);
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) {
+                    return;
+                }
+                final TopAdsKeywordListFragment topAdsKeywordListFragment = getCurrentFragment();
+                if (topAdsKeywordListFragment == null) {
+                    return;
+                }
+                final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+                if (toolbar.getHeight() > 0) {
+                    final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+                    int height = toolbar.getHeight();
+                    int width = toolbar.getWidth();
+
+                    // Pencarian
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    findViewById(android.R.id.content),
+                                    getString(R.string.topads_showcase_keyword_list_title_1),
+                                    getString(R.string.topads_showcase_keyword_list_desc_1),
+                                    ShowCaseContentPosition.UNDEFINED,
+                                    Color.WHITE)
+                                    .withCustomTarget(new int[]{width - (int)(height * 1.8), 0,width - (int)(height * 0.8), height}));
+
+                    // Filter
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    findViewById(android.R.id.content),
+                                    getString(R.string.topads_showcase_keyword_list_title_2),
+                                    getString(R.string.topads_showcase_keyword_list_desc_2),
+                                    ShowCaseContentPosition.UNDEFINED,
+                                    Color.WHITE)
+                                    .withCustomTarget(new int[]{width - (int)(height * 0.9), 0,width, height}));
+
+                    RecyclerView recyclerView = topAdsKeywordListFragment.getRecyclerView();
+                    recyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            View dateView = topAdsKeywordListFragment.getDateView();
+                            if (dateView != null) {
+                                dateView.setVisibility(View.VISIBLE);
+                                showCaseList.add(
+                                        new ShowCaseObject(
+                                                dateView,
+                                                getString(R.string.topads_showcase_keyword_list_title_3),
+                                                getString(R.string.topads_showcase_keyword_list_desc_3)));
+                            }
+
+                            View itemView = topAdsKeywordListFragment.getItemRecyclerView();
+                            if (itemView != null) {
+                                showCaseList.add(
+                                        new ShowCaseObject(
+                                                itemView,
+                                                getString(R.string.topads_showcase_keyword_list_title_4),
+                                                getString(R.string.topads_showcase_keyword_list_desc_4),
+                                                ShowCaseContentPosition.UNDEFINED,
+                                                Color.WHITE));
+                            }
+
+                            View fabView = topAdsKeywordListFragment.getFab();
+                            if (fabView != null) {
+                                showCaseList.add(
+                                        new ShowCaseObject(
+                                                fabView,
+                                                getString(R.string.topads_showcase_keyword_list_title_5),
+                                                getString(R.string.topads_showcase_keyword_list_desc_5)));
+                            }
+                            showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+                            showCaseDialog.show(TopAdsKeywordListActivity.this, showCaseTag, showCaseList);
+                        }
+                    }, 300);
+
+                }
+                else {
+                    isShowingShowCase = false;
+                    toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar,
+                            new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    startShowCase();
+                                }
+                            }));
+                }
+
+            }
+        });
     }
 }

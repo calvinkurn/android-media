@@ -48,27 +48,12 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
 
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 

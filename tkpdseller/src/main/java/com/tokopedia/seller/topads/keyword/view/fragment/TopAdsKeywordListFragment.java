@@ -1,10 +1,11 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl>
+public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl, Ad>
         implements TopAdsEmptyAdDataBinder.Callback {
 
     protected int filterStatus;
@@ -50,10 +51,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        super.initialListener(activity);
-        if (activity != null && activity instanceof KeywordListListener.Listener) {
-            keywordAdListener = (KeywordListListener.Listener) activity;
+    public void initialListener(Context context) {
+        super.initialListener(context);
+        if (context != null && context instanceof KeywordListListener.Listener) {
+            keywordAdListener = (KeywordListListener.Listener) context;
         }
     }
 
@@ -164,11 +165,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
         super.onDestroy();
         topAdsKeywordListPresenter.detachView();
     }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
   
     public void onEmptyContentItemTextClicked() {
         // Do nothing
@@ -214,6 +210,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     public boolean hasDataFromServer() {
         return hasData;
+    }
+
+    public RecyclerView getRecyclerView(){
+        return recyclerView;
     }
 
 }

@@ -42,7 +42,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsBaseListFragment<T> implements
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> extends TopAdsBaseListFragment<T,U> implements
         AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
 
     public interface OnAdListFragmentListener {
@@ -106,7 +106,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initView(view);
         tempTopPaddingRecycleView = recyclerView.getPaddingTop();
         tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
-        fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_filter);
+        fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,20 +301,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void initialListener(Context context) {
+        super.initialListener(context);
         if (context instanceof OnAdListFragmentListener) {
-            listener = (OnAdListFragmentListener) getActivity();
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof OnAdListFragmentListener) {
-            listener = (OnAdListFragmentListener) getActivity();
+            listener = (OnAdListFragmentListener) context;
         }
     }
 
@@ -353,5 +344,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         status = savedInstanceState.getInt(EXTRA_STATUS);
         keyword = savedInstanceState.getString(EXTRA_KEYWORD);
+    }
+
+    public View getFab() {
+        return fabAdd;
     }
 }

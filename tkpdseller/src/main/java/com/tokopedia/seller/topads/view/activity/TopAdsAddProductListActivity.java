@@ -278,10 +278,17 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     @Override
-    public void hideBottomBecauseEmpty() {
+    public void hideBottom() {
         bottomSheetHelper.dismissBottomSheet();
         bottomSheetHelper.collapse();
         hideFooterViewHolder();
+    }
+
+    @Override
+    public void showBottom() {
+        bottomSheetHelper.showBottomSheet();
+        bottomSheetHelper.collapse();
+        showFooterViewHolder();
     }
 
     @Override

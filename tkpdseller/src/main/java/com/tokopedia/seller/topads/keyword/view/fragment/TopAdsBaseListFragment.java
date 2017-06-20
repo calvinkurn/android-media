@@ -34,8 +34,8 @@ import java.util.List;
  *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment<T> implements
-        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<Ad> {
+public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragment<T> implements
+        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;
 
@@ -43,7 +43,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected static final String KEY_PAGE = "KEY_PAGE";
     protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
 
-    protected TopAdsBaseListAdapter<Ad> adapter;
+    protected TopAdsBaseListAdapter<U> adapter;
     protected CoordinatorLayout coordinatorLayout;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
@@ -271,8 +271,8 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         if (savedInstanceState == null)
             return;
         status = savedInstanceState.getInt(KEY_STATUS);
-        page = savedInstanceState.getInt(KEY_STATUS, 0);
-        totalItem = savedInstanceState.getInt(KEY_STATUS, Integer.MAX_VALUE);
+        page = savedInstanceState.getInt(KEY_PAGE, 0);
+        totalItem = savedInstanceState.getInt(KEY_TOTAL_ITEM, Integer.MAX_VALUE);
     }
 
     @Override
