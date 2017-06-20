@@ -52,8 +52,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-//import com.tokopedia.core.product.fragment.ProductDetailFragment;
-
 /**
  * Created by noiz354 on 3/24/16.
  */
@@ -62,10 +60,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     String TAG = FragmentDiscoveryPresenterImpl.class.getSimpleName();
     DiscoveryInteractor discoveryInteractor;
     WeakReference<Context> context;
-    private List<ProductItem> currTopAdsItem;
     private BrowseProductModel browseProductModel;
-    int spanCount;
-    private int topAdsPaging = 1;
     private CacheInteractorImpl cacheInteractor;
     private RetrofitInteractorImpl retrofitInteractor;
 
@@ -83,6 +78,19 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         if (TAG == null || TAG.equals(""))
             throw new RuntimeException(getMessageTAG() + "need supply TAG !!!");
 
+    }
+
+    @Override
+    public void callNetwork(BrowseView browseView) {
+        // jika datanya kosong, maka itu dianggap first time.
+        if (view.getDataSize(ProductFragment.TAG) <= 0) {
+            this.context = new WeakReference<Context>(browseView.getContext());
+            NetworkParam.Product productParam = browseView.getProductParam();
+            if (productParam == null)
+                return;
+            discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(productParam));
+            view.setLoading(true);
+        }
     }
 
     @Override
@@ -237,6 +245,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             case ProductFragment.TAG:
                 if (!isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
+                        view.setLoading(true);
                         browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);

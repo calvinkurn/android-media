@@ -635,7 +635,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @param datas     just another data.
      */
     public void addAll(boolean withClear, boolean reload, List<RecyclerViewItem> datas) {
-        int positionStart = getItemCount();
+        int positionStart = data.size();
         int itemCount = datas.size();
         if (withClear) {
             this.data.clear();

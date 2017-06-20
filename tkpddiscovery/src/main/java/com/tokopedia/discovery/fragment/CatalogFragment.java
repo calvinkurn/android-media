@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -158,13 +159,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void ariseRetry(int type, Object... data) {
-//        browseCatalogAdapter.setIsErrorState(true);
-//        browseCatalogAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
-//            @Override
-//            public void onRetryCliked() {
-//                presenter.loadMore(getActivity());
-//            }
-//        });
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

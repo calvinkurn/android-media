@@ -309,8 +309,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 if (!placer.getItems().contains(loadingViewModel)) {
                     placer.getItems().add(loadingViewModel);
                     notifyItemInserted(placer.getItemCount() + 1);
-                    loadMore = true;
                 }
+                loadMore = true;
             }
         });
     }
@@ -319,8 +319,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (placer.getItems().contains(loadingViewModel)) {
             placer.getItems().remove(loadingViewModel);
             notifyItemRemoved(placer.getItemCount());
-            loadMore = false;
         }
+        loadMore = false;
     }
 
     public void shouldLoadAds(boolean loadAds) {

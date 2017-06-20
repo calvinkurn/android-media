@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -112,13 +113,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void ariseRetry(int type, Object... data) {
-//        browseShopAdapter.setIsErrorState(true);
-//        browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
-//            @Override
-//            public void onRetryCliked() {
-//                presenter.loadMore(getActivity());
-//            }
-//        });
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -221,7 +215,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         }
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(),
                 browseShopModelList, this);
-        browseShopAdapter.setIsLoading(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         spanCount = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);

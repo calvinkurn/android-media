@@ -21,7 +21,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
@@ -53,6 +55,7 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
@@ -325,11 +328,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public int getDataSize(String TAG) {
-        if (TAG != null && ProductFragment.TAG.equals(TAG)) {
-            return productAdapter.getItemCount();
-        } else {
-            return 0;
-        }
+        if (productAdapter == null) return -1;
+        return productAdapter.getData() != null ? productAdapter.getData().size() : -1;
     }
 
     @Override
@@ -467,7 +467,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallNetwork() {
-
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
+        }
     }
 
     @Override
@@ -487,7 +490,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.loadMore(getActivity());
+                if (getActivity() != null && getActivity() instanceof BrowseView) {
+                    BrowseView browseView = (BrowseView) getActivity();
+                    presenter.callNetwork(browseView);
+                }
             }
         };
         if (listener != null) {
@@ -654,6 +660,15 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public void setLoading(boolean isLoading) {
+        if(isLoading){
+            topAdsRecyclerAdapter.showLoading();
+        } else {
+            topAdsRecyclerAdapter.hideLoading();
+        }
+    }
+
+    @Override
     public void displayEmptyResult() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         productAdapter.setSearchNotFound();
@@ -662,17 +677,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onTopAdsLoaded() {
-        topAdsRecyclerAdapter.hideLoading();
-        if (isAdded() && getActivity() != null) {
-            ((BrowseProductActivity) getActivity()).showLoading(false);
-        }
+        setLoading(false);
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
-        if (isAdded() && getActivity() != null) {
-            ((BrowseProductActivity) getActivity()).showLoading(false);
-        }
+        setLoading(false);
     }
 }

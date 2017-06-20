@@ -293,6 +293,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+                view.setLoadingProgress(false);
                 break;
             case DiscoveryListener.OS_BANNER:
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
