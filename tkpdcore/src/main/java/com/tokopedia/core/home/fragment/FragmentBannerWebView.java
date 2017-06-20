@@ -35,6 +35,7 @@ import java.net.URL;
  */
 public class FragmentBannerWebView extends Fragment {
 
+    private static final String SEAMLESS = "seamless";
     private ProgressBar progressBar;
     private TkpdWebView webview;
     private static final String EXTRA_URL = "url";
@@ -160,7 +161,11 @@ public class FragmentBannerWebView extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
+        if (!url.contains(SEAMLESS))
+            webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
+        else {
+            webview.loadAuthUrl(url);
+        }
         webview.setWebViewClient(new MyWebClient());
         webview.setWebChromeClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
