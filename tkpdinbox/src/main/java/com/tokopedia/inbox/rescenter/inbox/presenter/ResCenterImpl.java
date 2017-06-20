@@ -51,7 +51,7 @@ public class ResCenterImpl implements ResCenterPresenter {
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
             } else {
-                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_my_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
             }
         } else {
             list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));

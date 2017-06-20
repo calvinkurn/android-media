@@ -116,7 +116,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             }
         } else {
             if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
                 indicator.setVisibility(View.GONE);
             } else {
                 indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
