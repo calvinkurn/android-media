@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragment<T> implements
-        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<Ad> {
+        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;
 
