@@ -11,8 +11,10 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/register_button"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -70,7 +72,7 @@
             <TextView
                 android:id="@+id/accounts_sign_in"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/btn_login_height"
                 android:background="@drawable/green_button_rounded_unify"
                 android:gravity="center"
                 android:padding="@dimen/padding_small"
@@ -79,17 +81,19 @@
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:textStyle="bold"
                 />
-
             <TextView
                 android:id="@+id/forgot_pass"
-                android:layout_width="match_parent"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:background="@drawable/selectable_white_background"
-                android:gravity="center"
-                android:visibility="gone"
-                android:text="@string/title_forgot_password" />
+                android:textSize="11sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/medium_green"
+                android:lineSpacingExtra="9sp"
+                android:gravity="end"
+                android:text="@string/title_forgot_password"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"

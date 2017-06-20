@@ -201,4 +201,5 @@
 
     <dimen name="intermediary_brand">86dp</dimen>
     <dimen name="intermediary_card">100dp</dimen>
+    <dimen name="btn_login_height">52dp</dimen>
 </resources>

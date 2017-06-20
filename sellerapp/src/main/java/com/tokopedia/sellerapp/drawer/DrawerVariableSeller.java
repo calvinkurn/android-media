@@ -22,6 +22,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -331,12 +332,16 @@ public class DrawerVariableSeller extends DrawerVariable {
                 context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
                 break;
             case TkpdState.DrawerPosition.LOGIN:
-            case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, ((DrawerItem) model.data.get(position)).id);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
 //                context.finish();
+                break;
+            case TkpdState.DrawerPosition.REGISTER:
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToRegister(context);
+                }
                 break;
             case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                 goToShopNewOrder();

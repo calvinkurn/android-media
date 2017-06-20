@@ -133,8 +133,8 @@ public class DrawerVariable {
 
     public DrawerVariable(AppCompatActivity context) {
         this.context = context;
-        if(context instanceof GetUserInfoListener)
-            getUserInfoListener = (GetUserInfoListener)context;
+        if (context instanceof GetUserInfoListener)
+            getUserInfoListener = (GetUserInfoListener) context;
     }
 
     public void createDrawer(boolean withSearchBox) {
@@ -358,12 +358,16 @@ public class DrawerVariable {
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGIN:
-            case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, ((DrawerItem) model.data.get(position)).id);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
 //                context.finish();
+                break;
+            case TkpdState.DrawerPosition.REGISTER:
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToRegister(context);
+                }
                 break;
             case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
                 goToPeopleConfirmPayment();
@@ -411,8 +415,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                if(context.getApplication() instanceof TkpdCoreRouter){
-                    ((TkpdCoreRouter)context.getApplication()).goToManageEtalase(context);
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToManageEtalase(context);
                 }
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
@@ -805,7 +809,7 @@ public class DrawerVariable {
                 SessionHandler.setUserAvatarUri(context, profile.userIcon);
                 model.header.setDataToCache(context);
                 adapter.notifyDataSetChanged();
-                if(getUserInfoListener!=null)
+                if (getUserInfoListener != null)
                     getUserInfoListener.onGetUserInfo();
                 setShop();
             }

@@ -28,6 +28,7 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -49,8 +50,8 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -119,6 +120,12 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
