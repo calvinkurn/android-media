@@ -519,14 +519,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductDetailRetry() {
-        if(productPass !=null && !productPass.getProductName().isEmpty()){
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    initializationErrorListener()).showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getActivity().findViewById(R.id.root_view),
-                    initializationErrorListener());
-        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                initializationErrorListener()).showRetrySnackbar();
 
     }
 
@@ -911,7 +905,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_black));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
         }
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
@@ -924,7 +918,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_white));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_white));
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
             toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
         }

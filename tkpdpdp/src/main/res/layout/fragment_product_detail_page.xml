@@ -150,7 +150,8 @@
                     <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                         android:id="@+id/video_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"/>
 
                     <com.tokopedia.tkpdpdp.customview.OtherProductsView
                         android:id="@+id/view_other_products"
