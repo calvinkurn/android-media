@@ -48,6 +48,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import butterknife.BindView;
  * Created by Erry on 6/30/2016.
  */
 public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsListener {
     public static final int IDFRAGMENT = 123_348;
     public static final String INDEX = "FRAGMENT_INDEX";
 
@@ -241,6 +242,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseCatalogAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -295,7 +297,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         browseCatalogAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -348,6 +349,16 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         } else {
             topAdsRecyclerAdapter.hideLoading();
         }
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        setLoading(false);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        setLoading(false);
     }
 
     @Override

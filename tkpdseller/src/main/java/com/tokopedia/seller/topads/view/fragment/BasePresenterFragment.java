@@ -1,6 +1,9 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,19 +23,8 @@ import butterknife.Unbinder;
  */
 
 public class BasePresenterFragment<P> extends BaseDaggerFragment {
-    private static final String TAG = com.tokopedia.core.app.BasePresenterFragment.class.getSimpleName();
 
     protected P presenter;
-
-    protected Bundle savedState;
-    protected Unbinder unbinder;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        setHasOptionsMenu(getOptionsMenuEnable());
-        initialListener(activity);
-    }
 
     @Override
     protected String getScreenName() {
@@ -42,8 +34,6 @@ public class BasePresenterFragment<P> extends BaseDaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(isRetainInstance());
-        Log.d(TAG, "ON CREATE");
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
@@ -55,109 +45,55 @@ public class BasePresenterFragment<P> extends BaseDaggerFragment {
 
     }
 
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "ON CREATE VIEW");
         return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        injectView(view);
         initView(view);
         initialVar();
         setViewListener();
         setActionVar();
     }
 
+    /*
+     * Deprecated on API 23
+     * Use onAttachToContext instead
+     */
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            initialListener(activity);
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        initialListener(context);
+    }
+
     protected void onFirstTimeLaunched() {
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.d(TAG, "ON SAVE INSTANCE STATE");
-        saveStateToArguments();
-    }
-
-    private void saveStateToArguments() {
-        if (getView() != null)
-            savedState = saveState();
-        if (savedState != null) {
-            Bundle b = getArguments();
-            if (b == null) b = new Bundle();
-            b.putBundle("internalSavedViewState8954201239547", savedState);
-        }
-    }
-
-    private Bundle saveState() {
-        Bundle state = new Bundle();
-        onSaveState(state);
-        return state;
-    }
-
-    public void onSaveState(Bundle state) {
-    }
-
-    private boolean restoreStateFromArguments() {
-        Bundle b = getArguments();
-        if (b == null) b = new Bundle();
-        savedState = b.getBundle("internalSavedViewState8954201239547");
-        if (savedState != null) {
-            restoreState();
-            return true;
-        }
-        return false;
-    }
-
-    private void restoreState() {
-        if (savedState != null) {
-            // For Example
-            //tv1.setText(savedState.getString("text"));
-            onRestoreState(savedState);
-        }
-    }
-
-    public void onRestoreState(Bundle savedState) {
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        saveStateToArguments();
-        Log.d(TAG, "ON DESTROY VIEW");
-        unbinder.unbind();
-    }
-
-    private void injectView(View view) {
-        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!restoreStateFromArguments()) {
+        if (savedInstanceState == null) {
             onFirstTimeLaunched();
-            Log.d(TAG, "ON ACTIVITY CREATE FIRST");
         } else {
-            Log.d(TAG, "ON ACTIVITY CREATE");
+            onRestoreState (savedInstanceState);
         }
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    public void onRestoreState(Bundle savedInstanceState) {
     }
 
     /**
@@ -169,9 +105,9 @@ public class BasePresenterFragment<P> extends BaseDaggerFragment {
     /**
      * Cast si activity ke listener atau bisa juga ini untuk context activity
      *
-     * @param activity si activity yang punya fragment
+     * @param context si activity yang punya fragment
      */
-    protected void initialListener(Activity activity) {
+    protected void initialListener(Context context) {
     }
 
     /**
@@ -216,6 +152,5 @@ public class BasePresenterFragment<P> extends BaseDaggerFragment {
      */
     protected void setActionVar() {
     }
-
 
 }

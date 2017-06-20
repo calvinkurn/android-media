@@ -34,6 +34,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -110,6 +111,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -119,7 +121,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ShopInfoViewV2 shopInfoView;
     private OtherProductsView otherProductsView;
     private RatingTalkCourierView ratingTalkCourierView;
-    private ErrorShopView errorShopView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
@@ -139,6 +140,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
     private VideoData videoData;
+    private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -206,8 +208,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-
-        errorShopView = (ErrorShopView) view.findViewById(R.id.view_error_shop);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -236,7 +236,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void setViewListener() {
-        errorShopView.setListener(this);
         headerInfoView.setListener(this);
         pictureView.setListener(this);
         buttonBuyView.setListener(this);
@@ -415,7 +414,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
         this.productData = successResult;
-        this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
@@ -614,8 +612,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
-        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                message.replace("\n"," "),
+                Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        TextView tv = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setMaxLines(7);
+        snackbar.show();
     }
 
     @Override
@@ -682,6 +685,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
+        presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
     }
 
     @Override
@@ -861,6 +865,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 })
                 .setActionTextColor(getResources().getColor(R.color.tkpd_main_green ))
                 .show();
+    }
+
+    @Override
+    public void showProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
+        headerInfoView.renderProductCampaign(this.productCampaign);
     }
 
     private void destroyVideoLayout() {

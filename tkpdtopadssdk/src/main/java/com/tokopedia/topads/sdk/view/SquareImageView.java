@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.tokopedia.topads.sdk.imageutils.RecyclingImageView;
+
 /**
  * @author by errysuprayogi on 3/27/17.
  */
 
-public class SquareImageView extends ImageView {
+public class SquareImageView extends RecyclingImageView {
 
     public SquareImageView(Context context) {
         super(context);
@@ -16,10 +18,6 @@ public class SquareImageView extends ImageView {
 
     public SquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
     }
 
     @Override

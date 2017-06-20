@@ -21,18 +21,17 @@ public class ProductModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.list);
+        dest.writeTypedList(this.list);
     }
 
     public ProductModel() {
     }
 
     protected ProductModel(Parcel in) {
-        this.list = new ArrayList<List>();
-        in.readList(this.list, List.class.getClassLoader());
+        this.list = in.createTypedArrayList(List.CREATOR);
     }
 
-    public static final Parcelable.Creator<ProductModel> CREATOR = new Parcelable.Creator<ProductModel>() {
+    public static final Creator<ProductModel> CREATOR = new Creator<ProductModel>() {
         @Override
         public ProductModel createFromParcel(Parcel source) {
             return new ProductModel(source);

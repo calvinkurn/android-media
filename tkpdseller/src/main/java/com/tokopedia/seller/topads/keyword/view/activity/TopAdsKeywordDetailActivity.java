@@ -25,7 +25,7 @@ public class TopAdsKeywordDetailActivity extends TopAdsBaseSimpleActivity implem
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         String adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         return TopAdsKeywordDetailFragment.createInstance(keywordAd, adId);

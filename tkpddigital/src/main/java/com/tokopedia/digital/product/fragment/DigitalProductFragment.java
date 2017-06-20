@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -629,10 +628,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onBannerItemClicked(BannerData bannerData) {
         if (TextUtils.isEmpty(bannerData.getLink())) return;
         navigateToActivity(DigitalWebActivity.newInstance(
-                getActivity(),
-                URLGenerator.generateURLSessionLogin(
-                        Uri.encode(bannerData.getLink()), getActivity())
-        ));
+                getActivity(), bannerData.getLink())
+        );
     }
 
     @Override
@@ -690,25 +687,25 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
-            navigateToActivity(DigitalWebActivity.newInstance(
-                    getActivity(),
-                    URLGenerator.generateURLSessionLogin(
-                            Uri.encode(URL_PRODUCT_LIST_DIGITAL), getActivity())
-            ));
+            navigateToActivity(
+                    DigitalWebActivity.newInstance(
+                            getActivity(), URL_PRODUCT_LIST_DIGITAL
+                    )
+            );
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
-            navigateToActivity(DigitalWebActivity.newInstance(
-                    getActivity(),
-                    URLGenerator.generateURLSessionLogin(
-                            Uri.encode(URL_SUBSCRIPTIONS_DIGITAL), getActivity())
-            ));
+            navigateToActivity(
+                    DigitalWebActivity.newInstance(
+                            getActivity(), URL_SUBSCRIPTIONS_DIGITAL
+                    )
+            );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
-            navigateToActivity(DigitalWebActivity.newInstance(
-                    getActivity(),
-                    URLGenerator.generateURLSessionLogin(
-                            Uri.encode(URL_TRANSACTION_LIST_DIGITAL), getActivity())
-            ));
+            navigateToActivity(
+                    DigitalWebActivity.newInstance(
+                            getActivity(), URL_TRANSACTION_LIST_DIGITAL
+                    )
+            );
             return true;
         } else {
             return super.onOptionsItemSelected(item);

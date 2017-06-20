@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -34,4 +36,5 @@ public class FetchDraftProductUseCase extends UseCase<UploadProductInputDomainMo
         requestParams.putLong(DRAFT_PRODUCT_ID, Long.parseLong(draftProductId));
         return requestParams;
     }
+
 }

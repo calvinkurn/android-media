@@ -119,15 +119,15 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        super.onSaveState(state);
-        state.putParcelable(SHOP_AD_PARCELABLE, shopAd);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SHOP_AD_PARCELABLE, shopAd);
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        super.onRestoreState(savedState);
-        shopAd = savedState.getParcelable(SHOP_AD_PARCELABLE);
+    public void onRestoreState(Bundle savedInstanceState) {
+        super.onRestoreState(savedInstanceState);
+        shopAd = savedInstanceState.getParcelable(SHOP_AD_PARCELABLE);
         onAdLoaded(shopAd);
     }
 }

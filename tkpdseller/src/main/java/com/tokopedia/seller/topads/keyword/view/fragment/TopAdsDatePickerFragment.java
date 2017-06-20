@@ -33,9 +33,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialPresenter();
-        if (datePickerPresenter == null) {
-            throw new IllegalArgumentException("datePickerPresenter need to be initialized !!");
-        }
+        setHasOptionsMenu(true);
     }
 
     protected void initialPresenter() {
@@ -46,15 +44,11 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     @Override
     public void onResume() {
         super.onResume();
-        if (datePickerPresenter.isDateUpdated(startDate, endDate)) {
-            loadDateFromPresenter();
+        if (datePickerPresenter!= null && datePickerPresenter.isDateUpdated(startDate, endDate)) {
+            startDate = datePickerPresenter.getStartDate();
+            endDate = datePickerPresenter.getEndDate();
             loadData();
         }
-    }
-
-    private void loadDateFromPresenter() {
-        startDate = datePickerPresenter.getStartDate();
-        endDate = datePickerPresenter.getEndDate();
     }
 
     @Override
@@ -86,8 +80,4 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         datePickerResultListener = null;
     }
 
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
 }

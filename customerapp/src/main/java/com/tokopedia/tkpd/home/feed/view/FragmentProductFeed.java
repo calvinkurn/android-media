@@ -74,7 +74,7 @@ import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
         DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener,
-        TopAdsInfoClickListener, TopAdsItemClickListener {
+        TopAdsItemClickListener {
 
     private static final String TAG = "FragmentProductFeed";
 
@@ -100,7 +100,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private Unbinder unbinder;
     private RetryHandler retryHandler;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private static final String TOPADS_ITEM = "4";
+    private static final String TOPADS_ITEM = "2";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -188,6 +188,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void onRetryFooter() {
+        adapter.removeRetry();
+        topAdsRecyclerAdapter.showLoading();
+        topAdsRecyclerAdapter.setEndlessScrollListener();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
         feedPresenter.loadMoreDataFeed();
     }
 
@@ -220,12 +224,14 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRetryLoadMore() {
-        adapter.setIsRetry(true);
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+        topAdsRecyclerAdapter.hideLoading();
+        adapter.setRetryFeed();
     }
 
     @Override
     public void showLoadMoreFeed(List<RecyclerViewItem> dataFeedList) {
-        topAdsRecyclerAdapter.hideLoading();
         adapter.addNextPage(dataFeedList);
     }
 
@@ -268,7 +274,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             topAdsRecyclerAdapter.reset();
             topAdsRecyclerAdapter.shouldLoadAds(dataFeedList.size() > 1);
             adapter.setData(dataFeedList);
-            topAdsRecyclerAdapter.hideLoading();
         }
     }
 
@@ -318,6 +323,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
+                        topAdsRecyclerAdapter.setEndlessScrollListener();
+                        topAdsRecyclerAdapter.shouldLoadAds(true);
                         feedPresenter.refreshDataFeed();
                     }
                 }).showRetrySnackbar();
@@ -334,6 +341,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
+                        topAdsRecyclerAdapter.setEndlessScrollListener();
+                        topAdsRecyclerAdapter.shouldLoadAds(true);
                         feedPresenter.refreshDataFeed();
                     }
                 });
@@ -360,6 +369,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void onRefresh() {
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+        topAdsRecyclerAdapter.setEndlessScrollListener();
         feedPresenter.refreshDataFeed();
     }
 
@@ -390,21 +401,14 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.SHOP)
-                .displayMode(DisplayMode.FEED)
+                .setEndpoint(Endpoint.PRODUCT)
                 .topAdsParams(generateTopAdsParams())
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setConfig(config);
-    }
-
-    @Override
-    public void onInfoClicked() {
-
     }
 
     @Override
@@ -454,7 +458,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         });
         contentRecyclerView.setAdapter(topAdsRecyclerAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
-        adapter.setOnRetryListenerRV(onAdapterRetryListener());
+        adapter.setOnRetryListener(onAdapterRetryListener());
         setFabListener();
         retryHandler = new RetryHandler(getActivity(), parentView);
     }
@@ -478,6 +482,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             public int getSpanSize(int position) {
                 if (isPositionOnHistory(position)
                         || isPositionOnEmptyFeed(position)
+                        || isPositionOnRetryFeed(position)
                         || topAdsRecyclerAdapter.isTopAdsViewHolder(position)
                         || topAdsRecyclerAdapter.isLoading(position)) {
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
@@ -528,8 +533,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         return adapter.isEmptyFeed(position);
     }
 
-    private boolean isPositionInFooter(int position) {
-        return position == adapter.getData().size();
+    private boolean isPositionOnRetryFeed(int position) {
+        return adapter.isRetry(topAdsRecyclerAdapter.getPlacer().getItem(position).originalPos());
     }
 
     private void setLocalyticFlow() {
