@@ -7,7 +7,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -40,11 +42,13 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode displayMode;
     private TopAdsInfoClickListener clickListener;
+    private TextView textHeader;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
         context = itemView.getContext();
         adsHeader = (LinearLayout) itemView.findViewById(R.id.ads_header);
+        textHeader = (TextView) adsHeader.findViewById(R.id.title_promote);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
         gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
@@ -92,6 +96,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
+                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 break;
             case GRID:
                 recyclerView.setLayoutManager(gridLayoutManager);

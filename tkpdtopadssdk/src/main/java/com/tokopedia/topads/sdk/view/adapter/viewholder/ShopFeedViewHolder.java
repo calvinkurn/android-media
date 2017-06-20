@@ -90,8 +90,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(clickPosition, data);
-//                data.setFavorit(true);
-//                setFavorite(data.isFavorit());
             } else if (id == R.id.container || id == R.id.header){
                 itemClickListener.onShopItemClicked(clickPosition, data);
             }
@@ -103,7 +101,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         data = element.getData();
         Shop shop = data.getShop();
         if(shop!=null){
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
+            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
                     shopImage);
             if(shop.getImageProduct()!=null){
                 generateThumbnailImages(shop.getImageProduct());
@@ -149,13 +147,11 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         String text;
         if (isFavorite) {
             favBtn.setSelected(true);
-//            favBtn.setClickable(false);
             text = context.getString(R.string.favorited);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favBtn.setSelected(false);
-//            favBtn.setClickable(true);
             text = context.getString(R.string.favoritkan);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.white));

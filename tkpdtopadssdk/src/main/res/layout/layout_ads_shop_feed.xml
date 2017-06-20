@@ -61,7 +61,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     tools:text="kacamata kualitas premium / line @towns_fashion"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_xsmall"
                     android:fontFamily="sans-serif"
                     android:textStyle="normal"
                     android:textColor="@color/black_38"/>
@@ -117,7 +117,7 @@
             android:drawableLeft="@drawable/ic_add_black_24dp"
             android:gravity="center"
             android:text="@string/favoritkan"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_size_s_medium"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
             android:lineSpacingExtra="5sp"
