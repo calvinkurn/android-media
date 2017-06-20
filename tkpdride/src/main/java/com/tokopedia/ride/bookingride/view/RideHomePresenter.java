@@ -120,7 +120,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 }
                                 break;
                             default:
-                                //getView().inflateMapAndProductFragment();
+                                getView().inflateMapAndProductFragment();
                         }
 
                     } else {
