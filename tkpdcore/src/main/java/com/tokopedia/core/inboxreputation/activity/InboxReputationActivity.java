@@ -140,7 +140,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
             if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
             } else {
                 fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
                 fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
