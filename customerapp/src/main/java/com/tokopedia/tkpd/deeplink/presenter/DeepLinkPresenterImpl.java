@@ -130,6 +130,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    @Override
+    public void actionGotUrlFromApplink(Uri uriData) {
+        prepareOpenWebView(uriData);
+    }
+
     public void processDeepLinkAction(Uri uriData) {
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
