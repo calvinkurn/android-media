@@ -41,6 +41,12 @@ public class Product implements Parcelable {
     @SerializedName("insurance_type")
     @Expose
     private Integer insuranceMode;
+    @SerializedName("max_hours_id")
+    @Expose
+    private String maxHoursId;
+    @SerializedName("desc_hours_id")
+    @Expose
+    private String descHoursId;
 
     public Product() {
     }
@@ -157,6 +163,22 @@ public class Product implements Parcelable {
         this.ut = ut;
     }
 
+    public String getMaxHoursId() {
+        return maxHoursId;
+    }
+
+    public void setMaxHoursId(String maxHoursId) {
+        this.maxHoursId = maxHoursId;
+    }
+
+    public String getDescHoursId() {
+        return descHoursId;
+    }
+
+    public void setDescHoursId(String descHoursId) {
+        this.descHoursId = descHoursId;
+    }
+
     public Integer getInsurancePrice() {
         return insurancePrice;
     }
@@ -197,6 +219,8 @@ public class Product implements Parcelable {
         formattedPrice = in.readString();
         checkSum = in.readString();
         ut = in.readString();
+        maxHoursId = in.readString();
+        descHoursId = in.readString();
         insurancePrice = in.readByte() == 0x00 ? null : in.readInt();
         insuranceMode = in.readByte() == 0x00 ? null : in.readInt();
     }
@@ -226,6 +250,8 @@ public class Product implements Parcelable {
         dest.writeString(formattedPrice);
         dest.writeString(checkSum);
         dest.writeString(ut);
+        dest.writeString(maxHoursId);
+        dest.writeString(descHoursId);
         if (insurancePrice == null) {
             dest.writeByte((byte) (0x00));
         } else {
