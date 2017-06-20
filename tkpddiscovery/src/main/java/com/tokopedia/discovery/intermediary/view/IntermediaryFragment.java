@@ -42,6 +42,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -502,22 +503,29 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 curatedName, productModel.getName());
     }
 
-
     @Override
     public void onTopAdsLoaded() {
+        hideLoading();
         topAdsView.setVisibility(View.VISIBLE);
         backToTop();
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-
+        hideLoading();
     }
 
     @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
