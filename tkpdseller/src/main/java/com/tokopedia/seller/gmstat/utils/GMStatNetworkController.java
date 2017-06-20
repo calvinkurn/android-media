@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.gmstat.apis.GMStatApi;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
@@ -51,12 +50,11 @@ import static com.tkpd.library.utils.network.BaseNetworkController.onResponseErr
 
 public class GMStatNetworkController extends BaseNetworkController {
 
+    public static final int MAXIMUM_CATEGORY = 3;
     private final static String TAG = "GMStatNetworkController";
-
     private final static long DEFAULT_SDATE = Long.MAX_VALUE;
     private final static long DEFAULT_EDATE = Long.MIN_VALUE;
     private static final Locale locale = new Locale("in", "ID");
-
     private GMStatApi gmstatApi;
 
     public GMStatNetworkController(Context context, Gson gson, GMStatApi gmStatApi) {
@@ -81,6 +79,17 @@ public class GMStatNetworkController extends BaseNetworkController {
                 return null;
             }
         });
+    }
+
+    public static List<Integer> subList(List<Integer> datas, int size) {
+        if (datas != null && !datas.isEmpty()) {
+            if (datas.size() <= size) {
+                return datas;
+            } else {
+                return datas.subList(0, 3);
+            }
+        }
+        return null;
     }
 
     public Observable<Response<GetProductGraph>> getProductGraph(
@@ -197,7 +206,7 @@ public class GMStatNetworkController extends BaseNetworkController {
     }
 
     public Observable<Response<GetShopCategory>> getShopCategory(long shopId) {
-        return gmstatApi.getShopCategory(getGMStatParam(shopId, DEFAULT_SDATE, DEFAULT_EDATE));
+        return gmstatApi.getShopCategory(getGMStatParam(shopId, DEFAULT_SDATE, DEFAULT_EDATE)).take(1);
     }
 
     public void getShopCategory(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
@@ -251,7 +260,8 @@ public class GMStatNetworkController extends BaseNetworkController {
                                 return Observable.just(keywordModel);
                             }
 
-                            Observable<List<Response<HadesV1Model>>> getCategories = Observable.from(response.body().getShopCategory()).flatMap(
+                            List<Integer> shopCategory = subList(response.body().getShopCategory(), MAXIMUM_CATEGORY);
+                            Observable<List<Response<HadesV1Model>>> getCategories = Observable.from(shopCategory).flatMap(
                                     new Func1<Integer, Observable<Response<HadesV1Model>>>() {
                                         @Override
                                         public Observable<Response<HadesV1Model>> call(Integer integer) {
@@ -263,7 +273,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                             ).toList();
 
                             Observable<List<Response<GetKeyword>>> getKeywords
-                                    = Observable.from(response.body().getShopCategory())
+                                    = Observable.from(shopCategory)
                                     .flatMap(new Func1<Integer, Observable<Response<GetKeyword>>>() {
                                         @Override
                                         public Observable<Response<GetKeyword>> call(Integer catId) {
@@ -467,9 +477,9 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        if (BuildConfig.DEBUG) {
+//                                        if (BuildConfig.DEBUG) {
                                             Log.e(TAG, "error : " + e);
-                                        }
+//                                        }
                                         getGMStat.onError(e);
                                     }
 
@@ -578,9 +588,9 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        if (BuildConfig.DEBUG) {
+//                                        if (BuildConfig.DEBUG) {
                                             Log.e(TAG, "error : " + e);
-                                        }
+//                                        }
                                         getGMStat.onError(e);
                                     }
 
