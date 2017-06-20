@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -43,6 +46,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
+    private boolean goldMerchant;
     /**
      * this prevent duplication at videoIdList;
      */
@@ -76,7 +80,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.checkNotNull(listener)) {
-                    listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                    if (!goldMerchant && GlobalConfig.isSellerApp()) {
+                        showDialogMoveToGM();
+                    } else {
+                        listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                    }
                 }
             }
         });
@@ -105,12 +113,34 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
     }
 
+    private void showDialogMoveToGM() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(labelAddVideoView.getContext(),
+                R.style.AppCompatAlertDialogStyle);
+        builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
+        builder.setMessage(R.string.add_product_label_alert_dialog_video);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                listener.goToGoldMerchantPage();
+            }
+        });
+        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     public void setListener(Listener listener) {
         this.listener = listener;
     }
 
     public void updateViewGoldMerchant(boolean isShown) {
-        if (isShown) {
+        goldMerchant = isShown;
+        if (isShown || GlobalConfig.isSellerApp()) {
             labelAddVideoView.setVisibility(View.VISIBLE);
         } else {
             videoIdList.clear();
@@ -168,9 +198,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderUnit() {
-        if(preOrderExpandableOptionSwitch.isExpanded()) {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
             return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
-        }else{
+        } else {
             return INACTIVE_PREORDER;
         }
     }
@@ -180,9 +210,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderValue() {
-        if(preOrderExpandableOptionSwitch.isExpanded()) {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
             return (int) preOrderSpinnerCounterInputView.getCounterValue();
-        }else{
+        } else {
             return INACTIVE_PREORDER;
         }
     }
@@ -253,5 +283,6 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
         void onDescriptionTextChanged(String text);
 
+        void goToGoldMerchantPage();
     }
 }

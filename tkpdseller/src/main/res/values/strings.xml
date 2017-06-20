@@ -648,4 +648,9 @@
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
 
+    <!-- Add Product Alert Gold Merchant -->
+    <string name="add_product_title_alert_dialog_dollar">Saat ini Anda belum menjadi Gold Merchant!</string>
+    <string name="add_product_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+
 </resources>

@@ -24,6 +24,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
@@ -309,6 +310,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onDescriptionTextChanged(String text) {
         valueIndicatorScoreModel.setLengthDescProduct(text.length());
         updateProductScoring();
+    }
+
+    @Override
+    public void goToGoldMerchantPage() {
+        startActivity(new Intent(getActivity(), GmSubscribeHomeActivity.class));
     }
 
     private void updateProductScoring() {

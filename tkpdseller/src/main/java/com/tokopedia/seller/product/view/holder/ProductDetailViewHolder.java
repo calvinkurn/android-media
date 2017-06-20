@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -142,6 +143,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_IDR;
                 } else {
+                    showDialogMoveToGM();
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
@@ -208,7 +210,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(isMinOrderValid()){
+                if (isMinOrderValid()) {
                     minimumOrderCounterInputView.setError(null);
                 }
             }
@@ -275,6 +277,33 @@ public class ProductDetailViewHolder extends ProductViewHolder
         wholesaleAdapter = new WholesaleAdapter();
         wholesaleAdapter.setListener(this);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
+    }
+
+    private void showDialogMoveToGM() {
+        if (!goldMerchant && GlobalConfig.isSellerApp()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
+                    R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
+            builder.setMessage(R.string.add_product_label_alert_dialog_dollar);
+            builder.setCancelable(true);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    listener.goToGoldMerchantPage();
+                }
+            });
+            builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
+
+    private void goToGoldMerchantPage() {
+
     }
 
     private void showEditPriceDialog() {
@@ -367,7 +396,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         int minOrder;
         try {
             minOrder = (int) minimumOrderCounterInputView.getDoubleValue();
-        }catch (Exception e){
+        } catch (Exception e) {
             minOrder = -1;
         }
         return minOrder;
@@ -659,5 +688,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         void onEtalaseViewClicked(long etalaseId);
 
         void onFreeReturnChecked(boolean checked);
+
+        void goToGoldMerchantPage();
     }
 }
