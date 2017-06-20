@@ -18,6 +18,7 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
@@ -27,7 +28,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
-        DigitalApplinkModule.class
+        DigitalApplinkModule.class,
+        PdpApplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -38,7 +40,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TransactionApplinkModuleLoader(),
-                new DigitalApplinkModuleLoader()
+                new DigitalApplinkModuleLoader(),
+                new PdpApplinkModuleLoader()
         );
     }
 
