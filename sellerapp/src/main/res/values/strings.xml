@@ -24,5 +24,6 @@
     <string name="drawer_title_seller">Penjualan</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_product">Produk</string>
 
 </resources>
