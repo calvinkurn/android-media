@@ -354,6 +354,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         .setProductUri(uriData.toString())
                         .build());
         viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
+        viewListener.hideActionBar();
     }
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {
