@@ -105,10 +105,10 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        super.initialListener(activity);
-        if (activity != null && activity instanceof TopAdsKeywordGroupListListener) {
-            groupListAdapterListener = (TopAdsKeywordGroupListListener) activity;
+    protected void initialListener(Context context) {
+        super.initialListener(context);
+        if (context != null && context instanceof TopAdsKeywordGroupListListener) {
+            groupListAdapterListener = (TopAdsKeywordGroupListListener) context;
         }
     }
 

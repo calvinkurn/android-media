@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,10 +52,10 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        super.initialListener(activity);
-        if (activity != null && activity instanceof KeywordListListener.Listener) {
-            keywordAdListener = (KeywordListListener.Listener) activity;
+    public void initialListener(Context context) {
+        super.initialListener(context);
+        if (context != null && context instanceof KeywordListListener.Listener) {
+            keywordAdListener = (KeywordListListener.Listener) context;
         }
     }
 
@@ -164,11 +165,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordListPresenter.detachView();
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
     }
   
     public void onEmptyContentItemTextClicked() {

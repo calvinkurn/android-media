@@ -77,11 +77,6 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         populateShop();
     }
 
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        super.onRestoreState(savedState);
-    }
-
     private void populateShop() {
         presenter.populateShopAd(startDate, endDate);
     }

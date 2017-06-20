@@ -2,14 +2,13 @@ package com.tokopedia.seller.topads.keyword.view.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -30,8 +29,12 @@ public abstract class TopAdsBaseSimpleActivity extends BaseActivity implements H
         }
 
         setContentView(R.layout.activity_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
         }
         setupFragment(savedInstanceState);
     }
@@ -59,10 +62,8 @@ public abstract class TopAdsBaseSimpleActivity extends BaseActivity implements H
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
     protected abstract Fragment getNewFragment();
 
-    @NonNull
     protected abstract String getTagFragment();
 
 }

@@ -36,6 +36,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         if (datePickerPresenter == null) {
             throw new IllegalArgumentException("datePickerPresenter need to be initialized !!");
         }
+        setHasOptionsMenu(true);
     }
 
     protected void initialPresenter() {
@@ -86,8 +87,4 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         datePickerResultListener = null;
     }
 
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
 }

@@ -18,7 +18,7 @@ public abstract class TopAdsBaseListAdapter<T> extends BaseLinearRecyclerViewAda
         void onItemClicked(T t);
     }
 
-    public static final int UNKNOWN_TYPE = Integer.MIN_VALUE;
+    private static final int UNKNOWN_TYPE = Integer.MIN_VALUE;
 
     protected List<T> data;
     private Callback callback;

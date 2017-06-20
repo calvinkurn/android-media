@@ -127,20 +127,11 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void initialListener(Context context) {
+        super.initialListener(context);
         if (context instanceof OnTopAdsDetailGroupListener) {
             listener = (OnTopAdsDetailGroupListener) context;
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof OnTopAdsDetailGroupListener) {
-            listener = (OnTopAdsDetailGroupListener) activity;
         }
     }
 
@@ -168,15 +159,15 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        super.onSaveState(state);
-        state.putParcelable(GROUP_AD_PARCELABLE, groupAd);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(GROUP_AD_PARCELABLE, groupAd);
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        super.onRestoreState(savedState);
-        groupAd = savedState.getParcelable(GROUP_AD_PARCELABLE);
+    public void onRestoreState(Bundle savedInstanceState) {
+        super.onRestoreState(savedInstanceState);
+        groupAd = savedInstanceState.getParcelable(GROUP_AD_PARCELABLE);
         onAdLoaded(groupAd);
     }
 

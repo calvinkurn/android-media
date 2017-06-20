@@ -301,20 +301,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void initialListener(Context context) {
+        super.initialListener(context);
         if (context instanceof OnAdListFragmentListener) {
-            listener = (OnAdListFragmentListener) getActivity();
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof OnAdListFragmentListener) {
-            listener = (OnAdListFragmentListener) getActivity();
+            listener = (OnAdListFragmentListener) context;
         }
     }
 

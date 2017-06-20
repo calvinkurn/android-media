@@ -271,8 +271,8 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         if (savedInstanceState == null)
             return;
         status = savedInstanceState.getInt(KEY_STATUS);
-        page = savedInstanceState.getInt(KEY_STATUS, 0);
-        totalItem = savedInstanceState.getInt(KEY_STATUS, Integer.MAX_VALUE);
+        page = savedInstanceState.getInt(KEY_PAGE, 0);
+        totalItem = savedInstanceState.getInt(KEY_TOTAL_ITEM, Integer.MAX_VALUE);
     }
 
     @Override

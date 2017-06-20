@@ -2,14 +2,16 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.os.Bundle;
 
+import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListFragment extends TopAdsBaseListFragment {
+public class ProductDraftListFragment extends TopAdsBaseListFragment{
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     public static ProductDraftListFragment newInstance() {
@@ -21,12 +23,12 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment {
     }
 
     @Override
-    public void onItemClicked(Object o) {
-
+    protected TopAdsBaseListAdapter getNewAdapter() {
+        return new TopAdsKeywordAdapter();
     }
 
     @Override
-    protected TopAdsBaseListAdapter getNewAdapter() {
-        return null;
+    public void onItemClicked(Object o) {
+
     }
 }
