@@ -64,8 +64,10 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                 .doOnNext(new Action1<GeneratedHost>() {
                     @Override
                     public void call(GeneratedHost generatedHost) {
-                        if (!generatedHost.getMessageError().isEmpty())
-                            throw new ResponseRuntimeException(generatedHost.getMessageError().get(0));
+                        if (generatedHost.getMessageError() != null) {
+                            if (!generatedHost.getMessageError().isEmpty())
+                                throw new ResponseRuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
 
