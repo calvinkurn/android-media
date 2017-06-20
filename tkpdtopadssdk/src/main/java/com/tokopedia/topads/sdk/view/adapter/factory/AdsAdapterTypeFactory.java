@@ -30,7 +30,6 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
 
-    int position;
     public AdsAdapterTypeFactory(Context context) {
         this(context, 0);
     }
@@ -90,7 +89,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ShopListViewHolder.LAYOUT) {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopFeedViewHolder.LAYOUT) {
-            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
+            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else {

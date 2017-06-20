@@ -20,7 +20,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -291,9 +291,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(int productId) {
-        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
-        startActivity(intent);
+    public void onGoToProductDetail(String productUrl) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+        }
     }
 
     @Override

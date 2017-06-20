@@ -3,9 +3,7 @@ package com.tokopedia.discovery.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.network.entity.intermediary.Data;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 
 import java.util.HashMap;

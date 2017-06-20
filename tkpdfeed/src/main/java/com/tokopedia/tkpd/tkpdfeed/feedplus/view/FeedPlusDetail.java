@@ -45,7 +45,7 @@ public interface FeedPlusDetail {
 
         void onSuccessRemoveWishlist(int productId);
 
-        void onGoToProductDetail(int productId);
+        void onGoToProductDetail(String productId);
 
         int getColor(int resId);
 

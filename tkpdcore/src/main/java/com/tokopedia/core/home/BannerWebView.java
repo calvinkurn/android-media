@@ -17,7 +17,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;

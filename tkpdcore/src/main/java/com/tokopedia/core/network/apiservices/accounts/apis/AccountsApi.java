@@ -128,8 +128,4 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
     Call<String> makeLoginsynchronous(@FieldMap TKPDMapParam<String, Object> parameters);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.MSISDN.CHANGE_PHONE_NUMBER)
-    Observable<Response<TkpdResponse>> changePhoneNumber(@FieldMap TKPDMapParam<String, Object> parameters);
-
 }

@@ -26,7 +26,7 @@ public interface FeedPlus{
                                    String imgUrl,
                                    String contentMessage);
 
-        void onGoToProductDetail(Integer productId);
+        void onGoToProductDetail(String productId);
 
         void onGoToFeedDetail(String feedId);
 

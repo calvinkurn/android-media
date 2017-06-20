@@ -73,14 +73,14 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
+                viewListener.onGoToProductDetail(list.get(position).getUrl());
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
+                viewListener.onGoToProductDetail(list.get(position).getUrl());
             }
         });
     }

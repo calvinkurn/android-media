@@ -68,14 +68,14 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
+                viewListener.onGoToProductDetail(list.get(position).getUrl());
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
+                viewListener.onGoToProductDetail(list.get(position).getUrl());
             }
         });
     }

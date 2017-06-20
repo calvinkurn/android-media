@@ -104,7 +104,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(feedDetailViewModel.getProductId());
+                viewListener.onGoToProductDetail(feedDetailViewModel.getUrl());
             }
         });
     }

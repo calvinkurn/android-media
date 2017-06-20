@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
 import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
@@ -320,44 +321,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public TopAdsPlacer getPlacer() {
         return placer;
-    }
-
-    public void reset() {
-        placer.reset();
-        if (this.recyclerView != null) this.recyclerView.removeAllViews();
-        notifyDataSetChanged();
-
-    }
-
-    public void showLoading() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (!placer.getItems().contains(loadingViewModel)) {
-                    placer.getItems().add(loadingViewModel);
-                    notifyItemInserted(placer.getItemCount() + 1);
-                    loadMore = true;
-                }
-            }
-        });
-    }
-
-    public void hideLoading() {
-        if (placer.getItems().contains(loadingViewModel)) {
-            placer.getItems().remove(loadingViewModel);
-            notifyItemRemoved(placer.getItemCount());
-            loadMore = false;
-        }
-    }
-
-    public void shouldLoadAds(boolean loadAds){
-        placer.setShouldLoadAds(loadAds);
-    }
-
-    public interface OnLoadListener {
-
-        void onLoad(int page, int totalCount);
-
     }
 
 }

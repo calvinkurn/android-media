@@ -25,13 +25,12 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -54,7 +53,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -71,7 +69,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -246,9 +243,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(Integer productId) {
-        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
-        startActivity(intent);
+    public void onGoToProductDetail(String productUrl) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+        }
     }
 
 
