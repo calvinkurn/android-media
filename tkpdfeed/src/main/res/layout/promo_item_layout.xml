@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_vvs"
     android:orientation="vertical"
-    android:elevation="2dp"
+    android:elevation="dp"
     tools:background="@color/red_500">
 
     <LinearLayout

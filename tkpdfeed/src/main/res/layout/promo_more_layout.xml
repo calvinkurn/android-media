@@ -14,7 +14,7 @@
         android:background="@color/white"
         app:backgroundTint="@color/white"
         app:borderWidth="0dp"
-        android:elevation="@dimen/text_size_xxxxsmall"/>
+        android:elevation="@dimen/default_circle_indicator_radius"/>
 
     <Space
         android:layout_width="wrap_content"
