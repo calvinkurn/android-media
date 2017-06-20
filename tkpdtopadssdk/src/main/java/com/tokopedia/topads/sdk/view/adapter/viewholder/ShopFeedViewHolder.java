@@ -101,13 +101,17 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         );
 
         recyclerView.setLayoutManager(manager);
-        adapter = new PromotedShopAdapter();
+        adapter = new PromotedShopAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        onClick(id);
+    }
+
+    public void onClick(int id) {
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(clickPosition, data);
@@ -148,12 +152,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             setFavorite(data.isFavorit());
         }
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemClickListener.onShopItemClicked(clickPosition, data);
-            }
-        });
+
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
