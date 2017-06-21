@@ -64,13 +64,13 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
         baseFareTextView.setVisibility(element.getProductPrice() == 0.0 ? View.VISIBLE : View.GONE);
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
-        
+
         if (element.getTimeEstimate() != null) {
             timeEstimateTextView.setText(String.valueOf(element.getTimeEstimate()));
             timeEstimateTextView.setVisibility(View.VISIBLE);
             timeProgress.setVisibility(View.GONE);
         } else {
-            timeEstimateTextView.setVisibility(View.GONE);
+            timeEstimateTextView.setVisibility(View.INVISIBLE);
             timeProgress.setVisibility(View.VISIBLE);
         }
 

@@ -99,7 +99,8 @@
         android:gravity="left"
         android:text="2 min"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_twelev_revamp" />
+        android:textSize="@dimen/text_size_twelev_revamp"
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/progress_bar_time"
@@ -107,13 +108,12 @@
         android:layout_height="18dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/ten_dp"
-        android:layout_toLeftOf="@id/cab_price_estimate_layout"
         android:layout_toRightOf="@id/tv_cab_name"
         android:gravity="left"
         android:text="2 min"
-        android:visibility="gone"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_twelev_revamp" />
+        android:textSize="@dimen/text_size_twelev_revamp"
+        android:visibility="gone" />
 
 
     <View
