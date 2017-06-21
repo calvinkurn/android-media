@@ -536,7 +536,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         menuCart.setEnabled(true);
                         LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                         int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
-                        if (CartCache > 0) {
+                        if (CartCache > 0 && menu.findItem(R.id.action_cart)!=null) {
                             menu.findItem(R.id.action_cart).setIcon(R.drawable.cart_active_white);
                         }
                     }
