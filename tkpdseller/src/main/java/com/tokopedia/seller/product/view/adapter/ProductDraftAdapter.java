@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,13 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+
+import java.io.File;
+import java.net.URI;
 
 /**
  * @author hendry on 5/19/17.
@@ -55,11 +60,43 @@ public class ProductDraftAdapter extends TopAdsBaseListAdapter<ProductDraftViewM
         }
 
         public void bind (ProductDraftViewModel model) {
-            tvProductName.setText("Test");
-            tvCompletionPercentage.setText("38% complete");
-            rcProgressCompletion.setProgress(38);
-            // ImageHandler.loadImageRounded2(ivProduct.getContext(), ivProduct, model.getPrimaryImageUrl());
-            ivProduct.setImageResource(R.drawable.ic_image_unavailable);
+            if (TextUtils.isEmpty(model.getProductName())) {
+                tvProductName.setText(MethodChecker.fromHtml("<i>" +
+                        tvProductName.getContext().getString(R.string.product_no_have_product_name_yet)
+                        +"</i>"));
+            } else {
+                tvProductName.setText(MethodChecker.fromHtml("<b>" +
+                        model.getProductName()
+                        +"</b>"));
+            }
+            tvCompletionPercentage.setText(tvCompletionPercentage.getContext().getString(R.string.product_draft_item_percent_complete,
+                    model.getCompletionPercent()));
+            rcProgressCompletion.setProgress(model.getCompletionPercent());
+
+            if (TextUtils.isEmpty(model.getPrimaryImageUrl())) {
+                ivProduct.setImageResource(R.drawable.ic_image_unavailable);
+            } else if (isValidURL(model.getPrimaryImageUrl())) {
+                ImageHandler.loadImageFitCenter(
+                        ivProduct.getContext(),
+                        ivProduct,
+                        model.getPrimaryImageUrl()
+                );
+            } else { // local Uri
+                ImageHandler.loadImageFromFileFitCenter(
+                        ivProduct.getContext(),
+                        ivProduct,
+                        new File(model.getPrimaryImageUrl())
+                );
+            }
+        }
+    }
+
+    private boolean isValidURL(String urlStr) {
+        try {
+            URI uri = new URI(urlStr);
+            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
+        } catch (Exception e) {
+            return false;
         }
     }
 

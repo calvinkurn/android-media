@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.view.presenter;
 
+import com.tokopedia.seller.product.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.view.mapper.ProductDraftListMapper;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                     List<ProductDraftViewModel> viewModelList = new ArrayList<>();
                     for (int i=0, sizei = uploadProductInputDomainModels.size(); i<sizei; i++) {
                         UploadProductInputDomainModel domainModel = uploadProductInputDomainModels.get(i);
-                        viewModelList.add(new ProductDraftViewModel(domainModel));
+                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
                     }
                     getView().onSearchLoaded(viewModelList);
                 }

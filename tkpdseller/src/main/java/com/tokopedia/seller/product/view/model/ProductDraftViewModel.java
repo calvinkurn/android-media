@@ -1,8 +1,5 @@
 package com.tokopedia.seller.product.view.model;
 
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
-
 /**
  * Created by User on 6/21/2017.
  */
@@ -11,23 +8,16 @@ public class ProductDraftViewModel {
     private long productId;
     private String primaryImageUrl;
     private String productName;
-    private int completion;
+    private int completionPercent;
     private boolean isEdit;
 
-    public ProductDraftViewModel(long productId,
-                                 String primaryImageUrl, String productName, int completion, boolean isEdit) {
+    public ProductDraftViewModel(long productId, String primaryImageUrl,
+                                 String productName, int completionPercent, boolean isEdit) {
         this.productId = productId;
         this.primaryImageUrl = primaryImageUrl;
         this.productName = productName;
-        this.completion = completion;
+        this.completionPercent = completionPercent;
         this.isEdit = isEdit;
-    }
-
-    public ProductDraftViewModel(UploadProductInputDomainModel uploadProductInputDomainModel) {
-        this.productId = uploadProductInputDomainModel.getId();
-        this.productName = uploadProductInputDomainModel.getProductName();
-        this.completion = completion;
-        this.isEdit = (uploadProductInputDomainModel.getProductStatus() == ProductStatus.EDIT);
     }
 
     public long getProductId() {
@@ -54,12 +44,12 @@ public class ProductDraftViewModel {
         this.productName = productName;
     }
 
-    public int getCompletion() {
-        return completion;
+    public int getCompletionPercent() {
+        return completionPercent;
     }
 
-    public void setCompletion(int completion) {
-        this.completion = completion;
+    public void setCompletionPercent(int completionPercent) {
+        this.completionPercent = completionPercent;
     }
 
     public boolean isEdit() {
