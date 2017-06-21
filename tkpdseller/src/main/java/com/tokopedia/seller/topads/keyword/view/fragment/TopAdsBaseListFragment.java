@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +16,10 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -39,16 +36,11 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
 
     protected static final int START_PAGE = 1;
 
-    protected static final String KEY_STATUS = "KEY_STATUS";
-    protected static final String KEY_PAGE = "KEY_PAGE";
-    protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
-
     protected TopAdsBaseListAdapter<U> adapter;
-    protected CoordinatorLayout coordinatorLayout;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-    protected int status;
+
     protected int page;
     protected int totalItem;
     protected boolean searchMode;
@@ -96,7 +88,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
     @Override
     protected void initView(View view) {
         super.initView(view);
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
@@ -114,7 +105,7 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem &&
                         totalItem != Integer.MAX_VALUE) {
-                    searchAd(page + 1);
+                    searchData(page + 1);
                     adapter.showRetryFull(false);
                     adapter.showLoading(true);
                 }
@@ -123,8 +114,15 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
+        if (itemDecoration!= null) {
+            recyclerView.addItemDecoration(getItemDecoration());
+        }
         recyclerView.addOnScrollListener(onScrollListener);
+    }
+
+    protected RecyclerView.ItemDecoration getItemDecoration(){
+        return new DividerItemDecoration(getActivity());
     }
 
     @Override
@@ -133,12 +131,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         searchMode = false;
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                searchAd(START_PAGE);
-            }
-        });
         adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewDefaultBinder());
@@ -149,7 +141,7 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
                 hideLoading();
                 adapter.showRetryFull(false);
                 adapter.showLoadingFull(true);
-                searchAd(START_PAGE);
+                searchData(START_PAGE);
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
@@ -161,18 +153,18 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         adapter.clearData();
         adapter.showRetryFull(false);
         adapter.showLoadingFull(true);
-        searchAd();
+        searchData();
     }
 
-    protected void searchAd(int page) {
+    protected void searchData(int page) {
         this.page = page;
         if (startDate == null || endDate == null) {
             return;
         }
-        searchAd();
+        searchData();
     }
 
-    protected void searchAd() {
+    protected void searchData() {
 
     }
 
@@ -227,23 +219,25 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
             showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
-                    searchAd();
+                    searchData();
                 }
             });
         } else {
             recyclerView.removeOnScrollListener(onScrollListener);
             adapter.showRetryFull(true);
-            swipeToRefresh.setEnabled(false);
+            if (swipeToRefresh!= null) {
+                swipeToRefresh.setEnabled(false);
+            }
         }
     }
 
     protected void hideLoading() {
-        swipeToRefresh.setEnabled(true);
         adapter.showLoading(false);
         adapter.showLoadingFull(false);
         adapter.showEmptyFull(false);
         adapter.showRetryFull(false);
-        if (swipeToRefresh.isRefreshing()) {
+        if (swipeToRefresh!= null){
+            swipeToRefresh.setEnabled(true);
             swipeToRefresh.setRefreshing(false);
         }
         progressDialog.dismiss();
@@ -265,21 +259,4 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         }
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null)
-            return;
-        status = savedInstanceState.getInt(KEY_STATUS);
-        page = savedInstanceState.getInt(KEY_PAGE, 0);
-        totalItem = savedInstanceState.getInt(KEY_TOTAL_ITEM, Integer.MAX_VALUE);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_STATUS, status);
-        outState.putInt(KEY_PAGE, page);
-        outState.putInt(KEY_TOTAL_ITEM, totalItem);
-    }
 }
