@@ -147,6 +147,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.rv_official_intermediary)
     RecyclerView brandsRecyclerView;
 
+    @BindView(R2.id.top_ads_view)
+    TopAdsView topAdsView;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -163,7 +166,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
-    com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
     private NonScrollGridLayoutManager gridLayoutManager;
 
     public static IntermediaryFragment createInstance(String departmentId) {
@@ -191,7 +193,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         presenter.attachView(this);
         presenter.getIntermediaryCategory(departmentId);
-        topAdsView = (TopAdsView) parentView.findViewById(R.id.top_ads_view);
 
         return parentView;
     }

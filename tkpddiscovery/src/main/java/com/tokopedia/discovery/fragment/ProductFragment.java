@@ -409,8 +409,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             public void onLoad(int page, int totalCount) {
                 if (productAdapter.getPagingHandlerModel() != null) {
                     presenter.loadMore(getActivity());
-                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
-                            productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
+                            && productAdapter.getPagingHandlerModel().getUriNext() !=null
+                            && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
@@ -661,7 +662,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setLoading(boolean isLoading) {
-        if(isLoading){
+        if (isLoading) {
             topAdsRecyclerAdapter.showLoading();
         } else {
             topAdsRecyclerAdapter.hideLoading();
