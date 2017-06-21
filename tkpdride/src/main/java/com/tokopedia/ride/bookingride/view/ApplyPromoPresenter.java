@@ -50,7 +50,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 if (!isViewAttached()) return;
                 getView().showApplyPromoLayout();
                 getView().hideApplyPromoLoading();
-                getView().disableApplyButton();
+                getView().enableApplyButton();
                 getView().onFailedApplyPromo(e.getMessage());
             }
 
