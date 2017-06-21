@@ -215,20 +215,23 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
                 uriData = Uri.parse(bundle.getString(APPLINK_URL));
-            }
-            presenter.checkUriLogin(uriData);
-            if (presenter.isLandingPageWebView(uriData)) {
-                CommonUtils.dumper("GAv4 Escape HADES webview");
-                presenter.processDeepLinkAction(uriData);
+                presenter.actionGotUrlFromApplink(uriData);
             } else {
-                if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                    CommonUtils.dumper("GAv4 Entering HADES");
-                    showProgressService();
-                } else {
-                    CommonUtils.dumper("GAv4 Escape HADES non webview");
+                presenter.checkUriLogin(uriData);
+                if (presenter.isLandingPageWebView(uriData)) {
+                    CommonUtils.dumper("GAv4 Escape HADES webview");
                     presenter.processDeepLinkAction(uriData);
+                } else {
+                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                        CommonUtils.dumper("GAv4 Entering HADES");
+                        showProgressService();
+                    } else {
+                        CommonUtils.dumper("GAv4 Escape HADES non webview");
+                        presenter.processDeepLinkAction(uriData);
+                    }
                 }
             }
+
         } else {
             if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
                 CommonUtils.dumper("GAv4 Entering HADES null Uri");
