@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:text="@string/installment_simulation"
+                android:text="@string/installment_bank"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/fontvs" />
         </LinearLayout>
