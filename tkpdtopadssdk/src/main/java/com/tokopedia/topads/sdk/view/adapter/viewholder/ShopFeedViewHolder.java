@@ -174,7 +174,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             favBtn.setSelected(false);
 //            favBtn.setClickable(true);
             text = context.getString(R.string.favoritkan);
-            favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
+            favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_white_24px, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
 
