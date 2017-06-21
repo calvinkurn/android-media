@@ -212,7 +212,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             search.setText(inboxMessagePass.getKeyword());
             if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_ALL)) {
                 radioAll.setChecked(true);
-            } else if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_UNREAD)){
+            } else if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_UNREAD)) {
                 radioUnread.setChecked(true);
             }
         }
@@ -278,26 +278,25 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                     presenter.moveInbox(MOVE_ALL);
                     mode.finish();
                     return true;
-                }else if (item.getItemId() == R.id.action_mark_as_read) {
+                } else if (item.getItemId() == R.id.action_mark_as_read) {
                     presenter.markAsRead();
                     mode.finish();
                     return true;
-                }else if (item.getItemId() == R.id.action_mark_as_unread) {
+                } else if (item.getItemId() == R.id.action_mark_as_unread) {
                     presenter.markAsUnread();
                     mode.finish();
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                enableActions();
                 adapter.setSelected(0);
                 adapter.clearSelection();
                 isMultiActionEnabled = false;
+                enableActions();
             }
         };
     }
@@ -328,6 +327,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 search.setText("");
                 radioAll.setChecked(true);
                 fab.show();
+
             }
         };
     }
@@ -340,6 +340,8 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 adapter.getList().clear();
                 presenter.generateSearchParam();
                 presenter.getInboxMessage();
+
+                finishContextMode();
 
             }
         };
@@ -390,7 +392,10 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     public void enableActions() {
         if (getActivity() instanceof DrawerPresenterActivity)
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(true);
-        fab.show();
+
+        if (adapter.getSelected() == 0)
+            fab.show();
+
         if (presenter.hasActionListener()) {
             adapter.setEnabled(true);
         }

@@ -17,9 +17,6 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
-import com.tokopedia.core.network.entity.topads.TopAds;
-import com.tokopedia.core.network.entity.topads.TopAdsResponse;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
@@ -42,12 +39,12 @@ import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.model.ProductModel;
 import com.tokopedia.discovery.util.PagingHandlerUtil;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,11 +60,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     String TAG = FragmentDiscoveryPresenterImpl.class.getSimpleName();
     DiscoveryInteractor discoveryInteractor;
     WeakReference<Context> context;
-    private List<ProductItem> currTopAdsItem;
     private BrowseProductModel browseProductModel;
-    int spanCount;
-    private int topAdsPaging = 1;
-    private int wishlistButtonCounter = 0;
     private CacheInteractorImpl cacheInteractor;
     private RetrofitInteractorImpl retrofitInteractor;
 
@@ -85,6 +78,19 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         if (TAG == null || TAG.equals(""))
             throw new RuntimeException(getMessageTAG() + "need supply TAG !!!");
 
+    }
+
+    @Override
+    public void callNetwork(BrowseView browseView) {
+        // jika datanya kosong, maka itu dianggap first time.
+        if (view.getDataSize(ProductFragment.TAG) <= 0) {
+            this.context = new WeakReference<Context>(browseView.getContext());
+            NetworkParam.Product productParam = browseView.getProductParam();
+            if (productParam == null)
+                return;
+            discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(productParam));
+            view.setLoading(true);
+        }
     }
 
     @Override
@@ -116,69 +122,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     @Override
-    public void getTopAds(int page, String TAG, Context context) {
-        checkTAG();
-        this.context = new WeakReference<Context>(context);
-        switch (TAG) {
-            case ProductFragment.TAG:
-                int startIndexForQuery = view.getStartIndexForQuery(TAG);
-                if (context != null && context instanceof BrowseView) {
-
-                    NetworkParam.Product productParam = ((BrowseView) context).getProductParam();
-
-                    Log.d(TAG, getMessageTAG() + productParam);
-                    if (productParam == null)
-                        return;
-
-                    NetworkParam.TopAds topAds = new NetworkParam.TopAds();
-                    topAds.page = (topAdsPaging * 2) - 1;
-                    topAds.q = productParam.q;
-                    topAds.depId = productParam.sc;
-                    topAds.h = productParam.h;
-                    if(productParam.extraFilter != null){
-                        topAds.extraFilter = productParam.extraFilter;
-                    }
-
-                    topAds.src = ((BrowseView) context).getBrowseProductActivityModel().getAdSrc();
-
-                    Log.d(TAG, "getTopAds page "+page);
-                    if(spanCount < 3) {// spanCount 1 and 2
-                        if(currTopAdsItem == null || currTopAdsItem.isEmpty()){
-                            HashMap<String, String> topAdsParam = NetworkParam.generateTopAds(context, topAds);
-                            discoveryInteractor.getTopAds(topAdsParam);
-//                        fetchTopAds(page);
-                        } else {
-                            List<ProductItem> passProduct = new ArrayList<>();
-                            int counter = 2;
-                            while(counter != 0 && !currTopAdsItem.isEmpty()) {
-                                if (currTopAdsItem.get(0) != null) {
-                                    ProductItem productItem = currTopAdsItem.remove(0);
-                                    passProduct.add(productItem);
-                                    counter --;
-                                }
-                            }
-                            view.addTopAds(passProduct, page, TAG);
-                        }
-                    }else{
-                        HashMap<String, String> topAdsParam = NetworkParam.generateTopAds(context, topAds);
-                        discoveryInteractor.getTopAds(topAdsParam);
-                    }
-                }
-                break;
-            default:
-                Log.i(TAG, getMessageTAG() + " not implemented yet for this TAG");
-                break;
-        }
-
-    }
-
-    @Override
-    public void getTopAds(int page, String TAG, Context context, int spanCount) {
-        this.spanCount = spanCount;
-        getTopAds(page, TAG, context);
-    }
-
-    @Override
     public void sendGTMNoResult(Context context) {
         BrowseProductModel browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
         if (browseProductModel != null) {
@@ -200,15 +143,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void onWishlistButtonClick(ProductItem data, int itemPosition, Context context) {
         int productId = Integer.parseInt(data.getId());
         if (SessionHandler.isV4Login(context)) {
-            if (wishlistButtonCounter < 6) {
-                if (data.productAlreadyWishlist) {
-                    requestRemoveWishList(context, productId, itemPosition);
-                } else {
-                    requestAddWishList(context, productId, itemPosition);
-                }
-                wishlistButtonCounter++;
+            if (data.productAlreadyWishlist) {
+                requestRemoveWishList(context, productId, itemPosition);
             } else {
-                view.showToastMessage(context.getString(R.string.wishlist_too_much_attempt_error_message));
+                requestAddWishList(context, productId, itemPosition);
             }
         } else {
             cacheInteractor.deleteProductDetail(productId);
@@ -238,6 +176,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         view.showWishListRetry(error);
                     }
                 });
+
     }
 
     private void requestRemoveWishList(final Context context, final Integer productId, final int itemPosition) {
@@ -304,24 +243,30 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         switch (TAG) {
             case ProductFragment.TAG:
-                if ( !isAfterRotate && view.setupRecyclerView()) {
+                if (!isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
+                        view.setLoading(true);
                         browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);
                         if (browseProductModel == null || browseProductModel.result.products == null)
                             return;
-
                         Pair<List<ProductItem>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseProductModel(browseProductModel);
                         HotListBannerModel hotListBannerModel = browseProductModel.hotListBannerModel;
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
-                            processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         } else if (browseProductModel != null
-                                && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
-                            processBrowseProduct(browseProductModel.header.getTotalData(), listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            if (browseProductModel.header != null) {
+                                view.updateTotalProduct(browseProductModel.header.getTotalData());
+                            }
+                            if (browseProductModel.result.products.length == 0) {
+                                view.displayEmptyResult();
+                            } else {
+                                processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            }
                         }
                         sendGTMNoResult(context);
                     }
@@ -365,12 +310,15 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(final Long totalProduct,
-                                     final List<ProductItem> productItems,
+    public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        if (browseProductModel.getCategoryData() != null) {
+            view.addCategoryHeader(browseProductModel.getCategoryData());
+        }
+
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
-            view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+            view.onCallProductServiceResult(productItems, pagingHandlerModel);
             return;
         }
 
@@ -400,7 +348,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                 item.setProductAlreadyWishlist(false);
                             }
                         }
-                        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }
                 });
     }
@@ -528,86 +476,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             case DiscoveryListener.BROWSE_CATALOG:
 
                 break;
-            case DiscoveryListener.TOPADS:
-                Log.i(TAG, getMessageTAG() + " fetch top ads " + data.getModel1());
-                ObjContainer model2 = data.getModel2();
-                topAdsPaging ++;
-                if(model2 instanceof TopAdsResponse.TopAdsContainer){
-
-                    TopAdsResponse topAdsResponse = (TopAdsResponse) model2.body();
-                    int page = view.getPage(ProductFragment.TAG) - 1;
-
-                    if (spanCount < 3) {// spanCount 1 & 2
-
-                        currTopAdsItem = new ArrayList<>();
-                        List<TopAdsResponse.Data> topAdsData = topAdsResponse.data;
-                        for (int i = 0; i < topAdsData.size(); i++) {
-                            TopAdsResponse.Data dataTopAds = topAdsData.get(i);
-                            ProductItem topads = convertToProductItem(dataTopAds);
-                            topads.setTopAds(TopAds.from(dataTopAds));
-                            currTopAdsItem.add(topads);
-                        }
-
-                        List<ProductItem> passProduct = new ArrayList<>();
-
-                        int counter = 2;
-                        while(counter != 0 && !currTopAdsItem.isEmpty()) {
-                            passProduct.add(currTopAdsItem.remove(0));
-                            counter --;
-                        }
-
-                        view.addTopAds(passProduct, page, TAG);
-                    } else {
-                        List<ProductItem> topAds = new ArrayList<>();
-                        int count = 0, max = 4;
-                        A:
-                        for (TopAdsResponse.Data topAdsData :
-                                topAdsResponse.data) {
-                            if (count < max) {
-                                ProductItem topads = convertToProductItem(topAdsData);
-                                topads.setTopAds(TopAds.from(topAdsData));
-                                topAds.add(topads);
-                            } else {
-                                break A;
-                            }
-                            count++;
-                        }
-                        view.addTopAds(topAds, page, TAG);
-                    }
-
-                }
-                break;
             default:
 
                 break;
         }
     }
 
-    private ProductItem convertToProductItem(TopAdsResponse.Data data) {
-        ProductItem product = new ProductItem();
-        product.setId(data.product.id);
-        product.setPrice(data.product.priceFormat);
-        product.setName(data.product.name);
-        product.setShopId(Integer.parseInt(data.shop.id));
-        product.setImgUri(data.product.image.mUrl);
-        product.setShop(data.shop.name);
-        product.setIsGold(data.shop.goldShop ? "1" : "0");
-        product.setLuckyShop(data.shop.luckyShop);
-        product.setWholesale(data.product.wholesalePrice.size() > 0 ? "1" : "0");
-        product.setPreorder((data.product.preorder) ? "1" : "0");
-        product.setIsTopAds(true);
-        product.setShopLocation(data.shop.location);
-        product.setBadges(data.shop.badges);
-        product.setLabels(data.product.labels);
-        TopAds ads = new TopAds();
-        ads.setId(data.id);
-        ads.setAdRefKey(data.adRefKey);
-        ads.setProductClickUrl(data.productClickUrl);
-        ads.setRedirect(data.redirect);
-        ads.setShopClickUrl(data.shopClickUrl);
-        ads.setStickerId(data.stickerId);
-        ads.setStickerImage(data.stickerId);
-        product.setTopAds(ads);
-        return product;
-    }
 }

@@ -42,12 +42,12 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
-                topAdsListPromoViewListener.onSearchAdLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
+                topAdsListPromoViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onLoadSearchAdError();
+                topAdsListPromoViewListener.onLoadSearchError();
             }
         });
     }

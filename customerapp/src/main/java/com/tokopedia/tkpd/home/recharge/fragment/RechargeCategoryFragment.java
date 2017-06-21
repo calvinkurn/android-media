@@ -181,7 +181,7 @@ public class RechargeCategoryFragment extends
             TabLayout.Tab tab = tabLayoutRecharge.newTab();
             tab.setText(category.getAttributes().getName());
             tabLayoutRecharge.addTab(tab);
-            if (category.getAttributes().getIsNew()) {
+            if (category.getAttributes().isNew()) {
                 newRechargePositions.add(i);
 
             }

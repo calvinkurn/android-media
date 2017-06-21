@@ -5,7 +5,8 @@ import android.support.v4.util.ArrayMap;
 import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -28,8 +29,7 @@ public interface BrowseProductParentView extends BaseView {
     void setNetworkStateError();
     void setLoadingProgress(boolean isLoading);
     void redirectUrl(BrowseProductModel productModel);
-    void setupCategory(BrowseProductModel browseProductModel);
-    void renderCategories(Data a);
+    void showTabLayout(boolean show);
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
     void setCurrentTabs(int pos);
     String getProductShareUrl();
@@ -43,4 +43,8 @@ public interface BrowseProductParentView extends BaseView {
     BrowseProductModel getDataForBrowseProduct();
 
     NetworkParam.Product getProductParam();
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
+
+    void setOfficialStoreBanner(BannerOfficialStoreModel model);
 }

@@ -4,12 +4,8 @@ package com.tokopedia.seller.topads.view.model;
  * Created by normansyahputa on 2/13/17.
  */
 
-public class StateTypeBasedModel extends TypeBasedModel {
+public abstract class StateTypeBasedModel implements TypeBasedModel {
     private boolean isSelected;
-
-    public StateTypeBasedModel(int type) {
-        super(type);
-    }
 
     public boolean isSelected() {
         return isSelected;

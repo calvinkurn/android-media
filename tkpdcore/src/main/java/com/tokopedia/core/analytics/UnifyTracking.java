@@ -514,6 +514,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryVoiceSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.VOICE_SEARCH,
+                label
+        ).getEvent());
+    }
+
     public static void eventCartAbandon(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.BACK_CLICK,
@@ -1514,6 +1523,33 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+        ).getEvent());
+    }
+
+    public static void eventClickOsBanner(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_AD_BANNER,
+                AppEventTracking.Category.OS_AD_BANNER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventImpressionOsBanner(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_AD_BANNER,
+                AppEventTracking.Category.OS_AD_BANNER,
+                AppEventTracking.Action.IMPRESSION,
+                label
+        ).getEvent());
+    }
+
+    public static void eventBannerEmptyFeedOS() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
+                AppEventTracking.Category.PRODUCT_FEED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED
         ).getEvent());
     }
 

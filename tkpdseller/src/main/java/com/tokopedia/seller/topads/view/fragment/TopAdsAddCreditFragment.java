@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -24,15 +25,15 @@ import java.util.List;
 
 public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter> implements TopAdsAddCreditFragmentListener {
 
-    private static String TAG = TopAdsAddCreditFragment.class.getSimpleName();
+    private static final String EXTRA_SELECTION_POSITION = "EXTRA_SELECTION_POSITION";
 
-    RecyclerView recyclerView;
-    Button submitButton;
+    private RecyclerView recyclerView;
+    private Button submitButton;
 
     private TopAdsCreditAdapter adapter;
 
-    public static TopAdsAddCreditFragment createInstance() {
-        TopAdsAddCreditFragment fragment = new TopAdsAddCreditFragment();
+    public static Fragment createInstance() {
+        Fragment fragment = new TopAdsAddCreditFragment();
         return fragment;
     }
 
@@ -121,7 +122,9 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     public void onCreditListLoaded(@NonNull List<DataCredit> creditList) {
         hideLoading();
         adapter.setData(creditList);
-        adapter.setCheckedPosition(getDefaultSelection(creditList));
+        if (!adapter.isChecked()) {
+            adapter.setCheckedPosition(getDefaultSelection(creditList));
+        }
         submitButton.setVisibility(View.VISIBLE);
         submitButton.setEnabled(true);
     }
@@ -169,4 +172,18 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
         presenter.unSubscribe();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_SELECTION_POSITION, adapter.getCheckedPosition());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        adapter.setCheckedPosition(savedInstanceState.getInt(EXTRA_SELECTION_POSITION));
+    }
 }

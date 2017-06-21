@@ -1,17 +1,21 @@
 package com.tokopedia.core.inboxreputation.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
@@ -21,7 +25,9 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -49,6 +55,14 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     TabLayout indicator;
 
     private boolean goToReputationHistory;
+
+    @DeepLink(Constants.Applinks.REPUTATION)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, InboxReputationActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +111,18 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             if (sellerReputationFragment != null) {
                 indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
             }
-            if(goToReputationHistory){
+            if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         } else {
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.setVisibility(View.GONE);
+            } else {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+            }
         }
 
     }
@@ -120,9 +139,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
             fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+            } else {
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+            }
         }
         return fragmentList;
     }

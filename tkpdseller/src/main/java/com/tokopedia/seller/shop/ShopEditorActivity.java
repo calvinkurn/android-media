@@ -13,16 +13,15 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.shipping.OpenShopEditShipping;
-import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
-import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
+import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.Router;
@@ -38,7 +37,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-import static com.tokopedia.core.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
+import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
 /**
  * Created by Zulfikar on 5/19/2016.

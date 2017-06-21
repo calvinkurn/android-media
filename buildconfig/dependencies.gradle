@@ -17,6 +17,7 @@ ext {
     tkpdDigitalVersion = '1.+'
     tkpdTopAdsSDKVersion = '1.+'
     tkpdPaymentVersion = '1.+'
+    tkpdPdpVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 15
     targetSdkVersion = 24
@@ -86,8 +87,9 @@ ext {
     analyticsDependencies = [
             localytics : "com.localytics.android:library:4.2.1",
             appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar",
-            moengage : "com.moengage:moe-android-sdk:7.7.00",
-            moengageFCM : "com.moengage:moe-push-firebase:1.1.01"
+            moengage : "com.moengage:moe-android-sdk:7.7.02",
+            moengageFCM : "com.moengage:moe-push-firebase:1.1.01",
+            moengageMSG : "com.moengage:addon-messaging:1.1.01"
     ]
 
     deeplinkDispatchDependencies = [
@@ -112,7 +114,6 @@ ext {
             smoothAppBarLayout    : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller            : "true.caller.sdk:truecaller:0.5",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
-            kmNumber              : 'com.shootr:KMNumbers:1.0.0',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     ]
 
@@ -149,12 +150,13 @@ ext {
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}"
+            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
+            tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
-            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.10"
+            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 
 }

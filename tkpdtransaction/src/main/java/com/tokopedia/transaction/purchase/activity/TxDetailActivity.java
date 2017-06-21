@@ -27,7 +27,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
@@ -371,7 +371,9 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        navigateToActivity(ProductInfoActivity.createInstance(this, productPass));
+        Intent intent = ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(this, productPass);
+        navigateToActivity(intent);
     }
 
     @Override

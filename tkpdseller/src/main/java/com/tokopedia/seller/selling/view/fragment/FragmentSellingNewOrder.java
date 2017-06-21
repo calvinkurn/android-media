@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -216,7 +217,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
-
         presenter.getOrderList(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);

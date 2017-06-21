@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list">
@@ -13,15 +15,21 @@
         android:gravity="top|center_horizontal"
         android:orientation="horizontal">
 
-        <com.tokopedia.core.customwidget.SquareImageView
-            android:id="@+id/product_image"
-            android:layout_width="117dp"
-            android:layout_height="117dp"
-            android:layout_margin="10dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/image_product_desc"
-            android:gravity="center"
-            android:src="@drawable/ic_loading_toped" />
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_view_margin"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="0dp">
+
+            <com.tokopedia.core.customwidget.SquareImageView
+                android:id="@+id/product_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:src="@drawable/ic_loading_toped" />
+        </android.support.v7.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,22 +43,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
-                android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-                style="@style/MediumText"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
+                android:textSize="@dimen/text_size_s_medium"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:textColor="@color/black_70"
+                android:lineSpacingExtra="5sp" />
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/text_original_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/warm_grey"
+                android:textSize="@dimen/fontvvs"
+                android:visibility="gone"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:gravity="center_vertical"
-                android:minHeight="23dp"
-                android:text="Rp 3.121.500"
-                style="@style/MediumText"
-                android:textColor="@color/orange_red"
-                android:textSize="13sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    tools:text="Rp 3.121.500"
+                    android:textColor="@color/orange_red"
+                    android:textSize="@dimen/text_size_s_medium"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="normal"
+                    android:lineSpacingExtra="5sp" />
+
+                <TextView
+                    android:id="@+id/text_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/fontvvvs"
+                    android:padding="@dimen/margin_vvvs"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_rounded_corners_red"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/rating_review_container"
@@ -70,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_xsmall"
                     />
 
             </LinearLayout>
@@ -79,7 +117,6 @@
                 android:id="@+id/label_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
                 android:gravity="left"
                 android:orientation="horizontal">
 
@@ -91,8 +128,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/black_54"
-                android:text="ORIGINAL-ZONE"
-                android:textSize="11sp" />
+                tools:text="ORIGINAL-ZONE"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="@dimen/text_size_xsmall"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:lineSpacingExtra="5sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,9 +149,11 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/ic_place_black_24dp"
                     android:gravity="center_vertical"
+                    android:textSize="@dimen/text_size_xsmall"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="normal"
                     android:textColor="@color/black_38"
-                    android:text="Jakarta"
-                    android:textSize="11sp" />
+                    android:lineSpacingExtra="5sp"/>
 
                 <LinearLayout
                     android:id="@+id/badges_container"
@@ -126,15 +170,19 @@
         android:id="@+id/wishlist_button_container"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginRight="-5dp"
+        android:background="@drawable/circle_white"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/wishlist_button"
             android:layout_width="19dp"
             android:layout_height="19dp"
-            android:layout_centerInParent="true"
+            android:layout_marginLeft="8dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/ic_wishlist"
             />
 

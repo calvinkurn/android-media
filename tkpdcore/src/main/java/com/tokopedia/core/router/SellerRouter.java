@@ -15,8 +15,10 @@ public class SellerRouter {
 
     private static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
     private static final String ACTIVITY_TOPADS_DASHBOARD = "com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity";
+    private static final String ACTIVITY_MANAGE_SHOP = "com.tokopedia.seller.shopsettings.ManageShopActivity";
 
     private static final String FRAGMENT_SELLING_NEW_ORDER = "com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder";
+    private static final String FRAGMENT_SHOP_SETTINGS = "com.tokopedia.seller.shopsettings.FragmentSettingShop";
 
     private static final String ACTIVITY_SHOP_CREATE_EDIT = "com.tokopedia.seller.shop.ShopEditorActivity";
 
@@ -44,8 +46,16 @@ public class SellerRouter {
         return RouterUtils.getActivityIntent(context, ACTIVITY_SHOP_CREATE_EDIT);
     }
 
+    public static Intent getActivityManageShop(Context context) {
+        return RouterUtils.getActivityIntent(context, ACTIVITY_MANAGE_SHOP);
+    }
+
     public static Intent getActivitySellingTransaction(Context context) {
         return RouterUtils.getActivityIntent(context, ACTIVITY_SELLING_TRANSACTION);
+    }
+
+    public static Fragment getFragmentShopSettings(Context context) {
+        return Fragment.instantiate(context, FRAGMENT_SHOP_SETTINGS);
     }
 
     public static Fragment getFragmentSellingNewOrder(Context context) {

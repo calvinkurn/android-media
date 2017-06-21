@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -72,7 +73,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     private BottomSheetDialog bottomSheetDialog;
     private PagingHandler page;
     private RefreshHandler refresh;
-    private LinearLayoutManager linearLayoutManager;
     @SuppressWarnings("all")
     private BaseSellingAdapter adapter;
     private MultiSelector multiSelector = new MultiSelector();
@@ -128,7 +128,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             super.onCreateActionMode(actionMode, menu);
             FragmentSellingShipping.this.actionMode = actionMode;
-            disableFilter();
+            hideFab();
             actionMode.setTitle("1");
             getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
             refresh.setPullEnabled(false);
@@ -151,6 +151,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public void onDestroyActionMode(ActionMode actionMode) {
             super.onDestroyActionMode(actionMode);
             enableFilter();
+            showFab();
             refresh.setPullEnabled(true);
             multiSelector.clearSelections();
             presenter.updateListDataChecked(false);
@@ -165,7 +166,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         page = new PagingHandler();
         adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class, getActivity(), R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
             @Override
@@ -307,6 +307,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        if(actionMode != null && !isVisibleToUser){
+            actionMode.finish();
+        }
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
@@ -469,13 +472,14 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void setAdapter() {
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollView(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
+                presenter.onScrollView(((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }

@@ -140,7 +140,9 @@ public class CartMapperData implements ICartMapperData {
             voucherDigital.setType(responseVoucherData.getType());
 
             RelationData relationDataCart = new RelationData();
-            relationDataCart.setId(responseVoucherData.getRelationships().getCart().getData().getId());
+            relationDataCart.setId(
+                    responseVoucherData.getRelationships().getCart().getData().getId()
+            );
             relationDataCart.setType(
                     responseVoucherData.getRelationships().getCart().getData().getType()
             );
@@ -150,10 +152,16 @@ public class CartMapperData implements ICartMapperData {
 
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
-            voucherAttributeDigital.setDiscountAmountPlain(responseVoucherData.getAttributes().getDiscountAmountPlain());
-            voucherAttributeDigital.setCashbackAmpountPlain(responseVoucherData.getAttributes().getCashbackAmountPlain());
+            voucherAttributeDigital.setDiscountAmountPlain(
+                    responseVoucherData.getAttributes().getDiscountAmountPlain()
+            );
+            voucherAttributeDigital.setCashbackAmpountPlain(
+                    responseVoucherData.getAttributes().getCashbackAmountPlain()
+            );
             voucherAttributeDigital.setUserId(responseVoucherData.getAttributes().getUserId());
-            voucherAttributeDigital.setVoucherCode(responseVoucherData.getAttributes().getVoucherCode());
+            voucherAttributeDigital.setVoucherCode(
+                    responseVoucherData.getAttributes().getVoucherCode()
+            );
 
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
 
@@ -191,8 +199,8 @@ public class CartMapperData implements ICartMapperData {
     }
 
     @Override
-    public InstantCheckoutData transformInstantCheckoutData(ResponseInstantCheckoutData responseCheckoutData)
-            throws MapperDataException {
+    public InstantCheckoutData transformInstantCheckoutData(
+            ResponseInstantCheckoutData responseCheckoutData) throws MapperDataException {
         try {
             InstantCheckoutData instantCheckoutData = new InstantCheckoutData();
             instantCheckoutData.setRedirectUrl(

@@ -7,16 +7,12 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.CommonListener;
 import com.tkpd.library.utils.network.ManyRequestErrorException;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.util.ShopNetworkController;
-import com.tokopedia.sellerapp.SellerMainApplication;
-import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
@@ -45,6 +41,7 @@ public class ShopController extends BaseController{
     private InboxResCenterNetworkController inboxResCenterNetworkController;
     private DepositNetworkController depositNetworkController;
     private ShopTransactionController shopTransactionController;
+    private MojitoController mojitoController;
     private Gson gson;
 
     public ShopController(GCMHandler gcmHandler, ShopNetworkController shopNetworkController,
@@ -52,13 +49,14 @@ public class ShopController extends BaseController{
                           InboxResCenterNetworkController inboxResCenterNetworkController,
                           DepositNetworkController depositNetworkController,
                           ShopTransactionController shopTransactionController,
-                          Gson gson) {
+                          MojitoController mojitoController, Gson gson) {
         this.gcmHandler = gcmHandler;
         this.shopNetworkController = shopNetworkController;
         this.notifNetworkController = notifNetworkController;
         this.inboxResCenterNetworkController = inboxResCenterNetworkController;
         this.depositNetworkController = depositNetworkController;
         this.shopTransactionController = shopTransactionController;
+        this.mojitoController = mojitoController;
         this.gson = gson;
     }
 
@@ -105,13 +103,17 @@ public class ShopController extends BaseController{
         );
     }
 
+    public void getTicker(MojitoController.ListenerGetTicker listenerGetTicker) {
+        mojitoController.getTicker(listenerGetTicker);
+    }
+
     public void getData(String userId, String deviceId,
                         ShopNetworkController.ShopInfoParam shopInfoParam,
                         final ShopNetworkController.GetShopInfo shopInfo,
                         final NotifNetworkController.GetNotif notif,
                         final InboxResCenterNetworkController.InboxResCenterListener resCenter,
                         final DepositNetworkController.DepositListener deposit,
-                        final ListenerGetTicker listenerGetTicker){
+                        final MojitoController.ListenerGetTicker listenerGetTicker) {
 
         Observable<Response<TkpdResponse>> shopInfoObservable = shopNetworkController.
                 getShopInfo(userId, deviceId, shopInfoParam);
@@ -125,14 +127,16 @@ public class ShopController extends BaseController{
         Observable<Response<TkpdResponse>> depositObservable = depositNetworkController.
                 getDeposit(userId, deviceId);
 
+        Observable<Response<Ticker>> ticker = mojitoController.getTicker();
+
         compositeSubscription.add(
-                        Observable.concat(shopInfoObservable, notifObservable, resCenterListObservable, depositObservable)
+                Observable.concat(shopInfoObservable, notifObservable, resCenterListObservable, depositObservable, ticker)
                         .toList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(
-                                new Subscriber<List<Response<TkpdResponse>>>() {
+                                new Subscriber<List<Response<? extends Object>>>() {
                                     @Override
                                     public void onCompleted() {
 
@@ -145,64 +149,67 @@ public class ShopController extends BaseController{
                                     }
 
                                     @Override
-                                    public void onNext(List<Response<TkpdResponse>> responses) {
+                                    public void onNext(List<Response<? extends Object>> responses) {
                                         // get shop info
-                                        Response<TkpdResponse> response = responses.get(0);
+                                        Response<TkpdResponse> response = convertToTkpdResponse(responses.get(0));
                                         parseResponse(0, shopInfo, response);
 
                                         // get notification
-                                        response = responses.get(1);
+                                        response = convertToTkpdResponse(responses.get(1));
                                         parseResponse(1, notif, response);
 
                                         // get complain by resolution center
-                                        response = responses.get(2);
+                                        response = convertToTkpdResponse(responses.get(2));
                                         parseResponse(2, resCenter, response);
 
                                         // get deposit
-                                        response = responses.get(3);
+                                        response = convertToTkpdResponse(responses.get(3));
                                         parseResponse(3, deposit, response);
+
+                                        // get ticker
+                                        Response<Ticker> tickerResponse = convertToTicker(responses.get(4));
+                                        parseResponseTicker(listenerGetTicker, tickerResponse);
+
                                     }
                                 }
                         )
         );
+    }
 
-        compositeSubscription.add(
-                getTicker().subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(
-                                new Subscriber<Response<Ticker>>() {
-                                    @Override
-                                    public void onCompleted() {
+    private Response<TkpdResponse> convertToTkpdResponse(Response<? extends Object> tkpdResponseResponse) {
+        Object body = tkpdResponseResponse.body();
+        if (body != null && body instanceof TkpdResponse) {
+            return (Response<TkpdResponse>) tkpdResponseResponse;
+        }
+        return null;
+    }
 
-                                    }
+    private Response<Ticker> convertToTicker(Response<? extends Object> response) {
+        Object body = response.body();
+        if (body != null && body instanceof Ticker) {
+            return (Response<Ticker>) response;
+        }
+        return null;
+    }
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Log.e(TAG, "getData : onError : "+e.toString());
-                                        listenerGetTicker.onError();
-                                    }
-
-                                    @Override
-                                    public void onNext(Response<Ticker> responses) {
-                                        if(responses.isSuccessful()) {
-                                            Ticker ticker = responses.body();
-                                            Ticker.Data data = null;
-                                            if(ticker != null){
-                                                data = ticker.getData();
-                                            }
-                                            if(data != null) {
-                                                listenerGetTicker.onSuccess(data.getTickers());
-                                            }else{
-                                                listenerGetTicker.onError();
-                                            }
-                                        }else{
-                                            listenerGetTicker.onError();
-                                        }
-                                    }
-                                }
-                        )
-        );
+    private void parseResponseTicker(@NonNull CommonListener commonListener,
+                                     @NonNull Response<Ticker> response) {
+        MojitoController.ListenerGetTicker tickerListener =
+                (MojitoController.ListenerGetTicker) commonListener;
+        if (response.isSuccessful()) {
+            Ticker ticker = response.body();
+            Ticker.Data data = null;
+            if (ticker != null) {
+                data = ticker.getData();
+            }
+            if (data != null) {
+                tickerListener.onSuccess(data.getTickers());
+            } else {
+                tickerListener.onError(new Throwable());
+            }
+        } else {
+            onResponseError(response.code(), tickerListener);
+        }
     }
 
     /**
@@ -223,7 +230,7 @@ public class ShopController extends BaseController{
                         if(response.body().getStatus()!= null && response.body().getStatus().equalsIgnoreCase("TOO_MANY_REQUEST")){
                             throw new ManyRequestErrorException(response.body().getErrorMessages().get(0));
                         }else {
-                            throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                            throw new MessageErrorException(response.body().getErrorMessages().get(0));
                         }
                     }else{
                         String stringData = response.body().getStringData();
@@ -240,7 +247,7 @@ public class ShopController extends BaseController{
                         = (NotifNetworkController.GetNotif) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getNotif : onNext : "+stringData);
@@ -256,7 +263,7 @@ public class ShopController extends BaseController{
                         (InboxResCenterNetworkController.InboxResCenterListener) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getResCenterList : onNext : "+stringData);
@@ -272,7 +279,7 @@ public class ShopController extends BaseController{
                         (DepositNetworkController.DepositListener) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else {
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getDeposit : onNext : "+stringData);
@@ -285,20 +292,5 @@ public class ShopController extends BaseController{
                 break;
         }
     }
-
-    private Observable<Response<Ticker>> getTicker() {
-        TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
-
-        return tickerApiSeller.getTickers(
-                SessionHandler.getLoginID(SellerMainApplication.getAppContext()),
-                TickerApiSeller.size,
-                TickerApiSeller.FILTER_SELLERAPP_ANDROID_DEVICE);
-    }
-
-    public interface ListenerGetTicker {
-        void onSuccess(Ticker.Tickers[] tickers);
-
-        void onError();
-    };
 
 }

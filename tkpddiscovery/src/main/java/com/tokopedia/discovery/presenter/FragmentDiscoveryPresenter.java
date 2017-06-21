@@ -24,11 +24,9 @@ public abstract class FragmentDiscoveryPresenter extends BaseImpl<FragmentBrowse
      */
     public abstract void setTAG(String TAG);
 
+    public abstract void callNetwork(BrowseView browseView);
+
     public abstract void loadMore(Context context);
-
-    public abstract void getTopAds(int page, String TAG, Context context);
-
-    public abstract void getTopAds(int page, String TAG, Context context, int spanCount);
 
     public abstract void sendGTMNoResult(Context context);
 

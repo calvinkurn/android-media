@@ -6,6 +6,8 @@ import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -13,6 +15,11 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 2/20/17.
  */
 public class TopAdsSearchGroupMapper implements Func1<Response<DataResponse<List<GroupAd>>>, List<GroupAd>> {
+
+    @Inject
+    public TopAdsSearchGroupMapper() {
+    }
+
     @Override
     public List<GroupAd> call(Response<DataResponse<List<GroupAd>>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);

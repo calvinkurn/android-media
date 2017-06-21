@@ -29,7 +29,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -120,6 +121,22 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public NetworkParam.Product getProductParam() {
         return presenter.getProductParam();
+    }
+
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
+    public void setOfficialStoreBanner(BannerOfficialStoreModel model) {
+        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
+            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
+                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
+                productFragment.showOfficialStoreBanner(model);
+                break;
+            }
+        }
     }
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
@@ -241,12 +258,26 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
+    public void showTabLayout(boolean show) {
+        if(show){
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void redirectUrl(BrowseProductModel productModel) {
         String uri = productModel.result.redirect_url;
         if (uri.contains("/hot/")) {
-            Uri myurl = Uri.parse(uri);
-            uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                Uri myurl = Uri.parse(uri);
+                uri = myurl.getPathSegments().get(1);
+                browseProductActivity.sendHotlist(uri, model.getQ());
+            }
         }
         if (uri.contains("/p/")) {
             if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
@@ -263,24 +294,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void setupCategory(BrowseProductModel browseProductModel) {
-        ((BrowseProductActivity) getActivity()).sendCategory(browseProductModel.result.departmentId);
-    }
-
-    @Override
-    public void renderCategories(Data categoryHeader) {
-        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
-            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
-                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
-                productFragment.addCategoryHeader(categoryHeader);
-                if (categoryHeader.getIsRevamp()) {
-                    tabLayout.setVisibility(View.GONE);
-                }
-            }
         }
     }
 
@@ -362,6 +375,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
+            ((ProductFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
                 source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }

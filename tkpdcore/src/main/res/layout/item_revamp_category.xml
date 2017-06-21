@@ -19,8 +19,7 @@
                 android:layout_width="91dp"
                 android:layout_height="91dp"
                 android:visibility="visible"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_navigate_next_black_24dp"/>
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:id="@id/categoryTitle"

@@ -61,30 +61,39 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public void bind(ProductListViewModel element) {
         data = element.getData();
         Product product = data.getProduct();
-        imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
-                productImage);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            productName.setText(Html.fromHtml(product.getName(),
-                    Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            productName.setText(Html.fromHtml(product.getName()));
-        }
-        productPrice.setText(product.getPriceFormat());
+        if (product != null) {
+            imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
+                    productImage);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                productName.setText(Html.fromHtml(product.getName(),
+                        Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                productName.setText(Html.fromHtml(product.getName()));
+            }
+            productPrice.setText(product.getPriceFormat());
 
-        if(product.getLabels()!=null){
-            LabelLoader.initLabel(context, labelContainer, product.getLabels());
+            if (product.getLabels() != null) {
+                LabelLoader.initLabel(context, labelContainer, product.getLabels());
+            }
         }
         Shop shop = data.getShop();
-        shopLocation.setText(shop.getLocation());
-        shopName.setText(shop.getName());
-        if(shop.getBadges() !=null){
-            imageLoader.loadBadge(badgeContainer, shop.getBadges());
+        if (shop != null) {
+            shopLocation.setText(shop.getLocation());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                shopName.setText(Html.fromHtml(shop.getName(),
+                        Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                shopName.setText(Html.fromHtml(shop.getName()));
+            }
+            if (shop.getBadges() != null) {
+                imageLoader.loadBadge(badgeContainer, shop.getBadges());
+            }
         }
     }
 
     @Override
     public void onClick(View v) {
-        if(itemClickListener!=null) {
+        if (itemClickListener != null) {
             itemClickListener.onProductItemClicked(getAdapterPosition(), data);
         }
     }

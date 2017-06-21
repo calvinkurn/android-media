@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,6 +31,7 @@ import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.SellerRouter;
@@ -46,6 +48,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -101,6 +105,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     protected void onStart() {
+        super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
         if (!MainApplication.isTablet()) {
@@ -108,7 +113,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        super.onStart();
     }
 
     @Override
@@ -378,6 +382,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .getApplicationComponent(getActivityModule());
     }
 
+
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
     }
@@ -385,4 +390,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
+
+
 }

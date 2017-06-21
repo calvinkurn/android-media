@@ -22,7 +22,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.EtalaseShopEditor;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -394,9 +394,12 @@ public class DrawerVariableSeller extends DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
-                    intent.putExtra("link", "https://tokopedia.com/contact-us-android");
-                }
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.HELP:
+                intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
@@ -418,12 +421,12 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent = new Intent(context, TopAdsDashboardActivity.class);
                 context.startActivity(intent);
                 break;
-            case TkpdState.DrawerPosition.HELP:
-                intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
-                context.startActivity(intent);
+            case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
+                goToOpportunityList();
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.OPPORTUNIT_LIST
+                );
                 break;
+
             default:
                 break;
         }
@@ -432,6 +435,12 @@ public class DrawerVariableSeller extends DrawerVariable {
         }
 //        updateData();
         closeDrawer();
+    }
+
+    private void goToOpportunityList() {
+        Intent intent = SellerRouter.getActivitySellingTransaction(context);
+        intent.putExtra("tab", 5);
+        context.startActivity(intent);
     }
 
     private void goToShopTransactionList() {
@@ -607,6 +616,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         model.shopMenu.list.add(new DrawerItem("Konfirmasi pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
         model.shopMenu.list.add(new DrawerItem("Status pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
         model.shopMenu.list.add(new DrawerItem("Daftar penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
+        model.shopMenu.list.add(new DrawerItem("Peluang", 0, 0, TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
         model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
@@ -636,11 +646,11 @@ public class DrawerVariableSeller extends DrawerVariable {
         } else {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
+            model.data.add(model.shopMenu);// penjualan
+            model.data.add(model.inboxMenu);// inbox
             model.data.add(model.gmSubscribeMenu);
             model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT, false));
             model.data.add(model.topAdsMenu);
-            model.data.add(model.inboxMenu);
-            model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
                     false));
             model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contactus, TkpdState.DrawerPosition.CONTACT_US, false));

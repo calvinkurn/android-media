@@ -59,9 +59,9 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
@@ -221,7 +221,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
-                    session.setWhichFragment(((BaseView) fragment).getFragmentId());
+                    if(session.getWhichFragment() == 0) {
+                        session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
+                    }
                     setToolbarTitle();
                     invalidateOptionsMenu();
                 }

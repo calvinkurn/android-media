@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,11 +17,12 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class LabelView extends FrameLayout {
+public class LabelView extends BaseCustomView {
 
-    TextView titleTextView;
-    TextView contentTextView;
-    ImageView arrow;
+    private TextView titleTextView;
+    private TextView contentTextView;
+    private ImageView arrow;
+
     private String titleText;
     private String valueText;
     private int colorValue;

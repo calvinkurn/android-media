@@ -15,7 +15,7 @@ public interface AppEventTracking {
     String DEFAULT_EVENT = "Event";
     String ACCOUNTS_KEY = "accounts";
 
-    interface GTMKey{
+    interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
     }
 
@@ -114,9 +114,11 @@ public interface AppEventTracking {
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
-        String CLICK_VIEW_ALL_OS = "clickOS";
+        String CLICK_VIEW_ALL_OS = "clickOfficialStore";
+        String CLICK_AD_BANNER = "clickAdBanner";
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
+        String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
     }
 
     interface Category {
@@ -179,13 +181,16 @@ public interface AppEventTracking {
         String PUSH_NOTIFICATION = "Push Notification";
         String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
+        String OS_AD_BANNER = "OS Ad Banner";
         String RECHARGE = "Recharge - ";
+        String PRODUCT_FEED = "Product Feed";
     }
 
     interface Action {
         String CLICK = "Click";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
+        String VOICE_SEARCH = "Voice Search";
         String VIEW = "View";
         String VIEW_RECENT = "View Recent";
         String VIEW_ALL = "Lihat Semua";
@@ -395,6 +400,8 @@ public interface AppEventTracking {
         String TRUECALLER = "Truecaller";
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
+        String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
+        String OPPORTUNIT_LIST = "Peluang";
     }
 
     interface SOCIAL_MEDIA {
@@ -442,6 +449,22 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE          = "autocomplete";
         String SEARCH_HOTLIST               = "hotlist";
         String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
+
+        String UTM_SOURCE   = "utm_source";
+        String UTM_MEDIUM   = "utm_medium";
+        String UTM_CAMPAIGN = "utm_campaign";
+        String UTM_CONTENT  = "utm_content";
+        String UTM_TERM     = "utm_term";
+        String UTM_GCLID    = "gclid";
+
+        String UTM_SOURCE_APPEND   = "&"+UTM_SOURCE+"=";
+        String UTM_MEDIUM_APPEND   = "&"+UTM_MEDIUM+"=";
+        String UTM_CAMPAIGN_APPEND = "&"+UTM_CAMPAIGN+"=";
+        String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
+        String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
+        String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
     }
 
     interface MOENGAGE {
@@ -458,17 +481,17 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
-        String LOGIN_STATUS = "Logged_in_Status";
-        String PRODUCTS_NUMBER = "Number_of_Products";
-        String SUBCATEGORY = "SubCategory_name";
-        String SUBCATEGORY_ID = "SubCategory_id";
-        String CATEGORY = "Category";
-        String PRODUCT_ID = "Product_id";
-        String PRODUCT_NAME = "Product_name";
-        String PRODUCT_URL = "Product_url";
-        String PRODUCT_PRICE = "Product_price";
-        String BRAND_NAME = "Brand_name";
-        String BRAND_ID = "Brand_id";
+        String LOGIN_STATUS = "logged_in_status";
+        String PRODUCTS_NUMBER = "number_of_products";
+        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY_ID = "subcategory_id";
+        String CATEGORY = "category";
+        String PRODUCT_ID = "product_id";
+        String PRODUCT_NAME = "product_name";
+        String PRODUCT_URL = "product_url";
+        String PRODUCT_PRICE = "product_price";
+        String BRAND_NAME = "brand_name";
+        String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
 
@@ -476,11 +499,11 @@ public interface AppEventTracking {
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
         String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
+        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
 
 
         String REG_START = "Registration_Start";
@@ -503,7 +526,7 @@ public interface AppEventTracking {
         String APPSFLYER_KEY = "APPSFLYER_KEY";
     }
 
-    interface AddProduct{
+    interface AddProduct {
         String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
         String CATEGORY_ADD_PRODUCT = "Add Product";
         String EVENT_ACTION_ADD = "Add";
@@ -512,7 +535,7 @@ public interface AppEventTracking {
         String EVENT_ACTION_ERROR_SERVER = "Error Server";
 
         String FIELDS_MANDATORY_PRODUCT_NAME = "M1";
-        String FIELDS_MANDATORY_CATEGORY= "M2";
+        String FIELDS_MANDATORY_CATEGORY = "M2";
         String FIELDS_MANDATORY_PRICE = "M3";
         String FIELDS_MANDATORY_WEIGHT = "M4";
         String FIELDS_MANDATORY_MIN_PURCHASE = "M5";

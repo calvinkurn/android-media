@@ -13,6 +13,7 @@ import com.tokopedia.core.discovery.interfaces.Convert;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
@@ -45,6 +46,16 @@ public class BrowseProductModel {
 
     @SerializedName("server_process_time")
     public String serverProcessTime;
+
+    private Data categoryData;
+
+    public Data getCategoryData() {
+        return categoryData;
+    }
+
+    public void setCategoryData(Data categoryData) {
+        this.categoryData = categoryData;
+    }
 
     public static class Result {
         @SerializedName("locations")

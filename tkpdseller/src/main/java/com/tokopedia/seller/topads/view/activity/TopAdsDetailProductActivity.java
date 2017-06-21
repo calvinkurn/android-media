@@ -1,12 +1,12 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -40,11 +40,11 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
-        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if(fragment == null){
             fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, fragment,
                         TAG)
                 .commit();
@@ -63,6 +63,18 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     }
 
     @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            //coming from deeplink
+            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+            this.startActivity(intent);
+            this.finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailProductActivity.class.getName();
         if (ShowCasePreference.hasShown(this, showCaseTag)){
@@ -73,7 +85,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
         }
 
         final TopAdsDetailProductFragment topAdsDetailProductFragment =
-                (TopAdsDetailProductFragment) getFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
+                (TopAdsDetailProductFragment) getSupportFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
 
         if (topAdsDetailProductFragment == null) {
             return;

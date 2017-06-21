@@ -22,7 +22,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -390,6 +389,11 @@ public class DrawerVariable {
                 goToShopNewOrder();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
                 break;
+            case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
+                goToOpportunityList();
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.OPPORTUNIT_LIST
+                );
+                break;
             case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
                 goToShopConfirmShipping();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
@@ -407,7 +411,9 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                startIntent(EtalaseShopEditor.class);
+                if(context.getApplication() instanceof TkpdCoreRouter){
+                    ((TkpdCoreRouter)context.getApplication()).goToManageEtalase(context);
+                }
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
@@ -461,12 +467,12 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.HELP:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
@@ -482,6 +488,12 @@ public class DrawerVariable {
             context.finish();
         }
         closeDrawer();
+    }
+
+    private void goToOpportunityList() {
+        Intent intent = SellerRouter.getActivitySellingTransaction(context);
+        intent.putExtra("tab", 5);
+        context.startActivity(intent);
     }
 
     private void goToShopTransactionList() {
@@ -714,6 +726,7 @@ public class DrawerVariable {
         model.shopMenu.list.add(new DrawerItem("Konfirmasi Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
         model.shopMenu.list.add(new DrawerItem("Status Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
         model.shopMenu.list.add(new DrawerItem("Daftar Penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
+        model.shopMenu.list.add(new DrawerItem("Peluang", 0, 0, TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
         model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
@@ -755,8 +768,10 @@ public class DrawerVariable {
             public void onSuccess(LoyaltyItem data) {
                 model.header.LoyaltyUrl = URLGenerator.generateURLLucky(data.getUri(), context);
                 model.header.Loyalty = data.getLoyaltyPoint().getAmount();
+                model.header.TopPointsEnabled = data.getActive();
                 Cache.putString("loyalty", model.header.Loyalty);
                 Cache.putString("loyalty_url", model.header.LoyaltyUrl);
+                Cache.putBoolean("loyalty_state", model.header.TopPointsEnabled);
                 Cache.applyEditor();
                 adapter.notifyDataSetChanged();
             }
