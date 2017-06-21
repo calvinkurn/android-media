@@ -5,8 +5,8 @@
     android:layout_width="225dp"
     android:layout_height="wrap_content"
     android:background="@drawable/featured_product_item_background"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:paddingBottom="16dp"
     android:clickable="true">
 
