@@ -26,25 +26,15 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
 public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
-    private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
 
     public AdsAdapterTypeFactory(Context context) {
-        this(context, 0);
-    }
-
-    public AdsAdapterTypeFactory(Context context, int clickPosition) {
         imageLoader = new ImageLoader(context);
-        this.clickPosition = clickPosition;
     }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-    }
-
-    public void setClickPosition(int adapterPosition) {
-        clickPosition = adapterPosition;
     }
 
     @Override
@@ -89,7 +79,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ShopListViewHolder.LAYOUT) {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopFeedViewHolder.LAYOUT) {
-            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else {

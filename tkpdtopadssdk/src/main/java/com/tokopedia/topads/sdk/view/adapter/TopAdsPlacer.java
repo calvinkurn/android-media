@@ -11,7 +11,6 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
@@ -45,8 +44,8 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
     private boolean isFeed = false;
+    private boolean mNeedsPlacement;
     private boolean shouldLoadAds = true; //default load ads
-    private TopAdsFavShopClickListener favShopClickListener;
 
     public TopAdsPlacer(
             Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
@@ -88,6 +87,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
+        if (mNeedsPlacement)
+            return;
+        mNeedsPlacement = true;
         observerType = ObserverType.CHANGE;
         if (hasHeader)
             headerPlaced = false;
@@ -199,6 +201,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = getItemCount();
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
+        mNeedsPlacement = false;
     }
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
@@ -223,6 +226,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
         headerPlaced = true;
+        mNeedsPlacement = false;
     }
 
     @Override
@@ -260,7 +264,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         presenter.setConfig(config);
     }
 
-    public Config getConfig(){
+    public Config getConfig() {
         return presenter.getConfig();
     }
 
@@ -283,13 +287,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void onAddFavorite(int position, Data dataShop) {
-        if (favShopClickListener != null) {
-            favShopClickListener.onAddShopFavorite(position, dataShop);
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
-    }
-
-    public void setFavShopClickListener(TopAdsFavShopClickListener favShopClickListener) {
-        this.favShopClickListener = favShopClickListener;
     }
 
     public interface DataObserver {

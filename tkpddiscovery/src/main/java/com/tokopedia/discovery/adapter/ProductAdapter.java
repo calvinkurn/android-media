@@ -268,7 +268,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+        public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
 
         }
     }

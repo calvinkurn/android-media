@@ -178,10 +178,12 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
         setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
+        title.setText(actionSpanString);
+
         if (activityCardViewModel.getHeader().isOfficialStore()) {
-            setBadge(actionSpanString, R.drawable.ic_badge_official);
+            setBadge(actionSpanString, title, R.drawable.ic_badge_official);
         }else if (activityCardViewModel.getHeader().isGoldMerchant()) {
-            setBadge(actionSpanString, R.drawable.ic_shop_gold);
+            setBadge(actionSpanString, title, R.drawable.ic_shop_gold);
         }
 
         title.setText(actionSpanString);
@@ -208,12 +210,16 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         });
     }
 
-    private void setBadge(SpannableString actionSpanString, int resId) {
+    private void setBadge(SpannableString actionSpanString, TextView shopName, int resId) {
         int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
-        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
-        actionSpanString.setSpan(is, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ImageSpan is;
+        if (shopName.getLineCount() == 1)
+            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
+        else
+            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
+        actionSpanString.setSpan(is, 0, 1, 0);
     }
 
     private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {

@@ -477,7 +477,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
+    public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data shop) {
 
     }
 
