@@ -37,9 +37,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
 
     protected static final int START_PAGE = 1;
 
-    protected static final String KEY_PAGE = "KEY_PAGE";
-    protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
-
     protected TopAdsBaseListAdapter<U> adapter;
     protected CoordinatorLayout coordinatorLayout;
     protected RecyclerView recyclerView;
