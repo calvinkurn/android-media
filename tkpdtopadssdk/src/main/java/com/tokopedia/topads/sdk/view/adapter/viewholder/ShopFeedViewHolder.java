@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.view.SquareImageView;
 import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
 import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
@@ -49,7 +50,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
-    private final int clickPosition;
 
 
     private LocalAdsClickListener itemClickListener;
@@ -65,8 +65,10 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     private ImageLoader imageLoader;
     RecyclerView recyclerView;
     PromotedShopAdapter adapter;
+    private int adapterPosition = 0;
 
-    public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+    public ShopFeedViewHolder(View itemView, ImageLoader imageLoader,
+                              LocalAdsClickListener itemClickListener) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
@@ -82,8 +84,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         header = itemView.findViewById(R.id.header);
         header.setOnClickListener(this);
         favBtn.setOnClickListener(this);
-        this.clickPosition = clickPosition;
-
         SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
                 new SpannedGridLayoutManager.GridSpanLookup() {
                     @Override
@@ -110,9 +110,9 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         int id = v.getId();
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
-                itemClickListener.onAddFavorite(clickPosition, data);
+                itemClickListener.onAddFavorite(adapterPosition, data);
             } else if (id == R.id.container || id == R.id.header){
-                itemClickListener.onShopItemClicked(clickPosition, data);
+                itemClickListener.onShopItemClicked(adapterPosition, data);
             }
         }
     }
@@ -120,7 +120,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @Override
     public void bind(ShopFeedViewModel element) {
         data = element.getData();
-
         Shop shop = data.getShop();
         if(shop!=null){
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
@@ -151,7 +150,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClickListener.onShopItemClicked(clickPosition, data);
+                itemClickListener.onShopItemClicked(adapterPosition, data);
             }
         });
     }
@@ -202,5 +201,9 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
                 context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
         spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
+    }
+
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
     }
 }

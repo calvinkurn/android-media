@@ -422,7 +422,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     @Override
-    public void onAddFavorite(Data dataShop) {
+    public void onAddFavorite(int position, Data dataShop) {
         Shop shop = dataShop.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(
