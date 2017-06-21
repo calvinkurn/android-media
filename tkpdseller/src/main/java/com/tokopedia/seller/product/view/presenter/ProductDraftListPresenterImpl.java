@@ -42,7 +42,6 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
             @Override
             public void onNext(List<UploadProductInputDomainModel> uploadProductInputDomainModels) {
-                getView().hideLoading();
                 if (uploadProductInputDomainModels == null || uploadProductInputDomainModels.size() == 0 ) {
                     getView().onSearchLoaded(null);
                 } else {

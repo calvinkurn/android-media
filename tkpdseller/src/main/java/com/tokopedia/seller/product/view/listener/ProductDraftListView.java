@@ -13,7 +13,5 @@ import java.util.List;
 public interface ProductDraftListView extends CustomerView {
     void onLoadSearchError();
 
-    void hideLoading();
-
     void onSearchLoaded(List<ProductDraftViewModel> listDraft);
 }

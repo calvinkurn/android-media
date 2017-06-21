@@ -276,11 +276,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     }
 
     @Override
-    public void hideLoading() {
-        super.hideLoading();
-    }
-
-    @Override
     public void onSearchLoaded(List<ProductDraftViewModel> listDraft) {
         if (listDraft == null ) {
             onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
