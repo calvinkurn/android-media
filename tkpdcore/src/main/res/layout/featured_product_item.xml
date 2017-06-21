@@ -15,9 +15,9 @@
         android:layout_width="@dimen/featured_product_item_image_size"
         android:layout_height="@dimen/featured_product_item_image_size"
         app:cardElevation="0dp"
-        android:layout_marginTop="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginTop="@dimen/featured_product_grid_padding"
+        android:layout_marginLeft="@dimen/featured_product_grid_padding"
+        android:layout_marginRight="@dimen/featured_product_grid_padding"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -37,8 +37,8 @@
         android:layout_marginTop="6dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/featured_product_grid_padding"
+        android:layout_marginRight="@dimen/featured_product_grid_padding"
         android:minHeight="@dimen/product_item_title_min_height"
         style="@style/MediumText"
         android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
@@ -54,8 +54,8 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:layout_marginTop="3dp"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/featured_product_grid_padding"
+        android:layout_marginRight="@dimen/featured_product_grid_padding"
         style="@style/MediumText"
         android:text="Rp 3.121.500"
         android:textColor="@color/orange_red"
@@ -66,10 +66,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/price"
         android:gravity="center_vertical"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/featured_product_grid_padding"
+        android:layout_marginRight="@dimen/featured_product_grid_padding"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="@dimen/product_grid_padding"
+        android:layout_marginBottom="@dimen/featured_product_grid_padding"
         android:minHeight="@dimen/featured_product_badges_and_label_container_min_height"
         android:orientation="horizontal">
 
