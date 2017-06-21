@@ -26,15 +26,14 @@ import java.util.List;
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
 
     private TextView tvCategory;
-    private TextView tvWeight;
     private TextView tvMinOrder;
-    private TextView tvInsurance;
     private TextView tvCatalog;
     private TextView tvEtalase;
     private TextView tvCondition;
     private TextView tvReturnable;
     private TableRow catalogView;
     private TextView tvPreOrder;
+    private TextView tvSuccessRate;
     private TableRow returnableView;
     private TableRow preOrderView;
 
@@ -107,17 +106,13 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             catalogView.setVisibility(GONE);
         }
         showReturnable(data.getInfo().getProductReturnable(), data.getShopInfo().getShopHasTerms());
-
-        tvWeight.setText(String.format("%s%s",
-                data.getInfo().getProductWeight(),
-                data.getInfo().getProductWeightUnit()));
         tvMinOrder.setText(data.getInfo().getProductMinOrder().replace(".",""));
-        tvInsurance.setText(data.getInfo().getProductInsurance());
         if (data.getInfo().getProductEtalase() != null) {
             tvEtalase.setText(MethodChecker.fromHtml(data.getInfo().getProductEtalase()));
             tvEtalase.setOnClickListener(new EtalaseClick(data));
         }
         tvCondition.setText(data.getInfo().getProductCondition());
+        tvSuccessRate.setText(data.getStatistic().getProductSuccessRate()+"%");
 
         setVisibility(VISIBLE);
     }
@@ -126,9 +121,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     protected void initView(Context context) {
         super.initView(context);
         tvCategory = (TextView) findViewById(R.id.tv_category_1);
-        tvWeight = (TextView) findViewById(R.id.tv_weight);
         tvMinOrder = (TextView) findViewById(R.id.tv_minimum);
-        tvInsurance = (TextView) findViewById(R.id.tv_insurance);
         tvCatalog = (TextView) findViewById(R.id.tv_catalog);
         tvEtalase = (TextView) findViewById(R.id.tv_etalase);
         tvCondition = (TextView) findViewById(R.id.tv_condition);
@@ -137,6 +130,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvPreOrder = (TextView) findViewById(R.id.tv_preorder);
         returnableView = (TableRow) findViewById(R.id.tr_returnable);
         preOrderView = (TableRow) findViewById(R.id.tr_preorder);
+        tvSuccessRate = (TextView) findViewById(R.id.tv_success_rate);
     }
 
     private void showReturnable(int returnableState, int shopHasTerms) {
