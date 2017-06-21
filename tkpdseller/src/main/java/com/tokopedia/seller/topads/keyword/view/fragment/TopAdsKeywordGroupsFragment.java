@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -237,8 +236,8 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected void searchAd() {
-        super.searchAd();
+    protected void searchData() {
+        super.searchData();
         topAdsKeywordNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
     }
 

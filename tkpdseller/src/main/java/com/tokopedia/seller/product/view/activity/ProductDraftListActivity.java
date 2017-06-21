@@ -48,4 +48,5 @@ public class ProductDraftListActivity extends TkpdActivity {
                     .commit();
         }
     }
+
 }

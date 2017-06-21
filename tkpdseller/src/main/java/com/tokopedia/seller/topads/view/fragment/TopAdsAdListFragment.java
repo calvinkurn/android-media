@@ -1,11 +1,9 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
@@ -28,7 +26,6 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
@@ -163,7 +160,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> e
             boolean adChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
             if (adChanged || adDeleted) {
-                searchAd(START_PAGE);
+                searchData(START_PAGE);
                 setResultAdListChanged();
             }
         } else if (requestCode == REQUEST_CODE_AD_FILTER) {
@@ -263,7 +260,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> e
     @Override
     public void onSearch(String keyword) {
         this.keyword = keyword;
-        searchAd(START_PAGE);
+        searchData(START_PAGE);
         if (!searchMode && !TextUtils.isEmpty(keyword)) {
             searchMode = true;
         }
