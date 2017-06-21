@@ -4,14 +4,17 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -312,7 +315,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         updateProductScoring();
     }
 
-    @Override
     public void goToGoldMerchantPage() {
         startActivity(new Intent(getActivity(), GmSubscribeHomeActivity.class));
     }
@@ -612,6 +614,28 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder.onViewStateRestored(savedInstanceState);
         productAdditionalInfoViewHolder.onViewStateRestored(savedInstanceState);
 
+    }
+
+    @Override
+    public void showDialogMoveToGM(@StringRes int message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                R.style.AppCompatAlertDialogStyle);
+        builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                goToGoldMerchantPage();
+            }
+        });
+        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -142,8 +143,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_IDR;
-                } else {
-                    showDialogMoveToGM();
+                } else  {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
@@ -165,9 +165,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
             private void onItemClicked(int position) {
                 if (!goldMerchant && priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
                     priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
-                    Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
-                            .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
-                            .show();
+                    if(GlobalConfig.isSellerApp()) {
+                        listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_dollar);
+                    }else {
+                        Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                                .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
+                                .show();
+                    }
                     return;
                 }
                 priceSpinnerCounterInputView.setCounterValue(Double.parseDouble(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
@@ -277,33 +281,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         wholesaleAdapter = new WholesaleAdapter();
         wholesaleAdapter.setListener(this);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
-    }
-
-    private void showDialogMoveToGM() {
-        if (!goldMerchant && GlobalConfig.isSellerApp()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
-                    R.style.AppCompatAlertDialogStyle);
-            builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
-            builder.setMessage(R.string.add_product_label_alert_dialog_dollar);
-            builder.setCancelable(true);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    listener.goToGoldMerchantPage();
-                }
-            });
-            builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                }
-            });
-
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    }
-
-    private void goToGoldMerchantPage() {
-
     }
 
     private void showEditPriceDialog() {
@@ -689,6 +666,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         void onFreeReturnChecked(boolean checked);
 
-        void goToGoldMerchantPage();
+        void showDialogMoveToGM(@StringRes int message);
     }
 }
