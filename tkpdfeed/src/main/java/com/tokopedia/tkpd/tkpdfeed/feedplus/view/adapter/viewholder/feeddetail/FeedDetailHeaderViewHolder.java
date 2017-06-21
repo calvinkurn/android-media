@@ -97,10 +97,13 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
 
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
+        //Need this to count line
+        shopName.setText(actionSpanString);
+
         if (viewModel.isOfficialStore()) {
-            setBadge(actionSpanString, R.drawable.ic_badge_official);
-        }else if (viewModel.isGoldMerchant()) {
-            setBadge(actionSpanString, R.drawable.ic_shop_gold);
+            setBadge(actionSpanString, shopName, R.drawable.ic_badge_official);
+        } else if (viewModel.isGoldMerchant()) {
+            setBadge(actionSpanString, shopName, R.drawable.ic_shop_gold);
         }
 
         shopName.setText(actionSpanString);
@@ -133,11 +136,15 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     }
 
 
-    private void setBadge(SpannableString actionSpanString, int resId) {
+    private void setBadge(SpannableString actionSpanString, TextView shopName, int resId) {
         int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
-        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
+        ImageSpan is;
+        if (shopName.getLineCount() == 1)
+            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
+        else
+            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
         actionSpanString.setSpan(is, 0, 1, 0);
     }
 

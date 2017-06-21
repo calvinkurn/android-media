@@ -73,8 +73,10 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
         if (feedDetailViewModel.getCashback().equals(""))
             cashback.setVisibility(View.GONE);
-        else
+        else {
             cashback.setVisibility(View.VISIBLE);
+            cashback.setText(feedDetailViewModel.getCashback());
+        }
 
         if (feedDetailViewModel.isWholesale())
             wholesale.setVisibility(View.VISIBLE);
@@ -104,7 +106,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(feedDetailViewModel.getUrl());
+                viewListener.onGoToProductDetail(String.valueOf(feedDetailViewModel.getProductId()));
             }
         });
     }
