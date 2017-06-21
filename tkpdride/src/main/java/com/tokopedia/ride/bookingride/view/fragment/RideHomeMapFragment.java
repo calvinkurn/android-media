@@ -441,7 +441,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("Vishal RideHomeMapFragment onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -455,6 +454,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     } else {
                         source = sourceTemp;
                         interactionListener.collapseBottomPanel();
+                        presenter.setSourceSelectedFromAddress();
                         setSourceLocationText(String.valueOf(source.getTitle()));
                         proccessToRenderRideProduct();
                         if (!isAlreadySelectDestination) {
@@ -525,7 +525,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onResume() {
         mapView.onResume();
         super.onResume();
-        presenter.onResume();
         if (source != null && destination != null) {
             presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
@@ -757,5 +756,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    public void appResumedFromBackground() {
+        presenter.appResumedFromBackground();
     }
 }

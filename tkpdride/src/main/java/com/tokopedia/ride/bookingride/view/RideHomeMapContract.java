@@ -78,6 +78,8 @@ public interface RideHomeMapContract {
 
         void actionMapDragStopped(double latitude, double longitude);
 
-        void onResume();
+        void appResumedFromBackground();
+
+        void setSourceSelectedFromAddress();
     }
 }

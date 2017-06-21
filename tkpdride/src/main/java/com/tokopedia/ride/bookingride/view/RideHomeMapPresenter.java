@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
@@ -58,6 +59,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private boolean isMapDragging = false;
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
+    private boolean mSourceIsCurrentLocation;
 
     public RideHomeMapPresenter(GetUberProductsUseCase getUberProductsUseCase,
                                 GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
@@ -199,6 +201,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
         if (getView() == null) return;
 
+        mSourceIsCurrentLocation = true;
+
         getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
         //set source as current location
@@ -312,6 +316,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     public void onMapMoveCameraStarted() {
         if (!isMapDragging) {
             getView().onMapDragStarted();
+            mSourceIsCurrentLocation = false;
         }
         isMapDragging = true;
     }
@@ -458,9 +463,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     }
 
     @Override
-    public void onResume() {
-        if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
+    public void appResumedFromBackground() {
+        if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination() && mSourceIsCurrentLocation) {
             mRenderProductListBasedOnLocationUpdates = true;
         }
+    }
+
+    @Override
+    public void setSourceSelectedFromAddress() {
+        mSourceIsCurrentLocation = false;
     }
 }

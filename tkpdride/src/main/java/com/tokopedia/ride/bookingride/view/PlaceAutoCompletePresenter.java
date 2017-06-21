@@ -609,7 +609,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 }
             }));
         } else {
-            getView().showMessage("Location not setted");
+            getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
         }
     }
 
