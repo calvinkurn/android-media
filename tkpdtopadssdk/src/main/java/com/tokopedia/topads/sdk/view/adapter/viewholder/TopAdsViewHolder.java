@@ -8,11 +8,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -22,6 +22,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
@@ -36,7 +37,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
     private View container;
-
+    private static final String TAG = TopAdsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
@@ -46,11 +47,13 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode displayMode;
     private TopAdsInfoClickListener clickListener;
+    private TextView textHeader;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
         context = itemView.getContext();
         adsHeader = (LinearLayout) itemView.findViewById(R.id.ads_header);
+        textHeader = (TextView) adsHeader.findViewById(R.id.title_promote);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
         gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
@@ -63,6 +66,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         recyclerView.setAdapter(adapter);
     }
 
+
     @Override
     public void bind(TopAdsViewModel element) {
         List<Item> list = element.getList();
@@ -71,12 +75,13 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             switchDisplay(list.get(0));
         }
         adapter.setList(list);
-        adapter.setPosition(getAdapterPosition());
+        adapter.setAdapterPosition(getAdapterPosition());
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
+            Log.d(TAG, "Adapter Position "+getAdapterPosition());
             if(clickListener != null){
                 clickListener.onInfoClicked();
             }else {
@@ -99,9 +104,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
-                ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
-                imageView.setImageResource(R.drawable.icon_info);
-                imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
+                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="150dp"
+    android:layout_width="wrap_content"
+    android:minWidth="150dp"
     android:layout_height="match_parent"
     android:id="@id/container"
     android:gravity="center">
@@ -21,9 +22,11 @@
         android:layout_height="@dimen/margin_small" />
 
     <TextView
-        android:layout_width="67dp"
+        android:layout_width="wrap_content"
+        android:minWidth="67dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:maxLines="2"
         android:text="@string/see_all_promo"
         />
 

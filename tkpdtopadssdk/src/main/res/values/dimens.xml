@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
     <dimen name="large_dp">30dp</dimen>
     <dimen name="top_option_h">30dp</dimen>
     <dimen name="badge_size">18dp</dimen>
@@ -27,5 +28,8 @@
     <dimen name="product_list_margin">11dp</dimen>
     <dimen name="label_padding_left_right">5dp</dimen>
     <dimen name="label_padding_top_bottom">2dp</dimen>
+    <dimen name="text_size_xsmall">11sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_s_medium">13sp</dimen>
 
 </resources>

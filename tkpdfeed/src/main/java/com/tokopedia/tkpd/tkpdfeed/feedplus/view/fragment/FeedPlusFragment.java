@@ -59,7 +59,6 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
@@ -79,8 +78,7 @@ import javax.inject.Inject;
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener,
-        TopAdsFavShopClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -129,7 +127,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.SHOP)
+                .setEndpoint(Endpoint.RANDOM)
                 .displayMode(DisplayMode.FEED)
                 .topAdsParams(generateTopAdsParams())
                 .build();
@@ -137,7 +135,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setAdsInfoClickListener(this);
-        topAdsRecyclerAdapter.setFavShopClickListener(this);
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setConfig(config);
 
@@ -470,9 +467,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAddFavorite(Data dataShop) {
-        Log.d(TAG, "onAddFavorite " + dataShop.getShop().getName());
-
+    public void onAddFavorite(int position, Data dataShop) {
+        presenter.favoriteShop(dataShop, position);
     }
 
     @Override
@@ -483,11 +479,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         hideTopAdsAdapterLoading();
-    }
-
-    @Override
-    public void onAddShopFavorite(int position, Data data) {
-        presenter.favoriteShop(data, position);
     }
 
     public void scrollToTop() {

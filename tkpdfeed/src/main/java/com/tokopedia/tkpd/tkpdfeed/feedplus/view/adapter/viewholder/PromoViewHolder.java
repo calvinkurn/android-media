@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,27 +47,24 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
         promoterDesc = (TextView) itemView.findViewById(R.id.shop_desc);
         promoterAva = (ImageView) itemView.findViewById(R.id.user_ava);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()
-                , LinearLayoutManager.HORIZONTAL, false));
-
-//        recyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_MOVE:
-//                        view.getParent().requestDisallowInterceptTouchEvent(true);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        view.getParent().requestDisallowInterceptTouchEvent(false);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-
-        SnapHelper snapHelper = new LinearSnapHelper();
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext()
+                , LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        final SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if(layoutManager.findLastVisibleItemPosition() ==  adapter.getItemCount()-1){
+                        snapHelper.attachToRecyclerView(null);
+                    }else if(layoutManager.findFirstCompletelyVisibleItemPosition() != adapter.getItemCount()-1){
+                        snapHelper.attachToRecyclerView(recyclerView);
+                    }
+                }
+            }
+        });
         adapter = new PromoAdapter(viewListener);
         recyclerView.setAdapter(adapter);
     }

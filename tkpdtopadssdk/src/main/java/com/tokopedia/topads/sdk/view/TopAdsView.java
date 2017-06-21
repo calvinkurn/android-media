@@ -185,7 +185,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(dataShop);
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
 
