@@ -256,19 +256,4 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         }
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null)
-            return;
-        page = savedInstanceState.getInt(KEY_PAGE, 0);
-        totalItem = savedInstanceState.getInt(KEY_TOTAL_ITEM, Integer.MAX_VALUE);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_PAGE, page);
-        outState.putInt(KEY_TOTAL_ITEM, totalItem);
-    }
 }
