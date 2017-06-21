@@ -25,13 +25,12 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -53,7 +52,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -70,7 +69,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -82,7 +80,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener,
-        TopAdsFavShopClickListener{
+        TopAdsFavShopClickListener {
 
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
@@ -131,7 +129,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.RANDOM)
+                .setEndpoint(Endpoint.SHOP)
                 .displayMode(DisplayMode.FEED)
                 .topAdsParams(generateTopAdsParams())
                 .build();
@@ -245,9 +243,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(Integer productId) {
-        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
-        startActivity(intent);
+    public void onGoToProductDetail(String productUrl) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+        }
     }
 
 
@@ -315,8 +314,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        Object item = ((TopAdsViewModel)topAdsRecyclerAdapter.getPlacer().getItem(adapterPosition)).getList().get(0);
-        if(item instanceof ShopFeedViewModel){
+        Object item = ((TopAdsViewModel) topAdsRecyclerAdapter.getPlacer().getItem(adapterPosition)).getList().get(0);
+        if (item instanceof ShopFeedViewModel) {
             ShopFeedViewModel castedItem = ((ShopFeedViewModel) item);
             Data currentData = castedItem.getData();
             boolean currentStatus = currentData.isFavorit();
@@ -337,7 +336,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         adapter.clearData();
         adapter.removeEmpty();
-        if (listFeed.size() == 0) {
+        if ((listFeed.size() == 0) ||
+                (listFeed.size() == 1 && listFeed.get(0) instanceof PromoCardViewModel)) {
             adapter.showEmpty();
             topAdsRecyclerAdapter.unsetEndlessScrollListener();
         } else {
@@ -488,5 +488,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddShopFavorite(int position, Data data) {
         presenter.favoriteShop(data, position);
+    }
+
+    public void scrollToTop() {
+        if(recyclerView != null) recyclerView.smoothScrollToPosition(0);
     }
 }

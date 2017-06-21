@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_small"
-    android:background="@drawable/cards_ui_2"
+    android:background="@drawable/cards_ui_feed"
     >
 
     <include layout="@layout/inspiration_header"/>

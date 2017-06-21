@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -28,16 +27,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.product.customview.RatingView;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.fragment.ProductFragment;
-import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -46,23 +35,31 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.fragment.ProductFragment;
+import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -77,10 +74,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
+
+//import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+//import com.tokopedia.core.product.customview.RatingView;
+//import com.tokopedia.core.product.fragment.ProductDetailFragment;
 
 
 /**
@@ -145,6 +144,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateRevampCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                return OsBannerAdapter.onCreateBannerOfficialStore(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -175,6 +176,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     break;
                 case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                     ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
+                    break;
+                case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                    ((OsBannerAdapter.BannerOsViewHolder) holder).bind((OsBannerAdapter.OsBannerViewModel) data.get(position));
                     break;
                 default:
                     super.onBindViewHolder(holder, position);
@@ -560,6 +564,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
                 return recyclerViewItem.getType();
             default:
                 return -1;
@@ -593,6 +598,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         if (checkDataSize(position))
             return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
         return false;
+    }
+
+    public boolean isOfficialStoreBanner(int position) {
+        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
     }
 
     /**
@@ -656,7 +665,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     protected boolean checkIfOffset() {
         return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
                 || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
-                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER));
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE));
     }
 
     public void setSearchNotFound() {
@@ -673,6 +683,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addCategoryRevampHeader(CategoryHeaderRevampModel categoryHeaderModel) {
         data.add(0, categoryHeaderModel);
+    }
+
+    public void addOfficialStoreBanner(OsBannerAdapter.OsBannerViewModel bannerModel) {
+        data.add(0, bannerModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
@@ -809,6 +823,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ((ProductItem) data.get(position)).setProductAlreadyWishlist(isWishlist);
             notifyItemChanged(position);
         }
+
     }
 
     public static class ViewHolderProductitem extends RecyclerView.ViewHolder {
@@ -949,9 +964,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 UnifyTracking.eventProductOnCategory(categoryId);
             }
             Bundle bundle = new Bundle();
-            Intent intent = new Intent(context, ProductInfoActivity.class);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            bundle.putInt(ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION, position);
+            bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, position);
             intent.putExtras(bundle);
             fragmentBrowseProductView.navigateToActivityRequest(intent, ProductFragment.GOTO_PRODUCT_DETAIL);
         }

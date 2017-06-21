@@ -82,8 +82,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
 
-    protected View mainView;
-    protected View addProductView;
     protected ProductImageViewHolder productImageViewHolder;
     protected ProductDetailViewHolder productDetailViewHolder;
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
@@ -155,8 +153,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
-        mainView = view.findViewById(R.id.mainview);
-        addProductView = view.findViewById(R.id.add_product_view);
         productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info));
         productInfoViewHolder.setListener(this);
 
@@ -606,10 +602,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        productInfoViewHolder.onRestoreInstanceState(savedInstanceState);
-        productImageViewHolder.onRestoreInstanceState(savedInstanceState);
-        productDetailViewHolder.onRestoreInstanceState(savedInstanceState);
-        productAdditionalInfoViewHolder.onRestoreInstanceState(savedInstanceState);
+        productInfoViewHolder.onViewStateRestored(savedInstanceState);
+        productImageViewHolder.onViewStateRestored(savedInstanceState);
+        productDetailViewHolder.onViewStateRestored(savedInstanceState);
+        productAdditionalInfoViewHolder.onViewStateRestored(savedInstanceState);
 
     }
 

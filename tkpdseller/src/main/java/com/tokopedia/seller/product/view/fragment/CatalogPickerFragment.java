@@ -22,7 +22,7 @@ import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.adapter.CatalogPickerAdapter;
 import com.tokopedia.seller.product.view.listener.CatalogPickerView;
 import com.tokopedia.seller.product.view.presenter.CatalogPickerPresenter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         adapter = new CatalogPickerAdapter(null, selectedCatalogId, 0);
         adapter.setListener(this);
 
-        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
+        RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {

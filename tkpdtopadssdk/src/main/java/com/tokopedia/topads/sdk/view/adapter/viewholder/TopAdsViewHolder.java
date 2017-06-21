@@ -3,6 +3,8 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
+    private View container;
 
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
@@ -54,6 +57,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
+        container = itemView.findViewById(R.id.container);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
         recyclerView.setLayoutManager(gridLayoutManager);

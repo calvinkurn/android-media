@@ -1,12 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.content.Intent;
-
-import com.tkpd.library.utils.AnalyticsLog;
-import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionRefresh;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +45,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
+        if (isNeedRelogin(response)) {
+            doRelogin();
+            response = getResponse(chain, finalRequest);
+        }
+
         if (!response.isSuccessful()) {
             throwChainProcessCauseHttpError(response);
         }
@@ -70,16 +72,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
 
-
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         /* this can override for throw error */
     }
 
-    private void showTimezoneErrorSnackbar() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_TIMEZONE_ERROR);
-        MainApplication.getAppContext().sendBroadcast(intent);
-    }
 
     private boolean isTimezoneNotAutomatic() {
         return MethodChecker.isTimezoneNotAutomatic();
@@ -241,28 +237,74 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
+     */
+    @Deprecated
+    private void showTimezoneErrorSnackbar() {
+        ServerErrorHandler.showTimezoneErrorSnackbar();
+    }
+
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
+     */
+    @Deprecated
     private void showMaintenancePage() {
-        MainApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(MainApplication.getAppContext()));
+        ServerErrorHandler.showMaintenancePage();
     }
 
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
+     */
+    @Deprecated
     private void showForceLogoutDialog() {
-        Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
-        MainApplication.getAppContext().sendBroadcast(intent);
+        ServerErrorHandler.showForceLogoutDialog();
     }
 
+    /**
+     * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
+     */
+    @Deprecated
     private void sendForceLogoutAnalytics(Response response) {
-        AnalyticsLog.logForceLogout(response.request().url().toString());
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
+     */
+    @Deprecated
     private void showServerErrorSnackbar() {
-        Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.SERVER_ERROR");
-        MainApplication.getAppContext().sendBroadcast(intent);
+        ServerErrorHandler.showServerErrorSnackbar();
     }
 
+    /**
+     * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
+     */
+    @Deprecated
     private void sendErrorNetworkAnalytics(Response response) {
-        AnalyticsLog.logNetworkError(response.request().url().toString(), response.code());
+        ServerErrorHandler.sendErrorNetworkAnalytics(
+                response.request().url().toString(), response.code()
+        );
+    }
+
+    private Boolean isNeedRelogin(Response response) {
+        try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
+            String responseString = response.peekBody(512).string();
+            return responseString.contains("REQUEST_DENIED") &&
+                    !response.request().url().encodedPath().contains("make_login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void doRelogin() {
+        SessionRefresh sessionRefresh = new SessionRefresh();
+        try {
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -36,6 +36,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
@@ -53,7 +54,7 @@ import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
@@ -409,7 +410,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             adapter = SellerReputationAdapter.createInstance(getActivity());
         }
         adapter.setFragment(this);
-        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
+        RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
@@ -435,7 +436,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         listViewBalance.setAdapter(adapter);
-        datePickerResultListener = new DatePickerResultListener(this);
+        datePickerResultListener = new DatePickerResultListener(this, GMStatHeaderViewHelper.MOVE_TO_SET_DATE);
     }
 
     @Override

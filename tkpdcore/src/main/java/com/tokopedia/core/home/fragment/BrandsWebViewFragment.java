@@ -22,6 +22,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
@@ -179,7 +180,7 @@ public class BrandsWebViewFragment extends Fragment {
                     DeepLinkChecker.openHot(url, getActivity());
                     return true;
                 case DeepLinkChecker.HOT_LIST:
-                    DeepLinkChecker.openHomepage(getActivity());
+                    DeepLinkChecker.openHomepage(getActivity(),  HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
                     return true;
                 case DeepLinkChecker.CATALOG:
                     DeepLinkChecker.openCatalog(url, getActivity());

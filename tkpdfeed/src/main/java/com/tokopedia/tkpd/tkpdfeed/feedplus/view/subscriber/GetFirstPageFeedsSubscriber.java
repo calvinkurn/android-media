@@ -40,8 +40,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorGetFeedFirstPage(
-                ErrorHandler.getErrorMessage(e,
-                        viewListener.getActivity()));
+                ErrorHandler.getErrorMessage(e));
     }
 
     @Override
@@ -129,11 +128,15 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             domain.getThumbnail(),
                             domain.getUrl()));
         }
+        addSeeMorePromo(dataFeedDomain, listPromo);
+
+        return listPromo;
+    }
+
+    private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {
         if(dataFeedDomain.getContent().getPromotions().size()>1){
             listPromo.add(new PromoViewModel());
         }
-
-        return listPromo;
     }
 
 

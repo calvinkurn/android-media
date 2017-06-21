@@ -168,7 +168,7 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
-        String title = getString(R.string.title_notification_upload_product) + " " + productName;
+        String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
         Intent pendingIntent = new Intent(this, ManageProduct.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return new NotificationCompat.Builder(this)
@@ -176,7 +176,7 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setSmallIcon(getDrawableLargeIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
                 .setContentIntent(pIntent)
-                .setGroup(getString(R.string.group_notification));
+                .setGroup(getString(R.string.product_group_notification));
     }
 
     private int getDrawableLargeIcon() {
@@ -216,30 +216,30 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private Notification buildStartNotification(NotificationCompat.Builder builder) {
         return builder
-                .setContentText(getString(R.string.notification_start_upload_product))
+                .setContentText(getString(R.string.product_notification_start_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
-                        .bigText(getString(R.string.notification_start_upload_product))
+                        .bigText(getString(R.string.product_notification_start_upload_product))
                 )
                 .build();
     }
 
     private Notification buildProgressNotification(String productDraftId, int stepNotification) {
         return notificationBuilderMap.get(productDraftId)
-                .setContentText(getString(R.string.notification_progress_upload_product))
+                .setContentText(getString(R.string.product_notification_progress_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
-                        .bigText(getString(R.string.notification_progress_upload_product)))
+                        .bigText(getString(R.string.product_notification_progress_upload_product)))
                 .setProgress(4, stepNotification, false)
                 .build();
     }
 
     private Notification buildCompleteNotification(String productDraftId) {
         return notificationBuilderMap.get(productDraftId)
-                .setContentText(getString(R.string.notification_complete_upload_product))
+                .setContentText(getString(R.string.product_notification_complete_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
-                        .bigText(getString(R.string.notification_complete_upload_product))
+                        .bigText(getString(R.string.product_notification_complete_upload_product))
                 )
                 .setProgress(0, 0, false)
                 .setOngoing(false)

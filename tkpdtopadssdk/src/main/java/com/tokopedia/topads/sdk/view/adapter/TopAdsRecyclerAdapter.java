@@ -25,7 +25,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
-
 /**
  * @author by errysuprayogi on 4/11/17.
  */
@@ -336,4 +335,5 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public TopAdsPlacer getPlacer() {
         return placer;
     }
+
 }

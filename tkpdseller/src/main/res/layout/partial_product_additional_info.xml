@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
         android:visibility="gone"
-        app:content="@string/etalase_picker_add_etalase_add_button_dialog"
+        app:content="@string/product_etalase_picker_add_etalase_add_button_dialog"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
         app:title="@string/product_label_video" />
@@ -50,9 +50,9 @@
         <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
             android:id="@+id/spinner_counter_input_view_pre_order"
             style="@style/LabelLayoutInnerExpandable"
-            app:spinner_decimal_spinner_width="100dp"
             app:spinner_decimal_entries="@array/product_pre_order_entries"
             app:spinner_decimal_hint="@string/product_label_time_process"
+            app:spinner_decimal_spinner_width="100dp"
             app:spinner_decimal_values="@array/product_pre_order_values" />
 
     </com.tokopedia.expandable.ExpandableOptionSwitch>

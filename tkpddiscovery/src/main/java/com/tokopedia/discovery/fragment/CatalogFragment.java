@@ -296,6 +296,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         browseCatalogAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);

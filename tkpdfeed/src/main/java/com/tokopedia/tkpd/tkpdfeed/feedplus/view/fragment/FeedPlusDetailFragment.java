@@ -20,8 +20,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -290,9 +291,15 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(int productId) {
-        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
-        startActivity(intent);
+    public void onGoToProductDetail(String productUrl) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+        }
+    }
+
+    @Override
+    public int getColor(int resId) {
+        return MethodChecker.getColor(getActivity(), resId);
     }
 
     private void dismissLoadingProgress() {

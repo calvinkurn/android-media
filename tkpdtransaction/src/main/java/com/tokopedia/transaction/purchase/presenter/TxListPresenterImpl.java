@@ -23,6 +23,9 @@ import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
+import com.tokopedia.transaction.opportunity.view.subsriber.CancelReplacementSubscriber;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
@@ -45,10 +48,16 @@ public class TxListPresenterImpl implements TxListPresenter {
     private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     private final TxListViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
+    private final CancelReplacementUseCase cancelReplacementUseCase;
+    private final SessionHandler sessionHandler;
 
-    public TxListPresenterImpl(TxListViewListener viewListener) {
+    public TxListPresenterImpl(TxListViewListener viewListener,
+                               CancelReplacementUseCase cancelReplacementUseCase,
+                               SessionHandler sessionHandler) {
         this.viewListener = viewListener;
+        this.cancelReplacementUseCase = cancelReplacementUseCase;
         this.netInteractor = new TxOrderNetInteractorImpl();
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -368,6 +377,32 @@ public class TxListPresenterImpl implements TxListPresenter {
     @Override
     public void onDestroyView() {
         netInteractor.unSubscribeObservable();
+    }
+
+    @Override
+    public void cancelReplacement(Context context, final OrderData orderData) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(com.tokopedia.transaction.R.string.dialog_cancel_order)
+                .setPositiveButton(context.getString(R.string.title_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                viewListener.showProgressLoading();
+                                doCancelReplacement(orderData);
+                            }
+                        });
+        Dialog alertDialog = builder.create();
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        viewListener.showDialog(builder.create());
+    }
+
+    private void doCancelReplacement(OrderData orderData) {
+        cancelReplacementUseCase.execute(
+                CancelReplacementUseCase.getParameters(
+                        Integer.parseInt(orderData.getOrderDetail().getDetailOrderId()),
+                        sessionHandler.getLoginID(),
+                        sessionHandler.getAccessToken()
+                ),
+                new CancelReplacementSubscriber(viewListener));
     }
 
     private void processReview(final Context context, String message) {

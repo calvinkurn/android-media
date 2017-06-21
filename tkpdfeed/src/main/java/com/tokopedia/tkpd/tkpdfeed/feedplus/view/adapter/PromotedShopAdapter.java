@@ -26,7 +26,7 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
     @Override
     public PromotedShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.promoted_shop_product_image, parent, false);
+                .inflate(R.layout.topads_shop_product_image, parent, false);
         return new PromotedShopAdapter.ViewHolder(view);
     }
 

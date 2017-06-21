@@ -18,6 +18,7 @@ import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -62,7 +63,7 @@ public class NetModule {
     @TopAdsQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideTopAdsRetrofit(@NoAuthNoFingerprint OkHttpClient okHttpClient,
+    public Retrofit provideTopAdsRetrofit(@TopAdsAuth OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
     }

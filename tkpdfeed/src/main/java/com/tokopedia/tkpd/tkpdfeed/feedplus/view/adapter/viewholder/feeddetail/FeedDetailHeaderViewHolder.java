@@ -1,6 +1,17 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +23,9 @@ import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
+
+import static com.tokopedia.core.R.id.title;
+import static com.tokopedia.core.R.id.view;
 
 /**
  * @author by nisie on 5/19/17.
@@ -25,17 +39,15 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
 
     TextView shopName;
     ImageView shopAvatar;
-    ImageView goldMerchantBadge;
-    ImageView officialStoreBadge;
     TextView shopSlogan;
+
+    private final static String ADD_STRING = "tambah";
+    private final static String EDIT_STRING = "ubah";
 
     public FeedDetailHeaderViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
-        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
-        officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
-
         shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
         this.viewListener = viewListener;
     }
@@ -43,18 +55,56 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     @Override
     public void bind(final FeedDetailHeaderViewModel viewModel) {
 
-        shopName.setText(MethodChecker.fromHtml(viewModel.getShopName()));
+        String shopNameString = String.valueOf(MethodChecker.fromHtml(viewModel.getShopName()));
+        String actionString = String.valueOf(MethodChecker.fromHtml(viewModel.getActionText()));
+
+        StringBuilder titleText = new StringBuilder();
+
+        if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
+            titleText.append("  ");
+
+        titleText.append(shopNameString)
+                .append(" ")
+                .append(actionString);
+        SpannableString actionSpanString = new SpannableString(titleText);
+
+        ClickableSpan goToShopDetail = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onGoToShopDetail(
+                        viewModel.getShopId());
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            }
+        };
+
+        ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
+        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
+
+        setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
+        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
+        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
+
+        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
+        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
+
+
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
-        if (viewModel.isGoldMerchant())
-            goldMerchantBadge.setVisibility(View.VISIBLE);
-        else
-            goldMerchantBadge.setVisibility(View.GONE);
+        if (viewModel.isGoldMerchant()) {
+            setBadge(actionSpanString, R.drawable.ic_shop_gold);
+        } else if (viewModel.isOfficialStore()) {
+            setBadge(actionSpanString, R.drawable.ic_badge_official);
+        }
 
-        if (viewModel.isOfficialStore())
-            officialStoreBadge.setVisibility(View.VISIBLE);
-        else
-            officialStoreBadge.setVisibility(View.GONE);
+        shopName.setText(actionSpanString);
+        shopName.setMovementMethod(LinkMovementMethod.getInstance());
 
         shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
 
@@ -64,5 +114,32 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
                 viewListener.onGoToShopDetail(viewModel.getShopId());
             }
         });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onGoToShopDetail(viewModel.getShopId());
+            }
+        });
     }
+
+    private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {
+        if (object instanceof ImageSpan) {
+            actionSpanString.setSpan(object, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (titleText.toString().contains(stringEdited)) {
+            actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
+                    , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+
+    private void setBadge(SpannableString actionSpanString, int resId) {
+        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
+        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
+        badge.setBounds(0, 0, size, size);
+        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
+        actionSpanString.setSpan(is, 0, 1, 0);
+    }
+
+
 }

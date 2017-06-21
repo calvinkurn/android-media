@@ -1,17 +1,26 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,13 +47,13 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     TextView title;
     View header;
     ImageView shopAvatar;
-    ImageView goldMerchantBadge;
-    ImageView officialStoreBadge;
     TextView time;
     View shareButton;
     View buyButton;
     RecyclerView recyclerView;
 
+    private final static String ADD_STRING = "tambah";
+    private final static String EDIT_STRING = "ubah";
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
 
@@ -54,8 +63,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         header = itemView.findViewById(R.id.header);
         title = (TextView) itemView.findViewById(R.id.title);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
-        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
-        officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
         time = (TextView) itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
         buyButton = itemView.findViewById(R.id.buy_button);
@@ -117,9 +124,14 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         String actionString = String.valueOf(MethodChecker.fromHtml(activityCardViewModel.getActionText()));
 
         StringBuilder titleText = new StringBuilder();
-        titleText.append(shopNameString)
-                        .append(" ")
-                        .append(actionString);
+
+        if (activityCardViewModel.getHeader().isGoldMerchant() || activityCardViewModel.getHeader().isOfficialStore())
+            titleText.append("  ");
+
+        titleText
+                .append(shopNameString)
+                .append(" ")
+                .append(actionString);
         SpannableString actionSpanString = new SpannableString(titleText);
 
         ClickableSpan goToFeedDetail = new ClickableSpan() {
@@ -133,6 +145,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
@@ -149,33 +162,32 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setTypeface(Typeface.DEFAULT_BOLD);
-                ds.setColor(viewListener.getColor(R.color.black));
+                ds.setColor(viewListener.getColor(R.color.black_70));
+                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             }
         };
 
-        actionSpanString.setSpan(goToFeedDetail, titleText.indexOf(actionString)
-                , titleText.indexOf(actionString)+actionString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        actionSpanString.setSpan(goToShopDetail, titleText.indexOf(shopNameString)
-                , titleText.indexOf(shopNameString)+shopNameString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
+        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
+
+        setSpan(actionSpanString, goToFeedDetail, titleText, actionString);
+        setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
+        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
+        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
+
+        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
+        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
+
+        if (activityCardViewModel.getHeader().isGoldMerchant()) {
+            setBadge(actionSpanString, R.drawable.ic_shop_gold);
+        } else if (activityCardViewModel.getHeader().isOfficialStore()) {
+            setBadge(actionSpanString, R.drawable.ic_badge_official);
+        }
 
         title.setText(actionSpanString);
         title.setMovementMethod(LinkMovementMethod.getInstance());
 
-
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
-
-        if (activityCardViewModel.getHeader().isGoldMerchant())
-            goldMerchantBadge.setVisibility(View.VISIBLE);
-        else
-            goldMerchantBadge.setVisibility(View.GONE);
-
-        if (activityCardViewModel.getHeader().isOfficialStore()) {
-            officialStoreBadge.setVisibility(View.VISIBLE);
-            goldMerchantBadge.setVisibility(View.GONE);
-        }
-        else
-            officialStoreBadge.setVisibility(View.GONE);
 
         time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getTime()));
 
@@ -194,6 +206,23 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
+    }
+
+    private void setBadge(SpannableString actionSpanString, int resId) {
+        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
+        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
+        badge.setBounds(0, 0, size, size);
+        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
+        actionSpanString.setSpan(is, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {
+        if (object instanceof ImageSpan) {
+            actionSpanString.setSpan(object, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (titleText.toString().contains(stringEdited)) {
+            actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
+                    , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     public void setFooter(final ActivityCardViewModel viewModel) {

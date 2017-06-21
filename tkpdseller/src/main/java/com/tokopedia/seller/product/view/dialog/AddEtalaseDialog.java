@@ -20,8 +20,8 @@ public class AddEtalaseDialog extends TextPickerDialog {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        stringPickerTitle.setText(getString(R.string.etalase_picker_add_etalase_title_dialog));
-        textInputLayout.setHint(getString(R.string.etalase_picker_add_etalase_name_hint));
+        stringPickerTitle.setText(getString(R.string.product_etalase_picker_add_etalase_title_dialog));
+        textInputLayout.setHint(getString(R.string.product_etalase_picker_add_etalase_name_hint));
         return view;
 
     }
@@ -29,9 +29,9 @@ public class AddEtalaseDialog extends TextPickerDialog {
     @Override
     protected void onTextSubmited(String text) {
         if(text.trim().isEmpty()){
-            textInputLayout.setError(getString(R.string.etalase_picker_add_etalase_name_empty));
+            textInputLayout.setError(getString(R.string.product_etalase_picker_add_etalase_name_empty));
         } else if (text.trim().length() < 3) {
-            textInputLayout.setError(getString(R.string.etalase_picker_add_etalase_name_too_short));
+            textInputLayout.setError(getString(R.string.product_etalase_picker_add_etalase_name_too_short));
         } else {
             super.onTextSubmited(text);
         }

@@ -42,7 +42,8 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
         viewListener.onSuccessGetFeedDetail(
                 createHeaderViewModel(
                         dataFeedDetailDomain.getCreate_time(),
-                        dataFeedDetailDomain.getSource().getShop()),
+                        dataFeedDetailDomain.getSource().getShop(),
+                        dataFeedDetailDomain.getContent().getStatus_activity()),
                 convertToViewModel(dataFeedDetailDomain),
                 checkHasNextPage(dataFeedDetailDomains));
 
@@ -83,7 +84,9 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
     }
 
 
-    private FeedDetailHeaderViewModel createHeaderViewModel(String create_time, FeedDetailShopDomain shop) {
+    private FeedDetailHeaderViewModel createHeaderViewModel(String create_time,
+                                                            FeedDetailShopDomain shop,
+                                                            String status_activity) {
         return new FeedDetailHeaderViewModel(shop.getId(),
                 shop.getName(),
                 shop.getAvatar(),
@@ -92,6 +95,8 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
                 shop.getOfficial(),
                 shop.getShopLink(),
                 shop.getShareLinkURL(),
-                shop.getShareLinkDescription());
+                shop.getShareLinkDescription(),
+                status_activity
+        );
     }
 }

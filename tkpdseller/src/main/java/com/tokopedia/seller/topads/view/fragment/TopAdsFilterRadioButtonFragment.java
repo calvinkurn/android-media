@@ -7,8 +7,9 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.model.RadioButtonItem;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBasicRadioButtonAdapter;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -16,14 +17,15 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-
 public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterContentFragment<P> implements TopAdsBasicRadioButtonAdapter.Callback {
 
-    private RecyclerView recyclerView;
     protected TopAdsBasicRadioButtonAdapter adapter;
     protected int selectedAdapterPosition;
+    private RecyclerView recyclerView;
 
     protected abstract List<RadioButtonItem> getRadioButtonList();
+
+
 
     @Override
     protected int getFragmentLayout() {
@@ -47,7 +49,7 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
         setAdapterData(getRadioButtonList());
     }
 
-    public void setAdapterData(List<RadioButtonItem> radioButtonItems){
+    public void setAdapterData(List<RadioButtonItem> radioButtonItems) {
         adapter.setData(radioButtonItems);
         adapter.notifyDataSetChanged();
         if (selectedAdapterPosition > -1) { // data might come from api
@@ -56,8 +58,8 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
         adapter.setCallback(this);
     }
 
-    public String getSelectedRadioValue(){
-        if ( adapter.isEmpty()) {
+    public String getSelectedRadioValue() {
+        if (adapter.isEmpty()) {
             return String.valueOf(0);
         }
         return adapter.getSelectedItem().getValue();

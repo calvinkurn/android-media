@@ -19,7 +19,7 @@
         android:layout_marginBottom="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center_horizontal"
-        android:src="@drawable/asset_13_x"/>
+        android:src="@drawable/ic_top_ads_keyword_empty"/>
 
     <TextView
         android:id="@+id/text_view_empty_title_text"

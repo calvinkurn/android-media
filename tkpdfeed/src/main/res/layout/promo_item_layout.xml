@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_vvs"
     android:orientation="vertical"
-    android:elevation="2dp"
+    android:elevation="1dp"
     tools:background="@color/red_500">
 
     <LinearLayout
@@ -107,7 +107,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:background="@drawable/feed_rounded_corners"
-                    android:backgroundTint="@color/green_500"
                     android:gravity="center"
                     android:padding="@dimen/padding_vs"
                     android:text="@string/title_copy"
@@ -127,7 +126,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="@drawable/feed_rounded_corners"
-                    android:backgroundTint="@color/green_500"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/see_promo"

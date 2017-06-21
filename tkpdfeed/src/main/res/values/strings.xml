@@ -8,6 +8,7 @@
     <string name="period">Periode: "</string>
     <string name="title_code">Kode:  </string>
     <string name="title_copy">Salin</string>
+    <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Detail Feed</string>
     <string name="see_shop">Lihat Toko</string>
     <string name="see_promo">Lihat Promo</string>
@@ -27,5 +28,6 @@
     <string name="feed_add_more">Mau lihat update produk lebih banyak?</string>
     <string name="feed_add_more_1">Segera favoritkan toko yang Anda sukai</string>
     <string name="find_shop">Cari Toko</string>
+    <string name="see_all_promo">Lihat Semua Promo</string>
 
 </resources>
