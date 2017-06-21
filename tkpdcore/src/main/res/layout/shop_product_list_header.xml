@@ -5,6 +5,28 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
+    <TextView
+        android:id="@+id/featured_product_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_product_list_header_featured_product_title"
+        android:paddingTop="17dp"
+        android:paddingBottom="17dp"
+        android:paddingLeft="12dp"
+        android:gravity="start"
+        android:textColor="@color/black_70"
+        android:textSize="14sp"
+        style="@style/MediumText"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/featured_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
     <RelativeLayout
         android:gravity="center"
         android:layout_height="wrap_content"
@@ -58,27 +80,6 @@
             android:src="@drawable/sorting_icon" />
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/featured_product_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/shop_product_list_header_featured_product_title"
-        android:paddingTop="17dp"
-        android:paddingBottom="17dp"
-        android:paddingLeft="12dp"
-        android:gravity="start"
-        android:textColor="@color/black_70"
-        android:textSize="14sp"
-        style="@style/MediumText"
-        android:background="@color/white"
-        />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/featured_product_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
 
     <TextView
         android:id="@+id/product_section_title"
