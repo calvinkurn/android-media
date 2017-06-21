@@ -28,7 +28,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/margin_small"
         android:paddingRight="@dimen/margin_small"
         android:paddingTop="@dimen/margin_small">
 
@@ -45,7 +44,7 @@
                 android:textColor="@color/black_70"
                 android:textIsSelectable="false"
                 android:longClickable="false"
-                android:textSize="@dimen/fonts"
+                android:textSize="@dimen/fontm"
                 android:autoLink="all" />
 
         </LinearLayout>

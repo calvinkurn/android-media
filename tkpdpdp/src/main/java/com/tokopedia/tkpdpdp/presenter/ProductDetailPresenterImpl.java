@@ -56,6 +56,7 @@ import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -523,18 +524,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         MenuItem etalase = menu.findItem(R.id.action_etalase);
         boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
+            menuShare.setVisible(true);
+            menuShare.setEnabled(true);
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
                 if (isSellerApp) {
-                    menuShare.setVisible(false);
-                    menuShare.setEnabled(false);
                     menuCart.setVisible(false);
                     menuCart.setEnabled(false);
                 } else {
-                    menuShare.setVisible(true);
-                    menuShare.setEnabled(true);
                     if (SessionHandler.isV4Login(context)) {
                         menuCart.setVisible(true);
                         menuCart.setEnabled(true);
+                        LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+                        int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                        if (CartCache > 0 && menuCart!=null) {
+                            menuCart.setIcon(R.drawable.cart_active_white);
+                        }
                     }
                 }
                 report.setVisible(true);
@@ -544,8 +548,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 etalase.setVisible(false);
                 etalase.setEnabled(false);
             } else {
-                menuShare.setVisible(false);
-                menuShare.setEnabled(false);
                 menuCart.setVisible(false);
                 menuCart.setEnabled(false);
                 report.setVisible(false);
