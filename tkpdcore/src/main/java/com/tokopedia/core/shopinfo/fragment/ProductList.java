@@ -135,7 +135,9 @@ public class ProductList extends V2BaseFragment {
 
     @Override
     public void onStop() {
-        facadeShopProd.unsubscribeGetShopProduct();
+        if (facadeShopProd != null) {
+            facadeShopProd.unsubscribeGetShopProduct();
+        }
         super.onStop();
     }
     
