@@ -17,7 +17,7 @@
         android:background="@color/transparent"
         android:contentDescription="@string/image_product_desc"
         android:gravity="center"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         tools:src="@color/colorAccent" />
 
     <TextView

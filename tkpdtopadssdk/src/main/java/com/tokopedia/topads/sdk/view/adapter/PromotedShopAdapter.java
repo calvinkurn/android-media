@@ -9,6 +9,7 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.SquareImageView;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopFeedViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,11 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
     List<ImageProduct> list;
     ImageLoader imageLoader;
     private int MAX_SIZE = 3;
+    ShopFeedViewHolder viewHolder;
 
-    public PromotedShopAdapter() {
+    public PromotedShopAdapter(ShopFeedViewHolder shopFeedViewHolder) {
         this.list = new ArrayList<>();
+        viewHolder = shopFeedViewHolder;
     }
 
     @Override
@@ -40,6 +43,12 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
             imageLoader = new ImageLoader(holder.imageView.getContext());
         }
         imageLoader.loadImage(list.get(position).getImageUrl(), holder.imageView);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.onClick(R.id.header);
+            }
+        });
     }
 
     @Override

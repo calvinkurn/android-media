@@ -31,6 +31,7 @@ import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
 import com.tokopedia.topads.sdk.view.SquareImageView;
 import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
@@ -100,14 +101,20 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
                 1f // how big is default item
         );
 
+        int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.padding_item_decoration);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         recyclerView.setLayoutManager(manager);
-        adapter = new PromotedShopAdapter();
+        adapter = new PromotedShopAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        onClick(id);
+    }
+
+    public void onClick(int id) {
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(adapterPosition, data);
@@ -147,28 +154,10 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             setFavorite(data.isFavorit());
         }
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemClickListener.onShopItemClicked(adapterPosition, data);
-            }
-        });
+
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
-//        imageContainerBig.removeAllViews();
-//        imageContainerSmall.removeAllViews();
-//        for (int i = 0; i < 3; i++) {
-//            ImageProduct imgProduct = imageProducts.get(i);
-//            View view = LayoutInflater.from(context).inflate(R.layout.layout_shop_product_image_big, null);
-//            SquareImageView imageView = (SquareImageView) view.findViewById(R.id.image);
-//            if(i==0) {
-//                imageContainerBig.addView(view);
-//            } else {
-//                imageContainerSmall.addView(view);
-//            }
-//            imageLoader.loadImage(imgProduct.getImageUrl(), imageView);
-//        }
         adapter.setList(imageProducts);
     }
 
