@@ -30,7 +30,7 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
     @Override
     public void onNext(FeedResult feedResult) {
-        ArrayList<Visitable> list = convertToViewModel(feedResult.getDataFeedDomainList());
+        ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
 //        if (list.size() > 0) {
 //            if(getCurrentCursor(feedResult) != null){

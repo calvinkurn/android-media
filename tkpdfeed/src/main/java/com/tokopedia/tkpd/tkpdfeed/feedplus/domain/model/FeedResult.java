@@ -1,31 +1,29 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
 
-import java.util.List;
-
 /**
  * @author ricoharisin .
  */
 
 public class FeedResult {
 
-    private List<DataFeedDomain> dataFeedDomainList;
+    private FeedDomain feedDomain;
     private int dataSource;
     public static final int SOURCE_LOCAL = 1;
     public static final int SOURCE_CLOUD = 2;
     private boolean hasNext;
 
-    public FeedResult(List<DataFeedDomain> dataFeedDomainList, int dataSource, boolean hasNext) {
-        this.dataFeedDomainList = dataFeedDomainList;
+    public FeedResult(FeedDomain feedDomain, int dataSource, boolean hasNext) {
+        this.feedDomain = feedDomain;
         this.dataSource = dataSource;
         this.hasNext = hasNext;
     }
 
-    public List<DataFeedDomain> getDataFeedDomainList() {
-        return dataFeedDomainList;
+    public FeedDomain getFeedDomain() {
+        return feedDomain;
     }
 
-    public void setDataFeedDomainList(List<DataFeedDomain> dataFeedDomainList) {
-        this.dataFeedDomainList = dataFeedDomainList;
+    public void setFeedDomain(FeedDomain feedDomain) {
+        this.feedDomain = feedDomain;
     }
 
     public int getDataSource() {

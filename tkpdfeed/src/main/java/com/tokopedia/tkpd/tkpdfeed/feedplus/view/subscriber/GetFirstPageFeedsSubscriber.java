@@ -3,15 +3,20 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataInspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.PromotionFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,30 +51,68 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     @Override
     public void onNext(FeedResult feedResult) {
         viewListener.onSuccessGetFeedFirstPage(
-                convertToViewModel(feedResult.getDataFeedDomainList()));
+                convertToViewModel(feedResult.getFeedDomain()));
 
-        if (feedResult.getDataFeedDomainList().size() > 0)
+        if (feedResult.getFeedDomain().getListFeed().size() > 0)
             viewListener.updateCursor(getCurrentCursor(feedResult));
     }
 
-    protected ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
-        ArrayList<Visitable> listFeed = new ArrayList<>();
-        for (DataFeedDomain domain : dataFeedDomainList) {
-            switch (domain.getContent().getType()) {
-                case TYPE_NEW_PRODUCT:
-                    ActivityCardViewModel model = convertToActivityViewModel(domain);
-                    if (model.getListProduct() != null && model.getListProduct().size() > 0) {
-                        listFeed.add(model);
-                    }
-                    break;
-                case TYPE_PROMOTION:
-                    listFeed.add(convertToPromoViewModel(domain));
-                    break;
-                default:
-                    break;
+    protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
+        ArrayList<Visitable> listFeedView = new ArrayList<>();
+        addFeedData(listFeedView, feedDomain.getListFeed());
+        addInspirationData(listFeedView, feedDomain.getListInspiration());
+        return listFeedView;
+    }
+
+    private void addInspirationData(ArrayList<Visitable> listFeedView, List<DataInspirationDomain> listInspiration) {
+        if (listInspiration != null) {
+            for (DataInspirationDomain domain : listInspiration) {
+                InspirationViewModel model = convertToInspirationViewModel(domain);
+                if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                    listFeedView.add(model);
             }
         }
-        return listFeed;
+    }
+
+    private void addFeedData(ArrayList<Visitable> listFeedView, List<DataFeedDomain> listFeedDomain) {
+        if (listFeedDomain != null)
+            for (DataFeedDomain domain : listFeedDomain) {
+                switch (domain.getContent().getType()) {
+                    case TYPE_NEW_PRODUCT:
+                        ActivityCardViewModel model = convertToActivityViewModel(domain);
+                        if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                            listFeedView.add(model);
+                        break;
+                    case TYPE_PROMOTION:
+                        PromoCardViewModel promo = convertToPromoViewModel(domain);
+                        if (promo.getListPromo() != null && promo.getListPromo().size() > 0)
+                            listFeedView.add(promo);
+                        break;
+                    default:
+                        break;
+                }
+            }
+    }
+
+    private InspirationViewModel convertToInspirationViewModel(DataInspirationDomain domain) {
+        return new InspirationViewModel(domain.getTitle(), convertToRecommendationListViewModel(domain));
+    }
+
+    private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(DataInspirationDomain domains) {
+        ArrayList<InspirationProductViewModel> listRecommendation = new ArrayList<>();
+        if (domains.getRecommendation() != null && domains.getRecommendation().size() == 4)
+            for (InspirationRecommendationDomain recommendationDomain : domains.getRecommendation()) {
+                listRecommendation.add(convertToRecommendationViewModel(recommendationDomain));
+            }
+        return listRecommendation;
+    }
+
+    private InspirationProductViewModel convertToRecommendationViewModel(InspirationRecommendationDomain recommendationDomain) {
+        return new InspirationProductViewModel(recommendationDomain.getId(),
+                recommendationDomain.getName(),
+                recommendationDomain.getPrice(),
+                recommendationDomain.getImage_url(),
+                recommendationDomain.getUrl());
     }
 
     protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
@@ -134,14 +177,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {
-        if(dataFeedDomain.getContent().getPromotions().size()>1){
+        if (dataFeedDomain.getContent().getPromotions().size() > 1) {
             listPromo.add(new PromoViewModel());
         }
     }
 
 
     protected String getCurrentCursor(FeedResult feedResult) {
-        int lastIndex = feedResult.getDataFeedDomainList().size() - 1;
-        return feedResult.getDataFeedDomainList().get(lastIndex).getCursor();
+        int lastIndex = feedResult.getFeedDomain().getListFeed().size() - 1;
+        return feedResult.getFeedDomain().getListFeed().get(lastIndex).getCursor();
     }
 }

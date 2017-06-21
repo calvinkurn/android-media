@@ -21,6 +21,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_detail;
+    private static final String CASHBACK = "Cashback";
 
     public TextView productName;
     public TextView productPrice;
@@ -75,7 +76,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
             cashback.setVisibility(View.GONE);
         else {
             cashback.setVisibility(View.VISIBLE);
-            cashback.setText(feedDetailViewModel.getCashback());
+            cashback.setText(CASHBACK + " " + feedDetailViewModel.getCashback());
         }
 
         if (feedDetailViewModel.isWholesale())

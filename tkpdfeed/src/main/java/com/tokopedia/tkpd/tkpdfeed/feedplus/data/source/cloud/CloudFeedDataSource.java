@@ -12,6 +12,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
@@ -33,7 +34,6 @@ public class CloudFeedDataSource {
     private FeedListMapper feedListMapper;
     private GlobalCacheManager globalCacheManager;
     private FeedResultMapper feedResultMapper;
-    private static final String KEY_FEED_PLUS = "FEED_PLUS";
 
     public CloudFeedDataSource(Context context,
                                ApolloClient apolloClient,
@@ -53,10 +53,10 @@ public class CloudFeedDataSource {
                 .doOnNext(new Action1<FeedDomain>() {
                     @Override
                     public void call(FeedDomain dataFeedDomains) {
-                        globalCacheManager.setKey(KEY_FEED_PLUS);
+                        globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
                         globalCacheManager.setValue(
-                                CacheUtil.convertListModelToString(dataFeedDomains.getList(),
-                                        new TypeToken<List<DataFeedDomain>>() {
+                                CacheUtil.convertModelToString(dataFeedDomains,
+                                        new TypeToken<FeedDomain>() {
                                         }.getType()));
                         globalCacheManager.store();
                     }

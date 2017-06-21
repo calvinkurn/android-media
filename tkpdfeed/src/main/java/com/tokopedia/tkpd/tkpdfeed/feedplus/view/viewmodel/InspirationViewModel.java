@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 
 import java.util.ArrayList;
 
@@ -8,11 +10,13 @@ import java.util.ArrayList;
  * Created by stevenfredian on 5/18/17.
  */
 
-public class InspirationViewModel extends ProductCardViewModel {
+public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     private String inspired;
+    protected ArrayList<InspirationProductViewModel> listProduct;
 
-    public InspirationViewModel(String title, ArrayList<ProductFeedViewModel> listProduct) {
+
+    public InspirationViewModel(String title, ArrayList<InspirationProductViewModel> listProduct) {
         this.inspired = title;
         this.listProduct = listProduct;
     }
@@ -22,11 +26,11 @@ public class InspirationViewModel extends ProductCardViewModel {
         return favoriteTypeFactory.type(this);
     }
 
-    public ArrayList<ProductFeedViewModel> getListProduct() {
+    public ArrayList<InspirationProductViewModel> getListProduct() {
         return listProduct;
     }
 
-    public void setListProduct(ArrayList<ProductFeedViewModel> listProduct) {
+    public void setListProduct(ArrayList<InspirationProductViewModel> listProduct) {
         this.listProduct = listProduct;
     }
 
