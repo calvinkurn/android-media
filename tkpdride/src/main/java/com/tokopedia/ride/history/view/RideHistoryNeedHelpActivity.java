@@ -75,7 +75,9 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
             public void onProgressChanged(WebView view, int newProgress) {
                 //  progressBar.setProgress(newProgress);
                 if (newProgress == 100) {
-                    progressBar.setVisibility(View.GONE);
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
                 super.onProgressChanged(view, newProgress);
             }
