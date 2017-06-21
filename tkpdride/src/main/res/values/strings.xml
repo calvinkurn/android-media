@@ -136,5 +136,6 @@
     <string name="uber_product_header_all_cabs">All Cabs</string>
     <string name="uber_product_header_time">Time</string>
     <string name="uber_product_header_fare">Fare</string>
+    <string name="ontrip_cancellation_fee">Cancellation Fee:</string>
     <string name="invalid_current_location">Current location is not available</string>
 </resources>

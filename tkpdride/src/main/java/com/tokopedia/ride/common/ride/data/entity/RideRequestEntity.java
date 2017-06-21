@@ -80,7 +80,7 @@ public class RideRequestEntity {
     @SerializedName("poll_wait")
     @Expose
     int pollWait;
-    @SerializedName("cancel_charge_timestamp")
+    @SerializedName("cancel_grace_period")
     @Expose
     String cancelChargeTimestamp;
 

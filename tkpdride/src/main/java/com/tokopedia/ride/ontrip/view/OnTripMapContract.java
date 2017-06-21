@@ -187,6 +187,11 @@ public interface OnTripMapContract {
 
         void zoomMapFitByPolyline(List<LatLng> latLngs);
 
+        void actionNavigateToCancelReasonPage(String requestId, String timestamp);
+
+
+        void showCancellationLayout();
+
         void actionNavigateToCancelReasonPage(String requestId);
     }
 
@@ -232,5 +237,7 @@ public interface OnTripMapContract {
         void actionYesCancelBtnClicked();
 
         String getRideStatus();
+
+        void actionCancelButtonClicked();
     }
 }

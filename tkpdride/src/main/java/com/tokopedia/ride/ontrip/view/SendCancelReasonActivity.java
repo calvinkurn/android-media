@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,14 +21,24 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.adapter.CancelReasonAdapter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class SendCancelReasonActivity extends BaseActivity implements SendCancelReasonContract.View, CancelReasonAdapter.OnItemClickListener {
+    private static final String DATE_SERVER_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    private static final String EXTRA_CANCELLATION_TIMESTAMP = "EXTRA_CANCELLATION_TIMESTAMP";
 
     private SendCancelReasonPresenter presenter;
     private CancelReasonAdapter adapter;
@@ -36,14 +48,24 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     private RelativeLayout mainLayout;
     private RecyclerView reasonsRecyclerView;
     private TextView submitButtonTextView;
+    private LinearLayout cancellationLayout;
+    private TextView cancellationTextView;
     private Toolbar toolbar;
     private String selectedReason;
     private String requestId;
+
+    public static Intent getCallingIntent(Activity activity, String requestId, String timestamp) {
+        Intent intent = new Intent(activity, SendCancelReasonActivity.class);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(EXTRA_CANCELLATION_TIMESTAMP, timestamp);
+        return intent;
+    }
 
     public static Intent getCallingIntent(Activity activity, String requestId) {
         Intent intent = new Intent(activity, SendCancelReasonActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
+
     }
 
     @Override
@@ -80,6 +102,43 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();
         }
+
+        if (getIntent().hasExtra(EXTRA_CANCELLATION_TIMESTAMP) && !TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP))) {
+            SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
+            Date date = null;
+            try {
+                date = serverDateFormatter.parse(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+            Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+
+            long delta = date.getTime() - now.getTimeInMillis();
+            new CountDownTimer(delta, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        if (!SendCancelReasonActivity.this.isDestroyed()) {
+                            showCancellationLayout();
+                        }
+                    } else {
+                        showCancellationLayout();
+                    }
+                }
+            }.start();
+        }
+    }
+
+    private void showCancellationLayout() {
+        cancellationLayout.setVisibility(View.VISIBLE);
+        RideConfiguration rideConfiguration = new RideConfiguration(this);
+        cancellationTextView.setText(rideConfiguration.getActiveCancellationFee());
     }
 
     private void setupUiVariable() {
@@ -88,6 +147,8 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         reasonsRecyclerView = (RecyclerView) findViewById(R.id.rv_reasons);
         submitButtonTextView = (TextView) findViewById(R.id.tv_submit_reason);
+        cancellationLayout = (LinearLayout) findViewById(R.id.cancellation_charges_layout);
+        cancellationTextView = (TextView) findViewById(R.id.tv_cancellation_charges);
     }
 
     @Override
@@ -208,4 +269,5 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             }
         });
     }
+
 }

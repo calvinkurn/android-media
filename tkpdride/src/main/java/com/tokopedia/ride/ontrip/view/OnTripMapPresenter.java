@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -59,8 +60,15 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -78,7 +86,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
-
+    private static final String DATE_SERVER_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
@@ -654,14 +662,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void startGetRequestDetailsPeriodicService(String requestId) {
-
-        Observable waktu = Observable.create(new Observable.OnSubscribe<Object>() {
-            @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                subscriber.onCompleted();
-            }
-        });
-
         subscription.add(Observable.defer(new Func0<Observable<RideRequest>>() {
                     @Override
                     public Observable<RideRequest> call() {
@@ -999,7 +999,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         }
 
         if (!TextUtils.isEmpty(getView().getRequestId())) {
-            getView().actionNavigateToCancelReasonPage(getView().getRequestId());
+            if (activeRideRequest != null) {
+                if (activeRideRequest.getCancelChargeTimestamp() != null)
+                getView().actionNavigateToCancelReasonPage(getView().getRequestId(), activeRideRequest.getCancelChargeTimestamp());
+                else {
+                    getView().actionNavigateToCancelReasonPage(getView().getRequestId());
+                }
+            }
         }
     }
 
@@ -1009,5 +1015,35 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             return null;
         }
         return activeRideRequest.getStatus();
+    }
+
+    @Override
+    public void actionCancelButtonClicked() {
+        if (activeRideRequest != null){
+            if (activeRideRequest.getCancelChargeTimestamp() == null) return;
+            SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
+            Date date = null;
+            try {
+                date = serverDateFormatter.parse(activeRideRequest.getCancelChargeTimestamp());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+            Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+
+            long delta = date.getTime() - now.getTimeInMillis();
+            new CountDownTimer(delta, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    if(isViewAttached())
+                    getView().showCancellationLayout();
+                }
+            }.start();
+        }
     }
 }
