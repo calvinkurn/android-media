@@ -11,7 +11,7 @@ import com.tokopedia.seller.topads.keyword.view.activity.TopAdsBaseSimpleActivit
 
 public class DraftListActivity extends TopAdsBaseSimpleActivity {
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         return null;
     }
 
