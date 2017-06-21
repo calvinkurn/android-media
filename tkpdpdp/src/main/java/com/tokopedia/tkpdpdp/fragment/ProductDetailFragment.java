@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -50,6 +51,7 @@ import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
@@ -763,6 +765,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (productData != null) {
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
+            refreshMenu();
         }
     }
 
@@ -907,7 +910,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+            if (SessionHandler.isV4Login(context)) {
+                LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+                int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                if (CartCache > 0) {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+                } else {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+                }
+            }
         }
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
 
@@ -920,7 +931,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_white));
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+            if (SessionHandler.isV4Login(context)) {
+                LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+                int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                if (CartCache > 0) {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_white));
+                } else {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+                }
+            }
             toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
         }
     }

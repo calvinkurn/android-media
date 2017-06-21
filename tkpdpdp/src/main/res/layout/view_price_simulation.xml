@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/installment"
+                android:text="@string/installment_simulation"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/font_medium" />
 
@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:layout_marginBottom="@dimen/margin_small"
+                android:text="@string/installment_simulation"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/fontvs" />
         </LinearLayout>

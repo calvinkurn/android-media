@@ -22,7 +22,6 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
     private LinearLayout wholesaleLayout;
     private TextView tvWholesale;
     private LinearLayout installmentLayout;
-    private TextView tvInstallment;
     private View separator;
 
     boolean isInstallment = false;
@@ -65,7 +64,6 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         wholesaleLayout = (LinearLayout) findViewById(R.id.wholesale);
         tvWholesale = (TextView) findViewById(R.id.tv_wholesale);
         installmentLayout = (LinearLayout) findViewById(R.id.installmet);
-        tvInstallment = (TextView) findViewById(R.id.tv_installmet);
         separator = findViewById(R.id.separator);
 
     }
@@ -81,7 +79,6 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
             String installmentMinPrice = data.getInfo().getInstallmentMinPrice();
             String installment = titleInstallment.replace(PERCENTAGE,installmentMinPercentage)
                     .replace(CURRENCY,installmentMinPrice);
-            tvInstallment.setText(installment);
             isInstallment = true;
             installmentLayout.setOnClickListener(new OnClickListener() {
                 @Override

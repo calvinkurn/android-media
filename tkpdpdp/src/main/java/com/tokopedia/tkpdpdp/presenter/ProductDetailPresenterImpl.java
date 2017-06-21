@@ -56,6 +56,7 @@ import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -533,6 +534,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     if (SessionHandler.isV4Login(context)) {
                         menuCart.setVisible(true);
                         menuCart.setEnabled(true);
+                        LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+                        int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                        if (CartCache > 0) {
+                            menu.findItem(R.id.action_cart).setIcon(R.drawable.cart_active_white);
+                        }
                     }
                 }
                 report.setVisible(true);
