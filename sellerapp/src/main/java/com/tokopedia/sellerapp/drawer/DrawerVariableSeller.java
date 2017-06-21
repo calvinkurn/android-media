@@ -606,7 +606,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void setCacheShopMenu() {
-        model.shopMenu.isExpanded = CacheNotif.getBoolean("IS_SHOP_OPENED", false);
+        model.shopMenu.isExpanded = CacheNotif.getBoolean(IS_SHOP_OPENED, false);
         model.shopMenu.list.get(0).notif = CacheNotif.getInt("new_order", 0);
         model.shopMenu.list.get(1).notif = CacheNotif.getInt("shipping_confirm", 0);
         model.shopMenu.list.get(2).notif = CacheNotif.getInt("shipping_status", 0);
@@ -614,7 +614,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void setCacheInboxMenu() {
-        model.inboxMenu.isExpanded = CacheNotif.getBoolean("IS_INBOX_OPENED", false);
+        model.inboxMenu.isExpanded = CacheNotif.getBoolean(IS_INBOX_OPENED, false);
         model.inboxMenu.list.get(0).notif = CacheNotif.getInt("message", 0);
         model.inboxMenu.list.get(1).notif = CacheNotif.getInt("talk", 0);
         model.inboxMenu.list.get(2).notif = CacheNotif.getInt("reputation", 0);
