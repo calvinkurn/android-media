@@ -30,6 +30,8 @@
             android:textColor="@color/black_70"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:lineSpacingExtra="4sp"
             tools:text="Marowiajjfawioi ubah 1 produk " />
 
