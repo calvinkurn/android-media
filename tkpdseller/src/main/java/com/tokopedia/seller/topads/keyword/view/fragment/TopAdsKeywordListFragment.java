@@ -30,13 +30,12 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
 /**
  * @author normansyahputa on 5/17/17.
@@ -140,7 +139,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             searchAd(START_PAGE);
         }
 
-        if (requestCode == REQUEST_CODE_AD_STATUS) {
+        if (requestCode == TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS) {
             if (resultCode == Activity.RESULT_OK) {
                 // top ads new groups/edit existing group/promo not in group has been success
                 boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
