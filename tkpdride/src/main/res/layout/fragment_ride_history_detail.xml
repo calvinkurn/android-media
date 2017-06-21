@@ -8,12 +8,12 @@
     <RelativeLayout
         android:id="@+id/ride_history_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp">
+        android:layout_height="wrap_content">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp">
 
             <RelativeLayout
                 android:id="@+id/top_container"
@@ -365,6 +365,46 @@
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
+
+        <LinearLayout
+            android:id="@+id/bottom_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_300"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/layout_need_help"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/grey_100"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/need_help"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:text="@string/link_click_here"
+                    android:textColor="@color/colorGreen" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
     </RelativeLayout>
 

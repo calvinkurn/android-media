@@ -548,7 +548,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
-        //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
         //mSlidingUpPanelLayout.setPanelHeight(50);
         //mSlidingUpPanelLayout.setParallaxOffset(5);
 
@@ -771,7 +770,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
-    public void actionBookingHeaderClicked() {
+    public void expandSlidingPanel() {
         mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
 

@@ -30,7 +30,6 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         setupToolbar();
         rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         replaceFragment(R.id.top_container, RideHistoryDetailFragment.newInstance(rideHistory));
-        replaceFragment(R.id.fl_need_help_web_view, FragmentGeneralWebView.createInstance(rideHistory.getHelpUrl()));
     }
 
     private void setupToolbar() {
