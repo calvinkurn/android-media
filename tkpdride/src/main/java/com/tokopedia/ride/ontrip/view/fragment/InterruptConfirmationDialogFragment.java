@@ -189,7 +189,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                     try {
                         queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
                                 URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (UnsupportedEncodingException | NullPointerException | IllegalArgumentException e) {
                         e.printStackTrace();
                     }
                 }
@@ -216,7 +216,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
             );
             clearCache(webview);
             webview.loadAuthUrlWithFlags(url);
-        }else {
+        } else {
             clearCache(webview);
             webview.loadUrl(url);
         }
@@ -291,7 +291,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
         switch (requestCode) {
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == IDigitalModuleRouter.PAYMENT_SUCCESS) {
-                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                    if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                         if (!TextUtils.isEmpty(message)) {
                             NetworkErrorHelper.showSnackbar(getActivity(), message);
