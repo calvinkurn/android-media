@@ -417,12 +417,10 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         };
     }
 
-//    @OnClick(R2.id.layout_need_help)
-//    public void actionNeedHelpClicked() {
-//        mListener.showHelpWebview(rideHistory.getHelpUrl());
-//        //replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
-//        //startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
-//    }
+    @OnClick(R2.id.layout_need_help)
+    public void actionNeedHelpClicked() {
+        startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
+    }
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {

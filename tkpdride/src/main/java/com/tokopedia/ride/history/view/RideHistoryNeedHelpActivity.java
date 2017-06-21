@@ -1,23 +1,39 @@
 package com.tokopedia.ride.history.view;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.R2;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHistoryNeedHelpFragment.OnFragmentInteractionListener, FragmentGeneralWebView.OnFragmentInteractionListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWebViewClient.WebViewCallback {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
-    private static final String HELP_URL = "https://help.uber.com/h/d69a65cd-e466-43bc-900e-55e04cc9e656";
 
     private RideHistoryViewModel rideHistory;
+
+    @BindView(R2.id.webview)
+    TkpdWebView WebViewGeneral;
+    @BindView(R2.id.progressbar)
+    ProgressBar progressBar;
+    private Unbinder unbinder;
 
     public static Intent getCallingIntent(Activity activity, RideHistoryViewModel rideHistory) {
         Intent intent = new Intent(activity, RideHistoryNeedHelpActivity.class);
@@ -29,9 +45,11 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history_need_help);
-        setupToolbar();
+        unbinder = ButterKnife.bind(this);
         rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
-        replaceFragment(R.id.fl_container, RideHistoryNeedHelpFragment.newInstance(rideHistory));
+        setupToolbar();
+
+        init();
     }
 
     private void setupToolbar() {
@@ -44,20 +62,24 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHis
         }
     }
 
-    private void replaceFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
-            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(containerViewId, fragment);
-            fragmentTransaction.commit();
-        }
-    }
-
-    private void addFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
-            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-            fragmentTransaction.add(containerViewId, fragment);
-            fragmentTransaction.commit();
-        }
+    private void init() {
+        CookieManager.getInstance().setAcceptCookie(true);
+        progressBar.setIndeterminate(true);
+        WebViewGeneral.loadAuthUrl(rideHistory.getHelpUrl());
+        WebViewGeneral.getSettings().setJavaScriptEnabled(true);
+        WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        WebViewGeneral.getSettings().setDomStorageEnabled(true);
+        WebViewGeneral.setWebViewClient(new BaseWebViewClient(this));
+        WebViewGeneral.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                //  progressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
     }
 
     @Override
@@ -72,44 +94,32 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHis
     }
 
     @Override
-    public void showTokoCashBillingFragment() {
-        setTitle(R.string.title_tokocash_billing);
-        replaceFragment(R.id.fl_container, RideTokocashBillingHelpFragment.newInstance(rideHistory));
+    public void onSuccessResult(String successResult) {
+
     }
 
     @Override
-    public void rideHelpButtonClicked() {
-        setTitle(R.string.title_ride);
-        replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
+    public void onProgressResult(String progressResult) {
+
     }
 
-    public void setTitle(int resId) {
-        getSupportActionBar().setTitle(resId);
+    @Override
+    public void onErrorResult(SslError errorResult) {
+
     }
 
     @Override
     public void onBackPressed() {
-        if ((getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment)
-                || (getFragmentManager().findFragmentById(R.id.fl_container) instanceof FragmentGeneralWebView)) {
-            setTitle(R.string.help_toolbar_title);
-            replaceFragment(R.id.fl_container, RideHistoryNeedHelpFragment.newInstance(rideHistory));
+        if (WebViewGeneral.canGoBack()) {
+            WebViewGeneral.goBack();
         } else {
             super.onBackPressed();
         }
     }
 
     @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -99,7 +100,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
         void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel);
 
-        void actionBookingHeaderClicked();
+        void expandSlidingPanel();
 
         void actionBackToProductList();
     }
@@ -129,6 +130,14 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         presenter.initialize();
         setViewListener();
         updateSeatCountUi();
+
+        //set the bottom panel as expanded initially
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mListener.expandSlidingPanel();
+            }
+        }, 100);
     }
 
     private void setViewListener() {
@@ -447,6 +456,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.confirm_booking_header)
     public void actionBookingHeaderClicked() {
-        mListener.actionBookingHeaderClicked();
+        mListener.expandSlidingPanel();
     }
 }

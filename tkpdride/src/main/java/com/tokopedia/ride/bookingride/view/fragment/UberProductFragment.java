@@ -251,7 +251,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void hideAdsBadges() {
         mInteractionListener.actionAdsHidden();
-        mAdsContainerLinearLayout.setVisibility(View.GONE);
+        mAdsContainerLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
