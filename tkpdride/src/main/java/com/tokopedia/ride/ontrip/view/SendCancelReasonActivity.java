@@ -96,7 +96,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             invalidateOptionsMenu();
         }
 
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP))){
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP))) {
             SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
             Date date = null;
             try {
@@ -116,7 +116,9 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
 
                 @Override
                 public void onFinish() {
-                    showCancellationLayout();
+                    if (!SendCancelReasonActivity.this.isDestroyed()) {
+                        showCancellationLayout();
+                    }
                 }
             }.start();
         }
