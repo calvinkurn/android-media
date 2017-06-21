@@ -616,6 +616,8 @@
     <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
+    <string name="top_ads_keyword_add_group_promo">Tambahkan Grup Promo</string>
+    <string name="top_ads_keyword_add_group_promo_desc">Untuk menggunakan fitur kata \nkunci Anda harus memiliki \ngrup promo</string>
 
     <!-- SHOP SETTING-->
     <string name="title_activity_payment_editor">Pembayaran</string>

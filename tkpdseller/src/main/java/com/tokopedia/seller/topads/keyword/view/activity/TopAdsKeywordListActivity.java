@@ -43,17 +43,16 @@ import java.util.ArrayList;
 public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
         KeywordListListener.Listener,
-        TopAdsAdListFragment.OnAdListFragmentListener{
-    private ShowCaseDialog showCaseDialog;
-
+        TopAdsAdListFragment.OnAdListFragmentListener,
+        TopAdsKeywordListFragment.GroupTopAdsListener {
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
-
+    boolean isShowingShowCase = false;
+    private ShowCaseDialog showCaseDialog;
     private ViewPager viewPager;
     private TopAdsPagerAdapter pagerAdapter;
     private SearchView searchView;
     private KeywordListListener keywordListTablayout;
     private MenuItem searchItem;
-
     private int totalGroupAd;
     private MenuItem filter;
 
@@ -220,8 +219,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchItem.expandActionView();
     }
 
-    boolean isShowingShowCase = false;
-
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsKeywordListActivity.class.getName();
@@ -322,5 +319,15 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
             }
         });
+    }
+
+    @Override
+    public int getGroupTopAdsSize() {
+        return totalGroupAd;
+    }
+
+    @Override
+    public void setGroupTopAdsSize(int size) {
+        totalGroupAd = size;
     }
 }

@@ -22,7 +22,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -51,6 +50,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
@@ -67,6 +68,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     private static final String IS_GM_SUBSCRIBE_OPENED = "IS_GM_SUBSCRIBE_OPENED";
+    private static final String IS_PRODUCT_OPENED = "IS_PRODUCT_OPENED";
     public AppCompatActivity context;
     private NetworkInteractor networkInteractor;
     private ViewHolder holder;
@@ -137,6 +139,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         animator = new DefaultItemAnimator();
         initFacade();
         createShopMenu();
+        createProductMenu();
         createInboxMenu();
         createGoldMerchantMenu();
     }
@@ -299,6 +302,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
                 Cache.putBoolean(IS_GM_SUBSCRIBE_OPENED, isExpand);
                 break;
+            case TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND:
+                Cache.putBoolean(IS_PRODUCT_OPENED, isExpand);
+                break;
             default:
                 break;
         }
@@ -324,6 +330,9 @@ public class DrawerVariableSeller extends DrawerVariable {
         Boolean isFinish = true;
         Intent intent;
         switch (((DrawerItem) model.data.get(position)).id) {
+            case TkpdState.DrawerPosition.DRAFT_PRODUCT:
+                context.startActivity(new Intent(context, ProductDraftListActivity.class));
+                break;
             case TkpdState.DrawerPosition.SELLER_INDEX_HOME:
                 context.startActivity(new Intent(context, SellerHomeActivity.class));
                 break;
@@ -491,6 +500,9 @@ public class DrawerVariableSeller extends DrawerVariable {
         if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
         }
+        if (Cache.getBoolean(IS_PRODUCT_OPENED, false)) {
+            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND));
+        }
     }
 
     private void setSelected() {
@@ -594,7 +606,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void setCacheShopMenu() {
-        model.shopMenu.isExpanded = CacheNotif.getBoolean("IS_SHOP_OPENED", false);
+        model.shopMenu.isExpanded = CacheNotif.getBoolean(IS_SHOP_OPENED, false);
         model.shopMenu.list.get(0).notif = CacheNotif.getInt("new_order", 0);
         model.shopMenu.list.get(1).notif = CacheNotif.getInt("shipping_confirm", 0);
         model.shopMenu.list.get(2).notif = CacheNotif.getInt("shipping_status", 0);
@@ -602,7 +614,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void setCacheInboxMenu() {
-        model.inboxMenu.isExpanded = CacheNotif.getBoolean("IS_INBOX_OPENED", false);
+        model.inboxMenu.isExpanded = CacheNotif.getBoolean(IS_INBOX_OPENED, false);
         model.inboxMenu.list.get(0).notif = CacheNotif.getInt("message", 0);
         model.inboxMenu.list.get(1).notif = CacheNotif.getInt("talk", 0);
         model.inboxMenu.list.get(2).notif = CacheNotif.getInt("reputation", 0);
@@ -618,8 +630,12 @@ public class DrawerVariableSeller extends DrawerVariable {
         model.shopMenu.list.add(new DrawerItem("Daftar penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
         model.shopMenu.list.add(new DrawerItem("Peluang", 0, 0, TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
-        model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
+    }
+
+    private void createProductMenu() {
+        model.productMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
+        model.productMenu.list.add(new DrawerItem("Draft Produk", 0, 0, TkpdState.DrawerPosition.DRAFT_PRODUCT, true));
     }
 
     private void createInboxMenu() {
@@ -648,6 +664,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.sellerHome);
             model.data.add(model.shopMenu);// penjualan
             model.data.add(model.inboxMenu);// inbox
+            model.data.add(model.productMenu);
             model.data.add(model.gmSubscribeMenu);
             model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT, false));
             model.data.add(model.topAdsMenu);
@@ -887,6 +904,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
         private DrawerItemList gmSubscribeMenu;
+        private DrawerItemList productMenu;
         private DrawerItem topAdsMenu;
         private List<RecyclerViewItem> data;
 
@@ -898,6 +916,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             inboxMenu = new DrawerItemList(context.getString(R.string.drawer_title_inbox), 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
             gmSubscribeMenu = new DrawerItemList(context.getString(R.string.drawer_title_gold_merchant), 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
             topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
+            productMenu = new DrawerItemList(context.getString(R.string.drawer_title_product), 0, com.tokopedia.seller.R.drawable.ic_manage_produk, TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND, true);
         }
 
     }

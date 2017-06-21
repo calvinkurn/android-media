@@ -1,18 +1,27 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.SearchView;
 
+import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.data.source.db.ProductDraftDataManager;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.fragment.ProductDraftListFragment;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsBaseSimpleActivity;
 
 import java.util.List;
 
@@ -24,58 +33,19 @@ import rx.functions.Func1;
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListActivity extends TopAdsBaseSimpleActivity {
+public class ProductDraftListActivity extends TkpdActivity {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-        return ProductDraftListFragment.newInstance();
-    }
-
-    @Override
-    protected String getTagFragment() {
-        return ProductDraftListFragment.TAG;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Observable<List<UploadProductInputDomainModel>> productDraftDataBaseList =
-                new ProductDraftDataManager().getAllDraft()
-                        .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
-                            @Override
-                            public Observable<ProductDraftDataBase> call(List<ProductDraftDataBase> productDraftDataBases) {
-                                return Observable.from(productDraftDataBases);
-                            }
-                        })
-                        .map(new Func1<ProductDraftDataBase, UploadProductInputDomainModel>() {
-                            @Override
-                            public UploadProductInputDomainModel call(ProductDraftDataBase productDraftDataBase) {
-                                long id = productDraftDataBase.getId();
-                                String data = productDraftDataBase.getData();
-                                return Observable.just(data).map(new ProductDraftMapper(id)).toBlocking().first();
-                            }
-                        }).toList();
-        productDraftDataBaseList.subscribe(new Subscriber<List<UploadProductInputDomainModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<UploadProductInputDomainModel> uploadProductInputDomainModels) {
-                Log.d("Test", "test");
-            }
-        });
+        inflateView(R.layout.activity_simple_fragment);
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.DRAFT_PRODUCT);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, ProductDraftListFragment.newInstance(),
+                            ProductDraftListFragment.TAG)
+                    .commit();
+        }
     }
 }

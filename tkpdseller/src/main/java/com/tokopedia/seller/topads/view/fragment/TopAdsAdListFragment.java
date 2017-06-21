@@ -43,7 +43,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<Ad> {
+        AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
