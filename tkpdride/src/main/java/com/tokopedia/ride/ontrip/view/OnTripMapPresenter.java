@@ -1000,7 +1000,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
         if (!TextUtils.isEmpty(getView().getRequestId())) {
             if (activeRideRequest != null) {
+                if (activeRideRequest.getCancelChargeTimestamp() != null)
                 getView().actionNavigateToCancelReasonPage(getView().getRequestId(), activeRideRequest.getCancelChargeTimestamp());
+                else {
+                    getView().actionNavigateToCancelReasonPage(getView().getRequestId());
+                }
             }
         }
     }
@@ -1016,7 +1020,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void actionCancelButtonClicked() {
         if (activeRideRequest != null){
-
+            if (activeRideRequest.getCancelChargeTimestamp() == null) return;
             SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
             Date date = null;
             try {

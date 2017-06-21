@@ -1327,4 +1327,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId, timestamp);
         startActivityForResult(intent, REQUEST_CODE_CANCEL_REASON);
     }
+
+    @Override
+    public void actionNavigateToCancelReasonPage(String requestId) {
+        Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId);
+        startActivityForResult(intent, REQUEST_CODE_CANCEL_REASON);
+    }
 }

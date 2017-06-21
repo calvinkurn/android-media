@@ -61,6 +61,13 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         return intent;
     }
 
+    public static Intent getCallingIntent(Activity activity, String requestId) {
+        Intent intent = new Intent(activity, SendCancelReasonActivity.class);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
+        return intent;
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +103,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             invalidateOptionsMenu();
         }
 
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP))) {
+        if (getIntent().hasExtra(EXTRA_CANCELLATION_TIMESTAMP) && !TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_CANCELLATION_TIMESTAMP))) {
             SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
             Date date = null;
             try {
@@ -262,4 +269,5 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
             }
         });
     }
+
 }

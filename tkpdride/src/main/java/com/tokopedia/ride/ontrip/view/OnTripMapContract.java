@@ -191,6 +191,8 @@ public interface OnTripMapContract {
 
 
         void showCancellationLayout();
+
+        void actionNavigateToCancelReasonPage(String requestId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
