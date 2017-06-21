@@ -493,9 +493,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
             fabWishlist.setOnClickListener(new EditClick(productData));
         } else if (status == 1) {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_faved));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
 
