@@ -523,15 +523,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         MenuItem etalase = menu.findItem(R.id.action_etalase);
         boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
+            menuShare.setVisible(true);
+            menuShare.setEnabled(true);
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
                 if (isSellerApp) {
-                    menuShare.setVisible(false);
-                    menuShare.setEnabled(false);
                     menuCart.setVisible(false);
                     menuCart.setEnabled(false);
                 } else {
-                    menuShare.setVisible(true);
-                    menuShare.setEnabled(true);
                     if (SessionHandler.isV4Login(context)) {
                         menuCart.setVisible(true);
                         menuCart.setEnabled(true);
@@ -544,8 +542,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 etalase.setVisible(false);
                 etalase.setEnabled(false);
             } else {
-                menuShare.setVisible(false);
-                menuShare.setEnabled(false);
                 menuCart.setVisible(false);
                 menuCart.setEnabled(false);
                 report.setVisible(false);
