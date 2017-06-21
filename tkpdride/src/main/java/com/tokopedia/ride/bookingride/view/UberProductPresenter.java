@@ -49,7 +49,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void initialize() {
-        actionGetPromo();
+        //actionGetPromo();
         getView().showProgress();
     }
 
@@ -93,10 +93,12 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             for (Visitable visitable : existingProductList) {
                 if (visitable instanceof RideProductViewModel) {
                     RideProductViewModel rideProductViewModel = RideProductViewModel.copy((RideProductViewModel) visitable);
-                    rideProductViewModel.setTimeEstimate(" --");
+                    rideProductViewModel.setTimeEstimate(null);
                     if (destination != null) {
-                        rideProductViewModel.setProductPriceFmt("--");
+                        rideProductViewModel.setProductPriceFmt(null);
+                        rideProductViewModel.setProductPrice(-1);
                         rideProductViewModel.setBaseFare("");
+                        rideProductViewModel.setSurgePrice(false);
                     }
 
                     rideProductViewModel.setEnabled(false);

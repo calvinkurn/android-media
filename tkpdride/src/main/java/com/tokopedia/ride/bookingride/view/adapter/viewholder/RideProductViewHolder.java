@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,10 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     TextView baseFareTextView;
     @BindView(R2.id.cab_price_estimate_layout)
     FrameLayout priceEstimateContainerFrameLayout;
+    @BindView(R2.id.price_progressbar)
+    ProgressBar priceProgress;
+    @BindView(R2.id.progress_bar_time)
+    ProgressBar timeProgress;
 
     private RideProductItemClickListener mItemClickListener;
     private RideProductViewModel mRideProductViewModel;
@@ -54,12 +59,27 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     public void bind(RideProductViewModel element) {
         mRideProductViewModel = element;
         productNameTextView.setText(element.getProductName());
-        timeEstimateTextView.setText(String.valueOf(element.getTimeEstimate()));
         surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
         productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
         baseFareTextView.setVisibility(element.getProductPrice() == 0.0 ? View.VISIBLE : View.GONE);
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
+        
+        if (element.getTimeEstimate() != null) {
+            timeEstimateTextView.setText(String.valueOf(element.getTimeEstimate()));
+            timeEstimateTextView.setVisibility(View.VISIBLE);
+            timeProgress.setVisibility(View.GONE);
+        } else {
+            timeEstimateTextView.setVisibility(View.GONE);
+            timeProgress.setVisibility(View.VISIBLE);
+        }
+
+        if (element.getProductPrice() == -1 && element.getProductPriceFmt() == null) {
+            priceProgress.setVisibility(View.VISIBLE);
+        } else {
+            priceProgress.setVisibility(View.GONE);
+        }
+
         Glide.with(mContext).load(element.getProductImage())
                 .asBitmap()
                 .fitCenter()

@@ -56,7 +56,14 @@
                     android:paddingBottom="5dp"
                     android:text="Rp 100.000/Km"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_twelev_revamp" />
+                    android:textSize="@dimen/text_size_twelev_revamp"
+                    android:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/price_progressbar"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/iv_cab_surge"
@@ -65,6 +72,8 @@
                     android:paddingLeft="5dp"
                     android:src="@drawable/cab_surge"
                     android:visibility="visible" />
+
+
             </LinearLayout>
 
             <TextView
@@ -89,6 +98,20 @@
         android:layout_toRightOf="@id/tv_cab_name"
         android:gravity="left"
         android:text="2 min"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_twelev_revamp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_time"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/ten_dp"
+        android:layout_toLeftOf="@id/cab_price_estimate_layout"
+        android:layout_toRightOf="@id/tv_cab_name"
+        android:gravity="left"
+        android:text="2 min"
+        android:visibility="gone"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_twelev_revamp" />
 
