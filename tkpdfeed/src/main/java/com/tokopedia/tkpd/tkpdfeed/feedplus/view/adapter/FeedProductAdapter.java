@@ -73,18 +73,21 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
-
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         if (getItemCount() == 1) {
             holder.productName.setEllipsize(TextUtils.TruncateAt.END);
             holder.productName.setMaxLines(1);
-            RelativeLayout.LayoutParams lp =
-                    new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.MATCH_PARENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 5, 0, 0);
 
-            holder.productImage.setLayoutParams(lp);
+        } else {
+            holder.productName.setEllipsize(TextUtils.TruncateAt.END);
+            holder.productName.setMaxLines(2);
+            lp.setMargins(5, 5, 5, 5);
         }
+
+        holder.productImage.setLayoutParams(lp);
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
