@@ -203,4 +203,5 @@
     <dimen name="intermediary_card">100dp</dimen>
     <dimen name="featured_product_item_image_size">205dp</dimen>
     <dimen name="product_item_title_min_height">38dp</dimen>
+    <dimen name="featured_product_badges_and_label_container_min_height">21dp</dimen>
 </resources>
