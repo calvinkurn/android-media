@@ -61,14 +61,16 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getUrl());
+                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getUrl());
+                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+
             }
         });
     }

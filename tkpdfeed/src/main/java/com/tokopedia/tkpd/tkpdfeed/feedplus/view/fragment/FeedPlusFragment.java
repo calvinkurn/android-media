@@ -243,9 +243,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productUrl) {
+    public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
         }
     }
 

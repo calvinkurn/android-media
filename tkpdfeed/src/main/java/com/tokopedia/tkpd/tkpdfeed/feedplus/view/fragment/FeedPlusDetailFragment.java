@@ -214,33 +214,37 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
         finishLoading();
-        if (pagingHandler.getPage() == 1) {
-            adapter.add(header);
-        }
 
         if (listDetail.size() == 0) {
 //            adapter.showEmpty();
             getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra("message", getString(R.string.feed_deleted)));
             getActivity().finish();
         } else {
+            if (pagingHandler.getPage() == 1) {
+                adapter.add(header);
+            }
+
             adapter.addList(listDetail);
+
+            shareButton.setOnClickListener(onShareClicked(
+                    header.getShareLinkURL(),
+                    header.getShopName(),
+                    header.getShopAvatar(),
+                    header.getShareLinkDescription()));
+
+            seeShopButon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onGoToShopDetail(header.getShopId());
+                }
+            });
+
+            pagingHandler.setHasNext(hasNextPage);
+
+            adapter.notifyDataSetChanged();
         }
 
-        shareButton.setOnClickListener(onShareClicked(
-                header.getShareLinkURL(),
-                header.getShopName(),
-                header.getShopAvatar(),
-                header.getShareLinkDescription()));
 
-        seeShopButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGoToShopDetail(header.getShopId());
-            }
-        });
-
-        adapter.notifyDataSetChanged();
-        pagingHandler.setHasNext(hasNextPage);
     }
 
     @Override
@@ -291,9 +295,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productUrl) {
+    public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
         }
     }
 

@@ -82,12 +82,15 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                             RelativeLayout.LayoutParams.MATCH_PARENT,
                             RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 5, 0, 0);
+
             holder.productImage.setLayoutParams(lp);
         }
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.LoadImage(holder.productImage, getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
+        ImageHandler.loadImageFit2(holder.productImage.getContext(),
+                holder.productImage,
+                getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
 
         if (list.size() > 6 && position == 5) {
             holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
@@ -108,14 +111,14 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(list.get(position).getUrl());
+                    viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
                 }
             });
 
             holder.productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(list.get(position).getUrl());
+                    viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
                 }
             });
         }
