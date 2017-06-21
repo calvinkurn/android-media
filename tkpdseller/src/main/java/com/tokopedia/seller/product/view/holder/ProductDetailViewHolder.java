@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -141,7 +143,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_IDR;
-                } else {
+                } else  {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
@@ -163,9 +165,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
             private void onItemClicked(int position) {
                 if (!goldMerchant && priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
                     priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
-                    Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
-                            .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
-                            .show();
+                    if(GlobalConfig.isSellerApp()) {
+                        listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_dollar);
+                    }else {
+                        Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                                .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
+                                .show();
+                    }
                     return;
                 }
                 priceSpinnerCounterInputView.setCounterValue(Double.parseDouble(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
@@ -208,7 +214,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(isMinOrderValid()){
+                if (isMinOrderValid()) {
                     minimumOrderCounterInputView.setError(null);
                 }
             }
@@ -367,7 +373,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         int minOrder;
         try {
             minOrder = (int) minimumOrderCounterInputView.getDoubleValue();
-        }catch (Exception e){
+        } catch (Exception e) {
             minOrder = -1;
         }
         return minOrder;
@@ -659,5 +665,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         void onEtalaseViewClicked(long etalaseId);
 
         void onFreeReturnChecked(boolean checked);
+
+        void showDialogMoveToGM(@StringRes int message);
     }
 }

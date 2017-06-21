@@ -660,4 +660,9 @@
     <string name="topads_showcase_keyword_list_title_5">Tambah Kata Kunci</string>
     <string name="topads_showcase_keyword_list_desc_5">Klik di sini untuk menambahkan promo kata kunci Anda.</string>
 
+    <!-- Add Product Alert Gold Merchant -->
+    <string name="add_product_title_alert_dialog_dollar">Saat ini Anda belum menjadi Gold Merchant!</string>
+    <string name="add_product_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+
 </resources>
