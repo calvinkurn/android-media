@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    private List<TextView> tvCategories;
+    private TextView tvCategory;
     private TextView tvWeight;
     private TextView tvMinOrder;
     private TextView tvInsurance;
@@ -64,9 +64,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void setViewListener() {
         setVisibility(GONE);
-        for (TextView textView : tvCategories) {
-            textView.setVisibility(GONE);
-        }
+        tvCategory.setVisibility(GONE);
         catalogView.setVisibility(GONE);
         returnableView.setVisibility(GONE);
         preOrderView.setVisibility(GONE);
@@ -74,8 +72,6 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        final List<ProductBreadcrumb> productDepartments = data.getBreadcrumb();
-
         if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                 && !data.getPreOrder().getPreorderStatus().equals("0")
                 && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -87,17 +83,13 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             preOrderView.setVisibility(VISIBLE);
         }
 
-        int length = data.getBreadcrumb().size() <= tvCategories.size() ?
-                data.getBreadcrumb().size() : tvCategories.size();
-        if (length < tvCategories.size()) {
-            for (TextView textView : tvCategories) {
-                textView.setVisibility(GONE);
-            }
-        }
-        for (int i = 0; i < length; i++) {
-            tvCategories.get(i).setText(MethodChecker.fromHtml(productDepartments.get(i).getDepartmentName()));
-            tvCategories.get(i).setOnClickListener(new CategoryClick(productDepartments.get(i)));
-            tvCategories.get(i).setVisibility(VISIBLE);
+        final List<ProductBreadcrumb> productDepartments = data.getBreadcrumb();
+        if (productDepartments.size()>0) {
+            ProductBreadcrumb productBreadcrumb = productDepartments.get(productDepartments.size()-1);
+
+            tvCategory.setText(MethodChecker.fromHtml(productBreadcrumb.getDepartmentName()));
+            tvCategory.setOnClickListener(new CategoryClick(productBreadcrumb));
+            tvCategory.setVisibility(VISIBLE);
         }
         if (data.getInfo().getProductCatalogId() != null
                 && data.getInfo().getProductCatalogName() != null
@@ -133,10 +125,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        tvCategories = new ArrayList<>();
-        tvCategories.add((TextView) findViewById(R.id.tv_category_1));
-        tvCategories.add((TextView) findViewById(R.id.tv_category_2));
-        tvCategories.add((TextView) findViewById(R.id.tv_category_3));
+        tvCategory = (TextView) findViewById(R.id.tv_category_1);
         tvWeight = (TextView) findViewById(R.id.tv_weight);
         tvMinOrder = (TextView) findViewById(R.id.tv_minimum);
         tvInsurance = (TextView) findViewById(R.id.tv_insurance);
