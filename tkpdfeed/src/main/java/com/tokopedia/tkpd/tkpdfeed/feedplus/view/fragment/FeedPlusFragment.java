@@ -129,7 +129,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.SHOP)
+                .setEndpoint(Endpoint.RANDOM)
                 .displayMode(DisplayMode.FEED)
                 .topAdsParams(generateTopAdsParams())
                 .build();
