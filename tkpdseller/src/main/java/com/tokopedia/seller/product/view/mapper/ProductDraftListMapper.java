@@ -7,7 +7,6 @@ import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 /**
@@ -34,6 +33,8 @@ public class ProductDraftListMapper {
                 } else {
                     primaryPhotoUrl = imagePath;
                 }
+            } else {
+                primaryPhotoUrl = imageUrl;
             }
         }
         String productName = domainModel.getProductName();
