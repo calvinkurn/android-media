@@ -17,12 +17,10 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -39,7 +37,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
 
     protected static final int START_PAGE = 1;
 
-    protected static final String KEY_STATUS = "KEY_STATUS";
     protected static final String KEY_PAGE = "KEY_PAGE";
     protected static final String KEY_TOTAL_ITEM = "KEY_TOTAL_ITEM";
 
@@ -48,7 +45,7 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
-    protected int status;
+//    protected int status;
     protected int page;
     protected int totalItem;
     protected boolean searchMode;
@@ -133,12 +130,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         searchMode = false;
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                searchAd(START_PAGE);
-            }
-        });
         adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewDefaultBinder());
@@ -270,7 +261,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState == null)
             return;
-        status = savedInstanceState.getInt(KEY_STATUS);
         page = savedInstanceState.getInt(KEY_PAGE, 0);
         totalItem = savedInstanceState.getInt(KEY_TOTAL_ITEM, Integer.MAX_VALUE);
     }
@@ -278,7 +268,6 @@ public abstract class TopAdsBaseListFragment<T, U> extends TopAdsDatePickerFragm
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_STATUS, status);
         outState.putInt(KEY_PAGE, page);
         outState.putInt(KEY_TOTAL_ITEM, totalItem);
     }
