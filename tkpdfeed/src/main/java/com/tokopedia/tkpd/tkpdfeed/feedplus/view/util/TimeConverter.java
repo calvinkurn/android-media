@@ -35,9 +35,14 @@ public class TimeConverter {
                 return "Saat ini";
             } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
                 return getDifference(currentTime, postDate) / SECONDS_IN_MINUTE + " menit yang lalu";
-            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24) {
+            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
+                    && calCurrentTime.get(Calendar.DAY_OF_MONTH) == calPostDate.get(Calendar.DAY_OF_MONTH)
+                    && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                    && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
                 return getDifference(currentTime, postDate) / MINUTES_IN_HOUR + " jam yang lalu";
-            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 48) {
+            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 48
+                    && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                    && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
                 return "Kemarin pukul " + sdfHour.format(postDate);
             } else if (getDifference(currentTime, postDate) / HOUR_IN_DAY > 1 &&
                     calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
