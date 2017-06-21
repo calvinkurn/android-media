@@ -116,7 +116,11 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
 
                 @Override
                 public void onFinish() {
-                    if (!SendCancelReasonActivity.this.isDestroyed()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        if (!SendCancelReasonActivity.this.isDestroyed()) {
+                            showCancellationLayout();
+                        }
+                    } else {
                         showCancellationLayout();
                     }
                 }
