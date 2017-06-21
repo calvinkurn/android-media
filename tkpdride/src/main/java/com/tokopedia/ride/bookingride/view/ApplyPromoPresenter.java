@@ -59,7 +59,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 if (isViewAttached()) {
                     getView().enableApplyButton();
                     getView().showApplyPromoLayout();
-                    if (fareEstimate.isSuccess() && fareEstimate.getType().equalsIgnoreCase("")) {
+                    if (fareEstimate.isSuccess()) {
                         getView().hideApplyPromoLoading();
                         getView().onSuccessApplyPromo(fareEstimate);
                     } else {
