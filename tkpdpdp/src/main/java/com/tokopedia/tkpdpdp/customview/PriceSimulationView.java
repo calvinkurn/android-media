@@ -28,6 +28,9 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
     boolean isInstallment = false;
     boolean isWholesale = false;
 
+    private static final String PERCENTAGE = "%";
+    private static final String CURRENCY = "Rp";
+
     public PriceSimulationView(Context context) {
         super(context);
     }
@@ -69,16 +72,15 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        String startFrom = getContext().getString(R.string.mulaiDari);
+        String titleInstallment = getContext().getString(R.string.title_installment_pdp);
+        String titleWholesale = getContext().getString(R.string.title_grosir);
         if (data.getInfo().getProductInstallments()
                 != null && data.getInfo().getProductInstallments().size() > 0) {
             installmentLayout.setVisibility(VISIBLE);
-
             String installmentMinPercentage = data.getInfo().getInstallmentMinPercentage();
-            String interest = getContext().getString(R.string.bunga);
             String installmentMinPrice = data.getInfo().getInstallmentMinPrice();
-            String installment = interest + " " + installmentMinPercentage + " " + startFrom
-                    + " " + installmentMinPrice;
+            String installment = titleInstallment.replace(PERCENTAGE,installmentMinPercentage)
+                    .replace(CURRENCY,installmentMinPrice);
             tvInstallment.setText(installment);
             isInstallment = true;
             installmentLayout.setOnClickListener(new OnClickListener() {
@@ -94,7 +96,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         if (data.getWholesalePrice() != null && data.getWholesalePrice().size() > 0) {
             wholesaleLayout.setVisibility(VISIBLE);
             String wholseSaleMinPrice = data.getInfo().getWholseSaleMinPrice();
-            String wholeSale = startFrom + wholseSaleMinPrice;
+            String wholeSale = titleWholesale.replace(CURRENCY,wholseSaleMinPrice);
             tvWholesale.setText(wholeSale);
             isWholesale = true;
             wholesaleLayout.setOnClickListener(new OnClickListener() {
