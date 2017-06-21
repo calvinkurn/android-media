@@ -25,16 +25,15 @@ import java.util.List;
  */
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    private List<TextView> tvCategories;
-    private TextView tvWeight;
+    private TextView tvCategory;
     private TextView tvMinOrder;
-    private TextView tvInsurance;
     private TextView tvCatalog;
     private TextView tvEtalase;
     private TextView tvCondition;
     private TextView tvReturnable;
     private TableRow catalogView;
     private TextView tvPreOrder;
+    private TextView tvSuccessRate;
     private TableRow returnableView;
     private TableRow preOrderView;
 
@@ -64,9 +63,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void setViewListener() {
         setVisibility(GONE);
-        for (TextView textView : tvCategories) {
-            textView.setVisibility(GONE);
-        }
+        tvCategory.setVisibility(GONE);
         catalogView.setVisibility(GONE);
         returnableView.setVisibility(GONE);
         preOrderView.setVisibility(GONE);
@@ -74,8 +71,6 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        final List<ProductBreadcrumb> productDepartments = data.getBreadcrumb();
-
         if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                 && !data.getPreOrder().getPreorderStatus().equals("0")
                 && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -87,17 +82,13 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             preOrderView.setVisibility(VISIBLE);
         }
 
-        int length = data.getBreadcrumb().size() <= tvCategories.size() ?
-                data.getBreadcrumb().size() : tvCategories.size();
-        if (length < tvCategories.size()) {
-            for (TextView textView : tvCategories) {
-                textView.setVisibility(GONE);
-            }
-        }
-        for (int i = 0; i < length; i++) {
-            tvCategories.get(i).setText(MethodChecker.fromHtml(productDepartments.get(i).getDepartmentName()));
-            tvCategories.get(i).setOnClickListener(new CategoryClick(productDepartments.get(i)));
-            tvCategories.get(i).setVisibility(VISIBLE);
+        final List<ProductBreadcrumb> productDepartments = data.getBreadcrumb();
+        if (productDepartments.size()>0) {
+            ProductBreadcrumb productBreadcrumb = productDepartments.get(productDepartments.size()-1);
+
+            tvCategory.setText(MethodChecker.fromHtml(productBreadcrumb.getDepartmentName()));
+            tvCategory.setOnClickListener(new CategoryClick(productBreadcrumb));
+            tvCategory.setVisibility(VISIBLE);
         }
         if (data.getInfo().getProductCatalogId() != null
                 && data.getInfo().getProductCatalogName() != null
@@ -115,17 +106,13 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             catalogView.setVisibility(GONE);
         }
         showReturnable(data.getInfo().getProductReturnable(), data.getShopInfo().getShopHasTerms());
-
-        tvWeight.setText(String.format("%s%s",
-                data.getInfo().getProductWeight(),
-                data.getInfo().getProductWeightUnit()));
         tvMinOrder.setText(data.getInfo().getProductMinOrder().replace(".",""));
-        tvInsurance.setText(data.getInfo().getProductInsurance());
         if (data.getInfo().getProductEtalase() != null) {
             tvEtalase.setText(MethodChecker.fromHtml(data.getInfo().getProductEtalase()));
             tvEtalase.setOnClickListener(new EtalaseClick(data));
         }
         tvCondition.setText(data.getInfo().getProductCondition());
+        tvSuccessRate.setText(data.getStatistic().getProductSuccessRate()+"%");
 
         setVisibility(VISIBLE);
     }
@@ -133,13 +120,8 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        tvCategories = new ArrayList<>();
-        tvCategories.add((TextView) findViewById(R.id.tv_category_1));
-        tvCategories.add((TextView) findViewById(R.id.tv_category_2));
-        tvCategories.add((TextView) findViewById(R.id.tv_category_3));
-        tvWeight = (TextView) findViewById(R.id.tv_weight);
+        tvCategory = (TextView) findViewById(R.id.tv_category_1);
         tvMinOrder = (TextView) findViewById(R.id.tv_minimum);
-        tvInsurance = (TextView) findViewById(R.id.tv_insurance);
         tvCatalog = (TextView) findViewById(R.id.tv_catalog);
         tvEtalase = (TextView) findViewById(R.id.tv_etalase);
         tvCondition = (TextView) findViewById(R.id.tv_condition);
@@ -148,6 +130,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvPreOrder = (TextView) findViewById(R.id.tv_preorder);
         returnableView = (TableRow) findViewById(R.id.tr_returnable);
         preOrderView = (TableRow) findViewById(R.id.tr_preorder);
+        tvSuccessRate = (TextView) findViewById(R.id.tv_success_rate);
     }
 
     private void showReturnable(int returnableState, int shopHasTerms) {
