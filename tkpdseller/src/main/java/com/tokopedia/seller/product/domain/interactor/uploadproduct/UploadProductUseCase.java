@@ -67,7 +67,9 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository, new ProductDraftUpdate(productDraftRepository, productId)))
+                .flatMap(new UploadProduct(productId, listener, generateHostRepository,
+                        uploadProductRepository, imageProductUploadRepository,
+                        new ProductDraftUpdate(productDraftRepository, productId)))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 

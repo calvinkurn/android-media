@@ -105,12 +105,14 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
             recyclerView.addItemDecoration(getItemDecoration());
         }
         recyclerView.addOnScrollListener(onScrollListener);
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                searchData(START_PAGE);
-            }
-        });
+        if (swipeToRefresh!= null) {
+            new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+                @Override
+                public void onRefresh(View view) {
+                    searchData(START_PAGE);
+                }
+            });
+        }
     }
 
     protected RecyclerView.ItemDecoration getItemDecoration(){

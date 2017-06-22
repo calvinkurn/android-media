@@ -2,10 +2,8 @@ package com.tokopedia.seller.product.view.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -60,6 +57,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
+    public static final int PRODUCT_ADD_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
@@ -69,9 +67,9 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
 
-    public static void start(Context context) {
-        Intent intent = new Intent(context, ProductAddActivity.class);
-        context.startActivity(intent);
+    public static void start(Activity activity) {
+        Intent intent = new Intent(activity, ProductAddActivity.class);
+        activity.startActivityForResult(intent, PRODUCT_ADD_REQUEST_CODE);
     }
 
     public static void start(Context context, ArrayList<String> imageUrls) {
@@ -101,28 +99,26 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     @Override
     public void onBackPressed() {
-        showExitDialog();
+        if (hasDataAdded()){
+            saveProducttoDraft();
+        }
+        super.onBackPressed();
     }
 
-    private void showExitDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setMessage(getString(R.string.dialog_cancel_add_product));
+    private boolean hasDataAdded() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment!= null && fragment instanceof ProductAddFragment ) {
+            return ((ProductAddFragment)fragment).hasDataAdded();
+        }
+        return false;
+    }
 
-        myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-
-        myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-
-            }
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+    protected void saveProducttoDraft() {
+        // save newly added product ToDraft
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment!= null && fragment instanceof ProductAddFragment ) {
+            ((ProductAddFragment)fragment).saveDraft(false);
+        }
     }
 
     protected void setupFragment() {

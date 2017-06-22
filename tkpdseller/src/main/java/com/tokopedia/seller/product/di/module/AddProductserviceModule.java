@@ -19,6 +19,7 @@ import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
+import com.tokopedia.seller.product.domain.interactor.productdraft.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenterImpl;
@@ -36,8 +37,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(UploadProductUseCase uploadProductUseCase){
-        return new AddProductServicePresenterImpl(uploadProductUseCase);
+    AddProductServicePresenter provideAddProductServicePresenter(UploadProductUseCase uploadProductUseCase, UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
+        return new AddProductServicePresenterImpl(uploadProductUseCase, updateUploadingDraftProductUseCase);
     }
 
     @AddProductServiceScope
@@ -60,8 +61,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource, UploadProductPictureInputMapper uploadProductPictureInputMapper){
-        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource, uploadProductPictureInputMapper);
+    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource imageProductUploadDataSource, UploadProductPictureInputMapper uploadProductPictureInputMapper){
+        return new ImageProductUploadRepositoryImpl(imageProductUploadDataSource, uploadProductPictureInputMapper);
     }
 
     @AddProductServiceScope
