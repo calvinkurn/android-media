@@ -8,7 +8,10 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by alvarisi on 4/11/17.
@@ -34,6 +37,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private float cashback;
     private Rating rating;
     private String helpUrl;
+    private String cashbackDisplayFormat;
+    private String discountDisplayFormat;
 
     public RideHistoryViewModel() {
     }
@@ -61,6 +66,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         cashback = in.readFloat();
         rating = in.readParcelable(Rating.class.getClassLoader());
         helpUrl = in.readString();
+        cashbackDisplayFormat = in.readString();
+        discountDisplayFormat = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -248,6 +255,22 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.helpUrl = helpUrl;
     }
 
+    public String getCashbackDisplayFormat() {
+        return cashbackDisplayFormat;
+    }
+
+    public void setCashbackDisplayFormat(String cashbackDisplayFormat) {
+        this.cashbackDisplayFormat = cashbackDisplayFormat;
+    }
+
+    public String getDiscountDisplayFormat() {
+        return discountDisplayFormat;
+    }
+
+    public void setDiscountDisplayFormat(String discountDisplayFormat) {
+        this.discountDisplayFormat = discountDisplayFormat;
+    }
+
     public static String transformToDisplayStatus(String status) {
         switch (status) {
             case "arriving":
@@ -322,5 +345,35 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeFloat(cashback);
         parcel.writeParcelable(rating, i);
         parcel.writeString(helpUrl);
+        parcel.writeString(cashbackDisplayFormat);
+        parcel.writeString(discountDisplayFormat);
+    }
+
+    public static String formatStringToPriceString(String numberString, String currency) {
+        try {
+            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
+            format.setCurrency(Currency.getInstance("IDR"));
+            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
+                format.setMaximumFractionDigits(0);
+            }
+            String result = format.format(Float.parseFloat(numberString));
+            return result;
+        } catch (Exception ex) {
+            return currency + " " + numberString;
+        }
+    }
+
+    public static String formatNumberToPriceString(float number, String currency) {
+        try {
+            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
+            format.setCurrency(Currency.getInstance("IDR"));
+            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
+                format.setMaximumFractionDigits(0);
+            }
+            String result = format.format(number);
+            return result;
+        } catch (Exception ex) {
+            return currency + " " + number;
+        }
     }
 }

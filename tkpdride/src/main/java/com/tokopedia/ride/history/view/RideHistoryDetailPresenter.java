@@ -215,14 +215,22 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                 rideHistory.getVehicle().getLicensePlate())
         );
         viewModel.setStatus(rideHistory.getStatus());
-        viewModel.setFare(String.format("%s %s",
-                rideHistory.getPayment().getCurrency(),
-                rideHistory.getPayment().getTotalAmount())
-        );
-        viewModel.setTotalFare(String.format("%s %s",
-                rideHistory.getPayment().getCurrency(),
-                rideHistory.getPayment().getTotalAmount())
-        );
+//        viewModel.setFare(String.format("%s %s",
+//                rideHistory.getPayment().getCurrency(),
+//                rideHistory.getPayment().getTotalAmount())
+//        );
+//        viewModel.setTotalFare(String.format("%s %s",
+//                rideHistory.getPayment().getCurrency(),
+//                rideHistory.getPayment().getTotalAmount())
+//        );
+
+        viewModel.setFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setCashback(rideHistory.getCashbackAmount());
+        viewModel.setDiscount(rideHistory.getDiscountAmount());
+        viewModel.setCashbackDisplayFormat(RideHistoryViewModel.formatNumberToPriceString(rideHistory.getCashbackAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setDiscountDisplayFormat(RideHistoryViewModel.formatNumberToPriceString(rideHistory.getDiscountAmount(), rideHistory.getPayment().getCurrency()));
+
         viewModel.setRequestTime(rideHistory.getRequestTime());
         viewModel.setRequestId(rideHistory.getRequestId());
         viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());

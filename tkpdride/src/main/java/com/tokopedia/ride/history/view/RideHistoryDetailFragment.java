@@ -252,7 +252,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
                         @Override
                         protected void setResource(Bitmap resource) {
                             RoundedBitmapDrawable roundedBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
                             roundedBitmapDrawable.setCircular(true);
                             driverPictTextView.setImageDrawable(roundedBitmapDrawable);
                         }

@@ -42,7 +42,7 @@ public class RideHistoryEntity {
     @SerializedName("discount_amount")
     @Expose
     float discountAmount;
-    @SerializedName("cashback_amount")
+    @SerializedName("cashback_top_cash_amount")
     @Expose
     float cashbackAmount;
     @SerializedName("create_time")
