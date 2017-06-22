@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.exception;
+package com.tokopedia.seller.topads.dashboard.exception;
 
 /**
  * @author normansyahputa on 2/13/17.

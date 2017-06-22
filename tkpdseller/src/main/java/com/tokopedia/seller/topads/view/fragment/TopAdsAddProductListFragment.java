@@ -32,7 +32,7 @@ import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearch
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.exception.AddProductListException;
+import com.tokopedia.seller.topads.dashboard.exception.AddProductListException;
 import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.dashboard.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
