@@ -1,11 +1,11 @@
-package com.tokopedia.seller.util;
+package com.tokopedia.design.text.watcher;
 
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 
 /**
  * Created by Nathaniel on 3/3/2017.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.widget;
+package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.seller.product.utils.ConverterUtils;
+import com.tokopedia.design.utils.ConverterUtils;
 
 /**
  * Created by nathan on 04/05/17.

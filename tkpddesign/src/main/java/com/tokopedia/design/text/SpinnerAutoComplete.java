@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.widget;
+package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;

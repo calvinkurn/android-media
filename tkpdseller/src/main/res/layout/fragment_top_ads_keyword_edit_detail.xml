@@ -17,7 +17,7 @@
             android:padding="@dimen/top_ads_margin_layout"
             android:orientation="vertical">
 
-            <com.tokopedia.seller.product.view.widget.SpinnerTextView
+            <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/spinner_text_view_top_ads_keyword_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

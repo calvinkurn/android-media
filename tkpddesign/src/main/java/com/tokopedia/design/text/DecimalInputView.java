@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.widget;
+package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,10 +10,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.seller.util.NumberTextWatcher;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 
 import java.text.DecimalFormat;
 

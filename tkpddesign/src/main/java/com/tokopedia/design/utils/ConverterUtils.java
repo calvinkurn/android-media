@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.utils;
+package com.tokopedia.design.utils;
 
 import java.util.ArrayList;
 import java.util.List;

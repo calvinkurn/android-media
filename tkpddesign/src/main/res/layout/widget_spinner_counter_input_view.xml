@@ -5,12 +5,12 @@
     android:gravity="top"
     android:orientation="horizontal">
 
-    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+    <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view"
         android:layout_width="@dimen/spinner_decimal_spinner_width"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.seller.product.view.widget.CounterInputView
+    <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -6,7 +6,7 @@
     android:gravity="top"
     android:orientation="horizontal">
 
-    <com.tokopedia.seller.product.view.widget.DecimalInputView
+    <com.tokopedia.design.text.DecimalInputView
         android:id="@+id/decimal_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

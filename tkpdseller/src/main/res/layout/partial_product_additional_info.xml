@@ -47,7 +47,7 @@
         app:eo_theme="@style/ExpandableStyle"
         app:eo_title="@string/product_label_preorder">
 
-        <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        <com.tokopedia.design.text.SpinnerCounterInputView
             android:id="@+id/spinner_counter_input_view_pre_order"
             style="@style/LabelLayoutInnerExpandable"
             app:spinner_decimal_entries="@array/product_pre_order_entries"

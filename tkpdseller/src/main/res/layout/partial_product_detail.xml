@@ -18,7 +18,7 @@
 
     <LinearLayout style="@style/LabelLayoutWithoutBorder">
 
-        <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        <com.tokopedia.design.text.SpinnerCounterInputView
             android:id="@+id/spinner_counter_input_view_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         <include layout="@layout/partial_product_wholesale" />
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
-    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+    <com.tokopedia.design.text.SpinnerCounterInputView
         android:id="@+id/spinner_counter_input_view_weight"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
@@ -60,7 +60,7 @@
         app:spinner_decimal_show_counter_button="false"
         app:spinner_decimal_values="@array/product_weight_values" />
 
-    <com.tokopedia.seller.product.view.widget.CounterInputView
+    <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view_minimum_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
@@ -68,7 +68,7 @@
         app:counter_min="@integer/product_default_counter_minimum_order_text"
         app:counter_text="@string/product_default_counter_minimum_order_text" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+    <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_stock_status"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_stock_status_entries"
@@ -84,7 +84,7 @@
         app:eo_theme="@style/ExpandableStyle"
         app:eo_title="@string/product_label_manage_stock">
 
-        <com.tokopedia.seller.product.view.widget.CounterInputView
+        <com.tokopedia.design.text.CounterInputView
             android:id="@+id/counter_input_view_stock_total"
             style="@style/LabelLayoutInnerExpandable"
             app:counter_hint="@string/product_label_stock_total" />
@@ -101,7 +101,7 @@
         app:label_show_arrow="true"
         app:title="@string/product_label_shop_window" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+    <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_condition"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
@@ -109,14 +109,14 @@
         app:spinner_hint="@string/product_label_condition"
         app:spinner_values="@array/product_condition_values" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+    <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_insurance"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_insurance_entries"
         app:spinner_hint="@string/product_label_insurance"
         app:spinner_values="@array/product_insurance_values" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+    <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_free_returns"
         style="@style/LabelLayoutWithoutBorder"
         android:visibility="gone"

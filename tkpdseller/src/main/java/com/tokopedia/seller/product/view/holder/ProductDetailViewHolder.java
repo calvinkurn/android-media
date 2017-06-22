@@ -36,12 +36,12 @@ import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.adapter.WholesaleAdapter;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.widget.CounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.design.text.CounterInputView;
+import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
-import com.tokopedia.seller.util.NumberTextWatcher;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

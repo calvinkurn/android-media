@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.widget;
+package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.design.R;
 
 /**
  * Created by Hendry on 3/16/2017.
