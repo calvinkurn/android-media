@@ -104,8 +104,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
-                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);
