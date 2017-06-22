@@ -50,6 +50,10 @@ public interface FeedPlusDetail {
         int getColor(int resId);
 
         Resources getResources();
+
+        void onEmptyFeedDetail();
+
+        void onBackPressed();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

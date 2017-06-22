@@ -3,10 +3,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
@@ -35,6 +38,11 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(EmptyModel emptyModel) {
+        return EmptyFeedDetailViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -43,9 +51,9 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new FeedDetailViewHolder(view, viewListener);
         else if (type == FeedDetailHeaderViewHolder.LAYOUT)
             viewHolder = new FeedDetailHeaderViewHolder(view, viewListener);
-        else
-            viewHolder = super.createViewHolder(view, type);
-
+        else if (type == EmptyFeedDetailViewHolder.LAYOUT)
+            viewHolder = new EmptyFeedDetailViewHolder(view, viewListener);
+        else viewHolder = super.createViewHolder(view, type);
         return viewHolder;
     }
 }

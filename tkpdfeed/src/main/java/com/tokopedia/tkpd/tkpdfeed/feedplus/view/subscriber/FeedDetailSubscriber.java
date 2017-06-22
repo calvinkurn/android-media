@@ -37,16 +37,27 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+        if (hasFeed(dataFeedDetailDomains)) {
+            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+            viewListener.onSuccessGetFeedDetail(
+                    createHeaderViewModel(
+                            dataFeedDetailDomain.getCreate_time(),
+                            dataFeedDetailDomain.getSource().getShop(),
+                            dataFeedDetailDomain.getContent().getStatus_activity()),
+                    convertToViewModel(dataFeedDetailDomain),
+                    checkHasNextPage(dataFeedDetailDomains));
+        } else {
+            viewListener.onEmptyFeedDetail();
+        }
 
-        viewListener.onSuccessGetFeedDetail(
-                createHeaderViewModel(
-                        dataFeedDetailDomain.getCreate_time(),
-                        dataFeedDetailDomain.getSource().getShop(),
-                        dataFeedDetailDomain.getContent().getStatus_activity()),
-                convertToViewModel(dataFeedDetailDomain),
-                checkHasNextPage(dataFeedDetailDomains));
+    }
 
+    private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {
+        return !dataFeedDetailDomain.isEmpty()
+                && dataFeedDetailDomain.get(0) != null
+                && dataFeedDetailDomain.get(0).getContent() != null
+                && dataFeedDetailDomain.get(0).getContent().getProducts() != null
+                && !dataFeedDetailDomain.get(0).getContent().getProducts().isEmpty();
     }
 
     private boolean checkHasNextPage(List<DataFeedDetailDomain> dataFeedDetailDomains) {
@@ -57,9 +68,10 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
         ArrayList<Visitable> listDetail = new ArrayList<>();
 
-        for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
-            listDetail.add(createProductViewModel(productDomain));
-        }
+        if (dataFeedDetailDomain.getContent() != null && dataFeedDetailDomain.getContent().getProducts() != null)
+            for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
+                listDetail.add(createProductViewModel(productDomain));
+            }
         return listDetail;
     }
 

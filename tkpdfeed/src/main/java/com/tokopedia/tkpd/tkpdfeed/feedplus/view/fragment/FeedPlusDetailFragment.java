@@ -52,9 +52,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     RecyclerView recyclerView;
     TextView shareButton;
     TextView seeShopButon;
+    View footer;
 
     @Inject
     FeedPlusDetailPresenter presenter;
+
 
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
@@ -123,6 +125,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerView = (RecyclerView) parentView.findViewById(R.id.detail_list);
         shareButton = (TextView) parentView.findViewById(R.id.share_button);
         seeShopButon = (TextView) parentView.findViewById(R.id.see_shop);
+        footer = parentView.findViewById(R.id.footer);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -186,7 +189,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
-
         }
     }
 
@@ -209,42 +211,46 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEmptyFeedDetail() {
+        finishLoading();
+        adapter.showEmpty();
+        footer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        getActivity().onBackPressed();
+    }
+
+    @Override
     public void onSuccessGetFeedDetail(
             final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
         finishLoading();
 
-        if (listDetail.size() == 0) {
-//            adapter.showEmpty();
-            getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra("message", getString(R.string.feed_deleted)));
-            getActivity().finish();
-        } else {
-            if (pagingHandler.getPage() == 1) {
-                adapter.add(header);
-            }
-
-            adapter.addList(listDetail);
-
-            shareButton.setOnClickListener(onShareClicked(
-                    header.getShareLinkURL(),
-                    header.getShopName(),
-                    header.getShopAvatar(),
-                    header.getShareLinkDescription()));
-
-            seeShopButon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onGoToShopDetail(header.getShopId());
-                }
-            });
-
-            pagingHandler.setHasNext(hasNextPage);
-
-            adapter.notifyDataSetChanged();
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
         }
 
+        adapter.addList(listDetail);
 
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopId());
+            }
+        });
+
+        pagingHandler.setHasNext(hasNextPage);
+
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -29,5 +29,6 @@
     <string name="feed_add_more_1">Segera favoritkan toko yang Anda sukai</string>
     <string name="find_shop">Cari Toko</string>
     <string name="see_all_promo">Lihat\nSemua Promo</string>
+    <string name="return_to_feed">Kembali ke Feed</string>
 
 </resources>
