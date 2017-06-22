@@ -25,7 +25,7 @@ import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
@@ -37,7 +37,7 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BaseDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 

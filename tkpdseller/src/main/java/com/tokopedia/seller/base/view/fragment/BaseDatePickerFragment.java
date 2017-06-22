@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.seller.base.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
+public abstract class BaseDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
 
     protected Date startDate;
