@@ -1,15 +1,11 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailShopUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetailShopUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
-
-import rx.Subscriber;
 
 /**
  * Created by Nisie on 5/9/16.

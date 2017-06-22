@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 
 import java.util.List;

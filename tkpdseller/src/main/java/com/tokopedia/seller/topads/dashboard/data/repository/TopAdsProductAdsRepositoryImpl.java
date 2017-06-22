@@ -2,8 +2,8 @@ package com.tokopedia.seller.topads.dashboard.data.repository;
 
 import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.TopAdsProductAdsDataSource;
-import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
 
 import java.util.List;

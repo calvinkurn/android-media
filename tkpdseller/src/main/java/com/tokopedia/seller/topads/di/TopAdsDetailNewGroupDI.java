@@ -19,14 +19,14 @@ import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProduct
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateNewGroupUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenterImpl;
 

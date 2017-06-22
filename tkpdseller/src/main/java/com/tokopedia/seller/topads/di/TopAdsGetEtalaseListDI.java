@@ -8,8 +8,8 @@ import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsEtalaseListRe
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsShopService;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
 import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsEtalaseCacheDataSource;
-import com.tokopedia.seller.topads.domain.TopAdsEtalaseListRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsEtalaseListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsEtalaseListRepository;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEtalaseListUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenterImpl;
 

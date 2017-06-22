@@ -15,7 +15,7 @@ import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponseCre
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 
 import java.util.HashMap;
 import java.util.List;

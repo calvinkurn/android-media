@@ -14,11 +14,11 @@ import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProduct
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenterImpl;
 

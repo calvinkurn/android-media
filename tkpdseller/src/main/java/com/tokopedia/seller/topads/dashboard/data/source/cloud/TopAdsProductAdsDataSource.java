@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdAction;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdAction;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
 

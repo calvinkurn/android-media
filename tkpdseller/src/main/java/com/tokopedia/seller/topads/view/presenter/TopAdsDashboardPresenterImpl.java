@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
-import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;
 import com.tokopedia.seller.topads.dashboard.data.model.request.ShopRequest;

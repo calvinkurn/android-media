@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.dashboard.data.mapper;
 
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 

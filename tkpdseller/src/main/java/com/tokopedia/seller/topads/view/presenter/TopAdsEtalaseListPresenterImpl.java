@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsEtalaseListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEtalaseListUseCase;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 

@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
-import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.domain.model.ProductListDomain;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
+import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.Map;
 

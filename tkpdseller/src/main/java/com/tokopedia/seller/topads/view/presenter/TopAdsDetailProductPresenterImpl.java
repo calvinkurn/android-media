@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdAction;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;

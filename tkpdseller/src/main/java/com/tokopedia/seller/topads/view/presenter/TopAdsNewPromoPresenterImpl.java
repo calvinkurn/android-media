@@ -2,9 +2,9 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
-import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
 

@@ -1,10 +1,10 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailProductUseCase;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;

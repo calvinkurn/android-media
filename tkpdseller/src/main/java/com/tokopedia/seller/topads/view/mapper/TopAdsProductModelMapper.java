@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.view.mapper;
 
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 /**

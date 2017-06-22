@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.dashboard.data.mapper;
 
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponseCreateGroup;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 
 import javax.inject.Inject;
 

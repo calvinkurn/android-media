@@ -1,7 +1,5 @@
 package com.tokopedia.seller.topads.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 
 /**

@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.dashboard.data.mapper;
 
 import com.tokopedia.seller.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 
 import java.util.List;

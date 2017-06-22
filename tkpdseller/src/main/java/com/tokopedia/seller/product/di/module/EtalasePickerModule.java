@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsEtalaseFactory;
 import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsEtalaseListRepositoryImpl;
-import com.tokopedia.seller.topads.domain.TopAdsEtalaseListRepository;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsEtalaseListRepository;
 
 import dagger.Module;
 import dagger.Provides;

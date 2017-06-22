@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.topads.dashboard.data.model.data.Product;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
-import com.tokopedia.seller.topads.domain.model.ProductListDomain;
+import com.tokopedia.seller.topads.dashboard.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.dashboard.domain.model.ProductListDomain;
 
 import java.util.ArrayList;
 import java.util.List;

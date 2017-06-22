@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.seller.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
 
 import java.util.ArrayList;
