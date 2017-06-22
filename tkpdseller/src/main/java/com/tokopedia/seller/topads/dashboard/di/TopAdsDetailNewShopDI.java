@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.di;
+package com.tokopedia.seller.topads.dashboard.di;
 
 import android.content.Context;
 
@@ -15,32 +15,34 @@ import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAds
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.dashboard.domain.TopAdsShopAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetailShopUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.
  */
 
-public class TopAdsDetailEditShopDI {
+public class TopAdsDetailNewShopDI {
 
-    public static TopAdsDetailEditShopPresenter createPresenter(Context context) {
+    public static TopAdsDetailNewShopPresenter createPresenter(Context context) {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
         TopAdsDetailShopMapper mapper = new TopAdsDetailShopMapper();
+        TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, mapper);
         SearchProductEOFMapper searchProductEOFMapper = new SearchProductEOFMapper();
         CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource = new CloudTopAdsSearchProductDataSource(context, topAdsManagementService,searchProductEOFMapper);
         TopAdsSearchProductRepository topAdsSearchProductRepository = new TopAdsSearchProductRepositoryImpl(context, cloudTopAdsSearchProductDataSource);
-        TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, mapper);
-        TopAdsShopAdsRepository topAdsGroupAdsRepository = new TopAdsShopAdsRepositoryImpl(topAdsShopAdFactory);
-        TopAdsGetDetailShopUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
+        TopAdsShopAdsRepository topAdsShopAdsRepository = new TopAdsShopAdsRepositoryImpl(topAdsShopAdFactory);
+        TopAdsGetDetailShopUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailShopUseCase(threadExecutor, postExecutionThread, topAdsShopAdsRepository);
+        TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailShopUseCase(threadExecutor, postExecutionThread, topAdsShopAdsRepository);
+        TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase = new TopAdsCreateDetailShopUseCase(threadExecutor, postExecutionThread, topAdsShopAdsRepository);
         TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(threadExecutor,postExecutionThread,topAdsSearchProductRepository);
-        return new TopAdsDetailEditShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase, topAdsProductListUseCase);
+        return new TopAdsDetailNewShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase, topAdsCreateDetailShopUseCase, topAdsProductListUseCase);
     }
 }

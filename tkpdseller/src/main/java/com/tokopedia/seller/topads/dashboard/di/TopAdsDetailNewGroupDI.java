@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.di;
+package com.tokopedia.seller.topads.dashboard.di;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;

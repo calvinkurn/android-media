@@ -8,7 +8,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailNewProductDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsDetailNewProductDI;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;

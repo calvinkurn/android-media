@@ -8,7 +8,7 @@ import android.view.View;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsGroupeditPromoDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsGroupeditPromoDI;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
 

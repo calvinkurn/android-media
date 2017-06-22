@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.di;
+package com.tokopedia.seller.topads.dashboard.di;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;

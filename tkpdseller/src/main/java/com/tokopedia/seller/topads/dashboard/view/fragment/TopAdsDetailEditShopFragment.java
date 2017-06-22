@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;

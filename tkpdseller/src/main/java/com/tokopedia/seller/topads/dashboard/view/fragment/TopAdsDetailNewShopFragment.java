@@ -8,7 +8,7 @@ import android.view.View;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsDetailNewShopDI;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailShopViewModel;

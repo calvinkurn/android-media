@@ -11,7 +11,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
-import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.dashboard.view.model.RadioButtonItem;

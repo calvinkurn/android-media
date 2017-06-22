@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.di;
+package com.tokopedia.seller.topads.dashboard.di;
 
 import android.content.Context;
 

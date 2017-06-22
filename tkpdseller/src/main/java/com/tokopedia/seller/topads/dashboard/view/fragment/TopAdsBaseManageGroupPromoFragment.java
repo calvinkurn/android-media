@@ -19,7 +19,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsManageGroupPromoPresenter;

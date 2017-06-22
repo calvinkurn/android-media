@@ -9,7 +9,7 @@ import android.view.View;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailNewGroupDI;
+import com.tokopedia.seller.topads.dashboard.di.TopAdsDetailNewGroupDI;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
