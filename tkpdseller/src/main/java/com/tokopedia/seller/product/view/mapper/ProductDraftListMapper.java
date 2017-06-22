@@ -9,6 +9,8 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
+import java.util.List;
+
 /**
  * Created by User on 6/21/2017.
  */
@@ -16,6 +18,7 @@ import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 public class ProductDraftListMapper {
 
     public static final int MAX_COMPLETION_COUNT = 5;
+    public static final int MIN_COMPLETION_PERCENT = 5;
     public static final int MAX_COMPLETION_PERCENT = 95;
 
     public static ProductDraftViewModel mapDomainToView(UploadProductInputDomainModel domainModel) {
@@ -23,18 +26,23 @@ public class ProductDraftListMapper {
         String primaryPhotoUrl = null;
         ProductPhotoListDomainModel productPhotos = domainModel.getProductPhotos();
         if (productPhotos!= null && productPhotos.getProductDefaultPicture() >= 0){
-            ImageProductInputDomainModel imageProductInputDomainModel = domainModel.getProductPhotos().getPhotos().get(productPhotos.getProductDefaultPicture());
-            String imageUrl = imageProductInputDomainModel.getUrl();
-            String imagePath = imageProductInputDomainModel.getImagePath();
+            List<ImageProductInputDomainModel> imageProductInputDomainModelList = productPhotos.getPhotos();
+            if (imageProductInputDomainModelList!= null && imageProductInputDomainModelList.size() > 0) {
+                ImageProductInputDomainModel imageProductInputDomainModel = imageProductInputDomainModelList.get(productPhotos.getProductDefaultPicture());
+                String imageUrl = imageProductInputDomainModel.getUrl();
+                String imagePath = imageProductInputDomainModel.getImagePath();
 
-            if(StringUtils.isBlank(imageUrl)){
-                if (StringUtils.isBlank(imagePath)) {
-                    primaryPhotoUrl = null;
+                if(StringUtils.isBlank(imageUrl)){
+                    if (StringUtils.isBlank(imagePath)) {
+                        primaryPhotoUrl = null;
+                    } else {
+                        primaryPhotoUrl = imagePath;
+                    }
                 } else {
-                    primaryPhotoUrl = imagePath;
+                    primaryPhotoUrl = imageUrl;
                 }
             } else {
-                primaryPhotoUrl = imageUrl;
+                primaryPhotoUrl = null;
             }
         }
         String productName = domainModel.getProductName();
@@ -64,6 +72,9 @@ public class ProductDraftListMapper {
             completionPercent = MAX_COMPLETION_PERCENT;
         } else {
             completionPercent = completionCount * 100 / MAX_COMPLETION_COUNT;
+        }
+        if (completionPercent == 0) {
+            completionPercent = MIN_COMPLETION_PERCENT;
         }
 
         return new ProductDraftViewModel(

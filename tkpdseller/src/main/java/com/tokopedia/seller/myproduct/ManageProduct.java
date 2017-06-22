@@ -25,9 +25,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AbsListView.OnScrollListener;
@@ -84,7 +83,6 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.logout.di.component.DaggerTkpdSellerLogoutComponent;
 import com.tokopedia.seller.logout.di.component.TkpdSellerLogoutComponent;
 import com.tokopedia.seller.logout.di.module.TkpdSellerLogoutModule;
@@ -96,15 +94,11 @@ import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
-import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
-import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.view.listener.ProductDraftListCountView;
-import com.tokopedia.seller.product.view.listener.ProductDraftListView;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenter;
 
 import org.json.JSONException;
@@ -191,7 +185,6 @@ public class ManageProduct extends TkpdActivity implements
     private AlertDialog.Builder SortMenu;
     private AlertDialog SortDialog;
     private RefreshHandler Refresh;
-    private ArrayAdapter<CharSequence> adapterCondition;
     private ArrayAdapter<CharSequence> adapterInsurance;
     private ArrayAdapter<String> CategoryAdapter;
     private ArrayAdapter<String> EtalaseAdapter;
@@ -223,7 +216,6 @@ public class ManageProduct extends TkpdActivity implements
     private TkpdProgressDialog progress;
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
-    private SimpleSpinnerAdapter simpleSpinnerAdapter;
     // NEW NETWORK
     private NetworkInteractor networkInteractorImpl;
     private Gson gson;
@@ -574,24 +566,22 @@ public class ManageProduct extends TkpdActivity implements
         //[BUGFIX] AN-1430 Suggestion: Product Feed: Plus (+) icon should be
         // located on top right of the Product Settings page.
         return new AbsListViewScrollDetector() {
+            ViewGroup fabParent;
             @Override
             public void onScrollUp() {
                 if (fabAddProduct.isShown()) {
-                    Animation animationFadeOut = AnimationUtils.loadAnimation(ManageProduct.this, R.anim.fade_out_fab);
-                    fabAddProduct.startAnimation(animationFadeOut);
+                    fabAddProduct.hide();
                 }
-                fabAddProduct.setVisibility(View.GONE);
-                //fabAddProduct.setVisibility(View.GONE);
             }
 
             @Override
             public void onScrollDown() {
-                if (!fabAddProduct.isShown()) {
-                    Animation animationFadeIn = AnimationUtils.loadAnimation(ManageProduct.this, R.anim.fade_in_fab);
-                    fabAddProduct.startAnimation(animationFadeIn);
+                if (fabParent == null) {
+                    fabParent = (ViewGroup)fabAddProduct.getParent();
                 }
-                fabAddProduct.setVisibility(View.VISIBLE);
-                //fabAddProduct.setVisibility(View.VISIBLE);
+                if (!fabAddProduct.isShown() || fabAddProduct.getTop() >= fabParent.getMeasuredHeight()) {
+                    fabAddProduct.show();
+                }
             }
 
             @Override

@@ -10,6 +10,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -24,9 +25,9 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
 
     @Override
-    public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel) {
+    public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getId());
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading);
     }
 
     @Override
@@ -51,7 +52,12 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                         String data = productDraftDataBase.getData();
                         return Observable.just(data).map(new ProductDraftMapper(id)).toBlocking().first();
                     }
-                }).toList();
+                }).toSortedList(new Func2<UploadProductInputDomainModel, UploadProductInputDomainModel, Integer>() {
+                    @Override
+                    public Integer call(UploadProductInputDomainModel uploadProductInputDomainModel, UploadProductInputDomainModel uploadProductInputDomainModel2) {
+                        return (int) (uploadProductInputDomainModel2.getId() - uploadProductInputDomainModel.getId());
+                    }
+                });
     }
 
     @Override
@@ -65,13 +71,18 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
-    public void deleteDraft(long productId) {
-        productDraftDataSource.deleteDraft(productId);
+    public Observable<Boolean> deleteDraft(long productId) {
+        return productDraftDataSource.deleteDraft(productId);
     }
 
     @Override
-    public void updateDraft(long productId, UploadProductInputDomainModel domainModel) {
+    public Observable<Boolean> updateDraft(long productId, UploadProductInputDomainModel domainModel) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        productDraftDataSource.updateDraft(productId, productDraft);
+        return productDraftDataSource.updateDraft(productId, productDraft);
+    }
+
+    @Override
+    public Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading) {
+        return productDraftDataSource.updateUploadingStatusDraft(productId, isUploading);
     }
 }

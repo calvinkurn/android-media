@@ -91,14 +91,14 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraftAndAdd(UploadProductInputViewModel viewModel) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
+    public void saveDraftAndAdd(UploadProductInputViewModel viewModel, boolean isUploading) {
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
     }
 
-    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel) {
+    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
         UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        return SaveDraftProductUseCase.generateUploadProductParam(domainModel);
+        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, isUploading);
     }
 
     @Override
@@ -273,9 +273,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraft(UploadProductInputViewModel viewModel) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
+    public void saveDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
+        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber(isUploading));
     }
 
     @Override
@@ -348,6 +348,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     private class SaveDraftSubscriber extends Subscriber<Long> {
+
+        boolean isUploading;
+        SaveDraftSubscriber(boolean isUploading) {
+            this.isUploading = isUploading;
+        }
         @Override
         public void onCompleted() {
 
@@ -364,7 +369,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         @Override
         public void onNext(Long productId) {
             checkViewAttached();
-            getView().onSuccessStoreProductToDraft(productId);
+            getView().onSuccessStoreProductToDraft(productId, isUploading);
         }
     }
 

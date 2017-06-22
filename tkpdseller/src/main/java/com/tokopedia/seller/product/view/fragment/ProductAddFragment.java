@@ -15,6 +15,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -175,32 +177,50 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveDraft();
+                if (isDataValid()) {
+                    saveDraft(true);
+                }
             }
         });
         view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveAndAddDraft();
+                if (isDataValid()) {
+                    saveAndAddDraft(true);
+                }
             }
         });
         return view;
     }
 
-    private void saveAndAddDraft() {
-        if (isDataValid()) {
-            UploadProductInputViewModel viewModel = collectDataFromView();
-            sendAnalyticsAddMore(viewModel);
-            presenter.saveDraftAndAdd(viewModel);
-        }
+    private void saveAndAddDraft(boolean isUploading) {
+        UploadProductInputViewModel viewModel = collectDataFromView();
+        sendAnalyticsAddMore(viewModel);
+        presenter.saveDraftAndAdd(viewModel, isUploading);
     }
 
-    private void saveDraft() {
-        if (isDataValid()) {
-            UploadProductInputViewModel viewModel = collectDataFromView();
-            sendAnalyticsAdd(viewModel);
-            presenter.saveDraft(viewModel);
+    public boolean hasDataAdded(){
+        // check if this fragment has any data
+        // return true if there is any data added
+        ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+        List<ImageSelectModel> imageSelectModelList = imagesSelectView.getImageList();
+        if (imageSelectModelList!= null && imageSelectModelList.size() > 0) {
+            return true;
         }
+        if (!TextUtils.isEmpty(productInfoViewHolder.getName() )){
+            return true;
+        }
+        List<String> videoIdList = productAdditionalInfoViewHolder.getVideoIdList();
+        if (videoIdList!= null && videoIdList.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void saveDraft(boolean isUploading) {
+        UploadProductInputViewModel viewModel = collectDataFromView();
+        sendAnalyticsAdd(viewModel);
+        presenter.saveDraft(viewModel, isUploading);
     }
 
     private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
@@ -331,16 +351,24 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onErrorLoadScoringProduct(String errorMessage) {
-
     }
 
+
     @Override
-    public void onSuccessStoreProductToDraft(long productId) {
-        CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
-        if (productAdditionalInfoViewHolder.isShare()) {
-            listener.startUploadProductWithShare(productId);
+    public void onSuccessStoreProductToDraft(long productId, boolean isUploading) {
+        if (isUploading) {
+            CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
+            if (productAdditionalInfoViewHolder.isShare()) {
+                listener.startUploadProductWithShare(productId);
+            } else {
+                listener.startUploadProduct(productId);
+            }
         } else {
-            listener.startUploadProduct(productId);
+            CommonUtils.UniversalToast(getActivity(),getString(R.string.product_draft_product_has_been_saved_as_draft));
+            //setResult To OK
+            // TODO hendry set intent to differentiate the result OK
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }
     }
 
@@ -349,7 +377,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                saveDraft();
+                if (isDataValid()) {
+                    saveDraft(true);
+                }
             }
         }).showRetrySnackbar();
     }
@@ -359,7 +389,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                saveAndAddDraft();
+                if (isDataValid()) {
+                    saveAndAddDraft(true);
+                }
             }
         }).showRetrySnackbar();
     }

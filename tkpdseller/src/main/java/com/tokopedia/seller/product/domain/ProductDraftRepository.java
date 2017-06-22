@@ -11,17 +11,19 @@ import rx.Observable;
  */
 
 public interface ProductDraftRepository {
-    Observable<Long> saveDraft(UploadProductInputDomainModel domainModel);
+    Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading);
     Observable<UploadProductInputDomainModel> getDraft(long productId);
 
     Observable<Boolean> clearAllDraft();
 
-    void deleteDraft(long productId);
+    Observable<Boolean> deleteDraft(long productId);
 
     Observable<List<UploadProductInputDomainModel>> getAllDraft();
 
     Observable<Long> getAllDraftCount();
 
-    void updateDraft(long productId, UploadProductInputDomainModel domainModel);
+    Observable<Boolean> updateDraft(long productId, UploadProductInputDomainModel domainModel);
+
+    Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading);
 
 }

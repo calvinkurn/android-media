@@ -25,7 +25,7 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadRecommendationCategory(String errorMessage);
 
-    void onSuccessStoreProductToDraft(long productId);
+    void onSuccessStoreProductToDraft(long productId, boolean isUploading);
 
     void onErrorStoreProductToDraft(String errorMessage);
 

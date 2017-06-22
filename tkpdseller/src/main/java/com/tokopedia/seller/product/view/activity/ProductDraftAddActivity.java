@@ -48,4 +48,15 @@ public class ProductDraftAddActivity extends ProductAddActivity {
     protected String getFragmentTAG() {
         return ProductDraftAddFragment.class.getSimpleName();
     }
+
+    @Override
+    public void onBackPressed() {
+        saveProducttoDraft();
+        super.onBackPressed();
+    }
+
+    protected void saveProducttoDraft() {
+        // saveToDraft UPDATE existing draft product to database
+        // TODO hendry
+    }
 }

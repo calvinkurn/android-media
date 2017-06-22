@@ -19,6 +19,7 @@ import rx.functions.Func1;
 
 public class SaveDraftProductUseCase extends CompositeUseCase<Long> {
     private static final String UPLOAD_PRODUCT_INPUT_MODEL = "UPLOAD_PRODUCT_INPUT_MODEL";
+    private static final String IS_UPLOADING = "IS_UPLOADING";
     private final ProductDraftRepository productDraftRepository;
 
     @Inject
@@ -37,8 +38,9 @@ public class SaveDraftProductUseCase extends CompositeUseCase<Long> {
         } else {
             throw new RuntimeException("Input model is missing");
         }
+        boolean isUploading = requestParams.getBoolean(IS_UPLOADING, false);
         return Observable.just(inputModel)
-                .flatMap(new SaveDraft());
+                .flatMap(new SaveDraft(isUploading));
     }
 
     private boolean isInputProductNotNull(RequestParams requestParams) {
@@ -50,16 +52,21 @@ public class SaveDraftProductUseCase extends CompositeUseCase<Long> {
                 instanceof UploadProductInputDomainModel;
     }
 
-    public static RequestParams generateUploadProductParam(UploadProductInputDomainModel domainModel){
+    public static RequestParams generateUploadProductParam(UploadProductInputDomainModel domainModel, boolean isUploading){
         RequestParams params = RequestParams.create();
         params.putObject(UPLOAD_PRODUCT_INPUT_MODEL, domainModel);
+        params.putObject(IS_UPLOADING, isUploading);
         return params;
     }
 
     private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
+        boolean isUploading;
+        SaveDraft(boolean isUploading){
+            this.isUploading = isUploading;
+        }
         @Override
         public Observable<Long> call(UploadProductInputDomainModel inputModel) {
-            return productDraftRepository.saveDraft(inputModel);
+            return productDraftRepository.saveDraft(inputModel, isUploading);
         }
     }
 }
