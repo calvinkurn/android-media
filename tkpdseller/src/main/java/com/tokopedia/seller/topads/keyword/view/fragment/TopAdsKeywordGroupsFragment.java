@@ -19,6 +19,7 @@ import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
@@ -30,7 +31,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListV
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
+import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
 import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
@@ -42,10 +43,10 @@ import javax.inject.Inject;
  */
 
 public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
-        implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
+        implements TopAdsKeywordGroupListView, BaseFilterContentViewListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";
-    protected TopAdsFilterContentFragment.Callback callback;
+    protected BaseFilterContentFragment.Callback callback;
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private EditText groupFilterSearch;
@@ -232,7 +233,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
     }
 
     @Override
-    public void setCallback(TopAdsFilterContentFragment.Callback callback) {
+    public void setCallback(BaseFilterContentFragment.Callback callback) {
         this.callback = callback;
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.seller.base.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,9 +14,9 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
+import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
-import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
+import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
 import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author normansyahputa on 5/26/17.
  *         just move to new architecture.
  */
-public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
+public abstract class BaseFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
     protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     protected int selectedPosition = 0;
@@ -94,18 +94,18 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
         currentContentFragment = filterContentFragment;
         fragmentTransaction.commit();
 
-        if (filterContentFragment instanceof TopAdsFilterContentFragmentListener) {
-            ((TopAdsFilterContentFragmentListener) filterContentFragment).setCallback(this);
+        if (filterContentFragment instanceof BaseFilterContentViewListener) {
+            ((BaseFilterContentViewListener) filterContentFragment).setCallback(this);
         }
     }
 
     private ArrayList<FilterTitleItem> getFilterTitleItemList() {
         ArrayList<FilterTitleItem> filterTitleItemList = new ArrayList<>();
         for (Fragment filterContentFragment : filterContentFragmentList) {
-            if (filterContentFragment instanceof TopAdsFilterContentFragmentListener) {
+            if (filterContentFragment instanceof BaseFilterContentViewListener) {
                 FilterTitleItem filterTitleItem = new FilterTitleItem();
-                filterTitleItem.setTitle(((TopAdsFilterContentFragmentListener) filterContentFragment).getTitle(this));
-                filterTitleItem.setActive(((TopAdsFilterContentFragmentListener) filterContentFragment).isActive());
+                filterTitleItem.setTitle(((BaseFilterContentViewListener) filterContentFragment).getTitle(this));
+                filterTitleItem.setActive(((BaseFilterContentViewListener) filterContentFragment).isActive());
                 filterTitleItemList.add(filterTitleItem);
             }
         }
@@ -129,8 +129,8 @@ public abstract class TopAdsFilterActivity extends TActivity implements TopAdsFi
         for (Fragment topAdsFilterContentFragment : filterContentFragmentList) {
             // only process the added fragment, not-added-fragment has no adapter created.
             if (topAdsFilterContentFragment.isAdded()) {
-                if (topAdsFilterContentFragment instanceof TopAdsFilterContentFragmentListener)
-                    ((TopAdsFilterContentFragmentListener) topAdsFilterContentFragment).addResult(intent);
+                if (topAdsFilterContentFragment instanceof BaseFilterContentViewListener)
+                    ((BaseFilterContentViewListener) topAdsFilterContentFragment).addResult(intent);
             }
         }
         setResult(Activity.RESULT_OK, intent);

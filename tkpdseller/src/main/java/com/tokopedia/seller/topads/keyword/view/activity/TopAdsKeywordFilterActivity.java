@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity
+public class TopAdsKeywordFilterActivity extends BaseFilterActivity
         implements HasComponent<AppComponent>, TopAdsKeywordGroupListListener {
 
     @KeywordStatusTypeDef

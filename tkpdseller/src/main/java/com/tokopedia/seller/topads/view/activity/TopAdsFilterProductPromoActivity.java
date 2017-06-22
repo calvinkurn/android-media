@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsFilterActivity;
+import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterEtalaseFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusPromoFragment;
 
@@ -17,7 +17,7 @@ import java.util.List;
 /*
  * Digunakan untuk memfilter Product y
  */
-public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
+public class TopAdsFilterProductPromoActivity extends BaseFilterActivity {
 
     private int selectedStatusPromo;
     private int selectedEtalaseId;

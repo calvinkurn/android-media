@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsFilterActivity;
+import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsProductFilterStatusFragment;
 
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
+public class TopAdsFilterGroupActivity extends BaseFilterActivity {
 
     private int selectedFilterStatus;
 
