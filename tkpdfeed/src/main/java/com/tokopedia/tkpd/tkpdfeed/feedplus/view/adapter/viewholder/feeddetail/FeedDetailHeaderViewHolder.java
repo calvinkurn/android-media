@@ -101,7 +101,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopName.setText(actionSpanString);
 
         if (viewModel.isOfficialStore()) {
-            setBadge(actionSpanString, shopName, R.drawable.ic_badge_official);
+            setBadge(actionSpanString, shopName, R.drawable.ic_official);
         } else if (viewModel.isGoldMerchant()) {
             setBadge(actionSpanString, shopName, R.drawable.ic_shop_gold);
         }

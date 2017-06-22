@@ -181,7 +181,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         title.setText(actionSpanString);
 
         if (activityCardViewModel.getHeader().isOfficialStore()) {
-            setBadge(actionSpanString, title, R.drawable.ic_badge_official);
+            setBadge(actionSpanString, title, R.drawable.ic_official);
         }else if (activityCardViewModel.getHeader().isGoldMerchant()) {
             setBadge(actionSpanString, title, R.drawable.ic_shop_gold);
         }
