@@ -5,13 +5,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public class TopAdsAdListAdapter<T extends Ad> extends TopAdsBaseListAdapter<T> {
+public class TopAdsAdListAdapter<T extends Ad> extends BaseListAdapter<T> {
 
     private static final int AD_TYPE = 1;
 

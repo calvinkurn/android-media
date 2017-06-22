@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd> {
+public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
     private Listener listener;
 
     public Listener getListener() {

@@ -22,6 +22,7 @@ public class SuccessfulTransaction extends CommomGMModel {
         if (successTrans < 1_000_000) {
             Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
+            text = (currencyFormatter.format(successTrans));
         } else if (successTrans >= 1_000_000) {
             text = KMNumbers.formatNumbers(successTrans);
         }

@@ -51,5 +51,6 @@ public interface FragmentBrowseProductView extends BaseView {
     void showWishListRetry(String errorMessage);
     void updateTotalProduct(Long totalProduct);
     void displayEmptyResult();
+    void setLoading(boolean isLoading);
 
 }

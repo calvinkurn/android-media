@@ -17,16 +17,16 @@ import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.data.model.data.Summary;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
 
-public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
+public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BaseDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     private SwipeToRefresh swipeToRefresh;
@@ -48,8 +48,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     @Override
-    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
-        return new TopAdsDatePickerPresenterImpl(getActivity());
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        return new BaseDatePickerPresenterImpl(getActivity());
     }
 
     @Override

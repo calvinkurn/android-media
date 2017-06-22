@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.presenter;
+package com.tokopedia.seller.base.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter {
+public class BaseDatePickerPresenterImpl implements BaseDatePickerPresenter {
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
     private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";
@@ -30,7 +30,7 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
 
     private Context context;
 
-    public TopAdsDatePickerPresenterImpl(Context context) {
+    public BaseDatePickerPresenterImpl(Context context) {
         this.context = context;
         this.topAdsDatePickerInteractor = new TopAdsDatePickerInteractorImpl(context);
     }

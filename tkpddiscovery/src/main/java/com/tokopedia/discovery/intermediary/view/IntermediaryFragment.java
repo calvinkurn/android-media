@@ -42,6 +42,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -146,6 +147,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.rv_official_intermediary)
     RecyclerView brandsRecyclerView;
 
+    @BindView(R2.id.top_ads_view)
+    TopAdsView topAdsView;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -162,7 +166,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
-    com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
     private NonScrollGridLayoutManager gridLayoutManager;
 
     public static IntermediaryFragment createInstance(String departmentId) {
@@ -190,7 +193,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         presenter.attachView(this);
         presenter.getIntermediaryCategory(departmentId);
-        topAdsView = (TopAdsView) parentView.findViewById(R.id.top_ads_view);
 
         return parentView;
     }
@@ -502,22 +504,29 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 curatedName, productModel.getName());
     }
 
-
     @Override
     public void onTopAdsLoaded() {
+        hideLoading();
         topAdsView.setVisibility(View.VISIBLE);
         backToTop();
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-
+        hideLoading();
     }
 
     @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 

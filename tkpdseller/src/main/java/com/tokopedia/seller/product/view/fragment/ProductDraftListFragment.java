@@ -30,7 +30,7 @@ import com.tokopedia.seller.product.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     }
 
     @Override
-    protected TopAdsBaseListAdapter getNewAdapter() {
+    protected BaseListAdapter getNewAdapter() {
         return new ProductDraftAdapter();
     }
 

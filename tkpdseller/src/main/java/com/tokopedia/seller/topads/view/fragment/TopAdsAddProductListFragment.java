@@ -484,20 +484,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         refreshHandler.setRefreshing(false);
         topAdsProductListAdapter.showLoading(false);
 
-        // hide bottom sheet helper
-        addProductListInterface.hideBottom();
-
-        if (topAdsProductListAdapter != null
-                && topAdsProductListAdapter.getDataSize() <= 0) {
-            if (addProductListInterface != null) {
-                addProductListInterface.dismissNextButton();
-            }
-        } else {
-            if (addProductListInterface != null) {
-                addProductListInterface.showNextButton();
-            }
-        }
-
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -533,6 +519,20 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                                         }
                                     }, getActivity());
                             break;
+                    }
+
+                    // hide bottom sheet helper
+                    addProductListInterface.hideBottom();
+
+                    if (topAdsProductListAdapter != null
+                            && topAdsProductListAdapter.getDataSize() <= 0) {
+                        if (addProductListInterface != null) {
+                            addProductListInterface.dismissNextButton();
+                        }
+                    } else {
+                        if (addProductListInterface != null) {
+                            addProductListInterface.showNextButton();
+                        }
                     }
                 }
             }

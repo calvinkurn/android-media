@@ -18,6 +18,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
@@ -27,7 +28,7 @@ import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAd
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
 import com.tokopedia.seller.topads.view.model.Ad;
@@ -40,7 +41,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
+public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";
@@ -201,7 +202,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKe
     }
 
     @Override
-    protected TopAdsBaseListAdapter<GroupAd> getNewAdapter() {
+    protected BaseListAdapter<GroupAd> getNewAdapter() {
         TopAdsKeywordGroupListAdapter topAdsKeywordGroupListAdapter = new TopAdsKeywordGroupListAdapter();
         topAdsKeywordGroupListAdapter.setListener(this);
         return topAdsKeywordGroupListAdapter;

@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 import java.util.Date;
 import java.util.List;
@@ -21,8 +21,8 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
     protected final TopAdsGroupAdInteractor groupAdInteractor;
 
-    public TopAdsGroupAdListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
-        super(context, topAdsListPromoViewListener);
+    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener) {
+        super(context, baseListViewListener);
         this.groupAdInteractor = new TopAdsGroupAdInteractorImpl(context);
     }
 
@@ -38,12 +38,12 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
         groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<GroupAd>> pageDataResponse) {
-                topAdsListPromoViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
+                baseListViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onLoadSearchError();
+                baseListViewListener.onLoadSearchError();
             }
         });
     }

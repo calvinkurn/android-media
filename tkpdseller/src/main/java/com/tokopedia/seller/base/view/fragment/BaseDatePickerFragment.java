@@ -1,31 +1,30 @@
-package com.tokopedia.seller.topads.keyword.view.fragment;
+package com.tokopedia.seller.base.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
 
 /**
  * @author normansyahputa on 5/17/17.
  */
-public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
+public abstract class BaseDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
-
-    private static final int REQUEST_CODE_DATE = 5;
 
     protected Date startDate;
     protected Date endDate;
     protected DatePickerResultListener datePickerResultListener;
 
     @Nullable
-    protected TopAdsDatePickerPresenter datePickerPresenter;
+    protected BaseDatePickerPresenter datePickerPresenter;
 
-    protected abstract TopAdsDatePickerPresenter getDatePickerPresenter();
+    protected abstract BaseDatePickerPresenter getDatePickerPresenter();
 
     protected abstract void loadData();
 
@@ -38,7 +37,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
-        datePickerResultListener = new DatePickerResultListener(this, REQUEST_CODE_DATE);
+        datePickerResultListener = new DatePickerResultListener(this, ConstantView.REQUEST_CODE_DATE);
     }
 
     @Override
@@ -71,7 +70,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
-        startActivityForResult(intent, REQUEST_CODE_DATE);
+        startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
     }
 
     @Override

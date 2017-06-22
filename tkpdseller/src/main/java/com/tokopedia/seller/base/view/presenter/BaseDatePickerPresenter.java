@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.presenter;
+package com.tokopedia.seller.base.view.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by Nisie on 5/9/16.
  */
-public interface TopAdsDatePickerPresenter {
+public interface BaseDatePickerPresenter {
 
     void resetDate();
 
