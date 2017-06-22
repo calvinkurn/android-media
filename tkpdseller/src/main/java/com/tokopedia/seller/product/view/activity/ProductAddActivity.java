@@ -109,6 +109,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     public void onBackPressed() {
         if (hasDataAdded()){
             saveProducttoDraft();
+        } else {
+            super.onBackPressed();
         }
     }
 
