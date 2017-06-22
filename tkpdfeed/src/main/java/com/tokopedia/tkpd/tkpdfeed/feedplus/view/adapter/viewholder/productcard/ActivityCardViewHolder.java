@@ -215,7 +215,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
         badge.setBounds(0, 0, size, size);
         ImageSpan is;
-        if (shopName.getLineCount() == 1)
+        if (shopName.getLineCount() < 1)
             is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
         else
             is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
