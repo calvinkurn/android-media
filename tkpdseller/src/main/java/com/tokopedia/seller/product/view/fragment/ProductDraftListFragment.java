@@ -20,13 +20,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.view.adapter.ProductDraftAdapter;
-import com.tokopedia.seller.product.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
@@ -51,7 +51,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView {
+        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
     public static final int DRAFT_EDIT_REQ_CODE = 701;
     private FabSpeedDial fabAdd;
@@ -267,15 +267,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     public void onEmptyButtonClicked() {
         // TODO hendry button empty clicked
-    }
-
-    @Override
-    public void onSearchLoaded(List<ProductDraftViewModel> listDraft) {
-        if (listDraft == null ) {
-            onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
-        } else {
-            onSearchLoaded(listDraft, listDraft.size());
-        }
     }
 
     @Override

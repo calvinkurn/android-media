@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -328,16 +327,6 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordNewChooseGroupPresenter.detachView();
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List list, int totalItem) {
-
-    }
-
-    @Override
-    public void onLoadSearchError() {
-
     }
 
     @Override
