@@ -7,7 +7,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.utils.ViewUtils;
+import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;

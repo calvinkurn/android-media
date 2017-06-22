@@ -1,7 +1,6 @@
-package com.tokopedia.seller.topads.utils;
+package com.tokopedia.seller.topads.dashboard.utils;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.utils;
+package com.tokopedia.seller.topads.dashboard.utils;
 
 
 import android.support.v4.util.ArrayMap;

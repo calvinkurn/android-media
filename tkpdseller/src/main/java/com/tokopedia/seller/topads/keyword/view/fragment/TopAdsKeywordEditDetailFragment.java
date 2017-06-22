@@ -124,7 +124,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String errorMessage =
-                        com.tokopedia.seller.topads.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                        com.tokopedia.seller.topads.dashboard.utils.ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
                 } else {

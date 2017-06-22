@@ -53,7 +53,7 @@ import com.tokopedia.seller.reputation.view.adapter.SimpleDividerItemDecoration;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;

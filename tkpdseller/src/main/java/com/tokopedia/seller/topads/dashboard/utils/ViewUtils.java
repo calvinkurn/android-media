@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.utils;
+package com.tokopedia.seller.topads.dashboard.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;

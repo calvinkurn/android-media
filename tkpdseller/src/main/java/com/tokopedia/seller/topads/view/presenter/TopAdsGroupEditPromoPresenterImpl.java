@@ -4,7 +4,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCas
 import com.tokopedia.seller.topads.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.utils.ViewUtils;
+import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsGroupEditPromoView;
 
 import rx.Subscriber;
