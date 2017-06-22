@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.util;
 
+import com.tkpd.library.utils.CommonUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -16,12 +19,13 @@ public class TimeConverter {
     private static final long HOUR_IN_DAY = 60 * 60 * 24;
 
     public static String generateTime(String postTime) {
+        Locale localeID = new Locale("in", "ID");
         try {
-            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMMM", Locale.ENGLISH);
-            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMMM", localeID);
+            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMMM yyyy", localeID);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", localeID);
             Date postDate = sdf.parse(postTime);
             Date currentTime = new Date();
 

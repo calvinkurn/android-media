@@ -84,7 +84,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         } else {
             holder.productName.setEllipsize(TextUtils.TruncateAt.END);
             holder.productName.setMaxLines(2);
-            lp.setMargins(5, 5, 5, 5);
+            lp.setMargins(20, 20, 20, 0);
         }
 
         holder.productImage.setLayoutParams(lp);

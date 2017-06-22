@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_small"
     android:layout_marginTop="@dimen/margin_sm"
-    android:background="@drawable/cards_feed_plus">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-
-    <include layout="@layout/promo_header"/>
-
-    <android.support.v4.widget.Space
+    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_small" />
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+    <include layout="@layout/promo_header" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        android:layout_marginTop="@dimen/margin_small"/>
 
 </LinearLayout>

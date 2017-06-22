@@ -22,14 +22,12 @@ import java.util.ArrayList;
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.ViewHolder>{
+public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.ViewHolder> {
 
     protected ArrayList<InspirationProductViewModel> list;
-    private final Context context;
     private final FeedPlus.View viewListener;
 
     public InspirationAdapter(Context context, FeedPlus.View viewListener) {
-        this.context = context;
         this.viewListener = viewListener;
     }
 
@@ -45,6 +43,20 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
             productName = (TextView) itemLayoutView.findViewById(R.id.title);
             productPrice = (TextView) itemLayoutView.findViewById(R.id.price);
             productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
+            productName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(
+                            String.valueOf(list.get(getAdapterPosition()).getProductId()));
+                }
+            });
+            productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(
+                            String.valueOf(list.get(getAdapterPosition()).getProductId()));
+                }
+            });
         }
     }
 
@@ -56,26 +68,10 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-//        super.onBindViewHolder(holder, position);
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
-
-        holder.productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
-            }
-        });
-
-        holder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
-            }
-        });
     }
 
     @Override
