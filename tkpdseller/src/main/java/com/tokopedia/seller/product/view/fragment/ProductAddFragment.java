@@ -83,6 +83,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -364,16 +365,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 listener.startUploadProduct(productId);
             }
         } else {
-            CommonUtils.UniversalToast(getActivity(),getString(R.string.product_draft_product_has_been_saved_as_draft));
-            //setResult To OK
-            // TODO hendry set intent to differentiate the result OK
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            if (listener!= null) {
+                listener.successSaveDraftToDBWhenBackpressed();
+            }
         }
     }
 
     @Override
-    public void onErrorStoreProductToDraft(String errorMessage) {
+    public void onErrorStoreProductToDraftWhenUpload(String errorMessage) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -382,6 +381,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onErrorStoreProductToDraftWhenBackPressed(String errorMessage) {
+        CommonUtils.UniversalToast(getActivity(), errorMessage);
+        getActivity().finish();
     }
 
     @Override
@@ -394,6 +399,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public long getProductDraftId() {
+        return 0;
     }
 
     @Override
@@ -698,5 +708,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         void startUploadProductAndAddWithShare(Long productId);
 
         void startUploadProductAndAdd(Long productId);
+
+        void successSaveDraftToDBWhenBackpressed();
     }
 }

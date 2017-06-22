@@ -53,11 +53,12 @@ import permissions.dispatcher.RuntimePermissions;
 public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
         implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
-    public static final int DRAFT_EDIT_REQ_CODE = 701;
+
     private FabSpeedDial fabAdd;
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
+    private boolean needRefreshDraftInfo = false;
 
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
@@ -200,41 +201,50 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
             intent = ProductDraftAddActivity.createInstance(getActivity(),
                     String.valueOf(productDraftViewModel.getProductId()));
         }
-        startActivityForResult(intent, DRAFT_EDIT_REQ_CODE);
+        ProductDraftListFragment.this.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == DRAFT_EDIT_REQ_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                // TODO hendry draft has been submitted, go to manage product and finish this
+        // request code vary by seller router application, don't use it!
+        if (resultCode == Activity.RESULT_OK &&
+                intent.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
+            needRefreshDraftInfo = true;
+            return;
+        }
+
+        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+            @Override
+            public void onSuccess(ArrayList<String> imageUrls) {
+                ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
             }
-        } else {
-            ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-                @Override
-                public void onSuccess(ArrayList<String> imageUrls) {
-                    ProductAddActivity.start(getActivity(),imageUrls);
-                }
 
-                @Override
-                public void onSuccess(String path, int position) {
-                    ArrayList<String> imageUrls = new ArrayList<>();
-                    imageUrls.add(path);
-                    ProductAddActivity.start(getActivity(),imageUrls);
-                }
+            @Override
+            public void onSuccess(String path, int position) {
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(path);
+                ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
+            }
 
-                @Override
-                public void onFailed(String message) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), message);
-                }
+            @Override
+            public void onFailed(String message) {
+                NetworkErrorHelper.showSnackbar(getActivity(), message);
+            }
 
-                @Override
-                public Context getContext() {
-                    return getActivity();
-                }
-            }, requestCode, resultCode, intent);
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        }, requestCode, resultCode, intent);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (needRefreshDraftInfo) {
+            searchData();
+            needRefreshDraftInfo = false;
         }
     }
 

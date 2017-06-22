@@ -75,7 +75,7 @@ public class ProductDraftDataManager {
         return Observable.just(false);
     }
 
-    public Observable<Boolean> updateDraft(long productId, String draftData) {
+    public Observable<Long> updateDraft(long productId, String draftData) {
         ProductDraftDataBase productDraftDataBase = new Select()
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.id.is(productId))
@@ -83,7 +83,22 @@ public class ProductDraftDataManager {
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);
             productDraftDataBase.save();
-            return Observable.just(true);
+            return Observable.just(productDraftDataBase.getId());
+        } else {
+            throw new RuntimeException("Draft tidak ditemukan");
+        }
+    }
+
+    public Observable<Long> updateDraft(long productId, String draftData, boolean isUploading) {
+        ProductDraftDataBase productDraftDataBase = new Select()
+                .from(ProductDraftDataBase.class)
+                .where(ProductDraftDataBase_Table.id.is(productId))
+                .querySingle();
+        if (productDraftDataBase != null){
+            productDraftDataBase.setData(draftData);
+            productDraftDataBase.setUploading(isUploading);
+            productDraftDataBase.save();
+            return Observable.just(productDraftDataBase.getId());
         } else {
             throw new RuntimeException("Draft tidak ditemukan");
         }

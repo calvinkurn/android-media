@@ -2,6 +2,7 @@ package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -51,10 +52,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.AbsListViewScrollDetector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -247,6 +247,7 @@ public class ManageProduct extends TkpdActivity implements
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
     private TextView tvDraftProductInfo;
+    private boolean needRefreshDraftInfo = true;
 
     @Override
     public String getScreenName() {
@@ -362,7 +363,6 @@ public class ManageProduct extends TkpdActivity implements
                 .build()
                 .inject(this);
         productDraftListCountPresenter.attachView(this);
-        productDraftListCountPresenter.fetchAllDraftCount();
     }
 
     @Override
@@ -1524,6 +1524,12 @@ public class ManageProduct extends TkpdActivity implements
             CheckCache();
         }
         registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
+
+
+        if (needRefreshDraftInfo) {
+            productDraftListCountPresenter.fetchAllDraftCount();
+            needRefreshDraftInfo = false;
+        }
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
@@ -1561,6 +1567,13 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // request code vary by seller router application, don't use it!
+        if (resultCode == Activity.RESULT_OK &&
+                data.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
+            needRefreshDraftInfo = true;
+            return;
+        }
+        // ELSE
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {

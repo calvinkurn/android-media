@@ -76,9 +76,16 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
-    public Observable<Boolean> updateDraft(long productId, UploadProductInputDomainModel domainModel) {
+    public Observable<Long> updateDraft(long productId, UploadProductInputDomainModel domainModel) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
         return productDraftDataSource.updateDraft(productId, productDraft);
+    }
+
+    @Override
+    public Observable<Long> updateDraftToUpload(long productId, UploadProductInputDomainModel domainModel,
+                                                   boolean isUploading) {
+        String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
+        return productDraftDataSource.updateDraft(productId, productDraft, isUploading);
     }
 
     @Override

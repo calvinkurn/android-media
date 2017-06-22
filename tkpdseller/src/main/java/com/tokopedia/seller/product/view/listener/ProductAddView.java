@@ -27,7 +27,9 @@ public interface ProductAddView extends CustomerView {
 
     void onSuccessStoreProductToDraft(long productId, boolean isUploading);
 
-    void onErrorStoreProductToDraft(String errorMessage);
+    void onErrorStoreProductToDraftWhenUpload(String errorMessage);
+
+    void onErrorStoreProductToDraftWhenBackPressed(String errorMessage);
 
     void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn);
 
@@ -38,4 +40,6 @@ public interface ProductAddView extends CustomerView {
     void onSuccessStoreProductAndAddToDraft(Long productId);
 
     void onErrorStoreProductAndAddToDraft(String errorMessage);
+
+    long getProductDraftId();
 }
