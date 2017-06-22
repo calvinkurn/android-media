@@ -83,6 +83,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -364,11 +365,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 listener.startUploadProduct(productId);
             }
         } else {
-            CommonUtils.UniversalToast(getActivity(),getString(R.string.product_draft_product_has_been_saved_as_draft));
-            //setResult To OK
-            // TODO hendry set intent to differentiate the result OK
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            if (listener!= null) {
+                listener.successSaveDraftToDB();
+            }
         }
     }
 
@@ -394,6 +393,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onBackPressedAfterSaveDraft() {
+        if (listener!= null) {
+            listener.onBackPressedAfterSaveDraft();
+        }
     }
 
     @Override
@@ -698,5 +704,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         void startUploadProductAndAddWithShare(Long productId);
 
         void startUploadProductAndAdd(Long productId);
+
+        void successSaveDraftToDB();
+
+        void onBackPressedAfterSaveDraft();
     }
 }

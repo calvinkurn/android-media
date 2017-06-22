@@ -355,7 +355,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
         @Override
         public void onCompleted() {
-
+            getView().onBackPressedAfterSaveDraft();
         }
 
         @Override

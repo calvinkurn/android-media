@@ -57,7 +57,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
-    public static final int PRODUCT_ADD_REQUEST_CODE = 8293;
+    public static final int PRODUCT_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
@@ -67,15 +67,23 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
 
+    public static final String ACTION_REFRESH_DRAFT = "ref_drf";
+
     public static void start(Activity activity) {
         Intent intent = new Intent(activity, ProductAddActivity.class);
-        activity.startActivityForResult(intent, PRODUCT_ADD_REQUEST_CODE);
+        activity.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
-    public static void start(Context context, ArrayList<String> imageUrls) {
+    public static void start(Activity activity, ArrayList<String> imageUrls) {
+        Intent intent = new Intent(activity, ProductAddActivity.class);
+        intent.putStringArrayListExtra(EXTRA_IMAGE_URLS, imageUrls);
+        activity.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
+    }
+
+    public static void start(Fragment fragment, Context context, ArrayList<String> imageUrls) {
         Intent intent = new Intent(context, ProductAddActivity.class);
         intent.putStringArrayListExtra(EXTRA_IMAGE_URLS, imageUrls);
-        context.startActivity(intent);
+        fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
     @Override
@@ -102,7 +110,6 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         if (hasDataAdded()){
             saveProducttoDraft();
         }
-        super.onBackPressed();
     }
 
     private boolean hasDataAdded() {
@@ -367,6 +374,19 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         startService(UploadProductService.getIntent(this, productId));
         start(this);
         finish();
+    }
+
+    @Override
+    public void successSaveDraftToDB() {
+        CommonUtils.UniversalToast(this,getString(R.string.product_draft_product_has_been_saved_as_draft));
+        Intent data = new Intent().setAction(ACTION_REFRESH_DRAFT);
+        setResult(Activity.RESULT_OK, data);
+        finish();
+    }
+
+    @Override
+    public void onBackPressedAfterSaveDraft() {
+        super.onBackPressed();
     }
 
     @Override

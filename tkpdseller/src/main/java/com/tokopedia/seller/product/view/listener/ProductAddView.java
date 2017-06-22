@@ -38,4 +38,6 @@ public interface ProductAddView extends CustomerView {
     void onSuccessStoreProductAndAddToDraft(Long productId);
 
     void onErrorStoreProductAndAddToDraft(String errorMessage);
+
+    void onBackPressedAfterSaveDraft();
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -34,4 +35,5 @@ public class ProductDraftListActivity extends TkpdActivity implements HasCompone
     public AppComponent getComponent() {
         return getApplicationComponent();
     }
+
 }
