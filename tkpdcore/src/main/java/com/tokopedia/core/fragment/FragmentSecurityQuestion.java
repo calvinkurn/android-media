@@ -294,7 +294,11 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vSendOtp.setText(R.string.title_resend_otp);
         vSendOtp.setEnabled(true);
 
-        if (!titleSecurity.getText().toString().equals(getString(R.string.content_security_question_email)))
+        if (titleSecurity != null
+                && titleSecurity.getText() != null
+                && !titleSecurity.getText().equals("")
+                && !titleSecurity.getText().toString().equals(
+                getString(R.string.content_security_question_email)))
             vSendOtpCall.setVisibility(View.VISIBLE);
     }
 
