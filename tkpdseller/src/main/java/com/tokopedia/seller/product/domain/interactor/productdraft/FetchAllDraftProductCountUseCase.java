@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.domain.interactor.productdraft;
 
 import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
@@ -16,18 +15,18 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class FetchAllDraftProductUseCase extends CompositeUseCase<List<UploadProductInputDomainModel>> {
+public class FetchAllDraftProductCountUseCase extends CompositeUseCase<Long> {
     private ProductDraftRepository productDraftRepository;
 
-    public FetchAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                       ProductDraftRepository productDraftRepository) {
+    public FetchAllDraftProductCountUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                            ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;
     }
 
     @Override
-    public Observable<List<UploadProductInputDomainModel>> createObservable(RequestParams requestParams) {
-        return productDraftRepository.getAllDraft();
+    public Observable<Long> createObservable(RequestParams requestParams) {
+        return productDraftRepository.getAllDraftCount();
     }
 
     public static RequestParams createRequestParams(){

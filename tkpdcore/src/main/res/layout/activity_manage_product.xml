@@ -1,9 +1,27 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_draft_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/tkpd_yellow_status"
+        android:clickable="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:textSize="@dimen/fontvs"
+        android:foreground="?attr/selectableItemBackground"
+        tools:text="@string/product_manage_you_have_x_unfinished_product"/>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/no_result"
@@ -42,16 +60,18 @@
             android:id="@+id/fab_speed_dial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            app:touchGuardDrawable="@drawable/background_blur"
+            android:layout_alignParentRight="true"
+            app:fabBackgroundTint="@color/green_500"
             app:fabGravity="bottom_end"
             app:fabMenu="@menu/menu_add_product_instoped"
-            app:fabBackgroundTint="@color/green_500"
             app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
             app:miniFabDrawableTint="@android:color/white"
-            app:miniFabTitleTextColor="@android:color/white" />
+            app:miniFabTitleTextColor="@android:color/white"
+            app:touchGuardDrawable="@drawable/background_blur" />
 
-    <!--<include layout="@layout/fab_button" />-->
+        <!--<include layout="@layout/fab_button" />-->
 
-</RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>
+

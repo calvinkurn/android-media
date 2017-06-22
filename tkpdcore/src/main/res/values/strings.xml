@@ -1959,4 +1959,5 @@ di Tokopedia Sekarang!</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
     <string name="search_draft_hint">Cari Draft</string>
+    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
 </resources>

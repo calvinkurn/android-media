@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
@@ -252,11 +251,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
         emptyGroupAdsDataBinder.setCallback(this);
         return emptyGroupAdsDataBinder;
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
     }
 
     @Override

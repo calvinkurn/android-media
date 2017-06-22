@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.domain.interactor.productdraft;
 
+import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -16,7 +17,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class SaveDraftProductUseCase extends UseCase<Long> {
+public class SaveDraftProductUseCase extends CompositeUseCase<Long> {
     private static final String UPLOAD_PRODUCT_INPUT_MODEL = "UPLOAD_PRODUCT_INPUT_MODEL";
     private final ProductDraftRepository productDraftRepository;
 

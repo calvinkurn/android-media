@@ -20,6 +20,8 @@ public interface ProductDraftRepository {
 
     Observable<List<UploadProductInputDomainModel>> getAllDraft();
 
+    Observable<Long> getAllDraftCount();
+
     void updateDraft(long productId, UploadProductInputDomainModel domainModel);
 
 }

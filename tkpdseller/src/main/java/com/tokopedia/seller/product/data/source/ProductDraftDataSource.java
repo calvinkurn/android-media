@@ -33,6 +33,10 @@ public class ProductDraftDataSource {
         return productDraftDataManager.getAllDraft();
     }
 
+    public Observable<Long> getAllDraftCount() {
+        return productDraftDataManager.getAllDraftCount();
+    }
+
     public Observable<Boolean> clearAllDraft() {
         return productDraftDataManager.clearAllDraft();
     }
