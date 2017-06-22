@@ -206,38 +206,37 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == ProductAddActivity.PRODUCT_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (intent.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
-                    needRefreshDraftInfo = true;
-                }
-            }
-        } else {
-            ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-                @Override
-                public void onSuccess(ArrayList<String> imageUrls) {
-                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
-                }
-
-                @Override
-                public void onSuccess(String path, int position) {
-                    ArrayList<String> imageUrls = new ArrayList<>();
-                    imageUrls.add(path);
-                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
-                }
-
-                @Override
-                public void onFailed(String message) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), message);
-                }
-
-                @Override
-                public Context getContext() {
-                    return getActivity();
-                }
-            }, requestCode, resultCode, intent);
-
+        // request code vary by seller router application, don't use it!
+        if (resultCode == Activity.RESULT_OK &&
+                intent.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
+            needRefreshDraftInfo = true;
+            return;
         }
+
+        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+            @Override
+            public void onSuccess(ArrayList<String> imageUrls) {
+                ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
+            }
+
+            @Override
+            public void onSuccess(String path, int position) {
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(path);
+                ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),imageUrls);
+            }
+
+            @Override
+            public void onFailed(String message) {
+                NetworkErrorHelper.showSnackbar(getActivity(), message);
+            }
+
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        }, requestCode, resultCode, intent);
+
     }
 
     @Override

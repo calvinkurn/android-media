@@ -98,7 +98,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
         UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, isUploading);
+        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, getProductDraftId(), isUploading);
+    }
+
+    protected long getProductDraftId(){
+        return getView().getProductDraftId();
     }
 
     @Override

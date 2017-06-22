@@ -57,12 +57,14 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
+    public static final String TAG = ProductAddActivity.class.getSimpleName();
+
     public static final int PRODUCT_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
     public static final int MAX_IMAGES = 5;
-    public static final String TAG = ProductAddFragment.class.getSimpleName();
+
     TkpdProgressDialog tkpdProgressDialog;
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
@@ -117,7 +119,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         }
     }
 
-    private boolean hasDataAdded() {
+    protected boolean hasDataAdded() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment!= null && fragment instanceof ProductAddFragment ) {
             return ((ProductAddFragment)fragment).hasDataAdded();
@@ -366,13 +368,16 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     public void startUploadProduct(long productId) {
         startService(UploadProductService.getIntent(this, productId));
-        setResult(RESULT_OK);
+        Intent data = new Intent().setAction(ACTION_REFRESH_DRAFT);
+        setResult(RESULT_OK, data);
         finish();
     }
 
     public void startUploadProductWithShare(long productId) {
         startService(UploadProductService.getIntent(this, productId));
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
+        Intent data = new Intent().setAction(ACTION_REFRESH_DRAFT);
+        setResult(RESULT_OK, data);
         finish();
     }
 
@@ -380,6 +385,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     public void startUploadProductAndAdd(Long productId) {
         startService(UploadProductService.getIntent(this, productId));
         start(this);
+        Intent data = new Intent().setAction(ACTION_REFRESH_DRAFT);
+        setResult(RESULT_OK, data);
         finish();
     }
 
@@ -396,6 +403,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         startService(UploadProductService.getIntent(this, productId));
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
+        Intent data = new Intent().setAction(ACTION_REFRESH_DRAFT);
+        setResult(RESULT_OK, data);
         finish();
     }
 

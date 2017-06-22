@@ -17,7 +17,6 @@ import com.tokopedia.seller.product.view.fragment.ProductEditFragment;
 public class ProductEditActivity extends ProductDraftEditActivity {
 
     public static final String PRODUCT_ID = "PRODUCT_ID";
-    public static final String TAG = ProductEditFragment.class.getSimpleName();
 
     public static Intent createInstance(Context context, String productId){
         Intent intent = new Intent(context, ProductEditActivity.class);

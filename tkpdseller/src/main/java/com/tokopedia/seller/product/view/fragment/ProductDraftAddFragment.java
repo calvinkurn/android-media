@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,6 +133,19 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     public boolean hasDataAdded() {
         // this is to enable always save to draft
         return true;
+    }
+
+    @Override
+    public long getProductDraftId() {
+        if (TextUtils.isEmpty(draftId)) {
+            return 0;
+        }
+        try {
+            return Long.valueOf(draftId);
+        }
+        catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     @Override

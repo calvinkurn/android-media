@@ -45,8 +45,12 @@ public class ProductDraftDataSource {
         return productDraftDataManager.deleteDeraft(productId);
     }
 
-    public Observable<Boolean> updateDraft(long productId, String draftDataBase) {
+    public Observable<Long> updateDraft(long productId, String draftDataBase) {
         return productDraftDataManager.updateDraft(productId, draftDataBase);
+    }
+
+    public Observable<Long> updateDraft(long productId, String draftDataBase, boolean isUploading) {
+        return productDraftDataManager.updateDraft(productId, draftDataBase, isUploading);
     }
 
     public Observable<Boolean> updateUploadingStatusDraft(long productId, boolean draftDataBase) {

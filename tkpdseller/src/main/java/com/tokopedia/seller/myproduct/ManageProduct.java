@@ -54,7 +54,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -1567,12 +1567,10 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ProductAddActivity.PRODUCT_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
-                    needRefreshDraftInfo = true;
-                }
-            }
+        // request code vary by seller router application, don't use it!
+        if (resultCode == Activity.RESULT_OK &&
+                data.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
+            needRefreshDraftInfo = true;
             return;
         }
         // ELSE

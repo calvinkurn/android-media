@@ -402,6 +402,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public long getProductDraftId() {
+        return 0;
+    }
+
+    @Override
     public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList) {
         productInfoViewHolder.successFetchCatalogData(catalogViewModelList);
     }
