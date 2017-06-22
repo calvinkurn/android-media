@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.constant;
+package com.tokopedia.seller.topads.dashboard.constant;
 
 import android.text.format.DateUtils;
 

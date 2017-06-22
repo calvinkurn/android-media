@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.data.model.data.Product;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;

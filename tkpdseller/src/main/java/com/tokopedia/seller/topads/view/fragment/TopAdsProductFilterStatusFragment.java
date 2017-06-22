@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 
 /**
  * Created by Nathaniel on 1/31/2017.

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.request.EditGroupRequest;

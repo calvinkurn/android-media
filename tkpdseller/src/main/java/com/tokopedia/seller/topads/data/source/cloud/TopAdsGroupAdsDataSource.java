@@ -1,12 +1,11 @@
 package com.tokopedia.seller.topads.data.source.cloud;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;

@@ -1,15 +1,14 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;

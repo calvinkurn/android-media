@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.domain.model.ProductListDomain;
@@ -13,7 +13,6 @@ import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
-import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.util.ArrayList;

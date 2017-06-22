@@ -25,7 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;

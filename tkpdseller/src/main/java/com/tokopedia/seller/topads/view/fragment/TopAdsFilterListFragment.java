@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +7,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.adapter.TopAdsFilterAdapter;
 import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 

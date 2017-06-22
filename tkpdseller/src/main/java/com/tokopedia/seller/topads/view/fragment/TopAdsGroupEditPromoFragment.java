@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 
 /**
  * Created by zulfikarrahman on 2/27/17.

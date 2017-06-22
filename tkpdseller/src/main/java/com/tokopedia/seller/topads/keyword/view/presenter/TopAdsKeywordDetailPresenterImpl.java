@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
 import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;

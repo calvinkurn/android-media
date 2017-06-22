@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +10,7 @@ import android.view.View;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;

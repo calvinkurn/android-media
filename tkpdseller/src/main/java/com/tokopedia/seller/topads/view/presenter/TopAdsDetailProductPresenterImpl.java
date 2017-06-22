@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;

@@ -1,11 +1,8 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-import com.tokopedia.core.network.entity.topads.TopAds;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 
 public class TopAdsStatisticShopActivity extends TopAdsStatisticActivity {
 

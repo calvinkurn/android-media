@@ -1,10 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +10,7 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.model.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;

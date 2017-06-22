@@ -20,7 +20,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
@@ -28,8 +28,6 @@ import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetai
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 

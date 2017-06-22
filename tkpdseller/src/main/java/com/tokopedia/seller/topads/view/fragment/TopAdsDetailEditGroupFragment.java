@@ -6,18 +6,12 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditGroupDI;
-import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditGroupPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
-
-import java.util.ArrayList;
 
 public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditGroupPresenter> {
 

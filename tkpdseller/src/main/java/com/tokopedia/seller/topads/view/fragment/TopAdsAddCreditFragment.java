@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.data.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenterImpl;

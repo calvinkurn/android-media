@@ -1,22 +1,13 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.data.Cell;
 import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
-import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;

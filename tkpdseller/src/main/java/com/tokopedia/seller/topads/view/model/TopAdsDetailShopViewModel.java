@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.view.model;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 
 /**
  * Created by Nathaniel on 2/23/2017.

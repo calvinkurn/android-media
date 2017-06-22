@@ -14,7 +14,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.data.model.data.Summary;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;

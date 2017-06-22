@@ -4,9 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-
-import org.w3c.dom.Text;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

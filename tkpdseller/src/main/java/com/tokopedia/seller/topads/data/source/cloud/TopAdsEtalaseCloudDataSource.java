@@ -1,18 +1,14 @@
 package com.tokopedia.seller.topads.data.source.cloud;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.mapper.TopAdsEtalaseListMapper;
 import com.tokopedia.seller.topads.data.source.TopAdsEtalaseDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsShopApi;
 import com.tokopedia.seller.topads.data.source.local.TopAdsEtalaseCacheDataSource;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -3,11 +3,9 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;

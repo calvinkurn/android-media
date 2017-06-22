@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.keyword.data.source.cloud;
 
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.request.DataRequest;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;

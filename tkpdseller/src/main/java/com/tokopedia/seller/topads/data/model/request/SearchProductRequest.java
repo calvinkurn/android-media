@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.data.model.request;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 
 import java.util.HashMap;
 
