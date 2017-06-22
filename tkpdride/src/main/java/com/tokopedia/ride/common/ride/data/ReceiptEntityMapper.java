@@ -3,6 +3,10 @@ package com.tokopedia.ride.common.ride.data;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.Locale;
+
 /**
  * Created by alvarisi on 3/31/17.
  */
@@ -22,13 +26,15 @@ public class ReceiptEntityMapper {
             receipt.setDuratuinInMinute(transformDurationToMinute(entity.getDuration()));
             receipt.setRequestId(entity.getRequestId());
             receipt.setSubtotal(entity.getSubtotal());
-            receipt.setTotalFare(entity.getTotalFare());
+            receipt.setTotalFare(formatDisplayPrice(entity.getTotalFare()));
             receipt.setTotalOwe(entity.getTotalOwe());
 
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
-                totalCharged = entity.getPayment().getCurrencyCode() + " " + entity.getPayment().getTotalAmount();
+                totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
             }
+
+
             receipt.setTotalCharged(totalCharged);
 
             if (entity.getRideOffer() != null) {
@@ -53,6 +59,40 @@ public class ReceiptEntityMapper {
             return hours * 60 + minutes;
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * This function added a space after IDR currency if not provided
+     *
+     * @param price
+     */
+    private String formatDisplayPrice(String price) {
+        //format display to add space after currency
+        if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
+            price = price.replace("IDR", "IDR ");
+            price.replace(",", ".");
+        }
+
+        if (price != null && price.contains("Rp") && !price.contains("Rp ")) {
+            price = price.replace("Rp", "Rp ");
+            price.replace(",", ".");
+        }
+
+        return price;
+    }
+
+    private String formatNumber(float number, String currency) {
+        try {
+            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
+            format.setCurrency(Currency.getInstance("IDR"));
+            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
+                format.setMaximumFractionDigits(0);
+            }
+            String result = format.format(number);
+            return result;
+        } catch (Exception ex) {
+            return currency + " " + number;
         }
     }
 }
