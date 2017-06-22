@@ -12,7 +12,7 @@ import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 import java.util.Date;
 import java.util.List;
@@ -24,8 +24,8 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
     protected final TopAdsProductAdInteractor productAdInteractor;
 
-    public TopAdsProductAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
-        super(context, topadsListPromoViewListener);
+    public TopAdsProductAdListPresenterImpl(Context context, BaseListViewListener topadsListViewListener) {
+        super(context, topadsListViewListener);
         this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(context));
     }
 
@@ -42,12 +42,12 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
-                topAdsListPromoViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
+                baseListViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onLoadSearchError();
+                baseListViewListener.onLoadSearchError();
             }
         });
     }

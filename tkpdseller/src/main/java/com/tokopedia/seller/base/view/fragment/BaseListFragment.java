@@ -20,7 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
-        TopAdsListPromoViewListener, BaseListAdapter.Callback<U> {
+        BaseListViewListener, BaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;
 
