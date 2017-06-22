@@ -10,4 +10,5 @@
     <item name="shop_name" type="id" />
     <item name="price" type="id" />
     <item name="label_container" type="id" />
+    <item name="root" type="id" />
 </resources>
