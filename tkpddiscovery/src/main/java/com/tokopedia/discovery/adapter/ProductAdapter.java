@@ -261,8 +261,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onProductItemClicked(Product product) {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    product.getId());
+            ProductItem data = new ProductItem();
+            data.setId(product.getId());
+            data.setName(product.getName());
+            data.setPrice(product.getPriceFormat());
+            data.setImgUri(product.getImage().getM_url());
+            Bundle bundle = new Bundle();
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
 
@@ -628,7 +635,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @param datas     just another data.
      */
     public void addAll(boolean withClear, boolean reload, List<RecyclerViewItem> datas) {
-        int positionStart = getItemCount();
+        int positionStart = data.size();
         int itemCount = datas.size();
         if (withClear) {
             this.data.clear();
