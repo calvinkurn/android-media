@@ -60,7 +60,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
         ArrayList<Visitable> listFeedView = new ArrayList<>();
         addFeedData(listFeedView, feedDomain.getListFeed());
-        addInspirationData(listFeedView, feedDomain.getListInspiration());
+        if (listFeedView.size() > 1 && !(listFeedView.get(0) instanceof PromoCardViewModel))
+            addInspirationData(listFeedView, feedDomain.getListInspiration());
         return listFeedView;
     }
 
