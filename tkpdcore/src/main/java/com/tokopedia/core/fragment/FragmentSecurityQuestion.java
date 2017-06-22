@@ -254,7 +254,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void startTimer() {
-        if(!isRunningTimer){
+        if (!isRunningTimer) {
             countDownTimer = new CountDownTimer(90000, 1000) {
                 public void onTick(long millisUntilFinished) {
                     try {
@@ -294,7 +294,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vSendOtp.setText(R.string.title_resend_otp);
         vSendOtp.setEnabled(true);
 
-        vSendOtpCall.setVisibility(View.VISIBLE);
+        if (!titleSecurity.getText().toString().equals(getString(R.string.content_security_question_email)))
+            vSendOtpCall.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -315,10 +316,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-        if(GlobalConfig.isSellerApp()){
+        if (GlobalConfig.isSellerApp()) {
             verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-            if(b) UnifyTracking.eventTruecallerImpression();
-        }else {
+            if (b) UnifyTracking.eventTruecallerImpression();
+        } else {
             verifyTrueCaller.setVisibility(View.GONE);
         }
     }
