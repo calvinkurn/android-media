@@ -1,10 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.util;
 
-import com.tkpd.library.utils.CommonUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -44,9 +41,9 @@ public class TimeConverter {
                     && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
                     && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
                 return getDifference(currentTime, postDate) / MINUTES_IN_HOUR + " jam yang lalu";
-            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 48
-                    && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
-                    && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
+            } else if (calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                    && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
+                    && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
                 return "Kemarin pukul " + sdfHour.format(postDate);
             } else if (getDifference(currentTime, postDate) / HOUR_IN_DAY > 1 &&
                     calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
@@ -59,6 +56,10 @@ public class TimeConverter {
             return "";
         }
 
+    }
+
+    private static boolean isYesterday(int currentDay, int postDay) {
+        return currentDay - postDay == 1;
     }
 
     private static long getDifference(Date currentTime, Date postDate) {
