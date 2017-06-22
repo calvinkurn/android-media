@@ -27,7 +27,7 @@ import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
@@ -121,7 +121,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected TopAdsBaseListAdapter<KeywordAd> getNewAdapter() {
+    protected BaseListAdapter<KeywordAd> getNewAdapter() {
         return new TopAdsKeywordAdapter();
     }
 

@@ -8,14 +8,14 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.
  */
 
-public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<KeywordAd> {
+public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

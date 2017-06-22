@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.adapter;
+package com.tokopedia.seller.base.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public abstract class TopAdsBaseListAdapter<T> extends BaseLinearRecyclerViewAdapter {
+public abstract class BaseListAdapter<T> extends BaseLinearRecyclerViewAdapter {
 
     public interface Callback<T> {
 
@@ -27,7 +27,7 @@ public abstract class TopAdsBaseListAdapter<T> extends BaseLinearRecyclerViewAda
         this.callback = callback;
     }
 
-    public TopAdsBaseListAdapter() {
+    public BaseListAdapter() {
         super();
         this.data = new ArrayList<>();
     }

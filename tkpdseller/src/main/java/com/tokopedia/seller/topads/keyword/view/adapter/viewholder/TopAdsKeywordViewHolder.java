@@ -10,7 +10,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
 /**
  * Created by normansyahputa on 5/19/17.

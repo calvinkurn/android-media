@@ -27,7 +27,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsBaseListAdapter.Callback<U> {
+        AdListMenuListener, TopAdsListPromoViewListener, SearchView.OnQueryTextListener, BaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
@@ -80,7 +80,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> e
         return new BaseDatePickerPresenterImpl(getActivity());
     }
 
-    protected TopAdsBaseListAdapter getNewAdapter() {
+    protected BaseListAdapter getNewAdapter() {
         return new TopAdsAdListAdapter();
     }
 

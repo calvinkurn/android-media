@@ -13,7 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 
 import java.io.File;
 import java.net.URI;
@@ -22,7 +22,7 @@ import java.net.URI;
  * @author hendry on 5/19/17.
  */
 
-public class ProductDraftAdapter extends TopAdsBaseListAdapter<ProductDraftViewModel> {
+public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
     public static final int ITEM_TYPE = 4121;
 

@@ -18,7 +18,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -31,11 +31,11 @@ import java.util.List;
  */
 
 public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
-        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<U> {
+        TopAdsListViewListener, BaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;
 
-    protected TopAdsBaseListAdapter<U> adapter;
+    protected BaseListAdapter<U> adapter;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
@@ -50,7 +50,7 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
         // Required empty public constructor
     }
 
-    protected abstract TopAdsBaseListAdapter getNewAdapter();
+    protected abstract BaseListAdapter getNewAdapter();
 
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
         return new NoResultDataBinder(adapter);
