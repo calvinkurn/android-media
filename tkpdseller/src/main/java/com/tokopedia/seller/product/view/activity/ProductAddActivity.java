@@ -127,6 +127,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment!= null && fragment instanceof ProductAddFragment ) {
             ((ProductAddFragment)fragment).saveDraft(false);
+        } else {
+            super.onBackPressed();
         }
     }
 
