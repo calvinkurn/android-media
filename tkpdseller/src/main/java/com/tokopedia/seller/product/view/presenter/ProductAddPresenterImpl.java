@@ -355,7 +355,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
         @Override
         public void onCompleted() {
-            getView().onBackPressedAfterSaveDraft();
+
         }
 
         @Override
@@ -363,7 +363,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             if (!isViewAttached()) {
                 return;
             }
-            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+            if (isUploading) {
+                getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
+            } else {
+                getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
+            }
         }
 
         @Override

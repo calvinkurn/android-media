@@ -51,12 +51,13 @@ public class ProductDraftAddActivity extends ProductAddActivity {
 
     @Override
     public void onBackPressed() {
-        saveProducttoDraft();
         super.onBackPressed();
     }
 
-    protected void saveProducttoDraft() {
+    @Override
+    protected boolean saveProducttoDraft() {
         // saveToDraft UPDATE existing draft product to database
         // TODO hendry
+        return true;
     }
 }

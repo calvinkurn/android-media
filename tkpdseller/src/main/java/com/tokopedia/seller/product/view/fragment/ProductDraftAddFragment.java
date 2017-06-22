@@ -129,6 +129,12 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
+    public boolean hasDataAdded() {
+        // this is to enable always save to draft
+        return true;
+    }
+
+    @Override
     public void onErrorLoadProduct(Throwable throwable) {
         hideLoading();
         NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {

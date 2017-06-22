@@ -366,13 +366,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             }
         } else {
             if (listener!= null) {
-                listener.successSaveDraftToDB();
+                listener.successSaveDraftToDBWhenBackpressed();
             }
         }
     }
 
     @Override
-    public void onErrorStoreProductToDraft(String errorMessage) {
+    public void onErrorStoreProductToDraftWhenUpload(String errorMessage) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -381,6 +381,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onErrorStoreProductToDraftWhenBackPressed(String errorMessage) {
+        getActivity().finish();
     }
 
     @Override
@@ -393,13 +398,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         }).showRetrySnackbar();
-    }
-
-    @Override
-    public void onBackPressedAfterSaveDraft() {
-        if (listener!= null) {
-            listener.onBackPressedAfterSaveDraft();
-        }
     }
 
     @Override
@@ -705,8 +703,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         void startUploadProductAndAdd(Long productId);
 
-        void successSaveDraftToDB();
-
-        void onBackPressedAfterSaveDraft();
+        void successSaveDraftToDBWhenBackpressed();
     }
 }
