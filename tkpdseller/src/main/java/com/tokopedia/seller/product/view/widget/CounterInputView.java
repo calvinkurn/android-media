@@ -2,19 +2,16 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.BaseCustomView;
+import com.tokopedia.design.base.BaseCustomView;
 
 /**
  * Created by nathan on 04/05/17.

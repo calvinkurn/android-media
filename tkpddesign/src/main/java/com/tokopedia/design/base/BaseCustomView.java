@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.widget;
+package com.tokopedia.design.base;
 
 import android.content.Context;
 import android.os.Parcelable;

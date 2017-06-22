@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.widget;
+package com.tokopedia.design.base;
 
 /**
  * Created by nathan on 5/4/17.

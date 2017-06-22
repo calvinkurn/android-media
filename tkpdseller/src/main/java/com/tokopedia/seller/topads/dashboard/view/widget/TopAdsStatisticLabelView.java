@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.BaseCustomView;
+import com.tokopedia.design.base.BaseCustomView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.

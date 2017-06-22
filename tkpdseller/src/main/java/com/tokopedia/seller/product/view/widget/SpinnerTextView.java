@@ -14,7 +14,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.BaseCustomView;
+import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
 /**

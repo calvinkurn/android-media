@@ -2,20 +2,17 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.BaseCustomView;
+import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
 import java.text.DecimalFormat;
