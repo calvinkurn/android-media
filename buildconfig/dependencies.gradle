@@ -1,6 +1,6 @@
 ext {
     supportLibraryVersion = '24.2.1'
-    playServiceVersion = '9.0.1'
+    playServiceVersion = '9.6.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
@@ -58,7 +58,8 @@ ext {
             firebase   : "com.google.firebase:firebase-messaging:${playServiceVersion}",
             location   : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps       : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}"
+            auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places     : "com.google.android.gms:play-services-places:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [
