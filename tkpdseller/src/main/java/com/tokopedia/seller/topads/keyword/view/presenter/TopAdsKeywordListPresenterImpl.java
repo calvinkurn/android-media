@@ -17,7 +17,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

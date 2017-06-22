@@ -3,7 +3,7 @@ package com.tokopedia.seller.reputation.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
 
 /**
  * @author normansyahputa on 3/27/17.

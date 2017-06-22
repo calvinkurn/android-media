@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_impression"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 
             <include layout="@layout/include_separator_vertical" />
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_click"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_ctr"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
 
             <include layout="@layout/include_separator_vertical" />
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_conversion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_average"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
 
             <include layout="@layout/include_separator_vertical" />
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView
                 android:id="@+id/statistic_label_view_cost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

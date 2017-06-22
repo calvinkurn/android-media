@@ -27,8 +27,8 @@ import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCheckExistG
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 3/1/17.

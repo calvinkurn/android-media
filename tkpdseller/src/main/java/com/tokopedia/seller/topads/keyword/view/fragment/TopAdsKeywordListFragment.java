@@ -26,12 +26,12 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
-import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 import java.util.List;
 

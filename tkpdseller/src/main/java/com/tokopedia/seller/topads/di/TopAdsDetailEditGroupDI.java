@@ -20,8 +20,8 @@ import com.tokopedia.seller.topads.dashboard.domain.TopAdsSearchProductRepositor
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditGroupPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditGroupPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.

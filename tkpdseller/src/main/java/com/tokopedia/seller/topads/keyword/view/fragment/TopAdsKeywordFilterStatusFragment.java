@@ -7,7 +7,7 @@ import android.support.v4.util.SparseArrayCompat;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 /**
  * Created by Nathaniel on 1/31/2017.

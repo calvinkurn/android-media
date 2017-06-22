@@ -19,8 +19,8 @@ import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCreateDetai
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.

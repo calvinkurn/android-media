@@ -21,8 +21,8 @@ import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;

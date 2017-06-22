@@ -31,8 +31,8 @@ import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
-import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
+import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
+import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,7 @@
     app:success_leave_color="@color/font_top_ads_black_54"
     tools:showIn="@layout/fragment_top_ads_keyword_new_choose_group">
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView
+    <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView
         android:id="@+id/choose_group_auto_text"
         style="@style/EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView"
         android:drawableRight="@drawable/ic_close_green"

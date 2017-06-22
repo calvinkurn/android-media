@@ -30,9 +30,9 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListL
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
-import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 import java.util.List;
 

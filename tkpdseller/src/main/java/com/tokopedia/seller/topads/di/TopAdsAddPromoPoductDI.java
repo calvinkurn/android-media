@@ -15,8 +15,8 @@ import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.To
 import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenterImpl;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsManageGroupPromoPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsManageGroupPromoPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.

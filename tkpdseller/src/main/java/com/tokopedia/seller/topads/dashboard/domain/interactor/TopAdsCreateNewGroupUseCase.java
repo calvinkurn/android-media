@@ -12,8 +12,8 @@ import com.tokopedia.seller.topads.dashboard.data.model.request.AdCreateGroupReq
 import com.tokopedia.seller.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

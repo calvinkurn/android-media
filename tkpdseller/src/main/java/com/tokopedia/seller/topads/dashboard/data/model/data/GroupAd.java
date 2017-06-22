@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.view.model.Ad;
-import com.tokopedia.seller.topads.view.model.StateTypeBasedModel;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.model.StateTypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 12/14/16.

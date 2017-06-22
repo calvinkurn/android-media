@@ -26,7 +26,7 @@ import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModu
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
-import com.tokopedia.seller.topads.view.widget.PrefixEditText;
+import com.tokopedia.seller.topads.dashboard.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;

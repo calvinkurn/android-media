@@ -13,7 +13,7 @@ import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;

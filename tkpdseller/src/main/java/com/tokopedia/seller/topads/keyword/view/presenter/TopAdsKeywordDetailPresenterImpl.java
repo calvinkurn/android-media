@@ -5,7 +5,7 @@ import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordAction
 import com.tokopedia.seller.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
 import com.tokopedia.seller.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.Date;
 
