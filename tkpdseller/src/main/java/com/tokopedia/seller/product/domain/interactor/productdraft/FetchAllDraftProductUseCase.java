@@ -29,7 +29,7 @@ public class FetchAllDraftProductUseCase extends UseCase<List<UploadProductInput
         return productDraftRepository.getAllDraft();
     }
 
-    public static RequestParams createRequestParams(String draftProductId){
+    public static RequestParams createRequestParams(){
         RequestParams requestParams = RequestParams.create();
         return requestParams;
     }
