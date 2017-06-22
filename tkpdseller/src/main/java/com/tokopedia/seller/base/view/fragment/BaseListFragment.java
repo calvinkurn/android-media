@@ -17,10 +17,10 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
-        TopAdsListViewListener, BaseListAdapter.Callback<U> {
+        TopAdsListPromoViewListener, BaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;
 
@@ -152,11 +152,6 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
     }
 
     protected void searchData() {
-
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List list, boolean isEndOfFile) {
 
     }
 

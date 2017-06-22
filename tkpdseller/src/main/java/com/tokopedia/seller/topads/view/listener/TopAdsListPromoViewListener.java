@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public interface TopAdsListPromoViewListener<T extends Ad> extends CustomerView {
+public interface TopAdsListPromoViewListener<T> extends CustomerView {
 
-    void onSearchLoaded(@NonNull List<T> adList, int totalItem);
+    void onSearchLoaded(@NonNull List<T> list, int totalItem);
 
     void onLoadSearchError();
 
