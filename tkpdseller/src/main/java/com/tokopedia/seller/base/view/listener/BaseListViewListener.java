@@ -14,6 +14,6 @@ public interface BaseListViewListener<T> extends CustomerView {
 
     void onSearchLoaded(@NonNull List<T> list, int totalItem);
 
-    void onLoadSearchError();
+    void onLoadSearchError(Throwable t);
 
 }

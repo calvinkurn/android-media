@@ -43,7 +43,7 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
             @Override
             public void onError(Throwable throwable) {
-                baseListViewListener.onLoadSearchError();
+                baseListViewListener.onLoadSearchError(throwable);
             }
         });
     }

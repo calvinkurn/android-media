@@ -50,11 +50,11 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<B
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onLoadSearchError();
+                getView().onLoadSearchError(t);
             }
 
             @Override

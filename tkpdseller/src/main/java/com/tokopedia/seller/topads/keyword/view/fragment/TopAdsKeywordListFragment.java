@@ -239,8 +239,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void onLoadSearchError() {
-        super.onLoadSearchError();
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
         hasData = false;
         if (keywordAdListener != null) {
             keywordAdListener.validateMenuItem();

@@ -202,7 +202,7 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
     }
 
     @Override
-    public void onLoadSearchError() {
+    public void onLoadSearchError(Throwable t) {
         hideLoading();
         if (adapter.getDataSize() > 0) {
             showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {

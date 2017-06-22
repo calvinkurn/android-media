@@ -79,6 +79,9 @@ public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewCh
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().onGetGroupAdListError(e);
             }
 

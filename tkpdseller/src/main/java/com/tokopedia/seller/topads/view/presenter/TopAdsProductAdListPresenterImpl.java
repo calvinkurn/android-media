@@ -47,7 +47,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
             @Override
             public void onError(Throwable throwable) {
-                baseListViewListener.onLoadSearchError();
+                baseListViewListener.onLoadSearchError(throwable);
             }
         });
     }

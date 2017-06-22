@@ -177,8 +177,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> e
     }
 
     @Override
-    public void onLoadSearchError() {
-        super.onLoadSearchError();
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
         if (adapter.getDataSize() < 1) {
             showDateLabel(false);
         }
