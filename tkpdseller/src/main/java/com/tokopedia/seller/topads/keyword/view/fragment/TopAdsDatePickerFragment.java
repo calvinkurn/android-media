@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
@@ -15,8 +16,6 @@ import java.util.Date;
  */
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
-
-    private static final int REQUEST_CODE_DATE = 5;
 
     protected Date startDate;
     protected Date endDate;
@@ -38,7 +37,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
-        datePickerResultListener = new DatePickerResultListener(this, REQUEST_CODE_DATE);
+        datePickerResultListener = new DatePickerResultListener(this, ConstantView.REQUEST_CODE_DATE);
     }
 
     @Override
@@ -71,7 +70,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
-        startActivityForResult(intent, REQUEST_CODE_DATE);
+        startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
     }
 
     @Override

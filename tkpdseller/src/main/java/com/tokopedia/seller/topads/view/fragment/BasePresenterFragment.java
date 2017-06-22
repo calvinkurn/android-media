@@ -22,7 +22,7 @@ import butterknife.Unbinder;
  * PLEASE THIS IS TEMPORARY CONVERT FROM OLD BASE CLASS TO {@link BaseDaggerFragment}
  */
 
-public class BasePresenterFragment<P> extends BaseDaggerFragment {
+public abstract class BasePresenterFragment<P> extends BaseDaggerFragment {
 
     protected P presenter;
 

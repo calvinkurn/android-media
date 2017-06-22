@@ -18,6 +18,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
@@ -40,7 +41,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
+public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordNewChooseGroupPresenter, Ad>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     private static final String TAG = "TopAdsKeywordGroupsFrag";
