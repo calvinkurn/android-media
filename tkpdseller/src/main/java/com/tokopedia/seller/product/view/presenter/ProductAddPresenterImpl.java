@@ -366,7 +366,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             if (isUploading) {
                 getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
             } else {
-                getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
+                getView().onErrorStoreProductToDraftWhenBackPressed(ViewUtils.getErrorMessage(e));
             }
         }
 

@@ -385,6 +385,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onErrorStoreProductToDraftWhenBackPressed(String errorMessage) {
+        CommonUtils.UniversalToast(getActivity(), errorMessage);
         getActivity().finish();
     }
 
