@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
 
@@ -19,9 +19,9 @@ public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<
 
     protected Date startDate;
     protected Date endDate;
-    protected TopAdsDatePickerPresenter datePickerPresenter;
+    protected BaseDatePickerPresenter datePickerPresenter;
 
-    protected abstract TopAdsDatePickerPresenter getDatePickerPresenter();
+    protected abstract BaseDatePickerPresenter getDatePickerPresenter();
 
     @Override
     protected void setupURIPass(Uri uri) {

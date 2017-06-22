@@ -17,13 +17,10 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;

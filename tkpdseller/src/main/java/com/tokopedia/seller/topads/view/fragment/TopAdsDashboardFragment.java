@@ -21,8 +21,8 @@ import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragmen
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
 
@@ -48,8 +48,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     @Override
-    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
-        return new TopAdsDatePickerPresenterImpl(getActivity());
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        return new BaseDatePickerPresenterImpl(getActivity());
     }
 
     @Override

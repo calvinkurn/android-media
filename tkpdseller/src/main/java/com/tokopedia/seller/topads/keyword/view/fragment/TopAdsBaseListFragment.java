@@ -1,35 +1,16 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
-import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author normansyahputa on 5/17/17.
@@ -44,10 +25,10 @@ public abstract class TopAdsBaseListFragment<T, U> extends BaseListFragment<T, U
     protected DatePickerResultListener datePickerResultListener;
 
     @Nullable
-    protected TopAdsDatePickerPresenter datePickerPresenter;
+    protected BaseDatePickerPresenter datePickerPresenter;
 
-    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
-        return new TopAdsDatePickerPresenterImpl(getActivity());
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        return new BaseDatePickerPresenterImpl(getActivity());
     }
 
     @Override

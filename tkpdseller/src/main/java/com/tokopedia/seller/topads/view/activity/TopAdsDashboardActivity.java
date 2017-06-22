@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -26,7 +25,7 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -48,7 +47,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
     private TopAdsDashboardProductFragment dashboardProductFragment;
-    private TopAdsDatePickerPresenterImpl datePickerPresenter;
+    private BaseDatePickerPresenterImpl datePickerPresenter;
     private TopAdsDashboardTabListener topadsDashList;
     private ShowCaseDialog showCaseDialog;
 
@@ -69,7 +68,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     @Override
     protected void initialPresenter() {
-        datePickerPresenter = new TopAdsDatePickerPresenterImpl(this);
+        datePickerPresenter = new BaseDatePickerPresenterImpl(this);
     }
 
     @Override

@@ -26,8 +26,8 @@ import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.data.model.data.Cell;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
@@ -55,8 +55,8 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     SnackbarRetry snackbarRetry;
 
     @Override
-    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
-        return new TopAdsDatePickerPresenterImpl(this);
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        return new BaseDatePickerPresenterImpl(this);
     }
 
     @Override

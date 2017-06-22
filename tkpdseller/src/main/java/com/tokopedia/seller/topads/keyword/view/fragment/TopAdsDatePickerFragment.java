@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
 
@@ -22,9 +22,9 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     protected DatePickerResultListener datePickerResultListener;
 
     @Nullable
-    protected TopAdsDatePickerPresenter datePickerPresenter;
+    protected BaseDatePickerPresenter datePickerPresenter;
 
-    protected abstract TopAdsDatePickerPresenter getDatePickerPresenter();
+    protected abstract BaseDatePickerPresenter getDatePickerPresenter();
 
     protected abstract void loadData();
 
