@@ -16,6 +16,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
@@ -104,6 +105,12 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
             recyclerView.addItemDecoration(getItemDecoration());
         }
         recyclerView.addOnScrollListener(onScrollListener);
+        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                searchData(START_PAGE);
+            }
+        });
     }
 
     protected RecyclerView.ItemDecoration getItemDecoration(){
