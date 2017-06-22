@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.data.source.db;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
 
@@ -43,8 +45,14 @@ public class ProductDraftDataManager {
 
     public Observable<List<ProductDraftDataBase>> getAllDraft() {
         return Observable.just( new Select()
-                        .from(ProductDraftDataBase.class)
-                        .queryList());
+                .from(ProductDraftDataBase.class)
+                .queryList());
+    }
+
+    public Observable<Long> getAllDraftCount() {
+        return Observable.just( new Select(Method.count())
+                .from(ProductDraftDataBase.class)
+                .count());
     }
 
     public Observable<Boolean> clearAllDraft(){

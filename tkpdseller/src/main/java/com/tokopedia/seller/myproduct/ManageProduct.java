@@ -59,6 +59,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -81,6 +84,10 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.logout.TkpdSellerLogout;
+import com.tokopedia.seller.logout.di.component.DaggerTkpdSellerLogoutComponent;
+import com.tokopedia.seller.logout.di.component.TkpdSellerLogoutComponent;
+import com.tokopedia.seller.logout.di.module.TkpdSellerLogoutModule;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
@@ -89,7 +96,16 @@ import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
+import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
+import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.view.listener.ProductDraftListCountView;
+import com.tokopedia.seller.product.view.listener.ProductDraftListView;
+import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,6 +114,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -105,6 +123,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Response;
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -117,7 +136,9 @@ public class ManageProduct extends TkpdActivity implements
         NetworkInteractorImpl.ChangeInsurance,
         NetworkInteractorImpl.DeleteProduct,
         NetworkInteractorImpl.FetchEtalase,
-        ManageProductView {
+        ManageProductView,
+        HasComponent<AppComponent>,
+        ProductDraftListCountView {
     public static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     public static final String IMAGE_POSITION = "IMAGE_POSITION";
     public static final String TAG = "STUART";
@@ -231,6 +252,10 @@ public class ManageProduct extends TkpdActivity implements
     };
     private String messageTAG = "ManageProduct";
 
+    @Inject
+    ProductDraftListCountPresenter productDraftListCountPresenter;
+    private TextView tvDraftProductInfo;
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_PROD;
@@ -336,6 +361,21 @@ public class ManageProduct extends TkpdActivity implements
         networkInteractorImpl = new NetworkInteractorImpl();
         gson = new GsonBuilder().create();
 
+        tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
+        tvDraftProductInfo.setVisibility(View.GONE);
+        DaggerProductDraftListCountComponent
+                .builder()
+                .productDraftListCountModule(new ProductDraftListCountModule())
+                .appComponent(getComponent())
+                .build()
+                .inject(this);
+        productDraftListCountPresenter.attachView(this);
+        productDraftListCountPresenter.fetchAllDraftCount();
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -601,6 +641,7 @@ public class ManageProduct extends TkpdActivity implements
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
+        productDraftListCountPresenter.detachView();
     }
 
     private OnConnectionTimeout onTimeout() {
@@ -2000,6 +2041,51 @@ public class ManageProduct extends TkpdActivity implements
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
+    }
+
+    @Override
+    public void onDraftCountLoaded(long rowCount) {
+        if (rowCount == 0) {
+            tvDraftProductInfo.setVisibility(View.GONE);
+        } else {
+            tvDraftProductInfo.setText(
+                    MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount)));
+            tvDraftProductInfo.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(ManageProduct.this, ProductDraftListActivity.class));
+                }
+            });
+            tvDraftProductInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onDraftCountLoadError() {
+        // delete all draft when error loading draft
+        TkpdSellerLogoutComponent component = DaggerTkpdSellerLogoutComponent
+                .builder()
+                .appComponent(getComponent())
+                .tkpdSellerLogoutModule(new TkpdSellerLogoutModule())
+                .build();
+        component.getClearAllDraftProductUseCase().execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                // no op
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // no op
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                // no op
+            }
+        });
+
+        tvDraftProductInfo.setVisibility(View.GONE);
     }
 
     interface EtalaseChanging {

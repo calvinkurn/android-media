@@ -55,6 +55,11 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
+    public Observable<Long> getAllDraftCount() {
+        return productDraftDataSource.getAllDraftCount();
+    }
+
+    @Override
     public Observable<Boolean> clearAllDraft() {
         return productDraftDataSource.clearAllDraft();
     }
