@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.activity;
+package com.tokopedia.seller.base.view.activity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public abstract class TopAdsBaseSimpleActivity extends BaseActivity implements HasComponent<AppComponent> {
+public abstract class BaseSimpleActivity extends BaseActivity implements HasComponent<AppComponent> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
