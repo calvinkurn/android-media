@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;

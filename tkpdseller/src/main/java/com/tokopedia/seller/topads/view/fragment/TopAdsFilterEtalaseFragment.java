@@ -10,7 +10,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Etalase;
+import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
 import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;

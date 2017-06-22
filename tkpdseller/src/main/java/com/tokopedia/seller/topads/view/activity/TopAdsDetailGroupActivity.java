@@ -9,7 +9,7 @@ import android.view.View;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;

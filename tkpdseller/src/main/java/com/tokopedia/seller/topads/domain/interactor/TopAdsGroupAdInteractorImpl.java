@@ -3,16 +3,16 @@ package com.tokopedia.seller.topads.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.data.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSource;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import java.util.List;
 

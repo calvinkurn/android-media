@@ -1,8 +1,6 @@
 package com.tokopedia.seller.topads.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.data.model.data.Etalase;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
 

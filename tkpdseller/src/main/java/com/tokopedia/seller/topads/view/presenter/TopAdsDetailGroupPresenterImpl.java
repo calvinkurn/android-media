@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractor;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.data.model.data.GroupAdAction;
-import com.tokopedia.seller.topads.data.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdAction;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 
 import java.util.ArrayList;

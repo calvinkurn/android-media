@@ -2,8 +2,7 @@ package com.tokopedia.seller.topads.view.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.data.model.data.TotalAd;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
 
 /**
  * Created by Nathaniel on 11/24/2016.

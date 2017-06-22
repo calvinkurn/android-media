@@ -3,15 +3,15 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 import java.util.Date;

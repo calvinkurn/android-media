@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.view.model.Ad;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 
 /**
  * Created by zulfikarrahman on 11/28/16.

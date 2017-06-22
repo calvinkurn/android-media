@@ -1,17 +1,17 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
-import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.data.model.data.Cell;
-import com.tokopedia.seller.topads.data.model.data.DataStatistic;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.data.model.request.DataRequest;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.request.StatisticRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSource;
+import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.seller.topads.dashboard.data.model.data.DataStatistic;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import java.util.ArrayList;
 import java.util.Calendar;

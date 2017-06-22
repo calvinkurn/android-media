@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.data.model.data.Cell;
+import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;

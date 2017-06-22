@@ -1,8 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 
 import java.util.List;
 

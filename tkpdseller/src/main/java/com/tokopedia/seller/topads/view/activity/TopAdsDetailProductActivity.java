@@ -11,7 +11,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;

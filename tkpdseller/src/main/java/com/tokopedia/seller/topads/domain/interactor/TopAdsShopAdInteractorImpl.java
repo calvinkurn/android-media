@@ -3,13 +3,13 @@ package com.tokopedia.seller.topads.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.data.model.data.ShopAd;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSource;
+import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.dashboard.data.model.data.ShopAd;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
 import retrofit2.Response;
 import rx.Observable;

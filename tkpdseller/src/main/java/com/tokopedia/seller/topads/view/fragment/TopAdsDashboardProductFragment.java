@@ -11,7 +11,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.TotalAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;

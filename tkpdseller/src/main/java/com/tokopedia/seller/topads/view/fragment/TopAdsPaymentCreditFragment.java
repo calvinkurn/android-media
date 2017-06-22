@@ -16,7 +16,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.data.model.data.DataCredit;
+import com.tokopedia.seller.topads.dashboard.data.model.data.DataCredit;
 
 public class TopAdsPaymentCreditFragment extends TkpdFragment {
 

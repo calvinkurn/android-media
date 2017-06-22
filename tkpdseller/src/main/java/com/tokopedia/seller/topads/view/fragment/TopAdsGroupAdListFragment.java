@@ -7,7 +7,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.model.Ad;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenterImpl;

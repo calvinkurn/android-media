@@ -5,9 +5,9 @@ import android.content.Context;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 import java.util.Date;
