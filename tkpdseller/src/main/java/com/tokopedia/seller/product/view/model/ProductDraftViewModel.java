@@ -1,10 +1,14 @@
 package com.tokopedia.seller.product.view.model;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
 /**
  * Created by User on 6/21/2017.
  */
 
-public class ProductDraftViewModel {
+public class ProductDraftViewModel implements ItemType {
+    public static final int TYPE = 1;
+
     private long productId;
     private String primaryImageUrl;
     private String productName;
@@ -58,5 +62,10 @@ public class ProductDraftViewModel {
 
     public void setEdit(boolean edit) {
         isEdit = edit;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

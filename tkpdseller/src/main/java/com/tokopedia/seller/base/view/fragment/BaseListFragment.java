@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.beloo.widget.chipslayoutmanager.layouter.Item;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -19,6 +20,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
@@ -31,7 +33,7 @@ import java.util.List;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
+public abstract class BaseListFragment<T, U extends ItemType> extends BasePresenterFragment<T> implements
         BaseListViewListener, BaseListAdapter.Callback<U> {
 
     protected static final int START_PAGE = 1;

@@ -1,10 +1,12 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
 /**
  * Created by Nathaniel on 12/28/2016.
  */
 
-public interface Ad {
+public interface Ad extends ItemType {
 
     String getId();
 

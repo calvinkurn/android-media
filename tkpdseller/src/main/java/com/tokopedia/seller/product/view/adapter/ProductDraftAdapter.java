@@ -25,12 +25,10 @@ import java.net.URI;
 
 public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
-    private static final int ITEM_TYPE = 4121;
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case ITEM_TYPE:
+            case ProductDraftViewModel.TYPE:
                 return new ProductDraftViewHolder(
                         LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.item_product_draft, parent, false));
@@ -104,7 +102,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case ITEM_TYPE:
+            case ProductDraftViewModel.TYPE:
                 bindData(position, holder);
                 break;
             default:
@@ -119,6 +117,6 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
         if (!isUnknownViewType(itemType)) {
             return itemType;
         }
-        return ITEM_TYPE;
+        return data.get(position).getType();
     }
 }

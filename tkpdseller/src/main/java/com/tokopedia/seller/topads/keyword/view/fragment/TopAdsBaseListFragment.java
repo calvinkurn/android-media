@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
@@ -17,7 +18,7 @@ import java.util.Date;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class TopAdsBaseListFragment<T, U> extends BaseListFragment<T, U> implements
+public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends BaseListFragment<T, U> implements
         DatePickerResultListener.DatePickerResult {
 
     protected Date startDate;
