@@ -16,9 +16,14 @@
     <color name="deep_orange_500">#ff5722</color>
 
     <color name="font_top_ads_green">@color/tkpd_main_green</color>
-    <color name="font_top_ads_black_38">#61000000</color>
-    <color name="font_top_ads_black_54">#8C000000</color>
-    <color name="font_top_ads_black_70">#B3000000</color>
+
+    <color name="font_black_primary_70">#B3000000</color>
+    <color name="font_black_secondary_54">#8C000000</color>
+    <color name="font_black_disabled_38">#61000000</color>
+
+    <color name="font_white_primary_70">#FFFFFFFF</color>
+    <color name="font_white_secondary_54">#B3FFFFFF</color>
+    <color name="font_white_disabled_38">#88FFFFFF</color>
 
     <color name="colorGray">#DDDDDD</color>
 

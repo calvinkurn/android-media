@@ -113,7 +113,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
         setAsActionBar();
 
-        thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.font_top_ads_black_38);
+        thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.font_black_disabled_38);
         whiteColor = ContextCompat.getColor(this, R.color.white);
         nextButton = (Button) findViewById(R.id.top_ads_btn_next_);
 

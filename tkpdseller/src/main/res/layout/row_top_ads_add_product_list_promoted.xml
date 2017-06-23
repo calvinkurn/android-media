@@ -43,7 +43,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="3dp"
-        android:textColor="@color/font_top_ads_black_38"
+        android:textColor="@color/font_black_disabled_38"
         android:textSize="11sp"
         tools:text="[Nama_Grup]" />
 

@@ -22,7 +22,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_title_activity_product_score"
-                android:textColor="@color/font_top_ads_black_38"
+                android:textColor="@color/font_black_disabled_38"
                 android:textSize="12sp" />
 
             <TextView
