@@ -22,7 +22,6 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.List;

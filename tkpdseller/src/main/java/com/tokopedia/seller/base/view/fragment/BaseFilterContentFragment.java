@@ -1,6 +1,5 @@
 package com.tokopedia.seller.base.view.fragment;
 
-import com.tokopedia.seller.topads.dashboard.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
 
 /**
