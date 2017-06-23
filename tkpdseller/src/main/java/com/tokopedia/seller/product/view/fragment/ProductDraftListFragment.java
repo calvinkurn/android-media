@@ -282,18 +282,21 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     protected void showViewEmptyList() {
         super.showViewEmptyList();
-        fabAdd.hide();
+        fabAdd.setVisibility(View.GONE);
     }
 
     @Override
     protected void showViewSearchNoResult() {
         super.showViewSearchNoResult();
-        fabAdd.hide();
+        fabAdd.setVisibility(View.GONE);
     }
 
     @Override
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
+        if (!fabAdd.isShown()) {
+            fabAdd.setVisibility(View.VISIBLE);
+        }
         fabAdd.show();
     }
 

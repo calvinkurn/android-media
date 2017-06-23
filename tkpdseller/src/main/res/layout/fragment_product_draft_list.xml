@@ -22,5 +22,6 @@
         app:fabBackgroundTint="@color/green_500"
         app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
         app:miniFabDrawableTint="@android:color/white"
-        app:miniFabTitleTextColor="@android:color/white" />
+        app:miniFabTitleTextColor="@android:color/white"
+        android:visibility="gone"/>
 </FrameLayout>
