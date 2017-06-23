@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textColor="@color/thirty_eight_percent_black"
+            android:textColor="@color/font_top_ads_black_38"
             android:textSize="@dimen/fontvs" />
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/banner_margin"
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
-            android:textColor="@color/black_seventy_percent"
+            android:textColor="@color/font_top_ads_black_70"
             android:textSize="@dimen/fonts" />
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/banner_margin"
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
-            android:textColor="@color/thirty_eight_percent_black"
+            android:textColor="@color/font_top_ads_black_38"
             android:textSize="@dimen/fontvs"/>
 
     </LinearLayout>
@@ -59,7 +59,7 @@
         android:layout_alignParentRight="true"
         android:background="@android:drawable/list_selector_background"
         android:gravity="end|center_vertical"
-        android:textColor="@color/black_seventy_percent"
+        android:textColor="@color/font_top_ads_black_70"
         android:textSize="@dimen/fontl"
         tools:text="0" />
 

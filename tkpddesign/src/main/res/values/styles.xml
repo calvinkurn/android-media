@@ -10,7 +10,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="TextView.TopAds.Headline">
@@ -25,7 +25,7 @@
     </style>
 
     <style name="TextView.TopAds.Caption1.Grey">
-        <item name="android:textColor">@color/thirty_eight_percent_black</item>
+        <item name="android:textColor">@color/font_top_ads_black_38</item>
     </style>
 
     <style name="TextView.TopAds.Title">
@@ -73,7 +73,7 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.VerySmall">
@@ -145,7 +145,7 @@
 
     <style name="Button.Submit.White">
         <item name="android:background">@drawable/bg_button_white</item>
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
     <style name="ImageButton">
@@ -169,8 +169,7 @@
     </style>
 
     <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
-        <item name="android:textColorHint">@color/black_fifty_four_percent</item>
-
+        <item name="android:textColorHint">@color/font_top_ads_black_54</item>
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
         <item name="colorControlHighlight">@color/font_top_ads_green</item>
