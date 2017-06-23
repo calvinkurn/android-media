@@ -14,6 +14,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
@@ -930,12 +931,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_white));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
             if (SessionHandler.isV4Login(context)) {
                 LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                 int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
                 if (CartCache > 0) {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_white));
+                    menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
                 } else {
                     menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
                 }

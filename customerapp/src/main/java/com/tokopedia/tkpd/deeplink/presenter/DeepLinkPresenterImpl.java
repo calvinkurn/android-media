@@ -536,6 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
                 && !linkSegment.get(0).equals("hot")
+                && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")
                 && !linkSegment.get(0).equals("kartu-kredit")
                 && !linkSegment.get(0).equals("reset.pl")
@@ -551,7 +552,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
+                && !isBlog(linkSegment)
                 && !linkSegment.get(0).equals("pulsa"));
+    }
+
+    private boolean isBlog(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
     }
 
     private boolean isCatalog(List<String> linkSegment) {
