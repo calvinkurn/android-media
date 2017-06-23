@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout style="@style/LabelLayoutWithBorderBottom"
+    <LinearLayout style="@style/LabelLayout.BorderBottom"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -56,7 +56,7 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <LinearLayout style="@style/LabelLayoutWithBorderTop"
+    <LinearLayout style="@style/LabelLayout.BorderTop"
         android:orientation="vertical"
         android:clickable="false"
         android:layout_marginTop="@dimen/product_margin_cards"
