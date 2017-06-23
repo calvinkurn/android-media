@@ -1,12 +1,10 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -26,8 +24,8 @@ import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-import com.tokopedia.seller.util.NumberTextWatcher;
+import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -20,18 +20,18 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.view.adapter.ProductDraftAdapter;
-import com.tokopedia.seller.product.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView {
+        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView, BaseListViewListener {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     private FabSpeedDial fabAdd;

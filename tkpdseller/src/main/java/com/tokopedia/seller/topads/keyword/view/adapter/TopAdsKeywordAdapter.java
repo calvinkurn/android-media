@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeyword
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.

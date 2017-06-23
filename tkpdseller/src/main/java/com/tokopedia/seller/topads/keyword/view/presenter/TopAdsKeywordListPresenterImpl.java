@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.Datum;
@@ -17,7 +17,7 @@ import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +50,11 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<B
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onLoadSearchError();
+                getView().onLoadSearchError(t);
             }
 
             @Override

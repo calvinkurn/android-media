@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.keyword.domain.model;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
 
 /**
  * Created by normansyahputa on 5/18/17.

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 
 import retrofit2.Response;
 import rx.functions.Func1;

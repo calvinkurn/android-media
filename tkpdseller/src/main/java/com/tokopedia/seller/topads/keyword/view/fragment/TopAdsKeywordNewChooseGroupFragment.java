@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -20,11 +19,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
+import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.utils.ViewUtils;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
@@ -32,8 +31,8 @@ import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
-import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
+import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
+import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -328,16 +327,6 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordNewChooseGroupPresenter.detachView();
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List list, int totalItem) {
-
-    }
-
-    @Override
-    public void onLoadSearchError() {
-
     }
 
     @Override

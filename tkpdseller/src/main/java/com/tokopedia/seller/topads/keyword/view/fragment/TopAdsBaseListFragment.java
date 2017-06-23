@@ -14,7 +14,7 @@ import java.util.Date;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment}
+ *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class TopAdsBaseListFragment<T, U> extends BaseListFragment<T, U> implements

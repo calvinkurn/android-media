@@ -45,9 +45,9 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if(isViewAttached()) {
-                    getView().onLoadSearchError();
+                    getView().onLoadSearchError(t);
                 }
             }
 

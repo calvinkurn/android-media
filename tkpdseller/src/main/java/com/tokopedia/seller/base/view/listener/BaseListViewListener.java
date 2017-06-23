@@ -3,7 +3,6 @@ package com.tokopedia.seller.base.view.listener;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.view.model.Ad;
 
 import java.util.List;
 
@@ -14,6 +13,6 @@ public interface BaseListViewListener<T> extends CustomerView {
 
     void onSearchLoaded(@NonNull List<T> list, int totalItem);
 
-    void onLoadSearchError();
+    void onLoadSearchError(Throwable t);
 
 }

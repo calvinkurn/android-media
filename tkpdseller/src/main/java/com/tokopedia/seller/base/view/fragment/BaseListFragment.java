@@ -19,16 +19,16 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
+import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.List;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment}
+ *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
@@ -204,7 +204,7 @@ public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> im
     }
 
     @Override
-    public void onLoadSearchError() {
+    public void onLoadSearchError(Throwable t) {
         hideLoading();
         if (adapter.getDataSize() > 0) {
             showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {

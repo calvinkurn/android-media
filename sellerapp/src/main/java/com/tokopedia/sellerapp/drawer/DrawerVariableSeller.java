@@ -52,7 +52,7 @@ import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;

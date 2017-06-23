@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioGroup
+        <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomRadioGroup
             android:id="@+id/radio_group"
             style="@style/TopAdsCustomRadioGroup">
 
@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom = "@dimen/margin_small"/>
-        </com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioGroup>
+        </com.tokopedia.seller.topads.dashboard.view.widget.TopAdsCustomRadioGroup>
 
     </ScrollView>
 
