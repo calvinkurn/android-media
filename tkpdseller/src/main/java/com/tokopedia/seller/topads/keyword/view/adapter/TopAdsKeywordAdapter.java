@@ -21,9 +21,7 @@ public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
         switch (viewType) {
             case KeywordAd.TYPE:
             case NegativeKeywordAd.TYPE:
-                return new TopAdsKeywordViewHolder(
-                        LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.listview_top_ads_keyword_main, parent, false));
+                return new TopAdsKeywordViewHolder(getLayoutView(parent, R.layout.listview_top_ads_keyword_main));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

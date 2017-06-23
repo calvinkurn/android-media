@@ -15,6 +15,7 @@ import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
  */
 
 public class TopAdsKeywordViewHolder extends BaseViewHolder<KeywordAd> {
+
     private final TextView titleProduct;
     private final TextView statusActive;
     private final TextView pricePromoPerClick;
@@ -38,6 +39,7 @@ public class TopAdsKeywordViewHolder extends BaseViewHolder<KeywordAd> {
         statusActiveContainer = (LinearLayout) itemView.findViewById(R.id.status_active_container);
     }
 
+    @Override
     public void bindObject(final KeywordAd keywordAd) {
         if (keywordAd != null && keywordAd instanceof NegativeKeywordAd) {
             promoPriceUsedContainer.setVisibility(View.GONE);

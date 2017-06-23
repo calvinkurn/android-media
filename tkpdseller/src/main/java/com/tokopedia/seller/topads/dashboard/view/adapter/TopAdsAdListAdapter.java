@@ -21,7 +21,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseListAdapter<T> {
         switch (viewType) {
             case ProductAd.TYPE:
             case GroupAd.TYPE:
-                return new TopAdsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_ad, parent, false));
+                return new TopAdsViewHolder(getLayoutView(parent, R.layout.listview_top_ads_ad));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

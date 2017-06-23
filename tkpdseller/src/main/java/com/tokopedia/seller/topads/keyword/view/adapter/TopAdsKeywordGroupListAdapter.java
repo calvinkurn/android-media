@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
@@ -19,15 +18,11 @@ public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GroupAd.TYPE:
-                TopAdsKeywordGroupViewHolder topAdsKeywordGroupViewHolder
-                        = new TopAdsKeywordGroupViewHolder(
-                        LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_name_item, parent, false));
-                return topAdsKeywordGroupViewHolder;
+                return new TopAdsKeywordGroupViewHolder(getLayoutView(parent, R.layout.adapter_group_name_item));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
-
     public interface Listener {
         void notifySelect(GroupAd groupAd, int position);
     }

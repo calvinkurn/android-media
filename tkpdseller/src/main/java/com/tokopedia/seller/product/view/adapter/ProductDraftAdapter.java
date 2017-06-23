@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,9 +11,9 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 
 import java.io.File;
 import java.net.URI;
@@ -29,9 +28,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ProductDraftViewModel.TYPE:
-                return new ProductDraftViewHolder(
-                        LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_product_draft, parent, false));
+                return new ProductDraftViewHolder(getLayoutView(parent, R.layout.item_product_draft));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -58,6 +55,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             });
         }
 
+        @Override
         public void bindObject(ProductDraftViewModel model) {
             if (TextUtils.isEmpty(model.getProductName())) {
                 tvProductName.setText(MethodChecker.fromHtml("<i>" +

@@ -20,6 +20,7 @@ public class TopAdsKeywordGroupViewHolder extends BaseViewHolder<GroupAd> {
         groupNameText = (TextView) itemView.findViewById(R.id.text_group_name);
     }
 
+    @Override
     public void bindObject(final GroupAd groupAd) {
         groupNameText.setText(groupAd.getName());
     }

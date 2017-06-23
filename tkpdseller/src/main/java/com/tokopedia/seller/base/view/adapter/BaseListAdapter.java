@@ -1,7 +1,10 @@
 package com.tokopedia.seller.base.view.adapter;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 
@@ -49,7 +52,26 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
-    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
+    @Override
+    public int getItemViewType(int position) {
+        if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
+            if (isLoading()) {
+                return VIEW_LOADING;
+            } else if (isRetry()) {
+                return VIEW_RETRY;
+            } else {
+                return VIEW_EMPTY;
+            }
+        } else {
+            return data.get(position).getType();
+        }
+    }
+
+    protected View getLayoutView(ViewGroup parent, @LayoutRes int layoutRes) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
+    }
+
+    private void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
         if (data.size() <= position) {
             return;
         }
@@ -64,21 +86,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         });
         if (viewHolder instanceof BaseViewHolder) {
             ((BaseViewHolder) viewHolder).bindObject(t);
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
-            if (isLoading()) {
-                return VIEW_LOADING;
-            } else if (isRetry()) {
-                return VIEW_RETRY;
-            } else {
-                return VIEW_EMPTY;
-            }
-        } else {
-            return data.get(position).getType();
         }
     }
 

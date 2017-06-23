@@ -48,6 +48,7 @@ public class TopAdsViewHolder extends BaseViewHolder<Ad> {
         progressBarPromo.setProgressDrawable(draw);
     }
 
+    @Override
     public void bindObject(Ad ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
