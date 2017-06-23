@@ -51,7 +51,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView, BaseListViewListener {
+        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     private FabSpeedDial fabAdd;
@@ -295,15 +295,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
         fabAdd.show();
-    }
-
-    @Override
-    public void onSearchLoaded(List<ProductDraftViewModel> listDraft) {
-        if (listDraft == null ) {
-            onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
-        } else {
-            onSearchLoaded(listDraft, listDraft.size());
-        }
     }
 
     @Override

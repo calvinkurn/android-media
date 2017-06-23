@@ -54,7 +54,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             @Override
             public void onNext(List<UploadProductInputDomainModel> uploadProductInputDomainModels) {
                 if (uploadProductInputDomainModels == null || uploadProductInputDomainModels.size() == 0 ) {
-                    getView().onSearchLoaded(null);
+                    getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
                     // map to View Model
                     List<ProductDraftViewModel> viewModelList = new ArrayList<>();
@@ -62,7 +62,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                         UploadProductInputDomainModel domainModel = uploadProductInputDomainModels.get(i);
                         viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
                     }
-                    getView().onSearchLoaded(viewModelList);
+                    getView().onSearchLoaded(viewModelList, viewModelList.size());
                 }
 
             }
