@@ -5,25 +5,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
 public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
-    private Listener listener;
-
-    public Listener getListener() {
-        return listener;
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
     public int getDataSize() {
         return data.size();
     }
@@ -35,7 +25,6 @@ public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
                 TopAdsKeywordGroupViewHolder topAdsKeywordGroupViewHolder
                         = new TopAdsKeywordGroupViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_name_item, parent, false));
-                topAdsKeywordGroupViewHolder.setListener(listener);
                 return topAdsKeywordGroupViewHolder;
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -46,8 +35,7 @@ public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case GroupAd.TYPE:
-                TopAdsKeywordGroupViewHolder itemHolder = (TopAdsKeywordGroupViewHolder) holder;
-                itemHolder.bindData(data.get(position));
+                bindData(position, holder);
                 break;
             default:
                 super.onBindViewHolder(holder, position);

@@ -55,9 +55,6 @@ public abstract class BaseListAdapter<T> extends BaseLinearRecyclerViewAdapter {
             }
         });
         if (viewHolder instanceof BaseViewHolder) {
-            if (data.size() <= position) {
-                return;
-            }
             ((BaseViewHolder) viewHolder).bindObject(t);
         }
     }
