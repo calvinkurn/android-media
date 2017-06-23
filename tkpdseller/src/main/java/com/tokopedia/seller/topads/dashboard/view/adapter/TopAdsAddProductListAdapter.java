@@ -21,7 +21,7 @@ import com.tokopedia.seller.topads.dashboard.view.model.NonPromotedTopAdsAddProd
 import com.tokopedia.seller.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsAddProductModel;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         implements AdapterSelectionListener<TopAdsProductViewModel> {
-    List<TypeBasedModel> datas;
+    List<ItemType> datas;
     FragmentItemSelection fragmentItemSelection;
     private ImageHandler imageHandler;
     private boolean isEmptyShown;
@@ -135,13 +135,13 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         datas.clear();
     }
 
-    public void addAll(List<TypeBasedModel> typeBasedModels) {
-        datas.addAll(typeBasedModels);
+    public void addAll(List<ItemType> itemTypes) {
+        datas.addAll(itemTypes);
         notifyDataSetChanged();
     }
 
-    public void addAllWithoutNotify(List<TypeBasedModel> typeBasedModels) {
-        datas.addAll(typeBasedModels);
+    public void addAllWithoutNotify(List<ItemType> itemTypes) {
+        datas.addAll(itemTypes);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     private List<TopAdsProductViewModel> convertTo() {
         List<TopAdsProductViewModel> topAdsProductViewModels =
                 new ArrayList<>();
-        for (TypeBasedModel data : datas) {
+        for (ItemType data : datas) {
             if (data != null && data instanceof BaseTopAdsProductModel) {
                 BaseTopAdsProductModel baseTopAdsProductModel = ((BaseTopAdsProductModel) data);
                 if (baseTopAdsProductModel.getTopAdsProductViewModel() != null) {
@@ -195,9 +195,9 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public void removedItem(int position) {
-        TypeBasedModel typeBasedModel = datas.get(position);
-        if (typeBasedModel != null && typeBasedModel instanceof TopAdsAddProductModel) {
-            TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) typeBasedModel;
+        ItemType itemType = datas.get(position);
+        if (itemType != null && itemType instanceof TopAdsAddProductModel) {
+            TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) itemType;
             Log.d("MNORMANSYAH", "#4 before after selections : " + topAdsAddProductModel.isSelected()
                     + " position " + position);
             topAdsAddProductModel.setSelected(false);
@@ -217,9 +217,9 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
 
     public TopAdsProductViewModel getItem(int position) {
         if (position >= 0 && position < datas.size()) {
-            TypeBasedModel typeBasedModel = datas.get(position);
-            if (typeBasedModel instanceof TopAdsAddProductModel) {
-                return ((TopAdsAddProductModel) typeBasedModel).productDomain;
+            ItemType itemType = datas.get(position);
+            if (itemType instanceof TopAdsAddProductModel) {
+                return ((TopAdsAddProductModel) itemType).productDomain;
             }
         }
 

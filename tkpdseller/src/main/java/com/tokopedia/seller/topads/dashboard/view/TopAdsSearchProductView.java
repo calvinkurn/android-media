@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.dashboard.view;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
  */
 
 public interface TopAdsSearchProductView extends CustomerView {
-    void loadData(List<TypeBasedModel> datas);
+    void loadData(List<ItemType> datas);
 
-    void loadMore(List<TypeBasedModel> datas);
+    void loadMore(List<ItemType> datas);
 
     void dismissSnackbar();
 

@@ -42,7 +42,7 @@ import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetry
 import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.dashboard.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 
 import java.util.List;
@@ -419,11 +419,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void loadData(List<TypeBasedModel> datas) {
+    public void loadData(List<ItemType> datas) {
         renderDatas(datas);
     }
 
-    private void renderDatas(List<TypeBasedModel> datas) {
+    private void renderDatas(List<ItemType> datas) {
         if (refreshHandler.isRefreshing()) {
             refreshHandler.finishRefresh();
         }
@@ -469,7 +469,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void loadMore(List<TypeBasedModel> datas) {
+    public void loadMore(List<ItemType> datas) {
         renderDatas(datas);
     }
 

@@ -1,12 +1,11 @@
 package com.tokopedia.seller.topads.keyword.view.adapter.viewholder;
 
-import android.support.annotation.StringRes;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
@@ -15,7 +14,7 @@ import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
  * Created by normansyahputa on 5/19/17.
  */
 
-public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
+public class TopAdsKeywordViewHolder extends BaseViewHolder<KeywordAd> {
     private final TextView titleProduct;
     private final TextView statusActive;
     private final TextView pricePromoPerClick;
@@ -37,14 +36,6 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         promoPriceUsedContainer = (LinearLayout) itemView.findViewById(R.id.promo_price_used_container);
         keywordTypeDescription = (TextView) itemView.findViewById(R.id.title_keyword_type_description);
         statusActiveContainer = (LinearLayout) itemView.findViewById(R.id.status_active_container);
-    }
-
-    private String getString(@StringRes int stringRes) {
-        return itemView.getContext().getString(stringRes);
-    }
-
-    private String getString(@StringRes int stringRes, String value) {
-        return itemView.getContext().getString(stringRes, value);
     }
 
     public void bindObject(final KeywordAd keywordAd) {

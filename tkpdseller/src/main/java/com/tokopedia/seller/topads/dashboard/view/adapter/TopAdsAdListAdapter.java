@@ -30,24 +30,12 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseListAdapter<T> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case AD_TYPE:
-                TopAdsViewHolder itemHolder = (TopAdsViewHolder) holder;
-                bindData(position, itemHolder);
+                bindData(position, holder);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
                 break;
         }
-    }
-
-    @Override
-    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
-        super.bindData(position, viewHolder);
-        final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
-        if (data.size() <= position) {
-            return;
-        }
-        final Ad ad = data.get(position);
-        topAdsViewHolder.bindObject(ad);
     }
 
     @Override

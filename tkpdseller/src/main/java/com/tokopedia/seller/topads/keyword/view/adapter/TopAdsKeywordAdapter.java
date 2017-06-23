@@ -5,11 +5,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.model.NegativeKeywordAd;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.
@@ -35,24 +34,12 @@ public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
         switch (getItemViewType(position)) {
             case KeywordAd.TYPE:
             case NegativeKeywordAd.TYPE:
-                TopAdsKeywordViewHolder itemHolder = (TopAdsKeywordViewHolder) holder;
-                bindData(position, itemHolder);
+                bindData(position, holder);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
                 break;
         }
-    }
-
-    @Override
-    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
-        super.bindData(position, viewHolder);
-        final TopAdsKeywordViewHolder topAdsViewHolder = (TopAdsKeywordViewHolder) viewHolder;
-        if (data.size() <= position) {
-            return;
-        }
-        final Ad ad = data.get(position);
-        topAdsViewHolder.bindObject(data.get(position));
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 
@@ -24,7 +25,7 @@ import java.net.URI;
 
 public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
-    public static final int ITEM_TYPE = 4121;
+    private static final int ITEM_TYPE = 4121;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,7 +39,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
         }
     }
 
-    private class ProductDraftViewHolder extends RecyclerView.ViewHolder{
+    private class ProductDraftViewHolder extends BaseViewHolder<ProductDraftViewModel> {
         ImageView ivProduct;
         TextView tvProductName;
         TextView tvCompletionPercentage;
@@ -59,15 +60,15 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             });
         }
 
-        public void bind (ProductDraftViewModel model) {
+        public void bindObject(ProductDraftViewModel model) {
             if (TextUtils.isEmpty(model.getProductName())) {
                 tvProductName.setText(MethodChecker.fromHtml("<i>" +
                         tvProductName.getContext().getString(R.string.product_no_have_product_name_yet)
-                        +"</i>"));
+                        + "</i>"));
             } else {
                 tvProductName.setText(MethodChecker.fromHtml("<b>" +
                         model.getProductName()
-                        +"</b>"));
+                        + "</b>"));
             }
             tvCompletionPercentage.setText(tvCompletionPercentage.getContext().getString(R.string.product_draft_item_percent_complete,
                     model.getCompletionPercent()));
@@ -110,17 +111,6 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
                 super.onBindViewHolder(holder, position);
                 break;
         }
-    }
-
-    @Override
-    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
-        super.bindData(position, viewHolder);
-        final ProductDraftViewHolder draftViewHolder = (ProductDraftViewHolder) viewHolder;
-        if (data.size() <= position) {
-            return;
-        }
-        final ProductDraftViewModel model = data.get(position);
-        draftViewHolder.bind(model);
     }
 
     @Override

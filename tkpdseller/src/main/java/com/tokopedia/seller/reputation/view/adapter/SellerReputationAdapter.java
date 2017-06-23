@@ -26,7 +26,7 @@ import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final String TAG = "SellerReputationAdapter";
     private final Context context;
-    private ArrayList<TypeBasedModel> list;
+    private ArrayList<ItemType> list;
     private Fragment fragment;
 
     public SellerReputationAdapter(Context context) {
@@ -171,7 +171,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         notifyItemInserted(0);
     }
 
-    public void addAllWithoutNotify(List<TypeBasedModel> datas) {
+    public void addAllWithoutNotify(List<ItemType> datas) {
         list.addAll(datas);
     }
 
@@ -182,9 +182,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public SetDateHeaderModel getHeaderModel() {
         if (getDataSize() > 0) {
-            TypeBasedModel typeBasedModel = list.get(SET_DATE_MODEL_POSITION);
-            if (typeBasedModel != null && typeBasedModel instanceof SetDateHeaderModel) {
-                SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) typeBasedModel;
+            ItemType itemType = list.get(SET_DATE_MODEL_POSITION);
+            if (itemType != null && itemType instanceof SetDateHeaderModel) {
+                SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) itemType;
                 return setDateHeaderModel;
             }
         }
@@ -197,19 +197,19 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     private ArrayList<Parcelable> reformatParcelable() {
         ArrayList<Parcelable> parcelables = new ArrayList<>();
-        for (TypeBasedModel typeBasedModel : list) {
-            switch (typeBasedModel.getType()) {
+        for (ItemType itemType : list) {
+            switch (itemType.getType()) {
                 case ReputationReviewModel.VIEW_DEPOSIT:
-                    parcelables.add((ReputationReviewModel) typeBasedModel);
+                    parcelables.add((ReputationReviewModel) itemType);
                     break;
                 case SetDateHeaderModel.TYPE:
-                    parcelables.add((SetDateHeaderModel) typeBasedModel);
+                    parcelables.add((SetDateHeaderModel) itemType);
                     break;
                 case EmptySeparatorModel.TYPE:
-                    parcelables.add((EmptySeparatorModel) typeBasedModel);
+                    parcelables.add((EmptySeparatorModel) itemType);
                     break;
                 case EmptyListModel.TYPE:
-                    parcelables.add((EmptyListModel) typeBasedModel);
+                    parcelables.add((EmptyListModel) itemType);
                     break;
                 default:
                     throw new IllegalArgumentException("error in " + TAG);
@@ -220,8 +220,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public void restoreParcelable(ArrayList<Parcelable> parcelables) {
         for (Parcelable parcelable : parcelables) {
-            if (parcelable != null && parcelable instanceof TypeBasedModel) {
-                list.add((TypeBasedModel) parcelable);
+            if (parcelable != null && parcelable instanceof ItemType) {
+                list.add((ItemType) parcelable);
             }
         }
 

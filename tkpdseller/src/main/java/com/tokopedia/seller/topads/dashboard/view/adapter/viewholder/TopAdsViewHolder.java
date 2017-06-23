@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
@@ -15,18 +16,18 @@ import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
 /**
  * Created by zulfikarrahman on 11/28/16.
  */
-public class TopAdsViewHolder extends RecyclerView.ViewHolder {
+public class TopAdsViewHolder extends BaseViewHolder<Ad> {
 
-    public TextView titleProduct;
-    public View statusActiveDot;
-    public TextView statusActive;
-    public TextView promoPriceUsed;
-    public TextView dailySpentTextView;
-    public TextView dailyTotalTextView;
-    public TextView pricePromoPerClick;
-    public View progressBarLayout;
-    public ProgressBar progressBarPromo;
-    public TextView groupNameView;
+    private TextView titleProduct;
+    private View statusActiveDot;
+    private TextView statusActive;
+    private TextView promoPriceUsed;
+    private TextView dailySpentTextView;
+    private TextView dailyTotalTextView;
+    private TextView pricePromoPerClick;
+    private View progressBarLayout;
+    private ProgressBar progressBarPromo;
+    private TextView groupNameView;
 
     public TopAdsViewHolder(View view) {
         super(view);
