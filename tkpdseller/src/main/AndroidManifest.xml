@@ -87,11 +87,6 @@
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.dashboard.view.activity.TopAdsAddProductActivity"
-            android:label="@string/top_ads_title_product"
-            android:theme="@style/Theme.Tokopedia3"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".topads.dashboard.view.activity.TopAdsDetailShopActivity"
             android:label="@string/title_shop_ad_detail"
             android:theme="@style/Theme.Tokopedia3"
