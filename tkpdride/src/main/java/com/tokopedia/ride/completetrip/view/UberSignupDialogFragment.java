@@ -2,6 +2,8 @@ package com.tokopedia.ride.completetrip.view;
 
 import android.app.DialogFragment;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -112,6 +115,13 @@ public class UberSignupDialogFragment extends DialogFragment {
         webSettings.setBuiltInZoomControls(true);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Window window = getDialog().getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
     }
 
     private void clearCache(WebView webView) {
