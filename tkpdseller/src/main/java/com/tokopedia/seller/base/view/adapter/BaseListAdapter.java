@@ -18,8 +18,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         void onItemClicked(T t);
     }
 
-    private static final int UNKNOWN_TYPE = Integer.MIN_VALUE;
-
     protected List<T> data;
     private Callback callback;
 
@@ -32,13 +30,23 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         this.data = new ArrayList<>();
     }
 
-    public int getDataSize() {
-        return data.size();
-    }
-
     @Override
     public int getItemCount() {
         return data.size() + super.getItemCount();
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case VIEW_LOADING:
+            case VIEW_RETRY:
+            case VIEW_EMPTY:
+                super.onBindViewHolder(holder, position);
+                break;
+            default:
+                bindData(position, holder);
+                break;
+        }
     }
 
     public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
@@ -59,10 +67,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
-    protected boolean isLastItemPosition(int position) {
-        return position == data.size();
-    }
-
     @Override
     public int getItemViewType(int position) {
         if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
@@ -74,12 +78,16 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
                 return VIEW_EMPTY;
             }
         } else {
-            return UNKNOWN_TYPE;
+            return data.get(position).getType();
         }
     }
 
-    protected boolean isUnknownViewType(int itemType) {
-        return itemType == UNKNOWN_TYPE;
+    private boolean isLastItemPosition(int position) {
+        return position == data.size();
+    }
+
+    public int getDataSize() {
+        return data.size();
     }
 
     public void addData(List<T> data) {

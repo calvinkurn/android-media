@@ -28,26 +28,4 @@ public class TopAdsKeywordAdapter extends BaseListAdapter<KeywordAd> {
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case KeywordAd.TYPE:
-            case NegativeKeywordAd.TYPE:
-                bindData(position, holder);
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
-                break;
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int itemType = super.getItemViewType(position);
-        if (!isUnknownViewType(itemType)) {
-            return itemType;
-        }
-        return data.get(position).getType();
-    }
 }

@@ -14,9 +14,6 @@ import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeyword
  */
 
 public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
-    public int getDataSize() {
-        return data.size();
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -29,27 +26,6 @@ public class TopAdsKeywordGroupListAdapter extends BaseListAdapter<GroupAd> {
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case GroupAd.TYPE:
-                bindData(position, holder);
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
-                break;
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int itemType = super.getItemViewType(position);
-        if (!isUnknownViewType(itemType)) {
-            return itemType;
-        }
-        return data.get(position).getType();
     }
 
     public interface Listener {

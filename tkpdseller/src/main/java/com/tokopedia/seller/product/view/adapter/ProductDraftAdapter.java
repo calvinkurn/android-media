@@ -88,35 +88,14 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
                 );
             }
         }
-    }
 
-    private boolean isValidURL(String urlStr) {
-        try {
-            URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-        } catch (Exception e) {
-            return false;
+        private boolean isValidURL(String urlStr) {
+            try {
+                URI uri = new URI(urlStr);
+                return uri.getScheme().equals("http") || uri.getScheme().equals("https");
+            } catch (Exception e) {
+                return false;
+            }
         }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case ProductDraftViewModel.TYPE:
-                bindData(position, holder);
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
-                break;
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int itemType = super.getItemViewType(position);
-        if (!isUnknownViewType(itemType)) {
-            return itemType;
-        }
-        return data.get(position).getType();
     }
 }
