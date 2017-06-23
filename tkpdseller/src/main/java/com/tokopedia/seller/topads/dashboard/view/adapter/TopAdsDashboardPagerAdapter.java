@@ -35,11 +35,11 @@ public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return MainApplication.getAppContext().getString(R.string.title_top_ads_product);
+                return MainApplication.getAppContext().getString(R.string.top_ads_title_product);
             case 1:
                 return MainApplication.getAppContext().getString(R.string.title_top_ads_store);
             default:
-                return MainApplication.getAppContext().getString(R.string.title_top_ads_product);
+                return MainApplication.getAppContext().getString(R.string.top_ads_title_product);
         }
     }
 

@@ -20,10 +20,10 @@ public class TopAdsProductFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     public String[] getStatusValueList() {
-        return getResources().getStringArray(R.array.filter_status_list_values);
+        return getResources().getStringArray(R.array.top_ads_filter_status_list_values);
     }
 
     public String[] getStatusNameList() {
-        return getResources().getStringArray(R.array.filter_status_list_names);
+        return getResources().getStringArray(R.array.top_ads_filter_status_list_entries);
     }
 }

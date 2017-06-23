@@ -258,7 +258,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         public SellerDateHeaderViewHolder(View itemView) {
             super(itemView);
             dateHeaderFormatter = new DateHeaderFormatter(
-                    itemView.getResources().getStringArray(R.array.month_names_abrev)
+                    itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries)
             );
             reputationViewHelper = new ReputationHeaderViewHelper(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {

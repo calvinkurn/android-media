@@ -219,7 +219,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             @Override
             public void onClick(View view) {
                 //validate if server max not reached
-                if (keywordCount >= getResources().getInteger(R.integer.topads_max_keyword_in_group)) {
+                if (keywordCount >= getResources().getInteger(R.integer.top_ads_keyword_max_in_group)) {
                     CommonUtils.UniversalToast(getActivity(), getString(R.string.top_ads_keyword_per_group_reach_limit));
                     return;
                 }
@@ -231,7 +231,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                         autoCompleteChooseGroup.getText().toString(),
                         keywordType,
                         keywordCount,
-                        getResources().getInteger(R.integer.topads_max_keyword_in_group) - keywordCount,
+                        getResources().getInteger(R.integer.top_ads_keyword_max_in_group) - keywordCount,
                         new ArrayList<String>()
                 );
             }

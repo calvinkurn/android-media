@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:hint="@string/top_ads_keyword_add_keyword"
                     android:inputType="text"
-                    android:maxLength="@integer/keyword_max_length"
+                    android:maxLength="@integer/top_ads_keyword_max_length"
                     android:paddingRight="50dp"
                     android:maxLines="1"
                     android:singleLine="true"

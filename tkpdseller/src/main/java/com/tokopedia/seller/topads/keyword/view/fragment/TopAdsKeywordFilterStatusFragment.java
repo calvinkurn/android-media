@@ -38,7 +38,7 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     public String[] getStatusNameList() {
-        return getResources().getStringArray(R.array.top_ads_keyword_filter_status_list_names);
+        return getResources().getStringArray(R.array.top_ads_keyword_filter_status_list_entries);
     }
 
     @Override
