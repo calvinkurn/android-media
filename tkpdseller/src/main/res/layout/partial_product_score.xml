@@ -18,21 +18,19 @@
             android:layout_marginBottom="3dp">
 
             <TextView
-                style="@style/TextView"
+                style="@style/TextView.TopAds.Caption"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_title_activity_product_score"
-                android:textColor="@color/font_black_disabled_38"
-                android:textSize="12sp" />
+                android:textColor="@color/font_black_disabled_38" />
 
             <TextView
                 android:id="@+id/text_score"
-                style="@style/TextView"
+                style="@style/TextView.TopAds.Caption"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="@string/product_score_label_minus"
-                android:textColor="@color/low_score_value"
-                android:textSize="11sp" />
+                android:textColor="@color/low_score_value" />
         </RelativeLayout>
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar

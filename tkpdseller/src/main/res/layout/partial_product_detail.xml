@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextView.TopAds.Body.Gray"
+            style="@style/TextView.TopAds.Body1.Gray"
             android:text="@string/product_label_product_about" />
 
     </LinearLayout>

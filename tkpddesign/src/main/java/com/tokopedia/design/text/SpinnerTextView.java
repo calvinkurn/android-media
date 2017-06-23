@@ -78,7 +78,7 @@ public class SpinnerTextView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
             textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
-                    getResources().getDimension(R.dimen.font_medium));
+                    getResources().getDimension(R.dimen.font_subheading));
         } finally {
             styledAttributes.recycle();
         }

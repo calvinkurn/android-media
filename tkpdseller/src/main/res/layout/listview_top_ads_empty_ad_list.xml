@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        style="@style/TextView.TopAds.Body.Black"
+        style="@style/TextView.TopAds.Body1.Black"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:textSize="@dimen/font_medium"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        style="@style/TextView.TopAds.Body.Gray"
+        style="@style/TextView.TopAds.Body1.Gray"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:maxLines="4"
@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
-        style="@style/TextView.TopAds.Body.Green"
+        style="@style/TextView.TopAds.Body1.Green"
         android:layout_margin="@dimen/margin_med"
         android:visibility="gone"
         tools:text="@string/top_ads_empty_group_promo_content_item_no_text"/>

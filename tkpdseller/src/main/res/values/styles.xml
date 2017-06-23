@@ -138,7 +138,7 @@
 
     <style name="ExpandableStyle" parent="style_expandable_option_default">
         <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
-        <item name="eo_text_option_style">@style/TextView.TopAds.Title.Black</item>
+        <item name="eo_text_option_style">@style/TextView.TopAds.Subheading.Black</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 

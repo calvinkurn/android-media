@@ -17,9 +17,7 @@
 
     <TextView
         android:id="@+id/content_desc_product_score"
-        style="@style/TextView"
-        android:textColor="@color/font_black_secondary_54"
-        android:textSize="12sp"
+        style="@style/TextView.TopAds.Caption"
         tools:text="content description" />
 
 </LinearLayout>

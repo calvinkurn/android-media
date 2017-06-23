@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/text_group_name_"
-            style="@style/TextView.TopAds.Title.Black"
+            style="@style/TextView.TopAds.Subheading.Black"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
