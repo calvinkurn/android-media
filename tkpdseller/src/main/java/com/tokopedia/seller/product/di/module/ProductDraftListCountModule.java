@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
+import com.tokopedia.seller.product.domain.interactor.productdraft.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.productdraft.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenter;
@@ -30,8 +32,17 @@ public class ProductDraftListCountModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase){
-        return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase);
+    ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
+                                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase){
+        return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
+                clearAllDraftProductUseCase);
+    }
+
+    @ProductAddScope
+    @Provides
+    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                                                             ProductDraftRepository productDraftRepository){
+        return new ClearAllDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
     }
 }
 

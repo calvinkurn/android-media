@@ -247,7 +247,6 @@ public class ManageProduct extends TkpdActivity implements
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
     private TextView tvDraftProductInfo;
-    private boolean needRefreshDraftInfo = true;
 
     @Override
     public String getScreenName() {
@@ -1525,11 +1524,7 @@ public class ManageProduct extends TkpdActivity implements
         }
         registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
 
-
-        if (needRefreshDraftInfo) {
-            productDraftListCountPresenter.fetchAllDraftCount();
-            needRefreshDraftInfo = false;
-        }
+        productDraftListCountPresenter.fetchAllDraftCount();
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
@@ -1567,13 +1562,6 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // request code vary by seller router application, don't use it!
-        if (resultCode == Activity.RESULT_OK &&
-                data.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
-            needRefreshDraftInfo = true;
-            return;
-        }
-        // ELSE
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
@@ -2066,28 +2054,7 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     public void onDraftCountLoadError() {
         // delete all draft when error loading draft
-        TkpdSellerLogoutComponent component = DaggerTkpdSellerLogoutComponent
-                .builder()
-                .appComponent(getComponent())
-                .tkpdSellerLogoutModule(new TkpdSellerLogoutModule())
-                .build();
-        component.getClearAllDraftProductUseCase().execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-                // no op
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // no op
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                // no op
-            }
-        });
-
+        productDraftListCountPresenter.clearAllDraft();
         tvDraftProductInfo.setVisibility(View.GONE);
     }
 

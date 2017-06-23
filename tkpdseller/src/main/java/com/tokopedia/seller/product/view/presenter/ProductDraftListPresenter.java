@@ -9,4 +9,5 @@ import com.tokopedia.seller.product.view.listener.ProductDraftListView;
 
 public abstract class ProductDraftListPresenter extends BaseDaggerPresenter<ProductDraftListView> {
     public abstract void fetchAllDraftData();
+    public abstract void deleteProductDraft(long draftId);
 }

@@ -152,6 +152,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         bundle.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, errorMessage);
         result.putExtras(bundle);
         sendBroadcast(result);
+        // TODO hendry use the failed broadcast to update UI
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.product.view.presenter.ProductDraftView;
 
 import java.io.File;
 import java.net.URI;
@@ -25,6 +26,15 @@ import java.net.URI;
 public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
     public static final int ITEM_TYPE = 4121;
+
+    OnDraftDeleteListener onDraftDeleteListener;
+    public interface OnDraftDeleteListener{
+        void onDelete(ProductDraftViewModel draftViewModel, int position);
+    }
+
+    public void setOnDraftDeleteListener(OnDraftDeleteListener onDraftDeleteListener) {
+        this.onDraftDeleteListener = onDraftDeleteListener;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,7 +64,10 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO hendry delete item
+                    int position = getLayoutPosition();
+                    if (onDraftDeleteListener!= null) {
+                        onDraftDeleteListener.onDelete(data.get(position), position);
+                    }
                 }
             });
         }
@@ -89,6 +102,14 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
                 );
             }
         }
+    }
+
+    public void confirmDelete (int position){
+        if (position < 0 || position >= data.size()) {
+            return;
+        }
+        data.remove(position);
+        notifyItemRemoved(position);
     }
 
     private boolean isValidURL(String urlStr) {

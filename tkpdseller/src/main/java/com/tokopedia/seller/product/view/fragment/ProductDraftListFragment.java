@@ -58,7 +58,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
-    private boolean needRefreshDraftInfo = false;
 
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
@@ -66,7 +65,17 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     protected BaseListAdapter getNewAdapter() {
-        return new ProductDraftAdapter();
+        final ProductDraftAdapter adapter = new ProductDraftAdapter();
+        adapter.setOnDraftDeleteListener(new ProductDraftAdapter.OnDraftDeleteListener() {
+            @Override
+            public void onDelete(ProductDraftViewModel draftViewModel, int position) {
+                // TODO hendry delete confirmation dialog
+                adapter.confirmDelete(position);
+                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductId());
+                // TODO hendry go to empty state if all data has been deleted
+            }
+        });
+        return adapter;
     }
 
     @Override
@@ -206,13 +215,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        // request code vary by seller router application, don't use it!
-        if (resultCode == Activity.RESULT_OK &&
-                intent.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
-            needRefreshDraftInfo = true;
-            return;
-        }
-
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
@@ -242,14 +244,12 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     public void onResume() {
         super.onResume();
-        if (needRefreshDraftInfo) {
-            searchData();
-            needRefreshDraftInfo = false;
-        }
+        searchData();
     }
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
+        // TODO hendry empty state for draft product
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter) {
             @Override
             protected int getEmptyLayout() {
@@ -277,6 +277,24 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     public void onEmptyButtonClicked() {
         // TODO hendry button empty clicked
+    }
+
+    @Override
+    protected void showViewEmptyList() {
+        super.showViewEmptyList();
+        fabAdd.hide();
+    }
+
+    @Override
+    protected void showViewSearchNoResult() {
+        super.showViewSearchNoResult();
+        fabAdd.hide();
+    }
+
+    @Override
+    protected void showViewList(@NonNull List list) {
+        super.showViewList(list);
+        fabAdd.show();
     }
 
     @Override
