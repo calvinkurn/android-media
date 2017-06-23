@@ -8,10 +8,6 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="TextView.TopAds">
-        <item name="android:maxLines">1</item>
-    </style>
-
     <style name="TextView.Display4">
         <item name="android:textSize">@dimen/font_display4</item>
     </style>
@@ -44,60 +40,55 @@
         <item name="android:textSize">@dimen/font_headline</item>
     </style>
 
-    <style name="TextView.TopAds.Subheading">
+    <style name="TextView.Subheading">
         <item name="android:textSize">@dimen/font_subheading</item>
     </style>
 
-    <style name="TextView.TopAds.Subheading.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.TopAds.Subheading.Green">
+    <style name="TextView.Subheading.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
-    <style name="TextView.TopAds.Subheading.Gray">
+    <style name="TextView.Subheading.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
-    <style name="TextView.TopAds.Subheading.Black">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+    <style name="TextView.Subheading.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Body2">
+    <style name="TextView.Body2">
         <item name="android:textSize">@dimen/font_body2</item>
     </style>
 
-    <style name="TextView.TopAds.Body1">
+    <style name="TextView.Body1">
         <item name="android:textSize">@dimen/font_body1</item>
     </style>
 
-    <style name="TextView.TopAds.Body1.Gray">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
-    </style>
-
-    <style name="TextView.TopAds.Body1.LightGray">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
-    </style>
-
-    <style name="TextView.TopAds.Body1.Black">
-        <item name="android:textColor">@color/font_black_primary_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body1.Black.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.TopAds.Body1.Green">
+    <style name="TextView.Body1.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
-    <style name="TextView.TopAds.Caption">
-        <item name="android:textSize">@dimen/font_caption</item>
+    <style name="TextView.Body1.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
-    <style name="TextView.TopAds.Caption.Grey">
+    <style name="TextView.Body1.BlackDisabled">
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+    </style>
+
+    <style name="TextView.Body1.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextView.Caption">
+        <item name="android:textSize">@dimen/font_caption</item>
+    </style>
+
+    <style name="TextView.Caption.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="TextView.Caption.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
 

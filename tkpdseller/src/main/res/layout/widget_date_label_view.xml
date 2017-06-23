@@ -13,7 +13,7 @@
 
     <TextView
         android:id="@+id/text_view_date_range"
-        style="@style/TextView.TopAds.Subheading.Green"
+        style="@style/TextView.Subheading.Green"
         android:layout_width="0dp"
         android:layout_marginEnd="@dimen/topads_arrow_left_margin"
         android:layout_marginRight="@dimen/topads_arrow_left_margin"

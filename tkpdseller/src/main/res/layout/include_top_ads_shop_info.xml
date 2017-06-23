@@ -25,13 +25,13 @@
 
         <TextView
             android:id="@+id/text_view_shop_title"
-            style="@style/TextView.TopAds.Body1.Black.Bold"
+            style="@style/TextView.Body1.Bold"
             android:text="@string/top_ads_statistic_info_default_value"/>
 
         <TextView
             android:id="@+id/text_view_deposit_desc"
             android:maxLines="3"
-            style="@style/TextView.TopAds.Body1.Gray"
+            style="@style/TextView.Body1.BlackSecondary"
             android:text="@string/top_ads_statistic_info_default_value"/>
     </LinearLayout>
 
