@@ -962,7 +962,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             @Override
             public void run() {
                 //check if trip is in process then only make it visible
-                if (presenter.getRideStatus().equalsIgnoreCase(RideStatus.PROCESSING)) {
+                if (presenter.getRideStatus() != null && presenter.getRideStatus().equalsIgnoreCase(RideStatus.PROCESSING)) {
                     cancelButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -976,7 +976,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         cancelPanelLayout.setVisibility(View.VISIBLE);
         cancelPanelLayout.setAlpha(0.0f);
         cancelPanelLayout.animate().alpha(1.0f).setDuration(500);
-
     }
 
     @Override

@@ -282,7 +282,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
                 android:text="@string/popup_cancel_ride_title"
                 android:textColor="@color/black"
@@ -292,11 +292,10 @@
                 android:id="@+id/cancellation_charges_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
 
                 <TextView
@@ -319,10 +318,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center">
 
                 <TextView
@@ -330,7 +329,7 @@
                     android:layout_width="80dp"
                     android:layout_height="36dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/rounded_bg_promo_card"
+                    android:background="@drawable/rounded_bg_white_btn"
                     android:gravity="center"
                     android:text="@string/ontrip_cancel_no"
                     android:textAllCaps="false"
