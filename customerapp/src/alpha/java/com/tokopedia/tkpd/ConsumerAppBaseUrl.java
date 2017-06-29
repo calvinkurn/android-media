@@ -9,6 +9,7 @@ public class ConsumerAppBaseUrl {
 
     public static final String BASE_DOMAIN = "https://ws-alpha.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-alpha.tokopedia.com/";
+    public static final String BASE_TOME_DOMAIN = "https://tome-alpha.tokopedia.com/";
     public static final String BASE_CLOVER_DOMAIN = "https://ajax-alpha.tokopedia.com/points/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta-alpha.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito-alpha.tokopedia.com/";
@@ -26,4 +27,5 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_RIDE_DOMAIN = "https://ride-alpha.tokopedia.com/";
 
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-alpha.tokopedia.com/";
+
 }

@@ -33,8 +33,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -57,6 +57,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
     private static final String TAG = DiscoverySearchView.class.getSimpleName();
+    private static final String LOCALE_INDONESIA = "in_ID";
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -96,6 +97,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private interface QueryListener {
         void onQueryChanged(String query);
     }
+
     private String lastQuery;
 
     public DiscoverySearchView(Context context) {
@@ -238,7 +240,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mEmptyBtn.setOnClickListener(mOnClickListener);
         mTintView.setOnClickListener(mOnClickListener);
 
-        allowVoiceSearch = false;
+        allowVoiceSearch = true;
 
         showVoice(true);
 
@@ -264,12 +266,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (copyText) {
-                    s = s.subSequence(0, s.length() - 1);
-                    copyText = false;
+                if (s != null) {
+                    if (copyText) {
+                        s = s.subSequence(0, s.length() - 1);
+                        copyText = false;
+                    }
+                    mUserQuery = s;
+                    queryListener.onQueryChanged(s.toString());
                 }
-                mUserQuery = s;
-                queryListener.onQueryChanged(s.toString());
             }
 
             @Override
@@ -314,6 +318,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         //intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak an item name or number");    // user hint
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);    // setting recognition model, optimized for short phrases – search queries
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LOCALE_INDONESIA);  //This is priority for Indonesian language
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);    // quantity of results we want to receive
         if (mContext instanceof Activity) {
             ((Activity) mContext).startActivityForResult(intent, REQUEST_VOICE);
@@ -354,13 +359,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private boolean isVoiceAvailable() {
-        if (isInEditMode()) {
-            return true;
-        }
         PackageManager pm = getContext().getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(
                 new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        return activities.size() == 0;
+        return activities.size() != 0;
     }
 
     public void hideKeyboard(View view) {

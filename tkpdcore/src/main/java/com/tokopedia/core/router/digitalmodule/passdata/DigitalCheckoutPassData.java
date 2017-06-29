@@ -20,6 +20,9 @@ public class DigitalCheckoutPassData implements Parcelable {
     public static final String PARAM_UTM_CAMPAIGN = "utm_campaign";
     public static final String PARAM_UTM_CONTENT = "utm_content";
     public static final String PARAM_IDEM_POTENCY_KEY = "idem_potency_key";
+    public static final String DEFAULT_ACTION = "init_data";
+    public static final String UTM_SOURCE_ANDROID = "android";
+    public static final String UTM_MEDIUM_WIDGET = "widget";
 
     private String action;
     private String categoryId;
@@ -33,6 +36,7 @@ public class DigitalCheckoutPassData implements Parcelable {
     private String utmCampaign;
     private String utmContent;
     private String idemPotencyKey;
+    private String voucherCodeCopied;
 
     private DigitalCheckoutPassData(Builder builder) {
         setAction(builder.action);
@@ -47,6 +51,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         setUtmCampaign(builder.utmCampaign);
         setUtmContent(builder.utmContent);
         setIdemPotencyKey(builder.idemPotencyKey);
+        setVoucherCodeCopied(builder.voucherCodeCopied);
     }
 
     public String getAction() {
@@ -145,6 +150,14 @@ public class DigitalCheckoutPassData implements Parcelable {
         this.idemPotencyKey = idemPotencyKey;
     }
 
+    public String getVoucherCodeCopied() {
+        return voucherCodeCopied;
+    }
+
+    public void setVoucherCodeCopied(String voucherCodeCopied) {
+        this.voucherCodeCopied = voucherCodeCopied;
+    }
+
     public DigitalCheckoutPassData() {
     }
 
@@ -161,6 +174,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         private String utmCampaign;
         private String utmContent;
         private String idemPotencyKey;
+        private String voucherCodeCopied;
 
         public Builder() {
         }
@@ -225,6 +239,11 @@ public class DigitalCheckoutPassData implements Parcelable {
             return this;
         }
 
+        public Builder voucherCodeCopied(String val) {
+            voucherCodeCopied = val;
+            return this;
+        }
+
         public DigitalCheckoutPassData build() {
             return new DigitalCheckoutPassData(this);
         }
@@ -249,6 +268,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         dest.writeString(this.utmCampaign);
         dest.writeString(this.utmContent);
         dest.writeString(this.idemPotencyKey);
+        dest.writeString(this.voucherCodeCopied);
     }
 
     protected DigitalCheckoutPassData(Parcel in) {
@@ -264,17 +284,19 @@ public class DigitalCheckoutPassData implements Parcelable {
         this.utmCampaign = in.readString();
         this.utmContent = in.readString();
         this.idemPotencyKey = in.readString();
+        this.voucherCodeCopied = in.readString();
     }
 
-    public static final Creator<DigitalCheckoutPassData> CREATOR = new Creator<DigitalCheckoutPassData>() {
-        @Override
-        public DigitalCheckoutPassData createFromParcel(Parcel source) {
-            return new DigitalCheckoutPassData(source);
-        }
+    public static final Creator<DigitalCheckoutPassData> CREATOR =
+            new Creator<DigitalCheckoutPassData>() {
+                @Override
+                public DigitalCheckoutPassData createFromParcel(Parcel source) {
+                    return new DigitalCheckoutPassData(source);
+                }
 
-        @Override
-        public DigitalCheckoutPassData[] newArray(int size) {
-            return new DigitalCheckoutPassData[size];
-        }
-    };
+                @Override
+                public DigitalCheckoutPassData[] newArray(int size) {
+                    return new DigitalCheckoutPassData[size];
+                }
+            };
 }

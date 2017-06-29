@@ -16,7 +16,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -26,10 +25,9 @@ import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
-import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,6 +74,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private Date startDate;
     private Date endDate;
 
+    String itemIdToAdd;
+
     protected TopAdsDetailAdViewModel detailAd;
 
     @Override
@@ -112,6 +112,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     protected void setupArguments(Bundle bundle) {
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
         name = bundle.getString(TopAdsExtraConstant.EXTRA_NAME);
+        itemIdToAdd = bundle.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null && !TextUtils.isEmpty(itemIdToAdd)) {
+            presenter.getProductDetail(itemIdToAdd);
+        }
     }
 
     @Override
@@ -140,12 +149,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        maxPriceEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onCurrencyChanged(float currencyValue) {
-                super.onCurrencyChanged(currencyValue);
-                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), currencyValue);
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     maxPriceInputLayout.setError(errorMessage);
                 } else {
@@ -153,17 +162,17 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
-        budgetPerDayEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onCurrencyChanged(float currencyValue) {
-                super.onCurrencyChanged(currencyValue);
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
                 String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
                 float clickBudget = 0;
                 if (!TextUtils.isEmpty(clickBudgetString)) {
                     clickBudget = Float.parseFloat(clickBudgetString);
                 }
-                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, currencyValue);
+                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     budgetPerDayInputLayout.setError(errorMessage);
                 } else {

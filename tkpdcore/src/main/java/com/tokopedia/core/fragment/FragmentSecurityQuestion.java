@@ -31,10 +31,10 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
@@ -44,6 +44,7 @@ import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -253,7 +254,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void startTimer() {
-        if(!isRunningTimer){
+        if (!isRunningTimer) {
             countDownTimer = new CountDownTimer(90000, 1000) {
                 public void onTick(long millisUntilFinished) {
                     try {
@@ -293,7 +294,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vSendOtp.setText(R.string.title_resend_otp);
         vSendOtp.setEnabled(true);
 
-        vSendOtpCall.setVisibility(View.VISIBLE);
+        if (titleSecurity != null
+                && titleSecurity.getText() != null
+                && !titleSecurity.getText().equals("")
+                && !titleSecurity.getText().toString().equals(
+                getString(R.string.content_security_question_email)))
+            vSendOtpCall.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -314,8 +320,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-//        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-        verifyTrueCaller.setVisibility(View.GONE);
+        if (GlobalConfig.isSellerApp()) {
+            verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+            if (b) UnifyTracking.eventTruecallerImpression();
+        } else {
+            verifyTrueCaller.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -354,6 +364,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             @Override
             public void onClick(View v) {
                 presenter.getPhoneTrueCaller();
+                UnifyTracking.eventClickTruecaller();
             }
         });
     }
@@ -374,8 +385,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-            presenter.doRequestOtp();
+//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
+//                && !verifyTrueCaller.isShown())
+//            presenter.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
@@ -435,6 +447,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
                 presenter.showTrueCaller(getActivity());
+                if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true") && !verifyTrueCaller.isShown()) {
+                    presenter.doRequestOtp();
+                }
                 vSendOtp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

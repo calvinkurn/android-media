@@ -26,6 +26,8 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.customadapter.AttachmentAdapter;
@@ -38,8 +40,6 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.AppealResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.AppealResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;

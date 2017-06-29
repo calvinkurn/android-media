@@ -3,7 +3,6 @@ package com.tokopedia.discovery.intermediary.view;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
@@ -19,7 +18,6 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     public IntermediaryPresenter(GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase) {
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
     }
-
 
     @Override
     public void getIntermediaryCategory(String categoryId) {
@@ -48,18 +46,29 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
-            if (isViewAttached() && domainModel.isIntermediary()) {
-                getView().renderTopAds();
-                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
-                getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
-                if (domainModel.getHotListModelList().size()>0) {
-                    getView().renderHotList(domainModel.getHotListModelList());
+            if (isViewAttached()) {
+                if (domainModel.isIntermediary()) {
+                    getView().renderTopAds();
+                    getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
+                    getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
+                    if (domainModel.getHotListModelList().size() > 0) {
+                        getView().renderHotList(domainModel.getHotListModelList());
+                    }
+                    getView().renderHeader(domainModel.getHeaderModel());
+                    getView().updateDepartementId(domainModel.getDepartementId());
+                    if (domainModel.getBannerModelList().size() > 0) {
+                        getView().renderBanner(domainModel.getBannerModelList());
+                    }
+                    if (domainModel.getVideoModel() != null && domainModel.getVideoModel().getVideoUrl() != null) {
+                        getView().renderVideo(domainModel.getVideoModel());
+                    }
+                    if (domainModel.getBrandModelList() != null && domainModel.getBrandModelList().size() > 0) {
+                        getView().renderBrands(domainModel.getBrandModelList());
+                    }
+                    getView().backToTop();
+                } else {
+                    getView().skipIntermediaryPage();
                 }
-                getView().renderHeader(domainModel.getHeaderModel());
-                getView().updateDepartementId(domainModel.getDepartementId());
-                getView().backToTop();
-            } else {
-                getView().skipIntermediaryPage();
             }
         }
 

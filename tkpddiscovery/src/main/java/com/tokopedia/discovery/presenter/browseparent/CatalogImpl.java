@@ -45,7 +45,6 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
         // jika datanya kosong, maka itu dianggap first time.
         this.browseView = browseView;
         if (view.getDataSize() <= 0) {
-
             catalog = new NetworkParam.Catalog();
             catalog.start = 0;
             catalog.q = browseView.getProductParam().q;
@@ -58,6 +57,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
             catalog.breadcrumb = browseView.getProductParam().breadcrumb;
             catalog.extraFilter = browseView.getProductParam().extraFilter;
             discoveryInteractor.getCatalogs(NetworkParam.generateCatalogQuery(catalog));
+            view.setLoading(true);
         }
     }
 
@@ -112,7 +112,6 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
         view.ariseRetry(type, ((ErrorContainer) data.getModel2()).body().getMessage());
-
     }
 
     private Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> parseBrowseCategoryModel(BrowseCatalogModel browseCatalogModel) {

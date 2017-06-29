@@ -43,6 +43,7 @@ import com.tokopedia.seller.lib.williamchart.animation.style.BaseStyleAnimation;
 import com.tokopedia.seller.lib.williamchart.listener.OnEntryClickListener;
 import com.tokopedia.seller.lib.williamchart.model.ChartEntry;
 import com.tokopedia.seller.lib.williamchart.model.ChartSet;
+import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
 import com.tokopedia.seller.lib.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
@@ -90,7 +91,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * list data string to displaye on tooltip
      */
-    ArrayList<String> dataDisplayTooltip;
+    ArrayList<TooltipModel> dataDisplayTooltip;
 
     /**
      * Chart orientation
@@ -424,8 +425,6 @@ public abstract class ChartView extends RelativeLayout {
 
             // Draw axis X
             xRndr.draw(canvas);
-
-            //System.out.println("Time drawing "+(System.currentTimeMillis() - time));
         }
 
         mIsDrawing = false;
@@ -505,7 +504,7 @@ public abstract class ChartView extends RelativeLayout {
      *
      * @param dataDisplayTooltip
      */
-    public void addDataDisplayDots(ArrayList<String> dataDisplayTooltip) {
+    public void addDataDisplayDots(ArrayList<TooltipModel> dataDisplayTooltip) {
         if (dataDisplayTooltip == null)
             throw new IllegalArgumentException("Chart data tooltip set can't be null.");
 
@@ -700,7 +699,7 @@ public abstract class ChartView extends RelativeLayout {
      * @param rect  {@link Rect} containing the bounds of last clicked entry
      * @param value Value to display on tooltip
      */
-    private void toggleTooltip(Rect rect, String value) {
+    private void toggleTooltip(Rect rect, TooltipModel value) {
 
         if (!mTooltip.on()) {
             mTooltip.prepare(rect, value);
@@ -764,7 +763,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     private void dismissTooltip(Tooltip tooltip) {
 
-        dismissTooltip(tooltip, null, "");
+        dismissTooltip(tooltip, null, new TooltipModel("", ""));
     }
 
 
@@ -773,7 +772,7 @@ public abstract class ChartView extends RelativeLayout {
      *
      * @param tooltip View to be dismissed
      */
-    private void dismissTooltip(final Tooltip tooltip, final Rect rect, final String value) {
+    private void dismissTooltip(final Tooltip tooltip, final Rect rect, final TooltipModel value) {
 
         if (tooltip.hasExitAnimation()) {
             tooltip.animateExit(new Runnable() {
@@ -1663,7 +1662,8 @@ public abstract class ChartView extends RelativeLayout {
                                 if (dataDisplayTooltip != null && dataDisplayTooltip.get(i) != null) {
                                     toggleTooltip(getEntryRect(mRegions.get(i).get(j)), dataDisplayTooltip.get(j));
                                 } else {
-                                    toggleTooltip(getEntryRect(mRegions.get(i).get(j)), String.valueOf(data.get(i).getValue(j)));
+                                    TooltipModel tooltipModel = new TooltipModel("", String.valueOf(data.get(i).getValue(j)));
+                                    toggleTooltip(getEntryRect(mRegions.get(i).get(j)), tooltipModel);
                                 }
                             }
                             return true;

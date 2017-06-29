@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -50,6 +51,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -270,6 +272,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
+        return DeviceUtil.getDigitalIdentifierParam(getActivity());
+    }
+
+    @Override
     public void closeView() {
         getActivity().finish();
     }
@@ -320,6 +327,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else {
             pbMainLoading.setVisibility(View.GONE);
             mainContainer.setVisibility(View.VISIBLE);
+        }
+
+        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName()+" - "+cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+
+    }
+
+    private void sendGTMAnalytics(String ec, String el, boolean analyticsKind){
+
+        UnifyTracking.eventViewCheckoutPage(ec, el);
+
+        if(analyticsKind){
+            UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
+        }{
+            UnifyTracking.eventClickBeliWidget(ec, el);
         }
     }
 
@@ -594,6 +615,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
+        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName()+" - "+cartDigitalInfoDataState.getAttributes().getPricePlain());
         presenter.processToCheckout();
     }
 

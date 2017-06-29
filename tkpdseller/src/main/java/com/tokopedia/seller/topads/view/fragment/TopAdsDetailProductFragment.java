@@ -1,9 +1,12 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -13,20 +16,20 @@ import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import org.parceler.Parcels;
 
@@ -34,15 +37,18 @@ import org.parceler.Parcels;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
+public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter> {
 
     public static final String PRODUCT_AD_PARCELABLE = "PRODUCT_AD_PARCELABLE";
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
+        void startShowCase();
     }
 
-    private TopAdsLabelView promoGroupLabelView;
+    private LabelView promoGroupLabelView;
+
+    private LabelView priceAndSchedule;
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
@@ -64,10 +70,21 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopAdsDetailProductFragmentListener) {
+            listener = (TopAdsDetailProductFragmentListener) context;
+        }
+    }
+
     @Override
     protected void initView(View view) {
         super.initView(view);
-        promoGroupLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_promo_group);
+        promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
+        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
+
         name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +104,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)),
+        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
+                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
                 new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
@@ -140,8 +158,16 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     public void onAdLoaded(Ad ad) {
-        super.onAdLoaded(ad);
         productAd = (ProductAd) ad;
+        super.onAdLoaded(ad);
+        if (listener!= null) {
+            listener.startShowCase();
+        }
+    }
+
+    @Override
+    protected void updateMainView(Ad ad) {
+        super.updateMainView(ad);
         String groupName = productAd.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));
@@ -170,13 +196,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
     }
 
-    void onNameClicked() {
+    private void onNameClicked() {
         if (listener != null) {
             listener.goToProductActivity(productAd.getProductUri());
         }
     }
 
-    void onPromoGroupClicked() {
+    private void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());
@@ -223,5 +249,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onRestoreState(savedState);
         productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
         onAdLoaded(productAd);
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
     }
 }

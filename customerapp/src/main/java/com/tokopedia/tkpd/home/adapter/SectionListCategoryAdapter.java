@@ -11,14 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+
 
 /**
  * @author by mady on 9/23/16.
@@ -59,25 +58,31 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
         ImageHandler.LoadImage(holder.itemImage, singleItem.getImageUrl());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
-                if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
-                    categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
-                } else if (!TextUtils.isEmpty(singleItem.getApplinks()) && deepLinkDelegate.supportsUri(singleItem.getApplinks())) {
-                    applinkClickedListener.onApplinkClicked(singleItem);
-                } else {
-                    gimmicClickedListener.onGimmicClicked(singleItem);
-                }
-            }
-        });
+                                           @Override
+                                           public void onClick(View v) {
+                                               DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+
+                                               if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
+                                                   categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
+                                               } else if (CategoryItemModel.TYPE.DIGITAL.equals(singleItem.getType())) {
+                                                   gimmicClickedListener.onDigitalCategoryClicked(singleItem);
+                                               } else if (!TextUtils.isEmpty(singleItem.getAppLinks()) && deepLinkDelegate.supportsUri(singleItem.getAppLinks())) {
+                                                   applinkClickedListener.onApplinkClicked(singleItem);
+                                               } else {
+                                                   gimmicClickedListener.onGimmicClicked(singleItem);
+                                               }
+
+                                           }
+                                       }
+        );
 
         if (i % 2 != 0) {
             holder.sparator.setVisibility(View.GONE);
-        } else {
+        } else
+
+        {
             holder.sparator.setVisibility(View.VISIBLE);
         }
-
     }
 
 
@@ -116,9 +121,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
             this.itemImage = (ImageView) view.findViewById(R.id.itemImage);
 
             this.linWrapper = (LinearLayout) view.findViewById(R.id.linWrapper);
-
         }
-
     }
 
     public interface OnCategoryClickedListener {
@@ -127,6 +130,8 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
     public interface OnGimmicClickedListener {
         void onGimmicClicked(CategoryItemModel categoryItemModel);
+
+        void onDigitalCategoryClicked(CategoryItemModel itemModel);
     }
 
     public interface OnApplinkClickedListener {

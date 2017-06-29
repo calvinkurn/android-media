@@ -256,6 +256,7 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
     }
 
     private void setResult(ManagePeopleBankResult data) {
+        viewListener.getAdapter().getList().clear();
         viewListener.getAdapter().showEmpty(false);
         viewListener.getAdapter().getList().addAll(data.getList());
 

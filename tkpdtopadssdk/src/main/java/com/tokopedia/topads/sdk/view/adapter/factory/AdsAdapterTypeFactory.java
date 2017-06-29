@@ -7,12 +7,16 @@ import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
@@ -22,14 +26,26 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
 public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
+    private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
+
+    int position;
     public AdsAdapterTypeFactory(Context context) {
+        this(context, 0);
+    }
+
+    public AdsAdapterTypeFactory(Context context, int clickPosition) {
         imageLoader = new ImageLoader(context);
+        this.clickPosition = clickPosition;
     }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setClickPosition(int adapterPosition) {
+        clickPosition = adapterPosition;
     }
 
     @Override
@@ -53,6 +69,16 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     }
 
     @Override
+    public int type(ShopFeedViewModel viewModel) {
+        return ShopFeedViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(ProductFeedViewModel viewModel) {
+        return ProductFeedViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
@@ -63,6 +89,10 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
+        } else if (viewType == ShopFeedViewHolder.LAYOUT) {
+            holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener, clickPosition);
+        } else if (viewType == ProductFeedViewHolder.LAYOUT) {
+            holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

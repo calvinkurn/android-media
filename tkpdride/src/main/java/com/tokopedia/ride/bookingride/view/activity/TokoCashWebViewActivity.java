@@ -12,7 +12,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.util.TkpdWebView;
@@ -136,5 +135,10 @@ public class TokoCashWebViewActivity extends BasePresenterActivity implements Ba
     public void onBackPressed() {
         drawer.clearTokoCashData();
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOverrideUrl(String url) {
+        return false;
     }
 }

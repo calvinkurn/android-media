@@ -69,12 +69,9 @@ public class GooglePlusAPIV2 implements GoogleApiClient.ConnectionCallbacks, Goo
     }
 
     public boolean SignOut() {
-        System.out.println("Signing out");
         if(this.mGoogleApiClient.isConnected()) {
-            System.out.println("Is Signed in");
             Plus.AccountApi.clearDefaultAccount(this.mGoogleApiClient);
             this.mGoogleApiClient.disconnect();
-            System.out.println("Singout completed");
             return false;
         } else {
             return true;
@@ -82,7 +79,6 @@ public class GooglePlusAPIV2 implements GoogleApiClient.ConnectionCallbacks, Goo
     }
 
     public void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        System.out.println("responseCode " + responseCode + " isconnected " + this.mGoogleApiClient.isConnected());
         if(requestCode == 8844) {
             this.mIntentInProgress = false;
             if(responseCode == -1 && this.mGoogleApiClient.isConnected()) {

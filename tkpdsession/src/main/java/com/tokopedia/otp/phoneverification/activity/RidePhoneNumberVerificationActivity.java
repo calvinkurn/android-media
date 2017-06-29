@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
 
 public class RidePhoneNumberVerificationActivity extends BasePresenterActivity {

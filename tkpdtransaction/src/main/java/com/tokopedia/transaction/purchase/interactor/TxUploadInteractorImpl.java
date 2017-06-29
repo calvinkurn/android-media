@@ -10,6 +10,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 import org.json.JSONException;
@@ -26,6 +27,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -54,11 +56,19 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
 
     @Override
     public void uploadImageProof(final Context context, final String imagePath,
-                                 final TxVerData txVerData, final OnImageProofUpload listener) {
+            final TxVerData txVerData, final OnImageProofUpload listener) {
         Map<String, String> params = new HashMap<>();
         params.put("new_add", "2");
         Observable<GeneratedHost> observableGeneratedHost = generateHostActService.getApi()
-                .generateHost(AuthUtil.generateParams(context, params));
+                .generateHost(AuthUtil.generateParams(context, params))
+                .doOnNext(new Action1<GeneratedHost>() {
+                    @Override
+                    public void call(GeneratedHost generatedHost) {
+                        if (generatedHost.getMessageError() != null && !generatedHost.getMessageError().isEmpty()) {
+                            throw new ResponseRuntimeException(generatedHost.getMessageError().get(0));
+                        }
+                    }
+                });
 
         Func1<GeneratedHost, Observable<Response<TkpdResponse>>> funcUploadImage =
                 new Func1<GeneratedHost, Observable<Response<TkpdResponse>>>() {
@@ -147,7 +157,11 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        listener.onFailed(context.getString(R.string.label_error_upload_image));
+                        if (e instanceof ResponseRuntimeException) {
+                            listener.onFailed(e.getMessage());
+                        } else {
+                            listener.onFailed(context.getString(R.string.label_error_upload_image));
+                        }
                     }
 
                     @Override

@@ -52,6 +52,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
+
 /**
  * Created by alvarisi on 1/17/17.
  */
@@ -175,6 +176,11 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
                 push.processReceivedNotification(data);
                 break;
+
+            default:
+                ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                applinkBuildAndShowNotification.showApplinkNotification(data);
+                break;
         }
     }
 
@@ -213,7 +219,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(applink);
     }
 

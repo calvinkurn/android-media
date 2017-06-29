@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class TkpdResponse {
 
+    public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
+
     private boolean isNullData;
     private boolean isError;
     private String status;
@@ -183,7 +185,9 @@ public class TkpdResponse {
             for (int i = 0, statusMessagesSize = statusMessages.size(); i < statusMessagesSize; i++) {
                 String string = statusMessages.get(i);
                 stringBuilder.append(string);
-                if (i != statusMessages.size() - 1) {
+                if (i != statusMessages.size() - 1
+                        && !statusMessages.get(i).equals("")
+                        && !statusMessages.get(i + 1).equals("")) {
                     stringBuilder.append("\n");
                 }
             }
@@ -197,7 +201,9 @@ public class TkpdResponse {
             for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
                 String string = errorMessages.get(i);
                 stringBuilder.append(string);
-                if (i != errorMessages.size() - 1) {
+                if (i != errorMessages.size() - 1
+                        && !errorMessages.get(i).equals("")
+                        && !errorMessages.get(i + 1).equals("")) {
                     stringBuilder.append("\n");
                 }
             }

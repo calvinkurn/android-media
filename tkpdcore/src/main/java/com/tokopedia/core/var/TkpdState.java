@@ -78,6 +78,8 @@ public class TkpdState {
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;
+        public static final int HELP = 51;
+        public static final int SHOP_OPPORTUNITY_LIST = 52;
     }
 
     public class Application {
@@ -132,6 +134,7 @@ public class TkpdState {
         public static final int ORDER_DELIVERED = 600;
         public static final int ORDER_DELIVERY_FAILURE = 630;
         public static final int ORDER_CONFLICTED = 601;
+        public static final int ORDER_OPPORTUNITY = 11;
     }
 
     public class BrowseProdState {
@@ -387,12 +390,13 @@ public class TkpdState {
         public static final int VIEW_FAV_SHOP = 7;
         public static final int VIEW_PRODUCT_RIGHT = 8;
         public static final int VIEW_EMPTY_SEARCH = 9;
-        public static final int VIEW_CATEGORY = 10;
-        public static final int VIEW_TOP_ADS_4 = 999;
+        public static final int VIEW_EMPTY_STATE = 10;
+        public static final int VIEW_CATEGORY = 11;
         public static final int VIEW_BANNER_HOT_LIST = 998;
         public static final int VIEW_TOP_ADS_LIST = 997;
         public static final int VIEW_CATEGORY_HEADER = 996;
         public static final int VIEW_CATEGORY_REVAMP_HEADER = 995;
+        public static final int VIEW_BANNER_OFFICIAL_STORE = 994;
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
@@ -492,6 +496,9 @@ public class TkpdState {
         public static final String INVALID_MESSAGE_ERROR = "default";
 
 
-
+        public static final String PRODUCT_NAME = "PRODUCT_NAME";
+        public static final String IMAGE_URI = "IMAGE_URI";
+        public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
+        public static final String PRODUCT_URI = "PRODUCT_URI";
     }
 }

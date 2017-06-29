@@ -136,7 +136,17 @@ public class ScreenTracking extends TrackingUtils {
         });
     }
 
-    public static void eventDiscoveryScreenAuth(){
-        getGTMEngine().sendScreenAuthenticated(AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY);
+    public static void eventDiscoveryScreenAuth(String departmentId){
+        if(!TextUtils.isEmpty(departmentId)) {
+            getGTMEngine().sendScreenAuthenticated(
+                    AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
+            );
+        }
+    }
+
+    public static void eventOfficialStoreScreenAuth(String shopID, String shopType){
+        getGTMEngine().sendScreenAuthenticatedOfficialStore(
+                AppScreen.SCREEN_OFFICIAL_STORE, shopID, shopType
+        );
     }
 }

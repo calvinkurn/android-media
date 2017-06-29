@@ -124,4 +124,9 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
         super.onDestroy();
         unbinder.unbind();
     }
+
+    @Override
+    public boolean onOverrideUrl(String url) {
+        return false;
+    }
 }

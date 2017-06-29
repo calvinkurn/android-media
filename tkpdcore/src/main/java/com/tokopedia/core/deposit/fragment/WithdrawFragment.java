@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -227,6 +228,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
             getActivity().onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_send) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             presenter.onConfirmClicked();
         }
         return super.onOptionsItemSelected(item);

@@ -26,6 +26,11 @@ def allowDistribution() {
     return "false";
 }
 
+def getTopAdsSdk() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -69,8 +74,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2030104;
-        defaultVersionName = "2.3.1";
+        defaultVersionCode = 2080104;
+        defaultVersionName = "2.8.1";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -226,6 +231,8 @@ dependencies {
     compile project(':tkpdinbox')
     compile project(':tkpdride')
     compile project(':tkpddigital')
+    compile project(':tkpdpdp')
+    compile getTopAdsSdk()
 
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

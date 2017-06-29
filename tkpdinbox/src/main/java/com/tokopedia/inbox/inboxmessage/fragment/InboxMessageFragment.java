@@ -30,6 +30,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 import com.tokopedia.inbox.inboxmessage.listener.InboxMessageView;
@@ -38,9 +41,6 @@ import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageFragmentPresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
 
@@ -212,7 +212,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             search.setText(inboxMessagePass.getKeyword());
             if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_ALL)) {
                 radioAll.setChecked(true);
-            } else if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_UNREAD)){
+            } else if (inboxMessagePass.getFilter() != null && inboxMessagePass.getFilter().equals(PARAM_UNREAD)) {
                 radioUnread.setChecked(true);
             }
         }
@@ -278,26 +278,25 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                     presenter.moveInbox(MOVE_ALL);
                     mode.finish();
                     return true;
-                }else if (item.getItemId() == R.id.action_mark_as_read) {
+                } else if (item.getItemId() == R.id.action_mark_as_read) {
                     presenter.markAsRead();
                     mode.finish();
                     return true;
-                }else if (item.getItemId() == R.id.action_mark_as_unread) {
+                } else if (item.getItemId() == R.id.action_mark_as_unread) {
                     presenter.markAsUnread();
                     mode.finish();
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                enableActions();
                 adapter.setSelected(0);
                 adapter.clearSelection();
                 isMultiActionEnabled = false;
+                enableActions();
             }
         };
     }
@@ -328,6 +327,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 search.setText("");
                 radioAll.setChecked(true);
                 fab.show();
+
             }
         };
     }
@@ -340,6 +340,8 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 adapter.getList().clear();
                 presenter.generateSearchParam();
                 presenter.getInboxMessage();
+
+                finishContextMode();
 
             }
         };
@@ -383,7 +385,6 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(false);
         if (fab.isShown())
             fab.hide();
-        refreshHandler.setPullEnabled(false);
         adapter.setEnabled(false);
     }
 
@@ -391,8 +392,10 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     public void enableActions() {
         if (getActivity() instanceof DrawerPresenterActivity)
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(true);
-        fab.show();
-        refreshHandler.setPullEnabled(true);
+
+        if (adapter.getSelected() == 0)
+            fab.show();
+
         if (presenter.hasActionListener()) {
             adapter.setEnabled(true);
         }

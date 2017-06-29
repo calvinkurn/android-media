@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.localytics.android.Localytics;
+import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.util.SessionHandler;
@@ -24,12 +25,19 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
         updateLocalyticsPushRegistrationID(refreshedToken);
+        updateMoEngageToken(refreshedToken);
         propagateIDtoServer(refreshedToken);
     }
 
     @Override
     public void updateLocalyticsPushRegistrationID(String token) {
         Localytics.setPushRegistrationId(token);
+    }
+
+    @Override
+    public void updateMoEngageToken(String token) {
+        CommonUtils.dumper("Moengage RefreshedToken: " + token);
+        PushManager.getInstance().refreshToken(getApplicationContext(), token);
     }
 
     @Override

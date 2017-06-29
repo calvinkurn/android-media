@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
 
 /**
@@ -24,6 +25,8 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
+    void goToManageEtalase(Context context);
+
     void clearEtalaseCache();
 
     Intent goToEditProduct(Context context, boolean isEdit, String productId);
@@ -37,4 +40,6 @@ public interface TkpdCoreRouter {
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
+
+    void onLogout(AppComponent appComponent);
 }

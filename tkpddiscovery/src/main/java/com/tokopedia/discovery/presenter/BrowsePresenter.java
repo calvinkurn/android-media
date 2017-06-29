@@ -24,11 +24,9 @@ public interface BrowsePresenter {
     boolean onBottomBarTabSelected(String source, int position, int activeTab, boolean isShopFragment);
 
     void fetchHotListHeader(String alias);
-    void fetchCategoriesHeader(String departementId);
 
     void sendQuery(String query, String depId);
     void sendHotlist(String selected, String keyword);
-    void sendCategory(String departementId);
 
     void resetBrowseProductActivityModel();
     BrowseProductActivityModel getBrowseProductActivityModel();
@@ -47,4 +45,8 @@ public interface BrowsePresenter {
     BrowseProductRouter.GridType getGridType();
 
     void onRenderUpperCategoryLevel(String departmentId);
+
+    void retrieveLastGridConfig(final String departmentId);
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
 }

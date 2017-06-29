@@ -48,6 +48,7 @@ import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
 import com.tokopedia.session.session.presenter.RegisterInitialView;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
@@ -66,7 +67,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresenter>
-                                        implements RegisterInitialView{
+        implements RegisterInitialView {
 
     @BindView(R2.id.linearLayout)
     LinearLayout linearLayout;
@@ -84,7 +85,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     LocalCacheHandler cacheGTM;
     CallbackManager callbackManager;
 
-    public static Fragment newInstance(){
+    public static Fragment newInstance() {
         return new RegisterInitialFragment();
     }
 
@@ -114,6 +115,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
             public void onClick(View v) {
                 UnifyTracking.eventRegisterChannel(AppEventTracking.GTMCacheValue.EMAIL);
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
+                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
         });
@@ -135,13 +137,13 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                           }
                 , sourceString.indexOf("Masuk")
                 , sourceString.length()
-                ,0);
+                , 0);
 
         loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     @OnClick(R2.id.login_button)
-    public void moveToLogin(){
+    public void moveToLogin() {
         ((SessionView) getActivity()).moveToLogin();
     }
 
@@ -170,7 +172,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void addProgressBar() {
         ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = linearLayout.getChildCount()-1;
+        int lastPos = linearLayout.getChildCount() - 1;
         if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar))
             linearLayout.addView(pb, linearLayout.getChildCount());
     }
@@ -184,14 +186,17 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void showProgress(boolean isShow) {
-        progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        container.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (progressBar != null)
+            progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        if (container != null)
+            container.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (loginButton != null)
+            loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void showError(String string) {
-        snackbar = SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG);
+        snackbar = SnackbarManager.make(getActivity(), string, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -201,7 +206,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
             case DownloadService.DISCOVER_LOGIN:
                 removeProgressBar();
                 snackbar = SnackbarManager.make(getActivity()
-                        ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
+                        , getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
                 loginButton.setEnabled(false);
@@ -250,12 +255,12 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
             for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
                 int colorInt;
-                if(color==null) {
+                if (color == null) {
                     colorInt = Color.parseColor("#FFFFFF");
-                }else{
+                } else {
                     colorInt = Color.parseColor(color);
                 }
-                LoginTextView tv = new LoginTextView(getActivity(),colorInt);
+                LoginTextView tv = new LoginTextView(getActivity(), colorInt);
                 tv.setTextRegister(listProvider.get(i).getName());
                 tv.setImage(listProvider.get(i).getImage());
                 tv.setRoundCorner(10);
@@ -286,7 +291,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         }
                     });
                 }
-                if (linearLayout != null ) {
+                if (linearLayout != null) {
                     linearLayout.addView(tv, linearLayout.getChildCount(), layoutParams);
                 }
             }
@@ -306,45 +311,47 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
+        UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
-        if(AccessToken.getCurrentAccessToken() != null) {
+        if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
         }
         processFacebookLogin();
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     private void processFacebookLogin() {
         presenter.doFacebookLogin(this, callbackManager);
+        UnifyTracking.eventMoRegistrationStart(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode,resultCode,data);
-        switch (requestCode){
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
             case 100:
-                if(resultCode == Activity.RESULT_CANCELED){
-                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    KeyboardHandler.DropKeyboard(getActivity(), getView());
                     break;
                 }
                 Bundle bundle = data.getBundleExtra("bundle");
-                if(bundle.getString("path").contains("error")){
+                if (bundle.getString("path").contains("error")) {
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
                     snackbar.show();
-                }else if (bundle.getString("path").contains("code")){
+                } else if (bundle.getString("path").contains("code")) {
                     presenter.loginWebView(getActivity(), bundle);
-                }else if (bundle.getString("path").contains("activation-social")){
+                } else if (bundle.getString("path").contains("activation-social")) {
 //                    ((SessionView) getActivity()).moveToActivationResend(registerName.getText().toString());
                 }
                 break;
@@ -356,7 +363,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public boolean checkHasNoProvider() {
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            if(linearLayout.getChildAt(i) instanceof LoginTextView){
+            if (linearLayout.getChildAt(i) instanceof LoginTextView) {
                 return false;
             }
         }
@@ -376,18 +383,18 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void setData(int type, Bundle data) {
         if (presenter != null)
-            presenter.setData(getActivity(),type, data);
+            presenter.setData(getActivity(), type, data);
     }
 
     @Override
     public void onNetworkError(int type, Object... data) {
-        onMessageError(type,data);
+        onMessageError(type, data);
     }
 
     @Override
     public void onMessageError(int type, Object... data) {
         showProgress(false);
-        if(data!=null) {
+        if (data != null) {
             snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
             snackbar.show();
         }
@@ -397,14 +404,14 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     public void onDestroyView() {
         super.onDestroyView();
         presenter.unSubscribeFacade();
-        KeyboardHandler.DropKeyboard(getActivity(),getView());
-        if(snackbar!=null && snackbar.isShown()) snackbar.dismiss();
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this,requestCode, grantResults);
+        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.GET_ACCOUNTS)

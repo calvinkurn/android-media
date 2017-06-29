@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -18,9 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -28,7 +25,6 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
 import java.util.List;
@@ -37,8 +33,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITLE;
-import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
  * @author by alvarisi on 1/11/17.
@@ -95,20 +89,24 @@ public class BuildAndShowNotification {
         }
 
         PendingIntent resultPendingIntent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
-                    mContext,
-                    0,
-                    applinkNotificationPass.getIntent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
+        if (applinkNotificationPass.getTaskStackBuilder() != null) {
+            resultPendingIntent = applinkNotificationPass.getTaskStackBuilder().getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
-            resultPendingIntent = PendingIntent.getActivity(
-                    mContext,
-                    applinkNotificationPass.getNotificationId(),
-                    applinkNotificationPass.getIntent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            } else {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        applinkNotificationPass.getNotificationId(),
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            }
         }
 
         mBuilder.setContentIntent(resultPendingIntent);
@@ -124,7 +122,7 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-        } else if(!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())){
+        } else if (!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())) {
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else {
 
@@ -170,7 +168,7 @@ public class BuildAndShowNotification {
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
         //TODO : create flow again
-        saveIncomingNotification(notificationPass, data);
+        saveIncomingNotification(notificationPass.title, data);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -189,7 +187,7 @@ public class BuildAndShowNotification {
         } else {
             homeIntent = HomeRouter.getHomeActivity(mContext);
         }
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         stackBuilder.addNextIntent(homeIntent);
 
         if (notificationPass.isAllowedBigStyle || isSingleNotification()) {
@@ -223,7 +221,8 @@ public class BuildAndShowNotification {
         }
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (configuration.isVibrate() && configuration.isBell()) {
@@ -232,10 +231,70 @@ public class BuildAndShowNotification {
         mNotificationManager.notify(configuration.getNotificationId(), notif);
     }
 
-    private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {
+    public void buildAndShowApplinkNotification(ApplinkNotificationPass applinkNotificationPass, Bundle data, NotificationConfiguration configuration) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(getDrawableIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
+                .setAutoCancel(true);
+        NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+        mBuilder.setContentText(applinkNotificationPass.getDescription());
+        bigStyle.bigText(applinkNotificationPass.getDescription());
+        mBuilder.setStyle(bigStyle);
+        mBuilder.setTicker(applinkNotificationPass.getTicker());
+
+        mBuilder = configureBigPictureNotification(data, mBuilder);
+
+        mBuilder = configureIconNotification(data, mBuilder);
+
+        if (configuration.isBell()) {
+            mBuilder.setSound(configuration.getSoundUri());
+            if (configuration.isVibrate()) {
+                mBuilder.setVibrate(configuration.getVibratePattern());
+            }
+        }
+        PendingIntent resultPendingIntent;
+        if (applinkNotificationPass.getTaskStackBuilder() != null) {
+            resultPendingIntent = applinkNotificationPass.getTaskStackBuilder().getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            } else {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        applinkNotificationPass.getNotificationId(),
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            }
+        }
+
+        stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
+
+//        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        Notification notif = mBuilder.build();
+        if (configuration.isVibrate() && configuration.isBell()) {
+            notif.defaults |= Notification.DEFAULT_VIBRATE;
+        }
+        mNotificationManager.notify(configuration.getNotificationId(), notif);
+    }
+
+
+    private void saveIncomingNotification(String title, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
-        notificationEntity.setTitle(notificationPass.title);
+        notificationEntity.setTitle(title);
         cacheManager.saveIncomingNotification(notificationEntity);
     }
 

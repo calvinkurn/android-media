@@ -1,13 +1,13 @@
 package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.AutoCompleteTextView;
+
+import com.tokopedia.seller.R;
 
 /**
  * Created by zulfikarrahman on 2/23/17.
@@ -94,9 +94,9 @@ public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextV
 
     public void setVisibleDrawableRight(boolean isVisible){
         if(isVisible){
-            setCompoundDrawables(null, null, drawableRight, null);
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close_green, 0);
         }else{
-            setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_arrow_down_wpadding,0);
         }
         invalidate();
         requestLayout();
@@ -111,6 +111,23 @@ public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextV
     public void lockView(){
         setEnabled(false);
         setVisibleDrawableRight(true);
+        dismissDropDown();
     }
 
+    public void performFiltering(CharSequence text){
+        super.performFiltering(text, 0);
+    }
+
+    @Override
+    public boolean enoughToFilter() {
+        return true;
+    }
+
+    public void showDropDownFilter(){
+        if(isEnabled()) {
+            performFiltering(getText());
+            showDropDown();
+        }
+    }
 }
+

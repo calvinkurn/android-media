@@ -1,38 +1,55 @@
-<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh_layout"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.tokopedia.seller.topads.view.fragment.TopAdsDetailFragment">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        android:background="@android:color/white">
+        <com.tokopedia.seller.lib.widget.DateLabelView
+            android:id="@+id/date_label_view"
+            style="@style/LabelLayoutWithBorderBottom"
+            app:layout_scrollFlags="scroll|snap|enterAlways" />
+    </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/container_detail_topads"
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-            <include
-                layout="@layout/include_topads_header_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
-                android:id="@+id/items"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/topads_detail_padding_item"
-                app:title="@string/title_top_ads_product" />
+                android:orientation="vertical">
 
-            <include
-                layout="@layout/include_topads_content_detail" />
+                <include
+                    layout="@layout/include_topads_header_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        </LinearLayout>
+                <com.tokopedia.seller.lib.widget.LabelView
+                    android:id="@+id/items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/topads_detail_padding_item"
+                    app:title="@string/title_top_ads_product" />
 
-    </ScrollView>
+                <include layout="@layout/include_topads_content_detail" />
 
-</com.tokopedia.core.customwidget.SwipeToRefresh>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+</android.support.design.widget.CoordinatorLayout>

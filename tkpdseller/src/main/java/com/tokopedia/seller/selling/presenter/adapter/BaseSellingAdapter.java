@@ -13,14 +13,10 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 7/18/2016.
@@ -50,24 +46,22 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderRetry extends SwappingHolder {
-        @BindView(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
 //            super(itemView);
             super(itemView, new MultiSelector());
-            ButterKnife.bind(this, itemView);
+            retry = (TextView) itemView.findViewById(R.id.button_retry);
         }
     }
 
     public static class ViewHolderEmpty extends SwappingHolder {
-        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {
 //            super(itemView);
             super(itemView, new MultiSelector());
-            ButterKnife.bind(this, itemView);
+            emptyImage = (ImageView) itemView.findViewById(R.id.no_result_image);
         }
     }
 
@@ -93,11 +87,11 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             return (VH) createViewLoading(parent);
         } else if (viewType == TkpdState.RecyclerView.VIEW_RETRY) {
             return (VH) createViewRetry(parent);
-        } else if (viewType == TkpdState.RecyclerView.VIEW_EMPTY ) {
+        } else if (viewType == TkpdState.RecyclerView.VIEW_EMPTY) {
             return (VH) createViewEmpty(parent);
-        } else if (viewType == EMPTY_VIEW){
+        } else if (viewType == EMPTY_VIEW) {
             return (VH) new ViewHolder(new View(context));
-        }else{
+        } else {
             return getViewHolder(mModelLayout, parent);
         }
     }
@@ -137,7 +131,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             case EMPTY_VIEW:
                 break;
             default:
-                if (position < getListData().size()){
+                if (position < getListData().size()) {
                     T model = getItem(position);
                     populateViewHolder(holder, model, position);
                 }
@@ -155,7 +149,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
                 setIsRetry(false);
                 setIsLoading(true);
                 notifyDataSetChanged();
-                if(listener!=null) {
+                if (listener != null) {
                     listener.onRetryCliked();
                 }
             }
@@ -175,9 +169,9 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             return TkpdState.RecyclerView.VIEW_RETRY;
         } else if (isDataEmpty() && isEmpty()) {
             return TkpdState.RecyclerView.VIEW_EMPTY;
-        } else if(isEmpty()){
+        } else if (isEmpty()) {
             return EMPTY_VIEW;
-        }else {
+        } else {
             return mModelLayout;
         }
     }
@@ -186,14 +180,14 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
         return retry == 1;
     }
 
-    private boolean isDataEmpty(){
+    private boolean isDataEmpty() {
         return isDataEmpty == 1;
     }
 
-    public void setIsDataEmpty(boolean isDataEmpty){
-        if(isDataEmpty){
+    public void setIsDataEmpty(boolean isDataEmpty) {
+        if (isDataEmpty) {
             this.isDataEmpty = 1;
-        }else{
+        } else {
             this.isDataEmpty = 0;
         }
         notifyDataSetChanged();
@@ -234,7 +228,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
         return mListModel;
     }
 
-    public void clearData(){
+    public void clearData() {
         mListModel.clear();
         notifyDataSetChanged();
     }

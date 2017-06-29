@@ -59,6 +59,7 @@ public class NetworkParam {
         public String shipping;
         public boolean returnable;
         public String source;
+        public String keyword;
         public Map<String, String> extraFilter;
 
         @Override

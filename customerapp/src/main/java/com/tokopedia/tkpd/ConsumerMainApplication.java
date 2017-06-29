@@ -1,12 +1,12 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.tokopedia.core.app.MainApplication;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
@@ -28,6 +28,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
+        initializeDatabase();
         super.onCreate();
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
@@ -39,6 +40,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
     private void generateConsumerAppBaseUrl() {
         TkpdBaseURL.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        TkpdBaseURL.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = ConsumerAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
@@ -57,7 +59,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.RIDE_DOMAIN = ConsumerAppBaseUrl.BASE_RIDE_DOMAIN;
 
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+    }
 
+    public void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
     }
 
 }

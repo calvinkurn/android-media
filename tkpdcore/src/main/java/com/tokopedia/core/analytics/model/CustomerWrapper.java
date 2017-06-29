@@ -13,6 +13,13 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String mFullName;
     private String mEmailAddress;
     private String mMethod;
+    private String phoneNumber;
+    private boolean isGoldMerchant;
+    private boolean isSeller;
+    private String shopId;
+    private String shopName;
+    private String dateOfBirth;
+
     private Map<String, String> mAttr;
 
     public CustomerWrapper() {
@@ -20,15 +27,24 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     }
 
     public CustomerWrapper(CustomerWrapper.Builder builder) {
-        mCustomerId = builder.mCustomerId;
-        mFirstName = builder.mFirstName;
-        mLastName = builder.mLastName;
-        mFullName = builder.mFullName;
-        mEmailAddress = builder.mEmailAddress;
-        mMethod = builder.mMethod;
-        mAttr = builder.mAttr;
+        mCustomerId     = builder.mCustomerId;
+        mFirstName      = builder.mFirstName;
+        mLastName       = builder.mLastName;
+        mFullName       = builder.mFullName;
+        mEmailAddress   = builder.mEmailAddress;
+        mMethod         = builder.mMethod;
+        mAttr           = builder.mAttr;
+        phoneNumber     = builder.phoneNumber;
+        isGoldMerchant  = builder.isGoldMerchant;
+        isSeller        = builder.isSeller;
+        shopId          = builder.shopId;
+        shopName        = builder.shopName;
+        dateOfBirth     = builder.dateOfBirth;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
     public String getCustomerId() {
         return this.mCustomerId;
@@ -55,9 +71,53 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         return null;
     }
 
+    public boolean isGoldMerchant() {
+        return isGoldMerchant;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        isGoldMerchant = goldMerchant;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
+
     @Override
     public void setName(String name) {
 
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -78,6 +138,10 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     @Override
     public void setExtraAttr(Map<String, String> extraAttr) {
         this.extraAttr = extraAttr;
+    }
+
+    public Map<String, String> getExtraAttr() {
+        return this.extraAttr;
     }
 
     public String getmCustomerId() {
@@ -126,7 +190,12 @@ public class CustomerWrapper extends BaseAnalyticsModel {
                 ", mFullName='" + mFullName + '\'' +
                 ", mEmailAddress='" + mEmailAddress + '\'' +
                 ", mMethod='" + mMethod + '\'' +
-                ", mAttr=" + mAttr.toString() +
+                ", phonenumber='" + phoneNumber + '\'' +
+                ", isgoldmerch='" + isGoldMerchant + '\'' +
+                ", isseller='" + isSeller + '\'' +
+                ", shopId='" + shopId + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
                 '}';
     }
 
@@ -137,9 +206,70 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String mFullName;
         private String mEmailAddress;
         private String mMethod;
+        private String phoneNumber;
+        private boolean isGoldMerchant;
+        private boolean isSeller;
+        private String shopId;
+        private String shopName;
+        private String dateOfBirth;
+
         private Map<String, String> mAttr;
 
         public Builder() {
+        }
+
+        public CustomerWrapper.Builder setShopId(String shopId) {
+            this.shopId = shopId;
+            return this;
+        }
+
+        public String getShopId() {
+            return shopId;
+        }
+
+        public CustomerWrapper.Builder setShopName(String shopName) {
+            this.shopName = shopName;
+            return this;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public String getDateOfBirth() {
+            return dateOfBirth;
+        }
+
+        public CustomerWrapper.Builder setDateOfBirth(String dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+            return this;
+        }
+
+        public boolean isGoldMerchant() {
+            return isGoldMerchant;
+        }
+
+        public CustomerWrapper.Builder setGoldMerchant(boolean goldMerchant) {
+            isGoldMerchant = goldMerchant;
+            return this;
+        }
+
+        public boolean isSeller() {
+            return isSeller;
+        }
+
+        public CustomerWrapper.Builder setSeller(boolean seller) {
+            isSeller = seller;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
         }
 
         public CustomerWrapper.Builder setCustomerId(String customerId) {
