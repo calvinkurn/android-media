@@ -1,9 +1,13 @@
 package com.tokopedia.digital.utils;
 
+import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -76,5 +80,13 @@ public class DeviceUtil {
                 + Build.VERSION.SDK_INT
                 + "; Version"
                 + Build.VERSION.RELEASE + ") ";
+    }
+
+    public static RequestBodyIdentifier getDigitalIdentifierParam(Context context) {
+        RequestBodyIdentifier requestBodyIdentifier = new RequestBodyIdentifier();
+        requestBodyIdentifier.setDeviceToken(GCMHandler.getRegistrationId(context));
+        requestBodyIdentifier.setUserId(SessionHandler.getLoginID(context));
+        requestBodyIdentifier.setOsType("1");
+        return requestBodyIdentifier;
     }
 }
