@@ -47,6 +47,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     TextView title;
     View header;
     ImageView shopAvatar;
+    ImageView gmBadge;
+    ImageView osBadge;
     TextView time;
     View shareButton;
     View buyButton;
@@ -66,6 +68,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         time = (TextView) itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
         buyButton = itemView.findViewById(R.id.buy_button);
+        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         container = itemView.findViewById(R.id.container);
 
@@ -126,7 +130,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         StringBuilder titleText = new StringBuilder();
 
         if (activityCardViewModel.getHeader().isGoldMerchant() || activityCardViewModel.getHeader().isOfficialStore())
-            titleText.append("  ");
+            titleText.append("     ");
 
         titleText
                 .append(shopNameString)
@@ -178,12 +182,15 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
         setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
-        title.setText(actionSpanString);
-
         if (activityCardViewModel.getHeader().isOfficialStore()) {
-            setBadge(actionSpanString, title, R.drawable.ic_official);
-        }else if (activityCardViewModel.getHeader().isGoldMerchant()) {
-            setBadge(actionSpanString, title, R.drawable.ic_shop_gold);
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.VISIBLE);
+        } else if (activityCardViewModel.getHeader().isGoldMerchant()) {
+            gmBadge.setVisibility(View.VISIBLE);
+            osBadge.setVisibility(View.GONE);
+        } else {
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.GONE);
         }
 
         title.setText(actionSpanString);
@@ -208,18 +215,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
-    }
-
-    private void setBadge(SpannableString actionSpanString, TextView shopName, int resId) {
-        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
-        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
-        badge.setBounds(0, 0, size, size);
-        ImageSpan is;
-        if (shopName.getLineCount() < 1)
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
-        else
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
-        actionSpanString.setSpan(is, 0, 1, 0);
     }
 
     private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {

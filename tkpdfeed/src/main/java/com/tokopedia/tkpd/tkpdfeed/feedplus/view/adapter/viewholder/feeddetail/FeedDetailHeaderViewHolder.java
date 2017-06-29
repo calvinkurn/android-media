@@ -40,6 +40,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     TextView shopName;
     ImageView shopAvatar;
     TextView shopSlogan;
+    ImageView gmBadge;
+    ImageView osBadge;
 
     private final static String ADD_STRING = "tambah";
     private final static String EDIT_STRING = "ubah";
@@ -49,6 +51,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
+        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
         this.viewListener = viewListener;
     }
 
@@ -61,7 +65,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         StringBuilder titleText = new StringBuilder();
 
         if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
-            titleText.append("  ");
+            titleText.append("     ");
 
         titleText.append(shopNameString)
                 .append(" ")
@@ -97,13 +101,15 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
 
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
-        //Need this to count line
-        shopName.setText(actionSpanString);
-
         if (viewModel.isOfficialStore()) {
-            setBadge(actionSpanString, shopName, R.drawable.ic_official);
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.VISIBLE);
         } else if (viewModel.isGoldMerchant()) {
-            setBadge(actionSpanString, shopName, R.drawable.ic_shop_gold);
+            gmBadge.setVisibility(View.VISIBLE);
+            osBadge.setVisibility(View.GONE);
+        }else {
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.GONE);
         }
 
         shopName.setText(actionSpanString);
