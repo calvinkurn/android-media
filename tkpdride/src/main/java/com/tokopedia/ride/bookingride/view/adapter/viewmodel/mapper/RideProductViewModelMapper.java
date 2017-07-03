@@ -180,6 +180,7 @@ public class RideProductViewModelMapper {
         //format display to add space after currency
         if (productPriceFormat != null && productPriceFormat.contains("IDR") && !productPriceFormat.contains("IDR ")) {
             productPriceFormat = productPriceFormat.replace("IDR", "IDR ");
+            productPriceFormat.replace(",", ".");
         }
 
         if (productPriceFormat != null && productPriceFormat.contains("Rp") && !productPriceFormat.contains("Rp ")) {
