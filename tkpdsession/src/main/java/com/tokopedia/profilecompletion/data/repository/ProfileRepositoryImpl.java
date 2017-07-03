@@ -2,8 +2,8 @@ package com.tokopedia.profilecompletion.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
-import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
 
 import rx.Observable;
 
@@ -23,5 +23,10 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public Observable<GetUserInfoDomainModel> getUserInfo(TKPDMapParam<String, Object> parameters) {
         return profileSourceFactory.createCloudGetUserInfoSource().getUserInfo(parameters);
+    }
+
+    @Override
+    public Observable<EditUserInfoDomainModel> editUserInfo(TKPDMapParam<String, Object> parameters) {
+        return profileSourceFactory.createCloudEditUserInfoSource().editUserInfo(parameters);
     }
 }

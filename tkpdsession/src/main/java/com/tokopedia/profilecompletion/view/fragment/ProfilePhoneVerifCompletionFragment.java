@@ -10,8 +10,11 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenter;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
@@ -36,6 +39,10 @@ public class ProfilePhoneVerifCompletionFragment
     @Override
     protected void onFirstTimeLaunched() {
         presenter.getUserInfo();
+        presenter.editDOB("13","06","1980");
+        presenter.editGender(EditUserProfileUseCase.MALE);
+        presenter.editGender(3);
+
     }
 
     @Override
@@ -68,16 +75,25 @@ public class ProfilePhoneVerifCompletionFragment
                 new ProfileSourceFactory(
                         getActivity(),
                         accountsService,
-                        new GetUserInfoMapper()
+                        new GetUserInfoMapper(),
+                        new EditUserInfoMapper()
                 );
+
+        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
                 new JobExecutor(),
                 new UIThread(),
-                new ProfileRepositoryImpl(profileSourceFactory)
+                profileRepository
         );
 
-        presenter = new ProfilePhoneVerifCompletionPresenterImpl(getUserInfoUseCase);
+        EditUserProfileUseCase editUserProfileUseCase = new EditUserProfileUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                profileRepository
+        );
+
+        presenter = new ProfilePhoneVerifCompletionPresenterImpl(getUserInfoUseCase, editUserProfileUseCase);
     }
 
     @Override
