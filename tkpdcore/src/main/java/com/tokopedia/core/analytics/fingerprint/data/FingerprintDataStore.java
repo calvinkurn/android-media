@@ -8,8 +8,8 @@ import rx.Observable;
  * Created by Herdi_WORK on 20.06.17.
  */
 
-public interface FingerPrintEndPoint {
+public interface FingerprintDataStore {
 
-    Observable<String> sendFingerPrint(FingerPrint data);
+    Observable<String> getFingerprint(FingerPrint data);
 
 }
