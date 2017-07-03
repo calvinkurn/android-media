@@ -45,8 +45,7 @@ public class TimeConverter {
                     && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
                     && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
                 return "Kemarin pukul " + sdfHour.format(postDate);
-            } else if (getDifference(currentTime, postDate) / HOUR_IN_DAY > 1 &&
-                    calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
+            } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
                 return sdfDay.format(postDate) + " pukul " + sdfHour.format(postDate);
             else {
                 return sdfYear.format(postDate);
