@@ -36,21 +36,6 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
         super(dataBindAdapter);
     }
 
-    public static class EmptyViewHolder extends ViewHolder {
-        private TextView emptyTitleTextView;
-        private TextView emptyContentTextView;
-        private TextView emptyContentItemTextView;
-        private Button emptyButtonItemButton;
-
-        public EmptyViewHolder(View view) {
-            super(view);
-            emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
-            emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
-            emptyContentItemTextView = (TextView) view.findViewById(R.id.text_view_empty_content_item_text);
-            emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
-        }
-    }
-
     public void setEmptyTitleText(String emptyTitleText) {
         this.emptyTitleText = emptyTitleText;
     }
@@ -73,18 +58,13 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(getEmptyLayout(), null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_list, null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
         return new EmptyViewHolder(view);
-    }
-
-    @Resource
-    protected int getEmptyLayout() {
-        return R.layout.listview_top_ads_empty_ad_list;
     }
 
     @Override
@@ -123,6 +103,21 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
                 }
             });
             emptyViewHolder.emptyButtonItemButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public static class EmptyViewHolder extends ViewHolder {
+        private TextView emptyTitleTextView;
+        private TextView emptyContentTextView;
+        private TextView emptyContentItemTextView;
+        private Button emptyButtonItemButton;
+
+        public EmptyViewHolder(View view) {
+            super(view);
+            emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
+            emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
+            emptyContentItemTextView = (TextView) view.findViewById(R.id.text_view_empty_content_item_text);
+            emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
         }
     }
 }
