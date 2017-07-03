@@ -81,7 +81,7 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
         String groupName = getIntent().getStringExtra(EXTRA_GROUP_NAME);
         int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
         int serverCount = getIntent().getIntExtra(EXTRA_SERVER_COUNT, 0);
-        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.topads_max_keyword_in_group));
+        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.top_ads_keyword_max_in_group));
         ArrayList<String> localWords = getIntent().getStringArrayListExtra(EXTRA_LOCAL_WORDS);
         return TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords);
     }

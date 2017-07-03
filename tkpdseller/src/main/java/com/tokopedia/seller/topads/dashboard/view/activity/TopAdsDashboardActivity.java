@@ -88,7 +88,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         topadsDashList = new TopAdsDashboardTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(topadsDashList);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_product));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_title_product));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_store));
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
             @Override

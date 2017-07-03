@@ -37,7 +37,7 @@ public class DateUtilHelper {
     private int selectionType = DatePickerConstant.SELECTION_TYPE_PERIOD_DATE;
 
     public DateUtilHelper(Context context) {
-        monthNamesAbrev = context.getResources().getStringArray(R.array.month_names_abrev);
+        monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
     public void setSelectionType(int selectionType) {

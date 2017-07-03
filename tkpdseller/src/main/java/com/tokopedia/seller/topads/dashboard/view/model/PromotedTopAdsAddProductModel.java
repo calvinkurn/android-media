@@ -1,11 +1,13 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
 /**
  * Created by normansyahputa on 3/6/17.
  */
 
 public class PromotedTopAdsAddProductModel
-        implements BaseTopAdsProductModel, TypeBasedModel {
+        implements BaseTopAdsProductModel, ItemType {
     public static final int TYPE = 129130;
 
     public String description;

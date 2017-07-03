@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,9 +11,9 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.product.view.presenter.ProductDraftView;
+import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
+import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
 
 import java.io.File;
 import java.net.URI;
@@ -25,30 +24,17 @@ import java.net.URI;
 
 public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
-    public static final int ITEM_TYPE = 4121;
-
-    OnDraftDeleteListener onDraftDeleteListener;
-    public interface OnDraftDeleteListener{
-        void onDelete(ProductDraftViewModel draftViewModel, int position);
-    }
-
-    public void setOnDraftDeleteListener(OnDraftDeleteListener onDraftDeleteListener) {
-        this.onDraftDeleteListener = onDraftDeleteListener;
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case ITEM_TYPE:
-                return new ProductDraftViewHolder(
-                        LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_product_draft, parent, false));
+            case ProductDraftViewModel.TYPE:
+                return new ProductDraftViewHolder(getLayoutView(parent, R.layout.item_product_draft));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
 
-    private class ProductDraftViewHolder extends RecyclerView.ViewHolder{
+    private class ProductDraftViewHolder extends BaseViewHolder<ProductDraftViewModel> {
         ImageView ivProduct;
         TextView tvProductName;
         TextView tvCompletionPercentage;
@@ -64,23 +50,21 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getLayoutPosition();
-                    if (onDraftDeleteListener!= null) {
-                        onDraftDeleteListener.onDelete(data.get(position), position);
-                    }
+                    // TODO hendry delete item
                 }
             });
         }
 
-        public void bind (ProductDraftViewModel model) {
+        @Override
+        public void bindObject(ProductDraftViewModel model) {
             if (TextUtils.isEmpty(model.getProductName())) {
                 tvProductName.setText(MethodChecker.fromHtml("<i>" +
                         tvProductName.getContext().getString(R.string.product_no_have_product_name_yet)
-                        +"</i>"));
+                        + "</i>"));
             } else {
                 tvProductName.setText(MethodChecker.fromHtml("<b>" +
                         model.getProductName()
-                        +"</b>"));
+                        + "</b>"));
             }
             tvCompletionPercentage.setText(tvCompletionPercentage.getContext().getString(R.string.product_draft_item_percent_complete,
                     model.getCompletionPercent()));
@@ -102,54 +86,14 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
                 );
             }
         }
-    }
 
-    public void confirmDelete (int position){
-        if (position < 0 || position >= data.size()) {
-            return;
+        private boolean isValidURL(String urlStr) {
+            try {
+                URI uri = new URI(urlStr);
+                return uri.getScheme().equals("http") || uri.getScheme().equals("https");
+            } catch (Exception e) {
+                return false;
+            }
         }
-        data.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    private boolean isValidURL(String urlStr) {
-        try {
-            URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case ITEM_TYPE:
-                bindData(position, holder);
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
-                break;
-        }
-    }
-
-    @Override
-    public void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
-        super.bindData(position, viewHolder);
-        final ProductDraftViewHolder draftViewHolder = (ProductDraftViewHolder) viewHolder;
-        if (data.size() <= position) {
-            return;
-        }
-        final ProductDraftViewModel model = data.get(position);
-        draftViewHolder.bind(model);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int itemType = super.getItemViewType(position);
-        if (!isUnknownViewType(itemType)) {
-            return itemType;
-        }
-        return ITEM_TYPE;
     }
 }

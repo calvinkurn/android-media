@@ -11,7 +11,7 @@
     </style>
 
     <style name="TextView.infoInputType">
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textColor">@color/font_black_secondary_54</item>
         <item name="android:textSize">12sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -23,23 +23,6 @@
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:inputType">none</item>
         <item name="android:textColor">@color/green_200</item>
-    </style>
-
-    <style name="EditText.Currency">
-        <item name="android:inputType">number</item>
-    </style>
-
-    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:padding">12dp</item>`
-    </style>
-
-    <style name="TopAdsRadioButton" parent="@style/RadioButton">
-        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ImageViewStatus">
@@ -68,38 +51,30 @@
         <item name="android:paddingBottom">@dimen/top_ads_dashboard_padding_cards</item>
     </style>
 
-    <style name="LabelLayoutWithBorder" parent="LabelLayout">
+    <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
 
-    <style name="LabelLayoutWithoutBorder" parent="LabelLayout">
-        <item name="android:background">@color/white</item>
-    </style>
-
-    <style name="LabelLayoutWithBorderBottom" parent="LabelLayout">
+    <style name="LabelLayout.BorderBottom">
         <item name="android:background">@drawable/border_background_bottom</item>
     </style>
 
-    <style name="LabelLayoutWithBorderTop" parent="LabelLayout">
+    <style name="LabelLayout.BorderTop">
         <item name="android:background">@drawable/border_background_top</item>
     </style>
 
-    <style name="LabelLayoutInnerExpandable" parent="LabelLayout">
-        <item name="android:background">@color/white</item>
+    <style name="LabelLayout.InnerExpandable">
         <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
         <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
         <item name="android:paddingTop">@dimen/product_inner_expandable_padding</item>
         <item name="android:paddingBottom">0dp</item>
     </style>
 
-    <style name="LabelLayoutWithoutPadding">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-    </style>
-
-    <style name="LabelLayoutWithoutPadding.White">
-        <item name="android:background">@color/white</item>
+    <style name="LabelLayout.NoPadding">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
     </style>
 
     <style name="ColorSwitchCompat">
@@ -135,34 +110,10 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
-    <style name="EditText.GreenHighlight">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
-    </style>
-
     <style name="TopAdsRadioExpandView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">16dp</item>
-    </style>
-
-    <style name="TextInputLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:theme">@style/TextInputLayoutColorLine</item>
-    </style>
-
-    <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
-        <item name="android:textColorHint">@color/black_fifty_four_percent</item>
-
-        <item name="colorControlNormal">@color/colorGray</item>
-        <item name="colorControlActivated">@color/font_top_ads_green</item>
-        <item name="colorControlHighlight">@color/font_top_ads_green</item>
     </style>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -187,7 +138,7 @@
 
     <style name="ExpandableStyle" parent="style_expandable_option_default">
         <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
-        <item name="eo_text_option_style">@style/TextView.TopAds.Title.Black</item>
+        <item name="eo_text_option_style">@style/TextView.Subheading</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 

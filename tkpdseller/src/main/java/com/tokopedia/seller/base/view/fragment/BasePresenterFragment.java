@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.fragment;
+package com.tokopedia.seller.base.view.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

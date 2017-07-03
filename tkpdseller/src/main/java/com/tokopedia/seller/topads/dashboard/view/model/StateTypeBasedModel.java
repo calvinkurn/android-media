@@ -1,10 +1,12 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import com.tokopedia.seller.base.view.adapter.ItemType;
+
 /**
  * Created by normansyahputa on 2/13/17.
  */
 
-public abstract class StateTypeBasedModel implements TypeBasedModel {
+public abstract class StateTypeBasedModel implements ItemType {
     private boolean isSelected;
 
     public boolean isSelected() {

@@ -13,6 +13,8 @@ import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 public class ShopAd implements Ad, Parcelable {
 
+    public static final int TYPE = 2;
+
     @SerializedName("ad_id")
     @Expose
     private long id;
@@ -290,4 +292,9 @@ public class ShopAd implements Ad, Parcelable {
             return new ShopAd[size];
         }
     };
+
+    @Override
+    public int getType() {
+        return TYPE;
+    }
 }

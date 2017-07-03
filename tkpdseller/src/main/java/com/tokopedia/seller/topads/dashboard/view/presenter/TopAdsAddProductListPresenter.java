@@ -13,7 +13,7 @@ import com.tokopedia.seller.topads.dashboard.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.dashboard.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.seller.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
-import com.tokopedia.seller.topads.dashboard.view.model.TypeBasedModel;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,8 +218,8 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         }
     }
 
-    private List<TypeBasedModel> convertTo(List<ProductDomain> productDomains) {
-        List<TypeBasedModel> typeBasedModels = new ArrayList<>();
+    private List<ItemType> convertTo(List<ProductDomain> productDomains) {
+        List<ItemType> itemTypes = new ArrayList<>();
 
         boolean skipWithAdId = getView().isExistingGroup();
 
@@ -232,7 +232,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         productDomain.getGroupName(),
                         TopAdsProductModelMapper.convertModelFromDomainToView(productDomain)
                 );
-                typeBasedModels.add(promotedTopAdsAddProductModel);
+                itemTypes.add(promotedTopAdsAddProductModel);
             } else {
                 String groupName = productDomain.getGroupName();
                 NonPromotedTopAdsAddProductModel nonPromotedTopAdsAddProductModel
@@ -241,14 +241,14 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         (groupName == null || groupName.isEmpty()) ? null : groupName,
                         TopAdsProductModelMapper.convertModelFromDomainToView(productDomain)
                 );
-                typeBasedModels.add(nonPromotedTopAdsAddProductModel);
+                itemTypes.add(nonPromotedTopAdsAddProductModel);
             }
 
 
         }
 
 
-        return typeBasedModels;
+        return itemTypes;
     }
 
     @Override

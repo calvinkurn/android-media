@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
@@ -39,7 +40,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U> extends TopAdsBaseListFragment<T,U> implements
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
         AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener, BaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {

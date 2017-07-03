@@ -33,12 +33,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsDashboardActivity"
-            android:label="@string/title_top_ads_dashboard"
+            android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"/>
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsProductAdListActivity"
-            android:label="@string/title_top_ads_product"
+            android:label="@string/top_ads_title_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
@@ -84,11 +84,6 @@
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsGroupManagePromoActivity"
             android:label="@string/title_top_ads_manage_promo_product"
-            android:theme="@style/Theme.Tokopedia3"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".topads.dashboard.view.activity.TopAdsAddProductActivity"
-            android:label="@string/title_top_ads_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
@@ -152,7 +147,7 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"
-            android:label="@string/title_top_ads_dashboard"
+            android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity

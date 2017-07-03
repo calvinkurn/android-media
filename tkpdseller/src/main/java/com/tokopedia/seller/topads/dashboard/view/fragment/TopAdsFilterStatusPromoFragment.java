@@ -37,8 +37,8 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
     @Override
     protected List<RadioButtonItem> getRadioButtonList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        String[] statusValueList = getResources().getStringArray(R.array.filter_status_promo_list_values);
-        String[] statusNameList = getResources().getStringArray(R.array.filter_status_promo_list_names);
+        String[] statusValueList = getResources().getStringArray(R.array.top_ads_filter_status_promo_list_values);
+        String[] statusNameList = getResources().getStringArray(R.array.top_ads_filter_status_promo_list_entries);
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);

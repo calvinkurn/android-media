@@ -73,7 +73,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
         priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
 
-        name.setTitle(getString(R.string.title_top_ads_product));
+        name.setTitle(getString(R.string.top_ads_title_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
             @Override

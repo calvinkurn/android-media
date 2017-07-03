@@ -19,9 +19,9 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -31,12 +31,12 @@ import java.util.List;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class BaseListFragment<T, U> extends BasePresenterFragment<T> implements
-        BaseListViewListener, BaseListAdapter.Callback<U> {
+public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
+        BaseListViewListener, BaseListAdapter.Callback<T> {
 
     protected static final int START_PAGE = 1;
 
-    protected BaseListAdapter<U> adapter;
+    protected BaseListAdapter<T> adapter;
     protected RecyclerView recyclerView;
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;

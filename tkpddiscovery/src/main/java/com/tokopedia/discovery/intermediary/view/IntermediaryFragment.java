@@ -204,6 +204,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
         titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
+        headerContainer.setVisibility(View.VISIBLE);
+        bannerContainer.setVisibility(View.GONE);
         viewAllCategory.setText("Lihat Produk " + headerModel.getCategoryName() + " Lainnya");
     }
 
@@ -324,6 +326,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         bannerViewPager.setLayoutParams(param);
+        bannerContainer.setVisibility(View.VISIBLE);
         headerContainer.setVisibility(View.GONE);
         if (bannerModelList.size() == 1) bannerIndicator.setVisibility(View.GONE);
         startSlide();
