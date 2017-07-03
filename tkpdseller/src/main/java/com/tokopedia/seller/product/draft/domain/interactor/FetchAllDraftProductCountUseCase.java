@@ -1,13 +1,10 @@
-package com.tokopedia.seller.product.domain.interactor.productdraft;
+package com.tokopedia.seller.product.draft.domain.interactor;
 
 import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.domain.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-
-import java.util.List;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 
 import rx.Observable;
 

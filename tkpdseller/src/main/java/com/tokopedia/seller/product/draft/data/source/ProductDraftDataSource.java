@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.data.source;
+package com.tokopedia.seller.product.draft.data.source;
 
-import com.tokopedia.seller.product.data.source.db.ProductDraftDataManager;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.draft.data.source.db.ProductDraftDataManager;
 
 import java.util.List;
 

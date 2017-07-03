@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.model;
+package com.tokopedia.seller.product.draft.view.model;
 
 import com.tokopedia.seller.base.view.adapter.ItemType;
 

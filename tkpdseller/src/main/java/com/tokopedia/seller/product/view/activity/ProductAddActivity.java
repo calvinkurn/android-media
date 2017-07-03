@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -33,6 +35,7 @@ import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -108,10 +111,29 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     @Override
     public void onBackPressed() {
         if (hasDataAdded()){
-            boolean doSave = saveProducttoDraft();
-            if (!doSave) {
-                super.onBackPressed();
-            }
+            AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setMessage(getString(R.string.product_draft_dialog_cancel_message))
+                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ProductAddActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    }).setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            boolean doSave = saveProducttoDraft();
+                            if (!doSave) {
+                                ProductAddActivity.super.onBackPressed();
+                            }
+                        }
+                    })
+                    .create();
+            dialog.show();
+
         } else {
             super.onBackPressed();
         }

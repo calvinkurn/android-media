@@ -1,15 +1,8 @@
-package com.tokopedia.seller.product.view.presenter;
+package com.tokopedia.seller.product.draft.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.productdraft.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductCountUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.view.mapper.ProductDraftListMapper;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 
 import rx.Subscriber;
 

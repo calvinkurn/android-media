@@ -1,9 +1,8 @@
-package com.tokopedia.seller.product.data.source.db;
+package com.tokopedia.seller.product.draft.data.source.db;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
 

@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.view.presenter;
+package com.tokopedia.seller.product.draft.view.presenter;
 
-import com.tokopedia.seller.product.domain.interactor.productdraft.DeleteSingleDraftProductUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.view.mapper.ProductDraftListMapper;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

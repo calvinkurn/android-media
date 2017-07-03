@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;

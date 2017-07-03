@@ -50,7 +50,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;

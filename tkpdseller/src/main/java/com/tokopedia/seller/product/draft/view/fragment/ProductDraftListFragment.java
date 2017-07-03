@@ -1,13 +1,18 @@
-package com.tokopedia.seller.product.view.fragment;
+package com.tokopedia.seller.product.draft.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,6 +23,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
@@ -26,9 +32,11 @@ import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
-import com.tokopedia.seller.product.view.adapter.ProductDraftAdapter;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenter;
+import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
+import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -59,6 +67,8 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
 
+    private BroadcastReceiver draftBroadCastReceiver;
+
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
     }
@@ -68,11 +78,33 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
         final ProductDraftAdapter adapter = new ProductDraftAdapter();
         adapter.setOnDraftDeleteListener(new ProductDraftAdapter.OnDraftDeleteListener() {
             @Override
-            public void onDelete(ProductDraftViewModel draftViewModel, int position) {
-                // TODO hendry delete confirmation dialog
-                adapter.confirmDelete(position);
-                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductId());
-                // TODO hendry go to empty state if all data has been deleted
+            public void onDelete(final ProductDraftViewModel draftViewModel, final int position) {
+                String message;
+                if (TextUtils.isEmpty( draftViewModel.getProductName())) {
+                    message = getString(R.string.product_draft_dialog_delete_message);
+                } else {
+                    message = getString(R.string.product_draft_dialog_delete_name_message, draftViewModel.getProductName());
+                }
+                AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                        .setMessage(MethodChecker.fromHtml(message))
+                        .setPositiveButton(getString(R.string.action_delete), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                adapter.confirmDelete(position);
+                                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductId());
+                                // update total item value so scrolllistener won't retrieve next page.
+                                totalItem--;
+                                if (totalItem == 0) {
+                                    // go to empty state if all data has been deleted
+                                    searchData();
+                                }
+                            }
+                        }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                // no op
+                            }
+                        }).create();
+                dialog.show();
             }
         });
         return adapter;
@@ -121,6 +153,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
                 return false;
             }
         });
+        fabAdd.setVisibility(View.GONE);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -245,20 +278,45 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     public void onResume() {
         super.onResume();
         searchData();
+        registerDraftReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterDraftReceiver();
+    }
+
+    private void registerDraftReceiver(){
+        if (draftBroadCastReceiver == null) {
+            draftBroadCastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
+                        searchData();
+                    }
+                }
+            };
+        }
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                draftBroadCastReceiver,new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
+    }
+
+    private void unregisterDraftReceiver(){
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(draftBroadCastReceiver);
     }
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        // TODO hendry empty state for draft product
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter) {
             @Override
             protected int getEmptyLayout() {
                 return R.layout.listview_top_ads_empty_keyword_list;
             }
         };
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.product_draft_draft_product_empty));
+        emptyGroupAdsDataBinder.setEmptyContentText(null);
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.product_draft_add_product));
         emptyGroupAdsDataBinder.setCallback(this);
         return emptyGroupAdsDataBinder;
     }
@@ -271,12 +329,12 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     public void onEmptyContentItemTextClicked() {
-        // TODO hendry EmptyContentItemText clicked
+        // no op
     }
 
     @Override
     public void onEmptyButtonClicked() {
-        // TODO hendry button empty clicked
+        ProductAddActivity.start(getActivity());
     }
 
     @Override
@@ -294,6 +352,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
+        fabAdd.setVisibility(View.VISIBLE);
         fabAdd.show();
     }
 

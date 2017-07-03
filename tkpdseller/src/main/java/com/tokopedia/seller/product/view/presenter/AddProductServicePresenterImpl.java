@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.data.exception.UploadProductException;
-import com.tokopedia.seller.product.domain.interactor.productdraft.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;

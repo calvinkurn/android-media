@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.domain;
+package com.tokopedia.seller.product.draft.domain.model;
 
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
