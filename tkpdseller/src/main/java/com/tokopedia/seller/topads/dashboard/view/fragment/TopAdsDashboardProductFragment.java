@@ -82,11 +82,11 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         } else if (savedInstanceState.containsKey(GTM_KEYWORD)) {
             showKeyword = savedInstanceState.getBoolean(GTM_KEYWORD);
         }
-        if (showKeyword) {
+//        if (showKeyword) {
             keywordLabelView.setVisibility(View.VISIBLE);
-        } else {
-            keywordLabelView.setVisibility(View.GONE);
-        }
+//        } else {
+//            keywordLabelView.setVisibility(View.GONE);
+//        }
     }
 
     @Override
