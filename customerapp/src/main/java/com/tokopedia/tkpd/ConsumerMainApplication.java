@@ -56,8 +56,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-
+        TkpdBaseURL.TOKO_CASH_DOMAIN = ConsumerAppBaseUrl.TOKO_CASH_DOMAIN;
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        TkpdBaseURL.TopCash.HMAC_KEY = ConsumerAppBaseUrl.TOKO_CASH_HMAC;
     }
 
     public void initializeDatabase() {
