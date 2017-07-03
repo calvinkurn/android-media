@@ -25,7 +25,9 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talk.model.model.TalkUserReputation;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
@@ -305,13 +307,9 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                Intent intent;
-//				intent = new Intent(context, ProductDetailPresenter.class);
-                intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", productID);
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(context, productID);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         };

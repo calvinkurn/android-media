@@ -292,6 +292,7 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
 
     <!-- Top Ads Keyword -->
     <string name="top_ads_title_keyword_add_keyword">Tambah Kata Kunci</string>
@@ -613,7 +614,7 @@
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
     <string name="top_ads_keyword_please_use">Gunakan Kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai</string>
-    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci \nnegatif agar tidak tampil pada pencarian yang tidak sesuai</string>
+    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
 
@@ -621,5 +622,30 @@
     <string name="title_activity_payment_editor">Pembayaran</string>
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="label_manage_your_shop">Kelola Toko Anda</string>
+
+    <!-- OPPORTUNITY -->
+    <string name="same_day">Same Day</string>
+    <string name="next_day">Next Day</string>
+    <string name="reguler">Reguler</string>
+    <string name="supported_courier">Dukungan Pengiriman</string>
+    <string name="deadline">Jatuh Tempo</string>
+    <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
+    <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
+    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
+    <string name="action_agree">Setuju</string>
+    <string name="action_back">Kembali</string>
+    <string name="title_opportunity_detail">Peluang Baru</string>
+    <string name="cashback">Cashback :</string>
+    <string name="respond_deadline">Batas Respon :</string>
+    <string name="destination_city">Kota Tujuan :</string>
+    <string name="shipping">Pengiriman :</string>
+    <string name="title_quantity">Jumlah :</string>
+    <string name="item">barang</string>
+    <string name="title_supported_shipping">Dukungan Pengiriman</string>
+    <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
+    <string name="action_sort">Urutkan</string>
+    <string name="take_opportunity">Ambil Peluang</string>
+    <string name="delete_opportunity">Hapus Peluang</string>
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
 
 </resources>

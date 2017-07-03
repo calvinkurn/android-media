@@ -325,6 +325,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_promo">Promosi</string>
     <string name="title_promote">Promoted</string>
     <string name="title_sold_out">Gudangkan</string>
+    <string name="title_sold_out_action">Produk telah digudangkan</string>
+    <string name="title_move_etalase">Produk telah dipindahkan ke etalase</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
     <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
@@ -345,6 +347,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_share_product">Gagal membagikan produk</string>
     <string name="success_share_review">Sukses membagikan ulasan</string>
     <string name="error_share_review">Gagal membagikan ulasan</string>
+    <string name="download">Download</string>
     <!-- Strings related product info -->
 
 
@@ -1928,6 +1931,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
+    <string name="title_activity_snapshot">Snapshot</string>
 
     <!-- String related to Official Store START -->
     <string name="os_home_title_product">Produk</string>
@@ -1946,6 +1950,10 @@ di Tokopedia Sekarang!</string>
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
+    <string name="title_opportunity_list">Peluang</string>
+    <string name="accept_replacement">Ambil Peluang</string>
+    <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
+    <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 
     <string name="title_top_ads">TopAds</string>
 </resources>

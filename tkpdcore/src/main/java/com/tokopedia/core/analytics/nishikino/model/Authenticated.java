@@ -33,6 +33,8 @@ public class Authenticated extends BaseGTMModel {
     private static final String KEY_USER_STATUS =        "userStatus";
     private static final String KEY_IS_QC_ACC =          "isQcAccount";
     private static final String KEY_SHOP_ID =            "shopID";
+    public static final String KEY_SHOP_ID_SELLER =      "shopId";
+    public static final String KEY_SHOP_TYPE =          "shopType";
     private static final String KEY_GENDER =             "gender";
     private static final String KEY_AF_UNIQUE_ID =       "afUniqueId";
 
@@ -44,6 +46,9 @@ public class Authenticated extends BaseGTMModel {
         setUserDefaultShipping();
         return contactInfo;
     }
+
+    private String shopId;
+    private String shopType;
 
     public void setUserDefaultShipping(){
         contactInfo.put(KEY_USER_DEF_SHIPPING, userDefaultShipping);
@@ -131,5 +136,21 @@ public class Authenticated extends BaseGTMModel {
 
     public void clearAuth(){
 
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopId() {
+        return shopId;
     }
 }

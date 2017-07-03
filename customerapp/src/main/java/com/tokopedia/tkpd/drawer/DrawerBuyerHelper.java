@@ -195,6 +195,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 0,
                 TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
+        sellerMenu.add(new DrawerItem("Peluang",
+                0,
+                TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerItem("Daftar Produk",
                 0,
@@ -448,6 +452,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent.putExtra("tab", 4);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
+                    intent = SellerRouter.getActivitySellingTransaction(context);
+                    intent.putExtra("tab", 5);
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {

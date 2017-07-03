@@ -11,6 +11,7 @@ public class TkpdBaseURL {
     public static String BASE_DOMAIN = LIVE_DOMAIN;
     public static String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     public static String ACE_DOMAIN = "https://ace.tokopedia.com/";
+    public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
     public static String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
@@ -41,6 +42,8 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
+    public static final String URL_TOKOCASH = "https://tokocash.com/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -583,7 +586,7 @@ public class TkpdBaseURL {
 
 
     public static class Recharge {
-        public static final String VERSION = "v1.3";
+        public static final String VERSION = "v1.4";
         public static final String RECHARGE = "recharge";
 
         public static final String PATH_STATUS = VERSION + "/status";
@@ -713,7 +716,7 @@ public class TkpdBaseURL {
     }
 
     public static class DigitalApi {
-        public static final String VERSION = "v1.3/";
+        public static final String VERSION = "v1.4/";
         public static final String HMAC_KEY = "web_service_v4";
 
         public static final String PATH_STATUS = "status";
@@ -758,5 +761,14 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
+    }
+
+    public static class Replacement {
+        public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
+        public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/list";
+        public static final String PATH_GET_CATEGORY = "v4/order/replacement/category";
+
+        public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
+        public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
     }
 }

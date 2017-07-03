@@ -36,7 +36,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
-import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.PembelianCache;
@@ -57,6 +56,7 @@ public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
+    public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
     private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
     private static final String TEMP_NAME = "TEMP_NAME";
@@ -83,6 +83,7 @@ public class SessionHandler {
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
     private static final String USER_DATA = "USER_DATA";
+
 
     private Context context;
 
@@ -143,7 +144,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
-        LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
+        LocalCacheHandler.clearCache(context, CACHE_PROMOTION_PRODUCT);
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
