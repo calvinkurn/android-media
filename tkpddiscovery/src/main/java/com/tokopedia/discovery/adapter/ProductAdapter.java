@@ -142,6 +142,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateDefaultCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
                 return onCreateRevampCategoryHeader(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_BANNER:
+                return CategoryBannerAdapter.onCreateCategoryBanner(context, parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
@@ -173,6 +175,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     break;
                 case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
                     ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
+                    break;
+                case TkpdState.RecyclerView.VIEW_CATEGORY_BANNER:
+                    ((CategoryBannerAdapter.CategoryBannerViewHolder) holder).bind((CategoryBannerAdapter.CategoryBannerViewModel) data.get(position));
                     break;
                 case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                     ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
@@ -563,6 +568,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_BANNER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
                 return recyclerViewItem.getType();
@@ -687,6 +693,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addOfficialStoreBanner(OsBannerAdapter.OsBannerViewModel bannerModel) {
         data.add(0, bannerModel);
+    }
+
+    public void addCategoryBanner(CategoryBannerAdapter.CategoryBannerViewModel categoryBannerViewModel) {
+        data.add(0, categoryBannerViewModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
