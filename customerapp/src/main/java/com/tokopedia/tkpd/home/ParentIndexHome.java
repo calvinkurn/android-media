@@ -25,11 +25,19 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
+import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
@@ -61,6 +69,7 @@ import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 //import com.tokopedia.tkpd.home.fragment.DaggerFragmentProductFeed;
@@ -94,6 +103,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -237,6 +247,37 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }else {
             setMoengageUserAttributes();
         }
+
+        /**
+         * Example Fingerprint Devices
+          */
+
+        ThreadExecutor threadExecutor = new JobExecutor();
+        PostExecutionThread postExecutionThread = new UIThread();
+        FingerprintRepository fpRepo = new FingerprintDataRepository();
+        getFingerprintUseCase = new GetFingerprintUseCase(threadExecutor, postExecutionThread, fpRepo);
+        getFingerprintUseCase.execute(null, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                CommonUtils.dumper("the result "+s);
+            }
+        });
+
+
+        /**
+         * End Example Fingerprint Devices
+         */
+
     }
 
     private void setMoengageUserAttributes(){
