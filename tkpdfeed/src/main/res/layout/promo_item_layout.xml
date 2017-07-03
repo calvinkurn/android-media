@@ -4,7 +4,10 @@
     android:id="@id/container"
     android:layout_width="275dp"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_vvs"
+    android:layout_marginTop="@dimen/margin_vvs"
+    android:layout_marginBottom="@dimen/margin_vvs"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginRight="@dimen/margin_small"
     android:orientation="vertical"
     android:elevation="1dp"
     tools:background="@color/red_500">
