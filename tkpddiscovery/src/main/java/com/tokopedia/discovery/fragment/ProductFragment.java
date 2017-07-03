@@ -135,6 +135,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
+        if (topAdsRecyclerAdapter == null) {
+            initTopAdsRecyclerAdapter();
+        }
+        
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1: //List
@@ -392,6 +396,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public boolean setupRecyclerView() {
+        initTopAdsRecyclerAdapter();
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+        return true;
+    }
+
+    private void initTopAdsRecyclerAdapter() {
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
@@ -418,8 +428,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             }
         });
         mRecyclerView.setAdapter(topAdsRecyclerAdapter);
-        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
-        return true;
     }
 
     private TopAdsParams populatedNetworkParams() {
@@ -662,6 +670,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setLoading(boolean isLoading) {
+        if (topAdsRecyclerAdapter == null) {
+            initTopAdsRecyclerAdapter();
+        }
+
         if (isLoading) {
             topAdsRecyclerAdapter.showLoading();
         } else {
