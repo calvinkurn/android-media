@@ -1,7 +1,11 @@
 package com.tokopedia.profilecompletion.view;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
+import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
+import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
+import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
 
 import rx.Subscriber;
 
@@ -10,6 +14,12 @@ import rx.Subscriber;
  */
 
 public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
+
+    private GetProfileListener listener;
+
+    public GetUserInfoSubscriber(GetProfileListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void onCompleted() {
@@ -25,5 +35,6 @@ public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
     @Override
     public void onNext(GetUserInfoDomainModel getUserInfoDomainModel) {
         CommonUtils.dumper("NISNIS sukses");
+        listener.onGetUserInfo(getUserInfoDomainModel.getGetUserInfoDomainData());
     }
 }

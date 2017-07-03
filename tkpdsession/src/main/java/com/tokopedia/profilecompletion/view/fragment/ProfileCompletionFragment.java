@@ -1,8 +1,17 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -15,19 +24,26 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
 import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
-import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenter;
-import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenterImpl;
 import com.tokopedia.session.R;
 
 /**
- * @author by nisie on 6/19/17.
+ * Created by stevenfredian on 6/22/17.
  */
 
-public class ProfilePhoneVerifCompletionFragment
-        extends BasePresenterFragment<ProfilePhoneVerifCompletionPresenter> implements GetProfileListener {
+public class ProfileCompletionFragment extends BasePresenterFragment<ProfileCompletionPresenter>
+                                    implements GetProfileListener {
 
-    public static ProfilePhoneVerifCompletionFragment createInstance() {
-        return new ProfilePhoneVerifCompletionFragment();
+    ProgressBar progressBar;
+    ViewPager viewPager;
+    TextView percentText;
+    TextView proceed;
+    RadioGroup radioGroup;
+
+
+    public static ProfileCompletionFragment createInstance() {
+        return new ProfileCompletionFragment();
     }
 
     @Override
@@ -79,7 +95,8 @@ public class ProfilePhoneVerifCompletionFragment
                 new ProfileRepositoryImpl(profileSourceFactory)
         );
 
-        presenter = new ProfilePhoneVerifCompletionPresenterImpl(this, getUserInfoUseCase);
+
+        presenter = new ProfileCompletionPresenterImpl(this, getUserInfoUseCase);
     }
 
     @Override
@@ -94,22 +111,32 @@ public class ProfilePhoneVerifCompletionFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_profile_phone_verif_completion;
+        return R.layout.fragment_profile_completion;
     }
 
     @Override
     protected void initView(View view) {
-
+        progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        percentText = (TextView) view.findViewById(R.id.percentText);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        proceed = (TextView) view.findViewById(R.id.proceed);
     }
 
     @Override
     protected void setViewListener() {
-
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int selected = radioGroup.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) getView().findViewById(selected);
+                Toast.makeText(getActivity(), radioButton.getText(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     protected void initialVar() {
-
     }
 
     @Override
@@ -119,6 +146,17 @@ public class ProfilePhoneVerifCompletionFragment
 
     @Override
     public void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData) {
+        progressBar.setProgress(getUserInfoDomainData.getCompletion());
+        percentText.setText(String.format("%s%%", String.valueOf(progressBar.getProgress())));
+        loadFragment(getUserInfoDomainData);
+    }
 
+    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData) {
+        ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, genderFragment).commit();
+            radioGroup = (RadioGroup) genderFragment.getView().findViewById(R.id.radioGroup);
+        }
     }
 }

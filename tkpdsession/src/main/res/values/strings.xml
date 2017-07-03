@@ -57,4 +57,9 @@
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
     <string name="profile_completion_title">Data Diri</string>
+    <string name="continue_form">Lanjut</string>
+    <string name="skip_form">Lewati</string>
+
+    <string name="gender_title_prof_comp">Jenis Kelamin Anda</string>
+
 </resources>
