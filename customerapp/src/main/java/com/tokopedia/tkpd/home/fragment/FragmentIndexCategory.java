@@ -14,6 +14,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -67,9 +68,11 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -603,11 +606,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 getActivity().startActivity(intent);
             }
         }, getBrandsMenuWidth());
-        holder.brandsRecyclerView.setLayoutManager(
-                new NonScrollLinearLayoutManager(getActivity(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false)
-        );
+        holder.brandsRecyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
+                GridLayoutManager.VERTICAL, false));
+        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),R.drawable.divider300));
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
         holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }

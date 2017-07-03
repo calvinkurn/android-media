@@ -1958,4 +1958,5 @@ di Tokopedia Sekarang!</string>
     <string name="accept_replacement">Ambil Peluang</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
+    <string name="label_new">Baru</string>
 </resources>

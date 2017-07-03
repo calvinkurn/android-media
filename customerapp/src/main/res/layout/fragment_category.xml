@@ -83,7 +83,7 @@
             android:layout_marginTop="@dimen/margin_small"
             app:cardCornerRadius="0dip"
             app:cardElevation="0dip"
-            android:visibility="gone">
+            android:visibility="gone" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -130,6 +130,7 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_centerInParent="true"
                     android:nestedScrollingEnabled="false"
+                    android:padding="@dimen/padding_vs"
                     android:scrollbars="none" />
 
                 <TextView

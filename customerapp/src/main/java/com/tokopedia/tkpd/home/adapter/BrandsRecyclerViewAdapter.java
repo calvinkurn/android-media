@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -45,10 +46,21 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        holder.cardWrapper.getLayoutParams().width = homeMenuWidth;
-        holder.cardWrapper.getLayoutParams().height = homeMenuWidth;
         if(position<brands.getData().size()){
             final Brand singleBrand = brands.getData().get(position);
+
+            if(singleBrand.getIsNew() != 1) {
+                holder.labelNew.setVisibility(View.GONE);
+            } else {
+                holder.labelNew.setVisibility(View.VISIBLE);
+            }
+
+            if((position+1) % 3 == 0 ){
+                holder.separator.setVisibility(View.GONE);
+            } else {
+                holder.separator.setVisibility(View.VISIBLE);
+            }
+
             ImageHandler.LoadImage(holder.ivBrands,singleBrand.getLogoUrl());
             holder.ivBrands.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -70,12 +82,14 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         ImageView ivBrands;
-        CardView cardWrapper;
+        View separator;
+        TextView labelNew;
 
         ItemRowHolder(View view) {
             super(view);
             this.ivBrands = (ImageView) view.findViewById(R.id.iv_brands);
-            this.cardWrapper = (CardView) view.findViewById(R.id.card_wrapper);
+            this.separator = view.findViewById(R.id.separator);
+            this.labelNew = (TextView) view.findViewById(R.id.text_new);
         }
 
     }
