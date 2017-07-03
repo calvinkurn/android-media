@@ -14,7 +14,6 @@ public class ConfirmBookingViewModel implements Parcelable {
     private String productDisplayName;
     private String promoCode;
     private String promoDescription;
-    private String deviceType;
     private PlacePassViewModel source;
     private PlacePassViewModel destination;
     private int seatCount;
@@ -37,7 +36,6 @@ public class ConfirmBookingViewModel implements Parcelable {
         productDisplayName = in.readString();
         promoCode = in.readString();
         promoDescription = in.readString();
-        deviceType = in.readString();
         source = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         destination = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         seatCount = in.readInt();
@@ -59,7 +57,6 @@ public class ConfirmBookingViewModel implements Parcelable {
         dest.writeString(productDisplayName);
         dest.writeString(promoCode);
         dest.writeString(promoDescription);
-        dest.writeString(deviceType);
         dest.writeParcelable(source, flags);
         dest.writeParcelable(destination, flags);
         dest.writeInt(seatCount);
@@ -216,14 +213,6 @@ public class ConfirmBookingViewModel implements Parcelable {
 
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
-    }
-
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
     }
 
     public String getPromoDescription() {

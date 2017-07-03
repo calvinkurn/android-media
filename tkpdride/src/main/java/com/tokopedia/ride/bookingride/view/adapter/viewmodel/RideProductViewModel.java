@@ -25,6 +25,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private float surgeMultiplier;
     private String surgeConfirmationHref;
     private String cancellationFee;
+    private String promoCode;
+    private String promoMessage;
 
     public RideProductViewModel() {
     }
@@ -44,6 +46,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         surgeMultiplier = in.readFloat();
         surgeConfirmationHref = in.readString();
         cancellationFee = in.readString();
+        promoCode = in.readString();
+        promoMessage = in.readString();
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -175,6 +179,22 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.cancellationFee = cancellationFee;
     }
 
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    public String getPromoMessage() {
+        return promoMessage;
+    }
+
+    public void setPromoMessage(String promoMessage) {
+        this.promoMessage = promoMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -196,6 +216,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         parcel.writeFloat(surgeMultiplier);
         parcel.writeString(surgeConfirmationHref);
         parcel.writeString(cancellationFee);
+        parcel.writeString(promoCode);
+        parcel.writeString(promoMessage);
     }
 
     @Override

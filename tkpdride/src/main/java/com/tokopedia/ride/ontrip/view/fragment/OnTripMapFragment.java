@@ -303,7 +303,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
             requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
-            requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, confirmBookingViewModel.getDeviceType());
+            requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, presenter.getDeviceName());
         }
         return requestParams;
     }

@@ -194,6 +194,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             confirmBookingViewModel.setSurgeMultiplier(rideProductViewModel.getSurgeMultiplier());
             confirmBookingViewModel.setSurgeConfirmationHref(rideProductViewModel.getSurgeConfirmationHref());
             confirmBookingViewModel.setCancellationFee(rideProductViewModel.getCancellationFee());
+            confirmBookingViewModel.setPromoCode(rideProductViewModel.getPromoCode());
+            confirmBookingViewModel.setPromoDescription(rideProductViewModel.getPromoMessage());
             mInteractionListener.onProductClicked(confirmBookingViewModel);
         } else {
             //show message to enter destianation

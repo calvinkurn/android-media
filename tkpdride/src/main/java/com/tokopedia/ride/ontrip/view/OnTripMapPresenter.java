@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -38,7 +39,6 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
-import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
@@ -1001,7 +1001,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (!TextUtils.isEmpty(getView().getRequestId())) {
             if (activeRideRequest != null) {
                 if (activeRideRequest.getCancelChargeTimestamp() != null)
-                getView().actionNavigateToCancelReasonPage(getView().getRequestId(), activeRideRequest.getCancelChargeTimestamp());
+                    getView().actionNavigateToCancelReasonPage(getView().getRequestId(), activeRideRequest.getCancelChargeTimestamp());
                 else {
                     getView().actionNavigateToCancelReasonPage(getView().getRequestId());
                 }
@@ -1019,7 +1019,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionCancelButtonClicked() {
-        if (activeRideRequest != null){
+        if (activeRideRequest != null) {
             if (activeRideRequest.getCancelChargeTimestamp() == null) return;
             SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
             Date date = null;
@@ -1040,10 +1040,33 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                 @Override
                 public void onFinish() {
-                    if(isViewAttached())
-                    getView().showCancellationLayout();
+                    if (isViewAttached())
+                        getView().showCancellationLayout();
                 }
             }.start();
+        }
+    }
+
+    @Override
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
         }
     }
 }

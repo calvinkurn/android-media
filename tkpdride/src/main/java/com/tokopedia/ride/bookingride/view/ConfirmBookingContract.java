@@ -14,7 +14,7 @@ public interface ConfirmBookingContract {
     interface View extends CustomerView {
         RequestParams getParam();
 
-        void renderFareEstimate(String fareId, String display, float value, float surgeMultipliers, String surgeConfirmationHref);
+        void renderFareEstimate(String fareId, String display, float value, float surgeMultipliers, String surgeConfirmationHref, String code, String promoSuccessMessage);
 
         void hideConfirmButton();
 

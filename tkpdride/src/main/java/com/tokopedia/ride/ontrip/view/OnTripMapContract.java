@@ -239,5 +239,7 @@ public interface OnTripMapContract {
         String getRideStatus();
 
         void actionCancelButtonClicked();
+
+        String getDeviceName();
     }
 }

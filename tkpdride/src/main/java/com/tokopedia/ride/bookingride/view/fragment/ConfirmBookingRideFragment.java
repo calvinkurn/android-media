@@ -158,6 +158,14 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         } else {
             surgeRateTextView.setVisibility(View.GONE);
         }
+
+        //show promo message if promo code is auto applied
+        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoDescription())) {
+            mPromoResultLayout.setVisibility(View.VISIBLE);
+            mApplyPromoLayout.setVisibility(View.GONE);
+            mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+        }
+
 //        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 
@@ -241,7 +249,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void renderFareEstimate(String fareId, String display, float price, float surgeMultiplier, String surgeConfirmationHref) {
+    public void renderFareEstimate(String fareId, String display, float price, float surgeMultiplier, String surgeConfirmationHref, String code, String promoSuccessMessage) {
         if (isRemoving()) {
             return;
         }
@@ -251,6 +259,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel.setPrice(price);
         confirmBookingViewModel.setSurgeMultiplier(surgeMultiplier);
         confirmBookingViewModel.setSurgeConfirmationHref(surgeConfirmationHref);
+        confirmBookingViewModel.setPromoCode(code);
+        confirmBookingViewModel.setPromoDescription(promoSuccessMessage);
         priceTextView.setText(display);
 
         if (surgeMultiplier > 0) {
@@ -258,6 +268,16 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             surgeRateTextView.setVisibility(View.VISIBLE);
         } else {
             surgeRateTextView.setVisibility(View.GONE);
+        }
+
+        //show promo message if promo code is auto applied
+        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoDescription())) {
+            mPromoResultLayout.setVisibility(View.VISIBLE);
+            mApplyPromoLayout.setVisibility(View.GONE);
+            mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+        } else {
+            mPromoResultLayout.setVisibility(View.GONE);
+            mApplyPromoLayout.setVisibility(View.VISIBLE);
         }
 
         updateSeatCountUi();

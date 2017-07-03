@@ -84,6 +84,8 @@ public class RideProductViewModelMapper {
                 rideProductViewModel.setProductPriceFmt(fareEstimate.getFare().getDisplay());
                 rideProductViewModel.setProductPrice(fareEstimate.getFare().getValue());
                 rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
+                rideProductViewModel.setPromoCode(fareEstimate.getCode());
+                rideProductViewModel.setPromoMessage(fareEstimate.getMessageSuccess());
             }
 
             if (fareEstimate.getEstimate() != null) {
@@ -112,6 +114,8 @@ public class RideProductViewModelMapper {
                 rideProductViewModel.setProductPriceFmt(fareEstimate.getFare().getDisplay());
                 rideProductViewModel.setProductPrice(fareEstimate.getFare().getValue());
                 rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
+                rideProductViewModel.setPromoCode(fareEstimate.getCode());
+                rideProductViewModel.setPromoMessage(fareEstimate.getMessageSuccess());
             }
 
             if (fareEstimate.getEstimate() != null) {
