@@ -17,11 +17,14 @@ public interface IDigitalModuleRouter {
     int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 218;
     int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     int REQUEST_CODE_CONTACT_PICKER = 219;
+    int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData);
+
+    Intent instanceIntentDigitalCategoryList();
 
 }

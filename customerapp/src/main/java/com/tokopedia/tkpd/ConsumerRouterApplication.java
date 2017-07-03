@@ -20,9 +20,10 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -197,6 +198,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
         return DigitalProductActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return DigitalCategoryListActivity.newInstance(this);
     }
 
     @Override

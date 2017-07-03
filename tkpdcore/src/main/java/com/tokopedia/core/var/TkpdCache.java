@@ -191,6 +191,9 @@ public class TkpdCache {
         public static final String DIGITAL_OPERATOR_ID_CATEGORY = "DIGITAL_OPERATOR_ID_CATEGORY_";
         public static final String DIGITAL_PRODUCT_ID_CATEGORY = "DIGITAL_PRODUCT_ID_CATEGORY_";
         public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
+
+        public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
+
     }
 
 }
