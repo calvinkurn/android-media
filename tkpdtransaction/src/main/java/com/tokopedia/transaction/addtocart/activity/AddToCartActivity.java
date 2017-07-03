@@ -605,7 +605,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
             }
-            if (product.getMaxHoursId() != null) {
+            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
                 shipmentHourAtcLayout.setVisibility(View.VISIBLE);
