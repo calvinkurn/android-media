@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     style="?android:attr/dropDownItemStyle"
-    android:background="@drawable/backgrond_single_line"
+    android:background="@drawable/bg_single_line"
     android:maxLines="1"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"

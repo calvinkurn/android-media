@@ -15,7 +15,7 @@
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
+        <item name="android:textColor">@drawable/color_state_disable_text</item>
     </style>
 
     <style name="EditText.Currency">
@@ -27,7 +27,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColorHighlight">@color/font_top_ads_green</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
+        <item name="android:textColor">@drawable/color_state_disable_text</item>
     </style>
 
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
@@ -38,7 +38,7 @@
     </style>
 
     <style name="TopAdsRadioButton" parent="@style/RadioButton">
-        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
+        <item name="android:button">@drawable/bg_radio_button</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
         <item name="android:textSize">16sp</item>
     </style>
