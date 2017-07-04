@@ -277,7 +277,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     public void onResume() {
         super.onResume();
-        // searchData();
         registerDraftReceiver();
     }
 
