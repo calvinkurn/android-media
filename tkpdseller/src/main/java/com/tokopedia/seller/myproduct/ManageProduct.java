@@ -300,7 +300,6 @@ public class ManageProduct extends TkpdActivity implements
                 return false;
             }
         });
-        fabAddProduct.setVisibility(View.GONE);
 
         footerLV = View.inflate(this, R.layout.footer_list_view, null);
         footerLV.setOnClickListener(null);
@@ -1475,8 +1474,6 @@ public class ManageProduct extends TkpdActivity implements
         }
 
         finishLoading();
-
-        fabAddProduct.setVisibility(View.VISIBLE);
     }
 
     private void TriggerLoadNewData() {
