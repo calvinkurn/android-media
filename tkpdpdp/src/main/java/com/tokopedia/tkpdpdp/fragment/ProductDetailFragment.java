@@ -880,7 +880,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
             int scrollRange = -1;
 
             @Override
@@ -891,13 +890,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange + verticalOffset == 0) {
                     initStatusBarLight();
                     initToolbarLight();
-                    fabWishlist.setVisibility(View.GONE);
-                    isShow = true;
-                } else if (isShow) {
+                    fabWishlist.hide();
+                } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    fabWishlist.setVisibility(View.VISIBLE);
-                    isShow = false;
+                    fabWishlist.show();
                 }
             }
         };
