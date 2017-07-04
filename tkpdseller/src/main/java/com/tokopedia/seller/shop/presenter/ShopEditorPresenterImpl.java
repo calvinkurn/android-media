@@ -68,7 +68,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
             view.loadImageAva(shopEditorModel.getmShopAvaUri());
             modelShopData = shopEditorModel.getModelShopData();
 
-            if(modelShopData.getInfo().getShopIsGold() == 1){
+            if(modelShopData.getInfo() != null && modelShopData.getInfo().getShopIsGold() == 1){
                 view.setShopIsGold(modelShopData.getInfo().getShopGoldExpiredTime());
             }else{
                 view.setShopReguler();
