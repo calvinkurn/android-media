@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -17,12 +15,14 @@ import rx.functions.Func1;
 
 public class GetFirstPageFeedsUseCase extends GetFeedsUseCase {
 
+
+    GetRecentProductUsecase getRecentProductUsecase;
+
     public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     FeedRepository feedRepository) {
 
         super(threadExecutor, postExecutionThread, feedRepository);
-
     }
 
     @Override
@@ -36,7 +36,6 @@ public class GetFirstPageFeedsUseCase extends GetFeedsUseCase {
                         return feedRepository.getFirstPageFeedsFromCloud(requestParams);
                     }
                 });
-
     }
 
 }

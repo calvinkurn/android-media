@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
 import rx.Observable;
 

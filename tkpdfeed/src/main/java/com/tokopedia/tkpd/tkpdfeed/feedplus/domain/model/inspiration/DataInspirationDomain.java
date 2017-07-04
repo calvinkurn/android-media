@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationPaginationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;

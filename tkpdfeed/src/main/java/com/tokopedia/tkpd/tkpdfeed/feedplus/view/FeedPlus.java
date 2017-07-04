@@ -83,6 +83,8 @@ public interface FeedPlus{
         int getColor(int black);
 
         Resources getResources();
+
+        void onSeeAllRecentView();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

@@ -1,4 +1,7 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
+
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 
 import java.util.List;
 
@@ -22,6 +25,9 @@ public class FeedDomain {
     @Nullable
     boolean hasNext;
 
+    @Nullable
+    private List<RecentViewProductDomain> recentProduct;
+
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
                       @Nullable List<DataInspirationDomain> listInspiration,
                       @Nullable boolean hasNext) {
@@ -43,5 +49,13 @@ public class FeedDomain {
     @Nullable
     public List<DataInspirationDomain> getListInspiration() {
         return listInspiration;
+    }
+
+    public void setRecentProduct(List<RecentViewProductDomain> recentProduct) {
+        this.recentProduct = recentProduct;
+    }
+
+    public List<RecentViewProductDomain> getRecentProduct() {
+        return recentProduct;
     }
 }

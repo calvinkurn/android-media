@@ -2,12 +2,14 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataInspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ProductFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.PromotionFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
@@ -16,6 +18,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderView
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 
 import java.util.ArrayList;
@@ -59,23 +64,84 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
         ArrayList<Visitable> listFeedView = new ArrayList<>();
+
+        if (feedDomain.getRecentProduct() != null
+                && !feedDomain.getRecentProduct().isEmpty()
+                && feedDomain.getListFeed() != null
+                && !feedDomain.getListFeed().isEmpty())
+            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
+
         addFeedData(listFeedView, feedDomain.getListFeed());
-        if (listFeedView.size() > 1 && !(listFeedView.get(0) instanceof PromoCardViewModel))
+
+        if (listFeedView.size() > 1
+                && (hasFeedAndRecentView(listFeedView) || hasFeed(listFeedView))
+                && feedDomain.getListInspiration() != null)
             addInspirationData(listFeedView, feedDomain.getListInspiration());
+
         return listFeedView;
     }
 
-    private void addInspirationData(ArrayList<Visitable> listFeedView, List<DataInspirationDomain> listInspiration) {
-        if (listInspiration != null) {
-            for (DataInspirationDomain domain : listInspiration) {
-                InspirationViewModel model = convertToInspirationViewModel(domain);
-                if (model.getListProduct() != null && model.getListProduct().size() > 0)
-                    listFeedView.add(model);
-            }
+    private boolean hasFeed(ArrayList<Visitable> listFeedView) {
+        return !(listFeedView.get(0) instanceof RecentViewViewModel)
+                && !(listFeedView.get(0) instanceof PromoCardViewModel);
+    }
+
+    private boolean hasFeedAndRecentView(ArrayList<Visitable> listFeedView) {
+        return (listFeedView.get(0) instanceof RecentViewViewModel)
+                && !(listFeedView.get(1) instanceof PromoCardViewModel);
+    }
+
+    private void addRecentViewData(ArrayList<Visitable> listFeedView,
+                                   List<RecentViewProductDomain> recentProduct) {
+        listFeedView.add(new RecentViewViewModel(convertToRecentViewModelItem(recentProduct)));
+    }
+
+    private ArrayList<RecentViewProductViewModel> convertToRecentViewModelItem(
+            List<RecentViewProductDomain> domains) {
+        ArrayList<RecentViewProductViewModel> listProduct = new ArrayList<>();
+        for (RecentViewProductDomain domain : domains) {
+            RecentViewProductViewModel model = convertToRecentProductViewModel(domain);
+            listProduct.add(model);
+        }
+        return listProduct;
+    }
+
+    private RecentViewProductViewModel convertToRecentProductViewModel(
+            RecentViewProductDomain domain) {
+        return new RecentViewProductViewModel(domain.getId(),
+                domain.getName(),
+                domain.getPrice(),
+                domain.getShop().getName(),
+                domain.getImgUri(),
+                Integer.parseInt(domain.getShop().getId()),
+                domain.getPreorder(),
+                domain.getWholesale(),
+                convertToBadgeViewModel(domain.getBadges()),
+                domain.getFreeReturn(),
+                domain.getWishlist(),
+                domain.getIsGold()
+        );
+    }
+
+    private List<BadgeViewModel> convertToBadgeViewModel(List<RecentViewBadgeDomain> badges) {
+        List<BadgeViewModel> badgeList = new ArrayList<>();
+        for (RecentViewBadgeDomain badgeResponse : badges) {
+            badgeList.add(new BadgeViewModel(badgeResponse.getTitle(), badgeResponse.getImageUrl()));
+        }
+        return badgeList;
+    }
+
+    private void addInspirationData(ArrayList<Visitable> listFeedView,
+                                    List<DataInspirationDomain> listInspiration) {
+        for (DataInspirationDomain domain : listInspiration) {
+            InspirationViewModel model = convertToInspirationViewModel(domain);
+            if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                listFeedView.add(model);
         }
     }
 
-    private void addFeedData(ArrayList<Visitable> listFeedView, List<DataFeedDomain> listFeedDomain) {
+    private void addFeedData(ArrayList<Visitable> listFeedView,
+                             List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType()) {
@@ -95,11 +161,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             }
     }
 
-    private InspirationViewModel convertToInspirationViewModel(DataInspirationDomain domain) {
-        return new InspirationViewModel(domain.getTitle(), convertToRecommendationListViewModel(domain));
+    private InspirationViewModel convertToInspirationViewModel(
+            DataInspirationDomain domain) {
+        return new InspirationViewModel(domain.getTitle(),
+                convertToRecommendationListViewModel(domain));
     }
 
-    private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(DataInspirationDomain domains) {
+    private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(
+            DataInspirationDomain domains) {
         ArrayList<InspirationProductViewModel> listRecommendation = new ArrayList<>();
         if (domains.getRecommendation() != null && domains.getRecommendation().size() == 4)
             for (InspirationRecommendationDomain recommendationDomain : domains.getRecommendation()) {
@@ -108,7 +177,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return listRecommendation;
     }
 
-    private InspirationProductViewModel convertToRecommendationViewModel(InspirationRecommendationDomain recommendationDomain) {
+    private InspirationProductViewModel convertToRecommendationViewModel(
+            InspirationRecommendationDomain recommendationDomain) {
         return new InspirationProductViewModel(recommendationDomain.getId(),
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
@@ -139,7 +209,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    protected ArrayList<ProductFeedViewModel> convertToProductListViewModel(DataFeedDomain dataFeedDomain) {
+    protected ArrayList<ProductFeedViewModel> convertToProductListViewModel(
+            DataFeedDomain dataFeedDomain) {
         ArrayList<ProductFeedViewModel> listProduct = new ArrayList<>();
         for (ProductFeedDomain domain : dataFeedDomain.getContent().getProducts()) {
             listProduct.add(

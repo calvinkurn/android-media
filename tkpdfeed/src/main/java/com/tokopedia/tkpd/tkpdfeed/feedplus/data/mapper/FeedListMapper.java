@@ -1,15 +1,15 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
 import com.tkpdfeed.feeds.Feeds;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ContentFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataInspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ProductFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.PromotionFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.ShopFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SourceFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.WholesaleDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ShopFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.SourceFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.WholesaleDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationPaginationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 

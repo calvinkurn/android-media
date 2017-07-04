@@ -420,6 +420,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSeeAllRecentView() {
+
+    }
+
+    @Override
     public void onSeePromo(String link) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
     }

@@ -5,11 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.data.source;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud;
 
 import android.content.Context;
 

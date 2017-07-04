@@ -3,6 +3,9 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.di;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
+import com.google.gson.Gson;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -11,6 +14,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
@@ -20,6 +24,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepositoryImpl;
@@ -27,7 +32,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
@@ -42,6 +47,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 5/15/17.
@@ -104,7 +110,10 @@ public class FeedPlusModule {
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    FeedDetailListMapper feedDetailListMapper,
-                                   GlobalCacheManager globalCacheManager) {
+                                   GlobalCacheManager globalCacheManager,
+                                   RecentProductDbManager recentProductDbManager,
+                                   MojitoService mojitoService,
+                                   RecentProductMapper recentProductMapper) {
         return new FeedFactory(
                 context,
                 apolloClient,
@@ -112,7 +121,11 @@ public class FeedPlusModule {
                 feedResultMapperCloud,
                 feedResultMapperLocal,
                 globalCacheManager,
-                feedDetailListMapper);
+                feedDetailListMapper,
+                recentProductDbManager,
+                mojitoService,
+                recentProductMapper
+        );
     }
 
     @FeedPlusScope
@@ -239,4 +252,21 @@ public class FeedPlusModule {
                 wishlistRepository);
     }
 
+    @FeedPlusScope
+    @Provides
+    MojitoService provideRecentProductService(@MojitoQualifier Retrofit retrofit) {
+        return retrofit.create(MojitoService.class);
+    }
+
+    @FeedPlusScope
+    @Provides
+    RecentProductMapper provideRecentProductMapper(Gson gson) {
+        return new RecentProductMapper(gson);
+    }
+
+    @FeedPlusScope
+    @Provides
+    RecentProductDbManager provideDbManager() {
+        return new RecentProductDbManager();
+    }
 }

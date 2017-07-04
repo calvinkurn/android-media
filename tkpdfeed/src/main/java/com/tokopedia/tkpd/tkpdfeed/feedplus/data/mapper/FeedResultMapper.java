@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
 import rx.functions.Func1;
 

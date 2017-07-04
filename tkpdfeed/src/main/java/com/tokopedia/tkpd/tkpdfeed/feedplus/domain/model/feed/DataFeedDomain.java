@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
 import javax.annotation.Nullable;
 

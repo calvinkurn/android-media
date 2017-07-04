@@ -5,23 +5,16 @@ import android.content.Context;
 import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
-import com.google.gson.reflect.TypeToken;
 import com.tkpdfeed.feeds.Feeds;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 
-import java.util.List;
-
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @author ricoharisin .
@@ -32,8 +25,8 @@ public class CloudFeedDataSource {
     private ApolloClient apolloClient;
     private Context context;
     private FeedListMapper feedListMapper;
-    private GlobalCacheManager globalCacheManager;
-    private FeedResultMapper feedResultMapper;
+    protected GlobalCacheManager globalCacheManager;
+    protected FeedResultMapper feedResultMapper;
 
     public CloudFeedDataSource(Context context,
                                ApolloClient apolloClient,
@@ -48,30 +41,15 @@ public class CloudFeedDataSource {
         this.feedResultMapper = feedResultMapper;
     }
 
-    public Observable<FeedResult> getFirstPageFeedsList(RequestParams requestParams) {
-        return getFeedsList(requestParams)
-                .doOnNext(new Action1<FeedDomain>() {
-                    @Override
-                    public void call(FeedDomain dataFeedDomains) {
-                        globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
-                        globalCacheManager.setValue(
-                                CacheUtil.convertModelToString(dataFeedDomains,
-                                        new TypeToken<FeedDomain>() {
-                                        }.getType()));
-                        globalCacheManager.store();
-                    }
-                }).map(feedResultMapper);
-    }
-
     public Observable<FeedResult> getNextPageFeedsList(RequestParams requestParams) {
         return getFeedsList(requestParams).map(feedResultMapper);
     }
 
-    private Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
+    protected Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
-                .limit(5)
+                .limit(3)
                 .cursor(cursor)
                 .build()).watcher();
 
