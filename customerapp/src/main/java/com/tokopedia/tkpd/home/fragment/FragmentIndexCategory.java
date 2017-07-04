@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
@@ -191,6 +192,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
         LinearLayout wrapperLinearLayout;
+        TextView seeAllProduct;
 
         private ViewHolder() {
         }
@@ -470,6 +472,13 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView = (TokoCashHeaderView) holder
                 .MainView.findViewById(R.id.toko_cash_header_layout);
         holder.tokoCashHeaderView.setActionListener(this);
+        holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
+        holder.seeAllProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "See All Product", Toast.LENGTH_SHORT).show();
+            }
+        });
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();

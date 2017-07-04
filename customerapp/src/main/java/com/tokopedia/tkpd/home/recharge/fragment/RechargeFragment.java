@@ -721,6 +721,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         buyWithCreditCheckbox.setVisibility(
                 categoryAttributes.isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE
         );
+        if (buyWithCreditCheckbox.getVisibility() == View.GONE) {
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+            buyButton.setLayoutParams(param);
+        }
 
         setTextToEditTextOrSetVisibilityForm();
         setPhoneBookVisibility();
@@ -1164,7 +1169,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);
@@ -1241,5 +1246,4 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, ""
         );
     }
-
 }
