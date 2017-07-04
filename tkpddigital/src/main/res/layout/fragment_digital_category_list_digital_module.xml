@@ -3,8 +3,14 @@
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_digital_category"
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_digital_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
 </android.support.design.widget.CoordinatorLayout>

@@ -6,14 +6,19 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.R2;
+import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
 import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
@@ -25,6 +30,7 @@ import com.tokopedia.digital.widget.presenter.IDigitalCategoryListPresenter;
 
 import java.util.List;
 
+import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -33,9 +39,18 @@ import rx.subscriptions.CompositeSubscription;
 
 public class DigitalCategoryListFragment extends
         BasePresenterFragment<IDigitalCategoryListPresenter> implements
-        IDigitalCategoryListView {
+        IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
+        RefreshHandler.OnRefreshHandlerListener {
+    public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
+
+    @BindView(R2.id.rv_digital_category)
+    RecyclerView rvDigitalCategoryList;
 
     private CompositeSubscription compositeSubscription;
+    private DigitalCategoryListAdapter adapter;
+    private RefreshHandler refreshHandler;
+    private RecyclerView.LayoutManager gridLayoutManager;
+    private RecyclerView.LayoutManager linearLayoutManager;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -48,7 +63,7 @@ public class DigitalCategoryListFragment extends
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processGetDigitalCategoryList();
+        refreshHandler.startRefresh();
     }
 
     @Override
@@ -97,17 +112,19 @@ public class DigitalCategoryListFragment extends
 
     @Override
     protected void initView(View view) {
-
+        refreshHandler = new RefreshHandler(getActivity(), view, this);
     }
 
     @Override
     protected void setViewListener() {
-
+        rvDigitalCategoryList.setAdapter(adapter);
     }
 
     @Override
     protected void initialVar() {
-
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        gridLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
+        adapter = new DigitalCategoryListAdapter(this, this, NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
     }
 
     @Override
@@ -117,20 +134,49 @@ public class DigitalCategoryListFragment extends
 
     @Override
     public void renderDigitalCategoryDataList(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
+        refreshHandler.finishRefresh();
+        rvDigitalCategoryList.setLayoutManager(gridLayoutManager);
+        adapter.addAllDataList(digitalCategoryItemDataList);
+    }
 
-        for (DigitalCategoryItemData data : digitalCategoryItemDataList) {
-            Log.d("DIGITAL_CATEGORY", data.getName());
-        }
+    @Override
+    public void renderErrorGetDigitalCategoryList(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpGetDigitalCategoryList(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionGetDigitalCategoryList(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionGetDigitalCategoryList(String message) {
+
+    }
+
+    @Override
+    public void disableSwipeRefresh() {
+        refreshHandler.setPullEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        refreshHandler.setPullEnabled(true);
     }
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        startActivity(intent);
     }
 
     @Override
@@ -184,13 +230,15 @@ public class DigitalCategoryListFragment extends
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
         return null;
     }
 
     @Override
     public void closeView() {
-
+        getActivity().finish();
     }
 
     @Override
@@ -201,4 +249,13 @@ public class DigitalCategoryListFragment extends
     }
 
 
+    @Override
+    public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
+
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        if (refreshHandler.isRefreshing()) presenter.processGetDigitalCategoryList();
+    }
 }

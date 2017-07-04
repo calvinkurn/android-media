@@ -11,4 +11,16 @@ import java.util.List;
 
 public interface IDigitalCategoryListView extends IBaseView {
     void renderDigitalCategoryDataList(List<DigitalCategoryItemData> digitalCategoryItemDataList);
+
+    void renderErrorGetDigitalCategoryList(String message);
+
+    void renderErrorHttpGetDigitalCategoryList(String message);
+
+    void renderErrorNoConnectionGetDigitalCategoryList(String message);
+
+    void renderErrorTimeoutConnectionGetDigitalCategoryList(String message);
+
+    void disableSwipeRefresh();
+
+    void enableSwipeRefresh();
 }

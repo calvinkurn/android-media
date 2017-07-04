@@ -27,6 +27,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
     @Override
     public void processGetDigitalCategoryList() {
+        digitalCategoryListView.disableSwipeRefresh();
         digitalCategoryListInteractor.getDigitalCategoryItemDataList(
                 new Subscriber<List<DigitalCategoryItemData>>() {
                     @Override
