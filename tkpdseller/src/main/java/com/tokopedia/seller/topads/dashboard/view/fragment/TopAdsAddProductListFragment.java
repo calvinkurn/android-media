@@ -38,6 +38,7 @@ import com.tokopedia.seller.topads.dashboard.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.dashboard.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAddProductListAdapter;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.dashboard.view.listener.FragmentItemSelection;
@@ -213,6 +214,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     protected void initialVar() {
         totalItem = Integer.MAX_VALUE;
         topAdsProductListAdapter = new TopAdsAddProductListAdapter();
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(topAdsProductListAdapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
+        topAdsProductListAdapter.setEmptyView(emptyGroupAdsDataBinder);
         RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(topAdsProductListAdapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
