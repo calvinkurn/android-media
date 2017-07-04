@@ -1,5 +1,8 @@
 package com.tokopedia.seller.opportunity.domain.param;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
@@ -8,12 +11,35 @@ import java.util.HashMap;
 /**
  * Created by nisie on 3/2/17.
  */
-public class GetOpportunityListParam {
+public class GetOpportunityListParam implements Parcelable {
     private String page;
     private String query;
     private String sort;
     private String keySort;
     private ArrayList<FilterPass> listFilter;
+
+    public GetOpportunityListParam() {
+    }
+
+    protected GetOpportunityListParam(Parcel in) {
+        page = in.readString();
+        query = in.readString();
+        sort = in.readString();
+        keySort = in.readString();
+        listFilter = in.createTypedArrayList(FilterPass.CREATOR);
+    }
+
+    public static final Creator<GetOpportunityListParam> CREATOR = new Creator<GetOpportunityListParam>() {
+        @Override
+        public GetOpportunityListParam createFromParcel(Parcel in) {
+            return new GetOpportunityListParam(in);
+        }
+
+        @Override
+        public GetOpportunityListParam[] newArray(int size) {
+            return new GetOpportunityListParam[size];
+        }
+    };
 
     public String getPage() {
         return page;
@@ -54,5 +80,19 @@ public class GetOpportunityListParam {
 
     public void setKeySort(String keySort) {
         this.keySort = keySort;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(page);
+        dest.writeString(query);
+        dest.writeString(sort);
+        dest.writeString(keySort);
+        dest.writeTypedList(listFilter);
     }
 }

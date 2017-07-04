@@ -54,9 +54,7 @@ public class ListViewShopLocation extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         ViewHolder holder;
-        System.out.println("ListView Shop Location Adapter Called");
 
         if (convertView == null) {
             holder = new ViewHolder();

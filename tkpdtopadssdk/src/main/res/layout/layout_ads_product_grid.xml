@@ -38,11 +38,12 @@
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:minHeight="@dimen/product_title_min_height"
-        style="@style/MediumText"
+        android:textSize="@dimen/text_size_s_medium"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:lineSpacingExtra="5sp"
         tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-        android:textColor="@color/black_70"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textColor="@color/black_70"/>
 
     <TextView
         android:id="@id/price"
@@ -55,11 +56,11 @@
         android:layout_marginTop="2dp"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
-        style="@style/MediumText"
         tools:text="Rp 3.121.500"
         android:textColor="@color/orange_red"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textSize="@dimen/text_size_s_medium"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal" />
 
     <LinearLayout
         android:id="@id/shop_detail_container"
@@ -87,7 +88,7 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/black_54"
             tools:text="ORIGINAL-ZONE"
-            android:textSize="11sp" />
+            android:textSize="@dimen/text_size_xsmall" />
 
         <TextView
             android:id="@+id/location"
@@ -99,7 +100,7 @@
             android:minHeight="25dp"
             android:textColor="@color/black_70"
             tools:text="Jakarta"
-            android:textSize="11sp" />
+            android:textSize="@dimen/text_size_xsmall" />
 
     </LinearLayout>
 

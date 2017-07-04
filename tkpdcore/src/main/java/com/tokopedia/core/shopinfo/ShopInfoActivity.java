@@ -311,6 +311,15 @@ public class ShopInfoActivity extends BaseActivity
         unregisterReceiver(loginReceiver);
     }
 
+    @Override
+    public boolean isOfficialStore() {
+        if(shopModel != null && shopModel.info != null) {
+            return shopModel.info.shopIsOfficial == 1;
+        }
+
+        return false;
+    }
+
     private void clearVariable() {
         shopModel = null;
     }

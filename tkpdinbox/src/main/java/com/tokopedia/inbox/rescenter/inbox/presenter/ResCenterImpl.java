@@ -51,7 +51,7 @@ public class ResCenterImpl implements ResCenterPresenter {
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
             } else {
-                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_my_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
             }
         } else {
             list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
@@ -63,7 +63,7 @@ public class ResCenterImpl implements ResCenterPresenter {
     }
 
     private boolean isHasShop(Context context) {
-        return !SessionHandler.getShopID(context).equals("") || !SessionHandler.getShopID(context).equals("0");
+        return !(SessionHandler.getShopID(context).equals("0") || SessionHandler.getShopID(context).equals(""));
     }
 
     @Override
@@ -75,8 +75,8 @@ public class ResCenterImpl implements ResCenterPresenter {
     }
 
     @Override
-    public void initView() {
-        if (isSellerApp()) {
+    public void initView(Context context) {
+        if (isSellerApp() || !isHasShop(context)) {
             view.getTabLayout().setVisibility(View.GONE);
         } else {
             view.getTabLayout().setVisibility(View.VISIBLE);

@@ -15,7 +15,9 @@ public interface AddProductListInterface extends ActivityItemSelection {
 
     ImageHandler imageHandler();
 
-    void hideBottomBecauseEmpty();
+    void hideBottom();
+
+    void showBottom();
 
     void removeSelection(TopAdsProductViewModel data);
 

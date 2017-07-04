@@ -62,7 +62,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         data = element.getData();
         Product product = data.getProduct();
         if (product != null) {
-            imageLoader.loadImage(product.getImage().getXs_ecs(), product.getImage().getXs_url(),
+            imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
                     productImage);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productName.setText(Html.fromHtml(product.getName(),
@@ -79,7 +79,12 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         Shop shop = data.getShop();
         if (shop != null) {
             shopLocation.setText(shop.getLocation());
-            shopName.setText(shop.getName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                shopName.setText(Html.fromHtml(shop.getName(),
+                        Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                shopName.setText(Html.fromHtml(shop.getName()));
+            }
             if (shop.getBadges() != null) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
             }

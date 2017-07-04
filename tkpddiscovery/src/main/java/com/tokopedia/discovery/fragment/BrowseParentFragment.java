@@ -375,6 +375,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
+            ((ProductFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
                 source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }

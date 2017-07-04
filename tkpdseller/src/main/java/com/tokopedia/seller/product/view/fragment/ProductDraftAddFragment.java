@@ -88,7 +88,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         hideLoading();
-        displayView();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         fetchCategory(model.getProductDepartmentId());
@@ -132,21 +131,12 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onErrorLoadProduct(Throwable throwable) {
         hideLoading();
-        hideView();
         NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 fetchInputData();
             }
         });
-    }
-
-    protected void hideView(){
-        coordinatorLayout.setVisibility(View.GONE);
-    }
-
-    protected void displayView(){
-        coordinatorLayout.setVisibility(View.VISIBLE);
     }
 
 }
