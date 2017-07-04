@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
@@ -30,16 +31,24 @@ public class ProductDraftListCountModule extends ProductAddModule {
     @ProductAddScope
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
-                                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase){
+                                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase,
+                                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-                clearAllDraftProductUseCase);
+                clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
     }
 
     @ProductAddScope
     @Provides
     ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                                             ProductDraftRepository productDraftRepository){
+                                                                   ProductDraftRepository productDraftRepository){
         return new ClearAllDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
+    }
+
+    @ProductAddScope
+    @Provides
+    UpdateUploadingDraftProductUseCase provideUpdateUploadingDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                                                   ProductDraftRepository productDraftRepository){
+        return new UpdateUploadingDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
     }
 }
 

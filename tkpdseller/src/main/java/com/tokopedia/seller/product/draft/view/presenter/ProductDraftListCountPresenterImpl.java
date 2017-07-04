@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.draft.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 
 import rx.Subscriber;
 
@@ -13,17 +14,26 @@ import rx.Subscriber;
 public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPresenter {
     private FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
+    private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
     public ProductDraftListCountPresenterImpl(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
-                                              ClearAllDraftProductUseCase clearAllDraftProductUseCase){
+                                              ClearAllDraftProductUseCase clearAllDraftProductUseCase,
+                                              UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         this.fetchAllDraftProductCountUseCase = fetchAllDraftProductCountUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
+        this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
     }
 
     @Override
     public void fetchAllDraftCount() {
         fetchAllDraftProductCountUseCase.execute(FetchAllDraftProductCountUseCase.createRequestParams(),
                 getSubscriber());
+    }
+
+    @Override
+    public void fetchAllDraftCountWithUpdateUploading() {
+        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false),
+                getUploadingSubscriber());
     }
 
     @Override
@@ -72,6 +82,25 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
         super.detachView();
         fetchAllDraftProductCountUseCase.unsubscribe();
         clearAllDraftProductUseCase.unsubscribe();
+        updateUploadingDraftProductUseCase.unsubscribe();
     }
 
+    public Subscriber<Boolean> getUploadingSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                fetchAllDraftCount();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                fetchAllDraftCount();
+            }
+        };
+    }
 }

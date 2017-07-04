@@ -1,8 +1,11 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import android.app.ActivityManager;
+
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
@@ -18,17 +21,26 @@ import rx.Subscriber;
 public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private FetchAllDraftProductUseCase fetchAllDraftProductUseCase;
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
+    private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
     public ProductDraftListPresenterImpl (FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
-                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase){
+                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
+                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
+        this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
     }
 
     @Override
     public void fetchAllDraftData() {
         fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
                 getSubscriber());
+    }
+
+    @Override
+    public void fetchAllDraftDataWithUpdateUploading() {
+        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false),
+                getUpdateUploadingSubscriber());
     }
 
     @Override
@@ -93,5 +105,25 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         super.detachView();
         fetchAllDraftProductUseCase.unsubscribe();
         deleteSingleDraftProductUseCase.unsubscribe();
+        updateUploadingDraftProductUseCase.unsubscribe();
+    }
+
+    public Subscriber<Boolean> getUpdateUploadingSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                fetchAllDraftData();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                fetchAllDraftData();
+            }
+        };
     }
 }

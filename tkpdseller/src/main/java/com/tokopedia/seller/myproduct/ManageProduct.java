@@ -2,6 +2,7 @@ package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -53,6 +54,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -352,13 +354,16 @@ public class ManageProduct extends TkpdActivity implements
 
         tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
         tvDraftProductInfo.setVisibility(View.GONE);
-        DaggerProductDraftListCountComponent
-                .builder()
-                .productDraftListCountModule(new ProductDraftListCountModule())
-                .appComponent(getComponent())
-                .build()
-                .inject(this);
-        productDraftListCountPresenter.attachView(this);
+        // Only for seller app
+        if (GlobalConfig.isSellerApp()) {
+            DaggerProductDraftListCountComponent
+                    .builder()
+                    .productDraftListCountModule(new ProductDraftListCountModule())
+                    .appComponent(getComponent())
+                    .build()
+                    .inject(this);
+            productDraftListCountPresenter.attachView(this);
+        }
     }
 
     @Override
@@ -627,7 +632,9 @@ public class ManageProduct extends TkpdActivity implements
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
-        productDraftListCountPresenter.detachView();
+        if (productDraftListCountPresenter!= null) {
+            productDraftListCountPresenter.detachView();
+        }
     }
 
     private OnConnectionTimeout onTimeout() {
@@ -1521,8 +1528,25 @@ public class ManageProduct extends TkpdActivity implements
             CheckCache();
         }
         registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
-        registerDraftReceiver();
-        productDraftListCountPresenter.fetchAllDraftCount();
+        // only for seller app
+        if (GlobalConfig.isSellerApp()) {
+            registerDraftReceiver();
+            if (isMyServiceRunning(UploadProductService.class)) {
+                productDraftListCountPresenter.fetchAllDraftCount();
+            } else {
+                productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading();
+            }
+        }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void registerDraftReceiver(){
@@ -1620,7 +1644,10 @@ public class ManageProduct extends TkpdActivity implements
     protected void onPause() {
         super.onPause();
         unregisterReceiver(addProductReceiver);
-        unregisterDraftReceiver();
+        // only for seller app
+        if (GlobalConfig.isSellerApp()) {
+            unregisterDraftReceiver();
+        }
     }
 
     @Override
