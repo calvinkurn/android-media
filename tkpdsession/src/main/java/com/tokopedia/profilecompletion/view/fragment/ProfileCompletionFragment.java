@@ -1,12 +1,15 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -42,6 +45,9 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
     RadioGroup radioGroup;
     private View avaMan;
     private View avaWoman;
+    private TextInputEditText date;
+    private AutoCompleteTextView month;
+    private TextInputEditText year;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -123,8 +129,6 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         percentText = (TextView) view.findViewById(R.id.percentText);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         proceed = (TextView) view.findViewById(R.id.proceed);
-        avaMan = view.findViewById(R.id.ava_man);
-        avaWoman = view.findViewById(R.id.ava_woman);
     }
 
     @Override
@@ -132,8 +136,22 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                radioGroup = (RadioGroup) getView().findViewById(R.id.fragment_container).findViewById(R.id.radioGroup);
-                int selected = radioGroup.getCheckedRadioButtonId();
+                Fragment fragment = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    fragment = getChildFragmentManager().findFragmentByTag("date");
+                }
+
+                if(fragment != null){
+                    avaMan = getView().findViewById(R.id.fragment_container).findViewById(R.id.ava_man);
+                    avaWoman = getView().findViewById(R.id.fragment_container).findViewById(R.id.ava_woman);
+                    radioGroup = (RadioGroup) getView().findViewById(R.id.fragment_container).findViewById(R.id.radioGroup);
+                    date = (TextInputEditText) getView().findViewById(R.id.fragment_container).findViewById(R.id.date);
+                    month = (AutoCompleteTextView) getView().findViewById(R.id.fragment_container).findViewById(R.id.month);
+                    year = (TextInputEditText) getView().findViewById(R.id.fragment_container).findViewById(R.id.year);
+                    Toast.makeText(getActivity(),date.getText()+" "+month.getText()+" "+year.getText(), Toast.LENGTH_LONG).show();
+                }else {
+                    int selected = radioGroup.getCheckedRadioButtonId();
+                }
             }
         });
     }
@@ -155,10 +173,10 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
     }
 
     private void loadFragment(GetUserInfoDomainData getUserInfoDomainData) {
-        ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
+        ProfileCompletionDateFragment genderFragment = ProfileCompletionDateFragment.createInstance(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, genderFragment).commit();
+            transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionDateFragment.TAG).commit();
         }
     }
 }

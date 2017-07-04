@@ -15,6 +15,7 @@ import com.tokopedia.session.R;
 
 public class ProfileCompletionGenderFragment extends BasePresenterFragment<ProfileCompletionPresenter> {
 
+    public static final String TAG = "gender";
 
     public static ProfileCompletionGenderFragment createInstance(ProfileCompletionFragment profileCompletionFragment) {
         return new ProfileCompletionGenderFragment();

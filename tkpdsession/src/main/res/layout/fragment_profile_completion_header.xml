@@ -11,17 +11,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kelengkapan profil"
+            android:textSize="@dimen/text_size_11"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_38"
+            android:lineSpacingExtra="5sp"
+            android:text="@string/your_profile_completion"
             android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/percentText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            tools:text="60%"
-            android:layout_alignParentRight="true" />
+            android:textSize="@dimen/text_size_11"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:textColor="@color/black_70"
+            android:lineSpacingExtra="5sp"
+            android:gravity="end"
+            tools:text="50%"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_vsmall_prof_comp" />
+
     <ProgressBar
         android:id="@+id/ProgressBar"
         style="?android:attr/progressBarStyleHorizontal"

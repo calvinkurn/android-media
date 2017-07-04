@@ -60,6 +60,8 @@
     <string name="continue_form">Lanjut</string>
     <string name="skip_form">Lewati</string>
 
+    <string name="your_profile_completion">Kelengkapan profil</string>
     <string name="gender_title_prof_comp">Jenis Kelamin Anda</string>
+    <string name="date_title_prof_comp">Tanggal Lahir Anda</string>
 
 </resources>
