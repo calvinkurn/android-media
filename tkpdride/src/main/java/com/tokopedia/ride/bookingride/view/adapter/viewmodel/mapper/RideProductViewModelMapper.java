@@ -6,8 +6,11 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewMode
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PriceDetail;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by alvarisi on 3/16/17.
@@ -137,7 +140,7 @@ public class RideProductViewModelMapper {
         //set base fare
         String baseFare = "--";
         if (priceDetail != null) {
-            baseFare = "Base Fare: " + " " + priceDetail.getCurrencyCode() + " " + priceDetail.getBase();
+            baseFare = "Base Fare: " + " " + formatNumber(priceDetail.getBase(), priceDetail.getCurrencyCode());
         }
 
         return baseFare;
@@ -164,28 +167,26 @@ public class RideProductViewModelMapper {
         //set base fare
         String productPrice = "--";
         if (priceDetail != null) {
-            productPrice = priceDetail.getCurrencyCode() + " " + priceDetail.getCostPerDistance() + "/" + priceDetail.getDistanceUnit();
+            productPrice = formatNumber(priceDetail.getCostPerDistance(), priceDetail.getCurrencyCode()) + "/" + priceDetail.getDistanceUnit();
         }
 
         return productPrice;
     }
 
-    /**
-     * This function added a space after currency if not added by Uber
-     *
-     * @param productPriceFormat
-     * @return
-     */
-    private String getFormattedProductPrice(String productPriceFormat) {
-        //format display to add space after currency
-        if (productPriceFormat != null && productPriceFormat.contains("IDR") && !productPriceFormat.contains("IDR ")) {
-            productPriceFormat = productPriceFormat.replace("IDR", "IDR ").replace("," , ".");
+    private String formatNumber(String number, String currency) {
+        try {
+            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
+            format.setCurrency(Currency.getInstance("IDR"));
+            String result = "";
+            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
+                format.setMaximumFractionDigits(0);
+                result = format.format(Float.parseFloat(number)).replace(",", ".");
+            } else {
+                result = format.format(number);
+            }
+            return result;
+        } catch (Exception ex) {
+            return currency + " " + number;
         }
-
-        if (productPriceFormat != null && productPriceFormat.contains("Rp") && !productPriceFormat.contains("Rp ")) {
-            productPriceFormat = productPriceFormat.replace("Rp", "Rp ").replace("," , ".");
-        }
-
-        return productPriceFormat;
     }
 }

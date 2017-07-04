@@ -1011,4 +1011,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (tokoCashData.getData().getAction() == null) return "";
         else return tokoCashData.getData().getAction().getRedirectUrl();
     }
+
+    @Override
+    public String getUserId() {
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        return sessionHandler.getLoginID();
+    }
 }

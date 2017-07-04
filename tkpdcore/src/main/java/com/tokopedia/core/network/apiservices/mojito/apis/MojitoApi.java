@@ -7,8 +7,6 @@ import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 
@@ -35,7 +33,7 @@ public interface MojitoApi {
     @Headers({
             "X-Device: android"})
     @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU)
-    Observable<Response<String>> getHomeCategoryMenu();
+    Observable<Response<String>> getHomeCategoryMenu(@Header("X-User-ID") String user_id);
 
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS)
     Observable<Response<Brands>> getBrands(
