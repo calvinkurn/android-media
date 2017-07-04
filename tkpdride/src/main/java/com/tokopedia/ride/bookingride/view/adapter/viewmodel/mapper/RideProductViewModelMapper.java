@@ -179,12 +179,11 @@ public class RideProductViewModelMapper {
     private String getFormattedProductPrice(String productPriceFormat) {
         //format display to add space after currency
         if (productPriceFormat != null && productPriceFormat.contains("IDR") && !productPriceFormat.contains("IDR ")) {
-            productPriceFormat = productPriceFormat.replace("IDR", "IDR ");
-            productPriceFormat.replace(",", ".");
+            productPriceFormat = productPriceFormat.replace("IDR", "IDR ").replace("," , ".");
         }
 
         if (productPriceFormat != null && productPriceFormat.contains("Rp") && !productPriceFormat.contains("Rp ")) {
-            productPriceFormat = productPriceFormat.replace("Rp", "Rp ");
+            productPriceFormat = productPriceFormat.replace("Rp", "Rp ").replace("," , ".");
         }
 
         return productPriceFormat;

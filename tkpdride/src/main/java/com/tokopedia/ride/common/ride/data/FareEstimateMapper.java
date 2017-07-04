@@ -104,11 +104,11 @@ public class FareEstimateMapper {
     private String formatDisplayPrice(String price) {
         //format display to add space after currency
         if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
-            price = price.replace("IDR", "IDR ");
+            price = price.replace("IDR", "IDR ").replace(",", ".");
         }
 
         if (price != null && price.contains("Rp") && !price.contains("Rp ")) {
-            price = price.replace("Rp", "Rp ");
+            price = price.replace("Rp", "Rp ").replace(",", ".");
         }
 
         return price;
