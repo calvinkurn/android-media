@@ -39,7 +39,6 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     protected void initView(View view) {
         super.initView(view);
         nameEditText.setEnabled(false);
-        promoIconView.setVisibility(View.GONE);
         detailAd = new TopAdsDetailShopViewModel();
     }
 
