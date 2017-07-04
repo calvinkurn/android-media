@@ -50,7 +50,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected Ad ad;
     protected String adId;
-    private Ad adFromIntent;
+    protected Ad adFromIntent;
 
     protected abstract void refreshAd();
 
@@ -113,6 +113,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             setResultAdDetailChanged();
             if (startDate == null || endDate == null) {
                 return;
+            }
+            if(intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)){
+                adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
             }
             refreshAd();
         }

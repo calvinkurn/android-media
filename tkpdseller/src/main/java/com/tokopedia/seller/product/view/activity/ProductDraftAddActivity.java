@@ -34,12 +34,12 @@ public class ProductDraftAddActivity extends ProductAddActivity {
     }
 
     private void inflateFragment(String productId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment == null) {
             fragment = ProductDraftAddFragment.createInstance(productId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, TAG);
+        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
         fragmentTransaction.commit();
     }
 

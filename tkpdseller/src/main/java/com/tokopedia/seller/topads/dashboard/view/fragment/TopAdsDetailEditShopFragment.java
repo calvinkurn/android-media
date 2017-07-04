@@ -37,7 +37,6 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
     protected void initView(View view) {
         super.initView(view);
         nameEditText.setEnabled(false);
-        promoIconView.setVisibility(View.GONE);
     }
 
     @Override

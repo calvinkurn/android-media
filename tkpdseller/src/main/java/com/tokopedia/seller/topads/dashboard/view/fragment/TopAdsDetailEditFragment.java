@@ -59,11 +59,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private DatePickerLabelView showTimeStartTimeDatePicker;
     private DatePickerLabelView showTimeEndDateDatePicker;
     private DatePickerLabelView showTimeEndTimeDatePicker;
-    protected View promoIconView;
-    private RadioGroup iconRadioGroup;
-    private RadioButton iconSpeakerRadioButton;
-    private RadioButton iconThumbsUpRadioButton;
-    private RadioButton iconFireRadioButton;
     protected Button submitButton;
 
     private ProgressDialog progressDialog;
@@ -143,11 +138,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         showTimeStartTimeDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_start_time);
         showTimeEndDateDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_end_date);
         showTimeEndTimeDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_end_time);
-        promoIconView = view.findViewById(R.id.layout_top_ads_edit_promo_icon);
-        iconRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_icon);
-        iconSpeakerRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_speaker);
-        iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
-        iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
         maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
@@ -273,18 +263,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 timePickerdialog.show();
             }
         });
-        iconRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                if (checkedId == R.id.radio_button_icon_speaker) {
-                    updateTopAdsSticker(STICKER_SPEAKER);
-                } else if (checkedId == R.id.radio_button_icon_thumbs_up) {
-                    updateTopAdsSticker(STICKER_THUMBS_UP);
-                } else {
-                    updateTopAdsSticker(STICKER_FIRE);
-                }
-            }
-        });
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -384,9 +362,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             showTimeConfigurationTime(false);
         }
         updateDisplayDateView();
-        if (detailAd.getStickerId() > 0) {
-            updateTopAdsSticker(detailAd.getStickerId());
-        }
     }
 
     private void convertDate(TopAdsDetailAdViewModel detailAd) {
@@ -432,26 +407,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         showTimeEndTimeDatePicker.setContent(getDateText(endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME));
     }
 
-    private void updateTopAdsSticker(int stickerId) {
-        switch (stickerId) {
-            case STICKER_SPEAKER:
-                if (!iconSpeakerRadioButton.isChecked()) {
-                    iconSpeakerRadioButton.setChecked(true);
-                }
-                break;
-            case STICKER_THUMBS_UP:
-                if (!iconThumbsUpRadioButton.isChecked()) {
-                    iconThumbsUpRadioButton.setChecked(true);
-                }
-                break;
-            case STICKER_FIRE:
-                if (!iconFireRadioButton.isChecked()) {
-                    iconFireRadioButton.setChecked(true);
-                }
-                break;
-        }
-    }
-
     private String getDateText(Date date, String dateFormat) {
         return new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date);
     }
@@ -492,15 +447,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
         detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
-        if (promoIconView.getVisibility() == View.VISIBLE) {
-            if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_speaker) {
-                detailAd.setStickerId(STICKER_SPEAKER);
-            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_thumbs_up) {
-                detailAd.setStickerId(STICKER_THUMBS_UP);
-            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_fire) {
-                detailAd.setStickerId(STICKER_FIRE);
-            }
-        }
         detailAd.setTitle(nameEditText.getText().toString());
     }
 

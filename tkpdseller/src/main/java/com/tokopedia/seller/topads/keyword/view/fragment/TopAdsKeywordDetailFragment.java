@@ -33,8 +33,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
 
-    protected KeywordAd keywordAd;
-
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
@@ -81,20 +79,20 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void refreshAd() {
-        if (keywordAd != null) {
+        if (adFromIntent != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), keywordAd.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), adFromIntent.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
         } else {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
                     getDatePickerPresenter().getEndDate(), adId, getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
@@ -103,27 +101,21 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
-        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), keywordAd), REQUEST_CODE_AD_EDIT);
+        startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
 
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        topadsKeywordDetailPresenter.deleteAd(ad.getId(), keywordAd.getGroupId(), SessionHandler.getShopID(getActivity()));
-    }
-
-    @Override
-    public void onAdLoaded(Ad ad) {
-        keywordAd = (KeywordAd) ad;
-        super.onAdLoaded(ad);
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ((KeywordAd)ad).getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void updateMainView(Ad ad) {
         super.updateMainView(ad);
-        keywordLabelView.setContent(keywordAd.getKeywordTag());
-        promoGroupLabelView.setContent(keywordAd.getGroupName());
-        name.setContent(keywordAd.getkeywordTypeDesc());
+        keywordLabelView.setContent(((KeywordAd)ad).getKeywordTag());
+        promoGroupLabelView.setContent(((KeywordAd)ad).getGroupName());
+        name.setContent(((KeywordAd)ad).getkeywordTypeDesc());
     }
 
     protected int getKeywordTypeValue() {
@@ -137,7 +129,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     private void onPromoGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, keywordAd.getGroupId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ((KeywordAd)ad).getGroupId());
         startActivity(intent);
     }
 
