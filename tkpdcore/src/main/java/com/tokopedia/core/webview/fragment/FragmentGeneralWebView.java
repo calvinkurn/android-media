@@ -46,6 +46,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
     private static final String SEAMLESS = "seamless";
+    private static final int LOGIN_GPLUS = 123453;
 
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -230,7 +231,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
             intent.putExtra("login", DownloadService.GOOGLE);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            startActivityForResult(intent, 123453);
+            startActivityForResult(intent, LOGIN_GPLUS);
             return true;
         }
         return false;
@@ -239,15 +240,15 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 123453){
+        if(requestCode == LOGIN_GPLUS){
             String historyUrl="";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
                 historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex()-1).getUrl();
             if (!historyUrl.contains(SEAMLESS))
-                WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
+                WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
             else {
-                WebViewGeneral.loadAuthUrl(url);
+                WebViewGeneral.loadAuthUrl(historyUrl);
             }
         }
     }
