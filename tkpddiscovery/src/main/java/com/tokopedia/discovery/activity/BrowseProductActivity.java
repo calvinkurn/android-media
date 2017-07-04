@@ -31,8 +31,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
@@ -272,10 +274,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public void sendQuery(String query, String depId) {
-        browsePresenter.sendQuery(query, depId);
         toolbar.setTitle(query);
         discoverySearchView.setLastQuery(query);
         discoverySearchView.closeSearch();
+        browsePresenter.sendQuery(query, depId);
     }
 
     public void resetBrowseProductActivityModel() {
@@ -604,6 +606,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public void setDefaultGridTypeFromNetwork(Integer viewType) {
         browsePresenter.setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
+    public void launchOfficialStorePage() {
+        startActivity(BrandsWebViewActivity.newInstance(this, TkpdBaseURL.OfficialStore.URL_WEBVIEW));
     }
 
     public void removeEmptyState() {

@@ -21,7 +21,6 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -38,6 +37,7 @@ import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
@@ -507,6 +507,12 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
     @Override
     public void sendQuery(String query, String depId) {
+
+        if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
+            browseView.launchOfficialStorePage();
+            return;
+        }
+
         searchQuery = query;
         resetBrowseProductActivityModel();
         browseModel.setQ(query);
