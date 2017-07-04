@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -21,6 +22,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
@@ -37,6 +39,9 @@ public class UploadProductService extends BaseService implements AddProductServi
     public static final String TAG = "upload_product";
     ;
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
+
+    public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
+
     private NotificationManager notificationManager;
 
     ArrayList<String> productDraftIdList = new ArrayList<>();
@@ -152,6 +157,9 @@ public class UploadProductService extends BaseService implements AddProductServi
         bundle.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, errorMessage);
         result.putExtras(bundle);
         sendBroadcast(result);
+
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
     }
 
     @Override

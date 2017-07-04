@@ -2,14 +2,13 @@ package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
-import com.tokopedia.seller.product.domain.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductCountUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenterImpl;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenter;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListPresenterImpl;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,8 +29,17 @@ public class ProductDraftListCountModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase){
-        return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase);
+    ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
+                                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase){
+        return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
+                clearAllDraftProductUseCase);
+    }
+
+    @ProductAddScope
+    @Provides
+    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                                                             ProductDraftRepository productDraftRepository){
+        return new ClearAllDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
     }
 }
 

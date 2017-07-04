@@ -75,6 +75,9 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
         }
         if (!TextUtils.isEmpty(emptyContentText)) {
             emptyViewHolder.emptyContentTextView.setText(emptyContentText);
+            emptyViewHolder.emptyContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyViewHolder.emptyContentTextView.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(emptyContentItemText)) {
             emptyViewHolder.emptyContentItemTextView.setVisibility(View.VISIBLE);

@@ -1,6 +1,5 @@
-package com.tokopedia.seller.product.view.activity;
+package com.tokopedia.seller.product.draft.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -9,7 +8,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.fragment.ProductDraftListFragment;
+import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 
 /**
  * Created by User on 6/19/2017.

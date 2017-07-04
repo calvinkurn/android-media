@@ -2,7 +2,6 @@ package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -60,7 +59,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -83,9 +81,6 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.logout.di.component.DaggerTkpdSellerLogoutComponent;
-import com.tokopedia.seller.logout.di.component.TkpdSellerLogoutComponent;
-import com.tokopedia.seller.logout.di.module.TkpdSellerLogoutModule;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
@@ -97,9 +92,10 @@ import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.view.listener.ProductDraftListCountView;
-import com.tokopedia.seller.product.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
+import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,7 +113,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Response;
-import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -230,6 +225,7 @@ public class ManageProduct extends TkpdActivity implements
             }
         }
     };
+    private BroadcastReceiver draftBroadCastReceiver;
     private boolean refreshData, isSnackBarShow;
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -247,7 +243,6 @@ public class ManageProduct extends TkpdActivity implements
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
     private TextView tvDraftProductInfo;
-    private boolean needRefreshDraftInfo = true;
 
     @Override
     public String getScreenName() {
@@ -303,6 +298,7 @@ public class ManageProduct extends TkpdActivity implements
                 return false;
             }
         });
+        fabAddProduct.setVisibility(View.GONE);
 
         footerLV = View.inflate(this, R.layout.footer_list_view, null);
         footerLV.setOnClickListener(null);
@@ -1473,6 +1469,7 @@ public class ManageProduct extends TkpdActivity implements
 
         finishLoading();
 
+        fabAddProduct.setVisibility(View.VISIBLE);
     }
 
     private void TriggerLoadNewData() {
@@ -1524,12 +1521,27 @@ public class ManageProduct extends TkpdActivity implements
             CheckCache();
         }
         registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
+        registerDraftReceiver();
+        productDraftListCountPresenter.fetchAllDraftCount();
+    }
 
-
-        if (needRefreshDraftInfo) {
-            productDraftListCountPresenter.fetchAllDraftCount();
-            needRefreshDraftInfo = false;
+    private void registerDraftReceiver(){
+        if (draftBroadCastReceiver == null) {
+            draftBroadCastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
+                        productDraftListCountPresenter.fetchAllDraftCount();
+                    }
+                }
+            };
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                draftBroadCastReceiver,new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
+    }
+
+    private void unregisterDraftReceiver(){
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(draftBroadCastReceiver);
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
@@ -1567,13 +1579,6 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // request code vary by seller router application, don't use it!
-        if (resultCode == Activity.RESULT_OK &&
-                data.getAction().equals(ProductAddActivity.ACTION_REFRESH_DRAFT)) {
-            needRefreshDraftInfo = true;
-            return;
-        }
-        // ELSE
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
@@ -1615,6 +1620,7 @@ public class ManageProduct extends TkpdActivity implements
     protected void onPause() {
         super.onPause();
         unregisterReceiver(addProductReceiver);
+        unregisterDraftReceiver();
     }
 
     @Override
@@ -2066,28 +2072,7 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     public void onDraftCountLoadError() {
         // delete all draft when error loading draft
-        TkpdSellerLogoutComponent component = DaggerTkpdSellerLogoutComponent
-                .builder()
-                .appComponent(getComponent())
-                .tkpdSellerLogoutModule(new TkpdSellerLogoutModule())
-                .build();
-        component.getClearAllDraftProductUseCase().execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-                // no op
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // no op
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                // no op
-            }
-        });
-
+        productDraftListCountPresenter.clearAllDraft();
         tvDraftProductInfo.setVisibility(View.GONE);
     }
 

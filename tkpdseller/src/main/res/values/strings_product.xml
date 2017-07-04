@@ -64,6 +64,11 @@
     <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
 
+    <string name="product_draft_dialog_delete_name_message">Apakah Anda yakin ingin menghapus draft produk <![CDATA[<b>%1$s</b>]]>?</string>
+    <string name="product_draft_dialog_delete_message">Apakah Anda yakin ingin menghapus draft produk?</string>
+
+    <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
+
     <string name="product_free_return_values_active">3</string>
     <string name="product_free_return_values_inactive">0</string>
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>

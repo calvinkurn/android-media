@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.adapter;
+package com.tokopedia.seller.product.draft.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,7 +13,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.seller.product.view.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.io.File;
 import java.net.URI;
@@ -24,6 +24,15 @@ import java.net.URI;
 
 public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> {
 
+    OnDraftDeleteListener onDraftDeleteListener;
+    public interface OnDraftDeleteListener{
+        void onDelete(ProductDraftViewModel draftViewModel, int position);
+    }
+
+    public void setOnDraftDeleteListener(OnDraftDeleteListener onDraftDeleteListener) {
+        this.onDraftDeleteListener = onDraftDeleteListener;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -32,6 +41,14 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
+    }
+
+    public void confirmDelete (int position){
+        if (position < 0 || position >= data.size()) {
+            return;
+        }
+        data.remove(position);
+        notifyItemRemoved(position);
     }
 
     private class ProductDraftViewHolder extends BaseViewHolder<ProductDraftViewModel> {
@@ -50,7 +67,10 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO hendry delete item
+                    int position = getLayoutPosition();
+                    if (onDraftDeleteListener!= null) {
+                        onDraftDeleteListener.onDelete(data.get(position), position);
+                    }
                 }
             });
         }
