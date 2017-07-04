@@ -307,12 +307,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter) {
-            @Override
-            protected int getEmptyLayout() {
-                return R.layout.listview_top_ads_empty_keyword_list;
-            }
-        };
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.product_draft_draft_product_empty));
         emptyGroupAdsDataBinder.setEmptyContentText(null);
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.product_draft_add_product));
