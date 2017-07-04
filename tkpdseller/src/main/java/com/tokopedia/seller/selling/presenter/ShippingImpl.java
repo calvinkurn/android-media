@@ -461,7 +461,7 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void moveToDetail(int position) {
-        if(modelList != null && modelList.get(position) != null) {
+        if(modelList != null && position >= 0 && modelList.get(position) != null) {
             Intent intent = new Intent(context, SellingDetailActivity.class);
             intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(modelList.get(position)));
             intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.SHIPING);
