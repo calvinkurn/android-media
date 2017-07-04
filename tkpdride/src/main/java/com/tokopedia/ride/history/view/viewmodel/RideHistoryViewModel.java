@@ -353,10 +353,13 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance("IDR"));
+            String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
+                result = format.format(Float.parseFloat(numberString)).replace(",", ".");
+            } else {
+                result = format.format(Float.parseFloat(numberString));
             }
-            String result = format.format(Float.parseFloat(numberString));
             return result;
         } catch (Exception ex) {
             return currency + " " + numberString;
@@ -367,10 +370,13 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance("IDR"));
+            String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
+                result = format.format(number).replace(",", ".");
+            } else {
+                result = format.format(number);
             }
-            String result = format.format(number);
             return result;
         } catch (Exception ex) {
             return currency + " " + number;

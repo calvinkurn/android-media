@@ -86,10 +86,13 @@ public class ReceiptEntityMapper {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance("IDR"));
+            String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
+                result = format.format(number).replace(",", ".");
+            } else {
+                result = format.format(number);
             }
-            String result = format.format(number);
             return result;
         } catch (Exception ex) {
             return currency + " " + number;
