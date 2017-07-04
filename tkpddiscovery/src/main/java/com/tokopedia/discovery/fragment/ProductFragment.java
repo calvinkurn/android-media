@@ -47,13 +47,11 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.adapter.CategoryBannerAdapter;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.adapter.OsBannerAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
@@ -599,9 +597,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void addCategoryHeader(Data categoryHeader) {
-        topAdsRecyclerAdapter.setHasHeader(true);
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+            topAdsRecyclerAdapter.setHasHeader(true);
             if (categoryHeader.getIsRevamp() != null && categoryHeader.getIsRevamp()) {
                 productAdapter.addCategoryRevampHeader(
                         new ProductAdapter.CategoryHeaderRevampModel(categoryHeader, getActivity(), getCategoryWidth(),
@@ -611,25 +609,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
-            if (categoryHeader.getBanner()!=null && categoryHeader.getBanner().getImages()!=null) {
-                List<BannerModel> bannerModels = new ArrayList<>();
-                for (Image image: categoryHeader.getBanner().getImages()) {
-                    BannerModel bannerModel = new BannerModel();
-                    bannerModel.setUrl(image.getUrl());
-                    bannerModel.setImageUrl(image.getImageUrl());
-                    bannerModel.setPosition(image.getPosition());
-                    bannerModels.add(bannerModel);
-                }
-                if (bannerModels.size()>0) {
-                    topAdsRecyclerAdapter.setHasHeader(true);
-                    productAdapter.addCategoryBanner(new CategoryBannerAdapter.CategoryBannerViewModel(bannerModels));
-                    productAdapter.notifyDataSetChanged();
-                    topAdsRecyclerAdapter.notifyDataSetChanged();
-                    backToTop();
-                }
-            }
+            topAdsRecyclerAdapter.notifyDataSetChanged();
+            backToTop();
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {
