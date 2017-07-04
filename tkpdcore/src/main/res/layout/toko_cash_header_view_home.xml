@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/img_thumb_holder"
     android:background="@drawable/cards_with_shadow"
-    android:gravity="center"
     android:padding="@dimen/padding_small">
 
     <LinearLayout
         android:id="@+id/toko_cash_normal_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true">
+        android:layout_gravity="start"
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/header_toko_cash_image"
@@ -49,13 +47,13 @@
     <LinearLayout
         android:id="@+id/pending_cash_back_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
         android:orientation="vertical"
+        android:layout_gravity="start"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:visibility="gone">
 
         <LinearLayout
@@ -115,18 +113,19 @@
         android:id="@+id/header_toko_cash_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/img_thumb"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:background="@drawable/button_rounded_corner"
         android:gravity="center"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_vs"
         android:paddingEnd="@dimen/margin_vl"
         android:paddingLeft="@dimen/margin_vl"
         android:paddingRight="@dimen/margin_vl"
         android:paddingStart="@dimen/margin_vl"
         android:text="@string/toko_cash_activation"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:layout_gravity="end|center_vertical"
+        android:layout_weight="0.1"/>
 
-</RelativeLayout>
+</LinearLayout>
