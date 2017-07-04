@@ -13,8 +13,14 @@ import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
@@ -26,12 +32,6 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 import java.util.List;
 
@@ -208,7 +208,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
-                TopAdsKeywordListFragment.this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+                TopAdsKeywordListFragment.this.startActivityForResult(intent, TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS);
             }
         });
 
