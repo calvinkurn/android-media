@@ -40,6 +40,8 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
     TextView percentText;
     TextView proceed;
     RadioGroup radioGroup;
+    private View avaMan;
+    private View avaWoman;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -121,6 +123,8 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         percentText = (TextView) view.findViewById(R.id.percentText);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         proceed = (TextView) view.findViewById(R.id.proceed);
+        avaMan = view.findViewById(R.id.ava_man);
+        avaWoman = view.findViewById(R.id.ava_woman);
     }
 
     @Override
@@ -128,9 +132,8 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                radioGroup = (RadioGroup) getView().findViewById(R.id.fragment_container).findViewById(R.id.radioGroup);
                 int selected = radioGroup.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) getView().findViewById(selected);
-                Toast.makeText(getActivity(), radioButton.getText(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -156,7 +159,6 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, genderFragment).commit();
-            radioGroup = (RadioGroup) genderFragment.getView().findViewById(R.id.radioGroup);
         }
     }
 }

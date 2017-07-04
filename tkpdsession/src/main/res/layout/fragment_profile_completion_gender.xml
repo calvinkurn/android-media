@@ -33,19 +33,19 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
         <RadioButton
+            android:id="@+id/ava_man"
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:background="@drawable/man_button"
-            android:text="man"
             android:button="@color/transparent"/>
         <android.support.v4.widget.Space
             android:layout_width="60dp"
             android:layout_height="0dp" />
         <RadioButton
+            android:id="@+id/ava_woman"
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:background="@drawable/woman_button"
-            android:text="woman"
             android:button="@color/transparent"/>
         <android.support.v4.widget.Space
             android:layout_width="0dp"
