@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
@@ -28,7 +29,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
@@ -473,16 +473,28 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 .MainView.findViewById(R.id.toko_cash_header_layout);
         holder.tokoCashHeaderView.setActionListener(this);
         holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
-        holder.seeAllProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "See All Product", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
 
+    }
+
+    @NonNull
+    private View.OnClickListener getClickListenerShowAllDigitalProducts() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                    IDigitalModuleRouter digitalModuleRouter =
+                            (IDigitalModuleRouter) getActivity().getApplication();
+                    startActivityForResult(
+                            digitalModuleRouter.instanceIntentDigitalCategoryList(),
+                            IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+                    );
+                }
+            }
+        };
     }
 
     private void initCategoryRecyclerView() {

@@ -415,37 +415,25 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
 
+        if (SessionHandler.isV4Login(getActivity())) {
+            sendGTMClickBeli();
 
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter =
-                    (IDigitalModuleRouter) getActivity().getApplication();
-
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentDigitalCategoryList(),
-                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
-            );
+            if (selectedProduct == null) {
+                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
+                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+            } else {
+                if (checkStockProduct(selectedProduct))
+//                    goToCheckout(getUrlCheckout());
+                    goToNativeCheckout();
+            }
+        } else {
+            if (selectedProduct == null) {
+                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
+                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+            } else {
+                gotoLogin();
+            }
         }
-
-
-//        if (SessionHandler.isV4Login(getActivity())) {
-//            sendGTMClickBeli();
-//
-//            if (selectedProduct == null) {
-//                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
-//                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
-//            } else {
-//                if (checkStockProduct(selectedProduct))
-////                    goToCheckout(getUrlCheckout());
-//                    goToNativeCheckout();
-//            }
-//        } else {
-//            if (selectedProduct == null) {
-//                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
-//                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
-//            } else {
-//                gotoLogin();
-//            }
-//        }
     }
     //endregion
 
