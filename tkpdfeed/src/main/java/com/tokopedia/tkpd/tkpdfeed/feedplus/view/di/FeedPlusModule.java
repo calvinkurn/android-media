@@ -42,6 +42,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseC
 import javax.inject.Named;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
 import dagger.Module;
@@ -268,5 +269,15 @@ public class FeedPlusModule {
     @Provides
     RecentProductDbManager provideDbManager() {
         return new RecentProductDbManager();
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetRecentProductUsecase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           FeedRepository feedRepository) {
+        return new GetRecentProductUsecase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
     }
 }

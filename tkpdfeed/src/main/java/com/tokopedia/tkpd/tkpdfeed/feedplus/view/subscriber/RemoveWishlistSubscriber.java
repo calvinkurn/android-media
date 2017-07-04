@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist.RemoveWishlistDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
 
 import rx.Subscriber;
 
@@ -13,10 +14,10 @@ import rx.Subscriber;
 
 public class RemoveWishlistSubscriber extends Subscriber<RemoveWishlistDomain> {
 
-    private FeedPlusDetail.View viewListener;
+    private WishlistListener viewListener;
     private int adapterPosition;
 
-    public RemoveWishlistSubscriber(FeedPlusDetail.View viewListener, int adapterPosition) {
+    public RemoveWishlistSubscriber(WishlistListener viewListener, int adapterPosition) {
 
         this.viewListener = viewListener;
         this.adapterPosition = adapterPosition;
@@ -30,8 +31,7 @@ public class RemoveWishlistSubscriber extends Subscriber<RemoveWishlistDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorRemoveWishlist(
-                ErrorHandler.getErrorMessage(e, viewListener.getActivity()),
-                adapterPosition);
+                ErrorHandler.getErrorMessage(e), adapterPosition);
     }
 
     @Override

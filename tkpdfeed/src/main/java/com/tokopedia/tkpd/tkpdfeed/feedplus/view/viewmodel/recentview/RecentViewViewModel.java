@@ -1,7 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.RecentViewViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * @author by nisie on 7/3/17.
  */
 
-public class RecentViewViewModel implements Visitable {
+public class RecentViewViewModel implements Visitable<FeedPlusTypeFactory> {
 
     private final ArrayList<RecentViewProductViewModel> listProduct;
 
@@ -22,7 +23,7 @@ public class RecentViewViewModel implements Visitable {
     }
 
     @Override
-    public int type(Object favoriteTypeFactory) {
-        return RecentViewViewHolder.LAYOUT;
+    public int type(FeedPlusTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

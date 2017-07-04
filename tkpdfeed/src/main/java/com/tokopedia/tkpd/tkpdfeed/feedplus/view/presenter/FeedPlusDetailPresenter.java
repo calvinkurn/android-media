@@ -6,6 +6,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.AddWishlistSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FeedDetailSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.RemoveWishlistSubscriber;
@@ -24,6 +25,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     private final RemoveWishlistUseCase removeWishlistUseCase;
     private final SessionHandler sessionHandler;
     private FeedPlusDetail.View viewListener;
+    private WishlistListener wishlistListener;
 
     @Inject
     FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
@@ -36,9 +38,9 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         this.sessionHandler = sessionHandler;
     }
 
-    @Override
-    public void attachView(FeedPlusDetail.View view) {
+    public void attachView(FeedPlusDetail.View view, WishlistListener wishlistListener) {
         this.viewListener = view;
+        this.wishlistListener = wishlistListener;
         super.attachView(view);
     }
 
@@ -61,7 +63,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         viewListener.showLoadingProgress();
         addWishlistUseCase.execute(
                 AddWishlistUseCase.generateParam(productId, sessionHandler),
-                new AddWishlistSubscriber(viewListener, adapterPosition));
+                new AddWishlistSubscriber(wishlistListener, adapterPosition));
     }
 
 
@@ -70,6 +72,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         viewListener.showLoadingProgress();
         removeWishlistUseCase.execute(
                 RemoveWishlistUseCase.generateParam(productId, sessionHandler),
-                new RemoveWishlistSubscriber(viewListener, adapterPosition));
+                new RemoveWishlistSubscriber(wishlistListener, adapterPosition));
     }
 }

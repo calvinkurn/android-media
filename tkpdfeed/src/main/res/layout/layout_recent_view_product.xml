@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:layout_marginTop="@dimen/margin_sm"
-    android:layout_marginBottom="@dimen/margin_sm">
+    android:layout_marginTop="@dimen/margin_sm">
 
     <LinearLayout
         android:id="@+id/main_content"

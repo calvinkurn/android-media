@@ -14,4 +14,9 @@ public class RecentViewLabelDomain {
         this.title = title;
         this.color = color;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
 }

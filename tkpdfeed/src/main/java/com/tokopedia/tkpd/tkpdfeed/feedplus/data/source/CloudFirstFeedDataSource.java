@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSourc
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
     public Observable<List<RecentViewProductDomain>> getRecentProduct(RequestParams requestParams) {
 
         return mojitoService.getRecentProduct(
-                String.valueOf(requestParams.getInt(GetRecentProductUsecase.PARAM_USER_ID, 0)))
+                String.valueOf(requestParams.getInt(GetFirstPageFeedsUseCase.PARAM_USER_ID, 0)))
                 .doOnNext(validateError())
                 .doOnNext(saveToCache())
                 .map(recentProductMapper);

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
 

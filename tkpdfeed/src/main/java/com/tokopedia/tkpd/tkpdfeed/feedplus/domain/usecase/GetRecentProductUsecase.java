@@ -16,7 +16,7 @@ import rx.Observable;
  */
 
 public class GetRecentProductUsecase extends UseCase<List<RecentViewProductDomain>> {
-    public static final String PARAM_USER_ID = "PARAM_USER_ID";
+    public static final String PARAM_USER_ID = "user_id";
 
     private final FeedRepository feedRepository;
 
@@ -31,5 +31,11 @@ public class GetRecentProductUsecase extends UseCase<List<RecentViewProductDomai
     @Override
     public Observable<List<RecentViewProductDomain>> createObservable(RequestParams requestParams) {
         return feedRepository.getRecentViewProduct(requestParams);
+    }
+
+    public RequestParams getParam(String loginID) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_USER_ID, loginID);
+        return params;
     }
 }

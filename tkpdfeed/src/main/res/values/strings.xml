@@ -30,5 +30,6 @@
     <string name="find_shop">Cari Toko</string>
     <string name="see_all_promo">Lihat\nSemua Promo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
+    <string name="recent_view">Terakhir Dilihat</string>
 
 </resources>
