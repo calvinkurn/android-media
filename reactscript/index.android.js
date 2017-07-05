@@ -100,6 +100,7 @@ class Hotlist extends React.PureComponent {
       isLoading: true
     });
 
+    //usage: getResponse(url, method(POST/GET), json_param, is_using_auth)
     NetworkModule.getResponse("https://ws.tokopedia.com/v4/hotlist/get_hotlist.pl", "GET",
                                     '{"page" : "1", "per_page" : "30"}', true)
     .then((response) => {
