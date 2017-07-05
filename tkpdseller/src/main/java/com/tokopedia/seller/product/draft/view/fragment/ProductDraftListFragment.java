@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.draft.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -276,7 +277,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     public void onResume() {
         super.onResume();
-        searchData();
         registerDraftReceiver();
     }
 
@@ -318,7 +318,21 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     @Override
     protected void searchData() {
         super.searchData();
-        productDraftListPresenter.fetchAllDraftData();
+        if (isMyServiceRunning(UploadProductService.class)) {
+            productDraftListPresenter.fetchAllDraftData();
+        } else {
+            productDraftListPresenter.fetchAllDraftDataWithUpdateUploading();
+        }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

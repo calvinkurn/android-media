@@ -25,6 +25,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -110,7 +111,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     @Override
     public void onBackPressed() {
         if (hasDataAdded()){
-            AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(R.string.product_draft_dialog_cancel_message))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
@@ -121,16 +122,20 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                         public void onClick(DialogInterface arg0, int arg1) {
                             // no op, just dismiss
                         }
-                    }).setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            boolean doSave = saveProducttoDraft();
-                            if (!doSave) {
-                                ProductAddActivity.super.onBackPressed();
-                            }
+                    });
+            // seller app only
+            if (GlobalConfig.isSellerApp()) {
+                alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean doSave = saveProducttoDraft();
+                        if (!doSave) {
+                            ProductAddActivity.super.onBackPressed();
                         }
-                    })
-                    .create();
+                    }
+                });
+            }
+            AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
 
         } else {

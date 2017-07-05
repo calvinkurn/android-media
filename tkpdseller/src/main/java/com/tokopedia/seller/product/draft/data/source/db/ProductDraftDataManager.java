@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.draft.data.source.db;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
 
@@ -104,16 +105,24 @@ public class ProductDraftDataManager {
     }
 
     public Observable<Boolean> updateUploadingStatusDraft(long productId, boolean isUploading) {
-        ProductDraftDataBase productDraftDataBase = new Select()
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(productId))
-                .querySingle();
-        if (productDraftDataBase != null){
-            productDraftDataBase.setUploading(isUploading);
-            productDraftDataBase.save();
+        if (productId != 0){
+            ProductDraftDataBase productDraftDataBase = new Select()
+                    .from(ProductDraftDataBase.class)
+                    .where(ProductDraftDataBase_Table.id.is(productId))
+                    .querySingle();
+            if (productDraftDataBase != null){
+                productDraftDataBase.setUploading(isUploading);
+                productDraftDataBase.save();
+                return Observable.just(true);
+            } else {
+                throw new RuntimeException("Draft tidak ditemukan");
+            }
+        } else { // update all isUploading
+            new Update<>(ProductDraftDataBase.class)
+                    .set(ProductDraftDataBase_Table.is_uploading.eq(isUploading))
+                    .where(ProductDraftDataBase_Table.is_uploading.is(!isUploading))
+                    .execute();
             return Observable.just(true);
-        } else {
-            throw new RuntimeException("Draft tidak ditemukan");
         }
     }
 

@@ -41,4 +41,10 @@ public class UpdateUploadingDraftProductUseCase extends CompositeUseCase<Boolean
         return requestParams;
     }
 
+    public static RequestParams createRequestParamsUpdateAll(boolean isUploading){
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean(IS_UPLOADING, isUploading);
+        return requestParams;
+    }
+
 }
