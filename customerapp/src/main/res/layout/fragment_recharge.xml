@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="@dimen/padding_small"
-        android:visibility="visible"
+        android:visibility="gone"
         android:weightSum="1">
 
         <CheckBox
