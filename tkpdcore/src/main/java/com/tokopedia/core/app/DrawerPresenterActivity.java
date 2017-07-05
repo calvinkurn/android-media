@@ -34,7 +34,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         implements NotificationReceivedListener, DrawerDataListener {
 
     private static final String TAG = DrawerPresenterActivity.class.getSimpleName();
-
+    private static final int MAX_NOTIF = 999;
+    
     protected T presenter;
     private Boolean isLogin;
     protected DrawerHelper drawerHelper;
@@ -218,7 +219,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 notifRed.setVisibility(View.GONE);
             } else {
                 notifRed.setVisibility(View.VISIBLE);
-                String totalNotif = notification.getTotalNotif() > 999 ?
+                String totalNotif = notification.getTotalNotif() > MAX_NOTIF ?
                         getString(R.string.max_notif) : String.valueOf(notification.getTotalNotif());
                 notifRed.setText(totalNotif);
             }
