@@ -50,6 +50,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -364,7 +365,7 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                startIntent(ManageProduct.class);
+                startIntent(ManageProductSeller.class);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:

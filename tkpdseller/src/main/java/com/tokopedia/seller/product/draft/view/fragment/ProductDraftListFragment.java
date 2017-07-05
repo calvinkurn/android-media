@@ -28,6 +28,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
@@ -275,8 +276,14 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
     }
 
     @Override
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        return null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        searchData();
         registerDraftReceiver();
     }
 

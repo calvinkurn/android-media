@@ -41,6 +41,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -838,7 +839,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         switch (buttonIndex) {
                             case 0:
                                 context.startActivity(new Intent(
-                                        context, ManageProduct.class
+                                        context, ManageProductSeller.class
                                 ));
                                 break;
                             case 1:
