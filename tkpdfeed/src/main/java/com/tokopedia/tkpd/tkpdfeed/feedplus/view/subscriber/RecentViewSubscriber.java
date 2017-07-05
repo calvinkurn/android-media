@@ -22,6 +22,8 @@ import rx.Subscriber;
 public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomain>> {
 
     private static final java.lang.String CASHBACK = "Cashback";
+    private static final java.lang.String OFFICIAL_STORE = "Official Store";
+
     private final RecentView.View viewListener;
 
     public RecentViewSubscriber(RecentView.View viewListener) {
@@ -63,10 +65,26 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
                     domain.getPreorder() != null && domain.getPreorder().equals("1"),
                     domain.getFreeReturn() != null && domain.getFreeReturn().equals("1"),
                     domain.getWishlist(),
-                    Integer.parseInt(domain.getRating() != null ? domain.getRating() : "0")
+                    Integer.parseInt(domain.getRating() != null ? domain.getRating() : "0"),
+                    domain.getIsGold() != null && domain.getIsGold().equals("1"),
+                    convertToIsOfficial(domain.getBadges()),
+                    domain.getShop().getName(),
+                    domain.getShop().getLocation()
             ));
         }
         return listProduct;
+    }
+
+    private boolean convertToIsOfficial(List<RecentViewBadgeDomain> badges) {
+        if (!badges.isEmpty()) {
+            for (RecentViewBadgeDomain domain : badges) {
+                if (domain.getTitle().contains(OFFICIAL_STORE)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private String convertToCashback(List<RecentViewLabelDomain> labels) {

@@ -6,9 +6,11 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
@@ -62,8 +64,6 @@ public interface FeedPlus{
 
         void onSeePromo(String link);
 
-        void onErrorGetFeed();
-
         void onRetryClicked();
 
         void onShowRetryGetFeed();
@@ -81,6 +81,10 @@ public interface FeedPlus{
         Resources getResources();
 
         void onSeeAllRecentView();
+
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
+
+        void onShowEmpty();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

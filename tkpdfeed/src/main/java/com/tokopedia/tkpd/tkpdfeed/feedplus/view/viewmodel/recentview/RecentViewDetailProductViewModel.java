@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.R
  */
 
 public class RecentViewDetailProductViewModel implements Visitable<RecentViewTypeFactory> {
+
     private String name;
     private String price;
     private String imageSource;
@@ -20,18 +21,25 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     private boolean isWishlist;
     private int rating;
     private Integer productId;
-
+    private boolean isGold;
+    private final boolean isOfficial;
+    private final String shopName;
+    private final String shopLocation;
 
     public RecentViewDetailProductViewModel(Integer productId,
-                               String name,
-                               String price,
-                               String imageSource,
-                               String cashback,
-                               boolean isWholesale,
-                               boolean isPreorder,
-                               boolean isFreeReturn,
-                               boolean isWishlist,
-                               int rating) {
+                                            String name,
+                                            String price,
+                                            String imageSource,
+                                            String cashback,
+                                            boolean isWholesale,
+                                            boolean isPreorder,
+                                            boolean isFreeReturn,
+                                            boolean isWishlist,
+                                            int rating,
+                                            boolean isGold,
+                                            boolean isOfficial,
+                                            String shopName,
+                                            String shopLocation) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -42,6 +50,10 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
         this.isFreeReturn = isFreeReturn;
         this.isWishlist = isWishlist;
         this.rating = rating;
+        this.isGold = isGold;
+        this.isOfficial = isOfficial;
+        this.shopName = shopName;
+        this.shopLocation = shopLocation;
     }
 
     public String getName() {
@@ -82,6 +94,22 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
 
     public Integer getProductId() {
         return productId;
+    }
+
+    public boolean isGold() {
+        return isGold;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
     }
 
     @Override

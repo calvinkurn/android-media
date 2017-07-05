@@ -21,5 +21,6 @@
 
     <dimen name="padding_info">16dp</dimen>
     <dimen name="cactus_height">100dp</dimen>
+    <dimen name="small_badge_size">10dp</dimen>
 
 </resources>

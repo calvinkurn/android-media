@@ -55,40 +55,48 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onNext(FeedResult feedResult) {
-        viewListener.onSuccessGetFeedFirstPage(
-                convertToViewModel(feedResult.getFeedDomain()));
+        FeedDomain feedDomain = feedResult.getFeedDomain();
+        ArrayList<Visitable> listFeedView = new ArrayList<>();
 
-        if (feedResult.getFeedDomain().getListFeed().size() > 0)
+        if (hasRecentView(feedDomain) && hasFeed(feedDomain)) {
+            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
+            addFeedData(listFeedView, feedDomain.getListFeed());
+            addInspirationData(listFeedView, feedDomain.getListInspiration());
+            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+        } else if (!hasRecentView(feedDomain) && hasFeed(feedDomain)) {
+            addFeedData(listFeedView, feedDomain.getListFeed());
+            addInspirationData(listFeedView, feedDomain.getListInspiration());
+            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+        } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
+            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
+            viewListener.onShowEmptyWithRecentView(listFeedView);
+        } else
+            viewListener.onShowEmpty();
+
+
+        if (hasFeed(feedDomain))
             viewListener.updateCursor(getCurrentCursor(feedResult));
     }
 
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
         ArrayList<Visitable> listFeedView = new ArrayList<>();
-
-        if (feedDomain.getRecentProduct() != null
-                && !feedDomain.getRecentProduct().isEmpty()
-                && feedDomain.getListFeed() != null
-                && !feedDomain.getListFeed().isEmpty())
-            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-
         addFeedData(listFeedView, feedDomain.getListFeed());
-
-        if (listFeedView.size() > 1
-                && (hasFeedAndRecentView(listFeedView) || hasFeed(listFeedView))
-                && feedDomain.getListInspiration() != null)
+        if (listFeedView.size() > 1 && !(listFeedView.get(0) instanceof PromoCardViewModel))
             addInspirationData(listFeedView, feedDomain.getListInspiration());
-
         return listFeedView;
     }
 
-    private boolean hasFeed(ArrayList<Visitable> listFeedView) {
-        return !(listFeedView.get(0) instanceof RecentViewViewModel)
-                && !(listFeedView.get(0) instanceof PromoCardViewModel);
+    private boolean hasFeed(FeedDomain feedDomain) {
+        return feedDomain.getListFeed() != null
+                && !feedDomain.getListFeed().isEmpty()
+                && feedDomain.getListFeed().get(0) != null
+                && feedDomain.getListFeed().get(0).getContent() != null
+                && feedDomain.getListFeed().get(0).getContent().getType() != null
+                && feedDomain.getListFeed().get(0).getContent().getType().equals(TYPE_NEW_PRODUCT);
     }
 
-    private boolean hasFeedAndRecentView(ArrayList<Visitable> listFeedView) {
-        return (listFeedView.get(0) instanceof RecentViewViewModel)
-                && !(listFeedView.get(1) instanceof PromoCardViewModel);
+    private boolean hasRecentView(FeedDomain feedDomain) {
+        return feedDomain.getRecentProduct() != null && !feedDomain.getRecentProduct().isEmpty();
     }
 
     private void addRecentViewData(ArrayList<Visitable> listFeedView,

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed;
 
 import android.view.View;
 
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
@@ -36,6 +37,8 @@ public interface FeedPlusTypeFactory  {
     int type(AddFeedModel addFeedModel);
 
     int type(RecentViewViewModel recentViewViewModel);
+
+    int type(EmptyModel emptyModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

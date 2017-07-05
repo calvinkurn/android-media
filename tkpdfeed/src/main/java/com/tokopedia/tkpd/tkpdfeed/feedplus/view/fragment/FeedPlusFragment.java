@@ -52,7 +52,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -333,14 +332,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         adapter.clearData();
         adapter.removeEmpty();
-        if ((listFeed.size() == 0) ||
-                (listFeed.size() == 1 && listFeed.get(0) instanceof PromoCardViewModel)) {
-            adapter.showEmpty();
-            topAdsRecyclerAdapter.unsetEndlessScrollListener();
-        } else {
-            adapter.setList(listFeed);
-        }
+        adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct) {
+        finishLoading();
+        adapter.clearData();
+        adapter.showEmpty();
+        adapter.addList(recentProduct);
+        adapter.notifyItemRangeInserted(0, 2);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+    }
+
+    @Override
+    public void onShowEmpty() {
+        finishLoading();
+        adapter.clearData();
+        adapter.showEmpty();
+        adapter.notifyItemRangeInserted(0, 1);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
     }
 
     private void finishLoading() {
@@ -425,13 +439,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         getActivity().startActivity(intent);
     }
 
+
     @Override
     public void onSeePromo(String link) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
-    }
-
-    @Override
-    public void onErrorGetFeed() {
     }
 
     @Override

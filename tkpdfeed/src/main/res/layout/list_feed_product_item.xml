@@ -28,6 +28,8 @@
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
         android:maxLines="2"
         android:textColor="@color/black_70"
         tools:text="Nexus 5X 32 ,awawdawdasdas  pure white dan juga warna rose gold" />
@@ -43,6 +45,8 @@
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
         android:paddingTop="@dimen/padding_vs"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
         android:textColor="@color/orange_red"
         android:textSize="12sp"
         tools:text="Rp 3.121.500" />
