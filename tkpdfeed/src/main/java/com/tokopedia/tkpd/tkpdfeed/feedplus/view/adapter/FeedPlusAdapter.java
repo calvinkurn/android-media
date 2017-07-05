@@ -122,9 +122,8 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showAddFeed() {
-        int positionStart = getItemCount();
         this.list.add(addFeedModel);
-        notifyItemRangeInserted(positionStart, 1);
+
     }
 
     public void removeAddFeed(){

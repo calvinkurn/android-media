@@ -62,6 +62,8 @@ public interface FeedPlus{
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
+        void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
+
         void onSeePromo(String link);
 
         void onRetryClicked();
@@ -85,6 +87,7 @@ public interface FeedPlus{
         void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
 
         void onShowEmpty();
+
     }
 
     public interface Presenter extends CustomerPresenter<View>{

@@ -334,15 +334,28 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.removeEmpty();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
+        topAdsRecyclerAdapter.setEndlessScrollListener();
+
     }
 
+    @Override
+    public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
+        finishLoading();
+        adapter.clearData();
+        adapter.removeEmpty();
+        adapter.setList(listFeed);
+        adapter.showAddFeed();
+        adapter.notifyDataSetChanged();
+        hideTopAdsAdapterLoading();
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+    }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct) {
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
         finishLoading();
         adapter.clearData();
         adapter.showEmpty();
-        adapter.addList(recentProduct);
+        adapter.addList(listFeed);
         adapter.notifyItemRangeInserted(0, 2);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
     }
@@ -356,6 +369,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
     }
+
+
 
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
@@ -406,7 +421,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.addList(listFeed);
     }
 
-
     @Override
     public void onShowRetryGetFeed() {
         adapter.showRetry();
@@ -414,7 +428,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowAddFeedMore() {
+        int positionStart = adapter.getItemCount();
         adapter.showAddFeed();
+        adapter.notifyItemRangeInserted(positionStart, 1);
     }
 
     @Override

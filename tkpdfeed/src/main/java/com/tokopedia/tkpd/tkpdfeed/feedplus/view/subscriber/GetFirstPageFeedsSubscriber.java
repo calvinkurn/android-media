@@ -62,11 +62,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
             addFeedData(listFeedView, feedDomain.getListFeed());
             addInspirationData(listFeedView, feedDomain.getListInspiration());
-            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+            checkCanLoadNext(feedResult, listFeedView);
         } else if (!hasRecentView(feedDomain) && hasFeed(feedDomain)) {
             addFeedData(listFeedView, feedDomain.getListFeed());
             addInspirationData(listFeedView, feedDomain.getListInspiration());
-            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+            checkCanLoadNext(feedResult, listFeedView);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
             viewListener.onShowEmptyWithRecentView(listFeedView);
@@ -76,6 +76,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
         if (hasFeed(feedDomain))
             viewListener.updateCursor(getCurrentCursor(feedResult));
+
+
+    }
+
+    private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
+
+        if(hasFeed(feedResult.getFeedDomain())
+                && !feedResult.isHasNext()
+                && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
+            viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
+        }else{
+            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+        }
     }
 
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
