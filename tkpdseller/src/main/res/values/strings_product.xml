@@ -68,6 +68,7 @@
     <string name="product_draft_dialog_delete_message">Apakah Anda yakin ingin menghapus draft produk?</string>
 
     <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
+    <string name="product_draft_dialog_edit_cancel_message">Anda belum selesai mengubah produk. Apakah Anda yakin ingin keluar?</string>
 
     <string name="product_free_return_values_active">3</string>
     <string name="product_free_return_values_inactive">0</string>

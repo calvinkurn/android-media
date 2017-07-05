@@ -19,6 +19,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
@@ -177,7 +178,12 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-        Intent pendingIntent = new Intent(this, ManageProduct.class);
+        Intent pendingIntent;
+        if (GlobalConfig.isSellerApp()) {
+            pendingIntent = new Intent(this, ManageProductSeller.class);
+        } else {
+            pendingIntent = new Intent(this, ManageProduct.class);
+        }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return new NotificationCompat.Builder(this)
                 .setContentTitle(title)

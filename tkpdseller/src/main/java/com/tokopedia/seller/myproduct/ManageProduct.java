@@ -128,8 +128,7 @@ public class ManageProduct extends TkpdActivity implements
         NetworkInteractorImpl.DeleteProduct,
         NetworkInteractorImpl.FetchEtalase,
         ManageProductView,
-        HasComponent<AppComponent>,
-        ProductDraftListCountView {
+        HasComponent<AppComponent> {
     public static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     public static final String IMAGE_POSITION = "IMAGE_POSITION";
     public static final String TAG = "STUART";
@@ -227,7 +226,6 @@ public class ManageProduct extends TkpdActivity implements
             }
         }
     };
-    private BroadcastReceiver draftBroadCastReceiver;
     private boolean refreshData, isSnackBarShow;
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -242,19 +240,19 @@ public class ManageProduct extends TkpdActivity implements
     };
     private String messageTAG = "ManageProduct";
 
-    @Inject
-    ProductDraftListCountPresenter productDraftListCountPresenter;
-    private TextView tvDraftProductInfo;
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_PROD;
     }
 
+    protected int getLayoutResource (){
+        return R.layout.activity_manage_product;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_manage_product);
+        inflateView(getLayoutResource());
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         lvListProd = (SimpleListView) findViewById(R.id.prod_list);
         blurImage = (ImageView) findViewById(R.id.blur_image);
@@ -351,18 +349,6 @@ public class ManageProduct extends TkpdActivity implements
         networkInteractorImpl = new NetworkInteractorImpl();
         gson = new GsonBuilder().create();
 
-        tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
-        tvDraftProductInfo.setVisibility(View.GONE);
-        // Only for seller app
-        if (GlobalConfig.isSellerApp()) {
-            DaggerProductDraftListCountComponent
-                    .builder()
-                    .productDraftListCountModule(new ProductDraftListCountModule())
-                    .appComponent(getComponent())
-                    .build()
-                    .inject(this);
-            productDraftListCountPresenter.attachView(this);
-        }
     }
 
     @Override
@@ -631,9 +617,6 @@ public class ManageProduct extends TkpdActivity implements
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
-        if (productDraftListCountPresenter!= null) {
-            productDraftListCountPresenter.detachView();
-        }
     }
 
     private OnConnectionTimeout onTimeout() {
@@ -1525,15 +1508,6 @@ public class ManageProduct extends TkpdActivity implements
             CheckCache();
         }
         registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
-        // only for seller app
-        if (GlobalConfig.isSellerApp()) {
-            registerDraftReceiver();
-            if (isMyServiceRunning(UploadProductService.class)) {
-                productDraftListCountPresenter.fetchAllDraftCount();
-            } else {
-                productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading();
-            }
-        }
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -1544,25 +1518,6 @@ public class ManageProduct extends TkpdActivity implements
             }
         }
         return false;
-    }
-
-    private void registerDraftReceiver(){
-        if (draftBroadCastReceiver == null) {
-            draftBroadCastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
-                        productDraftListCountPresenter.fetchAllDraftCount();
-                    }
-                }
-            };
-        }
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                draftBroadCastReceiver,new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
-    }
-
-    private void unregisterDraftReceiver(){
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(draftBroadCastReceiver);
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
@@ -1641,10 +1596,6 @@ public class ManageProduct extends TkpdActivity implements
     protected void onPause() {
         super.onPause();
         unregisterReceiver(addProductReceiver);
-        // only for seller app
-        if (GlobalConfig.isSellerApp()) {
-            unregisterDraftReceiver();
-        }
     }
 
     @Override
@@ -2076,29 +2027,6 @@ public class ManageProduct extends TkpdActivity implements
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 
-    @Override
-    public void onDraftCountLoaded(long rowCount) {
-        if (rowCount == 0) {
-            tvDraftProductInfo.setVisibility(View.GONE);
-        } else {
-            tvDraftProductInfo.setText(
-                    MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount)));
-            tvDraftProductInfo.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(ManageProduct.this, ProductDraftListActivity.class));
-                }
-            });
-            tvDraftProductInfo.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onDraftCountLoadError() {
-        // delete all draft when error loading draft
-        productDraftListCountPresenter.clearAllDraft();
-        tvDraftProductInfo.setVisibility(View.GONE);
-    }
 
     interface EtalaseChanging {
         void createEtalaseSpinner(String addTo);

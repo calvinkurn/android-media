@@ -136,6 +136,11 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         return true;
     }
 
+    protected void saveDefaultModel(){
+        // in draft and edit mode, no need to save default model.
+        // no op;
+    }
+
     @Override
     public long getProductDraftId() {
         if (TextUtils.isEmpty(draftId)) {
