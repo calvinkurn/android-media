@@ -166,9 +166,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        sendQuery(query);
+        boolean redirectToOtherPage = sendQuery(query);
         sendSearchGTM(query);
-        return false;
+        return redirectToOtherPage;
     }
 
     @Override
@@ -269,15 +269,19 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         return browsePresenter.checkHasFilterAttributeIsNull(activeTab);
     }
 
-    public void sendQuery(String query) {
-        sendQuery(query, "");
+    public boolean sendQuery(String query) {
+        boolean redirectToOtherPage = sendQuery(query, "");
+        return redirectToOtherPage;
     }
 
-    public void sendQuery(String query, String depId) {
-        browsePresenter.sendQuery(query, depId);
-        toolbar.setTitle(query);
-        discoverySearchView.setLastQuery(query);
-        discoverySearchView.closeSearch();
+    public boolean sendQuery(String query, String depId) {
+        boolean redirectToOtherPage = browsePresenter.sendQuery(query, depId);
+        if (!redirectToOtherPage) {
+            toolbar.setTitle(query);
+            discoverySearchView.setLastQuery(query);
+            discoverySearchView.closeSearch();
+        }
+        return redirectToOtherPage;
     }
 
     public void resetBrowseProductActivityModel() {

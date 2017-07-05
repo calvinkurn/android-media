@@ -506,11 +506,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void sendQuery(String query, String depId) {
+    public boolean sendQuery(String query, String depId) {
 
         if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
             browseView.launchOfficialStorePage();
-            return;
+            return true;
         }
 
         searchQuery = query;
@@ -533,6 +533,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         } else if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_SHOP) {
             browseModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP);
         }
+        return false;
     }
 
     @Override
