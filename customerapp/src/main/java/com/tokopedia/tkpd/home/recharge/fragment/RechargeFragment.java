@@ -477,7 +477,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private boolean isRechargeEditTextFilled() {
-        return rechargeEditText.getText().length() >= 0;
+        return rechargeEditText.getText().length() >= 0 && !rechargeEditText.getText().trim().equals("");
     }
 
     @Override
@@ -679,6 +679,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (spnNominal != null) spnNominal.setVisibility(View.VISIBLE);
         if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.VISIBLE);
         if (nominalTextview != null) nominalTextview.setVisibility(View.VISIBLE);
+        if (buyWithCreditCheckbox.getVisibility() == View.GONE) {
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+            buyButton.setLayoutParams(param);
+        }
     }
 
     @Override
@@ -709,11 +714,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         buyWithCreditCheckbox.setVisibility(
                 categoryAttributes.isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE
         );
-        if (buyWithCreditCheckbox.getVisibility() == View.GONE) {
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
-            buyButton.setLayoutParams(param);
-        }
 
         setTextToEditTextOrSetVisibilityForm();
         setPhoneBookVisibility();
