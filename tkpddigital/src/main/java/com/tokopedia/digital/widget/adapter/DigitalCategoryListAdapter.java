@@ -59,11 +59,11 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_CATEGORY_ITEM) {
             return new DigitalCategoryItem(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
+                    hostFragment.getActivity()).inflate(R.layout.item_product_digital, parent, false
             ));
         } else if (viewType == TYPE_HOLDER_CATEGORY_ITEM_EMPTY) {
             return new DigitalCategoryItemEmpty(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
+                    hostFragment.getActivity()).inflate(R.layout.item_product_digital, parent, false
             ));
         } else {
             return null;
@@ -86,6 +86,10 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
                     }
             );
+        } else {
+            DigitalCategoryItemEmpty holderItemEmpty = (DigitalCategoryItemEmpty) holder;
+            holderItemEmpty.tvName.setVisibility(View.INVISIBLE);
+            holderItemEmpty.ivIcon.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -114,6 +118,11 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     static class DigitalCategoryItemEmpty extends RecyclerView.ViewHolder {
+        @BindView(R2.id.iv_icon)
+        ImageView ivIcon;
+        @BindView(R2.id.tv_category_name)
+        TextView tvName;
+
         DigitalCategoryItemEmpty(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
