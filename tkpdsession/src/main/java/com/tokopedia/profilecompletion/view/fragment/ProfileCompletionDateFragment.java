@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.profilecompletion.view.listener.ProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.session.R;
 
@@ -28,9 +29,13 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
     private View actvContainer;
     private TextInputEditText year;
     private TextInputEditText date;
+    private ProfileCompletionFragment view;
+    private View proceed;
 
-    public static ProfileCompletionDateFragment createInstance(ProfileCompletionFragment profileCompletionFragment) {
-        return new ProfileCompletionDateFragment();
+    public static ProfileCompletionDateFragment createInstance(ProfileCompletionFragment view) {
+        ProfileCompletionDateFragment fragment = new ProfileCompletionDateFragment();
+        fragment.view = view;
+        return fragment;
     }
 
     @Override
@@ -82,6 +87,7 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
     protected void initView(View view) {
         month = (AutoCompleteTextView) view.findViewById(R.id.month);
         actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer);
+        proceed = this.view.getView().findViewById(R.id.proceed);
     }
 
     @Override
@@ -97,6 +103,13 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
             @Override
             public void onClick(View v) {
                 month.showDropDown();
+            }
+        });
+
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] fruits = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Pear"};
             }
         });
     }

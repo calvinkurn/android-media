@@ -2,7 +2,6 @@ package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +24,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
-import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
+import com.tokopedia.profilecompletion.view.listener.ProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenterImpl;
 import com.tokopedia.session.R;
@@ -36,7 +34,7 @@ import com.tokopedia.session.R;
  */
 
 public class ProfileCompletionFragment extends BasePresenterFragment<ProfileCompletionPresenter>
-                                    implements GetProfileListener {
+                                    implements ProfileListener.Get {
 
     ProgressBar progressBar;
     ViewPager viewPager;

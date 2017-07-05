@@ -1,11 +1,8 @@
 package com.tokopedia.profilecompletion.view;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
-import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
-import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
-import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
+import com.tokopedia.profilecompletion.view.listener.ProfileListener;
 
 import rx.Subscriber;
 
@@ -15,9 +12,9 @@ import rx.Subscriber;
 
 public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
 
-    private GetProfileListener listener;
+    private ProfileListener.Get listener;
 
-    public GetUserInfoSubscriber(GetProfileListener listener) {
+    public GetUserInfoSubscriber(ProfileListener.Get listener) {
         this.listener = listener;
     }
 
