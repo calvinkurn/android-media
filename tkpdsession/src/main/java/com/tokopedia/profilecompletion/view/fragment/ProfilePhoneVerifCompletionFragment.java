@@ -16,6 +16,8 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
+import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenter;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
 import com.tokopedia.session.R;
@@ -25,7 +27,8 @@ import com.tokopedia.session.R;
  */
 
 public class ProfilePhoneVerifCompletionFragment
-        extends BasePresenterFragment<ProfilePhoneVerifCompletionPresenter> {
+        extends BasePresenterFragment<ProfilePhoneVerifCompletionPresenter>
+        implements GetProfileListener {
 
     public static ProfilePhoneVerifCompletionFragment createInstance() {
         return new ProfilePhoneVerifCompletionFragment();
@@ -39,7 +42,7 @@ public class ProfilePhoneVerifCompletionFragment
     @Override
     protected void onFirstTimeLaunched() {
         presenter.getUserInfo();
-        presenter.editDOB("13","06","1980");
+        presenter.editDOB("13", "06", "1980");
         presenter.editGender(EditUserProfileUseCase.MALE);
         presenter.editGender(3);
 
@@ -93,7 +96,9 @@ public class ProfilePhoneVerifCompletionFragment
                 profileRepository
         );
 
-        presenter = new ProfilePhoneVerifCompletionPresenterImpl(getUserInfoUseCase, editUserProfileUseCase);
+        presenter = new ProfilePhoneVerifCompletionPresenterImpl(this,
+                getUserInfoUseCase,
+                editUserProfileUseCase);
     }
 
     @Override
@@ -131,4 +136,8 @@ public class ProfilePhoneVerifCompletionFragment
 
     }
 
+    @Override
+    public void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData) {
+
+    }
 }

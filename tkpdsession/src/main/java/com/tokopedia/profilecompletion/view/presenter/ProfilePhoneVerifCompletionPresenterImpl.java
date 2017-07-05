@@ -1,7 +1,10 @@
 package com.tokopedia.profilecompletion.view.presenter;
 
+import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.GetUserInfoSubscriber;
+import com.tokopedia.profilecompletion.view.fragment.ProfilePhoneVerifCompletionFragment;
 import com.tokopedia.profilecompletion.view.subscriber.GetUserInfoSubscriber;
 import com.tokopedia.profilecompletion.view.subscriber.EditUserInfoSubscriber;
 
@@ -11,11 +14,14 @@ import com.tokopedia.profilecompletion.view.subscriber.EditUserInfoSubscriber;
 
 public class ProfilePhoneVerifCompletionPresenterImpl implements ProfilePhoneVerifCompletionPresenter {
 
+    private ProfilePhoneVerifCompletionFragment view;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final EditUserProfileUseCase editUserProfileUseCase;
 
-    public ProfilePhoneVerifCompletionPresenterImpl(GetUserInfoUseCase getUserInfoUseCase,
+    public ProfilePhoneVerifCompletionPresenterImpl(ProfilePhoneVerifCompletionFragment view,
+                                                    GetUserInfoUseCase getUserInfoUseCase,
                                                     EditUserProfileUseCase editUserProfileUseCase) {
+        this.view = view;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.editUserProfileUseCase = editUserProfileUseCase;
     }
@@ -25,7 +31,7 @@ public class ProfilePhoneVerifCompletionPresenterImpl implements ProfilePhoneVer
     public void getUserInfo() {
         getUserInfoUseCase.execute(
                 GetUserInfoUseCase.generateParam(),
-                new GetUserInfoSubscriber());
+                new GetUserInfoSubscriber(view));
     }
 
     @Override

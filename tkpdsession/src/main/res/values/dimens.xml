@@ -2,4 +2,17 @@
 <resources>
     <dimen name="dimen_id_image">300dp</dimen>
     <dimen name="width_icon_register">216dp</dimen>
+    <dimen name="space_large">30dp</dimen>
+    <dimen name="image_size">85dp</dimen>
+
+    <dimen name="padding_textview_prof_comp">2dp</dimen>
+    <dimen name="padding_vsmall_prof_comp">6dp</dimen>
+    <dimen name="padding_small_prof_comp">8dp</dimen>
+    <dimen name="padding_medium_prof_comp">16dp</dimen>
+    <dimen name="padding_large_prof_comp">18dp</dimen>
+
+
+    <dimen name="text_size_11">11sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
 </resources>
