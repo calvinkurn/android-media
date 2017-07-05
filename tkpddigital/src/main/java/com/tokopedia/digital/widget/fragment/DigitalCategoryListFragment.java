@@ -33,6 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
 import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
@@ -296,6 +297,11 @@ public class DigitalCategoryListFragment extends
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     ) {
+        return null;
+    }
+
+    @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
         return null;
     }
 
