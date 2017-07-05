@@ -42,4 +42,6 @@ public interface TkpdCoreRouter {
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
     void onLogout(AppComponent appComponent);
+
+    void goToDeepLinkHandlerActivity(Context context, Bundle bundle, String url);
 }
