@@ -109,15 +109,17 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_AD_EDIT) {
-            setResultAdDetailChanged();
-            if (startDate == null || endDate == null) {
-                return;
+        if (intent != null && requestCode == REQUEST_CODE_AD_EDIT) {
+            if(intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
+                if (startDate == null || endDate == null) {
+                    return;
+                }
+                setResultAdDetailChanged();
+                if (intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)) {
+                    adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                }
+                refreshAd();
             }
-            if(intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)){
-                adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
-            }
-            refreshAd();
         }
     }
 
