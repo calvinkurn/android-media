@@ -53,7 +53,7 @@ public class NewOrderImpl extends NewOrder {
     @Override
     public void initData(@NonNull Context context) {
         view.initListener();
-        if(!isAfterRotate) {
+        if (!isAfterRotate) {
             if (isAllowLoading()) {
                 addLoading();
             }
@@ -148,15 +148,16 @@ public class NewOrderImpl extends NewOrder {
     }
 
 
-
     @Override
     public void moveToDetail(int position) {
-        Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
-        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
+        if (listDatas != null && position >= 0 && listDatas.get(position) != null) {
+            Intent intent = new Intent(context, SellingDetailActivity.class);
+            intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
+            intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
+            intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
 //        context.startActivity(intent);
-        view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+            view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+        }
     }
 
     private void requestGetNewOrder() {

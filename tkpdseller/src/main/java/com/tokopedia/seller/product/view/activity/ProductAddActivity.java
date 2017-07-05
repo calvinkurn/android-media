@@ -30,6 +30,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
@@ -60,8 +61,6 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 @RuntimePermissions
 public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
-
-    public static final String TAG = ProductAddActivity.class.getSimpleName();
 
     public static final int PRODUCT_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";
@@ -149,7 +148,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     }
 
     protected boolean hasDataAdded() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment!= null && fragment instanceof ProductAddFragment ) {
             return ((ProductAddFragment)fragment).hasDataAdded();
         }
@@ -158,7 +157,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
 
     protected boolean saveProducttoDraft() {
         // save newly added product ToDraft
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment!= null && fragment instanceof ProductAddFragment ) {
             ((ProductAddFragment)fragment).saveDraft(false);
             return true;
@@ -167,20 +166,20 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     }
 
     protected void setupFragment() {
-        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(getFragmentTAG()) == null) {
             checkIntentImageUrls();
         }
     }
 
     private void createProductAddFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment == null) {
             fragment = ProductAddFragment.createInstance(imageUrls);
         } else {
             return;
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, TAG);
+        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
         fragmentTransaction.commit();
     }
 

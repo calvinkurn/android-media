@@ -168,12 +168,13 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
         hideLoading();
-        finishAndSetResult();
+        finishAndSetResult(viewModel.getId());
     }
 
-    void finishAndSetResult() {
+    void finishAndSetResult(String id) {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED , true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, id);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
