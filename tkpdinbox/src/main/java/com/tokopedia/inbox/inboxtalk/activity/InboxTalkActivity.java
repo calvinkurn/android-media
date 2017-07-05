@@ -216,9 +216,13 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(InboxTalkFragment.createInstance(MY_PRODUCT, forceUnread));
         } else {
-            fragmentList.add(InboxTalkFragment.createInstance(INBOX_ALL, forceUnread));
-            fragmentList.add(InboxTalkFragment.createInstance(MY_PRODUCT, forceUnread));
-            fragmentList.add(InboxTalkFragment.createInstance(FOLLOWING, forceUnread));
+            if (checkHasNoShop()) {
+                fragmentList.add(InboxTalkFragment.createInstance(INBOX_ALL, forceUnread));
+            } else {
+                fragmentList.add(InboxTalkFragment.createInstance(INBOX_ALL, forceUnread));
+                fragmentList.add(InboxTalkFragment.createInstance(MY_PRODUCT, forceUnread));
+                fragmentList.add(InboxTalkFragment.createInstance(FOLLOWING, forceUnread));
+            }
         }
         return fragmentList;
     }

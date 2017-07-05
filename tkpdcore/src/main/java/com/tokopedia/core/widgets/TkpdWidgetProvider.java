@@ -20,7 +20,6 @@ public class TkpdWidgetProvider extends AppWidgetProvider{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if(intent.getExtras()!=null){
-			System.out.println("Updating content");
 			RemoteViews rem = new RemoteViews(context.getPackageName(), R.layout.widget_home);
 			LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
 			if(cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).size()>0){

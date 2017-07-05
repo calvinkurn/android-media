@@ -440,7 +440,6 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 // Inflate the menu for the CAB
-                System.out.println("FALSE");
                 isMultiSelect = true;
                 lvadapter.setMultiselect(isMultiSelect);
                 getMenuInflater().inflate(R.menu.manage_product_contextual,
@@ -451,7 +450,6 @@ public class ManageProduct extends TkpdActivity implements
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                System.out.println("TRUE");
                 isMultiSelect = false;
                 lvadapter.setMultiselect(isMultiSelect);
                 if (!ActionTaken)

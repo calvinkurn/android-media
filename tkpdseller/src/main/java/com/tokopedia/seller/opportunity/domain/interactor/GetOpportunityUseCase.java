@@ -43,7 +43,7 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
 
     public static RequestParams getRequestParam(int page,
                                                 @Nullable String query,
-                                                @Nullable String key_sort,
+                                                @Nullable String keySort,
                                                 @Nullable String sort,
                                                 @Nullable ArrayList<FilterPass> listFilter
                                                 ) {
@@ -52,8 +52,8 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
         param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
         if (query != null)
             param.putString(GetOpportunityUseCase.QUERY, query);
-        if (sort != null && key_sort != null)
-            param.putString(key_sort, sort);
+        if (sort != null && keySort != null)
+            param.putString(keySort, sort);
         if (listFilter != null && listFilter.size() > 0) {
             for (FilterPass filterPass : listFilter) {
                 param.putString(filterPass.getKey(), filterPass.getValue());

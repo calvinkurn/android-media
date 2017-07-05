@@ -76,7 +76,7 @@ public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> e
 
     @Override
     public void getProductDetail(String productId) {
-        // TODO hendry
+        // no op, shop has no product id
     }
 
     @Override

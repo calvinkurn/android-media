@@ -11,5 +11,5 @@ import java.util.List;
 public interface TopAdsKeywordNewChooseGroupView extends TopAdsListViewListener {
     void onGetGroupAdList(List<GroupAd> groupAds);
 
-    void onGetGroupAdListError();
+    void onGetGroupAdListError(Throwable e);
 }

@@ -59,7 +59,7 @@ public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentVie
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_picture_product;
+        return R.layout.view_picture_product_snapshot;
     }
 
     @Override

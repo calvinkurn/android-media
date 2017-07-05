@@ -141,7 +141,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(5);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
 
@@ -219,11 +219,11 @@ public class ActivitySellingTransaction extends TkpdActivity
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
+            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
 
-        hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
     }
 
 
@@ -265,7 +265,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
                 }
-                hideTickerOpportunity(position);
+                initSellerTicker();
             }
 
             @Override
@@ -279,8 +279,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     public void hideTickerOpportunity(int position) {
         if (position == 5) {
             sellerTickerView.setVisibility(View.GONE);
-        } else {
-            sellerTickerView.setVisibility(View.VISIBLE);
         }
     }
 

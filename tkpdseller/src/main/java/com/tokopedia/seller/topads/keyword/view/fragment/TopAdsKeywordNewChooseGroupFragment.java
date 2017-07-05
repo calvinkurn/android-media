@@ -21,6 +21,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
@@ -319,8 +320,8 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     }
 
     @Override
-    public void onGetGroupAdListError() {
-        inputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+    public void onGetGroupAdListError(Throwable e) {
+        inputLayoutChooseGroup.setError(ViewUtils.getGeneralErrorMessage(getContext(), e));
     }
 
     @Override

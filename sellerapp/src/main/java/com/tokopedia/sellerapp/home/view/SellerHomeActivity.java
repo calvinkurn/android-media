@@ -249,11 +249,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @OnClick(R.id.seller_home_container)
     public void newOrderSeeMore() {
-        Intent intent = SellerRouter.getActivitySellingTransaction(this);
-        Bundle bundle = new Bundle();
-        bundle.putInt("tab", 1);
-        bundle.putString("user_id", SessionHandler.getLoginID(this));
-        intent.putExtras(bundle);
+        Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(this);
         startActivity(intent);
     }
 

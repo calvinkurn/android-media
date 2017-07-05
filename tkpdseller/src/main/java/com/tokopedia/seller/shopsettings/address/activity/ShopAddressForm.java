@@ -297,7 +297,6 @@ public class ShopAddressForm extends TActivity {
             progress.dismiss();
             mainView.setVisibility(View.VISIBLE);
         }
-        System.out.println("Change Regency");
         SubDistrictList.clear();
         SubDistrictID.clear();
         SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
@@ -311,8 +310,6 @@ public class ShopAddressForm extends TActivity {
         for (int k = 0; k < SubDistrictID.size(); k++) {
             if (SubDistrictID.get(k).equals(district)) {
                 SpinnerSubDistrict.setSelection(k + 1);
-                System.out.println(SpinnerRegency.getSelectedItem());
-                System.out.println("Sub district break");
                 break;
             }
         }
@@ -323,7 +320,6 @@ public class ShopAddressForm extends TActivity {
             progress.dismiss();
             mainView.setVisibility(View.VISIBLE);
         }
-        System.out.println("Change Regency");
         SubDistrictList.clear();
         SubDistrictID.clear();
         SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
@@ -434,7 +430,6 @@ public class ShopAddressForm extends TActivity {
 
         for (int i = 0; i < ProvinceID.size(); i++) {
             if (ProvinceID.get(i).equals(province)) {
-                System.out.println(province);
                 SpinnerProvince.setSelection(i + 1);
                 ProvLastIndex = i + 1;
 
@@ -581,9 +576,6 @@ public class ShopAddressForm extends TActivity {
         if (SpinnerSubDistrict.getSelectedItemPosition() == 0) {
             SubDistrictError.setVisibility(View.VISIBLE);
             valid = false;
-        }
-        if (valid) {
-            System.out.println("Added new address successful");
         }
         return valid;
     }

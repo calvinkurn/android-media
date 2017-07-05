@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
@@ -24,7 +25,9 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -111,9 +114,14 @@ public class InboxReputationActivity extends DrawerPresenterActivity
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         } else {
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.setVisibility(View.GONE);
+            } else {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+            }
         }
 
     }
@@ -130,9 +138,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
             fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+            } else {
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+            }
         }
         return fragmentList;
     }
