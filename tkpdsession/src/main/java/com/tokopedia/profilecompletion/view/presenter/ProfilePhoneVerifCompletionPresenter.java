@@ -6,4 +6,8 @@ package com.tokopedia.profilecompletion.view.presenter;
 
 public interface ProfilePhoneVerifCompletionPresenter {
     void getUserInfo();
+
+    void editDOB(String day, String month, String year);
+
+    void editGender(int i);
 }

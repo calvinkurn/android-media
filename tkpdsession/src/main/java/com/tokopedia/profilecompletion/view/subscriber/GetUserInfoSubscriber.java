@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.view;
+package com.tokopedia.profilecompletion.view.subscriber;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
