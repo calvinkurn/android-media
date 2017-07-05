@@ -187,7 +187,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    private boolean isRetry() {
+    public boolean isRetry() {
         if (retry == 1) {
             return true;
         } else

@@ -12,6 +12,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -63,13 +64,12 @@ public class RetrofitUtils {
     }
 
     public static Retrofit createRetrofit(String url, String urlProxy, int port, int timeout, boolean enableLogging) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         // Add the interceptor to OkHttpClient
         OkHttpClient.Builder client = new OkHttpClient.Builder();
-        if (enableLogging) {
+        if (GlobalConfig.isAllowDebuggingTools() && enableLogging) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            // set your desired log level
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client.interceptors().add(logging);
         }
         if (checkNotNull(urlProxy))

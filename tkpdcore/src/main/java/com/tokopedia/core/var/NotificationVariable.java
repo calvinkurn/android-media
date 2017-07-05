@@ -162,7 +162,6 @@ public class NotificationVariable {
                                     R.anim.slide_up);
                     if (!isNotificationShow) {
                         /*
-                         * System.out.println("false");
 						 * NotifBut.setImageResource
 						 * (R.drawable.ic_menu_notif_transaction_active); if
 						 * (IncNotif >= 1) ResetNotification();
@@ -178,7 +177,6 @@ public class NotificationVariable {
                         fragmentTransaction.commit();
                     } else {
                         /*
-                         * System.out.println("true");
 						 * NotifBut.setImageResource(
 						 * R.drawable.ic_new_action_notif);
 						 * overlayInfo.hide();
@@ -734,7 +732,6 @@ public class NotificationVariable {
                 public boolean onTouch(View arg0, MotionEvent event) {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            System.out.println("Down");
                             startY = event.getRawY();
                             liner.setBackgroundColor(context.getResources()
                                     .getColor(R.color.tkpd_dark_green));
@@ -748,7 +745,6 @@ public class NotificationVariable {
                             MainView.invalidate();
                             break;
                         case MotionEvent.ACTION_UP:
-                            System.out.println("Up");
                             liner.setBackgroundColor(context.getResources()
                                     .getColor(R.color.tkpd_dark_gray));
                             if (deltaY >= (FullHeight / 3))

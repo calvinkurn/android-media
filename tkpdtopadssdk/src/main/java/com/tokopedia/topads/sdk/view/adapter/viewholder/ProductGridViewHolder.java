@@ -76,14 +76,19 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
 
     private void bindShop(Shop shop) {
         shopLocation.setText(shop.getLocation());
-        shopName.setText(shop.getName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            shopName.setText(Html.fromHtml(shop.getName(),
+                    Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            shopName.setText(Html.fromHtml(shop.getName()));
+        }
         if(shop.getBadges() !=null){
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
         }
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product.getImage().getXs_ecs(), product.getImage().getXs_url(),
+        imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
                 productImage);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),

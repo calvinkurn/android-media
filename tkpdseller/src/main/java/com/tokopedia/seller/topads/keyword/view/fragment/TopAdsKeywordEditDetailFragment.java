@@ -159,7 +159,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     public String getTopAdsCostPerClick() {
-        return topAdsCostPerClick.getTextWithoutPrefix().toString();
+        return topAdsCostPerClick.getTextWithoutPrefix();
     }
 
     @Override

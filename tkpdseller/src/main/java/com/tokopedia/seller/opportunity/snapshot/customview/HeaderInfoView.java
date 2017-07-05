@@ -53,7 +53,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_header_product_info;
+        return R.layout.view_header_product_snapshot;
     }
 
     @Override

@@ -65,6 +65,7 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import org.parceler.Parcels;
@@ -96,6 +97,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     private String source = "search";
     private String category = "";
     private FragmentBrowseProductView fragmentBrowseProductView;
+    private TopAdsListener topAdsListener;
 
 
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
@@ -122,6 +124,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     source = "search";
             }
         }
+    }
+
+    public void setTopAdsListener(TopAdsListener topAdsListener) {
+        this.topAdsListener = topAdsListener;
     }
 
     @Override
@@ -225,7 +231,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_state, parent, false);
-        return new TopAdsEmptyStateViewHolder(view);
+        return new TopAdsEmptyStateViewHolder(view, topAdsListener);
     }
 
     public static class TopAdsEmptyStateViewHolder extends RecyclerView.ViewHolder implements
@@ -234,7 +240,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         TopAdsView topAdsView;
         private Context context;
 
-        public TopAdsEmptyStateViewHolder(View itemView) {
+        public TopAdsEmptyStateViewHolder(View itemView, TopAdsListener topAdsListener) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
@@ -246,6 +252,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     .build();
             topAdsView.setConfig(topAdsconfig);
             topAdsView.setAdsItemClickListener(this);
+            topAdsView.setAdsListener(topAdsListener);
         }
 
         public void loadTopAds() {
@@ -254,8 +261,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onProductItemClicked(Product product) {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    product.getId());
+            ProductItem data = new ProductItem();
+            data.setId(product.getId());
+            data.setName(product.getName());
+            data.setPrice(product.getPriceFormat());
+            data.setImgUri(product.getImage().getM_url());
+            Bundle bundle = new Bundle();
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
 
@@ -601,7 +615,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isOfficialStoreBanner(int position) {
-        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
+        if(checkDataSize(position)) {
+            return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
+        }
+        return false;
     }
 
     /**
@@ -618,7 +635,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @param datas     just another data.
      */
     public void addAll(boolean withClear, boolean reload, List<RecyclerViewItem> datas) {
-        int positionStart = getItemCount();
+        int positionStart = data.size();
         int itemCount = datas.size();
         if (withClear) {
             this.data.clear();
