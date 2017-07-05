@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ActionDiscussionModel {
 
-    private String postKey;
+    private String cacheKey;
     private String token;
     private DiscussionItemViewModel replyDiscussionData;
     private String message;
@@ -24,12 +24,12 @@ public class ActionDiscussionModel {
     private String uploadHost;
     private List<UploadImageModel> uploadedFile;
 
-    public void setPostKey(String postKey) {
-        this.postKey = postKey;
+    public void setCacheKey(String cacheKey) {
+        this.cacheKey = cacheKey;
     }
 
-    public String getPostKey() {
-        return postKey;
+    public String getCacheKey() {
+        return cacheKey;
     }
 
     public void setToken(String token) {

@@ -4,9 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.LoadMoreDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
@@ -77,23 +76,20 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         viewListener.setViewEnabled(false);
         viewListener.showLoadingProgress();
         if (isValid()) {
-            sendDiscussionV2UseCase.setActionDiscussionModel(getSendReplyParams());
             sendDiscussionV2UseCase.execute(
-                    RequestParams.EMPTY,
+                    getSendReplyParams(),
                     new ReplyDiscussionSubscriber(viewListener)
             );
         }
     }
 
-    private ActionDiscussionModel getSendReplyParams() {
-        ActionDiscussionModel params = new ActionDiscussionModel();
-        params.setMessage(pass.getMessage());
-        params.setResolutionId(pass.getResolutionId());
-        params.setFlagReceived(pass.getFlagReceived());
-
+    private RequestParams getSendReplyParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(SendDiscussionV2UseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
+        params.putString(SendDiscussionV2UseCase.PARAM_MESSAGE, pass.getMessage());
+        params.putInt(SendDiscussionV2UseCase.PARAM_FLAG_RECEIVED, pass.getFlagReceived());
         if (pass.getAttachment() != null && pass.getAttachment().size() > 0) {
-            params.setHasAttachment(true);
-            params.setAttachment(pass.getAttachment());
+            params.putObject(SendDiscussionV2UseCase.PARAM_ATTACHMENT, pass.getAttachment());
         }
         return params;
     }

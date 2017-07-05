@@ -4,7 +4,6 @@ package com.tokopedia.inbox.rescenter.discussion.data.mapper;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.generatehost.GenerateHostEntity;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.generatehost.GeneratedHost;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 
@@ -23,7 +22,7 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
             if (!response.body().isError()) {
                 GenerateHostEntity entity = response.body().convertDataObj(GenerateHostEntity.class);
                 domainData.setSuccess(true);
-                domainData.setGenerateHostData(mappingEntityDomain(entity.getGeneratedHost()));
+                domainData.setGenerateHostData(mappingEntityDomain(entity));
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {
@@ -39,11 +38,11 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
         return domainData;
     }
 
-    private GenerateHostData mappingEntityDomain(GeneratedHost generatedHost) {
+    private GenerateHostData mappingEntityDomain(GenerateHostEntity entity) {
         GenerateHostData generateHostData = new GenerateHostData();
-        generateHostData.setServerId(generatedHost.getServerId());
-        generateHostData.setUploadHost(generatedHost.getUploadHost());
-        generateHostData.setUserId(generatedHost.getUserId());
+        generateHostData.setServerId(entity.getServerId());
+        generateHostData.setUploadHost(entity.getUploadHost());
+        generateHostData.setToken(entity.getToken());
         return generateHostData;
 
     }

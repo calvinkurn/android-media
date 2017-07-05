@@ -14,6 +14,7 @@ import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
@@ -219,7 +220,8 @@ public class ResolutionDetailModule {
             ListProductMapper listProductMapper,
             ProductDetailMapper productDetailMapper,
             DiscussionResCenterMapper discussionResCenterMapper,
-            LoadMoreMapper loadMoreMapper) {
+            LoadMoreMapper loadMoreMapper,
+            ReplyResolutionMapper replyResolutionMapper) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -233,7 +235,8 @@ public class ResolutionDetailModule {
                 listProductMapper,
                 productDetailMapper,
                 discussionResCenterMapper,
-                loadMoreMapper
+                loadMoreMapper,
+                replyResolutionMapper
         );
     }
 
@@ -371,6 +374,12 @@ public class ResolutionDetailModule {
     @Provides
     SubmitImageMapper provideSubmitImageMapper() {
         return new SubmitImageMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyResolutionMapper provideReplyResolutionMapper() {
+        return new ReplyResolutionMapper();
     }
 
 }

@@ -7,25 +7,19 @@ package com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation;
 public class ReplyDiscussionData {
 
     private String userImg;
-    private int conversationId;
+    private String conversationId;
     private int userLabelId;
     private int solutionFlag;
     private String userUrl;
     private String userName;
     private int actionBy;
     private String createTimeWib;
-    private String action;
-    private int isAppeal;
-    private String problemType;
     private String remark;
     private ByData by;
-    private int notificationFlag;
     private String remarkStr;
     private String userLabel;
-    private int chatFlag;
     private int systemFlag;
     private String createTime;
-    private int resetFlag;
     private String timeAgo;
 
     private String postKey;
@@ -38,11 +32,11 @@ public class ReplyDiscussionData {
         this.userImg = userImg;
     }
 
-    public int getConversationId() {
+    public String getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(int conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 
@@ -94,30 +88,6 @@ public class ReplyDiscussionData {
         this.createTimeWib = createTimeWib;
     }
 
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public int getIsAppeal() {
-        return isAppeal;
-    }
-
-    public void setIsAppeal(int isAppeal) {
-        this.isAppeal = isAppeal;
-    }
-
-    public String getProblemType() {
-        return problemType;
-    }
-
-    public void setProblemType(String problemType) {
-        this.problemType = problemType;
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -132,14 +102,6 @@ public class ReplyDiscussionData {
 
     public void setBy(ByData by) {
         this.by = by;
-    }
-
-    public int getNotificationFlag() {
-        return notificationFlag;
-    }
-
-    public void setNotificationFlag(int notificationFlag) {
-        this.notificationFlag = notificationFlag;
     }
 
     public String getRemarkStr() {
@@ -158,14 +120,6 @@ public class ReplyDiscussionData {
         this.userLabel = userLabel;
     }
 
-    public int getChatFlag() {
-        return chatFlag;
-    }
-
-    public void setChatFlag(int chatFlag) {
-        this.chatFlag = chatFlag;
-    }
-
     public int getSystemFlag() {
         return systemFlag;
     }
@@ -180,14 +134,6 @@ public class ReplyDiscussionData {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public int getResetFlag() {
-        return resetFlag;
-    }
-
-    public void setResetFlag(int resetFlag) {
-        this.resetFlag = resetFlag;
     }
 
     public String getTimeAgo() {
