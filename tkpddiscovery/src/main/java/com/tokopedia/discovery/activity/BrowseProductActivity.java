@@ -274,10 +274,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public void sendQuery(String query, String depId) {
+        browsePresenter.sendQuery(query, depId);
         toolbar.setTitle(query);
         discoverySearchView.setLastQuery(query);
         discoverySearchView.closeSearch();
-        browsePresenter.sendQuery(query, depId);
     }
 
     public void resetBrowseProductActivityModel() {
