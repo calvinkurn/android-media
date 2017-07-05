@@ -27,7 +27,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -70,7 +70,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProduct.class);
+        Intent intent = new Intent(context, ManageProductSeller.class);
         startActivity(intent);
     }
 
