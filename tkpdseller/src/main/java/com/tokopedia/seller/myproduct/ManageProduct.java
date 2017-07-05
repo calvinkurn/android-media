@@ -230,12 +230,26 @@ public class ManageProduct extends TkpdActivity implements
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    resetListViewMode();
+            if (intent.getAction().equals(ACTION_ADD_PRODUCT)) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resetListViewMode();
+                    }
+                });
+            } else if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
+                if (intent.hasExtra(TkpdState.ProductService.STATUS_FLAG)) {
+                    if (intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) ==
+                            TkpdState.ProductService.STATUS_DONE) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TriggerLoadNewData();
+                            }
+                        });
+                    }
                 }
-            });
+            }
         }
     };
     private String messageTAG = "ManageProduct";
@@ -1507,7 +1521,10 @@ public class ManageProduct extends TkpdActivity implements
             initEtalaseFilter(etalaseDBs);
             CheckCache();
         }
-        registerReceiver(addProductReceiver, new IntentFilter(ACTION_ADD_PRODUCT));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_ADD_PRODUCT);
+        intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        registerReceiver(addProductReceiver, intentFilter);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
