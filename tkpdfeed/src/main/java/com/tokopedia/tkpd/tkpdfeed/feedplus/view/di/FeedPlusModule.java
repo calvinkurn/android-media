@@ -43,6 +43,7 @@ import javax.inject.Named;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
 import dagger.Module;
@@ -277,6 +278,16 @@ public class FeedPlusModule {
                                                            PostExecutionThread postExecutionThread,
                                                            FeedRepository feedRepository) {
         return new GetRecentProductUsecase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    RefreshFeedUseCase provideRefreshFeedUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           FeedRepository feedRepository) {
+        return new RefreshFeedUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);
     }

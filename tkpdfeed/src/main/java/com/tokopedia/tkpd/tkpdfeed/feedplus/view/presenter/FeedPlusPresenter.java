@@ -5,6 +5,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -29,6 +30,7 @@ public class FeedPlusPresenter
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
+    private RefreshFeedUseCase refreshFeedUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
 
@@ -36,11 +38,13 @@ public class FeedPlusPresenter
     FeedPlusPresenter(SessionHandler sessionHandler,
                       GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
-                      FavoriteShopUseCase favoriteShopUseCase) {
+                      FavoriteShopUseCase favoriteShopUseCase,
+                      RefreshFeedUseCase refreshFeedUseCase) {
         this.sessionHandler = sessionHandler;
         this.getFeedsUseCase = getFeedsUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
+        this.refreshFeedUseCase = refreshFeedUseCase;
     }
 
     @Override
@@ -119,7 +123,7 @@ public class FeedPlusPresenter
     public void refreshPage() {
         viewListener.showRefresh();
         currentCursor = "";
-        getFirstPageFeedsUseCase.execute(
+        refreshFeedUseCase.execute(
                 getFirstPageFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
                 new GetFirstPageFeedsSubscriber(viewListener));
     }

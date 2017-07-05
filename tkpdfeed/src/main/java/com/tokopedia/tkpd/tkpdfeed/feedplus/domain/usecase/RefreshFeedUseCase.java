@@ -10,29 +10,26 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * @author ricoharisin .
+ * @author by nisie on 7/5/17.
  */
 
-public class GetFirstPageFeedsUseCase extends GetFeedsUseCase {
+public class RefreshFeedUseCase extends GetFeedsUseCase {
 
-    public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    FeedRepository feedRepository) {
-
+    public RefreshFeedUseCase(ThreadExecutor threadExecutor,
+                              PostExecutionThread postExecutionThread,
+                              FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread, feedRepository);
     }
 
     @Override
     public Observable<FeedResult> createObservable(final RequestParams requestParams) {
-        return Observable.concat(
-                feedRepository.getFirstPageFeedsFromLocal(),
-                feedRepository.getFirstPageFeedsFromCloud(requestParams))
+        return feedRepository.getFirstPageFeedsFromCloud(requestParams)
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
                     @Override
                     public Observable<? extends FeedResult> call(Throwable throwable) {
-                        return feedRepository.getFirstPageFeedsFromCloud(requestParams);
+                        return feedRepository.getFirstPageFeedsFromLocal();
                     }
                 });
-    }
 
+    }
 }

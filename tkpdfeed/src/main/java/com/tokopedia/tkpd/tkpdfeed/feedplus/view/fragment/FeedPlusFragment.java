@@ -329,9 +329,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-        finishLoading();
-        adapter.clearData();
-        adapter.removeEmpty();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
@@ -340,46 +337,44 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
-        finishLoading();
-        adapter.clearData();
-        adapter.removeEmpty();
         adapter.setList(listFeed);
         adapter.showAddFeed();
         adapter.notifyDataSetChanged();
         hideTopAdsAdapterLoading();
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
     }
 
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
-        finishLoading();
-        adapter.clearData();
         adapter.showEmpty();
         adapter.addList(listFeed);
         adapter.notifyItemRangeInserted(0, 2);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
     }
 
     @Override
     public void onShowEmpty() {
-        finishLoading();
-        adapter.clearData();
         adapter.showEmpty();
         adapter.notifyItemRangeInserted(0, 1);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
     }
 
+    @Override
+    public void clearData(){
+        adapter.clearData();
+    }
 
-
-    private void finishLoading() {
+    @Override
+    public void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public void onErrorGetFeedFirstPage(String errorMessage) {
-        finishLoading();
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
@@ -391,7 +386,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
-
+        finishLoading();
 
     }
 

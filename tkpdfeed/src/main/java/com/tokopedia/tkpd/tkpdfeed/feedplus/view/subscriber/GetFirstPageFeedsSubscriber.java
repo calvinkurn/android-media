@@ -55,6 +55,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onNext(FeedResult feedResult) {
+
+        if(feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+            viewListener.clearData();
+
         FeedDomain feedDomain = feedResult.getFeedDomain();
         ArrayList<Visitable> listFeedView = new ArrayList<>();
 
@@ -77,6 +81,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (hasFeed(feedDomain))
             viewListener.updateCursor(getCurrentCursor(feedResult));
 
+        if(feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+            viewListener.finishLoading();
 
     }
 

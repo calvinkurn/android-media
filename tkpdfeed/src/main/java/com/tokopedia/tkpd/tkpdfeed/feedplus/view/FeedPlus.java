@@ -58,6 +58,8 @@ public interface FeedPlus{
 
         void showRefresh();
 
+        void finishLoading();
+
         void updateCursor(String currentCursor);
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
@@ -88,6 +90,7 @@ public interface FeedPlus{
 
         void onShowEmpty();
 
+        void clearData();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
