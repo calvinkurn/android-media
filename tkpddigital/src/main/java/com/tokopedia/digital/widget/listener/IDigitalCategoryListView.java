@@ -1,5 +1,7 @@
 package com.tokopedia.digital.widget.listener;
 
+import android.content.Intent;
+
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 
@@ -23,4 +25,8 @@ public interface IDigitalCategoryListView extends IBaseView {
     void disableSwipeRefresh();
 
     void enableSwipeRefresh();
+
+    boolean isUserLogin();
+
+    void sendBroadcastReceiver(Intent intent);
 }

@@ -27,4 +27,8 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
+    boolean isSupportedDelegateDeepLink(String appLinks);
+
+    Intent getIntentDeepLinkHandlerActivity();
+
 }

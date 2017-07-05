@@ -32,6 +32,8 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -122,6 +124,17 @@ public class ConsumerRouterApplication extends MainApplication implements
     public Fragment getRechargeCategoryFragment() {
         Bundle bundle = new Bundle();
         return RechargeCategoryFragment.newInstance(bundle);
+    }
+
+    @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLinks);
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return new Intent(this, DeeplinkHandlerActivity.class);
     }
 
     @Override

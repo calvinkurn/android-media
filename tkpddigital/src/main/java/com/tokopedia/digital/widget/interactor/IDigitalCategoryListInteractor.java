@@ -1,5 +1,6 @@
 package com.tokopedia.digital.widget.interactor;
 
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 
 import java.util.List;
@@ -13,4 +14,6 @@ import rx.Subscriber;
 public interface IDigitalCategoryListInteractor {
 
     void getDigitalCategoryItemDataList(Subscriber<List<DigitalCategoryItemData>> subscriber);
+
+    void getTokoCashData(Subscriber<TopCashItem> subscriber);
 }

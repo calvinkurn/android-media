@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,12 +14,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
 import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
@@ -40,7 +55,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalCategoryListFragment extends
         BasePresenterFragment<IDigitalCategoryListPresenter> implements
         IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener {
+        RefreshHandler.OnRefreshHandlerListener, TokoCashUpdateListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
 
     @BindView(R2.id.rv_digital_category)
@@ -51,6 +66,8 @@ public class DigitalCategoryListFragment extends
     private RefreshHandler refreshHandler;
     private RecyclerView.LayoutManager gridLayoutManager;
     private RecyclerView.LayoutManager linearLayoutManager;
+    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
+    private TopCashItem tokoCashData;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -86,13 +103,17 @@ public class DigitalCategoryListFragment extends
         MojitoService mojitoService = new MojitoService();
         ICategoryDigitalListDataMapper mapperData = new CategoryDigitalListDataMapper();
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        TokoCashService tokoCashService = new TokoCashService(sessionHandler.getAccessToken(
+                MainApplication.getAppContext()
+        ));
         presenter = new DigitalCategoryListPresenter(
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
                         new DigitalCategoryListRepository(
                                 mojitoService, new GlobalCacheManager(), mapperData
-                        )
-                ), this);
+                        ), tokoCashService), this);
     }
 
     @Override
@@ -113,6 +134,10 @@ public class DigitalCategoryListFragment extends
     @Override
     protected void initView(View view) {
         refreshHandler = new RefreshHandler(getActivity(), view, this);
+        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
+                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
+        ));
     }
 
     @Override
@@ -141,22 +166,50 @@ public class DigitalCategoryListFragment extends
 
     @Override
     public void renderErrorGetDigitalCategoryList(String message) {
-
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                });
     }
 
     @Override
     public void renderErrorHttpGetDigitalCategoryList(String message) {
-
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                });
     }
 
     @Override
     public void renderErrorNoConnectionGetDigitalCategoryList(String message) {
-
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                });
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetDigitalCategoryList(String message) {
-
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                });
     }
 
     @Override
@@ -167,6 +220,16 @@ public class DigitalCategoryListFragment extends
     @Override
     public void enableSwipeRefresh() {
         refreshHandler.setPullEnabled(true);
+    }
+
+    @Override
+    public boolean isUserLogin() {
+        return SessionHandler.isV4Login(getActivity());
+    }
+
+    @Override
+    public void sendBroadcastReceiver(Intent intent) {
+        getActivity().sendBroadcast(intent);
     }
 
     @Override
@@ -244,6 +307,7 @@ public class DigitalCategoryListFragment extends
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
     }
@@ -251,11 +315,70 @@ public class DigitalCategoryListFragment extends
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-
+        if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
+                && tokoCashData.getData().getLink() != 1) {
+            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
+            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
+                    getActivity());
+            openActivationTokoCashWebView(seamlessUrl);
+        } else {
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter)
+                if (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(itemData.getAppLinks())) {
+                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                            .appLinks(itemData.getAppLinks())
+                            .categoryId(itemData.getCategoryId())
+                            .categoryName(itemData.getName())
+                            .url(itemData.getRedirectValue())
+                            .build();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
+                            .getIntentDeepLinkHandlerActivity());
+                    intent.putExtras(bundle);
+                    intent.setData(Uri.parse(itemData.getAppLinks()));
+                    startActivity(intent);
+                } else {
+                    String redirectValueUrl = itemData.getRedirectValue();
+                    if (redirectValueUrl != null && redirectValueUrl.length() > 0) {
+                        String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                                Uri.encode(redirectValueUrl), MainApplication.getAppContext());
+                        Intent intent = new Intent(getActivity(), BannerWebView.class);
+                        intent.putExtra("url", resultGenerateUrl);
+                        navigateToActivity(intent);
+                    }
+                }
+        }
     }
 
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing()) presenter.processGetDigitalCategoryList();
+    }
+
+    @Override
+    public void onReceivedTokoCashData(TopCashItem tokoCashData) {
+        this.tokoCashData = tokoCashData;
+    }
+
+    @Override
+    public void onTokoCashDataError(String errorMessage) {
+
+    }
+
+    private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
+        if (tokoCashData.getData().getAction() == null) return "";
+        else return tokoCashData.getData().getAction().getRedirectUrl();
+    }
+
+    private void openActivationTokoCashWebView(String seamlessUrl) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url", seamlessUrl);
+        if (getActivity() != null) {
+            if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) getActivity().getApplication())
+                        .goToWallet(getActivity(), bundle);
+            }
+        }
     }
 }

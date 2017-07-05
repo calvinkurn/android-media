@@ -20,18 +20,19 @@ public class CategoryDigitalListDataMapper implements ICategoryDigitalListDataMa
             throws MapperDataException {
         List<DigitalCategoryItemData> digitalCategoryItemDataList = new ArrayList<>();
         for (LayoutSection layoutSection : homeCategoryMenuItem.getData().getLayoutSections()) {
-            for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
-                if (layoutRow.getType().equalsIgnoreCase("Digital")) {
-                    DigitalCategoryItemData data = new DigitalCategoryItemData();
-                    data.setName(layoutRow.getName());
-                    data.setImageUrl(layoutRow.getImageUrl());
-                    data.setCategoryId(String.valueOf(layoutRow.getCategoryId()));
-                    data.setRedirectValue(layoutRow.getUrl());
-                    data.setAppLinks(layoutRow.getAppLinks());
-                    data.setDescription("");
-                    digitalCategoryItemDataList.add(data);
+            if (layoutSection.getId() == 4)
+                for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
+                    if (layoutRow.getType().equalsIgnoreCase("Digital")) {
+                        DigitalCategoryItemData data = new DigitalCategoryItemData();
+                        data.setName(layoutRow.getName());
+                        data.setImageUrl(layoutRow.getImageUrl());
+                        data.setCategoryId(String.valueOf(layoutRow.getCategoryId()));
+                        data.setRedirectValue(layoutRow.getUrl());
+                        data.setAppLinks(layoutRow.getAppLinks());
+                        data.setDescription("");
+                        digitalCategoryItemDataList.add(data);
+                    }
                 }
-            }
         }
         return digitalCategoryItemDataList;
     }

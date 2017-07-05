@@ -7,4 +7,6 @@ package com.tokopedia.digital.widget.presenter;
 public interface IDigitalCategoryListPresenter {
 
     void processGetDigitalCategoryList();
+
+    void processGetTokoCashData();
 }

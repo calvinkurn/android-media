@@ -194,6 +194,7 @@ public class TkpdCache {
 
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
 
+        public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
     }
 
 }
