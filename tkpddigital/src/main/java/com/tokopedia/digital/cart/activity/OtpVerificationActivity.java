@@ -36,6 +36,8 @@ import com.tokopedia.digital.cart.interactor.OtpVerificationInteractor;
 import com.tokopedia.digital.cart.listener.IOtpVerificationView;
 import com.tokopedia.digital.cart.presenter.IOtpVerificationPresenter;
 import com.tokopedia.digital.cart.presenter.OtpVerificationPresenter;
+import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -214,6 +216,11 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams) {
         return null;
+    }
+
+    @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
+        return DeviceUtil.getDigitalIdentifierParam(this);
     }
 
     @Override

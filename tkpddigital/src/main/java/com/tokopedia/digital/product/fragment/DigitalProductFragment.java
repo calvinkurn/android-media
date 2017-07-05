@@ -72,7 +72,9 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
+import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -520,6 +522,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams) {
         return AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
+        return DeviceUtil.getDigitalIdentifierParam(getActivity());
     }
 
     @Override
