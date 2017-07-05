@@ -109,11 +109,15 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         return true;
     }
 
+    protected int getCancelMessageRes(){
+        return R.string.product_draft_dialog_cancel_message;
+    }
+
     @Override
     public void onBackPressed() {
         if (hasDataAdded()){
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setMessage(getString(R.string.product_draft_dialog_cancel_message))
+                    .setMessage(getString(getCancelMessageRes()))
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
