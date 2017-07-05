@@ -8,7 +8,9 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -21,4 +23,7 @@ public interface CloverApi {
     @POST(TkpdBaseURL.Transaction.PATH_GET_TOPPOINTS_CLOVER)
     Observable<Response<TkpdResponse>> getTopPoints(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Transaction.PATH_GET_TOPPOINTS_CLOVER)
+    Observable<Response<TkpdResponse>> getTopPoints2(@FieldMap Map<String, Object> params);
 }

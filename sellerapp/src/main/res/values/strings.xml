@@ -8,7 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
 
-    <string name="title_top_ads">TopAds</string>
+    <string name="drawer_title_top_ads">TopAds</string>
     <string name="title_shop_score_widget_home">Performa Toko</string>
     <string name="view_shop_score_per_cent">/100</string>
     <string name="action_shop_score_go_to_detail">Lihat Detail</string>
@@ -16,13 +16,5 @@
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
-    <string name="drawer_title_home">Beranda</string>
-    <string name="drawer_title_login">Masuk</string>
-    <string name="drawer_title_register">Daftar</string>
-    <string name="drawer_title_report">Laporkan</string>
-    <string name="drawer_title_developer_option">Developer Options</string>
-    <string name="drawer_title_seller">Penjualan</string>
-    <string name="drawer_title_inbox">Kotak Masuk</string>
-    <string name="drawer_title_gold_merchant">Gold Merchant</string>
 
 </resources>
