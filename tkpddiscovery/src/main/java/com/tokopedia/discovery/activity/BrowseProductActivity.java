@@ -611,6 +611,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public void launchOfficialStorePage() {
         startActivity(BrandsWebViewActivity.newInstance(this, TkpdBaseURL.OfficialStore.URL_WEBVIEW));
+        finish();
     }
 
     public void removeEmptyState() {
