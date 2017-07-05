@@ -114,7 +114,8 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
 
 //        setCover(holder);
 
-        if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
+        if (data.getDrawerProfile().getUserAvatar() != null
+                && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
         holder.name.setText(data.getDrawerProfile().getUserName());
@@ -156,7 +157,8 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
     }
 
     private void setCover(ViewHolder holder) {
-        if (data.getDrawerProfile().getShopCover() != null && !data.getDrawerProfile().getShopCover().equals("")) {
+        if (data.getDrawerProfile().getShopCover() != null
+                && !data.getDrawerProfile().getShopCover().equals("")) {
             holder.gradientBlack.setBackgroundResource(R.drawable.gradient_black);
             holder.coverImg.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(holder.coverImg, data.getDrawerProfile().getShopCover());

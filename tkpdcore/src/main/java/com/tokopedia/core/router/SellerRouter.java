@@ -1,11 +1,16 @@
 package com.tokopedia.core.router;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.util.SessionHandler;
+
+import static com.facebook.internal.NativeProtocol.EXTRA_USER_ID;
 
 /**
  * Created by ricoharisin on 11/10/16.
@@ -25,11 +30,14 @@ public class SellerRouter {
     private static final String ACTIVITY_SPLASH_SCREEN = "com.tokopedia.sellerapp.SplashScreenActivity";
 
     public static final String EXTRA_STATE_TAB_POSITION = "tab";
+    public static final String EXTRA_USER_ID = "user_id";
+
 
     public final static int TAB_POSITION_SELLING_NEW_ORDER = 1;
     public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 2;
     public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 3;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 4;
+    private static final int TAB_POSITION_SELLING_OPPORTUNITY = 5;
 
     public interface ShopSettingConstant{
         String FRAGMENT_TO_SHOW = "FragmentToShow";
@@ -83,4 +91,46 @@ public class SellerRouter {
         }
         return parentIndexHomeClass;
     }
+
+    public static Intent getActivitySellingTransactionNewOrder(Context context) {
+        Intent intent = getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER);
+        bundle.putString(EXTRA_USER_ID, SessionHandler.getLoginID(context));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        Intent intent = getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getActivitySellingTransactionShippingStatus(Context context) {
+        Intent intent = getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getActivitySellingTransactionList(Context context) {
+        Intent intent = getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getActivitySellingTransactionOpportunity(Context context) {
+        Intent intent = getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 }

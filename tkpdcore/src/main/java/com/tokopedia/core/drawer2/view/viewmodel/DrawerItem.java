@@ -21,10 +21,26 @@ public class DrawerItem {
         this.notif = 0;
     }
 
+    public DrawerItem(String label, int id, boolean isExpanded) {
+        this.id = id;
+        this.label = label;
+        this.iconId = 0;
+        this.isExpanded = isExpanded;
+        this.notif = 0;
+    }
+
     public DrawerItem(String label, int iconId, int id, boolean isExpanded, int notif) {
         this.id = id;
         this.label = label;
         this.iconId = iconId;
+        this.isExpanded = isExpanded;
+        this.notif = notif;
+    }
+
+    public DrawerItem(String label, int id, boolean isExpanded, int notif) {
+        this.id = id;
+        this.label = label;
+        this.iconId = 0;
         this.isExpanded = isExpanded;
         this.notif = notif;
     }

@@ -194,7 +194,7 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public void goToCreateMerchantRedirect(Context context) {
-        Intent intent = new Intent(context, RedirectCreateShopActivity.class);
+        Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
     }
 

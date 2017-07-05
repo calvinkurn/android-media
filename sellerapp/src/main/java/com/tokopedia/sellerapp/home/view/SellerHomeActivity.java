@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.home.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -226,6 +227,10 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private LocalCacheHandler drawerCache;
     private DrawerHelper drawerHelper;
     private Toolbar toolbar;
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, SellerHomeActivity.class);
+    }
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -1043,7 +1048,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @Override
     public void onGetDeposit(DrawerDeposit drawerDeposit) {
         if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
-            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerDeposit(drawerDeposit);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -1062,7 +1068,9 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 notifRed.setVisibility(View.GONE);
             } else {
                 notifRed.setVisibility(View.VISIBLE);
-                String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                String totalNotif = notification.getTotalNotif() > 999 ?
+                        getString(R.string.max_notif) :
+                        String.valueOf(notification.getTotalNotif());
                 notifRed.setText(totalNotif);
             }
         }

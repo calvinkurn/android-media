@@ -220,14 +220,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
         cacheHandler = new AnalyticsCacheHandler();
-
-//        if (TextUtils.isEmpty(cacheHandler.isUserDataCached())) {
-//            if (SessionHandler.isV4Login(this)) {
-//                drawerDataManager.getProfile();
-//            }
-//        } else {
-//            setMoengageUserAttributes();
-//        }
     }
 
     @Override
@@ -242,7 +234,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(params);
         View searchView = view.findViewById(R.id.search_container);
         searchView.setOnClickListener(new View.OnClickListener() {

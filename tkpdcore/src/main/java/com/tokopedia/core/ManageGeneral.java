@@ -35,8 +35,8 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     public final static int TAB_POSITION_MANAGE_APP = 2;
     public final static int TAB_POSITION_ABOUT_US = 3;
 
-    ViewPager mViewPager;
-    TabLayout indicator;
+    private ViewPager mViewPager;
+    private TabLayout indicator;
 
     public static Intent getCallingIntent(Activity activity, int position) {
         Intent intent = new Intent(activity, ManageGeneral.class);

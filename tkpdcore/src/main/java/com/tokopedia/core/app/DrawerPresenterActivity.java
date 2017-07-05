@@ -59,6 +59,23 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.removeAllViews();
+        initNotificationMenu(toolbar);
+        initTitle(toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+    }
+
+    private void initTitle(Toolbar toolbar) {
+        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
+        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
+        titleTextView.setText(getTitle());
+        toolbar.addView(title);
+    }
+
+    private void initNotificationMenu(Toolbar toolbar) {
         View notif = getLayoutInflater().inflate(
                 R.layout.custom_actionbar_drawer_notification, null);
         final ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
@@ -72,19 +89,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 }
             }
         });
-        TextView notifRed = (TextView) notif.findViewById(R.id.toggle_count_notif);
         toolbar.addView(notif);
-
-        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
-        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
-        titleTextView.setText(getTitle());
-        toolbar.addView(title);
         toolbar.setNavigationIcon(null);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
     }
 
     protected void setupDrawer() {
@@ -188,9 +194,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     public void onGetDeposit(DrawerDeposit drawerDeposit) {
         if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
-            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerDeposit(drawerDeposit);
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
-            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter()
+                    .getHeader()).getData().setDrawerDeposit(drawerDeposit);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -210,7 +218,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 notifRed.setVisibility(View.GONE);
             } else {
                 notifRed.setVisibility(View.VISIBLE);
-                String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                String totalNotif = notification.getTotalNotif() > 999 ?
+                        getString(R.string.max_notif) : String.valueOf(notification.getTotalNotif());
                 notifRed.setText(totalNotif);
             }
         }

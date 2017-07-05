@@ -162,8 +162,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.avatar.setVisibility(View.VISIBLE);
         holder.coverImg.setVisibility(View.INVISIBLE);
 
-//        setCover(holder);
-
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 

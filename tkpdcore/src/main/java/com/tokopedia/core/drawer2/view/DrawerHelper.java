@@ -78,7 +78,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getId());
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
-//                context.finish();
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 intent = InboxRouter.getInboxMessageActivityIntent(context);
@@ -127,7 +126,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
             default:
-                Log.d("NISNIS", item.getLabel());
+                Log.d(DrawerHelper.class.getSimpleName(), item.getLabel());
         }
     }
 
@@ -151,7 +150,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void setFooterData(DrawerProfile profile);
 
-    public void setSelectedPosition(int id){
+    public void setSelectedPosition(int id) {
         this.selectedPosition = id;
     }
 

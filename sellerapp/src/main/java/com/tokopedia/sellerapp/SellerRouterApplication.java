@@ -93,8 +93,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToMerchantRedirect(Context context) {
-        Intent intent = new Intent(context,
-                GmSubscribeHomeActivity.class);
+        Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
         context.startActivity(intent);
     }
 
