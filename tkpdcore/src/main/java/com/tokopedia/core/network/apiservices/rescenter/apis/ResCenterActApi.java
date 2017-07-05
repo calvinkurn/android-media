@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.rescenter.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -147,6 +148,10 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> createImage(@Url String url,
                                                    @PartMap Map<String, RequestBody> params);
 
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST)
+    Observable<Response<TkpdResponse>> generateTokenHost(@FieldMap TKPDMapParam<String, Object> params);
 
 }
 

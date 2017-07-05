@@ -1,19 +1,19 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
+import com.google.gson.JsonArray;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.AttachmentData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.ReplySubmitData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.ReplySubmitModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -37,58 +38,47 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
     public static final String PARAM_ATTACHMENT = "PARAM_ATTACHMENT";
     public static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
     public static final String PARAM_FLAG_RECEIVED = "PARAM_FLAG_RECEIVED";
-    private static final String IS_SUCCESS_VALIDATION = "IS_SUCCESS_VALIDATION";
 
-    private static final String PARAM_SERVER_ID = "PARAM_SERVER_ID";
-    private static final String PARAM_UPLOAD_HOST = "PARAM_UPLOAD_HOST";
-    private static final String PARAM_ATTACHMENT_STRING = "PARAM_ATTACHMENT_STRING";
-    private static final String PARAM_FILE_UPLOADED = "PARAM_FILE_UPLOADED";
-    private static final String PARAM_POST_KEY = "PARAM_POST_KEY";
-    private static final String PARAM_REPLY_DATA = "PARAM_REPLY_DATA";
-
-    private static final String PARAM_IS_HAS_ATTACHMENT = "PARAM_IS_HAS_ATTACHMENT";
-    private static final String PARAM_TOKEN = "PARAM_TOKEN";
-
-    private final GenerateHostUseCase generateHostUseCase;
-    private final ReplyDiscussionValidationUseCase replyValidationUseCase;
+    private final GenerateHostV2UseCase generateHostUseCase;
+    private final NewReplyDiscussionUseCase replyDiscussionUseCase;
+    private final NewReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
     private final UploadImageV2UseCase uploadImageUseCase;
     private final UploadVideoUseCase uploadVideoUseCase;
-    private final CreatePictureUseCase createPictureUseCase;
-    private final ReplyDiscussionSubmitUseCase replySubmitUseCase;
-    private ActionDiscussionModel actionDiscussionModel;
 
     public SendDiscussionV2UseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
-                                   GenerateHostUseCase generateHostUseCase,
-                                   ReplyDiscussionValidationUseCase replyValidationUseCase,
+                                   GenerateHostV2UseCase generateHostUseCase,
+                                   NewReplyDiscussionUseCase replyDiscussionUseCase,
+                                   NewReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
                                    UploadImageV2UseCase uploadImageUseCase,
-                                   UploadVideoUseCase uploadVideoUseCase,
-                                   CreatePictureUseCase createPictureUseCase,
-                                   ReplyDiscussionSubmitUseCase replySubmitUseCase) {
+                                   UploadVideoUseCase uploadVideoUseCase) {
 
         super(threadExecutor, postExecutionThread);
         this.generateHostUseCase = generateHostUseCase;
-        this.replyValidationUseCase = replyValidationUseCase;
+        this.replyDiscussionUseCase = replyDiscussionUseCase;
+        this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
         this.uploadVideoUseCase = uploadVideoUseCase;
-        this.createPictureUseCase = createPictureUseCase;
-        this.replySubmitUseCase = replySubmitUseCase;
-    }
-
-    public void setActionDiscussionModel(ActionDiscussionModel actionDiscussionModel) {
-        this.actionDiscussionModel = actionDiscussionModel;
     }
 
     @Override
     public Observable<DiscussionItemViewModel> createObservable(RequestParams requestParams) {
-        if (actionDiscussionModel == null) {
-            return Observable.empty();
+        ActionDiscussionModel params = new ActionDiscussionModel();
+        params.setMessage(requestParams.getString(PARAM_MESSAGE, ""));
+        params.setResolutionId(requestParams.getString(PARAM_RESOLUTION_ID, ""));
+        params.setFlagReceived(requestParams.getInt(PARAM_FLAG_RECEIVED, 0));
+        Object object = requestParams.getObject(PARAM_ATTACHMENT);
+        if (object != null) {
+            params.setHasAttachment(true);
+            //noinspection unchecked
+            params.setAttachment((List<AttachmentViewModel>) object);
         }
-        return Observable.just(actionDiscussionModel)
+
+        return Observable.just(params)
                 .flatMap(new Func1<ActionDiscussionModel, Observable<ActionDiscussionModel>>() {
                     @Override
                     public Observable<ActionDiscussionModel> call(ActionDiscussionModel model) {
-                        return getReplyValidation(model);
+                        return getReplyResolutionStep1(model);
                     }
                 })
                 .flatMap(new Func1<ActionDiscussionModel, Observable<ActionDiscussionModel>>() {
@@ -115,7 +105,7 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                     @Override
                     public Observable<DiscussionItemViewModel> call(ActionDiscussionModel model) {
                         if (model.isHasAttachment()) {
-                            return getReplySubmit(model);
+                            return getReplyResolutionStep2(model);
                         } else {
                             return Observable.just(model.getReplyDiscussionData());
                         }
@@ -123,25 +113,20 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                 });
     }
 
-    private Observable<ActionDiscussionModel> getReplyValidation(ActionDiscussionModel model) {
+    private Observable<ActionDiscussionModel> getReplyResolutionStep1(ActionDiscussionModel model) {
         RequestParams params = RequestParams.create();
-        params.putString(SendDiscussionUseCase.PARAM_MESSAGE, model.getMessage());
-        params.putObject(SendDiscussionUseCase.PARAM_RESOLUTION_ID, model.getResolutionId());
-        params.putInt(SendDiscussionUseCase.PARAM_FLAG_RECEIVED, model.getFlagReceived());
-
-        if (model.getAttachment() != null && model.getAttachment().size() > 0) {
-            params.putObject(SendDiscussionUseCase.PARAM_ATTACHMENT, model.getAttachment());
-        }
+        params.putString(NewReplyDiscussionUseCase.PARAM_REPLY_MSG, model.getMessage());
+        params.putString(NewReplyDiscussionUseCase.PARAM_RESOLUTION_ID, model.getResolutionId());
+        params.putInt(NewReplyDiscussionUseCase.PARAM_ATTACHMENT, model.getAttachment() != null ? model.getAttachment().size() : 0);
 
         return Observable.zip(
                 Observable.just(model),
-                replyValidationUseCase.createObservable(params),
-                new Func2<ActionDiscussionModel, ReplyDiscussionValidationModel, ActionDiscussionModel>() {
+                replyDiscussionUseCase.createObservable(params),
+                new Func2<ActionDiscussionModel, NewReplyDiscussionModel, ActionDiscussionModel>() {
                     @Override
-                    public ActionDiscussionModel call(ActionDiscussionModel model, ReplyDiscussionValidationModel domainModel) {
+                    public ActionDiscussionModel call(ActionDiscussionModel model, NewReplyDiscussionModel domainModel) {
                         if (model.isHasAttachment()) {
-                            model.setPostKey(domainModel.getPostKey());
-                            model.setToken(domainModel.getToken());
+                            model.setCacheKey(domainModel.getCacheKey());
                         } else {
                             model.setReplyDiscussionData(
                                     mappingValidationViewModel(domainModel.getReplyDiscussionData())
@@ -163,6 +148,9 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         viewModel.setUserLabelId(replyDiscussionData.getUserLabelId());
         viewModel.setUserName(replyDiscussionData.getUserName());
         viewModel.setConversationId(String.valueOf(replyDiscussionData.getConversationId()));
+//      todo attachment belom
+//        viewModel.setAttachment(replyDiscussionData.get);
+//        mappingSubmitAttachment(replyDiscussionData.getAttachment())
         return viewModel;
     }
 
@@ -182,22 +170,17 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
     private Observable<ActionDiscussionModel> getGenerateHost(ActionDiscussionModel model) {
         return Observable.zip(
                 Observable.just(model),
-                generateHostUseCase.createObservable(getGenerateHostParam()),
+                generateHostUseCase.createObservable(RequestParams.EMPTY),
                 new Func2<ActionDiscussionModel, GenerateHostModel, ActionDiscussionModel>() {
                     @Override
                     public ActionDiscussionModel call(ActionDiscussionModel model, GenerateHostModel domainModel) {
                         model.setServerId(domainModel.getGenerateHostData().getServerId());
                         model.setUploadHost(domainModel.getGenerateHostData().getUploadHost());
+                        model.setToken(domainModel.getGenerateHostData().getToken());
                         return model;
                     }
                 }
         );
-    }
-
-    private RequestParams getGenerateHostParam() {
-        RequestParams generateHostParams = RequestParams.create();
-        generateHostParams.putInt(GenerateHostUseCase.PARAM_SERVER_LANGUAGE, GenerateHostUseCase.STATIC_GOLANG_VALUE);
-        return generateHostParams;
     }
 
     private Observable<ActionDiscussionModel> getUploadAttachment(ActionDiscussionModel model) {
@@ -208,10 +191,22 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                     @Override
                     public ActionDiscussionModel call(ActionDiscussionModel model, List<UploadImageModel> listUploadedAttachment) {
                         model.setUploadedFile(listUploadedAttachment);
+                        for (int i = 0; i < model.getAttachment().size(); i++) {
+                            AttachmentViewModel viewModel = model.getAttachment().get(i);
+                            viewModel.setUploadedFile(mappingFileUploaded(listUploadedAttachment.get(i).getUploadImageData()));
+                        }
                         return model;
                     }
                 }
         );
+    }
+
+    private AttachmentViewModel.UploadedFileViewModel mappingFileUploaded(UploadImageData data) {
+        AttachmentViewModel.UploadedFileViewModel model = new AttachmentViewModel.UploadedFileViewModel();
+        model.setImageUrl(data.getImageUrl());
+        model.setPicObj(data.getPicObj());
+        model.setPicSrc(data.getPicSrc());
+        return model;
     }
 
     private Observable<List<UploadImageModel>> getObservableUploadAttachment(final ActionDiscussionModel model) {
@@ -228,9 +223,11 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                             return uploadVideoUseCase.createObservable(uploadVideoParams);
                         } else {
                             RequestParams uploadImageParams = RequestParams.create();
-                            uploadImageParams.putString(UploadImageUseCase.PARAM_SERVER_ID, model.getServerId());
-                            uploadImageParams.putString(UploadImageUseCase.PARAM_URL, model.getUploadHost());
-                            uploadImageParams.putString(UploadImageUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
+                            uploadImageParams.putString(UploadImageV2UseCase.PARAM_SERVER_ID, model.getServerId());
+                            uploadImageParams.putString(UploadImageV2UseCase.PARAM_URL, model.getUploadHost());
+                            uploadImageParams.putString(UploadImageV2UseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
+                            uploadImageParams.putString(UploadImageV2UseCase.PARAM_TOKEN, model.getToken());
+                            uploadImageParams.putString(UploadImageV2UseCase.PARAM_IMAGE_ID, UUID.randomUUID().toString());
                             return uploadImageUseCase.createObservable(uploadImageParams);
                         }
                     }
@@ -238,59 +235,57 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                 .toList();
     }
 
-    private Observable<DiscussionItemViewModel> getReplySubmit(ActionDiscussionModel model) {
-        return replySubmitUseCase.createObservable(getReplySubmitParams(model))
-                .flatMap(new Func1<ReplySubmitModel, Observable<DiscussionItemViewModel>>() {
+    private Observable<DiscussionItemViewModel> getReplyResolutionStep2(ActionDiscussionModel model) {
+        return replyDiscussionSubmitUseCase.createObservable(getReplySubmitParams(model))
+                .flatMap(new Func1<NewReplyDiscussionModel, Observable<DiscussionItemViewModel>>() {
                     @Override
-                    public Observable<DiscussionItemViewModel> call(ReplySubmitModel domainModel) {
-                        ReplySubmitData data = domainModel.getReplySubmitData();
-                        DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
-                        viewModel.setMessageReplyTimeFmt(formatTime(data.getCreateTimeWib()));
-                        viewModel.setMessage(data.getRemarkStr());
-                        viewModel.setUserLabel(data.getUserLabel());
-                        viewModel.setUserLabelId(data.getUserLabelId());
-                        viewModel.setUserName(data.getUserName());
-                        viewModel.setAttachment(mappingSubmitAttachment(data.getAttachment()));
-                        viewModel.setConversationId(String.valueOf(data.getConversationId()));
-                        viewModel.setMessageCreateBy(SessionHandler.getLoginID(MainApplication.getAppContext()));
-                        return Observable.just(viewModel);
+                    public Observable<DiscussionItemViewModel> call(NewReplyDiscussionModel domainModel) {
+                        return Observable.just(mappingValidationViewModel(domainModel.getReplyDiscussionData()));
                     }
                 });
     }
 
     private RequestParams getReplySubmitParams(ActionDiscussionModel model) {
         RequestParams params = RequestParams.create();
-        params.putString(ReplyDiscussionSubmitUseCase.PARAM_RESOLUTION_ID, model.getResolutionId());
-        params.putString(ReplyDiscussionSubmitUseCase.PARAM_POST_KEY, model.getPostKey());
-        params.putString(ReplyDiscussionSubmitUseCase.PARAM_FILE_UPLOADED, generateFileUploaded(model));
+        params.putString(NewReplyDiscussionSubmitUseCase.PARAM_RESOLUTION_ID, model.getResolutionId());
+        params.putString(NewReplyDiscussionSubmitUseCase.PARAM_CACHE_KEY, model.getCacheKey());
+        params.putString(NewReplyDiscussionSubmitUseCase.PARAM_PICTURES, generatePictures(model));
+        for (AttachmentViewModel attach : model.getAttachment()) {
+            if (attach.isVideo()) {
+                params.putString(NewReplyDiscussionSubmitUseCase.PARAM_VIDEOS, generateVideos(model));
+            }
+        }
         return params;
     }
 
-    private String generateFileUploaded(ActionDiscussionModel model) {
-        return null;
+    private String generatePictures(ActionDiscussionModel model) {
+        JsonArray json = new JsonArray();
+        for (AttachmentViewModel attach : model.getAttachment()) {
+            if (!attach.isVideo()) {
+                json.add(attach.getUploadedFile().getPicObj());
+            }
+        }
+        return json.toString();
     }
 
-    private List<AttachmentViewModel> mappingSubmitAttachment(List<AttachmentData> listAttachment) {
-        List<AttachmentViewModel> list = new ArrayList<>();
-        for (AttachmentData attachmentData : listAttachment) {
-            AttachmentViewModel attachmentViewModel = new AttachmentViewModel();
-            attachmentViewModel.setImgThumb(attachmentData.getFileUrl());
-            attachmentViewModel.setImgLarge(attachmentData.getRealFileUrl());
-            list.add(attachmentViewModel);
+    private String generateVideos(ActionDiscussionModel model) {
+        JsonArray json = new JsonArray();
+        for (AttachmentViewModel attach : model.getAttachment()) {
+            if (!attach.isVideo()) {
+                json.add(attach.getUploadedFile().getPicObj());
+            }
         }
-
-        return list;
+        return json.toString();
     }
 
     @Override
     public void unsubscribe() {
         super.unsubscribe();
         this.generateHostUseCase.unsubscribe();
-        this.replyValidationUseCase.unsubscribe();
+        this.replyDiscussionUseCase.unsubscribe();
+        this.replyDiscussionSubmitUseCase.unsubscribe();
         this.uploadImageUseCase.unsubscribe();
         this.uploadVideoUseCase.unsubscribe();
-        this.createPictureUseCase.unsubscribe();
-        this.replySubmitUseCase.unsubscribe();
     }
 
 }

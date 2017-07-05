@@ -67,19 +67,13 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
 
         if (entity.getConversationLast() != null && entity.getConversationLast().size() != 0) {
             ConversationLast conversationLast = entity.getConversationLast().get(0);
-            data.setAction(conversationLast.getAction());
             data.setActionBy(conversationLast.getActionBy());
             data.setBy(mappingBy(conversationLast.getBy()));
-            data.setChatFlag(conversationLast.getChatFlag());
             data.setConversationId(conversationLast.getConversationId());
             data.setCreateTime(conversationLast.getCreateTime());
             data.setCreateTimeWib(conversationLast.getCreateTimeWib());
-            data.setIsAppeal(conversationLast.getIsAppeal());
-            data.setNotificationFlag(conversationLast.getNotificationFlag());
-            data.setProblemType(conversationLast.getProblemType());
             data.setRemark(conversationLast.getRemark());
             data.setRemarkStr(conversationLast.getRemarkStr());
-            data.setResetFlag(conversationLast.getResetFlag());
         }
         return data;
     }

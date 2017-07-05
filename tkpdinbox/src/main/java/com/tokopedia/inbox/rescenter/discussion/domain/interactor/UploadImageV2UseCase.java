@@ -42,6 +42,7 @@ public class UploadImageV2UseCase extends UseCase<UploadImageModel> {
     public static final String PARAM_IMAGE_ID = "id";
     public static final String PARAM_TOKEN = "token";
     public static final String PARAM_WEB_SERVICE = "web_service";
+    public static final String PARAM_SERVER_ID = "server_id";
 
     private final UploadImageRepository uploadImageRepository;
 
