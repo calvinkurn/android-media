@@ -142,7 +142,9 @@ dependencies {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
     compile rootProject.ext.analyticsDependencies.moengageFCM
-    compile rootProject.ext.analyticsDependencies.moengageMSG
+    compile (rootProject.ext.analyticsDependencies.moengageMSG){
+        exclude group: 'com.android.support'
+    }
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

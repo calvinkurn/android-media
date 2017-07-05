@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -37,6 +38,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
+    private static final String SEAMLESS = "seamless";
 
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -83,7 +85,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
-        WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
+        if (!url.contains(SEAMLESS))
+            WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
+        else {
+            WebViewGeneral.loadAuthUrl(url);
+        }
         WebViewGeneral.getSettings().setJavaScriptEnabled(true);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
@@ -214,7 +220,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         return false;
     }
-
 
     public interface OnFragmentInteractionListener {
 

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
@@ -144,11 +145,15 @@ public class CommonUtils {
 	}
 
 	public static void dumper (Object o) {
-		Log.i("Dumper", o.toString());
+		if(GlobalConfig.isAllowDebuggingTools()) {
+			Log.i("Dumper", o.toString());
+		}
 	}
 
 	public static void dumper (String str) {
-		Log.i("Dumper", str);
+		if(GlobalConfig.isAllowDebuggingTools()) {
+			Log.i("Dumper", str);
+		}
 	}
 
 	public static String getUniqueDeviceID(Context context) {
@@ -165,7 +170,6 @@ public class CommonUtils {
 		File pictureFile = getOutputMediaFile(context, PicName);
 		String path = "";
 		if (pictureFile == null) {
-			System.out.println("Magic null");
 			return null;
 		}
 		try {
@@ -174,12 +178,9 @@ public class CommonUtils {
 			addImageToGallery(pictureFile.getPath(), context);
 			path = pictureFile.getPath();
 			fos.close();
-			System.out.println("Magic close");
 		} catch (FileNotFoundException e) {
-			System.out.println("Magic not found");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("Magic IOE");
 			e.printStackTrace();
 		}
 		return path;

@@ -23,8 +23,8 @@
 
             <com.tokopedia.seller.product.view.widget.SpinnerTextView
                 android:id="@+id/spinner_keyword_type"
-                style="@style/LabelLayoutWithoutBorder"
-                android:padding="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
                 app:spinner_entries="@array/top_ads_keyword_type_entries"
                 app:spinner_hint="@string/top_ads_choose_keyword_type"

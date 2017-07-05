@@ -60,6 +60,10 @@
             android:name=".login.view.ReloginActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />
 
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait" />
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />

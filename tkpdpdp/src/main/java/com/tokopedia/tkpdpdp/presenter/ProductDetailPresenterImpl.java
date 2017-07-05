@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -33,6 +34,8 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -53,6 +56,7 @@ import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -267,6 +271,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
+
+        if(successResult.getShopInfo().getShopIsOfficial()==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
+        }
+
     }
 
     @Override
@@ -288,6 +297,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
+                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
                         }
 
                         @Override
@@ -514,18 +524,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         MenuItem etalase = menu.findItem(R.id.action_etalase);
         boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
+            menuShare.setVisible(true);
+            menuShare.setEnabled(true);
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
                 if (isSellerApp) {
-                    menuShare.setVisible(false);
-                    menuShare.setEnabled(false);
                     menuCart.setVisible(false);
                     menuCart.setEnabled(false);
                 } else {
-                    menuShare.setVisible(true);
-                    menuShare.setEnabled(true);
                     if (SessionHandler.isV4Login(context)) {
                         menuCart.setVisible(true);
                         menuCart.setEnabled(true);
+                        LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+                        int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                        if (CartCache > 0 && menuCart!=null) {
+                            menuCart.setIcon(R.drawable.cart_active_white);
+                        }
                     }
                 }
                 report.setVisible(true);
@@ -535,8 +548,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 etalase.setVisible(false);
                 etalase.setEnabled(false);
             } else {
-                menuShare.setVisible(false);
-                menuShare.setEnabled(false);
                 menuCart.setVisible(false);
                 menuCart.setEnabled(false);
                 report.setVisible(false);
@@ -619,18 +630,29 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
+        if(value != null) outState.putParcelable(key, value);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
+        ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
+
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
             }
+        }
+
+        if(productCampaign != null) {
+            viewListener.showProductCampaign(productCampaign);
         }
     }
 
@@ -762,6 +784,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
+                        getProductCampaign(context, data.getInfo().getProductId().toString());
                     }
 
                     @Override
@@ -841,5 +864,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (productDetailData.getShopInfo().getShopIsGold() == 1) {
             requestVideo(context, productDetailData.getInfo().getProductId().toString());
         }
+    }
+
+    public void getProductCampaign(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductCampaign(context, id,
+                new RetrofitInteractor.ProductCampaignListener() {
+                    @Override
+                    public void onSucccess(ProductCampaign productCampaign) {
+                        viewListener.showProductCampaign(productCampaign);
+                    }
+
+                    @Override
+                    public void onError(String error) { }
+                }
+        );
     }
 }

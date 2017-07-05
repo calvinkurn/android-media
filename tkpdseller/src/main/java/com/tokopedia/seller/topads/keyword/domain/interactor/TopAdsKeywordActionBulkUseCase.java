@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.domain.interactor;
 
+import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
@@ -16,7 +16,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 5/29/17.
  */
 
-public class TopAdsKeywordActionBulkUseCase extends UseCase<Boolean> {
+public class TopAdsKeywordActionBulkUseCase extends CompositeUseCase<Boolean> {
 
     private final TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository;
     private final TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain;

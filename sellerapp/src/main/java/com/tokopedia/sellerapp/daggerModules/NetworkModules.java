@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.sellerapp.utils.Constants;
@@ -57,7 +58,7 @@ public class NetworkModules {
         builder.connectTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         builder.readTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         builder.addInterceptor(new TkpdAuthInterceptor());
-        if(BuildConfig.DEBUG) {
+        if(GlobalConfig.isAllowDebuggingTools()) {
             HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
             logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logInterceptor);
@@ -88,7 +89,7 @@ public class NetworkModules {
         builder.connectTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         builder.readTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         builder.addInterceptor(new TkpdAuthInterceptor());
-        if(BuildConfig.DEBUG) {
+        if(GlobalConfig.isAllowDebuggingTools()) {
             HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
             logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logInterceptor);

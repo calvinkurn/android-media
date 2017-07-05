@@ -1,4 +1,4 @@
-package com.tokopedia.core.product.customview;
+package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
 import android.text.Spannable;

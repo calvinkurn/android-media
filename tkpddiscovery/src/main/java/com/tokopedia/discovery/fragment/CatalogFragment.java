@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -22,14 +23,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
+import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -48,6 +52,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -59,7 +64,7 @@ import butterknife.BindView;
  * Created by Erry on 6/30/2016.
  */
 public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork,
-        TopAdsItemClickListener {
+        TopAdsItemClickListener, TopAdsListener {
     public static final int IDFRAGMENT = 123_348;
     public static final String INDEX = "FRAGMENT_INDEX";
 
@@ -154,10 +159,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseCatalogAdapter.setIsErrorState(true);
-        browseCatalogAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 presenter.loadMore(getActivity());
             }
         });
@@ -207,8 +211,15 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
@@ -241,6 +252,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseCatalogAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -295,7 +307,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         browseCatalogAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -348,6 +359,16 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         } else {
             topAdsRecyclerAdapter.hideLoading();
         }
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        setLoading(false);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        setLoading(false);
     }
 
     @Override

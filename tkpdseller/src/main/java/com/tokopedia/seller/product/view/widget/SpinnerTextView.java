@@ -23,8 +23,6 @@ import com.tokopedia.seller.product.utils.ConverterUtils;
 
 public class SpinnerTextView extends BaseCustomView {
 
-    private int hintTextColor;
-
     public interface OnItemChangeListener {
 
         void onItemChanged(int position, String entry, String value);
@@ -81,8 +79,6 @@ public class SpinnerTextView extends BaseCustomView {
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
             textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
                     getResources().getDimension(R.dimen.font_medium));
-            hintTextColor = styledAttributes.getColor(R.styleable.SpinnerTextView_spinner_hint_text_color,
-                    0);
         } finally {
             styledAttributes.recycle();
         }
@@ -101,9 +97,6 @@ public class SpinnerTextView extends BaseCustomView {
             textInputLayout.setHintTextAppearance(hintTextAppearance);
         }
         textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        if (hintTextColor!= 0) {
-            textAutoComplete.setHintTextColor(hintTextColor);
-        }
         invalidate();
         requestLayout();
     }

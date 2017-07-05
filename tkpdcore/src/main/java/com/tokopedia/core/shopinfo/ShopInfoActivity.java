@@ -311,6 +311,15 @@ public class ShopInfoActivity extends BaseActivity
         unregisterReceiver(loginReceiver);
     }
 
+    @Override
+    public boolean isOfficialStore() {
+        if(shopModel != null && shopModel.info != null) {
+            return shopModel.info.shopIsOfficial == 1;
+        }
+
+        return false;
+    }
+
     private void clearVariable() {
         shopModel = null;
     }
@@ -600,6 +609,10 @@ public class ShopInfoActivity extends BaseActivity
             productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
 
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
+        }
+
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
         }
     }
 

@@ -1,13 +1,11 @@
 package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.AutoCompleteTextView;
 
 import com.tokopedia.seller.R;
 
@@ -96,7 +94,7 @@ public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextV
 
     public void setVisibleDrawableRight(boolean isVisible){
         if(isVisible){
-            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close_green_wpadding, 0);
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close_green, 0);
         }else{
             setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_arrow_down_wpadding,0);
         }

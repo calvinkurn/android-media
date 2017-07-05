@@ -5,6 +5,7 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
@@ -26,7 +27,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
 
     private TextView topBarTitle;
     private DescriptionTextView tvDesc;
-    private LinearLayout descriptionContainer;
+    private ScrollView descriptionContainer;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
 
@@ -51,7 +52,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     private void initView() {
         topBarTitle = (TextView) findViewById(R.id.simple_top_bar_title);
         tvDesc = (DescriptionTextView) findViewById(R.id.tv_description);
-        descriptionContainer = (LinearLayout) findViewById(R.id.tv_desc);
+        descriptionContainer = (ScrollView) findViewById(R.id.tv_desc);
         productVideoHorizontalScroll
                 = (ProductVideoHorizontalScroll) findViewById(R.id.product_video_horizontal_scroll);
         ImageButton closeButton = (ImageButton) findViewById(R.id.simple_top_bar_close_button);

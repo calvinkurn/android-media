@@ -124,6 +124,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
     public void setOfficialStoreBanner(BannerOfficialStoreModel model) {
         for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
@@ -370,6 +375,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
+            ((ProductFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
                 source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }

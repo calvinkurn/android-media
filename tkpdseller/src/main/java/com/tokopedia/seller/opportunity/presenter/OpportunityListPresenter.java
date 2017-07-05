@@ -1,17 +1,25 @@
 package com.tokopedia.seller.opportunity.presenter;
 
-import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
+import android.support.annotation.Nullable;
+
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
+
+import java.util.ArrayList;
 
 /**
  * Created by nisie on 3/2/17.
  */
 
 public interface OpportunityListPresenter {
-    void getOpportunity();
+    void getOpportunity(@Nullable String query,
+                        @Nullable String keySort,
+                        @Nullable String sort,
+                        @Nullable ArrayList<FilterPass> listFilter);
 
     void unsubscribeObservable();
 
-    GetOpportunityListParam getPass();
-
-    void initOpportunityForFirstTime();
+    void initOpportunityForFirstTime(@Nullable String query,
+                                     @Nullable String keySort,
+                                     @Nullable String sort,
+                                     @Nullable ArrayList<FilterPass> listFilter);
 }

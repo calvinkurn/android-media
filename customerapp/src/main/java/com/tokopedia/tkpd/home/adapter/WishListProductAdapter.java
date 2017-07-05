@@ -213,8 +213,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onProductItemClicked(Product product) {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    product.getId());
+            ProductItem data = new ProductItem();
+            data.setId(product.getId());
+            data.setName(product.getName());
+            data.setPrice(product.getPriceFormat());
+            data.setImgUri(product.getImage().getM_url());
+            Bundle bundle = new Bundle();
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
 
