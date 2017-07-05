@@ -21,6 +21,7 @@ public class ReactSingleton {
                 .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("reactscript/index.android")
                 .addPackage(new MainReactPackage())
+                .addPackage(new CoreReactPackage())
                 .setUseDeveloperSupport(true)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();

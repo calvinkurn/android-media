@@ -64,4 +64,11 @@ public class RetrofitFactory {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(baseUrl);
     }
+
+    public static Retrofit.Builder createBasicRetrofit(String baseUrl) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .baseUrl(baseUrl)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
 }
