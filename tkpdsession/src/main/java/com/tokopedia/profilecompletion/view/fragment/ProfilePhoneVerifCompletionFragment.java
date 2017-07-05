@@ -14,7 +14,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
-import com.tokopedia.profilecompletion.view.listener.ProfileListener;
+import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenter;
 import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
 import com.tokopedia.session.R;
@@ -24,7 +24,7 @@ import com.tokopedia.session.R;
  */
 
 public class ProfilePhoneVerifCompletionFragment
-        extends BasePresenterFragment<ProfilePhoneVerifCompletionPresenter> implements ProfileListener.Get {
+        extends BasePresenterFragment<ProfilePhoneVerifCompletionPresenter> implements GetProfileListener {
 
     public static ProfilePhoneVerifCompletionFragment createInstance() {
         return new ProfilePhoneVerifCompletionFragment();

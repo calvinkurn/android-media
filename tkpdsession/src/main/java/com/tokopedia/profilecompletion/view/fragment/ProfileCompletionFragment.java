@@ -24,7 +24,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
-import com.tokopedia.profilecompletion.view.listener.ProfileListener;
+import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenterImpl;
 import com.tokopedia.session.R;
@@ -34,7 +34,7 @@ import com.tokopedia.session.R;
  */
 
 public class ProfileCompletionFragment extends BasePresenterFragment<ProfileCompletionPresenter>
-                                    implements ProfileListener.Get {
+                                    implements GetProfileListener {
 
     ProgressBar progressBar;
     ViewPager viewPager;
