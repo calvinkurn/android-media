@@ -1970,6 +1970,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_developer_option">Developer Options</string>
     <string name="drawer_title_seller">Penjualan</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
+    <string name="drawer_title_product">Produk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
@@ -1978,6 +1979,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
     <string name="drawer_title_opportunity">Peluang</string>
     <string name="drawer_title_product_list">Daftar Produk</string>
+    <string name="drawer_title_draft_list">Draft Produk</string>
     <string name="drawer_title_etalase_list">Etalase Toko</string>
     <string name="drawer_title_inbox_message">Pesan</string>
     <string name="drawer_title_inbox_discussion">Diskusi Produk</string>

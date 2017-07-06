@@ -21,13 +21,17 @@ public class ProductDraftListActivity extends TkpdActivity implements HasCompone
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.DRAFT_PRODUCT);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ProductDraftListFragment.newInstance(),
                             ProductDraftListFragment.TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.DRAFT_PRODUCT;
     }
 
     @Override
