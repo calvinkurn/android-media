@@ -194,6 +194,7 @@ public interface AppEventTracking {
         String CLICK = "Click";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
+        String VOICE_SEARCH = "Voice Search";
         String VIEW = "View";
         String VIEW_RECENT = "View Recent";
         String VIEW_ALL = "Lihat Semua";
@@ -406,6 +407,7 @@ public interface AppEventTracking {
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
+        String OPPORTUNIT_LIST = "Peluang";
     }
 
     interface SOCIAL_MEDIA {
@@ -422,37 +424,53 @@ public interface AppEventTracking {
 
     interface GTM {
         String GA_ID = "GA_ID";
-        String GTM_ID = "GTM_ID";
+        String GTM_ID       = "GTM_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
-        String LUCKY_BUYER = "msg_lucky_buyer";
-        String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
-        String LUCKY_BUYER_VALID = "msg_lucky_valid";
+        String LUCKY_BUYER          = "msg_lucky_buyer";
+        String LUCKY_BUYER_DETAIL   = "msg_lucky_buyer_detail";
+        String LUCKY_BUYER_VALID    = "msg_lucky_valid";
 
-        String LUCKY_MERCHANT = "msg_lucky_merchant";
-        String LUCKY_MERCHANT_DETAIL = "msg_lucky_merchant_detail";
-        String OVERRIDE_BANNER = "is_override_url_banner";
-        String CREATE_TICKET = "is_create_ticket";
-        String REPORT = "enable_report";
-        String CONTACT_US = "disable_contactus";
-        String TICKER_SEARCH = "is_show_ticker_search";
-        String TICKER_SEARCH_TEXT = "ticker_text_search";
-        String FILTER_SORT = "sort_filter_data";
-        String EXCLUDED_URL = "excluded-url";
-        String EXCLUDED_HOST = "excluded-host";
+        String LUCKY_MERCHANT           = "msg_lucky_merchant";
+        String LUCKY_MERCHANT_DETAIL    = "msg_lucky_merchant_detail";
+        String OVERRIDE_BANNER          = "is_override_url_banner";
+        String CREATE_TICKET            = "is_create_ticket";
+        String REPORT                   = "enable_report";
+        String CONTACT_US               = "disable_contactus";
+        String TICKER_SEARCH            = "is_show_ticker_search";
+        String TICKER_SEARCH_TEXT       = "ticker_text_search";
+        String FILTER_SORT              = "sort_filter_data";
+        String EXCLUDED_URL             = "excluded-url";
+        String EXCLUDED_HOST            = "excluded-host";
 
-        String TICKER_PDP = "is_show_ticker_pdp";
-        String TICKER_PDP_TEXT = "ticker_text_pdp";
-        String TICKER_CART = "is_show_ticker_cart";
+        String TICKER_PDP       = "is_show_ticker_pdp";
+        String TICKER_PDP_TEXT  = "ticker_text_pdp";
+        String TICKER_CART      = "is_show_ticker_cart";
         String TICKER_CART_TEXT = "ticker_text_cart";
-        String TICKER_ATC = "is_show_ticker_atc";
-        String TICKER_ATC_TEXT = "ticker_text_atc";
+        String TICKER_ATC       = "is_show_ticker_atc";
+        String TICKER_ATC_TEXT  = "ticker_text_atc";
 
-        String SEARCH_RECENT = "recent_search";
-        String SEARCH_POPULAR = "popular_search";
-        String SEARCH_AUTOCOMPLETE = "autocomplete";
-        String SEARCH_HOTLIST = "hotlist";
-        String SEARCH_AUTOCOMPLETE_IN_CAT = "in_category";
+        String SEARCH_RECENT                = "recent_search";
+        String SEARCH_POPULAR               = "popular_search";
+        String SEARCH_AUTOCOMPLETE          = "autocomplete";
+        String SEARCH_HOTLIST               = "hotlist";
+        String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
+
+        String UTM_SOURCE   = "utm_source";
+        String UTM_MEDIUM   = "utm_medium";
+        String UTM_CAMPAIGN = "utm_campaign";
+        String UTM_CONTENT  = "utm_content";
+        String UTM_TERM     = "utm_term";
+        String UTM_GCLID    = "gclid";
+
+        String UTM_SOURCE_APPEND   = "&"+UTM_SOURCE+"=";
+        String UTM_MEDIUM_APPEND   = "&"+UTM_MEDIUM+"=";
+        String UTM_CAMPAIGN_APPEND = "&"+UTM_CAMPAIGN+"=";
+        String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
+        String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
+        String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
     }
 
     interface MOENGAGE {
@@ -462,9 +480,9 @@ public interface AppEventTracking {
         String PURCHASE_DATE = "purchaseDate";
         String PRICE = "price";
         String IS_GOLD_MERCHANT = "is_gold_merchant";
-        String IS_SELLER = "is_seller";
-        String SHOP_ID = "shop_id";
-        String SHOP_NAME = "shop_name";
+        String IS_SELLER        = "is_seller";
+        String SHOP_ID          = "shop_id";
+        String SHOP_NAME        = "shop_name";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";

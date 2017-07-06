@@ -15,18 +15,19 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.RechargeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
@@ -41,7 +42,6 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -49,7 +49,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,11 +73,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int RECHARGE = 9;
     private static final int APPLINK = 10;
     private static final int CATEGORY = 11;
+    private static final int PROMO = 12;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
     private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String TOKOPEDIA_HOST = "tokopedia";
+    private static final String OVERRIDE_URL = "override_url";
     private final Activity context;
     private final DeepLinkView viewListener;
     SignInInteractor interactor;
@@ -129,6 +130,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    @Override
+    public void actionGotUrlFromApplink(Uri uriData) {
+        prepareOpenWebView(uriData);
+    }
+
     public void processDeepLinkAction(Uri uriData) {
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
@@ -170,9 +176,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    if(!uriData.getPath().contains("activation")) {
+                    if (!uriData.getPath().contains("activation")) {
                         prepareOpenWebView(uriData);
-                    }else {
+                    } else {
                         context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
@@ -192,10 +198,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                    */
                 case APPLINK:
-                    if (linkSegment != null && linkSegment.size() > 0){
-                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))));
+                    if (linkSegment != null && linkSegment.size() > 0) {
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false);
                         screenName = AppScreen.SCREEN_WEBVIEW;
-                    }else {
+                    } else {
                         return;
                     }
                     break;
@@ -305,13 +311,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
-        String url = encodeUrl(uriData.toString());
-        openWebView(Uri.parse(url));
+        if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
+            openWebView(uriData, uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
+        } else {
+            openWebView(uriData, false);
+        }
     }
 
-    private void openWebView(Uri encodedUri){
-        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()));
+    private static boolean isPromo(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+    }
+
+    private void openWebView(Uri encodedUri, boolean allowingOverriding) {
+        Fragment fragment = FragmentGeneralWebView.createInstance(encodedUri.toString(), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
@@ -338,12 +350,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
         CommonUtils.dumper("wvlogin opened product");
-        Fragment fragment = ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
-                .setProductKey(linkSegment.get(1))
-                .setShopDomain(linkSegment.get(0))
-                .setProductUri(uriData.toString())
-                .build());
+        Fragment fragment = ProductDetailRouter.instanceDeeplink(
+                context,
+                ProductPass.Builder.aProductPass()
+                        .setProductKey(linkSegment.get(1))
+                        .setShopDomain(linkSegment.get(0))
+                        .setProductUri(uriData.toString())
+                        .build());
         viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
+        viewListener.hideActionBar();
     }
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {
@@ -462,6 +477,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 return OTHER;
             else if (isExcludedUrl(uriData))
                 return OTHER;
+            else if (isPromo(linkSegment))
+                return PROMO;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isHomepage(linkSegment))
@@ -519,6 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
                 && !linkSegment.get(0).equals("hot")
+                && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")
                 && !linkSegment.get(0).equals("kartu-kredit")
                 && !linkSegment.get(0).equals("reset.pl")
@@ -534,7 +552,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
+                && !isBlog(linkSegment)
                 && !linkSegment.get(0).equals("pulsa"));
+    }
+
+    private boolean isBlog(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
     }
 
     private boolean isCatalog(List<String> linkSegment) {
@@ -547,13 +570,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isBrowse(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                 linkSegment.get(0).equals("search")
+                linkSegment.get(0).equals("search")
         );
     }
 
     private boolean isCategory(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                 linkSegment.get(0).equals("p")
+                linkSegment.get(0).equals("p")
         );
     }
 

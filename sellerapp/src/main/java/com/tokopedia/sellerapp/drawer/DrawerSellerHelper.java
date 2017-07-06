@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -33,6 +32,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
@@ -84,16 +84,16 @@ public class DrawerSellerHelper extends DrawerHelper
     public ArrayList<DrawerItem> createDrawerData() {
         ArrayList<DrawerItem> data = new ArrayList<>();
 
-        data.add(new DrawerItem("Beranda",
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.SELLER_INDEX_HOME,
                 true));
         data.add(getGoldMerchantMenu());
-        data.add(new DrawerItem("Statistik",
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.title_top_ads),
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
@@ -101,26 +101,26 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getSellerMenu());
 
-        data.add(new DrawerItem("Pengaturan",
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
-        data.add(new DrawerItem("Hubungi Kami",
+        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-            data.add(new DrawerItem("Bantuan",
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
                     R.drawable.ic_help,
                     TkpdState.DrawerPosition.HELP,
                     true));
         }
-        data.add(new DrawerItem("Keluar",
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
         if (GlobalConfig.isAllowDebuggingTools()) {
-            data.add(new DrawerItem("Developer Options",
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
                     0,
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
                     true));
@@ -132,37 +132,34 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getSellerMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup("Penjualan",
+        DrawerGroup sellerMenu = new DrawerGroup(context.getString(R.string.drawer_title_seller),
                 R.drawable.icon_penjualan,
                 TkpdState.DrawerPosition.SHOP,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 getTotalSellerNotif());
-        sellerMenu.add(new DrawerItem("Order Baru",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_order),
                 TkpdState.DrawerPosition.SHOP_NEW_ORDER,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER)));
-        sellerMenu.add(new DrawerItem("Konfirmasi Pengiriman",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_confirm_shipping),
                 TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)));
-        sellerMenu.add(new DrawerItem("Status Pengiriman",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_shipping_status),
                 TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS)));
-        sellerMenu.add(new DrawerItem("Daftar Penjualan",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_list_selling),
                 TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_opportunity),
+                TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem("Daftar Produk",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_product_list),
                 TkpdState.DrawerPosition.MANAGE_PRODUCT,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-        sellerMenu.add(new DrawerItem("Etalase Toko",
-                0,
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_etalase_list),
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
 
@@ -170,33 +167,28 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getInboxMenu() {
-        DrawerGroup inboxMenu = new DrawerGroup("Kotak Masuk",
+        DrawerGroup inboxMenu = new DrawerGroup(context.getString(R.string.drawer_title_inbox),
                 R.drawable.icon_inbox,
                 TkpdState.DrawerPosition.INBOX,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 getTotalInboxNotif());
-        inboxMenu.add(new DrawerItem("Pesan",
-                0,
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_inbox_message),
                 TkpdState.DrawerPosition.INBOX_MESSAGE,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE)));
-        inboxMenu.add(new DrawerItem("Diskusi Produk",
-                0,
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_inbox_discussion),
                 TkpdState.DrawerPosition.INBOX_TALK,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK)));
-        inboxMenu.add(new DrawerItem("Ulasan",
-                0,
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_inbox_review),
                 TkpdState.DrawerPosition.INBOX_REVIEW,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW)));
-        inboxMenu.add(new DrawerItem("Layanan Pengguna",
-                0,
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_inbox_ticket),
                 TkpdState.DrawerPosition.INBOX_TICKET,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem("Pusat Resolusi",
-                0,
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
@@ -218,7 +210,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getGoldMerchantMenu() {
-        DrawerGroup gmMenu = new DrawerGroup("Gold Merchant",
+        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
                 R.drawable.ic_goldmerchant_drawer,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(IS_GM_OPENED, false),
@@ -228,7 +220,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 context.getString(R.string.upgrade_gold_merchant);
 
         gmMenu.add(new DrawerItem(gmString,
-                0,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                 drawerCache.getBoolean(IS_GM_OPENED, false),
                 0));
@@ -312,37 +303,34 @@ public class DrawerSellerHelper extends DrawerHelper
             Intent intent;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    context.startActivity(new Intent(context, SellerHomeActivity.class));
+                    context.startActivity(SellerHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-                    context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
+                    context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
-                    intent = SellerRouter.getActivitySellingTransaction(context);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("tab", 1);
-                    bundle.putString("user_id", SessionHandler.getLoginID(context));
-                    intent.putExtras(bundle);
+                    intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
                     break;
                 case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
-                    intent = SellerRouter.getActivitySellingTransaction(context);
-                    intent.putExtra("tab", 2);
+                    intent = SellerRouter.getActivitySellingTransactionConfirmShipping(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
                     break;
                 case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
-                    intent = SellerRouter.getActivitySellingTransaction(context);
-                    intent.putExtra("tab", 3);
+                    intent = SellerRouter.getActivitySellingTransactionShippingStatus(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
                     break;
                 case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
-                    intent = SellerRouter.getActivitySellingTransaction(context);
-                    intent.putExtra("tab", 4);
+                    intent = SellerRouter.getActivitySellingTransactionList(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
+                    break;
+                case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {

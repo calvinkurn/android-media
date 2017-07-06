@@ -129,6 +129,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 new com.tokopedia.digital.cart.data.entity.requestbody.otpcart.Attributes();
         attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyOtpSuccess.setAttributes(attributes);
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
@@ -442,6 +443,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setUserId(Integer.parseInt(view.getUserId()));
         attributes.setProductId(view.getProductId());
         attributes.setFields(fieldList);
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
@@ -457,6 +459,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setTransactionAmount(checkoutData.getTransactionAmount());
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

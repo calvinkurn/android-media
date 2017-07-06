@@ -297,6 +297,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_weight">Berat</string>
     <string name="title_insurance">Asuransi</string>
     <string name="title_condition">Kondisi</string>
+    <string name="title_success_rate">Transaksi Sukses</string>
     <string name="title_category">Kategori</string>
     <string name="title_etalase">Etalase</string>
     <string name="title_catalog">Katalog</string>
@@ -325,6 +326,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_promo">Promosi</string>
     <string name="title_promote">Promoted</string>
     <string name="title_sold_out">Gudangkan</string>
+    <string name="title_sold_out_action">Produk telah digudangkan</string>
+    <string name="title_move_etalase">Produk telah dipindahkan ke etalase</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
     <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
@@ -345,6 +348,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_share_product">Gagal membagikan produk</string>
     <string name="success_share_review">Sukses membagikan ulasan</string>
     <string name="error_share_review">Gagal membagikan ulasan</string>
+    <string name="download">Download</string>
     <!-- Strings related product info -->
 
 
@@ -819,10 +823,9 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_shop_detail_favorited">Yang Memfavoritkan</string>
 
     <!-- Error String -->
-    <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="error_max_address">Anda hanya dapat menambahkan sampai 3 alamat </string>
     <string name="error_min_3_character">Nama terlalu pendek, minimal 3 karakter.</string>
-    <string name="title_activity_payment_editor">Pembayaran</string>
+
     <string name="title_activity_manage_shop_address">Pengaturan Alamat Toko</string>
     <string name="title_activity_shop_address_form">Alamat Toko</string>
     <string name="title_activity_people">Profil</string>
@@ -1698,7 +1701,7 @@ di Tokopedia Sekarang!</string>
 
 
     <!--recharge related string-->
-    <string name="instant_payment">Bayar instan dengan saldo</string>
+    <string name="instant_payment">Bayar instan</string>
     <string name="title_button_pay">Bayar</string>
     <string name="topup_saldo">Isi Saldo</string>
     <!--end recharge related string-->
@@ -1929,11 +1932,18 @@ di Tokopedia Sekarang!</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
+    <string name="title_activity_snapshot">Snapshot</string>
+
+    <!-- Marketing Campaign Official Store START-->
+    <string name="title_discount_timer">Promo berakhir dalam:</string>
+    <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
+    <string name="label_discount">%1$d%%OFF</string>
+    <string name="label_price_with_idr">Rp %1$s</string>
+    <!-- Marketing Campaign Official Store END-->
 
     <!-- String related to Official Store START -->
     <string name="os_home_title_product">Produk</string>
     <string name="os_view_all_product">Lihat Semua Barang</string>
-
     <string name="title_official_store">Official Store</string>
     <!-- String related to Official Store END -->
 
@@ -1946,6 +1956,37 @@ di Tokopedia Sekarang!</string>
 
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
+    <string name="error_data_not_found">Data tidak ditemukan.</string>
+    <string name="title_opportunity_list">Peluang</string>
+    <string name="accept_replacement">Ambil Peluang</string>
+    <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
+    <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 
-    <string name="title_top_ads">TopAds</string>
+    <string name="drawer_title_home">Beranda</string>
+    <string name="drawer_title_login">Masuk</string>
+    <string name="drawer_title_register">Daftar</string>
+    <string name="drawer_title_report">Laporkan</string>
+    <string name="drawer_title_developer_option">Developer Options</string>
+    <string name="drawer_title_seller">Penjualan</string>
+    <string name="drawer_title_inbox">Kotak Masuk</string>
+    <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+    <string name="drawer_title_statistic">Statistik</string>
+    <string name="drawer_title_logout">Keluar</string>
+    <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="drawer_title_list_selling">Daftar Penjualan</string>
+    <string name="drawer_title_opportunity">Peluang</string>
+    <string name="drawer_title_product_list">Daftar Produk</string>
+    <string name="drawer_title_etalase_list">Etalase Toko</string>
+    <string name="drawer_title_inbox_message">Pesan</string>
+    <string name="drawer_title_inbox_discussion">Diskusi Produk</string>
+    <string name="drawer_title_inbox_review">Ulasan</string>
+    <string name="drawer_title_resolution_center">Pusat Resolusi</string>
+    <string name="drawer_title_inbox_ticket">Layanan Pengguna</string>
+    <string name="drawer_title_top_ads">TopAds</string>
+    <string name="drawer_title_new_order">Order Baru</string>
+    <string name="drawer_title_shipping_status">Status Pengiriman</string>
+    <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
+    <string name="drawer_title_help">Bantuan</string>
+    <string name="max_notif">999+</string>
 </resources>

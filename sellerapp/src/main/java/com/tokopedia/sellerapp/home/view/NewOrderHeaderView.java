@@ -22,11 +22,7 @@ public class NewOrderHeaderView extends FrameLayout {
 
     @OnClick(R.id.new_order_see_detail)
     public void newOrderSeeDetail(){
-        Intent intent = SellerRouter.getActivitySellingTransaction(getContext());
-        Bundle bundle = new Bundle();
-        bundle.putInt("tab", 1);
-        bundle.putString("user_id", SessionHandler.getLoginID(getContext()));
-        intent.putExtras(bundle);
+        Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getContext());
         getContext().startActivity(intent);
     }
 

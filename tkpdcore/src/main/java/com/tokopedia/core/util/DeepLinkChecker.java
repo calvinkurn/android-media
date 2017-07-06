@@ -10,10 +10,10 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.List;
@@ -32,7 +32,9 @@ public class DeepLinkChecker {
     public static final int TOPPICKS = 5;
     public static final int HOT_LIST = 6;
     public static final int CATEGORY = 7;
-    public static final int ETALASE = 8;
+    public static final int HOME = 8;
+    public static final int PROMO = 9;
+    public static final int ETALASE = 10;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -40,7 +42,11 @@ public class DeepLinkChecker {
         List<String> linkSegment = getLinkSegment(url);
         CommonUtils.dumper("DEEPLINK " + linkSegment.toString());
         try {
-            if (isBrowse(linkSegment))
+            if (isHome(url, linkSegment))
+                return HOME;
+            else if (isPromo(linkSegment))
+                return PROMO;
+            else if (isBrowse(linkSegment))
                 return BROWSE;
             else if (isHot(linkSegment))
                 return HOT;
@@ -86,12 +92,21 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isPromo(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+    }
+
+    private static boolean isHome(String url, List<String> linkSegment) {
+        return (Uri.parse(url).getHost().contains("www.tokopedia.com")
+                || Uri.parse(url).getHost().contains("m.tokopedia.com")) && linkSegment.size() == 0;
+    }
+
     private static boolean isHot(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("hot") && linkSegment.size()>1);
+        return (linkSegment.get(0).equals("hot") && linkSegment.size() > 1);
     }
 
     private static boolean isHotList(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("hot") && linkSegment.size()== 1);
+        return (linkSegment.get(0).equals("hot") && linkSegment.size() == 1);
     }
 
     private static boolean isTopPicks(List<String> linkSegment) {
@@ -221,14 +236,14 @@ public class DeepLinkChecker {
 
     public static void openProduct(String url, Context context) {
         Bundle bundle = new Bundle();
-        if (getLinkSegment(url).size()>1) {
+        if (getLinkSegment(url).size() > 1) {
             bundle.putString("shop_domain", getLinkSegment(url).get(0));
             bundle.putString("product_key", getLinkSegment(url).get(1));
         }
         bundle.putString("url", url);
-        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
         intent.putExtras(bundle);
-        intent.setData(Uri.parse(url) );
+        intent.setData(Uri.parse(url));
         context.startActivity(intent);
     }
 
@@ -239,9 +254,9 @@ public class DeepLinkChecker {
         context.startActivity(intent);
     }
 
-    public static void openHomepage(Context context) {
+    public static void openHomepage(Context context, int tab) {
         Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
-        intent.putExtra("EXTRA_INIT_FRAGMENT",4);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         context.startActivity(intent);
     }

@@ -15,10 +15,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
@@ -31,7 +29,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
@@ -42,14 +39,13 @@ import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.model.ProductModel;
 import com.tokopedia.discovery.util.PagingHandlerUtil;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
+import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -64,10 +60,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     String TAG = FragmentDiscoveryPresenterImpl.class.getSimpleName();
     DiscoveryInteractor discoveryInteractor;
     WeakReference<Context> context;
-    private List<ProductItem> currTopAdsItem;
     private BrowseProductModel browseProductModel;
-    int spanCount;
-    private int topAdsPaging = 1;
     private CacheInteractorImpl cacheInteractor;
     private RetrofitInteractorImpl retrofitInteractor;
 
@@ -85,6 +78,19 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         if (TAG == null || TAG.equals(""))
             throw new RuntimeException(getMessageTAG() + "need supply TAG !!!");
 
+    }
+
+    @Override
+    public void callNetwork(BrowseView browseView) {
+        // jika datanya kosong, maka itu dianggap first time.
+        if (view.getDataSize(ProductFragment.TAG) <= 0) {
+            this.context = new WeakReference<Context>(browseView.getContext());
+            NetworkParam.Product productParam = browseView.getProductParam();
+            if (productParam == null)
+                return;
+            discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(productParam));
+            view.setLoading(true);
+        }
     }
 
     @Override
@@ -239,6 +245,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             case ProductFragment.TAG:
                 if (!isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
+                        view.setLoading(true);
                         browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);
@@ -250,11 +257,16 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         } else if (browseProductModel != null
-                                && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
-                            view.updateTotalProduct(browseProductModel.header.getTotalData());
-                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            if (browseProductModel.header != null) {
+                                view.updateTotalProduct(browseProductModel.header.getTotalData());
+                            }
+                            if (browseProductModel.result.products.length == 0) {
+                                view.displayEmptyResult();
+                            } else {
+                                processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            }
                         }
                         sendGTMNoResult(context);
                     }
@@ -301,6 +313,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        if (browseProductModel.getCategoryData() != null) {
+            view.addCategoryHeader(browseProductModel.getCategoryData());
+        }
+
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
             view.onCallProductServiceResult(productItems, pagingHandlerModel);
             return;
@@ -331,9 +347,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             } else {
                                 item.setProductAlreadyWishlist(false);
                             }
-                        }
-                        if (browseProductModel.getCategoryData() != null) {
-                            view.addCategoryHeader(browseProductModel.getCategoryData());
                         }
                         view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }

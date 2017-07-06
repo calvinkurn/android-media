@@ -150,7 +150,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (CommonUtils.checkCollectionNotNull(videoIdList)) {
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIdList.size()));
         } else {
-            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.etalase_picker_add_etalase_add_button_dialog));
+            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_etalase_picker_add_etalase_add_button_dialog));
         }
     }
 
@@ -230,7 +230,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             return;
         }

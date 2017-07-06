@@ -12,6 +12,7 @@ import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -27,18 +28,22 @@ public class CloudProfileSource {
     private final PeopleService peopleService;
     private final ProfileMapper profileMapper;
     private final GlobalCacheManager peopleCache;
+    private final SessionHandler sessionHandler;
 
     public CloudProfileSource(Context context,
                               PeopleService peopleService,
                               ProfileMapper profileMapper,
                               GlobalCacheManager peopleCache,
-                              AnalyticsCacheHandler analyticsCacheHandler) {
+                              AnalyticsCacheHandler analyticsCacheHandler,
+                              SessionHandler sessionHandler) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
         this.analyticsCacheHandler = analyticsCacheHandler;
+        this.sessionHandler = sessionHandler;
     }
+
 
     public Observable<ProfileModel> getProfile(TKPDMapParam<String, Object> parameters) {
         return peopleService.getApi()
@@ -46,6 +51,7 @@ public class CloudProfileSource {
                 .map(profileMapper)
                 .doOnNext(setToCache());
     }
+
     private Action1<ProfileModel> setToCache() {
         return new Action1<ProfileModel>() {
             @Override
@@ -59,6 +65,10 @@ public class CloudProfileSource {
                     peopleCache.store();
 
                     analyticsCacheHandler.setUserDataCache(profileModel.getProfileData());
+
+                    if (profileModel.getProfileData().getShopInfo() != null &&
+                            profileModel.getProfileData().getShopInfo().getShopId() != null)
+                        sessionHandler.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
                 }
             }
         };

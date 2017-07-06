@@ -14,6 +14,7 @@ import com.tokopedia.core.var.TkpdCache;
  */
 public class NotificationItem {
 
+    private static final int HAS_CART = 1;
     //PURCHASE
     public int payment_conf = 0; //Konfirmasi Pembayaran
     public int payment_confirmed = 0; //Ubah Pembayaran
@@ -84,7 +85,7 @@ public class NotificationItem {
         CacheNotif.putInt("total_notif", total_notif);
         CacheNotif.putInt(TkpdCache.Key.TOTAL_CART, total_cart);
         if (total_cart > 0) {
-            CacheNotif.putInt(DrawerNotification.IS_HAS_CART, 1);
+            CacheNotif.putInt(DrawerNotification.IS_HAS_CART, HAS_CART);
         }
         CacheNotif.putLong("expiry", System.currentTimeMillis() / 1000);
 

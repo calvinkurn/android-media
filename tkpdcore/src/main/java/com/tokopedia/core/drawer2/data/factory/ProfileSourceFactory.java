@@ -8,6 +8,7 @@ import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
 import com.tokopedia.core.drawer2.data.source.LocalProfileSource;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.util.SessionHandler;
 
 /**
  * Created by nisie on 5/5/17.
@@ -22,23 +23,25 @@ public class ProfileSourceFactory {
     private final ProfileMapper profileMapper;
     private final GlobalCacheManager peopleCache;
     private final AnalyticsCacheHandler analyticsCacheHandler;
-
+    private final SessionHandler sessionHandler;
 
     public ProfileSourceFactory(Context context,
                                 PeopleService peopleService,
                                 ProfileMapper profileMapper,
                                 GlobalCacheManager peopleCache,
-                                AnalyticsCacheHandler analyticsCacheHandler) {
+                                AnalyticsCacheHandler analyticsCacheHandler,
+                                SessionHandler sessionHandler) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
         this.analyticsCacheHandler = analyticsCacheHandler;
+        this.sessionHandler = sessionHandler;
     }
 
     public CloudProfileSource createCloudPeopleSource() {
         return new CloudProfileSource(context, peopleService,
-                profileMapper, peopleCache, analyticsCacheHandler);
+                profileMapper, peopleCache, analyticsCacheHandler, sessionHandler);
     }
 
     public LocalProfileSource createLocalPeopleSource() {

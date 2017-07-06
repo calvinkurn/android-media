@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -118,5 +119,9 @@ public class GmSubscribeHomeActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, GmSubscribeHomeActivity.class);
     }
 }

@@ -33,7 +33,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
-    TkpdProgressDialog tkpdProgressDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
+    private View coordinatorLayout;
+
     private String draftId;
 
     public static Fragment createInstance(String productDraftId) {
@@ -48,6 +50,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        coordinatorLayout = view.findViewById(R.id.coordinator_layout);
         presenter.attachView(this);
         fetchInputData();
         return view;
@@ -85,7 +88,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         hideLoading();
-        displayView();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         fetchCategory(model.getProductDepartmentId());
@@ -129,21 +131,12 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onErrorLoadProduct(Throwable throwable) {
         hideLoading();
-        hideView();
-        NetworkErrorHelper.showEmptyState(getActivity(), mainView, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 fetchInputData();
             }
         });
-    }
-
-    protected void hideView(){
-        addProductView.setVisibility(View.GONE);
-    }
-
-    protected void displayView(){
-        addProductView.setVisibility(View.VISIBLE);
     }
 
 }

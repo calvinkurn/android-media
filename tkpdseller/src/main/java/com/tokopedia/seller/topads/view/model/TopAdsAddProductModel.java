@@ -14,7 +14,7 @@ public class TopAdsAddProductModel extends StateTypeBasedModel
     public TopAdsProductViewModel productDomain;
 
     private TopAdsAddProductModel() {
-        super(TYPE);
+
     }
 
     public TopAdsAddProductModel(String imageUrl, String description, String snippet) {
@@ -33,5 +33,10 @@ public class TopAdsAddProductModel extends StateTypeBasedModel
     @Override
     public TopAdsProductViewModel getTopAdsProductViewModel() {
         return productDomain;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

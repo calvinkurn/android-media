@@ -21,15 +21,16 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
+import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
+import com.tokopedia.core.product.listener.FragmentDetailParent;
+import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
@@ -46,9 +47,9 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
-        ProductDetailFragment.OnFragmentInteractionListener,
+        DetailFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener,
-        ReportProductDialogFragment.OnFragmentInteractionListener,
+        ReportFragmentListener,
         ProductInfoResultReceiver.Receiver,
         ICatalogActionFragment {
 
@@ -128,6 +129,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
 
     }
@@ -139,7 +145,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
-        startActivity(ProductInfoActivity.createInstance(this, productPass));
+        if (getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+        }
     }
 
     @Override
@@ -171,6 +179,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         fragmentTransaction.replace(R.id.main_view, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
 
     @Override
@@ -206,20 +215,23 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
                 uriData = Uri.parse(bundle.getString(APPLINK_URL));
-            }
-            presenter.checkUriLogin(uriData);
-            if (presenter.isLandingPageWebView(uriData)) {
-                CommonUtils.dumper("GAv4 Escape HADES webview");
-                presenter.processDeepLinkAction(uriData);
+                presenter.actionGotUrlFromApplink(uriData);
             } else {
-                if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                    CommonUtils.dumper("GAv4 Entering HADES");
-                    showProgressService();
-                } else {
-                    CommonUtils.dumper("GAv4 Escape HADES non webview");
+                presenter.checkUriLogin(uriData);
+                if (presenter.isLandingPageWebView(uriData)) {
+                    CommonUtils.dumper("GAv4 Escape HADES webview");
                     presenter.processDeepLinkAction(uriData);
+                } else {
+                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                        CommonUtils.dumper("GAv4 Entering HADES");
+                        showProgressService();
+                    } else {
+                        CommonUtils.dumper("GAv4 Escape HADES non webview");
+                        presenter.processDeepLinkAction(uriData);
+                    }
                 }
             }
+
         } else {
             if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
                 CommonUtils.dumper("GAv4 Entering HADES null Uri");
@@ -290,7 +302,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.main_view);
-        if (fragment != null && fragment instanceof ProductDetailFragment) {
+        if (fragment != null && fragment instanceof FragmentDetailParent) {
             switch (resultCode) {
                 case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
                     onReceiveResultSuccess(fragment, resultData, resultCode);
@@ -303,10 +315,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
-        ((ProductDetailFragment) fragment).onErrorAction(resultData, resultCode);
+        ((FragmentDetailParent) fragment).onErrorAction(resultData, resultCode);
     }
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
-        ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
+        ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
     }
 }

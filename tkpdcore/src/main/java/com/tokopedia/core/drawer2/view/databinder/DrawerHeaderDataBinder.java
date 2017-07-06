@@ -162,8 +162,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.avatar.setVisibility(View.VISIBLE);
         holder.coverImg.setVisibility(View.INVISIBLE);
 
-//        setCover(holder);
-
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
@@ -189,7 +187,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             public void onClick(View v) {
                 if (data.getDrawerTopPoints() != null
                         && data.getDrawerTopPoints().getTopPointsUrl() != null)
-                listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
+                    listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
             }
         });
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
@@ -260,10 +258,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private void setTopPoints(ViewHolder holder) {
-        if (data.getDrawerTopPoints().getTopPoints().equals("")) {
+        if (!data.getDrawerTopPoints().isActive()) {
+            holder.topPointsLayout.setVisibility(View.GONE);
+        } else if (data.getDrawerTopPoints().getTopPoints().equals("")) {
+            holder.topPointsLayout.setVisibility(View.VISIBLE);
             holder.loadingLoyalty.setVisibility(View.VISIBLE);
             holder.topPoint.setVisibility(View.GONE);
         } else {
+            holder.topPointsLayout.setVisibility(View.VISIBLE);
             holder.loadingLoyalty.setVisibility(View.GONE);
             holder.topPoint.setVisibility(View.VISIBLE);
             holder.topPoint.setText(data.getDrawerTopPoints().getTopPoints());
@@ -298,6 +300,5 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     public int getItemCount() {
         return 1;
     }
-
 
 }

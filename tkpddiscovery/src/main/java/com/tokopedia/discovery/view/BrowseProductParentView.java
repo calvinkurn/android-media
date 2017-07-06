@@ -5,8 +5,8 @@ import android.support.v4.util.ArrayMap;
 import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -43,6 +43,8 @@ public interface BrowseProductParentView extends BaseView {
     BrowseProductModel getDataForBrowseProduct();
 
     NetworkParam.Product getProductParam();
+
+    void setDefaultGridTypeFromNetwork(Integer viewType);
 
     void setOfficialStoreBanner(BannerOfficialStoreModel model);
 }

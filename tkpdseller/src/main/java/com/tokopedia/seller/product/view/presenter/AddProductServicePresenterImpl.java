@@ -64,7 +64,9 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
             }
 
-            checkViewAttached();
+            if (!isViewAttached()) {
+                return;
+            }
             getView().onFailedAddProduct();
             getView().notificationFailed(e, productDraftId, productStatus);
             getView().sendFailedBroadcast(e);

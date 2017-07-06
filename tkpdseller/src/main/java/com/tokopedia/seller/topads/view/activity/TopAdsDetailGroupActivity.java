@@ -1,9 +1,9 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -41,11 +41,11 @@ public class TopAdsDetailGroupActivity extends TActivity
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
 
-        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if(fragment == null){
             fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, fragment, TAG)
                 .commit();
     }
@@ -66,7 +66,7 @@ public class TopAdsDetailGroupActivity extends TActivity
         }
 
         final TopAdsDetailGroupFragment topAdsDetailGroupFragment =
-                (TopAdsDetailGroupFragment) getFragmentManager().findFragmentByTag(TopAdsDetailGroupFragment.class.getSimpleName());
+                (TopAdsDetailGroupFragment) getSupportFragmentManager().findFragmentByTag(TopAdsDetailGroupFragment.class.getSimpleName());
 
         if (topAdsDetailGroupFragment == null) {
             return;

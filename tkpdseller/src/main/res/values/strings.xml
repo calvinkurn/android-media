@@ -57,6 +57,7 @@
     <string name="title_top_ads_manage_promo_product">Atur Grup</string>
     <string name="title_top_ads_add_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
+    <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -66,6 +67,7 @@
     <string name="label_top_ads_cost">Terpakai</string>
     <string name="label_top_ads_groups">Grup</string>
     <string name="label_top_ads_items">Produk</string>
+    <string name="label_top_ads_keyword">Kata Kunci</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>
@@ -228,6 +230,8 @@
     <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
 
 
+    <string name="exit">Keluar</string>
+    <string name="cancel">Batal</string>
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
@@ -267,6 +271,7 @@
     <string name="top_ads_detail_edit_default_currency_value">0</string>
     <string name="top_ads_detail_edit_default_max_price_currency_value">50</string>
     <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
+    <string name="top_ads_per_click_detail">%1s Per Klik</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
@@ -287,6 +292,11 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+
+    <!-- Top Ads Keyword -->
+    <string name="top_ads_title_keyword_add_keyword">Tambah Kata Kunci</string>
+    <string name="top_ads_keyword_total_keyword_in_group">Kata kunci dalam grup (%1s)</string>
 
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
@@ -323,12 +333,12 @@
     <!-- TOP ADS GROUP LIST -->
     <string name="topads_showcase_group_list_title_1">Pencarian</string>
     <string name="topads_showcase_group_list_desc_1">Memudahkan Anda dalam mencari nama grup.</string>
-    <string name="topads_showcase_group_list_title_2">Atur periode</string>
-    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_group_list_title_3">Daftar Grup Promo</string>
-    <string name="topads_showcase_group_list_desc_3">Informasi singkat promo yang telah Anda buat.</string>
-    <string name="topads_showcase_group_list_title_4">Filter</string>
-    <string name="topads_showcase_group_list_desc_4">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_group_list_title_2">Filter</string>
+    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_group_list_title_3">Atur periode</string>
+    <string name="topads_showcase_group_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_group_list_title_4">Daftar Grup Promo</string>
+    <string name="topads_showcase_group_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
 
     <!-- TOP ADS GROUP DETAIL -->
     <string name="topads_showcase_detail_group_title_1">Pengaturan</string>
@@ -339,14 +349,14 @@
     <string name="topads_showcase_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup promo.</string>
 
     <!-- TOP ADS PRODUCT LIST -->
-    <string name="topads_showcase_product_list_title_2">Atur Periode</string>
-    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
     <string name="topads_showcase_product_list_title_1">Pencarian</string>
     <string name="topads_showcase_product_list_desc_1">Memudahkan Anda dalam mencari nama produk.</string>
-    <string name="topads_showcase_product_list_title_3">Daftar Promo</string>
-    <string name="topads_showcase_product_list_desc_3">Informasi singkat promo yang telah Anda buat.</string>
-    <string name="topads_showcase_product_list_title_4">Filter</string>
-    <string name="topads_showcase_product_list_desc_4">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_product_list_title_2">Filter</string>
+    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_product_list_title_3">Atur Periode</string>
+    <string name="topads_showcase_product_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_product_list_title_4">Daftar Promo</string>
+    <string name="topads_showcase_product_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
 
     <!-- TOP ADS PRODUCT DETAIL -->
     <string name="topads_showcase_detail_promo_title_1">Pengaturan</string>
@@ -387,17 +397,17 @@
     <string name="product_default_counter_minimum_order_text">1</string>
     <string name="product_label_preorder">Preorder</string>
     <string name="product_label_share">Bagikan</string>
-    <string name="title_activity_etalase_picker">Pilih Etalase</string>
-    <string name="upload_product_image">Upload Gambar Produk</string>
+    <string name="product_title_activity_etalase_picker">Pilih Etalase</string>
+    <string name="product_upload_product_image">Upload Gambar Produk</string>
 
-    <string name="etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
-    <string name="etalase_picker_add_etalase_add_button_dialog">Tambah</string>
-    <string name="etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
-    <string name="etalase_picker_add_etalase_name_hint">Nama Etalase</string>
-    <string name="etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
+    <string name="product_etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
+    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
+    <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
+    <string name="product_etalase_picker_add_etalase_name_hint">Nama Etalase</string>
+    <string name="product_etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
 
     <!-- product score -->
-    <string name="title_activity_product_score">Skor Produk</string>
+    <string name="product_title_activity_product_score">Skor Produk</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
     <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
     <string name="product_score_label_minus">Kurang</string>
@@ -429,6 +439,15 @@
     <string-array name="product_stock_status_entries">
         <item>Stock Tersedia</item>
         <item>Stock Kosong</item>
+    </string-array>
+
+    <string-array name="top_ads_keyword_type_entries">
+        <item>@string/top_ads_keyword_phrase_match</item>
+        <item>@string/top_ads_keyword_exact_match</item>
+    </string-array>
+    <string-array name="top_ads_keyword_type_values">
+        <item>1</item>
+        <item>2</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
@@ -473,6 +492,9 @@
         <item>@string/product_pre_order_value_week</item>
     </string-array>
 
+    <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
+    <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
+
     <string name="product_free_return_values_active">3</string>
     <string name="product_free_return_values_inactive">0</string>
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>
@@ -500,42 +522,130 @@
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="title_product_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
+    <string name="product_title_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
     <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus saat harga diubah.</string>
-    <string name="video_delete_confirmation">Anda akan menghapus Video ini, lanjutkan?</string>
-    <string name="title_video_delete_confirmation">Hapus Video</string>
+    <string name="product_confirmation_delete_video">Anda akan menghapus Video ini, lanjutkan?</string>
+    <string name="product_title_confirmation_delete_video">Hapus Video</string>
 
-    <string name="add_image">Tambah Gambar</string>
+    <string name="product_add_image">Tambah Gambar</string>
 
-    <string name="video_not_found">Video tidak ditemukan</string>
-    <string name="invalid_video_url">URL video tidak benar</string>
-    <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
-    <string name="video_same_warn">Anda sudah menambahkan video ini</string>
-    <string name="add_url_video">Tambah URL Video</string>
-    <string name="url_video">URL Video</string>
-    <string name="error_no_video_url_name">Url Video harus diisi</string>
-    <string name="youtube_add_url_title">Tambah URL Video</string>
+    <string name="product_video_not_found">Video tidak ditemukan</string>
+    <string name="product_invalid_video_url">URL video tidak benar</string>
+    <string name="product_video_adult_warn">Video ini mengandung unsur konten dewasa</string>
+    <string name="product_video_same_warn">Anda sudah menambahkan video ini</string>
+    <string name="product_add_url_video">Tambah URL Video</string>
+    <string name="product_url_video">URL Video</string>
+    <string name="product_error_no_video_url_name">Url Video harus diisi</string>
+    <string name="product_youtube_add_url_title">Tambah URL Video</string>
     <string name="product_label_video">Video Produk</string>
     <string name="product_video_count">%1d Video</string>
-    <string name="title_notification_upload_product">Mengunggah</string>
-    <string name="group_notification">com.tokopedia</string>
-    <string name="notification_start_upload_product">Mulai mengunggah produk</string>
-    <string name="notification_progress_upload_product">Sedang mengunggah produk</string>
-    <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
+    <string name="product_title_notification_upload_product">Mengunggah</string>
+    <string name="product_group_notification">com.tokopedia</string>
+    <string name="product_notification_start_upload_product">Mulai mengunggah produk</string>
+    <string name="product_notification_progress_upload_product">Sedang mengunggah produk</string>
+    <string name="product_notification_complete_upload_product">Sukses Mengunggah Produk</string>
     <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
-    <string name="add_whole_sale_title">Tambah Harga Grosir</string>
-    <string name="price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
-    <string name="price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
-    <string name="quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
-    <string name="wholesale_range_format">%1$s - %2$s buah</string>
-    <string name="from_to_video">%1$d dari %2$d Video</string>
-    <string name="add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
-    <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
-    <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
-    <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
+    <string name="product_add_whole_sale_title">Tambah Harga Grosir</string>
+    <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
+    <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
+    <string name="product_quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
+    <string name="product_wholesale_range_format">%1$s - %2$s buah</string>
+    <string name="product_from_to_video">%1$d dari %2$d Video</string>
+    <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
+    <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
+    <string name="product_prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
+    <string name="product_prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
-    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
+    <string name="product_could_not_add_videos">tidak dapat menambahkan video</string>
     <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
-    <string name="etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
+    <string name="product_etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
+
+    <string name="top_ads_keyword_add">Tambah</string>
+    <string name="top_ads_keyword_save">Simpan</string>
+    <string name="top_ads_keywords_total_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
+    <string name="top_ads_keywords_total_current_and_max_summary">Total Kata Kunci ditambahkan (%1$d/%2$d)</string>
+    <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
+    <string name="top_ads_keywords_groups_format">Grup: %1$s</string>
+    <string name="top_ads_keywords_groups_format_without">Grup %1$s</string>
+    <string name="top_ads_keyword_must_be_filled">Kata kunci harus diisi.</string>
+    <string name="top_ads_keyword_must_only_letter_or_digit">Kata kunci hanya boleh huruf dan angka.</string>
+    <string name="top_ads_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
+    <string name="top_ads_keyword_has_existed">Kata Kunci telah ada.</string>
+    <string name="top_ads_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
+    <string name="top_ads_keyword_title">Kata Kunci</string>
+    <string name="top_ads_keyword_title_negative">Negatif</string>
+    <string name="top_ads_keyword_search_group">Cari Grup</string>
+    <string name="top_ads_keyword_title_add">Tambah Kata Kunci</string>
+    <string name="top_ads_keyword_broad_match">Broad Match</string>
+    <string name="top_ads_keyword_phrase_match">Phrase Match</string>
+    <string name="top_ads_keyword_exact_match">Exact Match</string>
+    <string name="top_ads_keyword_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
+    <string name="top_ads_keyword_phrase_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci.</string>
+    <string name="top_ads_keyword_exact_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
+    <string name="top_ads_keyword_phrase_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif.</string>
+    <string name="top_ads_keyword_exact_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
+    <string name="top_ads_keyword_type_hint">Kata Kunci</string>
+    <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
+
+    <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
+    <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
+    <string name="top_ads_keyword_confirmation_delete">Apakah anda yakin untuk menghapus kata kunci ini?</string>
+
+    <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
+    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
+    <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
+    <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
+                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]>, <![CDATA[<i><b>Trend</b></i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_exact_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
+                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
+    <string name="top_ads_keyword__all_group">Semua Grup</string>
+    <string name="top_ads_keyword_delete">Hapus</string>
+    <string name="top_ads_label_currency_rupiah_editext">Rp \u0020</string>
+    <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran promo Anda.</string>
+
+    <!-- tooltip statistic topads -->
+    <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
+    <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
+    <string name="title_top_ads_keyword">Kata Kunci</string>
+    <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
+    <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
+    <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
+    <string name="top_ads_keyword_please_use">Gunakan Kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai</string>
+    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
+    <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
+    <string name="top_ads_keyword_group_title">Grup</string>
+
+    <!-- SHOP SETTING-->
+    <string name="title_activity_payment_editor">Pembayaran</string>
+    <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
+    <string name="label_manage_your_shop">Kelola Toko Anda</string>
+
+    <!-- OPPORTUNITY -->
+    <string name="same_day">Same Day</string>
+    <string name="next_day">Next Day</string>
+    <string name="reguler">Reguler</string>
+    <string name="supported_courier">Dukungan Pengiriman</string>
+    <string name="deadline">Jatuh Tempo</string>
+    <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
+    <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
+    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
+    <string name="action_agree">Setuju</string>
+    <string name="action_back">Kembali</string>
+    <string name="title_opportunity_detail">Peluang Baru</string>
+    <string name="cashback">Cashback :</string>
+    <string name="respond_deadline">Batas Respon :</string>
+    <string name="destination_city">Kota Tujuan :</string>
+    <string name="shipping">Pengiriman :</string>
+    <string name="title_quantity">Jumlah :</string>
+    <string name="item">barang</string>
+    <string name="title_supported_shipping">Dukungan Pengiriman</string>
+    <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
+    <string name="action_sort">Urutkan</string>
+    <string name="take_opportunity">Ambil Peluang</string>
+    <string name="delete_opportunity">Hapus Peluang</string>
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
 
 </resources>

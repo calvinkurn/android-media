@@ -152,7 +152,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (presenter == null) {
+        if (presenter == null && getActivity()!= null) {
             initialPresenter();
         }
         if (isVisibleToUser && getActivity() != null)

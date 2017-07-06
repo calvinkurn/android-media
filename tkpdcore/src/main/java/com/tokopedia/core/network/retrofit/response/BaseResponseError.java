@@ -4,7 +4,6 @@ import java.io.IOException;
 
 /**
  * Created by Hendry on 3/1/2017.
- * see TkpdResponseError for example.
  */
 
 public abstract class BaseResponseError {

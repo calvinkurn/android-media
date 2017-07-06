@@ -11,11 +11,15 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.digital.applink.DigitalApplinkModule;
+import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
+import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
@@ -24,7 +28,9 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
-        TransactionApplinkModule.class
+        TransactionApplinkModule.class,
+        DigitalApplinkModule.class,
+        PdpApplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -34,7 +40,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader()
+                new TransactionApplinkModuleLoader(),
+                new DigitalApplinkModuleLoader(),
+                new PdpApplinkModuleLoader()
         );
     }
 

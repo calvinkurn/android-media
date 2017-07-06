@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.home.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,7 +43,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.EtalaseShopEditor;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -227,6 +228,10 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private DrawerHelper drawerHelper;
     private Toolbar toolbar;
 
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, SellerHomeActivity.class);
+    }
+
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
         startActivity(InboxRouter.getInboxTalkActivityIntent(this));
@@ -244,11 +249,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @OnClick(R.id.seller_home_container)
     public void newOrderSeeMore() {
-        Intent intent = SellerRouter.getActivitySellingTransaction(this);
-        Bundle bundle = new Bundle();
-        bundle.putInt("tab", 1);
-        bundle.putString("user_id", SessionHandler.getLoginID(this));
-        intent.putExtras(bundle);
+        Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(this);
         startActivity(intent);
     }
 
@@ -1043,7 +1044,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @Override
     public void onGetDeposit(DrawerDeposit drawerDeposit) {
         if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
-            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerDeposit(drawerDeposit);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -1062,7 +1064,9 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 notifRed.setVisibility(View.GONE);
             } else {
                 notifRed.setVisibility(View.VISIBLE);
-                String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                String totalNotif = notification.getTotalNotif() > 999 ?
+                        getString(R.string.max_notif) :
+                        String.valueOf(notification.getTotalNotif());
                 notifRed.setText(totalNotif);
             }
         }

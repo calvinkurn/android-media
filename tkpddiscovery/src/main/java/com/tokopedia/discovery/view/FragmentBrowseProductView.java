@@ -4,8 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
@@ -51,6 +50,7 @@ public interface FragmentBrowseProductView extends BaseView {
     void closeView();
     void showWishListRetry(String errorMessage);
     void updateTotalProduct(Long totalProduct);
-    void displayTopAds();
+    void displayEmptyResult();
+    void setLoading(boolean isLoading);
 
 }

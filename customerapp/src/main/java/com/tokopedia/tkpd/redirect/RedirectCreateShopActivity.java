@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.redirect;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,9 +31,14 @@ public class RedirectCreateShopActivity extends TActivity {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(MARKET_URL + TOP_SELLER_APPLICATION_PACKAGE)));
                         UnifyTracking.eventDownloadFromSwitcher();
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL + TOP_SELLER_APPLICATION_PACKAGE)));
                     }
                 });
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, RedirectCreateShopActivity.class);
     }
 }

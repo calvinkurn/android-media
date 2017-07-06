@@ -59,7 +59,7 @@ public class DrawerInjector {
                                                LocalCacheHandler drawerCache) {
 
         return ((TkpdCoreRouter) activity.getApplication()).getDrawer(activity,
-                sessionHandler, drawerCache);
+                sessionHandler, drawerCache, new GlobalCacheManager());
     }
 
     public static DrawerDataManager getDrawerDataManager(Context context,
@@ -74,7 +74,8 @@ public class DrawerInjector {
                 new PeopleService(),
                 new ProfileMapper(),
                 profileCache,
-                new AnalyticsCacheHandler()
+                new AnalyticsCacheHandler(),
+                sessionHandler
         );
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);

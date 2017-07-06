@@ -19,7 +19,6 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
     }
 
-
     @Override
     public void getIntermediaryCategory(String categoryId) {
         getIntermediaryCategoryUseCase.setCategoryId(categoryId);
@@ -47,18 +46,29 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
-            if (isViewAttached() && domainModel.isIntermediary()) {
-                getView().renderTopAds();
-                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
-                getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
-                if (domainModel.getHotListModelList().size()>0) {
-                    getView().renderHotList(domainModel.getHotListModelList());
+            if (isViewAttached()) {
+                if (domainModel.isIntermediary()) {
+                    getView().renderTopAds();
+                    getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
+                    getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
+                    if (domainModel.getHotListModelList().size() > 0) {
+                        getView().renderHotList(domainModel.getHotListModelList());
+                    }
+                    getView().renderHeader(domainModel.getHeaderModel());
+                    getView().updateDepartementId(domainModel.getDepartementId());
+                    if (domainModel.getBannerModelList().size() > 0) {
+                        getView().renderBanner(domainModel.getBannerModelList());
+                    }
+                    if (domainModel.getVideoModel() != null && domainModel.getVideoModel().getVideoUrl() != null) {
+                        getView().renderVideo(domainModel.getVideoModel());
+                    }
+                    if (domainModel.getBrandModelList() != null && domainModel.getBrandModelList().size() > 0) {
+                        getView().renderBrands(domainModel.getBrandModelList());
+                    }
+                    getView().backToTop();
+                } else {
+                    getView().skipIntermediaryPage();
                 }
-                getView().renderHeader(domainModel.getHeaderModel());
-                getView().updateDepartementId(domainModel.getDepartementId());
-                getView().backToTop();
-            } else {
-                getView().skipIntermediaryPage();
             }
         }
 

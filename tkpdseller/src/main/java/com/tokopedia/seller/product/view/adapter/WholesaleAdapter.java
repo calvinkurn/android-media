@@ -228,7 +228,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             quantityNumberFormat.setMinimumIntegerDigits(0);
             String qtyOne = quantityNumberFormat.format(wholesaleModel.getQtyOne());
             String qtyTwo = quantityNumberFormat.format(wholesaleModel.getQtyTwo());
-            textRangeWholesale.setText(itemView.getContext().getString(R.string.wholesale_range_format,
+            textRangeWholesale.setText(itemView.getContext().getString(R.string.product_wholesale_range_format,
                     qtyOne, qtyTwo));
             String qtyPrice = wholesaleModel.getQtyPrice() + "";
             textWholeSalePrice.setText(formatValue(qtyPrice));

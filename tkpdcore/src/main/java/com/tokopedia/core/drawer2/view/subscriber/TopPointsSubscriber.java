@@ -48,6 +48,7 @@ public class TopPointsSubscriber extends Subscriber<TopPointsModel> {
 
     private DrawerTopPoints convertToViewModel(TopPointsData topPointsData) {
         DrawerTopPoints drawerTopPoints = new DrawerTopPoints();
+        drawerTopPoints.setActive(topPointsData.isActive());
         drawerTopPoints.setTopPoints(topPointsData.getLoyaltyPoint().getAmount());
         drawerTopPoints.setTopPointsUrl(topPointsData.getUri());
         return drawerTopPoints;

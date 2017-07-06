@@ -26,7 +26,6 @@ import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -38,6 +37,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -47,7 +47,6 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -214,8 +213,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onProductItemClicked(Product product) {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    product.getId());
+            ProductItem data = new ProductItem();
+            data.setId(product.getId());
+            data.setName(product.getName());
+            data.setPrice(product.getPriceFormat());
+            data.setImgUri(product.getImage().getM_url());
+            Bundle bundle = new Bundle();
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
 

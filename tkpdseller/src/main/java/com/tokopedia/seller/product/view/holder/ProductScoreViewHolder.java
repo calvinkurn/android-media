@@ -64,7 +64,7 @@ public class ProductScoreViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
 
     }
 }
