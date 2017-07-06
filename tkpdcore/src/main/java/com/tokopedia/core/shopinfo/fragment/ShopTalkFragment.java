@@ -281,9 +281,9 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     public void onGetShopTalk(ShopTalkResult result) {
         adapter.addList(result.getList());
         if (adapter.getList().isEmpty())
-            adapter.showEmpty(true);
+            adapter.showEmptyFull(true);
         else
-            adapter.showEmpty(false);
+            adapter.showEmptyFull(false);
 
     }
 
