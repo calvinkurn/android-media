@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/gm_statistic_transaction_graph_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/gm_statistic_transaction_graph_container_inner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.tokopedia.seller.lib.williamchart.view.LineChartView
+                android:id="@+id/gm_statistic_transaction_income_graph"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

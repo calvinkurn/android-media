@@ -41,7 +41,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -75,9 +74,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
@@ -267,6 +268,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // force to move to new statistic
+        startActivity(new Intent(this, GMStatisticTransactionActivity.class));
+        finish();
+        // force to move to new statistic
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

@@ -122,6 +122,16 @@ public class GrossGraphChartConfig {
 
         LineSet dataset = new LineSet(mLabels, mValues);
 
+        float[] tryThis = new float[mValues.length];
+        int i = 0;
+        for (float mValue : mValues) {
+            tryThis[i] = mValue - 25;
+            i++;
+        }
+
+        LineSet dataset2 = new LineSet(mLabels, tryThis);
+
+
         float mLineThickness = 3;
         dataset.setSmooth(LineSet.SMOOTH_QUAD)
                 .setThickness(Tools.fromDpToPx(mLineThickness))
@@ -130,6 +140,7 @@ public class GrossGraphChartConfig {
         float mPointsSize = 4;
         dataset.setDotsRadius(Tools.fromDpToPx(mPointsSize)).setDotsColor(mPointColorId);
         chart.addData(dataset);
+        chart.addData(dataset2);
 
         return chart;
     }

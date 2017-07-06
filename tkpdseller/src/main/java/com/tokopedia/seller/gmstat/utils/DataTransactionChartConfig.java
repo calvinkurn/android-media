@@ -26,6 +26,8 @@ import java.text.DecimalFormat;
 /**
  * Created by normansyahputa on 12/17/16.
  * rename class to DataTransactionChartConfig because it belongs to DataTransaction only.
+ *
+ * mistakes
  */
 public class DataTransactionChartConfig {
     private static final int GREEN_COLOR = Color.rgb(66, 181, 73);
