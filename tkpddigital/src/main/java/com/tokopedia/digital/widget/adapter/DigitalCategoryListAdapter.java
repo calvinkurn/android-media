@@ -59,11 +59,11 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_CATEGORY_ITEM) {
             return new DigitalCategoryItem(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(R.layout.item_product_digital, parent, false
+                    hostFragment.getActivity()).inflate(viewType, parent, false
             ));
         } else if (viewType == TYPE_HOLDER_CATEGORY_ITEM_EMPTY) {
             return new DigitalCategoryItemEmpty(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(R.layout.item_product_digital, parent, false
+                    hostFragment.getActivity()).inflate(viewType, parent, false
             ));
         } else {
             return null;
