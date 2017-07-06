@@ -91,6 +91,9 @@ public interface FeedPlus{
         void onShowEmpty();
 
         void clearData();
+
+        void unsetEndlessScroll();
+
     }
 
     public interface Presenter extends CustomerPresenter<View>{

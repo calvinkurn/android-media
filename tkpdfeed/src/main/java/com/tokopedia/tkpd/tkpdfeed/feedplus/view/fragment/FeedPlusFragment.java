@@ -373,6 +373,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void unsetEndlessScroll() {
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+    }
+
+    @Override
     public void finishLoading() {
         swipeToRefresh.setRefreshing(false);
     }
