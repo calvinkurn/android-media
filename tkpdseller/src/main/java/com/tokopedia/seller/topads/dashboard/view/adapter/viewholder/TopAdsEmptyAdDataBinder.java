@@ -58,7 +58,7 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_list, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_list, parent, false);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {

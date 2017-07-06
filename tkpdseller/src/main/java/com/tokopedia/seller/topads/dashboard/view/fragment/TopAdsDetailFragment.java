@@ -37,7 +37,9 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BaseDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends
+        BaseDatePickerFragment<T> implements TopAdsDetailViewListener,
+        CompoundButton.OnCheckedChangeListener {
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
