@@ -22,7 +22,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
@@ -197,9 +196,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     }
 
     private void setSourceAsCurrentLocation() {
-        if (mCurrentLocation == null) return;
-
         if (getView() == null) return;
+
+        if (mCurrentLocation == null) {
+            return;
+        }
 
         mSourceIsCurrentLocation = true;
 
@@ -387,6 +388,13 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     @Override
     public void actionMyLocation() {
         if (!getView().isAlreadySelectDestination()) {
+
+            //if current location is null, ask permission to enable location
+            if (mCurrentLocation == null) {
+                checkLocationSettings();
+                return;
+            }
+
             setSourceAsCurrentLocation();
         } else {
             if (mCurrentLocation != null) {

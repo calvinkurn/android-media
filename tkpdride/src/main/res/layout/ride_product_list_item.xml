@@ -107,7 +107,7 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/ten_dp"
+        android:layout_marginLeft="@dimen/fifteen_dp"
         android:layout_toRightOf="@id/tv_cab_name"
         android:gravity="left"
         android:text="2 min"

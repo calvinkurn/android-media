@@ -16,6 +16,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +125,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 if (isViewAttached()) {
                     getView().hideProductList();
                     getView().hideProgress();
-                    getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    }
+
+                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                 }
 
             }
@@ -242,7 +249,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         if (isViewAttached()) {
                             getView().hideProgress();
                             getView().hideProductList();
-                            getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+
+                            String message = e.getMessage();
+                            if (e instanceof UnknownHostException) {
+                                message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                            }
+
+                            getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                         }
                     }
 
@@ -293,7 +306,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 } else {
                     //show error message
                     getView().hideProductList();
-                    getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    }
+
+                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                 }
             }
 

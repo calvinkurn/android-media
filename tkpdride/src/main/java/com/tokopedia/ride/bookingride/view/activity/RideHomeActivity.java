@@ -428,6 +428,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                         destionation = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_DESTINATION);
                     }
                     initFragmentWithPlace(source, destionation);
+
+                    //collapse bottom sliding panel
+                    if (mSlidingUpPanelLayout != null) {
+                        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                    
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
                     //message on confirm booking fragment

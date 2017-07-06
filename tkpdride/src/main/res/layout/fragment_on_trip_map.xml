@@ -79,7 +79,7 @@
         android:paddingLeft="@dimen/fifteen_dp"
         android:paddingRight="@dimen/fifteen_dp"
         android:paddingTop="@dimen/fifteen_dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/materialLoader"

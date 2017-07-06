@@ -6,7 +6,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -14,7 +13,6 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
@@ -93,23 +91,20 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
 
     @Override
     public void onBackPressed() {
-        actionBackToBookingScreen();
+        actionBackToAppHomeScreen();
     }
 
-    private void actionBackToBookingScreen() {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
+    private void actionBackToAppHomeScreen() {
         Intent homeIntent = HomeRouter.getHomeActivity(getApplicationContext());
         homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                 HomeRouter.INIT_STATE_FRAGMENT_HOME);
-        Intent destination = new Intent(this, RideHomeActivity.class);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
-        taskStackBuilder.startActivities();
-        finish();
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);
     }
 
     @Override
     public void actionSuccessRatingSubmited() {
-        actionBackToBookingScreen();
+        actionBackToAppHomeScreen();
     }
 }

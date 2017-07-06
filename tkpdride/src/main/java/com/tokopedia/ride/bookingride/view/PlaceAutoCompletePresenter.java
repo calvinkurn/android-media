@@ -349,6 +349,18 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     @Override
+    public boolean isLocationPermissionGranted() {
+        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+                && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public void actionQueryPlacesByKeyword(final String keyword) {
 //        if (isLoadingPlaces) return;
 //        isLoadingPlaces = true;

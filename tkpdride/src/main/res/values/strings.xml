@@ -138,4 +138,5 @@
     <string name="uber_product_header_fare">Fare</string>
     <string name="ontrip_cancellation_fee">Cancellation Fee:</string>
     <string name="invalid_current_location">Current location is not available</string>
+    <string name="error_internet_not_connected">Unable to connect to network</string>
 </resources>

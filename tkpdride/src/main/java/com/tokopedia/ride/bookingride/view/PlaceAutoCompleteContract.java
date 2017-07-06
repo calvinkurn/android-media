@@ -84,6 +84,8 @@ public interface PlaceAutoCompleteContract {
 
         void actionGetUserAddresses(boolean isLoadMore);
 
+        boolean isLocationPermissionGranted();
+
         void actionQueryPlacesByKeyword(String keyword);
 
         void actionAutoDetectLocation();

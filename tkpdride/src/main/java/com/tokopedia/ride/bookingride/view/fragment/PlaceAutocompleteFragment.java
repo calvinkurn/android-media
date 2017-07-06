@@ -123,7 +123,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mPresenter.initialize();
 
         mAutoDetectLocationRelativeLayout.setVisibility(showAutodetectLocation ? View.VISIBLE : View.GONE);
-        mSelectLocationOnMapRelativeLayout.setVisibility(showSelectLocationOnMap ? View.VISIBLE : View.GONE);
+        mSelectLocationOnMapRelativeLayout.setVisibility(mPresenter.isLocationPermissionGranted() && showSelectLocationOnMap ? View.VISIBLE : View.GONE);
 
         mAutocompleteEditText.addTextChangedListener(new TextWatcher() {
             @Override

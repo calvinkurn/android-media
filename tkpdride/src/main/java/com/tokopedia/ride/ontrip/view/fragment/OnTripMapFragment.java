@@ -332,7 +332,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void showLoadingWaitingResponse() {
         processingLayout.setVisibility(View.VISIBLE);
-        loaderLayout.setVisibility(View.VISIBLE);
+        //loaderLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
