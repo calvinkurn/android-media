@@ -7,15 +7,11 @@ import com.tokopedia.inbox.rescenter.discussion.data.pojo.replyvalidation.Conver
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.replyvalidation.ReplyDiscussionValidationEntity;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.replyvalidation.ReplyDiscussionValidationImageEntity;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ByData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyDiscussionDomainData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
-
-import org.json.JSONException;
 
 import retrofit2.Response;
 import rx.functions.Func1;
-
-import static android.R.attr.data;
 
 /**
  * Created by nisie on 4/3/17.
@@ -56,14 +52,14 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
         return domainData;
     }
 
-    private ReplyDiscussionData mappingImageEntityDomain(ReplyDiscussionValidationImageEntity entity) {
-        ReplyDiscussionData data = new ReplyDiscussionData();
+    private ReplyDiscussionDomainData mappingImageEntityDomain(ReplyDiscussionValidationImageEntity entity) {
+        ReplyDiscussionDomainData data = new ReplyDiscussionDomainData();
         data.setPostKey(entity.getPostKey());
         return data;
     }
 
-    private ReplyDiscussionData mappingEntityDomain(ReplyDiscussionValidationEntity entity) {
-        ReplyDiscussionData data = new ReplyDiscussionData();
+    private ReplyDiscussionDomainData mappingEntityDomain(ReplyDiscussionValidationEntity entity) {
+        ReplyDiscussionDomainData data = new ReplyDiscussionDomainData();
 
         if (entity.getConversationLast() != null && entity.getConversationLast().size() != 0) {
             ConversationLast conversationLast = entity.getConversationLast().get(0);

@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation;
 
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyDiscussionDomainData;
+
 /**
  * Created by nisie on 4/3/17.
  */
@@ -8,7 +10,7 @@ public class ReplyDiscussionValidationModel {
 
     private boolean success;
     private String messageError;
-    private ReplyDiscussionData replyDiscussionData;
+    private ReplyDiscussionDomainData replyDiscussionData;
     private int responseCode;
     private String postKey;
     private String token;
@@ -29,11 +31,11 @@ public class ReplyDiscussionValidationModel {
         this.messageError = messageError;
     }
 
-    public ReplyDiscussionData getReplyDiscussionData() {
+    public ReplyDiscussionDomainData getReplyDiscussionData() {
         return replyDiscussionData;
     }
 
-    public void setReplyDiscussionData(ReplyDiscussionData replyDiscussionData) {
+    public void setReplyDiscussionData(ReplyDiscussionDomainData replyDiscussionData) {
         this.replyDiscussionData = replyDiscussionData;
     }
 

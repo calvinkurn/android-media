@@ -5,20 +5,26 @@ import android.util.Log;
 import com.tkpd.library.utils.Logger;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.replyvalidation.NewReplyDiscussionEntity;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.replysubmit.Attachments;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.replysubmit.Conversations;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.replysubmit.NewReplyDiscussionSubmitEntity;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyAttachmentDomainData;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyDiscussionDomainData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by hangnadi on 6/16/17.
+ * Created by hangnadi on 7/5/17.
  */
 
-public class ReplyResolutionMapper implements Func1<Response<TkpdResponse>, NewReplyDiscussionModel> {
+public class ReplyResolutionSubmitMapper implements Func1<Response<TkpdResponse>, NewReplyDiscussionModel> {
 
-    public ReplyResolutionMapper() {
+    public ReplyResolutionSubmitMapper() {
     }
 
     @Override
@@ -28,13 +34,9 @@ public class ReplyResolutionMapper implements Func1<Response<TkpdResponse>, NewR
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 domainData.setSuccess(true);
-                NewReplyDiscussionEntity entity = response.body()
-                        .convertDataObj(NewReplyDiscussionEntity.class);
-                if (entity.getCacheKey() != null && !entity.getCacheKey().isEmpty()) {
-                    domainData.setCacheKey(entity.getCacheKey());
-                } else {
-                    domainData.setReplyDiscussionData(mappingDomainData(entity));
-                }
+                NewReplyDiscussionSubmitEntity entity = response.body()
+                        .convertDataObj(NewReplyDiscussionSubmitEntity.class);
+                domainData.setReplyDiscussionData(mappingDomainData(entity));
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {
@@ -50,16 +52,30 @@ public class ReplyResolutionMapper implements Func1<Response<TkpdResponse>, NewR
         return domainData;
     }
 
-    private ReplyDiscussionDomainData mappingDomainData(NewReplyDiscussionEntity entity) {
+    private ReplyDiscussionDomainData mappingDomainData(NewReplyDiscussionSubmitEntity entity) {
         ReplyDiscussionDomainData data = new ReplyDiscussionDomainData();
-        NewReplyDiscussionEntity.Conversations conversationLast = entity.getConversations().get(0);
+        Conversations conversationLast = entity.getConversations().get(0);
         data.setActionBy(conversationLast.getActionBy());
         data.setConversationId(conversationLast.getId());
         data.setCreateTime(conversationLast.getCreateTime());
         data.setCreateTimeWib(conversationLast.getCreateTimeStr());
         data.setRemark(conversationLast.getMessage());
         data.setRemarkStr(conversationLast.getMessage());
+        data.setReplyAttachmentDomainData(mappingAttachments(conversationLast.getAttachments()));
         return data;
+    }
+
+    private List<ReplyAttachmentDomainData> mappingAttachments(List<Attachments> listAttachment) {
+        List<ReplyAttachmentDomainData> list = new ArrayList<>();
+        for(Attachments attachments : listAttachment) {
+            ReplyAttachmentDomainData replyAttachmentDomainData = new ReplyAttachmentDomainData();
+            replyAttachmentDomainData.setIsVideo(attachments.getIsVideo());
+            replyAttachmentDomainData.setFullUrl(attachments.getFullUrl());
+            replyAttachmentDomainData.setThumbnail(attachments.getThumbnail());
+            replyAttachmentDomainData.setIsVideo(attachments.getIsVideo());
+            list.add(replyAttachmentDomainData);
+        }
+        return list;
     }
 
 }

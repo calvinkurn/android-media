@@ -18,6 +18,7 @@ public class AttachmentViewModel implements Parcelable{
     private String fileLoc;
     private int fileType;
     private UploadedFileViewModel uploadedFile;
+    private int isVideo;
 
     public UploadedFileViewModel getUploadedFile() {
         return uploadedFile;
