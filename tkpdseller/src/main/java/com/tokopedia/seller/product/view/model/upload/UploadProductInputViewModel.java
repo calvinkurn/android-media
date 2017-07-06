@@ -347,9 +347,6 @@ public class UploadProductInputViewModel {
         if (productReturnable!= defaultModel.getProductReturnable()) {
             return false;
         }
-        if (productInvenageSwitch!= defaultModel.getProductInvenageSwitch()) {
-            return false;
-        }
         if (productInvenageValue!= defaultModel.getProductInvenageValue()) {
             return false;
         }
