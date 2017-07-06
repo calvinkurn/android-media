@@ -196,7 +196,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     private void showExitDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity()
+                , R.style.AppCompatAlertDialogStyle);
         myAlertDialog.setMessage(getString(R.string.top_ads_keyword_add_group_promo_desc));
 
         myAlertDialog.setPositiveButton(getString(R.string.top_ads_keyword_add_group_promo_yes), new DialogInterface.OnClickListener() {
