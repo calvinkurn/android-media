@@ -157,6 +157,11 @@
         <service
             android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
             android:exported="false" />
+
+        <activity android:name=".redirect.RedirectCreateShopActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
     </application>
 
 </manifest>

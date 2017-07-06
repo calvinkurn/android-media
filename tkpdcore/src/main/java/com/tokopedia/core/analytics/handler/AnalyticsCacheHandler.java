@@ -3,7 +3,7 @@ package com.tokopedia.core.analytics.handler;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 
 import rx.Single;
 import rx.SingleSubscriber;
