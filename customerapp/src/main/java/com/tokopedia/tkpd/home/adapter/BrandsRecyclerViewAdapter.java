@@ -44,7 +44,7 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        if (position < brands.getData().size()) {
+        if (brands.getData() != null && position < brands.getData().size()) {
             final Brand singleBrand = brands.getData().get(position);
 
             if (singleBrand.getIsNew() != 1) {
