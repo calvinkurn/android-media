@@ -4,7 +4,7 @@
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/cards_ui"
+    android:background="@drawable/cards_feed_plus"
     android:padding="@dimen/padding_small">
 
     <ImageView
@@ -54,13 +54,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textColor="@color/black_70"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="4sp"
-            tools:text="     Marowiajjfawioi ubah 1 produk " />
+            android:maxLines="2"
+            android:textColor="@color/black_70"
+            android:textStyle="normal"
+            tools:text="     Marowiajjfawioi ubah 1 produk "/>
 
     </LinearLayout>
 
