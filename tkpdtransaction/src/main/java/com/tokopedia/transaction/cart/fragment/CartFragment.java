@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -58,6 +59,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -70,7 +72,6 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
-import com.tokopedia.transaction.cart.activity.TopPayActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
@@ -708,10 +709,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         paymentPassData.setCallbackFailedUrl(data.getCallbackUrl());
         paymentPassData.setQueryString(data.getQueryString());
         navigateToActivityRequest
-                (
-                        com.tokopedia.payment.activity.TopPayActivity.createInstance
-                                (getActivity(), paymentPassData),
-                        com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE);
+                (TopPayActivity.createInstance(getActivity(), paymentPassData),
+                        TopPayActivity.REQUEST_CODE
+                );
     }
 
     @Override
@@ -801,27 +801,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TopPayActivity.REQUEST_CODE) {
-            if (resultCode == TopPayActivity.RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED) {
-                if (data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE) != null) {
-                    NetworkErrorHelper.showSnackbar(
-                            getActivity(), data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE)
-                    );
-                }
-            }
-            presenter.processGetCartData();
-        } else if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
+        if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             presenter.processGetCartData();
-        } else if (requestCode == com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE) {
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
+                case TopPayActivity.PAYMENT_CANCELLED:
                     NetworkErrorHelper.showSnackbar(
                             getActivity(),
                             getString(R.string.alert_payment_canceled_or_failed_transaction_module)
                     );
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
+                case TopPayActivity.PAYMENT_SUCCESS:
                     presenter.processValidationPayment(
                             ((PaymentPassData) data.getParcelableExtra(
                                     com.tokopedia.payment.activity
@@ -829,7 +820,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                             )).getPaymentId()
                     );
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
+                case TopPayActivity.PAYMENT_FAILED:
                     presenter.processValidationPayment(
                             ((PaymentPassData) data.getParcelableExtra(
                                     com.tokopedia.payment.activity
@@ -1026,7 +1017,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_donasi_info, null);
+                @SuppressLint("InflateParams")
+                View view = LayoutInflater.from(
+                        getActivity()).inflate(R.layout.dialog_donasi_info, null
+                );
                 dialog.setContentView(view);
                 setDataDialog(dialog, view, donation);
                 dialog.show();
