@@ -17,6 +17,7 @@ import rx.Observable;
 public class GetFeedsUseCase extends UseCase<FeedResult> {
     public static final String PARAM_USER_ID = "PARAM_USER_ID";
     public static final String PARAM_CURSOR = "PARAM_CURSOR";
+    public static final String PARAM_PAGE = "PARAM_PAGE";
     protected FeedRepository feedRepository;
 
     public GetFeedsUseCase(ThreadExecutor threadExecutor,
@@ -31,10 +32,12 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
         return feedRepository.getFeedsFromCloud(requestParams);
     }
 
-    public RequestParams getFeedPlusParam(SessionHandler sessionHandler, String currentCursor) {
+    public RequestParams getFeedPlusParam(int page, SessionHandler sessionHandler, String
+            currentCursor) {
         RequestParams params = RequestParams.create();
         params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
+        params.putInt(GetFeedsUseCase.PARAM_PAGE, page);
         return params;
     }
 

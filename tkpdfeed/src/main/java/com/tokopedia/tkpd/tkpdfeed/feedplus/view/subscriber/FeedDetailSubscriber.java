@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
@@ -32,7 +34,9 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetFeedDetail(e.toString());
+        if (e instanceof ApolloNetworkException)
+            viewListener.onErrorGetFeedDetail(viewListener.getString(R.string.msg_network_error));
+        else viewListener.onErrorGetFeedDetail(e.toString());
     }
 
     @Override

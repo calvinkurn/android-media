@@ -49,6 +49,7 @@ public class CloudFeedDataSource {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
+                .page(requestParams.getInt(GetFeedsUseCase.PARAM_PAGE,0))
                 .limit(3)
                 .cursor(cursor)
                 .build()).watcher();

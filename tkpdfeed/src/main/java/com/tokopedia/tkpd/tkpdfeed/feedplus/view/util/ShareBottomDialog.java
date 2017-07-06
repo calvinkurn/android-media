@@ -151,9 +151,7 @@ public class ShareBottomDialog {
 
                 String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
 
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                smsIntent.setType("vnd.android-dir/mms-sms");
-                smsIntent.putExtra("sms_body",shareText);
+                Intent smsIntent = MethodChecker.getSmsIntent(activity, shareText);
                 activity.startActivity(smsIntent);
 
             }

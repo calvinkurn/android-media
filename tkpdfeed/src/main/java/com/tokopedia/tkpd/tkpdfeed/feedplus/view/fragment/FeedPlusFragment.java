@@ -375,6 +375,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFeedFirstPage(String errorMessage) {
+        finishLoading();
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
@@ -386,7 +387,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
-        finishLoading();
 
     }
 

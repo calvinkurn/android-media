@@ -203,7 +203,14 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetFeedDetail(String errorMessage) {
         finishLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        footer.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getFeedDetail(detailId, pagingHandler.getPage());
+                    }
+                });
     }
 
     private void finishLoading() {
@@ -228,6 +235,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
         finishLoading();
+        footer.setVisibility(View.VISIBLE);
 
         if (pagingHandler.getPage() == 1) {
             adapter.add(header);

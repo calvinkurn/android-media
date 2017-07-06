@@ -38,20 +38,23 @@ public class CloudFeedDetailDataSource {
     public Observable<List<DataFeedDetailDomain>> getFeedsDetailList(RequestParams requestParams) {
         ApolloWatcher<FeedDetail.Data> apolloWatcher = apolloClient.newCall(
                 FeedDetail.builder()
-                .detailID(getDetailId(requestParams))
-                .limitDetail(LIMIT_DETAIL)
-                .pageDetail(getPaging(requestParams))
-                .build()).watcher();
+                        .detailID(getDetailId(requestParams))
+                        .userID(Integer.parseInt(
+                                requestParams.getString(GetFeedsDetailUseCase
+                                        .PARAM_USER_ID, "0")))
+                        .limitDetail(LIMIT_DETAIL)
+                        .pageDetail(getPaging(requestParams))
+                        .build()).watcher();
 
         return RxApollo.from(apolloWatcher).map(feedDetailListMapper);
     }
 
     private int getPaging(RequestParams requestParams) {
-        return requestParams.getInt(GetFeedsDetailUseCase.PARAM_PAGE,1);
+        return requestParams.getInt(GetFeedsDetailUseCase.PARAM_PAGE, 1);
     }
 
     private String getDetailId(RequestParams requestParams) {
-        return requestParams.getString(GetFeedsDetailUseCase.PARAM_DETAIL_ID,"");
+        return requestParams.getString(GetFeedsDetailUseCase.PARAM_DETAIL_ID, "");
     }
 
 

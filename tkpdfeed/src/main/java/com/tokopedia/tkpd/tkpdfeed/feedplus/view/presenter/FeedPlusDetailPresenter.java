@@ -55,7 +55,10 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void getFeedDetail(String detailId, int page) {
         viewListener.showLoading();
         getFeedsDetailUseCase.execute(
-                getFeedsDetailUseCase.getFeedDetailParam(detailId, page),
+                getFeedsDetailUseCase.getFeedDetailParam(
+                        sessionHandler.getLoginID(),
+                        detailId,
+                        page),
                 new FeedDetailSubscriber(viewListener));
     }
 
