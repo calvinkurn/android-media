@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -12,8 +14,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit.AttachmentData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyAttachmentDomainData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.reply.ReplyDiscussionDomainData;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
@@ -138,7 +140,7 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         );
     }
 
-    private DiscussionItemViewModel mappingValidationViewModel(ReplyDiscussionData replyDiscussionData) {
+    private DiscussionItemViewModel mappingValidationViewModel(ReplyDiscussionDomainData replyDiscussionData) {
         DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
         viewModel.setMessageCreateBy(SessionHandler.getLoginID(MainApplication.getAppContext()));
         viewModel.setMessage(replyDiscussionData.getRemarkStr());
@@ -148,10 +150,20 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         viewModel.setUserLabelId(replyDiscussionData.getUserLabelId());
         viewModel.setUserName(replyDiscussionData.getUserName());
         viewModel.setConversationId(String.valueOf(replyDiscussionData.getConversationId()));
-//      todo attachment belom
-//        viewModel.setAttachment(replyDiscussionData.get);
-//        mappingSubmitAttachment(replyDiscussionData.getAttachment())
+        viewModel.setAttachment(mappingAttachmentView(replyDiscussionData.getReplyAttachmentDomainData()));
         return viewModel;
+    }
+
+    private List<AttachmentViewModel> mappingAttachmentView(List<ReplyAttachmentDomainData> replyAttachmentDomainData) {
+        List<AttachmentViewModel> list = new ArrayList<>();
+        for(ReplyAttachmentDomainData attachments : replyAttachmentDomainData) {
+            AttachmentViewModel attachmentViewModel = new AttachmentViewModel();
+            attachmentViewModel.setImgThumb(attachments.getIsVideo() == 1 ? "" : attachments.getThumbnail());
+            attachmentViewModel.setUrl(attachments.getFullUrl());
+            attachmentViewModel.setFileType(attachments.getIsVideo() == 1 ? AttachmentViewModel.FILE_VIDEO : AttachmentViewModel.FILE_IMAGE);
+            list.add(attachmentViewModel);
+        }
+        return  list;
     }
 
     private String formatTime(String createTimeOld) {
@@ -214,7 +226,8 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                 .flatMap(new Func1<AttachmentViewModel, Observable<UploadImageModel>>() {
                     @Override
                     public Observable<UploadImageModel> call(AttachmentViewModel attachment) {
-                        if (attachment.getFileType() == AttachmentViewModel.FILE_VIDEO) {
+                        Log.d("hangnadi", "getObservableUploadAttachment: file type" + attachment.getFileType());
+                        if (attachment.isVideo()) {
                             RequestParams uploadVideoParams = RequestParams.create();
                             uploadVideoParams.putString(UploadVideoUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
                             uploadVideoParams.putString(UploadVideoUseCase.PARAM_FILE_NAME, attachment.getFileLoc().substring(attachment.getFileLoc().lastIndexOf("/")+1));
@@ -249,10 +262,11 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         RequestParams params = RequestParams.create();
         params.putString(NewReplyDiscussionSubmitUseCase.PARAM_RESOLUTION_ID, model.getResolutionId());
         params.putString(NewReplyDiscussionSubmitUseCase.PARAM_CACHE_KEY, model.getCacheKey());
-        params.putString(NewReplyDiscussionSubmitUseCase.PARAM_PICTURES, generatePictures(model));
         for (AttachmentViewModel attach : model.getAttachment()) {
             if (attach.isVideo()) {
                 params.putString(NewReplyDiscussionSubmitUseCase.PARAM_VIDEOS, generateVideos(model));
+            } else {
+                params.putString(NewReplyDiscussionSubmitUseCase.PARAM_PICTURES, generatePictures(model));
             }
         }
         return params;
@@ -271,7 +285,7 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
     private String generateVideos(ActionDiscussionModel model) {
         JsonArray json = new JsonArray();
         for (AttachmentViewModel attach : model.getAttachment()) {
-            if (!attach.isVideo()) {
+            if (attach.isVideo()) {
                 json.add(attach.getUploadedFile().getPicObj());
             }
         }

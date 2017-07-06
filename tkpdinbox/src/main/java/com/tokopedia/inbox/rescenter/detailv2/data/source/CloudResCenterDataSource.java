@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
@@ -23,8 +24,6 @@ import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-
-import java.util.ArrayList;
 
 import rx.Observable;
 
@@ -45,6 +44,7 @@ public class CloudResCenterDataSource {
     private DiscussionResCenterMapper discussionResCenterMapper;
     private LoadMoreMapper loadMoreMapper;
     private ReplyResolutionMapper replyResolutionMapper;
+    private ReplyResolutionSubmitMapper replyResolutionSubmitMapper;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionApi resolutionApi,
@@ -56,7 +56,8 @@ public class CloudResCenterDataSource {
                                     ProductDetailMapper productDetailMapper,
                                     DiscussionResCenterMapper discussionResCenterMapper,
                                     LoadMoreMapper loadMoreMapper,
-                                    ReplyResolutionMapper replyResolutionMapper) {
+                                    ReplyResolutionMapper replyResolutionMapper,
+                                    ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
         super();
         this.context = context;
         this.resolutionApi = resolutionApi;
@@ -69,6 +70,7 @@ public class CloudResCenterDataSource {
         this.discussionResCenterMapper = discussionResCenterMapper;
         this.loadMoreMapper = loadMoreMapper;
         this.replyResolutionMapper = replyResolutionMapper;
+        this.replyResolutionSubmitMapper = replyResolutionSubmitMapper;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -146,7 +148,7 @@ public class CloudResCenterDataSource {
                                                                      TKPDMapParam<String, Object> parameters) {
         return resolutionApi.replyResolutionSubmit(resolutionID,
                 AuthUtil.generateParamsNetwork2(context, parameters))
-                .map(replyResolutionMapper);
+                .map(replyResolutionSubmitMapper);
     }
 
 }

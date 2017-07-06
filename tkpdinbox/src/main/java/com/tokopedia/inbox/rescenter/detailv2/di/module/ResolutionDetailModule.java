@@ -33,6 +33,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
@@ -221,7 +222,8 @@ public class ResolutionDetailModule {
             ProductDetailMapper productDetailMapper,
             DiscussionResCenterMapper discussionResCenterMapper,
             LoadMoreMapper loadMoreMapper,
-            ReplyResolutionMapper replyResolutionMapper) {
+            ReplyResolutionMapper replyResolutionMapper,
+            ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -236,7 +238,8 @@ public class ResolutionDetailModule {
                 productDetailMapper,
                 discussionResCenterMapper,
                 loadMoreMapper,
-                replyResolutionMapper
+                replyResolutionMapper,
+                replyResolutionSubmitMapper
         );
     }
 
@@ -380,6 +383,12 @@ public class ResolutionDetailModule {
     @Provides
     ReplyResolutionMapper provideReplyResolutionMapper() {
         return new ReplyResolutionMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyResolutionSubmitMapper provideReplyResolutionSubmitMapper() {
+        return new ReplyResolutionSubmitMapper();
     }
 
 }

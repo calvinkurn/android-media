@@ -1,10 +1,14 @@
-package com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation;
+package com.tokopedia.inbox.rescenter.discussion.domain.model.reply;
+
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ByData;
+
+import java.util.List;
 
 /**
  * Created by nisie on 4/3/17.
  */
 
-public class ReplyDiscussionData {
+public class ReplyDiscussionDomainData {
 
     private String userImg;
     private String conversationId;
@@ -23,6 +27,7 @@ public class ReplyDiscussionData {
     private String timeAgo;
 
     private String postKey;
+    private List<ReplyAttachmentDomainData> replyAttachmentDomainData;
 
     public String getUserImg() {
         return userImg;
@@ -150,5 +155,13 @@ public class ReplyDiscussionData {
 
     public void setPostKey(String postKey) {
         this.postKey = postKey;
+    }
+
+    public void setReplyAttachmentDomainData(List<ReplyAttachmentDomainData> replyAttachmentDomainData) {
+        this.replyAttachmentDomainData = replyAttachmentDomainData;
+    }
+
+    public List<ReplyAttachmentDomainData> getReplyAttachmentDomainData() {
+        return replyAttachmentDomainData;
     }
 }
