@@ -466,7 +466,6 @@ public class ShippingImpl extends Shipping {
             intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(modelList.get(position)));
             intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.SHIPING);
             view.moveToDetailResult(intent, FragmentSellingShipping.REQUEST_CODE_PROCESS_RESULT);
-//        context.startActivity(intent);
         }
     }
 
