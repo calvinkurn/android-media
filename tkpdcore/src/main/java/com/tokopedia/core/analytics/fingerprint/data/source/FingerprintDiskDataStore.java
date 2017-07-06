@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics.fingerprint.data.source;
 
 import android.os.Build;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
@@ -23,9 +24,9 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
     @Override
     public Observable<String> getFingerprint(final FingerPrint data) {
         return Observable.just(data)
-                .map(new Func1<FingerPrint, String>() {
+                .map(new Func1<FingerPrint, FingerPrint>() {
                     @Override
-                    public String call(FingerPrint fingerPrint) {
+                    public FingerPrint call(FingerPrint fingerPrint) {
 
                         String deviceID = GCMHandler.getRegistrationId(MainApplication.getAppContext());
                         String deviceName = Build.MODEL;
@@ -41,23 +42,33 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String screenReso = Utilities.getScreenResolution(MainApplication.getAppContext());
                         String deviceLanguage = Locale.getDefault().toString();
 
-                        String all =
-                                "deviceID " + deviceID +" \n "+
-                                "deviceName " + deviceName +" \n "+
-                                "deviceFabrik " + deviceFabrik +" \n "+
-                                "deviceOS " + deviceOS +" \n "+
-                                "isRooted " + isRooted +" \n "+
-                                "timezone " + timezone +" \n "+
-                                "userAgent " + userAgent +" \n "+
-                                "isEmulator " + isEmulator +" \n "+
-                                "isTablet " + isTablet +" \n "+
-                                "buildNum " + buildNumber +" \n "+
-                                "ipAddr " + ipAddress +" \n "+
-                                "screenReso " + screenReso +" \n "+
-                                "deviceLang " + deviceLanguage +" \n "
-                                ;
+                        FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                                .deviceID(deviceID)
+                                .deviceName(deviceName)
+                                .deviceManufacturer(deviceFabrik)
+                                .currentOS(deviceOS)
+                                .jailbreak(isRooted)
+                                .timezone(timezone)
+                                .userAgent(userAgent)
+                                .emulator(isEmulator)
+                                .tablet(isTablet)
+                                .buildNumber(buildNumber)
+                                .ipAddres(ipAddress)
+                                .screenReso(screenReso)
+                                .language(deviceLanguage)
+                                .build();
 
-                        return all;
+                        return fp;
+                    }
+                }).map(new Func1<FingerPrint, String>() {
+                    @Override
+                    public String call(FingerPrint fingerPrint) {
+
+                        Gson gson = new Gson();
+
+                        return gson.toJson(fingerPrint);
+
+
                     }
                 });
     }
