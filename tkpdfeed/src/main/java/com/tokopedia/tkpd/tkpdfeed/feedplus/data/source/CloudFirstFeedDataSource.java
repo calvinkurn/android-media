@@ -91,10 +91,8 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
         return new Action1<Response<String>>() {
             @Override
             public void call(Response<String> stringResponse) {
-                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
-                    throw new ErrorMessageException("Server Error!");
-                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
-                    throw new ErrorMessageException("Client Error!");
+                if (stringResponse.code() != 200) {
+                    throw new RuntimeException(String.valueOf(stringResponse.code()));
                 }
             }
         };

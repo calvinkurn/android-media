@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewLabelDomain;
@@ -37,14 +38,13 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetRecentView(e.toString());
+        viewListener.onErrorGetRecentView(ErrorHandler.getErrorMessage(e));
 
     }
 
     @Override
     public void onNext(List<RecentViewProductDomain> recentViewProductDomains) {
         if (!recentViewProductDomains.isEmpty()) {
-
             viewListener.onSuccessGetRecentView(convertToViewModel(recentViewProductDomains));
         } else {
             viewListener.onEmptyGetRecentView()
