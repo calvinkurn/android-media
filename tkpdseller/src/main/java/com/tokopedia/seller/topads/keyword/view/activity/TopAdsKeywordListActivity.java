@@ -112,6 +112,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
 
         filter = menu.findItem(R.id.menu_filter);
@@ -134,9 +135,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchView.setOnQueryTextListener(this);
         keywordListTablayout.attachSearchView(searchView);
 
-        filter.setVisible(false);
-        searchItem.setVisible(false);
-        searchView.setVisibility(View.GONE);
+        validateMenuItem();
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -256,6 +255,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
             int height = toolbar.getHeight();
             int width = toolbar.getWidth();
 
+            if (filter == null || !filter.isVisible()
+                || searchView == null || !searchView.isShown()) {
+                return;
+            }
             // Pencarian
             showCaseList.add(
                     new ShowCaseObject(
