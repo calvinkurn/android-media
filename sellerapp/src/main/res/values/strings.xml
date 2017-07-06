@@ -8,7 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
 
-    <string name="title_top_ads">TopAds</string>
+    <string name="drawer_title_top_ads">TopAds</string>
     <string name="title_shop_score_widget_home">Performa Toko</string>
     <string name="view_shop_score_per_cent">/100</string>
     <string name="action_shop_score_go_to_detail">Lihat Detail</string>

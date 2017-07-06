@@ -176,6 +176,9 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
                         @Override
                         public void onError(Throwable e) {
+                            if (!isViewAttached()) {
+                                return;
+                            }
                             if (ViewUtils.getErrorMessage(e) != null) {
                                 showMessageError(new StringBuilder(
                                         ViewUtils.getErrorMessage(e)
@@ -188,6 +191,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
+                                getView().showBottom();
                                 if (productListDomain.getPage() > page) {
                                     page = productListDomain.getPage();
                                 }

@@ -35,12 +35,9 @@ public class JSONHandler {
     	IDunique = UUID.randomUUID().toString();
     	String id = IDunique.replaceAll("-", "");
     	String iv = id.substring(0, 16);
-    	System.out.println("sending to ws:"+json.toString());
     	String encrypt_data = encoder.Encrypt(json.toString(),iv);
     	rclient.AddParam("sc",encrypt_data);
     	rclient.AddParam("iv",iv);
-    	//System.out.println("SC: "+encrypt_data);
-    	//System.out.println("SC: "+encrypt_data);
     	status = rclient.Execute("POST");
     	return status;
     }

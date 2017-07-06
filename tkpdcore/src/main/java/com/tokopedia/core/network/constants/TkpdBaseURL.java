@@ -581,12 +581,14 @@ public class TkpdBaseURL {
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
 
+        public static final String PATH_V1_BRAND_CAMPAIGN_DETAIL = "/os/v1/campaign/product_detail";
+        public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
     }
 
 
     public static class Recharge {
-        public static final String VERSION = "v1.3";
+        public static final String VERSION = "v1.4";
         public static final String RECHARGE = "recharge";
 
         public static final String PATH_STATUS = VERSION + "/status";
@@ -674,6 +676,10 @@ public class TkpdBaseURL {
             public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
             public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
         }
+
+        public class Wallet {
+            public static final String GET_BALANCE = "api/v1/wallet/balance";
+        }
     }
 
     public static class Home {
@@ -712,7 +718,7 @@ public class TkpdBaseURL {
     }
 
     public static class DigitalApi {
-        public static final String VERSION = "v1.3/";
+        public static final String VERSION = "v1.4/";
         public static final String HMAC_KEY = "web_service_v4";
 
         public static final String PATH_STATUS = "status";
