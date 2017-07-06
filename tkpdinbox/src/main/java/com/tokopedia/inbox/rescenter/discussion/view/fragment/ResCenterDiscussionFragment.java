@@ -478,13 +478,29 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         if (resultCode == Activity.RESULT_OK) {
             if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
                 MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-                onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+                if (checkAttachmentValidation(item)) {
+                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+                }
             } else {
                 onFailedAddAttachment();
             }
         } else {
             onFailedAddAttachment();
         }
+    }
+
+    private boolean checkAttachmentValidation(MediaItem item) {
+        boolean allow = true;
+        if (item.isVideo() || item.isGif()) {
+            for (AttachmentViewModel model :attachmentAdapter.getList()) {
+                if (model.isVideo()) {
+                    onErrorSendReply(getActivity().getString(R.string.error_reply_discussion_resolution_reach_max));
+                    allow = false;
+                    break;
+                }
+            }
+        }
+        return allow;
     }
 
     private void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
