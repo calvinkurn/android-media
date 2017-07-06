@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/tkpd_bg_color"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical">
+    android:descendantFocusability="blocksDescendants">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -15,9 +16,9 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
+            android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_small"/>
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
-</LinearLayout>
+</RelativeLayout>

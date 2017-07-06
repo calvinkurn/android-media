@@ -82,7 +82,7 @@ public class RecentViewActivity extends BasePresenterActivity implements HasComp
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
+            toolbar.setElevation(8);
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

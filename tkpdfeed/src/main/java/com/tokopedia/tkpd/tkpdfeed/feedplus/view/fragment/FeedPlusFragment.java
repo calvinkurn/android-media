@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -82,6 +83,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
+    RelativeLayout mainContent;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -183,6 +185,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -206,9 +209,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         presenter.refreshPage();
-        topAdsRecyclerAdapter.reset();
-        topAdsRecyclerAdapter.shouldLoadAds(true);
-        topAdsRecyclerAdapter.setEndlessScrollListener();
     }
 
     @Override
@@ -337,6 +337,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.reset();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+
         adapter.setList(listFeed);
         adapter.showAddFeed();
         adapter.notifyDataSetChanged();
@@ -363,21 +366,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void clearData(){
+    public void clearData() {
         adapter.clearData();
+        topAdsRecyclerAdapter.reset();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
     }
 
     @Override
     public void finishLoading() {
-        if (swipeToRefresh.isRefreshing())
-            swipeToRefresh.setRefreshing(false);
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public void onErrorGetFeedFirstPage(String errorMessage) {
         finishLoading();
         if (adapter.getItemCount() == 0) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+            NetworkErrorHelper.showEmptyState(getActivity(), mainContent, errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {

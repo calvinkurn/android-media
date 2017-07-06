@@ -121,7 +121,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         StringBuilder titleText = new StringBuilder();
 
         if (activityCardViewModel.getHeader().isGoldMerchant() || activityCardViewModel.getHeader().isOfficialStore())
-            titleText.append("     ");
+            titleText.append("      ");
 
         titleText
                 .append(shopNameString)

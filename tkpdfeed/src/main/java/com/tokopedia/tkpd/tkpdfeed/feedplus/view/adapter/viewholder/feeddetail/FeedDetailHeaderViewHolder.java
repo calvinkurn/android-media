@@ -62,7 +62,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         StringBuilder titleText = new StringBuilder();
 
         if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
-            titleText.append("     ");
+            titleText.append("      ");
 
         titleText.append(shopNameString)
                 .append(" ")
@@ -137,19 +137,5 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
                     , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
-
-
-    private void setBadge(SpannableString actionSpanString, TextView shopName, int resId) {
-        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
-        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
-        badge.setBounds(0, 0, size, size);
-        ImageSpan is;
-        if (shopName.getLineCount() < 1)
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
-        else
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
-        actionSpanString.setSpan(is, 0, 1, 0);
-    }
-
 
 }

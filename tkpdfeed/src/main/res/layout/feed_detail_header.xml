@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/header"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/cards_feed_plus"
-    android:padding="@dimen/padding_small">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+    >
 
     <ImageView
+        android:layout_margin="@dimen/margin_small"
         android:id="@+id/shop_avatar"
         android:layout_width="@dimen/feed_user_ava"
         android:layout_height="@dimen/feed_user_ava"
-        android:layout_marginRight="@dimen/margin_small"
         android:background="@drawable/feed_container_rounded_corners_border"
-        tools:src="@drawable/ic_check_green_24dp" />
+        tools:src="@drawable/ic_check_green_24dp"/>
 
     <ImageView
         android:id="@+id/gold_merchant"
-        android:layout_marginTop="2dp"
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
-        android:layout_marginRight="@dimen/margin_small"
         android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
         android:src="@drawable/ic_gold"
@@ -30,11 +30,11 @@
 
     <ImageView
         android:id="@+id/official_store"
-        android:layout_marginTop="2dp"
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
-        android:layout_marginRight="@dimen/margin_small"
         android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
         android:src="@drawable/ic_official"
@@ -42,12 +42,13 @@
         tools:visibility="visible"/>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/shop_avatar"
+        android:layout_marginTop="@dimen/margin_small"
         android:layout_toEndOf="@+id/shop_avatar"
-        android:id="@+id/linearLayout">
+        android:layout_toRightOf="@+id/shop_avatar">
 
         <TextView
             android:id="@+id/shop_name"
@@ -69,8 +70,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout"
-        android:textColor="@color/grey_500"
         android:layout_toRightOf="@id/shop_avatar"
+        android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
-        tools:text="Milik tanah air bangsa" />
+        tools:text="Milik tanah air bangsa"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        android:layout_alignParentBottom="true"
+
+        />
 </RelativeLayout>

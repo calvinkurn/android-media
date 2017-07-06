@@ -23,13 +23,7 @@ public class RefreshFeedUseCase extends GetFeedsUseCase {
 
     @Override
     public Observable<FeedResult> createObservable(final RequestParams requestParams) {
-        return feedRepository.getFirstPageFeedsFromCloud(requestParams)
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
-                    @Override
-                    public Observable<? extends FeedResult> call(Throwable throwable) {
-                        return feedRepository.getFirstPageFeedsFromLocal();
-                    }
-                });
+        return feedRepository.getFirstPageFeedsFromCloud(requestParams);
 
     }
 }

@@ -15,7 +15,7 @@
         android:background="@color/white"
         app:backgroundTint="@color/white"
         app:borderWidth="0dp"
-        android:elevation="@dimen/default_circle_indicator_radius"/>
+        android:elevation="2dp"/>
 
     <Space
         android:layout_width="wrap_content"

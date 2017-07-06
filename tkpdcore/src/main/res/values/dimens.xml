@@ -89,6 +89,7 @@
     <dimen name="loading_img_big">150dp</dimen>
     <dimen name="pager_height">200dp</dimen>
     <dimen name="padding_med">20dp</dimen>
+    <dimen name="padding_large">25dp</dimen>
     <dimen name="img_thumb_s">15dp</dimen>
     <dimen name="screen_per_3_pad">90dp</dimen>
     <dimen name="shop_cover_height">220dp</dimen>

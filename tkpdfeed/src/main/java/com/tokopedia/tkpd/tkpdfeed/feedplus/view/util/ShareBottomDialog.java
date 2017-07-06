@@ -95,22 +95,7 @@ public class ShareBottomDialog {
     }
 
     private void initVar(Context context) {
-        GridLayoutManager layoutManager = new GridLayoutManager(context, 12);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-//                if(position<4){
-//                    return position%4 + 1;
-//                }else {
-//                    return (position/4)%4 + 1;
-//                }
-                if(position<4){
-                    return 3;
-                }else {
-                    return 3;
-                }
-            }
-        });
+        GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
         appGrid.setLayoutManager(layoutManager);
 
         list = new ArrayList<>();
@@ -128,19 +113,19 @@ public class ShareBottomDialog {
     protected void setShareList() {
 
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_googleplus), "Google+", shareGoogle()));
+                R.drawable.ic_btn_g), "Google+", shareGoogle()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_facebook), "Facebook", shareFb()));
+                R.drawable.ic_btn_fb), "Facebook", shareFb()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_line), "Line", shareLine()));
+                R.drawable.ic_btn_line), "Line", shareLine()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_whatsapp), "Whatsapp", shareWhatsapp()));
+                R.drawable.ic_btn_wa), "Whatsapp", shareWhatsapp()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_twitter), "Twitter", shareTwitter()));
+                R.drawable.ic_btn_twitter), "Twitter", shareTwitter()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_sms), "SMS", shareSMS()));
+                R.drawable.ic_btn_sms), "SMS", shareSMS()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_link), "Copy Link", shareCopyLink()));
+                R.drawable.ic_btn_copy), "Copy Link", shareCopyLink()));
         adapter.setList(list);
     }
 
