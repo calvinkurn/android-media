@@ -43,6 +43,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
+import com.tokopedia.discovery.categorynav.CategoryNavigationActivity;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
@@ -331,7 +332,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void changeBottomBar(String source) {
         browsePresenter.onBottomBarChanged(source);
-
     }
 
     private void setupBottomBar(List<AHBottomNavigationItem> items, final String source) {
@@ -382,6 +382,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 filters, getProductBreadCrumb(),
                 filterAttribute.getFilter(),
                 parentDepartment, source, departmentId);
+    }
+
+    @Override
+    public void openCategoryNavigation(
+                           String departmentId) {
+        CategoryNavigationActivity.moveTo(BrowseProductActivity.this, departmentId);
+
     }
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {
@@ -663,6 +670,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
         renderNewCategoryLevel(child.getId(),child.getName(),false);
+    }
+
+    public void setUpBottomNavCategory() {
+        if (bottomNavigation.getChildCount()>3) {
+            bottomNavigation.removeItemAtIndex(3);
+            bottomNavigation.addItem(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_share_black));
+        }
     }
 
     @Override

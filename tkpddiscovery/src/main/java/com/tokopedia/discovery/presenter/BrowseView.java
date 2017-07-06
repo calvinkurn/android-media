@@ -32,6 +32,7 @@ public interface BrowseView {
                     String parentDepartment,
                     String departmentId,
                     Map<String, String> filters);
+    void openCategoryNavigation(String departementId);
     void openSort(DataValue filterAttribute, String source);
 
     void initDiscoverySearchView(String lastQuery);

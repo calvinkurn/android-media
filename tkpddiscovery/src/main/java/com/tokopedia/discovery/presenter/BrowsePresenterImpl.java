@@ -76,7 +76,6 @@ import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
 /**
  * Created by HenryPri on 29/03/17.
  */
-
 public class BrowsePresenterImpl implements BrowsePresenter {
 
     private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
@@ -296,20 +295,24 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 switchGridType();
                 break;
             case 3:
-                String shareUrl = browseView.getShareUrl();
-                if (StringUtils.isNotBlank(shareUrl)) {
-                    ShareData shareData = ShareData.Builder.aShareData()
-                            .setType(ShareData.DISCOVERY_TYPE)
-                            .setName(context.getString(R.string.message_share_catalog))
-                            .setTextContent(context.getString(R.string.message_share_category))
-                            .setUri(shareUrl)
-                            .build();
-                    if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        shareData.setType(ShareData.CATEGORY_TYPE);
-                        shareData.setDescription(browseModel.getParentDepartement()+","
-                                +browseModel.getDepartmentId());
+                if (isFromCategory()) {
+                    browseView.openCategoryNavigation(browseModel.getDepartmentId());
+                } else {
+                    String shareUrl = browseView.getShareUrl();
+                    if (StringUtils.isNotBlank(shareUrl)) {
+                        ShareData shareData = ShareData.Builder.aShareData()
+                                .setType(ShareData.DISCOVERY_TYPE)
+                                .setName(context.getString(R.string.message_share_catalog))
+                                .setTextContent(context.getString(R.string.message_share_category))
+                                .setUri(shareUrl)
+                                .build();
+                        if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                            shareData.setType(ShareData.CATEGORY_TYPE);
+                            shareData.setDescription(browseModel.getParentDepartement()+","
+                                    +browseModel.getDepartmentId());
+                        }
+                        browseView.startShareActivity(shareData);
                     }
-                    browseView.startShareActivity(shareData);
                 }
                 break;
         }

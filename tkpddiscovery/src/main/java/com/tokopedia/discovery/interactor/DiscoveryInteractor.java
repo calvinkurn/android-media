@@ -38,4 +38,6 @@ public interface DiscoveryInteractor {
     Observable<Map<String, Boolean>> checkProductsInWishlist(String userId, List<ProductItem> productItemList);
 
     void getOSBanner(String keyword);
+
+    void getRootCategory(String departementId);
 }

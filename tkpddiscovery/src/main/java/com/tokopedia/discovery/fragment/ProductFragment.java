@@ -612,6 +612,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             topAdsRecyclerAdapter.notifyDataSetChanged();
             backToTop();
         }
+        ((BrowseProductActivity) getActivity()).setUpBottomNavCategory();
     }
 
     private int calcColumnSize(int orientation) {
