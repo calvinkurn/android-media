@@ -852,6 +852,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         ImageView rating;
         @BindView(R2.id.review_count)
         TextView reviewCount;
+        @BindView(R2.id.rating_review_container)
+        LinearLayout ratingReviewContainer;
 
         private Context context;
         private String source = "";
@@ -922,12 +924,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             });
 
             if (TextUtils.isEmpty(data.getRating()) || ("0").equals(data.getReviewCount())) {
-                rating.setVisibility(View.GONE);
-                reviewCount.setVisibility(View.GONE);
+                ratingReviewContainer.setVisibility(View.GONE);
             } else {
                 float rateAmount = Float.parseFloat(data.getRating());
-                rating.setVisibility(View.VISIBLE);
-                reviewCount.setVisibility(View.VISIBLE);
+                ratingReviewContainer.setVisibility(View.VISIBLE);
                 rating.setImageResource(
                         RatingView.getRatingDrawable(getStarCount(rateAmount))
                 );
