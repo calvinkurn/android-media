@@ -492,7 +492,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         if (item.isVideo() || item.isGif()) {
             for (AttachmentViewModel model :attachmentAdapter.getList()) {
                 if (model.isVideo()) {
-                    onErrorSendReply(getActivity().getString(R.string.error_reply_discussion_resolution_reach_max));
+                    NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_reply_discussion_resolution_reach_max));
                     allow = false;
                     break;
                 }
