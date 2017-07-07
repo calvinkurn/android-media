@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -79,6 +81,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         }
         adapter.setList(list);
         adapter.setAdapterPosition(getAdapterPosition());
+        adapter.setPosition(getAdapterPosition());
     }
 
     @Override

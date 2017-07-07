@@ -115,7 +115,16 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
         } else if (!data.getInfo().getProductStatus().equals("1")) {
             listener.onProductStatusError();
-        } else {
+        } else if (data.getShopInfo().getShopStatus()!=1) {
+            errorProductContainer.setVisibility(VISIBLE);
+            errorProductTitle.setText(data.getShopInfo().getShopStatusTitle() != null
+                    && !data.getShopInfo().getShopStatusTitle().isEmpty()
+                    ? data.getShopInfo().getShopStatusTitle() : "");
+            errorProductSubitle.setText(data.getShopInfo().getShopStatusMessage() != null
+                    && !data.getShopInfo().getShopStatusMessage().isEmpty()
+                    ? data.getShopInfo().getShopStatusMessage() : "");
+
+        }else {
             errorProductContainer.setVisibility(GONE);
         }
     }

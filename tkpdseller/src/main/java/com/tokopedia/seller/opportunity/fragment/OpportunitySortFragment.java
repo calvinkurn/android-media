@@ -26,9 +26,10 @@ import java.util.List;
 
 public class OpportunitySortFragment extends BasePresenterFragment {
 
-    public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
     public static final String SELECTED_VALUE = "SELECTED_VALUE";
     public static final String SELECTED_KEY = "SELECTED_KEY";
+    public static final String SELECTED_POSITION = "SELECTED_POSITION";
+    public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
 
     OpportunitySortAdapter adapter;
     List<SortingTypeViewModel> listSort;
@@ -149,20 +150,11 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
             public void onItemSelected(int position, String value, String key) {
 
-                for (int i = 0; i < listSort.size(); i++) {
-                    if (i != position)
-                        listSort.get(i).setSelected(false);
-                    else {
-                        listSort.get(i).setSelected(true);
-                    }
-                }
-
                 Intent intent = new Intent();
                 intent.putExtra(SELECTED_VALUE, value);
                 intent.putExtra(SELECTED_KEY, key);
+                intent.putExtra(SELECTED_POSITION, position);
 
-                listSort.get(position).setSelected(true);
-                intent.putParcelableArrayListExtra(ARGS_LIST_SORT, new ArrayList<>(listSort));
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }

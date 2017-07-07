@@ -3,6 +3,8 @@ package com.tokopedia.core.drawer.var;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -12,6 +14,7 @@ import com.tokopedia.core.var.TkpdCache;
  */
 public class NotificationItem {
 
+    private static final int HAS_CART = 1;
     //PURCHASE
     public int payment_conf = 0; //Konfirmasi Pembayaran
     public int payment_confirmed = 0; //Ubah Pembayaran
@@ -40,7 +43,7 @@ public class NotificationItem {
 
     public NotificationItem(Context context) {
         this.context = context;
-        CacheNotif = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+        CacheNotif = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 
     public int getNotifPurchase() {
@@ -82,7 +85,7 @@ public class NotificationItem {
         CacheNotif.putInt("total_notif", total_notif);
         CacheNotif.putInt(TkpdCache.Key.TOTAL_CART, total_cart);
         if (total_cart > 0) {
-            CacheNotif.putInt(TkpdCache.Key.IS_HAS_CART, 1);
+            CacheNotif.putInt(DrawerNotification.IS_HAS_CART, HAS_CART);
         }
         CacheNotif.putLong("expiry", System.currentTimeMillis() / 1000);
 
@@ -98,7 +101,6 @@ public class NotificationItem {
             return CacheNotif.getInt("total_notif");
         else
             return CacheNotif.getInt("total_notif") - getNotifPurchase();
-
     }
 
     public boolean isUnread() {

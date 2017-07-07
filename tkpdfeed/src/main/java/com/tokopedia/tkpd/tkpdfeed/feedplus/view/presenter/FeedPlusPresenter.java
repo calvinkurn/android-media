@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -112,7 +113,9 @@ public class FeedPlusPresenter
                 StringBuilder stringBuilder = new StringBuilder();
 
                 if (isSuccess) {
-                    stringBuilder.append(promotedShopViewModel.getShop().getName());
+                    stringBuilder.append(
+                            MethodChecker.fromHtml(promotedShopViewModel.getShop()
+                                    .getName()));
                     if (promotedShopViewModel.isFavorit()) {
                         stringBuilder.append(" dihapus dari toko favorit");
                     } else {

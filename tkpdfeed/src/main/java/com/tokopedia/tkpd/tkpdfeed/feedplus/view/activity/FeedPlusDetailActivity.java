@@ -83,7 +83,8 @@ public class FeedPlusDetailActivity extends BasePresenterActivity implements Has
 
     }
 
-    private void setupToolbar() {
+    @Override
+    public void setupToolbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
             int flags = view.getSystemUiVisibility();

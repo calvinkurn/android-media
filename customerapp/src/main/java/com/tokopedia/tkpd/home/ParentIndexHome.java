@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,13 +10,15 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -32,14 +33,15 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.customadapter.ListViewHotProductParent;
-import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
-import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
@@ -48,7 +50,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -56,11 +57,9 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
-import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
-import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,GetUserInfoListener, HasComponent {
+public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener, GetUserInfoListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -172,7 +171,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             initStateFragment = viewPagerIndex;
         }
         content = new ArrayList<>();
-        initView();
+        setView();
 
         if (isFirstTime()) {
             TrackFirstTime();
@@ -181,7 +180,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         content.clear();
 //        adapter.notifyDataSetChanged();
         if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[] {
+            String[] CONTENT = new String[]{
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -193,7 +192,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 content.add(content_);
             }
         } else {
-            String[] CONTENT = new String[] {getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
+            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
             content = new ArrayList<>();
             for (String content_ : CONTENT) {
                 indicator.addTab(indicator.newTab().setText(content_));
@@ -201,7 +200,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
         initCreate();
         adapter.notifyDataSetChanged();
 
@@ -219,30 +217,51 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
 
         t.start();
-        if (!GlobalConfig.isSellerApp()) {
-            drawer.createDrawer(true);
-            drawer.setEnabled(true);
-            drawer.setOnSearchClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onSearchOptionSelected();
-                }
-            });
-        }
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
         cacheHandler = new AnalyticsCacheHandler();
-
-        if(TextUtils.isEmpty(cacheHandler.isUserDataCached())){
-            if(SessionHandler.isV4Login(this))
-                drawer.getUserInfo();
-        }else {
-            setMoengageUserAttributes();
-        }
     }
 
-    private void setMoengageUserAttributes(){
+    @Override
+    public void onGetProfile(DrawerProfile profile) {
+        super.onGetProfile(profile);
+
+        setMoengageUserAttributes();
+    }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.removeAllViews();
+        View view = getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(params);
+        View searchView = view.findViewById(R.id.search_container);
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSearchOptionSelected();
+            }
+        });
+        View notif = view.findViewById(R.id.burger_menu);
+        ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        drawerToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerHelper.isOpened()) {
+                    drawerHelper.closeDrawer();
+                } else {
+                    drawerHelper.openDrawer();
+                }
+            }
+        });
+        toolbar.addView(view);
+        setSupportActionBar(toolbar);
+    }
+
+    private void setMoengageUserAttributes() {
         cacheHandler.getUserDataCache(new AnalyticsCacheHandler.GetUserDataListener() {
             @Override
             public void onSuccessGetUserData(ProfileData result) {
@@ -331,7 +350,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
     }
 
-    private void initView() {
+    private void setView() {
         inflateView(R.layout.activity_index_home_4);
         footerCat = View.inflate(ParentIndexHome.this, R.layout.fragment_category, null);
         mViewPager = (ViewPager) findViewById(R.id.index_page);
@@ -379,7 +398,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 }
 
                 if (getPageTitle(position).equals(content.get(1))) {
-//                    return new FragmentProductFeed();
                     Fragment fragment = new FeedPlusFragment();
                     registeredFragments.put(position, fragment);
                     return fragment;
@@ -433,11 +451,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.INDEX_HOME;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (SessionHandler.isV4Login(this)) {
             getMenuInflater().inflate(R.menu.main, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), TkpdCache.NOTIFICATION_DATA);
-            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
             } else {
@@ -473,9 +496,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public void onGetNotif() {
         CommonUtils.dumper("nyampeee nich status: " + MainApplication.getNotificationStatus());
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
     }
 
     @Override
@@ -505,7 +525,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
-            String[] CONTENT = new String[] {
+            String[] CONTENT = new String[]{
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -523,12 +543,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
         super.onResume();
 
         sendNotifLocalyticsCallback();
@@ -556,7 +570,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onSuccess(String path, int position) {
                 ArrayList<String> imageUrls = new ArrayList<>();
                 imageUrls.add(path);
-                ProductAddActivity.start(ParentIndexHome.this,imageUrls);
+                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
             }
 
             @Override
@@ -583,8 +597,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
+        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);

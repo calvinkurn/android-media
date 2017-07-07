@@ -11,6 +11,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
@@ -206,7 +207,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
-        Log.d(TAG, "start " + positionStart + " item count " + itemCount);
+        Log.d(TAG, "renderItemsWithAds start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
             ClientViewModel model = new ClientViewModel();
             model.setPosition(i);
@@ -291,6 +292,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
+
 
     public interface DataObserver {
         void onStreamLoaded(int type);

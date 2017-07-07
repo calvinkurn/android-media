@@ -10,10 +10,12 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
@@ -22,11 +24,11 @@ import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
-import com.tokopedia.seller.opportunity.domain.model.OpportunityFirstTimeModel;
+import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
-import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterPassModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
@@ -34,6 +36,8 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER;
 
 /**
  * Created by nisie on 3/1/17.
@@ -49,8 +53,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
 
-    private static final int DEFAULT_CATEGORY_SELECTED = 1;
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
+    private static final String ARGS_PARAM = "ARGS_PARAM";
+
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
@@ -64,8 +69,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private RefreshHandler refreshHandler;
     private LocalCacheHandler cacheHandler;
     private PagingHandler pagingHandler;
+    private GlobalCacheManager cacheManager;
 
-    OpportunityFilterViewModel filterData;
+    private GetOpportunityListParam opportunityParam;
+    private OpportunityFilterViewModel filterData;
+    private OpportunityFilterPassModel opportunityFilterPassModel;
 
     public static Fragment newInstance() {
         return new OpportunityListFragment();
@@ -73,24 +81,36 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected boolean isRetainInstance() {
-        return false;
+        return true;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null
                 && savedInstanceState.getParcelable(ARGS_FILTER_DATA) != null) {
             filterData = savedInstanceState.getParcelable(ARGS_FILTER_DATA);
         } else {
             filterData = new OpportunityFilterViewModel();
         }
+
+        if (savedInstanceState != null
+                && savedInstanceState.getParcelable(ARGS_PARAM) != null)
+            opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
+        else
+            opportunityParam = new GetOpportunityListParam();
     }
 
     @Override
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
-        presenter.initOpportunityForFirstTime();
+        presenter.initOpportunityForFirstTime(
+                opportunityParam.getQuery(),
+                opportunityParam.getKeySort(),
+                opportunityParam.getSort(),
+                opportunityParam.getListFilter()
+        );
     }
 
     @Override
@@ -168,7 +188,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private void resetOpportunityList() {
         pagingHandler.resetPage();
-        presenter.initOpportunityForFirstTime();
+        presenter.initOpportunityForFirstTime(
+                opportunityParam.getQuery(),
+                opportunityParam.getKeySort(),
+                opportunityParam.getSort(),
+                opportunityParam.getListFilter()
+        );
     }
 
 
@@ -201,7 +226,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                 && !adapter.isLoading()
                                 && hasNextPage()) {
                             pagingHandler.nextPage();
-                            presenter.getOpportunity();
+                            presenter.getOpportunity(
+                                    opportunityParam.getQuery(),
+                                    opportunityParam.getKeySort(),
+                                    opportunityParam.getSort(),
+                                    opportunityParam.getListFilter());
                         }
                     }
                 });
@@ -209,7 +238,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                presenter.getPass().setQuery(query);
+                opportunityParam.setQuery(query);
                 resetOpportunityList();
                 return false;
             }
@@ -217,7 +246,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
-                    presenter.getPass().setQuery("");
+                    opportunityParam.setQuery("");
                     resetOpportunityList();
                 }
                 return false;
@@ -229,6 +258,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     protected void initialVar() {
         pagingHandler = new PagingHandler();
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -284,7 +314,17 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), filterData.getListFilter());
+
+                opportunityFilterPassModel = new OpportunityFilterPassModel();
+                opportunityFilterPassModel.setListFilter(filterData.getListFilter());
+
+                cacheManager.setKey(CACHE_OPPORTUNITY_FILTER);
+                cacheManager.setValue(CacheUtil.convertModelToString(opportunityFilterPassModel,
+                        new TypeToken<OpportunityFilterPassModel>() {
+                        }.getType()));
+                cacheManager.store();
+
+                Intent intent = OpportunityFilterActivity.createIntent(getActivity());
                 startActivityForResult(intent, REQUEST_FILTER);
             }
         });
@@ -344,7 +384,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.initOpportunityForFirstTime();
+                presenter.initOpportunityForFirstTime(
+                        opportunityParam.getQuery(),
+                        opportunityParam.getKeySort(),
+                        opportunityParam.getSort(),
+                        opportunityParam.getListFilter()
+                );
             }
         };
     }
@@ -365,9 +410,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         if (filterData.getListFilter() == null
                 && filterData.getListSortingType() == null) {
             filterData = opportunityFilterViewModel;
-            setFilter();
-            setSort();
         }
+
+        setFilter();
+        setSort();
 
         enableView();
 
@@ -405,31 +451,46 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 adapter.showEmptyFull(true);
             adapter.notifyDataSetChanged();
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
-            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
-            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
-
-            ArrayList<SortingTypeViewModel> listSort = data.getExtras()
-                    .getParcelableArrayList(OpportunitySortFragment.ARGS_LIST_SORT);
-            filterData.setListSortingType(listSort);
-
-            presenter.getPass().setSort(keySort, paramSort);
-            resetOpportunityList();
-
+            setOpportunitySortData(data);
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
-            ArrayList<FilterViewModel> listFilter = data.getExtras()
-                    .getParcelableArrayList(OpportunityFilterActivity.PARAM_FILTER_VIEW_MODEL);
-            filterData.setListFilter(listFilter);
-
-            ArrayList<FilterPass> listPass = data.getExtras()
-                    .getParcelableArrayList(OpportunityFilterActivity.PARAM_SELECTED_FILTER);
-            if (listPass != null) {
-                presenter.getPass().setListFilter(listPass);
-                resetOpportunityList();
-            }
-
+            setOpportunityFilterData();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void setOpportunityFilterData() {
+
+        opportunityFilterPassModel =
+                cacheManager.getConvertObjData(CACHE_OPPORTUNITY_FILTER,
+                        OpportunityFilterPassModel.class);
+        filterData.setListFilter(opportunityFilterPassModel.getListFilter());
+
+        ArrayList<FilterPass> listPass = opportunityFilterPassModel.getListPass();
+
+        if (listPass != null) {
+            opportunityParam.setListFilter(listPass);
+            resetOpportunityList();
+        }
+    }
+
+    private void setOpportunitySortData(Intent data) {
+        if (filterData != null && filterData.getListSortingType() != null) {
+            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
+            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
+            int position = data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION);
+
+            for (int i = 0; i < filterData.getListSortingType().size(); i++) {
+                if (i != position)
+                    filterData.getListSortingType().get(i).setSelected(false);
+                else {
+                    filterData.getListSortingType().get(i).setSelected(true);
+                }
+            }
+            opportunityParam.setSort(keySort, paramSort);
+            resetOpportunityList();
+        }
+
     }
 
 
@@ -438,11 +499,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onDestroyView();
         presenter.unsubscribeObservable();
         cacheHandler = null;
+        cacheManager.delete(CACHE_OPPORTUNITY_FILTER);
+        cacheManager = null;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ARGS_FILTER_DATA, filterData);
         super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_FILTER_DATA, filterData);
+        outState.putParcelable(ARGS_PARAM, opportunityParam);
     }
 }

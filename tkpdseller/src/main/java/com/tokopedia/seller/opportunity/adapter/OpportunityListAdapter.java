@@ -1,5 +1,6 @@
 package com.tokopedia.seller.opportunity.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by nisie on 3/1/17.
  */
 
-public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
+public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -66,7 +67,7 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         return new OpportunityListAdapter(listener);
     }
 
-    public OpportunityListAdapter(OpportunityListener listener){
+    public OpportunityListAdapter(OpportunityListener listener) {
         this.listener = listener;
         this.list = new ArrayList<>();
     }
@@ -100,7 +101,10 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         holder.productName.setText(list.get(position).getOrderProducts().get(0).getProductName());
         holder.productPrice.setText(list.get(position).getOrderDetail().getDetailOpenAmountIdr());
         holder.deadline.setText(list.get(position).getOrderDeadline().getDeadlineProcess());
-
+        String color = list.get(position).getOrderDeadline().getDeadlineColor();
+        if (color != null && !color.equals("")) {
+            holder.deadline.setBackgroundColor(Color.parseColor(color));
+        }
     }
 
     @Override

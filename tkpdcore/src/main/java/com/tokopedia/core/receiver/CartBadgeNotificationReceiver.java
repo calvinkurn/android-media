@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
@@ -25,9 +27,9 @@ public class CartBadgeNotificationReceiver extends BroadcastReceiver {
         if (intent.getAction().equalsIgnoreCase(ACTION)) {
             boolean hasCart = intent.getBooleanExtra(EXTRA_HAS_CART, false);
             LocalCacheHandler cacheHandler = new LocalCacheHandler(
-                    context, TkpdCache.NOTIFICATION_DATA
+                    context, DrawerHelper.DRAWER_CACHE
             );
-            cacheHandler.putInt(TkpdCache.Key.IS_HAS_CART, hasCart ? 1 : 0);
+            cacheHandler.putInt(DrawerNotification.IS_HAS_CART, hasCart ? 1 : 0);
             cacheHandler.applyEditor();
             if (actionListener != null) actionListener.onRefreshBadgeCart();
         }

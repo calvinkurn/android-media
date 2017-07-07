@@ -233,7 +233,6 @@ public final class CurrencyFormatHelper {
 		result = result + source.charAt(first+1);
 		result = result + source.charAt(first);
 		result = result + source.subSequence(first+2, source.length());
-		System.out.println("Swap: " + source + " to " + result);
 		return result;
 	}
 
@@ -241,7 +240,6 @@ public final class CurrencyFormatHelper {
         rupiah = rupiah.replace("Rp", "");
         rupiah = rupiah.replace(".", "");
         rupiah = rupiah.replace(" ", "");
-        Log.i("UA-9801603-15", rupiah);
         return Integer.parseInt(rupiah);
     }
 }

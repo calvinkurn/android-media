@@ -276,22 +276,32 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(0);
                         }
-                        getOfficialStoreBanner(p.q);
+
+                        if(isSearchResultNotEmpty()) {
+                            getOfficialStoreBanner(p.q);
+                        }
                     }
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
-                    if(browseProductModel.getCategoryData().getIsRevamp() && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
+                    if (browseProductModel.getCategoryData() != null
+                            && browseProductModel.getCategoryData().getIsRevamp()
+                            && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         view.showTabLayout(false);
                     }
-                    view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+                view.setLoadingProgress(false);
                 break;
             case DiscoveryListener.OS_BANNER:
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
+    }
+
+    private boolean isSearchResultNotEmpty() {
+        return browseProductModel.result.products != null
+                && browseProductModel.result.products.length != 0;
     }
 }

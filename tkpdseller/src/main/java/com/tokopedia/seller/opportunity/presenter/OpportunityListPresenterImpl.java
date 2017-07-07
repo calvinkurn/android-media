@@ -1,5 +1,7 @@
 package com.tokopedia.seller.opportunity.presenter;
 
+import android.support.annotation.Nullable;
+
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -17,6 +19,9 @@ import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunityFirstTimeSubscriber;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunitySubscriber;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
+
+import java.util.ArrayList;
 
 /**
  * Created by nisie on 3/2/17.
@@ -29,12 +34,10 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     private GetOpportunityUseCase getOpportunityUseCase;
     private GetOpportunityFilterUseCase getFilterUseCase;
     private GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase;
-    private GetOpportunityListParam opportunityParam;
     private SessionHandler sessionHandler;
 
     public OpportunityListPresenterImpl(OpportunityListView viewListener) {
         this.viewListener = viewListener;
-        this.opportunityParam = new GetOpportunityListParam();
 
         ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
                 new ActionReplacementSourceFactory(viewListener.getActivity()),
@@ -60,15 +63,18 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     }
 
     @Override
-    public void getOpportunity() {
+    public void getOpportunity(@Nullable String query,
+                               @Nullable String keySort,
+                               @Nullable String sort,
+                               @Nullable ArrayList<FilterPass> listFilter) {
         viewListener.showLoadingList();
         viewListener.disableView();
         getOpportunityUseCase.execute(GetOpportunityUseCase.getRequestParam(
                 viewListener.getPage(),
-                opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
-                opportunityParam.getListFilter()
+                query,
+                keySort,
+                sort,
+                listFilter
         ), new GetOpportunitySubscriber(viewListener));
 
     }
@@ -81,21 +87,19 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     }
 
     @Override
-    public GetOpportunityListParam getPass() {
-        return opportunityParam;
-    }
-
-    @Override
-    public void initOpportunityForFirstTime() {
+    public void initOpportunityForFirstTime(@Nullable String query,
+                                            @Nullable String keySort,
+                                            @Nullable String sort,
+                                            @Nullable ArrayList<FilterPass> listFilter) {
         viewListener.showLoadingList();
         viewListener.disableView();
         getOpportunityFirstTimeUseCase.execute(
                 GetOpportunityFirstTimeUseCase.getRequestParam(
                         1,
-                        opportunityParam.getQuery(),
-                        opportunityParam.getKeySort(),
-                        opportunityParam.getSort(),
-                        opportunityParam.getListFilter(),
+                        query,
+                        keySort,
+                        sort,
+                        listFilter,
                         sessionHandler.getShopID()),
                 new GetOpportunityFirstTimeSubscriber(viewListener));
     }

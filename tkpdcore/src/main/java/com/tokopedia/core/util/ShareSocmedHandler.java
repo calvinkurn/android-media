@@ -108,7 +108,6 @@ public class ShareSocmedHandler {
             cache.applyEditor(); // Update exclusion
 
             for (String string : ExclusionList) {
-                System.out.println("Magic: " + string + " : " + link);
                 if (link.contains(string)) {
                     PackageManager pm = context.getPackageManager();
                     Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.tokopedia.com"));
@@ -142,10 +141,8 @@ public class ShareSocmedHandler {
         LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.EXCLUSION);
         String ExclusionList[] = cache.getArrayString(TkpdCache.Key.URL);
         // Mengambil daftar exlcude dari cache yang telah disimpan
-        System.out.println("Magic Exiled: " + ExclusionList);
         if (ExclusionList != null)
             for (String string : ExclusionList) {
-                System.out.println("Magic: " + string + " : " + link);
                 if (link.contains(string)) {
                     PackageManager pm = context.getPackageManager();
                     Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
@@ -170,7 +167,6 @@ public class ShareSocmedHandler {
 
         // Untuk memproses URL jika berupa Hot, atau search atau link toko/produk
         if (link.contains("/hot/")) {
-            System.out.println("Magic is a hot");
             link = link.replace("http://www.tokopedia.com/hot/", "");
             link = link.replace("http://m.tokopedia.com/hot/", "");
             link = link.replace("www.tokopedia.com/hot/", "");
@@ -178,7 +174,6 @@ public class ShareSocmedHandler {
             context.startActivity(BrowseProductRouter.getBrowseProductIntent(context, link));
             return 1; // 1 untuk pindah ke activity lain 2 untuk buka home
         } else if (link.contains("/search?")) {
-            System.out.println("Magic is a search/cat");
             link = link.replace("http://www.tokopedia.com/search?", "");
             link = link.replace("http://m.tokopedia.com/search?", "");
             link = link.replace("www.tokopedia.com/hot/", "");
@@ -198,7 +193,6 @@ public class ShareSocmedHandler {
             link = link.replace("https://m.tokopedia.com/", "");
             link = link.replace("www.tokopedia.com/hot/", "");
             link = link.replace("m.tokopedia.com/hot/", "");
-            System.out.println("Magic " + link);
             String[] div = link.split("/");
             if (div.length == 1) {
                 Intent intent = new Intent(context, ShopInfoActivity.class);
@@ -526,11 +520,9 @@ public class ShareSocmedHandler {
             share.setType("image/*");
             List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, PackageManager.MATCH_DEFAULT_ONLY);
             if (!resInfo.isEmpty()) {
-                System.out.println("Magic there are " + resInfo.size());
                 for (ResolveInfo info : resInfo) {
                     try {
                         Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
-                        System.out.println("Magic " + info.activityInfo.packageName);
 //						  if (info.activityInfo.packageName.equals("com.google.android.gm") || info.activityInfo.packageName.equals("com.google.android.keep") || info.activityInfo.packageName.equals("com.google.android.apps.plus") || info.activityInfo.packageName.equals("com.google.android.talk")) {
                         targetedShare.setType("text/plain"); // put here your mime type
                         //targetedShare.putExtra(Intent.EXTRA_SUBJECT,"Aplikasi Tokopedia");
@@ -550,7 +542,6 @@ public class ShareSocmedHandler {
                         targetedShare.putExtra(Intent.EXTRA_TEXT, shareTxt);
                         targetedShareIntents.add(targetedShare);
                     } catch (Exception e) {
-                        System.out.println("Magic WTF IS THIS");
                         e.printStackTrace();
                     }
                 }

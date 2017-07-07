@@ -13,6 +13,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
@@ -50,9 +51,11 @@ public class DigitalProductActivity extends BasePresenterActivity
         homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                 HomeRouter.INIT_STATE_FRAGMENT_HOME);
 
-        Intent destination = new Intent(context, DigitalProductActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(uri.toString())
+                .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
+                .build();
+        Intent destination = DigitalProductActivity.newInstance(context, passData);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);

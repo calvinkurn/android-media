@@ -11,27 +11,6 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
-
-
-    private AppScreen() {
-
-    }
-
-    public static String convertAFActivityEvent(String tag) {
-        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
-            return AFInAppEventType.LOGIN;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
-
-    public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            return AFInAppEventType.COMPLETE_REGISTRATION;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
@@ -258,5 +237,26 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_LIST = "Resolution Center - Product List";
     public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_DETAIL = "Resolution Center - Product Detail";
     public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
+    public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
     public static final String SCREEN_FEED_DETAIL = "Feed Detail";
+
+    private AppScreen() {
+
+    }
+
+    public static String convertAFActivityEvent(String tag) {
+        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
+            return AFInAppEventType.LOGIN;
+        } else {
+            return AFInAppEventType.CONTENT_VIEW;
+        }
+    }
+
+    public static String convertAFFragmentEvent(String tag) {
+        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+            return AFInAppEventType.COMPLETE_REGISTRATION;
+        } else {
+            return AFInAppEventType.CONTENT_VIEW;
+        }
+    }
 }

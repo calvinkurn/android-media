@@ -37,7 +37,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
         ImageView imageView = new ImageView(context);
         String urlImage = productImages.get(position).getImageSrc();
-        if (urlImage!= null && !urlImage.isEmpty())
+        if (urlImage!=null && !urlImage.isEmpty())
             ImageHandler.loadImageFit2(context, imageView, urlImage);
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
