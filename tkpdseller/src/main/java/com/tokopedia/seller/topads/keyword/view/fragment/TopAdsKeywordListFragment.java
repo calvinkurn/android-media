@@ -57,6 +57,12 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
+    }
+
+    @Override
     public void initialListener(Context context) {
         super.initialListener(context);
         if (context != null && context instanceof KeywordListListener.Listener) {
