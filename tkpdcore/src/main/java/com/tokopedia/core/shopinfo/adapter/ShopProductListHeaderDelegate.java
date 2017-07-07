@@ -110,7 +110,7 @@ public class ShopProductListHeaderDelegate {
         if (vholder.featuredProductList.getLayoutManager() == null) {
             vholder.featuredProductList.setLayoutManager(
                     new LinearLayoutManager(MainApplication.getAppContext(),
-                            LinearLayoutManager.HORIZONTAL, false)
+                            LinearLayoutManager.VERTICAL, false)
             );
         }
 
