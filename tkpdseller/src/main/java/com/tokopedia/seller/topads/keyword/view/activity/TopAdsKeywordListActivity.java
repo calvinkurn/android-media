@@ -256,7 +256,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
             int width = toolbar.getWidth();
 
             if (filter == null || !filter.isVisible()
-                || searchView == null || !searchView.isShown()) {
+                || searchView == null || !searchItem.isVisible()) {
                 return;
             }
             // Pencarian
