@@ -102,8 +102,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
-
-        CommonUtils.UniversalToast(this, this.getClass().getSimpleName());
     }
 
     @Override
