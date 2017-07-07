@@ -1910,6 +1910,9 @@ di Tokopedia Sekarang!</string>
 
     <string name="mark_as_read">Tandai sudah dibaca</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
@@ -1959,4 +1962,34 @@ di Tokopedia Sekarang!</string>
     <string name="accept_replacement">Ambil Peluang</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
+
+    <string name="drawer_title_home">Beranda</string>
+    <string name="drawer_title_login">Masuk</string>
+    <string name="drawer_title_register">Daftar</string>
+    <string name="drawer_title_report">Laporkan</string>
+    <string name="drawer_title_developer_option">Developer Options</string>
+    <string name="drawer_title_seller">Penjualan</string>
+    <string name="drawer_title_inbox">Kotak Masuk</string>
+    <string name="drawer_title_product">Produk</string>
+    <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+    <string name="drawer_title_statistic">Statistik</string>
+    <string name="drawer_title_logout">Keluar</string>
+    <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="drawer_title_list_selling">Daftar Penjualan</string>
+    <string name="drawer_title_opportunity">Peluang</string>
+    <string name="drawer_title_product_list">Daftar Produk</string>
+    <string name="drawer_title_draft_list">Draft Produk</string>
+    <string name="drawer_title_etalase_list">Etalase Toko</string>
+    <string name="drawer_title_inbox_message">Pesan</string>
+    <string name="drawer_title_inbox_discussion">Diskusi Produk</string>
+    <string name="drawer_title_inbox_review">Ulasan</string>
+    <string name="drawer_title_resolution_center">Pusat Resolusi</string>
+    <string name="drawer_title_inbox_ticket">Layanan Pengguna</string>
+    <string name="drawer_title_top_ads">TopAds</string>
+    <string name="drawer_title_new_order">Order Baru</string>
+    <string name="drawer_title_shipping_status">Status Pengiriman</string>
+    <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
+    <string name="drawer_title_help">Bantuan</string>
+    <string name="max_notif">999+</string>
 </resources>

@@ -166,6 +166,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         if (!SessionHandler.isV4Login(getBaseContext())) {
             finish();
         }
+
+        setDrawerSidePosition(drawerPosition);
         super.onResume();
     }
 
@@ -212,40 +214,42 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         super.initView();
         if (getIntent().getExtras() != null && getIntent().getExtras()
                 .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
-            drawer.updateBalance();
+            drawerDataManager.getTokoCash();
     }
 
     private void setDrawerSidePosition(int position) {
-        switch (position) {
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
-            case TAB_POSITION_PURCHASE_VERIFICATION:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
-                break;
-            case TAB_POSITION_PURCHASE_STATUS_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
-                break;
-            case TAB_POSITION_PURCHASE_DELIVER_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
-                break;
-            case TAB_POSITION_PURCHASE_ALL_ORDER:
-                switch (stateTxFilterID) {
-                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
-                        );
-                        break;
-                    default:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
-                        );
-                        break;
-                }
-                break;
-            default:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
+        if(drawerHelper!=null) {
+            switch (position) {
+                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+                    break;
+                case TAB_POSITION_PURCHASE_VERIFICATION:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
+                    break;
+                case TAB_POSITION_PURCHASE_STATUS_ORDER:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
+                    break;
+                case TAB_POSITION_PURCHASE_DELIVER_ORDER:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
+                    break;
+                case TAB_POSITION_PURCHASE_ALL_ORDER:
+                    switch (stateTxFilterID) {
+                        case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
+                            drawerHelper.setSelectedPosition(
+                                    TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
+                            );
+                            break;
+                        default:
+                            drawerHelper.setSelectedPosition(
+                                    TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
+                            );
+                            break;
+                    }
+                    break;
+                default:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+                    break;
+            }
         }
     }
 
@@ -259,7 +263,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             hideKeyboard();
-            setDrawerSidePosition(position);
+            drawerPosition = position;
+            setDrawerSidePosition(drawerPosition);
         }
 
         private void hideKeyboard() {
@@ -267,4 +272,5 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
     }
+
 }

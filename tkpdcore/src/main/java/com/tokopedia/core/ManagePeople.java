@@ -17,6 +17,7 @@ import com.tokopedia.core.manage.people.notification.activity.ManageNotification
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
@@ -91,6 +92,11 @@ public class ManagePeople extends TkpdActivity {
             }
 
         });
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.MANAGE_PEOPLE;
     }
 
     Intent datas = new Intent();

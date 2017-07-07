@@ -30,7 +30,8 @@ import rx.Subscriber;
  * @author normansyahputa on 5/17/17.
  */
 
-public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<BaseListViewListener> implements TopAdsAdListPresenter<GroupAd> {
+public class TopAdsKeywordListPresenterImpl extends
+        TopAdsKeywordListPresenter<BaseListViewListener> implements TopAdsAdListPresenter<GroupAd> {
 
     public static final String KEYWORD_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "TopAdsKeywordListPresen";
