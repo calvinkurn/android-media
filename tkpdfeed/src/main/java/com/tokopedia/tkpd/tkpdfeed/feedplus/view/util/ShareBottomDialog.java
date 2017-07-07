@@ -117,11 +117,11 @@ public class ShareBottomDialog {
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_btn_fb), "Facebook", shareFb()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
+                R.drawable.ic_btn_twitter), "Twitter", shareTwitter()));
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_btn_line), "Line", shareLine()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_btn_wa), "Whatsapp", shareWhatsapp()));
-        list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_twitter), "Twitter", shareTwitter()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_btn_sms), "SMS", shareSMS()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
