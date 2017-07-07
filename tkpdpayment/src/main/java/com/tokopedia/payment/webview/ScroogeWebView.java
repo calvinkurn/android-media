@@ -33,7 +33,6 @@ public class ScroogeWebView extends WebView {
     public static final long FORCE_TIMEOUT = 90000L;
 
     private ITopPayView topPayView;
-    private String paymentId;
     private boolean isEndThanksPage;
 
     public ScroogeWebView(Context context) {
@@ -65,10 +64,6 @@ public class ScroogeWebView extends WebView {
         setOnKeyListener(getWebViewOnKeyListener());
     }
 
-    public String getPaymentId() {
-        return paymentId;
-    }
-
     public boolean isEndThanksPage() {
         return isEndThanksPage;
     }
@@ -86,8 +81,6 @@ public class ScroogeWebView extends WebView {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.invalidate();
             Log.d(TAG, "URL payment " + url);
-            Uri uri = Uri.parse(url);
-            paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
             isEndThanksPage = url.contains("thanks") || url.contains("thank");
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -184,7 +177,7 @@ public class ScroogeWebView extends WebView {
             urlThanks = "";
         }
         Uri uri = Uri.parse(urlThanks);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         if (paymentId != null)
             topPayView.callbackPaymentSucceed();
         else
@@ -192,14 +185,10 @@ public class ScroogeWebView extends WebView {
     }
 
     private void processRedirectUrlContainsSuccessCallbackUrl(String url) {
-        Uri uri = Uri.parse(url);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         topPayView.callbackPaymentSucceed();
     }
 
     private void processRedirectUrlContainsFailedCallbackUrl(String url) {
-        Uri uri = Uri.parse(url);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         topPayView.callbackPaymentFailed();
     }
 
