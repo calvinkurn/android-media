@@ -69,6 +69,7 @@ public class RecentViewActivity extends BasePresenterActivity implements HasComp
 
     @Override
     public void setupToolbar() {
+        super.setupToolbar();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
             int flags = view.getSystemUiVisibility();
