@@ -43,5 +43,7 @@ public class ShopInfoDataSource {
                 });
     }
 
-
+    public boolean clearCacheShopInfo() {
+        return ShopInfoCache.clearShopInfoCache();
+    }
 }
