@@ -80,6 +80,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         initDeepLink();
         isAllowFetchDepartmentView = true;
+        TrackingUtils.sendAppsFlyerDeeplink(this);
     }
 
     @Override
