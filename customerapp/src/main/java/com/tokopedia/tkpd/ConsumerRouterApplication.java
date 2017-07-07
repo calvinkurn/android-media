@@ -8,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -19,10 +21,11 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -31,9 +34,11 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -124,8 +129,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public DrawerVariable getDrawer(AppCompatActivity activity) {
-        return new DrawerVariable(activity);
+    public DrawerHelper getDrawer(AppCompatActivity activity,
+                                  SessionHandler sessionHandler,
+                                  LocalCacheHandler drawerCache,
+                                  GlobalCacheManager globalCacheManager) {
+        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache, globalCacheManager);
     }
 
     @Override
@@ -134,8 +142,8 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -152,6 +160,7 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void goToManageEtalase(Context context) {
         Intent intent = new Intent(context, EtalaseShopEditor.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -181,6 +190,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToCreateMerchantRedirect(Context context) {
+        Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
     }
 

@@ -418,7 +418,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
             public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
-                browseView.showLoading(false);
+
             }
 
             @Override

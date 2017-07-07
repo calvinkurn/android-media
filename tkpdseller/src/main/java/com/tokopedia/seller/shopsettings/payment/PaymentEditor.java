@@ -58,7 +58,6 @@ public class PaymentEditor extends TActivity {
 
 
     private void setToUI(JSONObject Result) {
-        System.out.println("Initiate payment editor");
         mProgressDialog.dismiss();
         ArrayList<String> PaymentIconUri = new ArrayList<String>();
         ArrayList<String> PaymentInfo = new ArrayList<String>();

@@ -21,4 +21,6 @@ public interface TopAdsSearchProductView extends CustomerView {
     void setLoadMoreFlag(boolean eof);
 
     void resetEmptyViewHolder();
+
+    void showBottom();
 }

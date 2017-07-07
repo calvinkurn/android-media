@@ -10,10 +10,10 @@ import android.widget.ImageView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.product.customview.DescriptionTextView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.customview.DescriptionTextView;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
@@ -51,7 +51,7 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
 
     @Override
     protected int getLayoutView() {
-        return R.layout.view_description_product_info;
+        return R.layout.view_description_product_snapshot;
     }
 
     @Override
