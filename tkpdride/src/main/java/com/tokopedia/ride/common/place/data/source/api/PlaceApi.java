@@ -1,6 +1,7 @@
 package com.tokopedia.ride.common.place.data.source.api;
 
 import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
+import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
 
 import java.util.Map;
 
@@ -16,4 +17,7 @@ import rx.Observable;
 public interface PlaceApi {
     @GET("/maps/api/directions/{output}")
     Observable<DirectionEntity> getRoute(@Path("output") String output, @QueryMap Map<String, Object> params);
+
+    @GET("/maps/api/distancematrix/{output}")
+    Observable<DistanceMatrixEntity> getDistanceMatrix(@Path("output") String output, @QueryMap Map<String, Object> params);
 }

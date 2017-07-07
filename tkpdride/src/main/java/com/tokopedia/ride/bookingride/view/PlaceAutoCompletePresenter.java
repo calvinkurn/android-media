@@ -37,6 +37,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
@@ -45,6 +46,8 @@ import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
+import com.tokopedia.ride.common.place.data.entity.Element;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
@@ -79,6 +82,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private CompositeSubscription compositeSubscription;
     private GetUserAddressUseCase getUserAddressUseCase;
     private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
+    private GetDistanceMatrixUseCase getDistanceMatrixUseCase;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
@@ -86,11 +90,13 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase,
                                       GetUserAddressUseCase getUserAddressUseCase,
-                                      GetUserAddressCacheUseCase getUserAddressCacheUseCase) {
+                                      GetUserAddressCacheUseCase getUserAddressCacheUseCase,
+                                      GetDistanceMatrixUseCase getDistanceMatrixUseCase) {
         mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
+        this.getDistanceMatrixUseCase = getDistanceMatrixUseCase;
     }
 
     @Override
@@ -490,15 +496,25 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                                    address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
                                                    addresses.add(address);
                                                }
-                                               getView().showGoogleLabel();
-                                               getView().renderPlacesList(addresses);
-                                               getView().hideAutoCompleteLoadingCross();
-                                               getView().showClearButton();
+
+
+                                               if (mCurrentLocation == null || results == null || results.size() == 0) {
+                                                   renderPlaceList(addresses);
+                                               } else {
+                                                   getDistanceMatrixFromOrigin(results, addresses);
+                                               }
                                            }
                                        }
                                    }
                         )
         );
+    }
+
+    public void renderPlaceList(ArrayList<Visitable> addresses) {
+        getView().showGoogleLabel();
+        getView().renderPlacesList(addresses);
+        getView().hideAutoCompleteLoadingCross();
+        getView().showClearButton();
     }
 
     public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {
@@ -623,6 +639,57 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         } else {
             getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
         }
+    }
+
+    public void getDistanceMatrixFromOrigin(ArrayList<AutocompletePrediction> results, final ArrayList<Visitable> addresses) {
+        if (mCurrentLocation == null || results == null || results.size() == 0) return;
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetDistanceMatrixUseCase.PARAM_ORIGINS, String.format("%s,%s",
+                mCurrentLocation.getLatitude(),
+                mCurrentLocation.getLongitude()
+        ));
+
+        String destinations = "";
+        for (AutocompletePrediction prediction : results) {
+            destinations += prediction.getFullText(null) + "|";
+        }
+
+        requestParams.putString(GetDistanceMatrixUseCase.PARAM_DESTINATIONS, destinations);
+        requestParams.putString(GetDistanceMatrixUseCase.PARAM_KEY, getView().getActivity().getString(R.string.GOOGLE_API_KEY));
+
+        getDistanceMatrixUseCase.execute(requestParams, new Subscriber<DistanceMatrixEntity>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                renderPlaceList(addresses);
+            }
+
+            @Override
+            public void onNext(DistanceMatrixEntity distanceMatrixEntity) {
+                //add distance to the addresses
+                if (distanceMatrixEntity != null && distanceMatrixEntity.getRows().size() > 0 && distanceMatrixEntity.getRows().get(0).getElements() != null) {
+                    int index = 0;
+                    for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
+                        if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
+                            String distance = element.getDistance().getText();
+
+                            if (addresses.size() > index) {
+                                ((PlaceAutoCompeleteViewModel) addresses.get(index)).setDistance(distance);
+                            }
+                        }
+                        index++;
+                    }
+                }
+
+                renderPlaceList(addresses);
+            }
+        });
     }
 
     @Override
