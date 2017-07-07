@@ -52,6 +52,7 @@
         android:layout_marginStart="@dimen/margin_vs"
         android:orientation="vertical"
         android:layout_gravity="start"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:visibility="gone">
 
@@ -118,10 +119,10 @@
         android:gravity="center"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
-        android:paddingEnd="@dimen/margin_vl"
-        android:paddingLeft="@dimen/margin_vl"
-        android:paddingRight="@dimen/margin_vl"
-        android:paddingStart="@dimen/margin_vl"
+        android:paddingEnd="@dimen/margin_med"
+        android:paddingLeft="@dimen/margin_med"
+        android:paddingRight="@dimen/margin_med"
+        android:paddingStart="@dimen/margin_med"
         android:text="@string/toko_cash_activation"
         android:textColor="@color/white"
         android:layout_gravity="end|center_vertical"
