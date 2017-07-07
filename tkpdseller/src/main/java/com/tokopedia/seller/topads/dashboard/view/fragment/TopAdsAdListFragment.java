@@ -302,8 +302,8 @@ public abstract class TopAdsAdListFragment<T extends
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof OnAdListFragmentListener) {
             listener = (OnAdListFragmentListener) context;
         }

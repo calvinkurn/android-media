@@ -63,8 +63,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context != null && context instanceof KeywordListListener.Listener) {
             keywordAdListener = (KeywordListListener.Listener) context;
         }
