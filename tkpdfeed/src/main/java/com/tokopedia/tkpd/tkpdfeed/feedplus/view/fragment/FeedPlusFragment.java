@@ -1,21 +1,28 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -48,11 +55,14 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.product.AddFeedViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -84,7 +94,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
-
+    View newFeed;
     @Inject
     FeedPlusPresenter presenter;
 
@@ -186,6 +196,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
+        newFeed = parentView.findViewById(R.id.layout_new_feed);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -198,6 +209,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
+        newFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollToTop();
+                showRefresh();
+                onRefresh();
+            }
+        });
     }
 
     @Override
@@ -208,6 +227,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
 
@@ -378,6 +398,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onShowNewFeed() {
+        newFeed.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void finishLoading() {
         swipeToRefresh.setRefreshing(false);
     }
@@ -520,5 +545,31 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     public void scrollToTop() {
         if (recyclerView != null) recyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint() && presenter != null) {
+            if (hasFeed()
+                    && adapter.getlist().get(0) instanceof RecentViewViewModel
+                    && adapter.getlist().get(1) instanceof ActivityCardViewModel) {
+                presenter.checkNewFeed(((ActivityCardViewModel) adapter.getlist().get(1))
+                        .getCursor());
+            } else if (hasFeed()
+                    && adapter.getlist().get(0) instanceof ActivityCardViewModel) {
+                presenter.checkNewFeed(((ActivityCardViewModel) adapter.getlist().get(0))
+                        .getCursor());
+            } else {
+                presenter.checkNewFeed("");
+            }
+        }
+    }
+
+    private boolean hasFeed() {
+        return adapter.getlist() != null
+                && !adapter.getlist().isEmpty()
+                && adapter.getlist().size() > 1
+                && !(adapter.getlist().get(0) instanceof EmptyModel);
     }
 }

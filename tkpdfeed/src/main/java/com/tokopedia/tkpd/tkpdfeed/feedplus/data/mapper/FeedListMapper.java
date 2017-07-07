@@ -28,12 +28,12 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         return convertToDataFeedDomain(data);
     }
 
-    private ProductFeedDomain createProductFeedDomain(Feeds.Data.Product product, List<WholesaleDomain> wholesaleDomains) {
+    private ProductFeedDomain createProductFeedDomain(String cursor, Feeds.Data.Product product, List<WholesaleDomain> wholesaleDomains) {
         if (product == null) return null;
         return new ProductFeedDomain(product.id(), product.name(), product.price(),
                 product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
                 product.preorder(), product.cashback(), product.url(), product.productLink(), product.wishlist(),
-                product.rating());
+                product.rating(), cursor);
     }
 
     private PromotionFeedDomain createPromotionFeedDomain(Feeds.Data.Promotion promotion) {
@@ -58,7 +58,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         return wholesaleDomains;
     }
 
-    private List<ProductFeedDomain> convertToProductFeedDomain(List<Feeds.Data.Product> products) {
+    private List<ProductFeedDomain> convertToProductFeedDomain(String cursor, List<Feeds.Data.Product> products) {
         List<ProductFeedDomain> productFeedDomains = new ArrayList<>();
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
@@ -66,7 +66,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
 
                 List<WholesaleDomain> wholesaleDomains = convertToWholesaleDomain(product.wholesale());
 
-                productFeedDomains.add(createProductFeedDomain(product, wholesaleDomains));
+                productFeedDomains.add(createProductFeedDomain(cursor, product, wholesaleDomains));
             }
         }
 
@@ -129,7 +129,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
 
     private List<InspirationRecommendationDomain> convertToInspirationRecommendation(List<Feeds.Data.Recommendation> recommendations) {
         List<InspirationRecommendationDomain> listRecommendation = new ArrayList<>();
-        if(recommendations != null) {
+        if (recommendations != null) {
             for (Feeds.Data.Recommendation recommendation : recommendations) {
                 listRecommendation.add(new InspirationRecommendationDomain(
                         recommendation.id(),
@@ -168,7 +168,9 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         if (datumList != null) {
             for (int i = 0; i < datumList.size(); i++) {
                 Feeds.Data.Datum datum = datumList.get(i);
-                List<ProductFeedDomain> productFeedDomains = convertToProductFeedDomain(datum.content().products());
+                List<ProductFeedDomain> productFeedDomains = convertToProductFeedDomain(datum
+                        .cursor(), datum
+                        .content().products());
                 List<PromotionFeedDomain> promotionFeedDomains = convertToPromotionFeedDomain(datum.content().promotions());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(datum.content(), productFeedDomains, promotionFeedDomains);

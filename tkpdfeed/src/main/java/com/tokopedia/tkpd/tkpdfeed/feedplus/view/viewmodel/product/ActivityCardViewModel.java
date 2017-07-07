@@ -16,6 +16,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
     private String actionText;
     private String feedId;
     private String shareLinkDescription;
+    private String cursor;
 
     public ActivityCardViewModel(ProductCardHeaderViewModel productCardHeaderViewModel,
                                  ArrayList<ProductFeedViewModel> listProduct,
@@ -23,7 +24,8 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String shareLinkDescription,
                                  String actionText,
                                  String feedId,
-                                 int totalProduct) {
+                                 int totalProduct,
+                                 String cursor) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
@@ -31,6 +33,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.actionText = actionText;
         this.feedId = feedId;
         this.totalProduct = totalProduct;
+        this.cursor = cursor;
     }
 
     @Override
@@ -89,5 +92,13 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public int getTotalProduct() {
         return totalProduct;
+    }
+
+    public String getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
     }
 }

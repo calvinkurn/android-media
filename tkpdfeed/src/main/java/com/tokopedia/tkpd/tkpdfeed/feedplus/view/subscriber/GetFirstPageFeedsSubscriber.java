@@ -56,7 +56,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     @Override
     public void onNext(FeedResult feedResult) {
 
-        if(feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.clearData();
 
         FeedDomain feedDomain = feedResult.getFeedDomain();
@@ -81,18 +81,18 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (hasFeed(feedDomain))
             viewListener.updateCursor(getCurrentCursor(feedResult));
 
-        if(feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.finishLoading();
 
     }
 
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
-        if(hasFeed(feedResult.getFeedDomain())
+        if (hasFeed(feedResult.getFeedDomain())
                 && !feedResult.isHasNext()
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
-        }else{
+        } else {
             viewListener.onSuccessGetFeedFirstPage(listFeedView);
         }
     }
@@ -221,7 +221,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getSource().getShop().getShareLinkDescription(),
                 domain.getContent().getStatusActivity(),
                 domain.getId(),
-                domain.getContent().getTotalProduct());
+                domain.getContent().getTotalProduct(),
+                domain.getCursor());
     }
 
     protected ProductCardHeaderViewModel convertToProductCardHeaderViewModel(DataFeedDomain domain) {

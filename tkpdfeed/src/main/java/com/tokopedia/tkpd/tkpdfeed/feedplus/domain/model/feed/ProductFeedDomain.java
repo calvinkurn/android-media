@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -10,38 +12,67 @@ import javax.annotation.Nullable;
 
 public class ProductFeedDomain {
 
-    private @Nullable Integer id;
+    private
+    @Nullable
+    Integer id;
 
-    private @Nullable String name;
+    private
+    @Nullable
+    String name;
 
-    private @Nullable String price;
+    private
+    @Nullable
+    String price;
 
-    private @Nullable String image;
+    private
+    @Nullable
+    String image;
 
-    private @Nullable String imageSingle;
+    private
+    @Nullable
+    String imageSingle;
 
-    private @Nullable
+    private
+    @Nullable
     List<WholesaleDomain> wholesale;
 
-    private @Nullable Boolean freeReturns;
+    private
+    @Nullable
+    Boolean freeReturns;
 
-    private @Nullable Boolean preorder;
+    private
+    @Nullable
+    Boolean preorder;
 
-    private @Nullable String cashback;
+    private
+    @Nullable
+    String cashback;
 
-    private @Nullable Object url;
+    private
+    @Nullable
+    Object url;
 
-    private @Nullable String productLink;
+    private
+    @Nullable
+    String productLink;
 
-    private @Nullable Boolean wishlist;
+    private
+    @Nullable
+    Boolean wishlist;
 
-    private @Nullable Integer rating;
+    private
+    @Nullable
+    Integer rating;
+    private
+    @NonNull
+    String cursor;
 
     public ProductFeedDomain(@Nullable Integer id, @Nullable String name, @Nullable String price,
-                   @Nullable String image, @Nullable String image_single,
-                   @Nullable List<WholesaleDomain> wholesale, @Nullable Boolean freereturns,
-                   @Nullable Boolean preorder, @Nullable String cashback, @Nullable Object url,
-                   @Nullable String productLink, @Nullable Boolean wishlist, @Nullable Integer rating) {
+                             @Nullable String image, @Nullable String image_single,
+                             @Nullable List<WholesaleDomain> wholesale, @Nullable Boolean freereturns,
+                             @Nullable Boolean preorder, @Nullable String cashback, @Nullable Object url,
+                             @Nullable String productLink, @Nullable Boolean wishlist, @Nullable Integer
+                                     rating, @NonNull String cursor) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -55,6 +86,7 @@ public class ProductFeedDomain {
         this.productLink = productLink;
         this.wishlist = wishlist;
         this.rating = rating;
+        this.cursor = cursor;
     }
 
     @Nullable
@@ -163,5 +195,13 @@ public class ProductFeedDomain {
 
     public void setRating(@Nullable Integer rating) {
         this.rating = rating;
+    }
+
+    public String getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.CheckNewFeedSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -146,5 +147,16 @@ public class FeedPlusPresenter
                         currentCursor),
                 new GetFirstPageFeedsSubscriber(viewListener));
     }
+
+    @Override
+    public void checkNewFeed(String firstCursor) {
+        refreshFeedUseCase.execute(
+                refreshFeedUseCase.getFeedPlusParam(
+                        1,
+                        sessionHandler,
+                        ""),
+                new CheckNewFeedSubscriber(firstCursor, viewListener));
+    }
+
 
 }

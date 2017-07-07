@@ -94,6 +94,7 @@ public interface FeedPlus{
 
         void unsetEndlessScroll();
 
+        void onShowNewFeed();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
@@ -103,6 +104,8 @@ public interface FeedPlus{
         void fetchNextPage();
 
         void refreshPage();
+
+        void checkNewFeed(String cursor);
 
     }
 }
