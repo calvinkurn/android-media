@@ -484,8 +484,6 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
             } else {
                 onFailedAddAttachment();
             }
-        } else {
-            onFailedAddAttachment();
         }
     }
 
