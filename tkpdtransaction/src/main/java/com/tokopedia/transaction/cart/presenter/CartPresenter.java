@@ -19,15 +19,18 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
@@ -323,8 +326,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processUpdateInsurance(@NonNull CartItem cartData, boolean useInsurance) {
+    public void processUpdateInsurance(@NonNull final CartItemEditable cartItemEditable,
+                                       final boolean useInsurance) {
         view.showProgressLoading();
+        CartItem cartData = cartItemEditable.getCartItem();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", cartData.getCartDestination().getAddressId());
         maps.put("product_insurance", useInsurance ? "1" : "0");
@@ -342,6 +347,7 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         handleThrowableGeneral(e);
+                        switchInsurancePrice(cartItemEditable, !useInsurance);
                     }
 
                     @Override
@@ -360,9 +366,15 @@ public class CartPresenter implements ICartPresenter {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        processRenderViewCartData(cartData);
+                        switchInsurancePrice(cartItemEditable, useInsurance);
                     }
                 });
+    }
+
+    private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
+        cartItemEditable.setUseInsurance(useInsurance);
+        cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
+        view.refreshCartList();
     }
 
     @Override
@@ -477,6 +489,8 @@ public class CartPresenter implements ICartPresenter {
 
         List<String> dropShipperStringList = new ArrayList<>();
         List<String> partialDeliverStringList = new ArrayList<>();
+        List<String> rateKeyList = new ArrayList<>();
+        List<String> rateDataList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -486,6 +500,13 @@ public class CartPresenter implements ICartPresenter {
             }
             if (data.isPartialDeliver()) {
                 partialDeliverStringList.add(data.getCartStringForDeliverOption());
+            }
+            if(data.getCartCourierPrices() != null) {
+                rateKeyList.add(data.getCartCourierPrices().getKey());
+                rateDataList.add(data.getCartCourierPrices().getKeroValue());
+            } else {
+                rateKeyList.add("");
+                rateDataList.add("");
             }
         }
 
@@ -528,6 +549,8 @@ public class CartPresenter implements ICartPresenter {
                 .partialString(partialDeliverParamString)
                 .lpFlag("1")
                 .step("1")
+                .keroKeyParams(rateKeyList)
+                .keroValueParams(rateDataList)
                 .build();
         if (checkoutData.getGateway() == null) {
             view.renderForceShowPaymentGatewaySelection();
@@ -606,7 +629,7 @@ public class CartPresenter implements ICartPresenter {
                     String.valueOf(data.getLpAmount()));
         else view.renderInvisibleLoyaltyBalance();
         view.renderTotalPaymentWithoutLoyalty(data.getGrandTotalWithoutLPIDR());
-        view.renderCartListData(data.getCartItemList());
+        view.renderCartListData(data.getTokenKero(), data.getCartItemList());
         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
         view.setCheckoutCartToken(data.getToken());
         if ((data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0"))) {
@@ -624,5 +647,86 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
+    }
+
+    @Override
+    public void processCartRates(String token, final List<CartItem> cartItemList) {
+        cartDataInteractor.calculateKeroRates(token, cartItemList, keroRatesListener());
+    }
+
+    private ICartDataInteractor.KeroRatesListener keroRatesListener() {
+        return new ICartDataInteractor.KeroRatesListener() {
+            @Override
+            public void onSuccess(CartRatesData cartRatesData) {
+                if(cartRatesData.getRatesResponse() == null) {
+                    view.setCartError(cartRatesData.getRatesIndex());
+                } else {
+                    Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
+                            Rates.class);
+                    CartCourierPrices cartCourierPrices = new CartCourierPrices();
+                    cartCourierPrices.setKey(cartRatesData.getKeroRatesKey());
+                    cartCourierPrices.setCartProductPrice(cartRatesData.getCartTotalProductPrice());
+                    cartCourierPrices.setCartIndex(cartRatesData.getRatesIndex());
+                    cartCourierPrices.setAdditionFee(cartRatesData.getCartAdditionalLogisticFee());
+                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData.getData()
+                            .getAttributes()
+                            .get(0)
+                            .getWeight()));
+                    List<com.tokopedia.transaction.addtocart.model.kero.Product> shipmentServices =
+                            ratesData.getData().getAttributes().get(0).getProducts();
+
+                    setSubTotalPrice(shipmentServices,
+                            cartCourierPrices,
+                            cartRatesData);
+                    view.setCartSubTotal(cartCourierPrices);
+                }
+            }
+
+            @Override
+            public void onAllDataCompleted() {
+                view.showRatesCompletion();
+            }
+
+            @Override
+            public void onRatesFailed(String errorMessage) {
+                view.setCartNoGrandTotal();
+            }
+
+            @Override
+            public void onConnectionFailed() {
+
+            }
+        };
+    }
+
+    private void setSubTotalPrice(List<com.tokopedia.transaction.addtocart.model.kero
+            .Product> keroShipmentServices,
+                                  CartCourierPrices courierPrices,
+                                  CartRatesData cartRatesData) {
+
+        int shipmentServiceId = cartRatesData.getCourierServiceId();
+
+        for (int i = 0; i< keroShipmentServices.size(); i++) {
+            Integer currentKeroShipmentServiceId = Integer
+                    .parseInt(keroShipmentServices.get(i).getShipperProductId());
+
+            if (currentKeroShipmentServiceId == shipmentServiceId) {
+                courierPrices.setShipmentPrice(keroShipmentServices.get(i).getPrice());
+                courierPrices.setInsuranceMode(keroShipmentServices.get(i).getInsuranceMode());
+                if (courierPrices.getInsuranceMode() == 3) {
+                    courierPrices.setInsurancePrice(keroShipmentServices.get(i)
+                            .getInsurancePrice());
+                    courierPrices.setCartSubtotal(true);
+                } else if (courierPrices.getInsuranceMode() == 2){
+                    courierPrices.setInsurancePrice(keroShipmentServices.get(i)
+                            .getInsurancePrice());
+                    courierPrices.setCartSubtotal(cartRatesData.isInsuranced());
+                } else {
+                    courierPrices.setCartSubtotal(false);
+                }
+                courierPrices.setKeroValue(keroShipmentServices.get(i));
+            }
+        }
+
     }
 }

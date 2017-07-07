@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -73,6 +74,7 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -84,7 +86,10 @@ import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.transaction.utils.ValueConverter;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -161,6 +166,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     ImageView donasiInfo;
     @BindView(R2.id.layout_cart_fragment)
     RelativeLayout layoutCartFragment;
+    @BindView(R2.id.total_payment_loading)
+    ProgressBar totalPaymentLoading;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -298,8 +305,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderTotalPaymentWithLoyalty(String totalPaymentWithLoyaltyIdr) {
-        this.totalPaymentWithLoyaltyIdr = totalPaymentWithLoyaltyIdr;
-        tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
+
     }
 
     @Override
@@ -346,9 +352,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCartListData(final List<CartItem> cartList) {
+    public void renderCartListData(String keroToken, final List<CartItem> cartList) {
         cartItemAdapter = new CartItemAdapter(this, this);
-        cartItemAdapter.fillDataList(cartList);
+        totalPaymentLoading.setVisibility(View.VISIBLE);
+        cartItemAdapter.fillDataList(keroToken, cartList);
+        presenter.processCartRates(keroToken, cartList);
         rvCart.setAdapter(cartItemAdapter);
         btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
@@ -462,6 +470,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void renderVisibleMainCartContainer() {
         nsvContainer.setVisibility(View.VISIBLE);
         pbMainLoading.setVisibility(View.GONE);
+        tvTotalPayment.setVisibility(View.GONE);
         presenter.processGetTickerGTM();
     }
 
@@ -622,6 +631,50 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void setCartSubTotal(CartCourierPrices cartCourierPrices) {
+        cartItemAdapter.setRates(cartCourierPrices);
+    }
+
+    @Override
+    public void setCartError(int cartIndex) {
+        cartItemAdapter.setCartItemError(cartIndex,
+                getActivity().getString(R.string.label_title_error_default_initial_cart_data),
+                getActivity().getString(R.string.error_cannot_send_to_destination));
+        holderError.setVisibility(View.VISIBLE);
+        tvError1.setText(getActivity().getString(R.string.label_title_error_default_initial_cart_data));
+        tvError2.setText(getActivity().getString(R.string.error_check_cart));
+    }
+
+    @Override
+    public void showRatesCompletion() {
+        refreshCartList();
+    }
+
+    @Override
+    public void setCartNoGrandTotal() {
+        totalPaymentLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void refreshCartList() {
+        int grandTotal = 0;
+        cartItemAdapter.notifyDataSetChanged();
+        for (int i = 0; i < cartItemAdapter.getDataList().size(); i++) {
+            if(cartItemAdapter.getDataList().get(i).getCartCourierPrices() != null) {
+                grandTotal += cartItemAdapter
+                        .getDataList().get(i).getCartCourierPrices().getCartSubtotal();
+            }
+        }
+        if(grandTotal < 1)
+            tvTotalPayment.setVisibility(View.GONE);
+        else {
+            tvTotalPayment.setVisibility(View.VISIBLE);
+            tvTotalPayment.setText(ValueConverter.getStringIdrFormat(grandTotal));
+        }
+        totalPaymentLoading.setVisibility(View.GONE);
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -670,8 +723,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance) {
-        presenter.processUpdateInsurance(cartData, useInsurance);
+    public void onUpdateInsuranceCartItem(CartItemEditable cartItemEditable, boolean useInsurance) {
+        presenter.processUpdateInsurance(cartItemEditable, useInsurance);
     }
 
     @Override
@@ -979,5 +1032,19 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 return false;
             }
         });
+    }
+
+    private String getStringIdrFormat(int value) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+
+        return kursIndonesia.format(value);
     }
 }
