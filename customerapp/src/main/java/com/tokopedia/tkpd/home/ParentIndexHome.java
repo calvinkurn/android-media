@@ -281,26 +281,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    mViewPager.setCurrentItem(tab.getPosition());
-                    sendGTMButtonEvent(tab.getPosition());
-                }
 
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                    Fragment fragment = adapter.getFragmentForPosition(tab.getPosition());
-                    if(fragment != null && fragment instanceof FeedPlusFragment){
-                        ((FeedPlusFragment)fragment).scrollToTop();
-                    }
-                }
-            });
             // indicator.setupWithViewPager(mViewPager);
             // int fragment = getIntent().getIntExtra("fragment", 1);
             switch (initStateFragment) {
@@ -444,8 +425,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             return ParentIndexHome.this.content.size();
         }
 
-        public @Nullable Fragment getFragmentForPosition(int position)
-        {
+        public
+        @Nullable
+        Fragment getFragmentForPosition(int position) {
             return registeredFragments.get(position);
         }
     }
@@ -541,6 +523,30 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter.notifyDataSetChanged();
         }
 
+        if (sessionHandler != null
+                && sessionHandler.isV4Login()
+                && indicator != null) {
+            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+                    sendGTMButtonEvent(tab.getPosition());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                    Fragment fragment = adapter.getFragmentForPosition(tab.getPosition());
+                    if (fragment != null && fragment instanceof FeedPlusFragment) {
+                        ((FeedPlusFragment) fragment).scrollToTop();
+                    }
+                }
+            });
+        }
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
@@ -590,7 +596,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             startActivity(intent);
             finish();
         }
-        if(requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(3);
         }
     }
