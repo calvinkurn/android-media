@@ -26,6 +26,9 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.PlaceFilter;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
@@ -576,8 +579,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void actionAutoDetectLocation() {
-        if (mCurrentLocation != null) {
-            compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
+        if (mCurrentLocation != null || ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            /*compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     try {
@@ -619,7 +622,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         getView().onPlaceSelectedFound(placePassViewModel);
                     }
                 }
-            }));
+            }));*/
+            getCurrentPlace();
         } else {
             getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
         }
@@ -653,5 +657,62 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     public void detachView() {
         mGetPeopleAddressesUseCase.unsubscribe();
         super.detachView();
+    }
+
+    private void getCurrentPlace() {
+        getCurrentPlace(new PlaceFilter())
+                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
+                    @Override
+                    public Place call(PlaceLikelihoodBuffer buffer) {
+                        if (buffer != null) {
+                            PlaceLikelihood likelihood = buffer.get(0);
+                            if (likelihood != null) {
+                                return likelihood.getPlace();
+                            }
+                            buffer.release();
+                            return null;
+                        } else {
+                            return null;
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Place>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Place place) {
+                        if (isViewAttached() && !isUnsubscribed() && place != null) {
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(String.valueOf(place.getName()));
+                            placeVm.setAndFormatLatitude(place.getLatLng().latitude);
+                            placeVm.setAndFormatLongitude(place.getLatLng().longitude);
+                            placeVm.setPlaceId(place.getId());
+                            placeVm.setTitle(String.valueOf(place.getName()));
+                            getView().onPlaceSelectedFound(placeVm);
+                        }
+                    }
+                });
+    }
+
+    private Observable<PlaceLikelihoodBuffer> getCurrentPlace(@javax.annotation.Nullable final PlaceFilter placeFilter) {
+        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
+                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
+                    @Override
+                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
+                        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return Observable.empty();
+                        }
+                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+                    }
+                });
     }
 }
