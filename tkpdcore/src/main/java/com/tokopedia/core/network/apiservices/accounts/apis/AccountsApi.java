@@ -131,6 +131,7 @@ public interface AccountsApi {
     @GET(TkpdBaseURL.Accounts.PATH_GET_INFO)
     Observable<Response<String>> getUserInfo(@QueryMap Map<String, Object> params);
 
-    @GET(TkpdBaseURL.Accounts.PATH_EDIT_PROFILE)
-    Observable<Response<TkpdResponse>> editProfile(@QueryMap TKPDMapParam<String, Object> parameters);
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_EDIT_PROFILE)
+    Observable<Response<TkpdResponse>> editProfile(@FieldMap TKPDMapParam<String, Object> parameters);
 }

@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/gender_title_prof_comp"
+        android:text="@string/date_title_prof_comp"
         android:textSize="@dimen/text_size_16"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Tanggal">
+            android:hint="@string/profile_completion_date">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/date"
                 android:layout_width="match_parent"
@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Bulan">
+            android:hint="@string/profile_completion_month">
             <AutoCompleteTextView
                 android:id="@+id/month"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Tahun">
+            android:hint="@string/profile_completion_year">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/year"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"

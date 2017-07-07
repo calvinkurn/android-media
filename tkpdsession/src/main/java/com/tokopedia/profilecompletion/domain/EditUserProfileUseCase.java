@@ -15,6 +15,10 @@ import rx.Observable;
 
 public class EditUserProfileUseCase extends UseCase<EditUserInfoDomainModel> {
 
+    public static final int EDIT_GENDER = 1;
+    public static final int EDIT_DOB = 2;
+    public static final int EDIT_VERIF = 3;
+
     private static final String BDAY_DATE = "bday_dd";
     private static final String BDAY_MONTH = "bday_mm";
     private static final String BDAY_YEAR = "bday_yy";

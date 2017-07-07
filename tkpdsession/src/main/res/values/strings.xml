@@ -21,6 +21,7 @@
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
+    <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_activity_change_phone_number">Ubah Nomor Ponsel</string>
     <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
     <string name="profile_completion">Kelengkapan data diri</string>
@@ -59,9 +60,21 @@
     <string name="profile_completion_title">Data Diri</string>
     <string name="continue_form">Lanjut</string>
     <string name="skip_form">Lewati</string>
+    <string name="via_call">atau lewat telepon</string>
+    <string name="via_call_short">lewat telepon</string>
+
+    <string name="tokocash_phone_verification_text">Setelah terverifikasi, TokoCash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
 
     <string name="your_profile_completion">Kelengkapan profil</string>
     <string name="gender_title_prof_comp">Jenis Kelamin Anda</string>
     <string name="date_title_prof_comp">Tanggal Lahir Anda</string>
+    <string name="title_verif_phone_prof_comp">Verifikasi Nomor Handphone</string>
+
+    <string name="profile_completion_man">Pria</string>
+    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_date">Tanggal</string>
+    <string name="profile_completion_month">Bulan</string>
+    <string name="profile_completion_year">Tahun</string>
+
 
 </resources>

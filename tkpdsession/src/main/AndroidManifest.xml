@@ -67,6 +67,7 @@
 
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait" />
 

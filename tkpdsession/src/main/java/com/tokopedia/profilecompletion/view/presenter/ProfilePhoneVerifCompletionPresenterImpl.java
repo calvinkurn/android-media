@@ -1,9 +1,7 @@
 package com.tokopedia.profilecompletion.view.presenter;
 
-import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.GetUserInfoSubscriber;
 import com.tokopedia.profilecompletion.view.fragment.ProfilePhoneVerifCompletionFragment;
 import com.tokopedia.profilecompletion.view.subscriber.GetUserInfoSubscriber;
 import com.tokopedia.profilecompletion.view.subscriber.EditUserInfoSubscriber;
@@ -26,25 +24,25 @@ public class ProfilePhoneVerifCompletionPresenterImpl implements ProfilePhoneVer
         this.editUserProfileUseCase = editUserProfileUseCase;
     }
 
-
-    @Override
-    public void getUserInfo() {
-        getUserInfoUseCase.execute(
-                GetUserInfoUseCase.generateParam(),
-                new GetUserInfoSubscriber(view));
-    }
-
-    @Override
-    public void editDOB(String day, String month, String year) {
-        editUserProfileUseCase.execute(
-                EditUserProfileUseCase.generateParamDOB(day, month, year),
-                new EditUserInfoSubscriber());
-    }
-
-    @Override
-    public void editGender(int gender) {
-        editUserProfileUseCase.execute(
-                EditUserProfileUseCase.generateParamGender(gender),
-                new EditUserInfoSubscriber());
-    }
+//
+//    @Override
+//    public void getUserInfo() {
+//        getUserInfoUseCase.execute(
+//                GetUserInfoUseCase.generateParam(),
+//                new GetUserInfoSubscriber(view));
+//    }
+//
+//    @Override
+//    public void editDOB(String day, String month, String year) {
+//        editUserProfileUseCase.execute(
+//                EditUserProfileUseCase.generateParamDOB(day, month, year),
+//                new EditUserInfoSubscriber(view, EditUserProfileUseCase.EDIT_GENDER));
+//    }
+//
+//    @Override
+//    public void editGender(int gender) {
+//        editUserProfileUseCase.execute(
+//                EditUserProfileUseCase.generateParamGender(gender),
+//                new EditUserInfoSubscriber(view, EditUserProfileUseCase.EDIT_GENDER));
+//    }
 }

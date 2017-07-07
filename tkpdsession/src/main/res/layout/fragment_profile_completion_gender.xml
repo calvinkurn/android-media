@@ -35,17 +35,36 @@
         <RadioButton
             android:id="@+id/ava_man"
             android:layout_width="@dimen/image_size"
-            android:layout_height="@dimen/image_size"
-            android:background="@drawable/man_button"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:drawableTop="@drawable/man_button"
+            android:text="@string/profile_completion_man"
+            android:drawablePadding="@dimen/padding_small_med_prof_comp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_14"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
             android:button="@color/transparent"/>
+
         <android.support.v4.widget.Space
             android:layout_width="60dp"
             android:layout_height="0dp" />
+
         <RadioButton
             android:id="@+id/ava_woman"
             android:layout_width="@dimen/image_size"
-            android:layout_height="@dimen/image_size"
-            android:background="@drawable/woman_button"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:drawableTop="@drawable/woman_button"
+            android:text="@string/profile_completion_woman"
+            android:drawablePadding="@dimen/padding_small_med_prof_comp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_14"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
+
             android:button="@color/transparent"/>
         <android.support.v4.widget.Space
             android:layout_width="0dp"
