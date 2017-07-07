@@ -363,6 +363,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 } else {
                     getView().setTitle(R.string.title_trip_accepted);
                 }
+                if (getView().isAlreadyRouteDrawed()) {
+                    List<LatLng> latLngs = new ArrayList<>();
+                    latLngs.add(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                    latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
+                    getView().zoomMapFitByDriverAndCustomer(latLngs);
+                }
                 break;
             case RideStatus.ARRIVING:
                 getView().saveActiveRequestId(result.getRequestId());

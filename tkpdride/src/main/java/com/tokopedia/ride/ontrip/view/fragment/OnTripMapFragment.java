@@ -1332,4 +1332,25 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         Intent intent = SendCancelReasonActivity.getCallingIntent(getActivity(), requestId);
         startActivityForResult(intent, REQUEST_CODE_CANCEL_REASON);
     }
+
+    @Override
+    public void zoomMapFitByDriverAndCustomer(List<LatLng> latLngs) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : latLngs) {
+            builder.include(latLng);
+        }
+        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+        int heightPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+        if (bottomContainer.getVisibility() == View.VISIBLE) {
+            int topYAxis = mSrcDestLayout.getBottom();
+            int bottomYAxis = bottomContainer.getTop();
+            heightPixels = bottomYAxis - topYAxis;
+        }
+
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                widthPixels, heightPixels,
+                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        );
+    }
 }
