@@ -188,6 +188,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 .into(new BitmapImageViewTarget(driverPictImageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
+                        if (getActivity() == null) {
+                            return;
+                        }
+
                         RoundedBitmapDrawable roundedBitmapDrawable =
                                 RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                         roundedBitmapDrawable.setCircular(true);
