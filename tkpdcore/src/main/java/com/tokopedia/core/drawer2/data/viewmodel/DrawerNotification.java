@@ -162,10 +162,7 @@ public class DrawerNotification {
     }
 
     public int getTotalNotif() {
-        if (GlobalConfig.isSellerApp())
-            return totalNotif - (getTotalPurchaseNotif() + inboxReview + inboxResCenter + inboxTicket);
-        else
-            return totalNotif;
+        return totalNotif;
     }
 
     public int getTotalPurchaseNotif() {
