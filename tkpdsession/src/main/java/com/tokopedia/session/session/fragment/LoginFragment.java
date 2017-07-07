@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -107,7 +108,7 @@ LoginFragment extends Fragment implements LoginView {
     @BindView(R2.id.email_auto)
     AutoCompleteTextView mEmailView;
     @BindView(R2.id.password)
-    PasswordView mPasswordView;
+    TextInputEditText mPasswordView;
     @BindView(R2.id.login_form)
     ScrollView mLoginFormView;
     @BindView(R2.id.login_status)
