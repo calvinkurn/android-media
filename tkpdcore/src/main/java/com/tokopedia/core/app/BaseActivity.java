@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.localytics.android.Localytics;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
