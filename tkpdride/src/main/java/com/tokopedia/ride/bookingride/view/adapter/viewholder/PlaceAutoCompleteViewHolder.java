@@ -1,6 +1,7 @@
 package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,8 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
     TextView mPlaceAddressTextView;
     @BindView(R2.id.indicator)
     ImageView mIndicator;
+    @BindView(R2.id.tv_distance)
+    TextView mDistanceTextView;
 
     private final ItemClickListener mItemClickListener;
     private PlaceAutoCompeleteViewModel mItem;
@@ -46,6 +49,14 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
         } else {
             mIndicator.setImageResource(R.drawable.location);
         }
+
+        if (!TextUtils.isEmpty(element.getDistance())) {
+            mDistanceTextView.setText(element.getDistance());
+            mDistanceTextView.setVisibility(View.VISIBLE);
+        } else {
+            mDistanceTextView.setVisibility(View.GONE);
+        }
+
         mItem = element;
     }
 

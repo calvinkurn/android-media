@@ -14,6 +14,8 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
     private double latitude;
     private double longitude;
     private TYPE type;
+    private String distance;
+    private String duration;
 
     public PlaceAutoCompeleteViewModel() {
     }
@@ -69,6 +71,14 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
 
     public void setType(TYPE type) {
         this.type = type;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public enum TYPE {

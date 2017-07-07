@@ -2,6 +2,7 @@ package com.tokopedia.ride.common.place.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
+import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
@@ -33,11 +34,11 @@ public class PlaceDataRepository implements PlaceRepository {
                         return directionEntityMapper.transformOverViews(directionEntity);
                     }
                 });
-                /*.map(new Func1<DirectionEntity, OverviewPolyline>() {
-                    @Override
-                    public OverviewPolyline call(DirectionEntity directionEntity) {
-                        return directionEntityMapper.transformToOverviewPolyline(directionEntity);
-                    }
-                });*/
+    }
+
+    @Override
+    public Observable<DistanceMatrixEntity> getDistanceMatrix(TKPDMapParam<String, Object> param) {
+        return placeDataStoreFactory.createCloudPlaceDataStore()
+                .getDistanceMarix("json", param);
     }
 }
