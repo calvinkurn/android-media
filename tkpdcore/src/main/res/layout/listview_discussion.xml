@@ -158,9 +158,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="25dp"
         android:id="@+id/empty_view"
-        android:background="@color/white"
+        android:background="@color/transparent"
         android:visibility="gone"
         />
 
