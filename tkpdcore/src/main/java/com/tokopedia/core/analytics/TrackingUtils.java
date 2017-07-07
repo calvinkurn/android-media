@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -329,6 +330,10 @@ public class TrackingUtils extends TrackingConfig {
 
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
+    }
+
+    public static void sendAppsFlyerDeeplink(Activity activity){
+        getAFEngine().sendDeeplinkData(activity);
     }
 
     public static String getClientID() {
