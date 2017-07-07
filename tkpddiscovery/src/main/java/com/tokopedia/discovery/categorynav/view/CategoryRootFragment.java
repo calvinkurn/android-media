@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categorynav;
+package com.tokopedia.discovery.categorynav.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.discovery.R;
 import com.tokopedia.core.network.entity.categories.Category;
+import com.tokopedia.discovery.categorynav.view.adapter.CategoryRootAdapter;
 
 import java.util.ArrayList;
 

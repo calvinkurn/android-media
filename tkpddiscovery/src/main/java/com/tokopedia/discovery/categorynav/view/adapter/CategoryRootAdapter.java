@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categorynav;
+package com.tokopedia.discovery.categorynav.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;

@@ -1,0 +1,88 @@
+package com.tokopedia.discovery.categorynav.view;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.categorynav.di.CategoryNavigationInjector;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+
+import butterknife.ButterKnife;
+
+/**
+ * @author by alifa on 7/6/17.
+ */
+
+public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View {
+
+    public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
+    private String departmentId = "";
+    private CategoryNavigationContract.Presenter presenter;
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        presenter = CategoryNavigationInjector.getPresenter(getActivity());
+    }
+
+
+    public static CategoryNavigationFragment createInstance(String departmentId) {
+        CategoryNavigationFragment categoryNavigationFragment = new CategoryNavigationFragment();
+        categoryNavigationFragment.departmentId = departmentId;
+        return categoryNavigationFragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout.fragment_category_navigation, container, false);
+
+        ButterKnife.bind(this, parentView);
+
+        presenter.attachView(this);
+        presenter.getRootCategory(departmentId);
+
+        return parentView;
+    }
+
+    @Override
+    public void showLoading() {
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+            ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
+            ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void emptyState() {
+        showErrorEmptyState();
+    }
+
+    private void showErrorEmptyState() {
+        NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
+                        .getFrameLayout(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getRootCategory(departmentId);
+                    }
+                });
+    }
+
+
+}
