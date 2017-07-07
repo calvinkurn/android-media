@@ -9,14 +9,18 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryFragment;
+
+import butterknife.BindView;
 
 
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
@@ -24,6 +28,8 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     private FragmentManager fragmentManager;
     private String departmentId = "";
     private TextView topBarTitle;
+
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     private void initView() {
         topBarTitle = (TextView) findViewById(com.tokopedia.tkpdpdp.R.id.simple_top_bar_title);
         topBarTitle.setText(getString(R.string.title_category));
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         findViewById(com.tokopedia.tkpdpdp.R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -100,6 +107,10 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
             fragmentActivity.startActivity(intent);
             fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
         }
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
     }
 
 

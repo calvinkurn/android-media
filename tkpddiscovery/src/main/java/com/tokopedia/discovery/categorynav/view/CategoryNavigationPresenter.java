@@ -30,18 +30,18 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
     private class CategoryRootNavigationSubscriber extends DefaultSubscriber<CategoryNavDomainModel> {
         @Override
         public void onCompleted() {
-           // getView().hideLoading();
+           getView().hideLoading();
         }
 
         @Override
         public void onError(Throwable e) {
-           // getView().skipIntermediaryPage();
+            getView().emptyState();
             e.printStackTrace();
         }
 
         @Override
         public void onNext(CategoryNavDomainModel domainModel) {
-            //TODO
+            getView().renderRootCategory(domainModel);
         }
 
     }

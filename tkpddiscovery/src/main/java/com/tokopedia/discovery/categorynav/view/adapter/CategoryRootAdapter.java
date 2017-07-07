@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.discovery.R;
-import com.tokopedia.core.network.entity.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 
 public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapter.ItemRowHolder> {
 
-    private List<Category> categories;
+    private List<com.tokopedia.discovery.categorynav.domain.model.Category> categories;
     private OnItemClickListener clickListener;
 
     public CategoryRootAdapter(OnItemClickListener itemListener) {
@@ -28,7 +27,7 @@ public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapte
         categories = new ArrayList<>();
     }
 
-    public void setDataList(List<Category> dataList) {
+    public void setDataList(List<com.tokopedia.discovery.categorynav.domain.model.Category> dataList) {
         categories = dataList;
     }
 
@@ -42,7 +41,7 @@ public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapte
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-
+        holder.CategotyName.setText(categories.get(position).getName());
 
     }
 
@@ -67,7 +66,7 @@ public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapte
     }
 
     public interface OnItemClickListener {
-        void onItemClicked(Category category);
+        void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
     }
 
 }

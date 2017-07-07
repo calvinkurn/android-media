@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categorynav.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 
 /**
  * @author by alifa on 7/6/17.
@@ -16,6 +17,8 @@ public interface CategoryNavigationContract {
         void hideLoading();
 
         void emptyState();
+
+        void renderRootCategory(CategoryNavDomainModel categoryNavDomainModel);
 
     }
 

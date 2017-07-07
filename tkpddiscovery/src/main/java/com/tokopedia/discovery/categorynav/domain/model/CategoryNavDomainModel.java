@@ -8,5 +8,13 @@ import java.util.ArrayList;
 
 public class CategoryNavDomainModel {
 
-    ArrayList<Category> categories;
+    private ArrayList<Category> categories = new ArrayList<>();
+
+    public ArrayList<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
 }
