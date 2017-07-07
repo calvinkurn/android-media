@@ -1348,9 +1348,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             heightPixels = bottomYAxis - topYAxis;
         }
 
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
-                widthPixels, heightPixels,
-                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        mGoogleMap.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(builder.build(), 150),
+                1000, null
         );
     }
 }
