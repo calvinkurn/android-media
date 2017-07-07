@@ -514,10 +514,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             GridLayoutManager.VERTICAL, false));
             categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth, categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
-                    categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
-            titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
-            titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
+            if ( categoryHeaderModel.categoryHeader.getHeaderImage() != null &&
+                    !categoryHeaderModel.categoryHeader.getHeaderImage().equals("")) {
+                ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
+                        categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
+                titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+                titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
+            } else {
+                imageHeaderContainer.setVisibility(View.GONE);
+            }
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
