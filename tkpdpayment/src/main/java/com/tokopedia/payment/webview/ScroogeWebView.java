@@ -79,7 +79,7 @@ public class ScroogeWebView extends WebView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.invalidate();
+            //       view.invalidate();
             Log.d(TAG, "URL payment " + url);
             isEndThanksPage = url.contains("thanks") || url.contains("thank");
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
@@ -99,7 +99,7 @@ public class ScroogeWebView extends WebView {
                 topPayView.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                return super.shouldOverrideUrlLoading(view, url);
+                return false;
             }
         }
 
