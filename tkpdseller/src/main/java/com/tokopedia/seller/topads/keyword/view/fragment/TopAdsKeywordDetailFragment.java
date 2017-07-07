@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
 
+    OnKeywordDetailListener onKeywordDetailListener;
+    public interface OnKeywordDetailListener{
+        void startShowCase();
+    }
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
@@ -100,6 +105,14 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
+    public void onAdLoaded(Ad ad) {
+        super.onAdLoaded(ad);
+        if (onKeywordDetailListener!= null) {
+            onKeywordDetailListener.startShowCase();
+        }
+    }
+
+    @Override
     protected void editAd() {
         startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
@@ -146,5 +159,16 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     public void onDestroy() {
         super.onDestroy();
         topadsKeywordDetailPresenter.unSubscribe();
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        onKeywordDetailListener = (OnKeywordDetailListener) context;
     }
 }

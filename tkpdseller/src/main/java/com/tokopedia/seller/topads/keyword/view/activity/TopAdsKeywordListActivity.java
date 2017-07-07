@@ -224,9 +224,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void startShowCase() {
-        if (ShowCasePreference.hasShown(this, TAG)) {
-            return;
-        }
+//        if (ShowCasePreference.hasShown(this, TAG)) {
+//            return;
+//        }
         if (showCaseDialog != null || isShowingShowCase) {
             return;
         }
