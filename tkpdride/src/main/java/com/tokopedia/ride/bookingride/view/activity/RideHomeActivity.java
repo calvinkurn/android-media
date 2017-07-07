@@ -227,6 +227,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 return false; // Never happens.
+            } catch (RuntimeException e) {
+                return false;
             }
         }
         return true;
@@ -433,7 +435,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                     if (mSlidingUpPanelLayout != null) {
                         mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                     }
-                    
+
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
                     //message on confirm booking fragment
