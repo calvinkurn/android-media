@@ -30,6 +30,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.williamchart.Tools;
@@ -233,6 +234,10 @@ public class LineChartView extends ChartView {
 		return result;
 	}
 
+	@Override
+	protected boolean isContainsRegion(MotionEvent ev, int i, int j) {
+		return super.isContainsRegion(ev, i, j) && data.get(i).ismPointVisible();
+	}
 
 	/**
 	 * Responsible for drawing points

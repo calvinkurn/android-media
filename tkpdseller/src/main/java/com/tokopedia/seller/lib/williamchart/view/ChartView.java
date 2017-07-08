@@ -1416,6 +1416,10 @@ public abstract class ChartView extends RelativeLayout {
                         color[1], color[2], color[3]));
     }
 
+    protected boolean isContainsRegion(MotionEvent ev, int i, int j) {
+        return mRegions.get(i).get(j).contains((int) ev.getX(), (int) ev.getY());
+    }
+
 
     public enum GridType {
         FULL, VERTICAL, HORIZONTAL, NONE
@@ -1425,7 +1429,6 @@ public abstract class ChartView extends RelativeLayout {
     public enum Orientation {
         HORIZONTAL, VERTICAL
     }
-
 
     /**
      * Class responsible to style the Graph!
@@ -1605,7 +1608,7 @@ public abstract class ChartView extends RelativeLayout {
                 int nEntries = mRegions.get(0).size();
                 for (int i = 0; i < nSets; i++)
                     for (int j = 0; j < nEntries; j++)
-                        if (mRegions.get(i).get(j).contains((int) ev.getX(), (int) ev.getY())) {
+                        if (isContainsRegion(ev, i, j)) {
                             if (mEntryListener != null)  // Trigger entry callback
                                 mEntryListener.onClick(i, j, getEntryRect(mRegions.get(i).get(j)));
                             if (mTooltip != null) {  // Toggle tooltip
