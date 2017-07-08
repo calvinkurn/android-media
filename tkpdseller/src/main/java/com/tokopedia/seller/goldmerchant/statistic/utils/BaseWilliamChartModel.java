@@ -38,4 +38,8 @@ public class BaseWilliamChartModel {
     public void setValues(float[] values) {
         this.values = values;
     }
+
+    public int size() {
+        return values.length;
+    }
 }

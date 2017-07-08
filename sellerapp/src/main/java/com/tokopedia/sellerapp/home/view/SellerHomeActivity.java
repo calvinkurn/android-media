@@ -74,6 +74,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
@@ -269,7 +270,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         super.onCreate(savedInstanceState);
 
         // force to move to new statistic
-        Intent intent = new Intent(this, GMStatActivity.class);
+        Intent intent = new Intent(this, GMStatisticTransactionActivity.class);
         intent.putExtra(GMStatActivity.SHOP_ID, sessionHandler.getShopID());
         intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(this));
         startActivity(intent);

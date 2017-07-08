@@ -23,6 +23,7 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
@@ -72,8 +73,6 @@ import java.util.TreeMap;
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.SHOP_ID;
-import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
-import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -405,12 +404,12 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
      *
      * @param numChart
      */
-    private void resizeChart(int numChart) {
+    private void resizeChart(int numChart, LineChartView chartView) {
         Log.d(TAG, "resizeChart " + numChart);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
+        int width = (int) DataTransactionViewHelper.dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
         /*
             set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
             is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
@@ -418,9 +417,9 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         */
         double newSizeRatio = ((double) numChart) / 7;
         if (newSizeRatio > 1) {
-            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680), grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(getActivity(), 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         } else {
-            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams(width, grossIncomeGraph2.getLayoutParams().height));
+            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
         }
     }
 
@@ -469,9 +468,17 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
         //[START] use date from network
-        List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
-        if (dates != null) {
-            grossIncome.textDescription = dates.get(0) + " - " + dates.get(1);
+        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatActivityFragment.this.monthNamesAbrev,
+                0);
+        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatActivityFragment.this.monthNamesAbrev,
+                dateGraph.size() - 1);
+        if (startDateString != null || endDateString != null) {
+            if (startDateString.getModel2() == null || endDateString.getModel2() == null)
+                return;
+
+            grossIncome.textDescription = getString(R.string.gold_merchant_date_range_format_text, startDateString.getModel2(), endDateString.getModel2());
         }
         //[END] use date from network
         //[START] override sDate and eDate with local selection.
@@ -491,7 +498,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         if (nExcels != null) {
             //[]START] try used willam chart
             displayChart();
-            resizeChart(nExcels.size());
+            resizeChart(nExcels.size(), grossIncomeGraph2);
             int i = 0;
             String[] mLabels = new String[nExcels.size()];
             final float[] mValues = new float[nExcels.size()];

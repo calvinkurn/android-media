@@ -64,22 +64,6 @@ public class GMStatHeaderViewHelper {
         resetToLoading();
     }
 
-    public static List<String> getDates(List<Integer> dateGraph, String[] monthNames) {
-        if (dateGraph == null || dateGraph.size() <= 0)
-            return null;
-
-        String startDate = getDateWithYear(dateGraph.get(0), monthNames);
-
-        int lastIndex = dateGraph.size() - 1;
-        String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNames);
-
-        List<String> dates = new ArrayList<>();
-        dates.add(startDate);
-        dates.add(endDate);
-
-        return dates;
-    }
-
     public void setSelectionType(int selectionType) {
         this.selectionType = selectionType;
     }
