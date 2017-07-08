@@ -49,7 +49,7 @@ public class LineChartView extends ChartView {
 
 	/** Style applied to line chart */
 	final private Style mStyle;
-
+	PointF prePoint = new PointF(), nextPointF = new PointF();
 	/** Radius clickable region */
 	private float mClickableRadius;
 	private Drawable drawable;
@@ -75,7 +75,6 @@ public class LineChartView extends ChartView {
 		mClickableRadius = context.getResources().getDimension(R.dimen.dot_region_radius);
 	}
 
-
 	/**
 	 * Credits: http://www.jayway.com/author/andersericsson/
 	 * Given an index in points, it will make sure the the returned index is
@@ -88,6 +87,27 @@ public class LineChartView extends ChartView {
 		return i;
 	}
 
+	/**
+	 * The curve from prePoint to nextPoint
+	 *
+	 * @param pathline
+	 * @param prePoint
+	 * @param nextPointF
+	 */
+	public static void pathCubicTo(Path pathline, PointF prePoint, PointF nextPointF) {
+
+//		float pointX = (prePoint.x + nextPointF.x) / 2;
+//		float pointY = (prePoint.y + nextPointF.y) / 2;
+//		Log.d("MNORMANSYAH", "x " + pointX + " y " + pointY);
+//
+//		float controlX = prePoint.x;
+//		float controlY = prePoint.y;
+//
+//		pathline.quadTo(controlX, controlY, pointX, pointY);
+
+		float c_x = (prePoint.x + nextPointF.x) / 2;
+		pathline.cubicTo(c_x, prePoint.y, c_x, nextPointF.y, nextPointF.x, nextPointF.y);
+	}
 
 	@Override
 	public void onAttachedToWindow() {
@@ -96,14 +116,12 @@ public class LineChartView extends ChartView {
 		mStyle.init();
 	}
 
-
 	@Override
 	public void onDetachedFromWindow() {
 
 		super.onDetachedFromWindow();
 		mStyle.clean();
 	}
-
 
 	/**
 	 * Method responsible to draw a line with the parsed screen points.
@@ -135,7 +153,7 @@ public class LineChartView extends ChartView {
 				else if(lineSet.isSmooth()==LineSet.SMOOTH_CUBIC) linePath = createSmoothLinePath(lineSet);
 				else linePath = createSmoothQuadLinePath(lineSet);
 
-				if (drawable != null) lineSet.setDotsDrawable(drawable);
+				if (drawable != null && lineSet.ismPointVisible()) lineSet.setDotsDrawable(drawable);
 
 				//Draw background
 				if (lineSet.hasFill() || lineSet.hasGradientFill())
@@ -177,32 +195,6 @@ public class LineChartView extends ChartView {
 
 		return res;
 	}
-
-	PointF prePoint = new PointF(), nextPointF = new PointF();
-
-
-	/**
-	 * The curve from prePoint to nextPoint
-	 *
-	 * @param pathline
-	 * @param prePoint
-	 * @param nextPointF
-	 */
-	public static void pathCubicTo(Path pathline, PointF prePoint, PointF nextPointF) {
-
-//		float pointX = (prePoint.x + nextPointF.x) / 2;
-//		float pointY = (prePoint.y + nextPointF.y) / 2;
-//		Log.d("MNORMANSYAH", "x " + pointX + " y " + pointY);
-//
-//		float controlX = prePoint.x;
-//		float controlY = prePoint.y;
-//
-//		pathline.quadTo(controlX, controlY, pointX, pointY);
-
-        float c_x = ( prePoint.x+nextPointF.x )/2;
-        pathline.cubicTo(c_x, prePoint.y, c_x, nextPointF.y, nextPointF.x, nextPointF.y);
-	}
-
 
 	/**
 	 * (Optional) To be overridden in order for each chart to define its own clickable regions.
@@ -400,6 +392,12 @@ public class LineChartView extends ChartView {
 		return this;
 	}
 
+	/**
+	 * set the drawable
+	 */
+	public void setDrawable(Drawable drawable) {
+		this.drawable = drawable;
+	}
 
 	/**
 	 * Class responsible to style the LineChart!
@@ -451,10 +449,5 @@ public class LineChartView extends ChartView {
 			mDotsPaint = null;
 		}
 
-	}
-
-	/** set the drawable */
-	public void setDrawable(Drawable drawable) {
-		this.drawable = drawable;
 	}
 }

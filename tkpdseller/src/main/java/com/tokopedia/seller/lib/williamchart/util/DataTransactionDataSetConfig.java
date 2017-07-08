@@ -9,4 +9,9 @@ public class DataTransactionDataSetConfig extends GrossGraphDataSetConfig {
     public float pointsSize() {
         return 0;
     }
+
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
 }

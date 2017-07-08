@@ -34,8 +34,8 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
+import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
@@ -172,7 +172,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
                         baseWilliamChartConfig
                                 .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                                .addBaseWilliamChartModels(secondWilliamChartModel, new DataTransactionDataSetConfig())
+                                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
                                 .setBasicGraphConfiguration(new GrossGraphChartConfig())
                                 .setDotDrawable(oval2Copy6)
                                 .setTooltip(tooltip, new DefaultTooltipConfiguration())
