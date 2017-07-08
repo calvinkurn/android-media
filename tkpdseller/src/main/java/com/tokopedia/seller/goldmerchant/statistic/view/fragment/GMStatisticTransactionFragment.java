@@ -81,7 +81,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
+        rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
         initView();
         initVar();
         return rootView;
