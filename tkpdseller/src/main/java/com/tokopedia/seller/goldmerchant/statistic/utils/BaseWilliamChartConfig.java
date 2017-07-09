@@ -202,6 +202,9 @@ public class BaseWilliamChartConfig {
         if (basicGraphConfiguration.gridType() != null)
             chart.setGrid(basicGraphConfiguration.gridType(), mGridPaint);
 
+        chart.setXAxisLabelSpacing(basicGraphConfiguration.xDistAxisToLabel());
+        chart.setYAxisLabelSpacing(basicGraphConfiguration.yDistAxisToLabel());
+
         String mLabelFormat = "";
         chart.setLabelsFormat(new DecimalFormat("#" + mLabelFormat));
 

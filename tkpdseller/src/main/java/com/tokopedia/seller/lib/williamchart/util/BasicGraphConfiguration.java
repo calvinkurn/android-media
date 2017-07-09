@@ -39,4 +39,8 @@ public interface BasicGraphConfiguration {
     int rightMargin();
 
     int bottomMargin();
+
+    float xDistAxisToLabel();
+
+    float yDistAxisToLabel();
 }

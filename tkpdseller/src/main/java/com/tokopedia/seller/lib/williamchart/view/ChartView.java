@@ -1357,6 +1357,28 @@ public abstract class ChartView extends RelativeLayout {
         return this;
     }
 
+    /**
+     * Set spacing between Labels and Axis. Will be applied to X.
+     *
+     * @param spacing Spacing between labels and axis
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setXAxisLabelSpacing(float spacing) {
+        xRndr.setAxisLabelsSpacing(spacing);
+        return this;
+    }
+
+    /**
+     * Set spacing between Labels and Axis. Will be applied to Y.
+     *
+     * @param spacing Spacing between labels and axis
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setYAxisLabelSpacing(float spacing) {
+        xRndr.setAxisLabelsSpacing(spacing);
+        return this;
+    }
+
 
     /**
      * Mandatory horizontal border when necessary (ex: BarCharts)
