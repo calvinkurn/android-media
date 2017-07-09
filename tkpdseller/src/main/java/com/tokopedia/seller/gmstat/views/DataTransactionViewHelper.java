@@ -12,12 +12,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
-import com.tokopedia.seller.gmstat.utils.DataTransactionChartConfig;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
+import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
+import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -34,7 +37,6 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
 
 public class DataTransactionViewHelper {
     int transparantColor;
-    private DataTransactionChartConfig williamChartUtils;
     private LineChartView transactionChart;
     private TextView percentage;
     private ImageView transactionCountIcon;
@@ -51,8 +53,12 @@ public class DataTransactionViewHelper {
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
     private LinearLayout separator2;
+    private BaseWilliamChartConfig baseWilliamChartConfig;
+    private DataTransactionChartConfig dataTransactionChartConfig;
 
-    public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant) {
+    public DataTransactionViewHelper(View itemView, boolean isGoldMerchant) {
+        baseWilliamChartConfig = new BaseWilliamChartConfig();
+
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
         initView(itemView);
@@ -64,7 +70,6 @@ public class DataTransactionViewHelper {
         for (int i = 0; i < mLabels.length; i++) {
             mLabels[i] = "";
         }
-        williamChartUtils = new DataTransactionChartConfig(mLabels, mValues);
 
         if (isGoldMerchant) {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
@@ -75,6 +80,10 @@ public class DataTransactionViewHelper {
     public static float dpToPx(Context context, float valueInDp) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
+    }
+
+    public void setDataTransactionChartConfig(DataTransactionChartConfig dataTransactionChartConfig) {
+        this.dataTransactionChartConfig = dataTransactionChartConfig;
     }
 
     public void moveToGMSubscribe() {
@@ -115,6 +124,9 @@ public class DataTransactionViewHelper {
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph) {
+
+        if (dataTransactionChartConfig == null)
+            throw new RuntimeException("please pass configuration for graphic !!");
 
         if (isGoldMerchant) {
             separator2.removeAllViews();
@@ -187,9 +199,12 @@ public class DataTransactionViewHelper {
     }
 
     public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {
-
         List<Integer> successTransGraph = getTransactionGraph.getSuccessTransGraph();
         List<Integer> rejectedTransGraph = getTransactionGraph.getRejectedTransGraph();
+
+        if (successTransGraph == null || rejectedTransGraph == null)
+            return;
+
         int size = (successTransGraph.size() >= rejectedTransGraph.size())
                 ? rejectedTransGraph.size() : successTransGraph.size();
         List<Integer> merge = new ArrayList<>();
@@ -203,10 +218,7 @@ public class DataTransactionViewHelper {
         if (nExcels == null)
             return;
 
-//        if(nExcels!= null) {
-//            transactionChart.cmdFill(nExcels);
-//        }
-        //[]START] try used willam chart
+
         int i = 0;
         mLabels = new String[nExcels.size()];
         mValues = new float[nExcels.size()];
@@ -215,15 +227,19 @@ public class DataTransactionViewHelper {
             mValues[i] = nExcel.getUpper();
             i++;
         }
-        williamChartUtils.setmLabels(mLabels);
-        williamChartUtils.setmValues(mValues);
 
-        int bottomMargin = 5;
-        williamChartUtils.buildChart(
-                williamChartUtils.buildLineChart(transactionChart,
-                        (int) dpToPx(itemView.getContext(),
-                                bottomMargin), emptyState));
-        //[END] try used willam chart
+        BaseWilliamChartModel baseWilliamChartModel
+                = new BaseWilliamChartModel(mLabels, mValues);
+        baseWilliamChartConfig.setBasicGraphConfiguration(dataTransactionChartConfig);
+
+        if (emptyState) {
+            baseWilliamChartConfig.addBaseWilliamChartModels(
+                    baseWilliamChartModel, new EmptyDataTransactionDataSetConfig());
+        } else {
+            baseWilliamChartConfig.addBaseWilliamChartModels(
+                    baseWilliamChartModel, new DataTransactionDataSetConfig());
+        }
+        baseWilliamChartConfig.buildChart(transactionChart);
     }
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> successTransGrpah) {
