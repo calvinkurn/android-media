@@ -26,7 +26,7 @@ public class GMSeeDetailViewHelper extends BaseGMViewHelper {
 
     @Override
     public void initView(View itemView) {
-        seeDetailContainer = (RelativeLayout) itemView.findViewById(R.id.see_detail_container)
+        seeDetailContainer = (RelativeLayout) itemView.findViewById(R.id.see_detail_container);
         seeDetailText = (TextView) itemView.findViewById(R.id.see_detail_text);
         seeDetailImage = (ImageView) itemView.findViewById(R.id.see_detail_image);
     }
