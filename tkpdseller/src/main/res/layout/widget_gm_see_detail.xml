@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/see_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/see_detail_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/see_detail_image"
+        android:layout_toStartOf="@id/see_detail_image"
+        android:text="@string/see_detail_gm_description" />
+
+    <com.tokopedia.seller.gmstat.library.LoaderImageView
+        android:id="@+id/see_detail_image"
+        android:layout_width="8dp"
+        android:layout_height="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        app:use_gradient="true" />
+</RelativeLayout>

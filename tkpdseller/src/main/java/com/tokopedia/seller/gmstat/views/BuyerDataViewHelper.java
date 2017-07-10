@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
+import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 
@@ -17,7 +18,6 @@ import java.util.Locale;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LOWER_BUYER_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMAT;
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
@@ -136,7 +136,7 @@ public class BuyerDataViewHelper {
             percentageBuyer.setTextColor(arrowUp);
             isDefault = true;
         } else if (percentage < 0) {// down here
-            if (percentage == NoDataAvailable * 100) {
+            if (percentage == GMStatConstant.NoDataAvailable * 100) {
                 buyerCountIcon.setVisibility(View.GONE);
                 percentageBuyer.setTextColor(gredyColor);
                 isDefault = false;

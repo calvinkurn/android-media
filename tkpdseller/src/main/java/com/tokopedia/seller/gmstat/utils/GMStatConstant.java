@@ -16,6 +16,7 @@ public final class GMStatConstant {
     public static final String LAST_THIRTY_DAYS_AGO_FORMAT = "<i>%s</i>";
     public static final String RANGE_DATE_FORMAT = "%s - %s";
     public static final String SINGLE_DATE_FORMAT = "%s";
+    public static final double NoDataAvailable = -2147483600;
     // this is used by automated testing.
     public static String baseUrl = TkpdBaseURL.GOLD_MERCHANT_DOMAIN;
 }

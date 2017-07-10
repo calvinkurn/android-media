@@ -80,7 +80,6 @@ import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.SHOP_ID;
  */
 public class GMStatActivityFragment extends BasePresenterFragment implements GMFragmentView {
 
-    public static final double NoDataAvailable = -2147483600;
     public static final String TAG = "GMStatActivityFragment";
     private static final Locale locale = new Locale("in", "ID");
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>();

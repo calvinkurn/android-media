@@ -31,6 +31,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -66,7 +67,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
     @Inject
     SessionHandler sessionHandler;
-
+    // gm percentage helper
+    GMPercentageViewHelper gmPercentageViewHelper;
     private View rootView;
     private LineChartView gmStatisticIncomeGraph;
     private LinearLayout gmStatisticGraphContainerInner;
@@ -83,8 +85,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
-        initView();
         initVar();
+        initView();
         return rootView;
     }
 
@@ -92,6 +94,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
+
+        gmPercentageViewHelper = new GMPercentageViewHelper(getActivity());
     }
 
     private void initView() {
@@ -101,6 +105,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         gmStatisticGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gm_statistic_transaction_graph_container);
         gmStatisticGraphContainerInner = (LinearLayout) rootView.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
         gmStatisticIncomeGraph = (LineChartView) rootView.findViewById(R.id.gm_statistic_transaction_income_graph);
+
+        gmPercentageViewHelper.initView(rootView);
     }
 
     @Override
@@ -150,47 +156,10 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         // currently not used
                         String dateRangeFormatString = getString(R.string.gold_merchant_date_range_format_text, startDateString.getModel2(), endDateString.getModel2());
 
-                        // create model for chart
-                        final BaseWilliamChartModel baseWilliamChartModel
-                                = joinDateAndGraph3(dateGraph, getTransactionGraph.getGrossGraph());
+                        // display percentage demo
+                        processTransactionGraph(getTransactionGraph.getGrossGraph(), dateGraph);
 
-                        BaseWilliamChartModel secondWilliamChartModel =
-                                new BaseWilliamChartModel(baseWilliamChartModel);
-                        secondWilliamChartModel.increment(25);
-
-                        // resize linechart according to data
-                        resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph);
-
-                        // get index to display
-                        final List<Integer> indexToDisplay = indexToDisplay(baseWilliamChartModel.getValues());
-
-                        // get tooltip
-                        Tooltip tooltip = getTooltip(
-                                GMStatisticTransactionFragment.this.getActivity(),
-                                getTooltipResLayout()
-                        );
-
-                        baseWilliamChartConfig
-                                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
-                                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                                .setDotDrawable(oval2Copy6)
-                                .setTooltip(tooltip, new DefaultTooltipConfiguration())
-                                .setxRendererListener(new XRenderer.XRendererListener() {
-                                    @Override
-                                    public boolean filterX(@IntRange(from = 0L) int i) {
-                                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
-                                            return true;
-
-                                        if (baseWilliamChartModel.getValues().length <= 15) {
-                                            return true;
-                                        }
-
-                                        return indexToDisplay.contains(i);
-
-                                    }
-                                }).buildChart(gmStatisticIncomeGraph);
-
+                        gmPercentageViewHelper.bind(getTransactionGraph.getDiffGrossRevenue());
                     }
                 });
 
@@ -214,6 +183,49 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         Log.e(TAG, stringResponse.body().toString());
                     }
                 });
+    }
+
+    protected void processTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
+        // create model for chart
+        final BaseWilliamChartModel baseWilliamChartModel
+                = joinDateAndGraph3(dateGraph, data);
+
+        BaseWilliamChartModel secondWilliamChartModel =
+                new BaseWilliamChartModel(baseWilliamChartModel);
+        secondWilliamChartModel.increment(25);
+
+        // resize linechart according to data
+        resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph);
+
+        // get index to display
+        final List<Integer> indexToDisplay = indexToDisplay(baseWilliamChartModel.getValues());
+
+        // get tooltip
+        Tooltip tooltip = getTooltip(
+                GMStatisticTransactionFragment.this.getActivity(),
+                getTooltipResLayout()
+        );
+
+        baseWilliamChartConfig
+                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
+                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
+                .setBasicGraphConfiguration(new GrossGraphChartConfig())
+                .setDotDrawable(oval2Copy6)
+                .setTooltip(tooltip, new DefaultTooltipConfiguration())
+                .setxRendererListener(new XRenderer.XRendererListener() {
+                    @Override
+                    public boolean filterX(@IntRange(from = 0L) int i) {
+                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
+                            return true;
+
+                        if (baseWilliamChartModel.getValues().length <= 15) {
+                            return true;
+                        }
+
+                        return indexToDisplay.contains(i);
+
+                    }
+                }).buildChart(gmStatisticIncomeGraph);
     }
 
     private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
