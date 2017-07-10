@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.domain.model;
+package com.tokopedia.core.profile.model;
 
 import java.util.List;
 

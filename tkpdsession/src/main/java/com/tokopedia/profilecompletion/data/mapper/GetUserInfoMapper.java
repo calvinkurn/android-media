@@ -1,22 +1,16 @@
 package com.tokopedia.profilecompletion.data.mapper;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.profilecompletion.data.pojo.GetUserInfoData;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
-
-import static com.facebook.stetho.inspector.network.PrettyPrinterDisplayType.JSON;
 
 /**
  * @author by nisie on 6/19/17.

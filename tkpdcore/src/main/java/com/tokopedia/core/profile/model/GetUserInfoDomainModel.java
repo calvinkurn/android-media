@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.domain.model;
+package com.tokopedia.core.profile.model;
 
 /**
  * @author by nisie on 6/19/17.

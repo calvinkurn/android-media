@@ -1,7 +1,5 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.Spannable;
@@ -15,10 +13,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -26,19 +20,9 @@ import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivi
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainData;
-import com.tokopedia.profilecompletion.view.listener.EditProfileListener;
-import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
-import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenter;
-import com.tokopedia.profilecompletion.view.presenter.ProfilePhoneVerifCompletionPresenterImpl;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
@@ -54,7 +38,6 @@ public class ProfilePhoneVerifCompletionFragment
     public static final String TAG = "verif";
     private ProfileCompletionFragment parentView;
     private View skip;
-    private View proceed;
     private GetUserInfoDomainData data;
     private ProfileCompletionPresenter parentPresenter;
     private View instruction;
@@ -70,36 +53,6 @@ public class ProfilePhoneVerifCompletionFragment
     protected void initialPresenter() {
 
         super.initialPresenter();
-
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(getActivity());
-        String authKey = sessionHandler.getAccessToken(getActivity());
-        authKey = sessionHandler.getTokenType(getActivity()) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        getActivity(),
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        new EditUserInfoMapper()
-                );
-
-        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
-
-        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                profileRepository
-        );
-
-        EditUserProfileUseCase editUserProfileUseCase = new EditUserProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                profileRepository
-        );
 
         parentPresenter = parentView.getPresenter();
     }
@@ -118,9 +71,13 @@ public class ProfilePhoneVerifCompletionFragment
     protected void initView(View view) {
         findView(view);
         data = parentView.getData();
-        proceed = parentView.getView().findViewById(R.id.proceed);
-        proceed.setEnabled(false);
-        proceed.setBackgroundColor(getResources().getColor(R.color.black_12));
+        verifyButton = (TextView) parentView.getView().findViewById(R.id.proceed);
+        verifyButton.setText(getResources().getString(R.string.continue_form));
+        verifyButton.setEnabled(false);
+
+        verifyButton.setBackgroundColor(MethodChecker.getColor(context, R.color.grey_300));
+        verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+
         skipButton = (TextView) parentView.getView().findViewById(R.id.skip);
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
 
@@ -170,7 +127,6 @@ public class ProfilePhoneVerifCompletionFragment
 
     @Override
     protected void findView(View view) {
-        verifyButton = (TextView) view.findViewById(R.id.verify_button);
         phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
         changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
         instruction = view.findViewById(R.id.verification_instruction);
@@ -201,7 +157,6 @@ public class ProfilePhoneVerifCompletionFragment
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                proceed.setVisibility(View.GONE);
                 presenter.requestOtp();
             }
         });
@@ -209,7 +164,6 @@ public class ProfilePhoneVerifCompletionFragment
         requestOtpCallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                proceed.setVisibility(View.GONE);
                 presenter.requestOtpWithCall();
 
             }
@@ -276,8 +230,6 @@ public class ProfilePhoneVerifCompletionFragment
             }
 
             public void onFinish() {
-                instruction.setVisibility(View.VISIBLE);
-                tokocashText.setVisibility(View.GONE);
                 enableOtpButton();
             }
 
@@ -285,15 +237,23 @@ public class ProfilePhoneVerifCompletionFragment
     }
 
     @Override
+    public void setViewEnabled(boolean isEnabled) {
+        super.setViewEnabled(isEnabled);
+        if (inputOtpView.getVisibility() == View.VISIBLE){
+            verifyButton.setText(getResources().getString(R.string.title_confirm_otp));
+        }else {
+            verifyButton.setText(getResources().getString(R.string.continue_form));
+        }
+    }
+
+    @Override
     public void onSuccessVerifyPhoneNumber() {
         finishProgressDialog();
         setViewEnabled(true);
         SessionHandler.setIsMSISDNVerified(true);
+        verifyButton.setText(getResources().getString(R.string.continue_form));
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
-        proceed.setVisibility(View.VISIBLE);
-        proceed.setEnabled(true);
-        proceed.setBackgroundColor(getResources().getColor(R.color.medium_green));
-        parentPresenter.skipView(TAG);
+        parentView.onSuccessEditProfile(EditUserProfileUseCase.EDIT_VERIF);
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }
 }

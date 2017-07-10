@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
 import rx.Observable;
 import rx.functions.Action1;

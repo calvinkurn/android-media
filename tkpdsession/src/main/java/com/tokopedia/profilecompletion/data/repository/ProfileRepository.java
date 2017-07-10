@@ -2,7 +2,7 @@ package com.tokopedia.profilecompletion.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
 import rx.Observable;
 

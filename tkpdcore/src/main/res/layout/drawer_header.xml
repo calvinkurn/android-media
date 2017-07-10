@@ -89,7 +89,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <TextView
-                android:id="@+id/percentText"
+                android:id="@+id/percent_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_xsmall"
@@ -102,6 +102,7 @@
                 android:layout_toRightOf="@+id/profile_completion_title"/>
 
             <TextView
+                android:id="@+id/complete_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_xsmall"

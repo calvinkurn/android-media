@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.view.subscriber;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.profilecompletion.domain.model.GetUserInfoDomainModel;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 
 import rx.Subscriber;
