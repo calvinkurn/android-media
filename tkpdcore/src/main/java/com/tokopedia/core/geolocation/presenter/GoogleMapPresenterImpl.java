@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
@@ -79,12 +80,23 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 .build();
         this.isAllowGenerateAddress = true;
         this.locationPass = locationPass;
+        CommonUtils.dumper("theresult google map fragment");
+        if(locationPass!=null)
+        {
+            CommonUtils.dumper("theresult locationpass enter");
+            Location location = new Location("default");
+            location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
+            location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
+            LocationCache.saveLocation(location);
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
+        CommonUtils.dumper("theresult save location onlocationchanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
+        LocationCache.saveLocation(location);
         removeLocationUpdate();
     }
 
@@ -157,6 +169,8 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                CommonUtils.dumper("theresult save location getLastLocation");
+                LocationCache.saveLocation(location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
                 return DEFAULT_LATLNG_JAKARTA;

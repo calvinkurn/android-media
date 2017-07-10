@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.fingerprint.data.source;
 import android.os.Build;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
@@ -56,6 +57,8 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .ipAddres(ipAddress)
                                 .screenReso(screenReso)
                                 .language(deviceLanguage)
+//                                .deviceLat(LocationCache.getLocation().getLatitude())
+//                                .deviceLng(LocationCache.getLocation().getLongitude())
                                 .build();
 
                         return fp;

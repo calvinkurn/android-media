@@ -25,6 +25,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
@@ -248,6 +249,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             setMoengageUserAttributes();
         }
 
+        CommonUtils.dumper("theresult "+LocationCache.isLocationCached());
+        CommonUtils.dumper("theresult "+LocationCache.getLocation().getLatitude());
+        CommonUtils.dumper("theresult "+LocationCache.getLocation().getLongitude());
+
         /**
          * Example Fingerprint Devices
           */
@@ -269,7 +274,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             @Override
             public void onNext(String s) {
-                CommonUtils.dumper("the result "+s);
+                CommonUtils.dumper("theresult "+s);
             }
         });
 

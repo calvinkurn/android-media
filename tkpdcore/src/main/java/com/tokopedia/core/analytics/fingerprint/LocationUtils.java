@@ -26,7 +26,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private Context context;
     boolean isConnected;
 
-    public LocationUtils(Context ctx, LocationListener listener){
+    public LocationUtils(Context ctx){
 
         context = ctx;
 
@@ -41,6 +41,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         isConnected = false;
+
     }
 
     @Override

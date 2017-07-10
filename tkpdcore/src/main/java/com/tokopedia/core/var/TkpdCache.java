@@ -189,6 +189,8 @@ public class TkpdCache {
         public static final String DIGITAL_CLIENT_NUMBER_CATEGORY = "DIGITAL_CLIENT_NUMBER_CATEGORY_";
         public static final String DIGITAL_OPERATOR_ID_CATEGORY = "DIGITAL_OPERATOR_ID_CATEGORY_";
         public static final String DIGITAL_PRODUCT_ID_CATEGORY = "DIGITAL_PRODUCT_ID_CATEGORY_";
+
+        public static final String KEY_LOCATION = "KEY_FP_LOCATION";
     }
 
 }
