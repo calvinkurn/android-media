@@ -509,7 +509,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                             return null;
                         }
                     }
-                }).subscribeOn(Schedulers.io())
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Place>() {
                     @Override
@@ -520,6 +521,15 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (mCurrentLocation != null) {
+                            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setTitle(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+                            getView().setSourceLocation(placeVm);
+                        }
                     }
 
                     @Override
