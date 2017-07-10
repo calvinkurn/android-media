@@ -295,11 +295,11 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
             case "driver_canceled":
             case "DRIVER_CANCELED":
-                return "DRIVER CANCELLED";
+                return "DRIVER CANCELED";
 
             case "rider_canceled":
             case "RIDER_CANCELED":
-                return "YOU CANCELLED";
+                return "YOU CANCELED";
 
             case "completed":
             case "COMPLETED":

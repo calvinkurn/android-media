@@ -1058,6 +1058,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void actionYesCancelBtnClicked() {
         hideCancelPanel();
         hideFindingUberNotification();
+        hideAcceptedNotification();
         presenter.actionYesCancelBtnClicked();
     }
 
