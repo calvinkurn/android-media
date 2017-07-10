@@ -51,6 +51,8 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -72,22 +74,30 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private SessionHandler sessionHandler;
+
+    @Inject
+    protected SessionHandler sessionHandler;
+
+    @Inject
+    protected GCMHandler gcmHandler;
+
     private CategoryDatabaseManager categoryDatabaseManager;
-    private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplicationComponent().inject(this);
+
 
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-        sessionHandler = new SessionHandler(getBaseContext());
+
         categoryDatabaseManager = new CategoryDatabaseManager();
-        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -95,7 +105,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
 
         /* clear cache if not login */
-        if (!SessionHandler.isV4Login(this)) {
+        if (!sessionHandler.isV4Login()) {
             globalCacheManager.deleteAll();
         }
 
@@ -138,7 +148,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();
+//        verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();

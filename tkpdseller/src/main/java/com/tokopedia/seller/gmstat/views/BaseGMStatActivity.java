@@ -12,10 +12,14 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.di.component.DaggerGMStatComponent;
+import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 
@@ -27,10 +31,13 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
-    protected GMStatNetworkController gmStatNetworkController;
-    protected ImageHandler imageHandler;
+    @Inject
+    GMStatNetworkController gmStatNetworkController;
+    @Inject
+    ImageHandler imageHandler;
     private boolean isGoldMerchant;
     private String shopId;
+    private GMStatComponent gmstatComponent;
 
 //    private boolean isAfterRotate;
 
@@ -51,6 +58,14 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         super.setupVar(savedInstanceState);
         fetchSaveInstance(savedInstanceState);
         inject();
+    }
+
+    @Override
+    public void inject() {
+        gmstatComponent = DaggerGMStatComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        gmstatComponent.inject(this);
     }
 
     private void fetchSaveInstance(Bundle savedInstanceState) {
