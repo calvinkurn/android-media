@@ -32,7 +32,7 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     }
 
     public void setDataList(List<com.tokopedia.discovery.categorynav.domain.model.Category> dataList) {
-        categories = dataList;
+        categories.addAll(dataList);
     }
 
     @Override

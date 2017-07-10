@@ -25,7 +25,7 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
 
         if (dataResponse.body()!=null && dataResponse.body().getResult() !=null
                 && dataResponse.body().getResult().getCategories() !=null) {
-            List<com.tokopedia.discovery.categorynav.domain.model.Category> categoryList = new ArrayList<>();
+            ArrayList<com.tokopedia.discovery.categorynav.domain.model.Category> categoryList = new ArrayList<>();
             for (Category category: dataResponse.body().getResult().getCategories()) {
                 com.tokopedia.discovery.categorynav.domain.model.Category categoryModel = new
                         com.tokopedia.discovery.categorynav.domain.model.Category();
@@ -46,6 +46,7 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                 categoryList.add(categoryModel);
             }
             categoryList.addAll(categoryList);
+            categoryNavDomainModel.setCategories(categoryList);
 
         }
 
