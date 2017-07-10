@@ -51,7 +51,6 @@ public class ShopEditorActivity extends TActivity implements
 
     FragmentManager supportFragmentManager;
     String FRAGMENT;
-    Toolbar toolbar;
 
     FrameLayout container;
     private String onBack;
