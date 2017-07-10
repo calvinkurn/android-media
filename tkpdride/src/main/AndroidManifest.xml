@@ -65,6 +65,9 @@
         <activity
             android:name=".ontrip.view.SendCancelReasonActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+
+        <activity android:name=".completetrip.view.PendingFareChooserActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"/>
     </application>
 
 </manifest>
