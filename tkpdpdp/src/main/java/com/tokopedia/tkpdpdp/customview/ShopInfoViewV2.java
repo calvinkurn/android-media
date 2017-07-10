@@ -202,6 +202,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
             bundle.putString(InboxRouter.PARAM_SHOP_ID,
                     String.valueOf(data.getShopInfo().getShopId()));
             bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
+            bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT, data.getInfo().getProductName());
             listener.onProductShopMessageClicked(bundle);
         }
     }

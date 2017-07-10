@@ -7,6 +7,10 @@ import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
+import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -23,6 +27,8 @@ import rx.Observable;
 public interface MojitoApi {
 
     String DEVICE = "device";
+    String ID = "id";
+    String PID = "pid";
     String CATEGORY_ID = "categoryId";
 
     //api requirement add static header
@@ -58,4 +64,14 @@ public interface MojitoApi {
     Observable<Response<WishlistCheckResult>> checkWishlist(
             @Path("userId") String userId,
             @Path("listId") String listId);
+
+    @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_DETAIL)
+    Observable<Response<ProductCampaignResponse>> getProductCampaign(
+            @Query(ID) String id
+    );
+
+    @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_PRODUCT)
+    Observable<Response<ShopProductCampaignResponse>> getProductCampaigns(
+            @Query(PID) String ids
+    );
 }

@@ -13,6 +13,7 @@
     <dimen name="font_small">14sp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="fontvvs">10sp</dimen>
+    <dimen name="fontvvvs">8sp</dimen>
 
     <dimen name="page_with_pad">290dp</dimen>
     <dimen name="margin_vs">5dp</dimen>
@@ -27,6 +28,7 @@
     <dimen name="padding_vs">5dp</dimen>
     <dimen name="padding_vvs">3dp</dimen>
     <dimen name="padding_vvvs">2dp</dimen>
+    <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
     <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
@@ -103,7 +105,6 @@
     <dimen name="medal_size">20dp</dimen>
     <dimen name="icon_size">48dp</dimen>
     <dimen name="item_revamp_category">175dp</dimen>
-    <dimen name="item_banner_category">150dp</dimen>
     <dimen name="text_item_revamp_category">28sp</dimen>
 
     <!-- youtube thumbnail dimens -->
@@ -141,6 +142,7 @@
     <dimen name="text_size_xxsmall">10sp</dimen>
     <dimen name="text_size_xsmall">11sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_s_medium">13sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>

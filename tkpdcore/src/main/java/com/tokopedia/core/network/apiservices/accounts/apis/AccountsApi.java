@@ -134,4 +134,7 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_EDIT_PROFILE)
     Observable<Response<TkpdResponse>> editProfile(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
+    Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 }

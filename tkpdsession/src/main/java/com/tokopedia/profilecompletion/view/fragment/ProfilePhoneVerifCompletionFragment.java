@@ -201,6 +201,7 @@ public class ProfilePhoneVerifCompletionFragment
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                proceed.setVisibility(View.GONE);
                 presenter.requestOtp();
             }
         });
@@ -208,6 +209,7 @@ public class ProfilePhoneVerifCompletionFragment
         requestOtpCallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                proceed.setVisibility(View.GONE);
                 presenter.requestOtpWithCall();
 
             }
@@ -288,8 +290,10 @@ public class ProfilePhoneVerifCompletionFragment
         setViewEnabled(true);
         SessionHandler.setIsMSISDNVerified(true);
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
+        proceed.setVisibility(View.VISIBLE);
+        proceed.setEnabled(true);
+        proceed.setBackgroundColor(getResources().getColor(R.color.medium_green));
         parentPresenter.skipView(TAG);
-
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }
 }

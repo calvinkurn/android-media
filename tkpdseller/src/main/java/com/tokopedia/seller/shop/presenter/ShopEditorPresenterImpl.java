@@ -14,6 +14,8 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopCache;
@@ -48,9 +50,11 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
     private boolean isViewActive = true;
     private Data modelShopData;
     ShopScheduleDialog editScheduleDialog;
+    private final GlobalCacheManager cacheManager;
 
     public ShopEditorPresenterImpl(ShopEditorView view) {
         super(view);
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -223,6 +227,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         }
                         String jsonShopDataCache = resultData.getString(ShopEditService.JSON_SHOP_DATA_CACHE);
                         ShopSettingCache.SaveCache(ShopSettingCache.CODE_SHOP_INFO, jsonShopDataCache, context);
+
                         //((BaseView) fragment).setData(type, resultData);
                         break;
                     case ShopEditServiceConstant.POST_EDIT_DATA:
@@ -244,9 +249,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         if(updateShopImageModel.getData().getIs_success() == 1){
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
                             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context);
-                            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdState.CacheName.CACHE_USER);
-                            Cache.putString("shop_pic_uri", resultData.getString(ShopEditService.PIC_SRC));
-                            Cache.applyEditor();
+                            cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                             shopEditorModel.setUploadingAvatar(false);
                             if(isViewActive) {
                                 view.loadImageAva(resultData.getString(ShopEditService.PIC_SRC));

@@ -149,7 +149,6 @@ public class InboxTicketFragmentPresenterImpl implements InboxTicketFragmentPres
 
             @Override
             public void onError(Throwable e) {
-                System.out.println("Magic GetNew");
                 getInboxTicket();
             }
         });

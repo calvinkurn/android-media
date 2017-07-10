@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.data.entity.requestbody.atc;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,13 @@ public class Attributes {
     @SerializedName("fields")
     @Expose
     private List<Field> fields = new ArrayList<>();
+    @SerializedName("identifier")
+    @Expose
+    private RequestBodyIdentifier identifier;
+
+    public void setIdentifier(RequestBodyIdentifier identifier) {
+        this.identifier = identifier;
+    }
 
     public void setUserId(int userId) {
         this.userId = userId;
