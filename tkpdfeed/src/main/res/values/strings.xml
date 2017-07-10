@@ -31,5 +31,6 @@
     <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
+    <string name="you_have_new_feed">Feed baru</string>
 
 </resources>

@@ -5,20 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@color/tkpd_bg_color"
     android:descendantFocusability="blocksDescendants">
-
-    <include
-        android:id="@+id/layout_new_feed"
-        layout="@layout/layout_new_feed"
-        android:visibility="gone"
-        tools:visibility="visible"/>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_new_feed">
+        >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -29,4 +24,33 @@
             android:clipToPadding="false"
             android:scrollbars="vertical"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+
+    <LinearLayout
+        android:id="@+id/layout_new_feed"
+        android:layout_width="@dimen/label_new_feed_width"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/label_new_feed"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_vs"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_arrow_up"/>
+
+        <TextView
+            android:id="@+id/new_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/you_have_new_feed"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small"/>
+    </LinearLayout>
+
 </RelativeLayout>

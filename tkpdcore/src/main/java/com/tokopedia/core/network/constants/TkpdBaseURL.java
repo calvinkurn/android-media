@@ -46,7 +46,7 @@ public class TkpdBaseURL {
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static final String URL_TOKOCASH = "https://tokocash.com/";
-    public static final String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
+    public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
