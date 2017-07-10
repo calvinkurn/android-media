@@ -24,8 +24,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -108,18 +106,6 @@ public class ConsumerRouterApplication extends MainApplication implements
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
-    }
-
-
-    @Override
-    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(url);
-        paymentPassData.setQueryString(parameter);
-        paymentPassData.setCallbackSuccessUrl(callbackUrl);
-        paymentPassData.setPaymentId(String.valueOf(paymentId));
-        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
-        context.startActivity(intent);
     }
 
     @Override
