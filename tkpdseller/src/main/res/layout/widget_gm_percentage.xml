@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/arrow_icon"
+        android:layout_width="@dimen/gm_button_width_size"
+        android:layout_height="@dimen/gm_button_height_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/gm_button_margin_size"
+        android:layout_marginRight="@dimen/gm_button_margin_size"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_rectangle_up" />
+
+    <TextView
+        android:id="@+id/percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/gm_percentage_margin_left_size"
+        android:layout_marginStart="@dimen/gm_percentage_margin_left_size"
+        android:gravity="start"
+        android:text="@string/gold_merchant_default_percentage_text"
+        android:textColor="@color/arrow_down"
+        android:textSize="@dimen/gm_percentage_text_size" />
+
+
+</LinearLayout>

@@ -9,8 +9,12 @@ public class GrossIncome extends SuccessfulTransaction {
 
     public GrossIncome(long successTrans) {
         super(successTrans);
-        type = TYPE;
         text = "Rp " + text;
         textDescription = "Pendapatan Kotor";
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

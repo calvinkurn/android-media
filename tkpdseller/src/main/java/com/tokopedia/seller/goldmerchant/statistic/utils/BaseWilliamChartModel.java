@@ -1,5 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
+import java.util.Arrays;
+
 /**
  * @author normansyahputa on 7/6/17.
  *         <p>
@@ -20,6 +22,11 @@ public class BaseWilliamChartModel {
         this.values = values;
     }
 
+    public BaseWilliamChartModel(BaseWilliamChartModel baseWilliamChartModel) {
+        setValues(Arrays.copyOf(baseWilliamChartModel.getValues(), baseWilliamChartModel.getValues().length));
+        setLabels(Arrays.copyOf(baseWilliamChartModel.getLabels(), baseWilliamChartModel.getLabels().length));
+    }
+
     private BaseWilliamChartModel() {
     }
 
@@ -37,5 +44,15 @@ public class BaseWilliamChartModel {
 
     public void setValues(float[] values) {
         this.values = values;
+    }
+
+    public int size() {
+        return values.length;
+    }
+
+    public void increment(int increment) {
+        for (int i = 0; i < values.length; i++) {
+            values[i] += increment;
+        }
     }
 }

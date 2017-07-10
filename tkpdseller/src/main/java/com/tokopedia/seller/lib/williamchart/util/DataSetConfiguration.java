@@ -13,4 +13,6 @@ public interface DataSetConfiguration {
     float lineThickness();
 
     float pointsSize();
+
+    boolean isVisible();
 }

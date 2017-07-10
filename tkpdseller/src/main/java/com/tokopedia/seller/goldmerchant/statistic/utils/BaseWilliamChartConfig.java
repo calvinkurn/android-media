@@ -113,14 +113,23 @@ public class BaseWilliamChartConfig {
             BaseWilliamChartModel baseWilliamChartModel = pairConfig.getModel1();
             DataSetConfiguration dataSetConfiguration = pairConfig.getModel2();
 
-            LineSet dataset = new LineSet(baseWilliamChartModel.getLabels(), baseWilliamChartModel.getValues());
+            LineSet dataset = new LineSet();
+            dataset.setmPointVisible(dataSetConfiguration.isVisible());
+
+            for (int i = 0; i < baseWilliamChartModel.size(); i++) {
+                dataset.addPoint(
+                        baseWilliamChartModel.getLabels()[i],
+                        baseWilliamChartModel.getValues()[i]);
+            }
 
             dataset.setSmooth(LineSet.SMOOTH_QUAD)
                     .setThickness(Tools.fromDpToPx(dataSetConfiguration.lineThickness()))
                     .setColor(dataSetConfiguration.lineColor());
 
-            dataset.setDotsRadius(Tools.fromDpToPx(dataSetConfiguration.pointsSize()))
-                    .setDotsColor(dataSetConfiguration.pointColor());
+            if (dataSetConfiguration.isVisible()) {
+                dataset.setDotsRadius(Tools.fromDpToPx(dataSetConfiguration.pointsSize()))
+                        .setDotsColor(dataSetConfiguration.pointColor());
+            }
             chart.addData(dataset);
         }
 
@@ -192,6 +201,9 @@ public class BaseWilliamChartConfig {
 
         if (basicGraphConfiguration.gridType() != null)
             chart.setGrid(basicGraphConfiguration.gridType(), mGridPaint);
+
+        chart.setXAxisLabelSpacing(basicGraphConfiguration.xDistAxisToLabel());
+        chart.setYAxisLabelSpacing(basicGraphConfiguration.yDistAxisToLabel());
 
         String mLabelFormat = "";
         chart.setLabelsFormat(new DecimalFormat("#" + mLabelFormat));

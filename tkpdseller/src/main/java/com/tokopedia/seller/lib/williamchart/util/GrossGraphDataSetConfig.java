@@ -27,4 +27,9 @@ public class GrossGraphDataSetConfig implements DataSetConfiguration {
     public float pointsSize() {
         return 4;
     }
+
+    @Override
+    public boolean isVisible() {
+        return true;
+    }
 }

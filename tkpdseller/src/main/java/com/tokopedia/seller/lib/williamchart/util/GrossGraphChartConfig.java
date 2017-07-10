@@ -3,6 +3,7 @@ package com.tokopedia.seller.lib.williamchart.util;
 import android.graphics.Color;
 
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.view.ChartView;
@@ -81,6 +82,16 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
     @Override
     public int bottomMargin() {
         return BaseWilliamChartConfig.DEFAULT;
+    }
+
+    @Override
+    public float xDistAxisToLabel() {
+        return Tools.fromDpToPx(12f);
+    }
+
+    @Override
+    public float yDistAxisToLabel() {
+        return Tools.fromDpToPx(6f);
     }
 
     @Override
