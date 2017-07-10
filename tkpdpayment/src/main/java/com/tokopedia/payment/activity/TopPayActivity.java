@@ -92,7 +92,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                //  onBackPressed();
+                scroogeWebView.loadUrl("javascript:handlePop();");
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
