@@ -21,7 +21,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_detail;
-    private static final String CASHBACK = "Cashback";
+    protected static final String CASHBACK = "Cashback";
 
     public TextView productName;
     public TextView productPrice;
@@ -34,7 +34,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
     public ImageView freeReturn;
     public View mainView;
 
-    private final FeedPlusDetail.View viewListener;
+    protected final FeedPlusDetail.View viewListener;
 
     public FeedDetailViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);

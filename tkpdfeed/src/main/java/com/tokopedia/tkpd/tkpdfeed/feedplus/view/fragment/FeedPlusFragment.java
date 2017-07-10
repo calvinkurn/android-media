@@ -560,7 +560,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     && adapter.getlist().get(0) instanceof ActivityCardViewModel) {
                 presenter.checkNewFeed(((ActivityCardViewModel) adapter.getlist().get(0))
                         .getCursor());
-            } else {
+            } else if (adapter.getlist() != null && !adapter.getlist().isEmpty()) {
                 presenter.checkNewFeed("");
             }
         }

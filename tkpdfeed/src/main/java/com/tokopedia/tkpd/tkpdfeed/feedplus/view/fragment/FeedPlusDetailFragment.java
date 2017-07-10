@@ -20,6 +20,8 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -33,6 +35,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
@@ -227,6 +230,46 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onBackPressed() {
         getActivity().onBackPressed();
+    }
+
+    @Override
+    public void onGoToBuyProduct(String productId) {
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setProductId(productId)
+                .build();
+
+        Intent intent = TransactionAddToCartRouter
+                .createInstanceAddToCartActivity(getActivity(), pass);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessGetSingleFeedDetail(final FeedDetailHeaderViewModel header,
+                                             SingleFeedDetailViewModel singleFeedDetailViewModel) {
+        finishLoading();
+        footer.setVisibility(View.VISIBLE);
+
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
+        }
+
+        adapter.add(singleFeedDetailViewModel);
+
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopId());
+            }
+        });
+
+        pagingHandler.setHasNext(false);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

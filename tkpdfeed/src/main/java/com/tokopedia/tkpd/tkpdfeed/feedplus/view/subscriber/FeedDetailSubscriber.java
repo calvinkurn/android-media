@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDeta
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
+
+import static android.R.attr.data;
 
 /**
  * @author by nisie on 5/24/17.
@@ -41,7 +44,16 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        if (hasFeed(dataFeedDetailDomains)) {
+        if (hasFeed(dataFeedDetailDomains)
+                && dataFeedDetailDomains.get(0).getContent().getProducts().size() == 1) {
+            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+            viewListener.onSuccessGetSingleFeedDetail(
+                    createHeaderViewModel(
+                            dataFeedDetailDomain.getCreate_time(),
+                            dataFeedDetailDomain.getSource().getShop(),
+                            dataFeedDetailDomain.getContent().getStatus_activity()),
+                    convertToSingleViewModel(dataFeedDetailDomain));
+        } else if (hasFeed(dataFeedDetailDomains)) {
             DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
             viewListener.onSuccessGetFeedDetail(
                     createHeaderViewModel(
@@ -54,6 +66,28 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
             viewListener.onEmptyFeedDetail();
         }
 
+    }
+
+    private SingleFeedDetailViewModel convertToSingleViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
+        FeedDetailProductDomain productDomain = dataFeedDetailDomain.getContent().getProducts()
+                .get(0);
+        return createSingleProductViewModel(productDomain);
+    }
+
+    private SingleFeedDetailViewModel createSingleProductViewModel(FeedDetailProductDomain productDomain) {
+        return new SingleFeedDetailViewModel(
+                productDomain.getId(),
+                productDomain.getName(),
+                productDomain.getPrice(),
+                productDomain.getImage(),
+                productDomain.getProductLink(),
+                productDomain.getCashback(),
+                getIsWholesale(productDomain.getWholesale()),
+                productDomain.getPreorder(),
+                productDomain.getFreereturns(),
+                productDomain.getWishlist(),
+                productDomain.getRating()
+        );
     }
 
     private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {

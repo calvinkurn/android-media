@@ -6,7 +6,9 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,11 @@ public interface FeedPlusDetail {
         void onEmptyFeedDetail();
 
         void onBackPressed();
+
+        void onGoToBuyProduct(String productId);
+
+        void onSuccessGetSingleFeedDetail(FeedDetailHeaderViewModel headerViewModel,
+                                          SingleFeedDetailViewModel feedDetailViewModel);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -62,7 +62,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         StringBuilder titleText = new StringBuilder();
 
         if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
-            titleText.append("      ");
+            titleText.append("     ");
 
         titleText.append(shopNameString)
                 .append(" ")
