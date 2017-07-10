@@ -67,9 +67,6 @@ public class ShopEditorActivity extends TActivity implements
 
         inflateView(R.layout.activity_simple_fragment);
         container = (FrameLayout) findViewById(R.id.container);
-        toolbar = (Toolbar) this.findViewById(R.id.app_bar);
-        toolbar.removeAllViews();
-        setSupportActionBar(toolbar);
 
         fetchExtras(getIntent(), savedInstanceState);
 
@@ -247,8 +244,7 @@ public class ShopEditorActivity extends TActivity implements
     }
 
     private void createCustomToolbar(String shopTitle) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(shopTitle);
+        toolbar.setTitle(shopTitle);
 
     }
 
