@@ -9,191 +9,100 @@ import com.google.gson.annotations.SerializedName;
 
 public class Brand implements Parcelable
 {
-
     @SerializedName("shop_id")
     @Expose
     private int shopId;
-    @SerializedName("shop_defaultv3_url")
+
+    @SerializedName("shop_url")
     @Expose
-    private String shopDefaultv3Url;
-    @SerializedName("shop_mobile_url")
-    @Expose
-    private String shopMobileUrl;
-    @SerializedName("shop_apps_url")
-    @Expose
-    private String shopAppsUrl;
+    private String shopUrl;
+
     @SerializedName("shop_name")
     @Expose
     private String shopName;
+
     @SerializedName("logo_url")
     @Expose
     private String logoUrl;
-    @SerializedName("microsite_url")
+
+    @SerializedName("is_new")
     @Expose
-    private String micrositeUrl;
-    public final static Parcelable.Creator<Brand> CREATOR = new Creator<Brand>() {
+    private int isNew;
 
-
-        @SuppressWarnings({
-            "unchecked"
-        })
-        public Brand createFromParcel(Parcel in) {
-            Brand instance = new Brand();
-            instance.shopId = ((int) in.readValue((int.class.getClassLoader())));
-            instance.shopDefaultv3Url = ((String) in.readValue((String.class.getClassLoader())));
-            instance.shopMobileUrl = ((String) in.readValue((String.class.getClassLoader())));
-            instance.shopAppsUrl = ((String) in.readValue((String.class.getClassLoader())));
-            instance.shopName = ((String) in.readValue((String.class.getClassLoader())));
-            instance.logoUrl = ((String) in.readValue((String.class.getClassLoader())));
-            instance.micrositeUrl = ((String) in.readValue((String.class.getClassLoader())));
-            return instance;
-        }
-
-        public Brand[] newArray(int size) {
-            return (new Brand[size]);
-        }
-
-    }
-    ;
-
-    /**
-     * 
-     * @return
-     *     The shopId
-     */
     public int getShopId() {
         return shopId;
     }
 
-    /**
-     * 
-     * @param shopId
-     *     The shop_id
-     */
     public void setShopId(int shopId) {
         this.shopId = shopId;
     }
 
-    /**
-     * 
-     * @return
-     *     The shopDefaultv3Url
-     */
-    public String getShopDefaultv3Url() {
-        return shopDefaultv3Url;
+    public String getShopUrl() {
+        return shopUrl;
     }
 
-    /**
-     * 
-     * @param shopDefaultv3Url
-     *     The shop_defaultv3_url
-     */
-    public void setShopDefaultv3Url(String shopDefaultv3Url) {
-        this.shopDefaultv3Url = shopDefaultv3Url;
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
     }
 
-    /**
-     * 
-     * @return
-     *     The shopMobileUrl
-     */
-    public String getShopMobileUrl() {
-        return shopMobileUrl;
-    }
-
-    /**
-     * 
-     * @param shopMobileUrl
-     *     The shop_mobile_url
-     */
-    public void setShopMobileUrl(String shopMobileUrl) {
-        this.shopMobileUrl = shopMobileUrl;
-    }
-
-    /**
-     * 
-     * @return
-     *     The shopAppsUrl
-     */
-    public String getShopAppsUrl() {
-        return shopAppsUrl;
-    }
-
-    /**
-     * 
-     * @param shopAppsUrl
-     *     The shop_apps_url
-     */
-    public void setShopAppsUrl(String shopAppsUrl) {
-        this.shopAppsUrl = shopAppsUrl;
-    }
-
-    /**
-     * 
-     * @return
-     *     The shopName
-     */
     public String getShopName() {
         return shopName;
     }
 
-    /**
-     * 
-     * @param shopName
-     *     The shop_name
-     */
     public void setShopName(String shopName) {
         this.shopName = shopName;
     }
 
-    /**
-     * 
-     * @return
-     *     The logoUrl
-     */
     public String getLogoUrl() {
         return logoUrl;
     }
 
-    /**
-     * 
-     * @param logoUrl
-     *     The logo_url
-     */
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
     }
 
-    /**
-     * 
-     * @return
-     *     The micrositeUrl
-     */
-    public String getMicrositeUrl() {
-        return micrositeUrl;
+    public int getIsNew() {
+        return isNew;
     }
 
-    /**
-     * 
-     * @param micrositeUrl
-     *     The microsite_url
-     */
-    public void setMicrositeUrl(String micrositeUrl) {
-        this.micrositeUrl = micrositeUrl;
+    public void setIsNew(int isNew) {
+        this.isNew = isNew;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(shopId);
-        dest.writeValue(shopDefaultv3Url);
-        dest.writeValue(shopMobileUrl);
-        dest.writeValue(shopAppsUrl);
-        dest.writeValue(shopName);
-        dest.writeValue(logoUrl);
-        dest.writeValue(micrositeUrl);
-    }
-
+    @Override
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shopId);
+        dest.writeString(this.shopUrl);
+        dest.writeString(this.shopName);
+        dest.writeString(this.logoUrl);
+        dest.writeInt(this.isNew);
+    }
+
+    public Brand() {
+    }
+
+    protected Brand(Parcel in) {
+        this.shopId = in.readInt();
+        this.shopUrl = in.readString();
+        this.shopName = in.readString();
+        this.logoUrl = in.readString();
+        this.isNew = in.readInt();
+    }
+
+    public static final Creator<Brand> CREATOR = new Creator<Brand>() {
+        @Override
+        public Brand createFromParcel(Parcel source) {
+            return new Brand(source);
+        }
+
+        @Override
+        public Brand[] newArray(int size) {
+            return new Brand[size];
+        }
+    };
 }

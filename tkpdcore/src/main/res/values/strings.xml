@@ -1962,6 +1962,8 @@ di Tokopedia Sekarang!</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 
+    <string name="label_new">Baru</string>
+
     <string name="drawer_title_home">Beranda</string>
     <string name="drawer_title_login">Masuk</string>
     <string name="drawer_title_register">Daftar</string>

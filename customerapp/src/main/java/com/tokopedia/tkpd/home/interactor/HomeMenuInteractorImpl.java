@@ -80,8 +80,8 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
     }
 
     @Override
-    public void fetchBrands(String param, Subscriber<Response<Brands>> brandsSubscriber) {
-        subscription.add(mojitoService.getApi().getBrands(param)
+    public void fetchBrands(Subscriber<Response<Brands>> brandsSubscriber) {
+        subscription.add(mojitoService.getApi().getBrands()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
