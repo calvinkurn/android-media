@@ -25,7 +25,7 @@ public interface BrowsePresenter {
 
     void fetchHotListHeader(String alias);
 
-    void sendQuery(String query, String depId);
+    boolean sendQuery(String query, String depId);
     void sendHotlist(String selected, String keyword);
 
     void resetBrowseProductActivityModel();
