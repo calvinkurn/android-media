@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by alvarisi on 3/31/17.
  */
 
-public class Receipt implements Parcelable {
+public class Receipt implements Parcelable{
     private String requestId;
     private String currency;
     private String distance;
@@ -23,6 +23,7 @@ public class Receipt implements Parcelable {
     private String uberSignupTermsUrl;
     private float discount;
     private float cashback;
+    private PendingPayment pendingPayment;
 
     public Receipt() {
     }
@@ -43,6 +44,7 @@ public class Receipt implements Parcelable {
         uberSignupTermsUrl = in.readString();
         discount = in.readFloat();
         cashback = in.readFloat();
+        pendingPayment = in.readParcelable(PendingPayment.class.getClassLoader());
     }
 
     public static final Creator<Receipt> CREATOR = new Creator<Receipt>() {
@@ -177,6 +179,14 @@ public class Receipt implements Parcelable {
         this.cashback = cashback;
     }
 
+    public PendingPayment getPendingPayment() {
+        return pendingPayment;
+    }
+
+    public void setPendingPayment(PendingPayment pendingPayment) {
+        this.pendingPayment = pendingPayment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -199,5 +209,6 @@ public class Receipt implements Parcelable {
         parcel.writeString(uberSignupTermsUrl);
         parcel.writeFloat(discount);
         parcel.writeFloat(cashback);
+        parcel.writeParcelable(pendingPayment, i);
     }
 }
