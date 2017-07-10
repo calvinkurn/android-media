@@ -133,11 +133,6 @@ public class ShopEditorActivity extends TActivity implements
         }
     }
 
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.CREATE_SHOP;
-    }
-
     public static void startOpenShopEditShippingActivity(AppCompatActivity context) {
         Intent intent = new Intent(context, OpenShopEditShipping.class);
         context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
