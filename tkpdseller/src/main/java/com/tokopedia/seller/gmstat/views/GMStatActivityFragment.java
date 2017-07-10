@@ -25,6 +25,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
@@ -44,7 +45,6 @@ import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
 import com.tokopedia.seller.gmstat.views.helper.PopularProductLoading;
 import com.tokopedia.seller.gmstat.views.helper.TransactionDataLoading;
-import com.tokopedia.seller.gmstat.views.models.BaseGMModel;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
@@ -279,7 +279,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private void resetEmptyAdapter() {
         gmStatWidgetAdapter.clear();
 
-        List<BaseGMModel> loadingBases = new ArrayList<>();
+        List<ItemType> loadingBases = new ArrayList<>();
         for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
@@ -289,7 +289,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     protected void initEmptyAdapter() {
-        List<BaseGMModel> loadingBases = new ArrayList<>();
+        List<ItemType> loadingBases = new ArrayList<>();
         for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
@@ -463,7 +463,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
-        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        List<ItemType> baseGMModels = new ArrayList<>();
         baseGMModels.add(grossIncome);
 
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
@@ -572,7 +572,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime) {
-        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        List<ItemType> baseGMModels = new ArrayList<>();
         SuccessfulTransaction successfulTransaction
                 = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
         successfulTransaction.percentage = getProductGraph.getDiffTrans() * 100;
