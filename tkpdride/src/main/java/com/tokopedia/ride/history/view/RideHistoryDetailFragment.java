@@ -226,7 +226,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
             paymentDetailsLayout.setVisibility(View.VISIBLE);
             if (rideHistory.getCashback() > 0) {
-                cashbackValueTextView.setText(rideHistory.getCashback() + "");
+                cashbackValueTextView.setText(rideHistory.getCashbackDisplayFormat());
             } else {
                 cashbackValueTextView.setVisibility(View.GONE);
                 cashbackLableTextView.setVisibility(View.GONE);
@@ -236,7 +236,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         }
 
         if (rideHistory.getDiscount() > 0) {
-            discountValueTextView.setText("- " + rideHistory.getDiscount());
+            discountValueTextView.setText("- " + rideHistory.getDiscountDisplayFormat());
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);

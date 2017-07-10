@@ -34,6 +34,10 @@ public class ReceiptEntityMapper {
                 totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
             }
 
+            receipt.setCashback(entity.getCashbackAmount());
+            receipt.setDiscount(entity.getDiscountAmount());
+            receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
+            receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
 
             receipt.setTotalCharged(totalCharged);
 
