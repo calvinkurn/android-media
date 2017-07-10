@@ -17,6 +17,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
@@ -45,7 +46,7 @@ import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RE
 /**
  * Created by Zulfikar on 5/19/2016.
  */
-public class ShopEditorActivity extends TkpdActivity implements
+public class ShopEditorActivity extends TActivity implements
         ShopSettingView {
 
     FragmentManager supportFragmentManager;
@@ -106,7 +107,6 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, true, CREATE_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_open_shop));
-                drawerHelper.setEnabled(false);
                 break;
             case EDIT_SHOP_FRAGMENT_TAG:
                 if (!isFragmentCreated(EDIT_SHOP_FRAGMENT_TAG)) {
@@ -116,7 +116,6 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, false, EDIT_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_shop_information_menu));
-                drawerHelper.setEnabled(true);
                 break;
         }
     }
