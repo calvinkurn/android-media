@@ -106,6 +106,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private LocalCacheHandler cacheGridType;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     private boolean isBottomBarFirstTimeChange = true;
+    private boolean isFetchingDynamicAttribute = false;
     private String searchQuery;
     private Context context;
 
@@ -379,6 +380,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                             filterAttribute.setSelected(filterAttribute.getSort().get(0).getName());
                         }
                         browseView.setFilterAttribute(filterAttribute, activeTab);
+                        isFetchingDynamicAttribute = false;
                         switch (dest) {
                             case FILTER:
                                 openFilterPageIfNeeded(filterAttribute, source, activeTab);
@@ -716,7 +718,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
             browseView.openFilter(filterAttribute, source,
                     browseModel.getParentDepartement(), browseModel.getDepartmentId(), filters);
-        } else {
+        } else if (!isFetchingDynamicAttribute) {
+            isFetchingDynamicAttribute = true;
             fetchDynamicAttribute(activeTab, source, FILTER);
         }
     }
@@ -727,7 +730,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 filterAttribute.setSelectedOb(browseModel.getOb());
             }
             browseView.openSort(filterAttribute, source);
-        } else {
+        } else if (!isFetchingDynamicAttribute) {
+            isFetchingDynamicAttribute = true;
             fetchDynamicAttribute(activeTab, source, SORT);
         }
     }

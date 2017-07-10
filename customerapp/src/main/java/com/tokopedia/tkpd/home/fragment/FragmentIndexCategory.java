@@ -191,6 +191,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
         LinearLayout wrapperLinearLayout;
+        CardView containerRecharge;
 
         private ViewHolder() {
         }
@@ -460,6 +461,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.MainView = inflater.inflate(R.layout.fragment_category, container, false);
         holder.wrapperLinearLayout = (LinearLayout) holder.MainView.findViewById(R.id.wrapperLinearLayout);
         holder.bannerContainer = (RelativeLayout) holder.MainView.findViewById(R.id.banner_container);
+        holder.containerRecharge = (CardView) holder.MainView.findViewById(R.id.container_recharge);
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
@@ -820,6 +822,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (rechargeCategory.getData().size() == 0) {
             return;
         }
+        holder.containerRecharge.setVisibility(View.VISIBLE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.VISIBLE);
 
         List<Integer> newRechargePositions = new ArrayList<>();
@@ -865,6 +868,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void failedRenderDataRechargeCategory() {
+        holder.containerRecharge.setVisibility(View.GONE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
@@ -875,6 +879,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void hideRechargeWidget() {
+        holder.containerRecharge.setVisibility(View.GONE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
