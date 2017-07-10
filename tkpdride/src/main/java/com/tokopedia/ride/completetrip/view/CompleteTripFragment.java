@@ -6,7 +6,9 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,10 +31,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -40,9 +47,21 @@ import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,6 +74,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 public class CompleteTripFragment extends BaseFragment implements CompleteTripContract.View {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_DRIVER_VEHICLE_VIEW_MODEL = "EXTRA_DRIVER_VEHICLE_VIEW_MODEL";
+    private static final int TOKOCASH_PRODUCT_REQUEST_CODE = 1001;
 
     @BindView(R2.id.on_trip_complete_layout)
     RelativeLayout onTripCompleteLayout;
@@ -111,10 +131,23 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @BindView(R2.id.rb_rate_star_result)
     RatingBar ratingBarResult;
 
+
+    @BindView(R2.id.pending_fare_layout)
+    RelativeLayout pendingFareLayout;
+    @BindView(R2.id.tv_total_pending)
+    TextView totalPendingTextView;
+    @BindView(R2.id.layout_tokocash_option)
+    RelativeLayout tokocashOptionRelativeLayout;
+    @BindView(R2.id.tv_tokocash_selected_product)
+    TextView tokocashSelectedProductTextView;
+    @BindView(R2.id.btn_topup_tokocash)
+    TextView topupButtonTextView;
+
     CompleteTripContract.Presenter presenter;
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
     private Receipt receipt;
+    private DigitalCheckoutPassData passData;
     private OnFragmentInteractionListener interactionListener;
 
     public interface OnFragmentInteractionListener {
@@ -316,6 +349,29 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
         }
+
+        if (receipt.getPendingPayment() != null) {
+            passData = new DigitalCheckoutPassData();
+            passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
+            passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
+            Map<String, String> maps = splitQuery(Uri.parse(receipt.getPendingPayment().getTopupUrl()));
+            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN) != null)
+                passData.setUtmCampaign(maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
+            if (maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER) != null)
+                passData.setClientNumber(maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER));
+            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE) != null)
+                passData.setUtmSource(maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
+            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT) != null)
+                passData.setUtmContent(maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
+            if (maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO) != null)
+                passData.setIsPromo(maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO));
+            if (maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT) != null)
+                passData.setInstantCheckout(maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
+
+            pendingFareLayout.setVisibility(View.VISIBLE);
+            totalPendingTextView.setText(CurrencyFormatHelper.ConvertToRupiah(receipt.getPendingPayment().getPendingAmount()));
+
+        }
     }
 
     @Override
@@ -464,5 +520,102 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     public void showRatingResultLayout(int star) {
         ratingResultLayout.setVisibility(View.VISIBLE);
         ratingBarResult.setRating(star);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+                if (resultCode == IDigitalModuleRouter.PAYMENT_SUCCESS) {
+                    if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            NetworkErrorHelper.showSnackbar(getActivity(), message);
+                        }
+                    }
+                    pendingFareLayout.setVisibility(View.GONE);
+                    ratingLayout.setVisibility(View.VISIBLE);
+                } else {
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.complete_trip_payment_failed));
+                }
+
+                break;
+            case TOKOCASH_PRODUCT_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    TokoCashProduct product = data.getParcelableExtra(PendingFareChooserActivity.EXTRA_PRODUCT);
+                    tokocashSelectedProductTextView.setText(product.getTitle());
+                    passData.setProductId(product.getId());
+                }
+                break;
+        }
+    }
+
+    @OnClick(R2.id.pending_fare_layout)
+    public void actionFareLayout() {
+        List<TokoCashProduct> products = transformProductsFromJson(receipt.getPendingPayment().getTopUpOptions(), receipt.getCurrency());
+        startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
+    }
+
+    @OnClick(R2.id.btn_topup_tokocash)
+    public void actionTopupTokocash() {
+        if (passData == null) return;
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            passData.setIdemPotencyKey(generateIdEmpotency(receipt.getRequestId()));
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+            startActivityForResult(
+                    digitalModuleRouter.instanceIntentCartDigitalProduct(passData),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
+        }
+    }
+
+    private String generateIdEmpotency(String requestId) {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = AuthUtil.md5(timeMillis);
+        return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
+    }
+
+    private List<TokoCashProduct> transformProductsFromJson(String jsonStr, String prefixCurrency) {
+        List<TokoCashProduct> products = new ArrayList<>();
+        if (!TextUtils.isEmpty(jsonStr)) {
+            try {
+                JSONObject jsonObject = new JSONObject(receipt.getPendingPayment().getTopUpOptions());
+                Iterator<?> keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    TokoCashProduct product = new TokoCashProduct();
+                    String key = (String) keys.next();
+                    product.setValue(key);
+                    JSONObject itemJsonObject = new JSONObject(jsonObject.getString(key));
+                    product.setId(itemJsonObject.getString("product_id"));
+                    product.setTitle(String.format("%s %s", prefixCurrency, itemJsonObject.getString("display_price")));
+                    products.add(product);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return products;
+    }
+
+    private Map<String, String> splitQuery(Uri url) {
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        String query = url.getQuery();
+        if (!TextUtils.isEmpty(query)) {
+            String[] pairs = query.split("&|\\?");
+            for (String pair : pairs) {
+                int indexKey = pair.indexOf("=");
+                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
+                    try {
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
+                    } catch (UnsupportedEncodingException | NullPointerException | IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return queryPairs;
     }
 }
