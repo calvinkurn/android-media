@@ -212,31 +212,30 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     public static boolean isApplicationBroughtToBackground(final Activity activity) {
-        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks;
+        try {
+            ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningTaskInfo> tasks;
 
-        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-            tasks = activityManager.getRunningTasks(1);
-        } else {
-            return false;
-        }
+            if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                tasks = activityManager.getRunningTasks(1);
+            } else {
+                return false;
+            }
 
-        // Check the top Activity against the list of Activities contained in the Application's package.
-        if (!tasks.isEmpty()) {
-            ComponentName topActivity = tasks.get(0).topActivity;
-            try {
+            // Check the top Activity against the list of Activities contained in the Application's package.
+            if (!tasks.isEmpty()) {
+                ComponentName topActivity = tasks.get(0).topActivity;
                 PackageInfo pi = activity.getPackageManager().getPackageInfo(activity.getPackageName(), PackageManager.GET_ACTIVITIES);
                 for (ActivityInfo activityInfo : pi.activities) {
                     if (topActivity.getClassName().equals(activityInfo.name)) {
                         return false;
                     }
                 }
-            } catch (PackageManager.NameNotFoundException e) {
-                return false; // Never happens.
-            } catch (RuntimeException e) {
-                return false;
             }
+        } catch (Exception ex) {
+            return false;
         }
+
         return true;
     }
 

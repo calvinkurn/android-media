@@ -299,7 +299,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
             case "rider_canceled":
             case "RIDER_CANCELED":
-                return "RIDER CANCELLED";
+                return "YOU CANCELLED";
 
             case "completed":
             case "COMPLETED":
