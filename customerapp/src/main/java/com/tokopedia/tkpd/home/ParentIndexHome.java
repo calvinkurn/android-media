@@ -564,13 +564,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getExtras() != null) {
-            if (data.getExtras().get(com.tokopedia.core.session.presenter.Session
+            if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
                     .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.LOGIN) {
                 Intent intent = SessionRouter.getLoginActivityIntent(this);
                 intent.putExtras(data.getExtras());
                 startActivity(intent);
                 finish();
-            } else if (data.getExtras().get(com.tokopedia.core.session.presenter.Session
+            } else if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
                     .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.REGISTER) {
                 ((TkpdCoreRouter) getApplication()).goToRegister(this);
             }
