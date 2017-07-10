@@ -35,6 +35,7 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -202,6 +203,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        context.startActivity(intent);
     }
 
     @Override

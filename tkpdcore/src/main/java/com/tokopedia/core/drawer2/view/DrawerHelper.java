@@ -15,12 +15,14 @@ import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -73,11 +75,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
-            case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getId());
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.REGISTER:
+                ((TkpdCoreRouter) context.getApplication()).goToRegister(context);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 intent = InboxRouter.getInboxMessageActivityIntent(context);

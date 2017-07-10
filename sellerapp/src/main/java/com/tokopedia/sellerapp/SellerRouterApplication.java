@@ -41,6 +41,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -57,8 +58,8 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -143,6 +144,12 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
