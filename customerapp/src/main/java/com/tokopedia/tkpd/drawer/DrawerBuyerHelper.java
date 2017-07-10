@@ -207,7 +207,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 0,
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_product),
+                0,
+                TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT,
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         return sellerMenu;
     }
 
@@ -446,6 +449,16 @@ public class DrawerBuyerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
                     startIntent(context, EtalaseShopEditor.class);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT:
+                    Intent draftProductIntent = context.getPackageManager()
+                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+                    if (draftProductIntent != null) {
+                        context.startActivity(draftProductIntent);
+                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                    }
                     break;
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
