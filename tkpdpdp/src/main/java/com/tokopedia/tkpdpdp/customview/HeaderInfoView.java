@@ -130,7 +130,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
             long delta = sf.parse(data.getEndDate()).getTime() - now.getTimeInMillis();
 
-            if (TimeUnit.MILLISECONDS.toDays(delta) <= 1) {
+            if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 textDiscountTimer.setText(getCountdownText(delta));
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
 
