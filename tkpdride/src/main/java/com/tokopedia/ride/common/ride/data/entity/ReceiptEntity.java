@@ -80,6 +80,9 @@ public class ReceiptEntity {
     @SerializedName("cashback_amount")
     @Expose
     float cashbackAmount;
+    @SerializedName("pending_payment")
+    @Expose
+    PendingPaymentEntity pendingPayment;
 
     public ReceiptEntity() {
     }
@@ -142,5 +145,9 @@ public class ReceiptEntity {
 
     public float getCashbackAmount() {
         return cashbackAmount;
+    }
+
+    public PendingPaymentEntity getPendingPayment() {
+        return pendingPayment;
     }
 }
