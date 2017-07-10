@@ -34,7 +34,7 @@
             android:id="@id/iv_brands"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_loading_toped"
             android:layout_margin="3dp" />
