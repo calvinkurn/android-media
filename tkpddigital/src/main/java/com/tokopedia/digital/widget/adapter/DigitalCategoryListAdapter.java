@@ -45,6 +45,8 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public void addAllDataList(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
+        if (digitalCategoryItemDataList == null || digitalCategoryItemDataList.isEmpty())
+            return;
         int countList = digitalCategoryItemDataList.size();
         int countIncrement = column - (countList % column);
         dataList.clear();

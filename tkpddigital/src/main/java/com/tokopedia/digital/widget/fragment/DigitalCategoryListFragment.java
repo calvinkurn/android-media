@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +45,7 @@ import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.widget.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.widget.presenter.IDigitalCategoryListPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -58,6 +60,8 @@ public class DigitalCategoryListFragment extends
         IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, TokoCashUpdateListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
+    private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
+            "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
@@ -69,6 +73,7 @@ public class DigitalCategoryListFragment extends
     private RecyclerView.LayoutManager linearLayoutManager;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private TopCashItem tokoCashData;
+    private List<DigitalCategoryItemData> digitalCategoryListDataState;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -81,17 +86,20 @@ public class DigitalCategoryListFragment extends
 
     @Override
     protected void onFirstTimeLaunched() {
-        refreshHandler.startRefresh();
+
     }
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelableArrayList(EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA,
+                (ArrayList<? extends Parcelable>) digitalCategoryListDataState);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        digitalCategoryListDataState = savedState.getParcelableArrayList(
+                EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA
+        );
     }
 
     @Override
@@ -155,14 +163,17 @@ public class DigitalCategoryListFragment extends
 
     @Override
     protected void setActionVar() {
-
+        if (digitalCategoryListDataState == null || digitalCategoryListDataState.isEmpty())
+            refreshHandler.startRefresh();
+        else renderDigitalCategoryDataList(digitalCategoryListDataState);
     }
 
     @Override
     public void renderDigitalCategoryDataList(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
+        this.digitalCategoryListDataState = digitalCategoryItemDataList;
         refreshHandler.finishRefresh();
         rvDigitalCategoryList.setLayoutManager(gridLayoutManager);
-        adapter.addAllDataList(digitalCategoryItemDataList);
+        adapter.addAllDataList(digitalCategoryListDataState);
     }
 
     @Override
