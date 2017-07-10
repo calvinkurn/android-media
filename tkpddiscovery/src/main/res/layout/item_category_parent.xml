@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/category_parent_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/filter_selector_drawable"
+    android:clickable="true"
     android:orientation="vertical">
+    
+    <ImageView
+        android:id="@+id/category_parent_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        />
 
     <TextView
-        android:id="@+id/dynamic_filter_list_text"
+        android:id="@+id/category_parent_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/filter_selector_drawable"
-        android:clickable="true"
         android:gravity="center"
         android:padding="10dp"
         android:drawableLeft="@drawable/dot_notification"

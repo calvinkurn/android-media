@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +20,13 @@ import java.util.List;
  * @author by alifa on 7/6/17.
  */
 
-public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapter.ItemRowHolder> {
+public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAdapter.ItemRowHolder> {
 
     private List<com.tokopedia.discovery.categorynav.domain.model.Category> categories;
     private OnItemClickListener clickListener;
+    private int activePosition = 0;
 
-    public CategoryRootAdapter(OnItemClickListener itemListener) {
+    public CategoryParentAdapter(OnItemClickListener itemListener) {
         clickListener = itemListener;
         categories = new ArrayList<>();
     }
@@ -34,14 +38,16 @@ public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapte
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.item_category_root, null
+                parent.getContext()).inflate(R.layout.item_category_parent, null
         );
-        return new CategoryRootAdapter.ItemRowHolder(v);
+        return new CategoryParentAdapter.ItemRowHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        holder.CategotyName.setText(categories.get(position).getName());
+        activePosition = position;
+        ItemRowHolder itemRowHolder = (ItemRowHolder) holder;
+        itemRowHolder.bindData(position);
 
     }
 
@@ -54,13 +60,26 @@ public class CategoryRootAdapter extends RecyclerView.Adapter<CategoryRootAdapte
     }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
-        ImageView iconCategory;
-        TextView CategotyName;
+        LinearLayout categoryContainer;
+        ImageView categoryIcon;
+        TextView categoryName;
 
         ItemRowHolder(View view) {
             super(view);
-           // this.iconCategory = (ImageView) view.findViewById(R.id.iv_brands);
-            this.CategotyName = (TextView) view.findViewById(R.id.dynamic_filter_list_text);
+            this.categoryIcon = (ImageView) view.findViewById(R.id.category_parent_icon);
+            this.categoryName = (TextView) view.findViewById(R.id.category_parent_text);
+            this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_parent_container);
+        }
+
+        public void bindData(int position) {
+            Category category = categories.get(position);
+            this.categoryName.setText(category.getName());
+            ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
+            if (position == activePosition) {
+                this.categoryContainer.setSelected(true);
+            } else {
+                this.categoryContainer.setSelected(false);
+            }
         }
 
     }

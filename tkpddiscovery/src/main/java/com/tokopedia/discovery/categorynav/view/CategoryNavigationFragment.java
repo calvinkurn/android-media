@@ -13,7 +13,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.di.CategoryNavigationInjector;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
-import com.tokopedia.discovery.categorynav.view.adapter.CategoryRootAdapter;
+import com.tokopedia.discovery.categorynav.view.adapter.CategoryParentAdapter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 
 
@@ -21,7 +21,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
  * @author by alifa on 7/6/17.
  */
 
-public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View, CategoryRootAdapter.OnItemClickListener{
+public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View, CategoryParentAdapter.OnItemClickListener{
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
     private String departmentId = "";
@@ -30,7 +30,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     RecyclerView categoryRootRecyclerView;
 
     LinearLayoutManager linearLayoutManager;
-    CategoryRootAdapter categoryRootAdapter;
+    CategoryParentAdapter categoryParentAdapter;
 
     @Override
     protected String getScreenName() {
@@ -82,12 +82,12 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void renderRootCategory(CategoryNavDomainModel categoryNavDomainModel) {
-        categoryRootAdapter = new CategoryRootAdapter(this);
+        categoryParentAdapter = new CategoryParentAdapter(this);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
-        categoryRootRecyclerView.setAdapter(categoryRootAdapter);
-        categoryRootAdapter.setDataList(categoryNavDomainModel.getCategories());
-        categoryRootAdapter.notifyDataSetChanged();
+        categoryRootRecyclerView.setAdapter(categoryParentAdapter);
+        categoryParentAdapter.setDataList(categoryNavDomainModel.getCategories());
+        categoryParentAdapter.notifyDataSetChanged();
     }
 
     private void showErrorEmptyState() {
