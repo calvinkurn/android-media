@@ -50,6 +50,7 @@ public interface FragmentBrowseProductView extends BaseView {
     void closeView();
     void showWishListRetry(String errorMessage);
     void updateTotalProduct(Long totalProduct);
-    void displayTopAds();
+    void displayEmptyResult();
+    void setLoading(boolean isLoading);
 
 }

@@ -163,7 +163,6 @@ public class AccountsUtil extends AuthUtil{
             mac.init(signingKey);
             byte[] rawHmac = mac.doFinal(authString.getBytes());
             String asB64 = Base64.encodeToString(rawHmac, Base64.DEFAULT);
-            System.out.println(asB64);
             return asB64;
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();

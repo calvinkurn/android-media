@@ -289,9 +289,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     protected void searchProductNetworkCall() {
-        if (addProductListInterface != null) {
-            addProductListInterface.showNextButton();
-        }
         topAdsAddProductListPresenter.searchProduct();
     }
 
@@ -524,10 +521,17 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             break;
                     }
 
+                    // hide bottom sheet helper
+                    addProductListInterface.hideBottom();
+
                     if (topAdsProductListAdapter != null
                             && topAdsProductListAdapter.getDataSize() <= 0) {
                         if (addProductListInterface != null) {
                             addProductListInterface.dismissNextButton();
+                        }
+                    } else {
+                        if (addProductListInterface != null) {
+                            addProductListInterface.showNextButton();
                         }
                     }
                 }
@@ -574,5 +578,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     public void resetEmptyViewHolder() {
         topAdsProductListAdapter.resetEmptyShown();
+    }
+
+    @Override
+    public void showBottom() {
+        addProductListInterface.showNextButton();
+        addProductListInterface.showBottom();
     }
 }

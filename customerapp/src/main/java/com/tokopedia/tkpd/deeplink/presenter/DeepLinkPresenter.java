@@ -12,4 +12,6 @@ public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
     boolean isLandingPageWebView(Uri uri);
 
     void checkUriLogin(Uri uriData);
+
+    void actionGotUrlFromApplink(Uri uriData);
 }

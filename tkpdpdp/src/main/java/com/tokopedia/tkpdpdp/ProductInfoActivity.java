@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -249,6 +250,14 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
                     onReceiveResultError(fragment, resultData, resultCode);
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle stateBundle) {
+        int osVersion = android.os.Build.VERSION.SDK_INT;
+        if ( osVersion < Build.VERSION_CODES.N) {
+            super.onSaveInstanceState(stateBundle);
         }
     }
 

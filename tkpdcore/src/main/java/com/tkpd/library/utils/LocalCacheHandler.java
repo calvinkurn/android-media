@@ -42,8 +42,6 @@ public class LocalCacheHandler {
                 if (temp.length() > 0) {
                     editor.putString(key, temp);
                 }
-            } else {
-                System.out.println("Magic Checked as null");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -195,7 +193,7 @@ public class LocalCacheHandler {
         putInt("expired_time", time);
         Long curr_time = System.currentTimeMillis() / 1000;
         putLong("timestamp", curr_time);
-
+        applyEditor();
     }
 
     public Boolean isExpired() {

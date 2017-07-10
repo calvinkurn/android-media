@@ -4,34 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.var.ToolbarVariable;
 
 /**
  * Created by Nisie on 31/08/15.
  */
 public abstract class TActivity extends BaseActivity {
 
-
     protected FrameLayout parentView;
-    protected ToolbarVariable toolbar;
-    private DrawerLayout drawerLayout;
-    protected DrawerVariable drawer;
+    protected Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,38 +36,23 @@ public abstract class TActivity extends BaseActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
 
-        setContentView(R.layout.drawer_activity);
+        setContentView(getContentId());
+
         parentView = (FrameLayout) findViewById(R.id.parent_view);
-        toolbar = new ToolbarVariable(this);
-        toolbar.createToolbarWithoutDrawer();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_nav);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        if (GlobalConfig.isSellerApp()) {
-            drawer = ((TkpdCoreRouter)getApplication()).getDrawer(this);
-        } else {
-            drawer = new DrawerVariable(this);
-        }
-
-        drawer.setToolbar(toolbar);
-        drawer.createDrawer();
-        drawer.setEnabled(false);
+        setupToolbar();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        drawer.setHasUpdated(false);
+    protected int getContentId() {
+        return R.layout.main_activity;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!drawer.hasUpdated()) {
-            drawer.updateData();
-        }
-
+    protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.setTitle(getTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override

@@ -200,9 +200,12 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
 
     @Override
     public void showProgress(boolean isShow) {
-        progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        container.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (progressBar != null)
+            progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        if (container != null)
+            container.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (loginButton != null)
+            loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -283,7 +286,8 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RegisterInitialFragmentPermissionsDispatcher.onGoogleClickWithCheck(RegisterInitialFragment.this);
+                            RegisterInitialFragmentPermissionsDispatcher
+                                    .onGoogleClickWithCheck(RegisterInitialFragment.this);
                             UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                         }
                     });
@@ -318,14 +322,17 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
 
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
-        UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
+                AppEventTracking.GTMCacheValue.GMAIL);
+        UnifyTracking.eventMoRegistrationStart(
+                AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
+                AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
@@ -333,12 +340,14 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
             LoginManager.getInstance().logOut();
         }
         processFacebookLogin();
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
+                AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     private void processFacebookLogin() {
         presenter.doFacebookLogin(this, callbackManager);
-        UnifyTracking.eventMoRegistrationStart(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
+        UnifyTracking.eventMoRegistrationStart(
+                com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -356,6 +365,8 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
                     NetworkErrorHelper.showSnackbar(getActivity(), bundle.getString(ARGS_MESSAGE));
                 } else if (bundle.getString("path").contains("code")) {
                     presenter.loginWebView(getActivity(), bundle);
+                } else if (bundle.getString("path").contains("activation-social")) {
+//                    ((SessionView) getActivity()).moveToActivationResend(registerName.getText().toString());
                 }
                 break;
             default:
