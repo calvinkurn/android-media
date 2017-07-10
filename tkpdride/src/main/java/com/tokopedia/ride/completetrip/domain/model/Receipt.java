@@ -24,6 +24,8 @@ public class Receipt implements Parcelable{
     private float discount;
     private float cashback;
     private PendingPayment pendingPayment;
+    private String cashbackDisplayFormat;
+    private String discountDisplayFormat;
 
     public Receipt() {
     }
@@ -45,6 +47,8 @@ public class Receipt implements Parcelable{
         discount = in.readFloat();
         cashback = in.readFloat();
         pendingPayment = in.readParcelable(PendingPayment.class.getClassLoader());
+        cashbackDisplayFormat = in.readString();
+        discountDisplayFormat = in.readString();
     }
 
     public static final Creator<Receipt> CREATOR = new Creator<Receipt>() {
@@ -187,6 +191,22 @@ public class Receipt implements Parcelable{
         this.pendingPayment = pendingPayment;
     }
 
+    public String getCashbackDisplayFormat() {
+        return cashbackDisplayFormat;
+    }
+
+    public void setCashbackDisplayFormat(String cashbackDisplayFormat) {
+        this.cashbackDisplayFormat = cashbackDisplayFormat;
+    }
+
+    public String getDiscountDisplayFormat() {
+        return discountDisplayFormat;
+    }
+
+    public void setDiscountDisplayFormat(String discountDisplayFormat) {
+        this.discountDisplayFormat = discountDisplayFormat;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -210,5 +230,7 @@ public class Receipt implements Parcelable{
         parcel.writeFloat(discount);
         parcel.writeFloat(cashback);
         parcel.writeParcelable(pendingPayment, i);
+        parcel.writeString(cashbackDisplayFormat);
+        parcel.writeString(discountDisplayFormat);
     }
 }

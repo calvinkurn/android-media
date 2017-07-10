@@ -1,5 +1,6 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -100,6 +101,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @BindView(R2.id.rb_rating_result)
     RatingBar ratingResult;
 
+    ProgressDialog mProgressDialog;
+
     RideHistoryDetailContract.Presenter mPresenter;
 
     public RideHistoryDetailFragment() {
@@ -145,6 +148,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = RideHistoryDetailDependencyInjection.createPresenter(getActivity());
+        mProgressDialog = new ProgressDialog(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
         setViewListener();
@@ -226,7 +230,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
             paymentDetailsLayout.setVisibility(View.VISIBLE);
             if (rideHistory.getCashback() > 0) {
-                cashbackValueTextView.setText(rideHistory.getCashback() + "");
+                cashbackValueTextView.setText(rideHistory.getCashbackDisplayFormat());
             } else {
                 cashbackValueTextView.setVisibility(View.GONE);
                 cashbackLableTextView.setVisibility(View.GONE);
@@ -236,7 +240,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         }
 
         if (rideHistory.getDiscount() > 0) {
-            discountValueTextView.setText("- " + rideHistory.getDiscount());
+            discountValueTextView.setText("- " + rideHistory.getDiscountDisplayFormat());
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
@@ -251,6 +255,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
                     .into(new BitmapImageViewTarget(driverPictTextView) {
                         @Override
                         protected void setResource(Bitmap resource) {
+                            if (getActivity() == null) return;
+
                             RoundedBitmapDrawable roundedBitmapDrawable =
                                     RoundedBitmapDrawableFactory.create(getResources(), resource);
                             roundedBitmapDrawable.setCircular(true);
@@ -403,18 +409,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
-    public void showRatingNetworkError() {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), getErrorRatingListener());
-    }
-
-    @NonNull
-    private NetworkErrorHelper.RetryClickedListener getErrorRatingListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                mPresenter.actionSendRating();
-            }
-        };
+    public void showRatingNetworkError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @OnClick(R2.id.layout_need_help)
@@ -431,5 +427,18 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void setHistoryViewModelData(RideHistoryViewModel viewModel) {
         this.rideHistory = viewModel;
         mListener.rideHistoryUpdated(viewModel);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (mProgressDialog == null) return;
+        mProgressDialog.setMessage(getString(R.string.please_wait_message));
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        if (mProgressDialog == null) return;
+        mProgressDialog.hide();
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.ride.history.view;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
@@ -10,6 +11,8 @@ import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+
+import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -88,8 +91,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
 
     @Override
     public void actionSendRating() {
-        getView().hideMainLayout();
-        getView().showLoading();
+        getView().showProgressDialog();
         giveDriverRatingUseCase.execute(getView().getRatingParam(), new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -100,9 +102,13 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showMainLayout();
-                    getView().hideLoading();
-                    getView().showRatingNetworkError();
+                    getView().hideProgressLoading();
+
+                    if (e instanceof UnknownHostException) {
+                        getView().showRatingNetworkError(getView().getActivity().getString(R.string.error_internet_not_connected));
+                    } else {
+                        getView().showRatingNetworkError(e.getMessage());
+                    }
                 }
             }
 
@@ -111,8 +117,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                 if (isViewAttached()) {
                     getView().renderSuccessfullGiveRating(getView().getRateStars());
                     getView().hideRatingLayout();
-                    getView().showMainLayout();
-                    getView().hideLoading();
+                    getView().hideProgressLoading();
                     RideHistoryViewModel viewModel = getView().getRideHistory();
                     viewModel.getRating().setStar(String.valueOf(getView().getRateStars()));
                     getView().setHistoryViewModelData(viewModel);

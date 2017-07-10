@@ -20,8 +20,8 @@
     <dimen name="sliding_panel_min_height">200dp</dimen>
     <dimen name="tooler_height">56dp</dimen>
     <dimen name="map_polyline_padding">10dp</dimen>
-    <dimen name="marker_width">22dp</dimen>
-    <dimen name="marker_height">22dp</dimen>
+    <dimen name="marker_width">14dp</dimen>
+    <dimen name="marker_height">14dp</dimen>
     <dimen name="car_marker_width">15dp</dimen>
     <dimen name="car_marker_height">35dp</dimen>
     <dimen name="thirty_two_dp">32dp</dimen>

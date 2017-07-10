@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 /**
@@ -46,8 +45,6 @@ public interface RideHistoryDetailContract {
 
         void hideLoading();
 
-        void showRatingNetworkError();
-
         void renderSuccessfullGiveRating(int star);
 
         RequestParams getSingleHistoryParam();
@@ -59,9 +56,15 @@ public interface RideHistoryDetailContract {
 
         String getMapSize();
 
+        void showRatingNetworkError(String resourceId);
+
         void setHistoryViewModelData(RideHistoryViewModel viewModel);
 
         int getRateStars();
+
+        void showProgressDialog();
+
+        void hideProgressLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

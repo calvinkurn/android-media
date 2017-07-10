@@ -127,6 +127,9 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
 
     @Override
     public boolean onOverrideUrl(String url) {
+        if (url.endsWith("action_back") || url.endsWith("tokopedia://close")) {
+            finish();
+        }
         return false;
     }
 }

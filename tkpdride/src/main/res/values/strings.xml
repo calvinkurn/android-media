@@ -18,7 +18,7 @@
     <string name="booking_how_many_seats_you_need">How many seats you need?</string>
     <string name="btn_text_retry">Retry</string>
     <string name="en_route">On Trip</string>
-    <string name="driver_cancelled_ride_message">Sorry, driver cancelled your request. Try booking again.</string>
+    <string name="driver_cancelled_ride_message">Sorry, driver canceled your request. Try booking again.</string>
     <string name="no_uber_valid_location">This service is available for Indonesia only.</string>
     <string name="notification_title_finding_uber">Finding your </string>
     <string name="accepted_push_message">%1$s (%2$s stars) will pick you up in %3$s minutes.</string>
@@ -79,7 +79,7 @@
     <string name="ride_push_toolbar_tap_view_detail">Tap to view trip detail</string>
     <string name="ride_push_toolbar_driver_not_found">No Driver Found</string>
     <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
-    <string name="ride_push_driver_cancel">Driver cancelled your booking</string>
+    <string name="ride_push_driver_cancel">Driver canceled your booking</string>
     <string name="ride_push_book_request_again">Book another Uber</string>
     <string name="ride_push_driver_arriving_now">Your Uber is arriving now</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
@@ -145,4 +145,5 @@
     <string name="complete_trip_pending_fare">Pending Fare</string>
     <string name="pending_fare_choose_nominal">Nominal</string>
     <string name="complete_trip_payment_failed">Payment failed</string>
+    <string name="please_wait_message">Please wait...</string>
 </resources>
