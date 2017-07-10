@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -44,6 +45,8 @@ import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemVie
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -91,6 +94,9 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Inject
     ResCenterDiscussionPresenterImpl presenter;
+    private String[] extensions = {
+            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
+    };
 
     public static Fragment createInstance(String resolutionID, boolean flagReceived, boolean flagAllowReply) {
         Fragment fragment = new ResCenterDiscussionFragment();
@@ -488,17 +494,40 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     }
 
     private boolean checkAttachmentValidation(MediaItem item) {
-        boolean allow = true;
+        boolean isExtensionAllow = false;
+        for (String extension : extensions) {
+            String path = item.getRealPath();
+            if (path != null && path.toLowerCase(Locale.US).endsWith(extension)) {
+                Log.d("hangnadi validation", "checkAttachmentValidation: " + extension + "\npath : " + path);
+                isExtensionAllow = true;
+            }
+        }
+        if (!isExtensionAllow) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getActivity().getString(R.string.error_reply_discussion_resolution_file_not_allowed)
+            );
+            return false;
+        }
+
+        int isMaximalContentVideoAllow = 1;
+        int countVideo = 0;
         if (item.isVideo() || item.isGif()) {
             for (AttachmentViewModel model :attachmentAdapter.getList()) {
                 if (model.isVideo()) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_reply_discussion_resolution_reach_max));
-                    allow = false;
-                    break;
+                    countVideo++;
                 }
             }
         }
-        return allow;
+        if (countVideo > isMaximalContentVideoAllow) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getActivity().getString(R.string.error_reply_discussion_resolution_reach_max)
+            );
+            return false;
+        }
+
+        return true;
     }
 
     private void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
