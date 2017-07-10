@@ -213,7 +213,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     public static boolean isApplicationBroughtToBackground(final Activity activity) {
         ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+        List<ActivityManager.RunningTaskInfo> tasks;
+
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+            tasks = activityManager.getRunningTasks(1);
+        } else {
+            return false;
+        }
 
         // Check the top Activity against the list of Activities contained in the Application's package.
         if (!tasks.isEmpty()) {
