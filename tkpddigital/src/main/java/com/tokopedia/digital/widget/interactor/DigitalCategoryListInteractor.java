@@ -8,8 +8,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.domain.IDigitalCategoryListRepository;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
 

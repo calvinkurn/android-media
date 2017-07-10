@@ -9,9 +9,9 @@ import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

@@ -1,7 +1,7 @@
 package com.tokopedia.digital.widget.interactor;
 
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
 

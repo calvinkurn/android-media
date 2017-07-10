@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.data.entity;
+package com.tokopedia.digital.widget.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class DigitalCategoryItemData implements Parcelable {
+    public static final String DEFAULT_TYPE_DIGITAL = "Digital";
 
     private String name;
     private String imageUrl;
@@ -92,15 +93,16 @@ public class DigitalCategoryItemData implements Parcelable {
         this.appLinks = in.readString();
     }
 
-    public static final Parcelable.Creator<DigitalCategoryItemData> CREATOR = new Parcelable.Creator<DigitalCategoryItemData>() {
-        @Override
-        public DigitalCategoryItemData createFromParcel(Parcel source) {
-            return new DigitalCategoryItemData(source);
-        }
+    public static final Parcelable.Creator<DigitalCategoryItemData> CREATOR =
+            new Parcelable.Creator<DigitalCategoryItemData>() {
+                @Override
+                public DigitalCategoryItemData createFromParcel(Parcel source) {
+                    return new DigitalCategoryItemData(source);
+                }
 
-        @Override
-        public DigitalCategoryItemData[] newArray(int size) {
-            return new DigitalCategoryItemData[size];
-        }
-    };
+                @Override
+                public DigitalCategoryItemData[] newArray(int size) {
+                    return new DigitalCategoryItemData[size];
+                }
+            };
 }

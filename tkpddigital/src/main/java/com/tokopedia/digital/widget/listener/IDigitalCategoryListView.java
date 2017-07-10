@@ -3,7 +3,7 @@ package com.tokopedia.digital.widget.listener;
 import android.content.Intent;
 
 import com.tokopedia.digital.cart.listener.IBaseView;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
 

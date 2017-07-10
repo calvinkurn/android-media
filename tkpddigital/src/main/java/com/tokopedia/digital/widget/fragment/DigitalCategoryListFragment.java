@@ -36,12 +36,12 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalCategoryListRepository;
 import com.tokopedia.digital.widget.interactor.DigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.widget.presenter.IDigitalCategoryListPresenter;
 
@@ -55,9 +55,8 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryListFragment extends
-        BasePresenterFragment<IDigitalCategoryListPresenter> implements
-        IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
+public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalCategoryListPresenter>
+        implements IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, TokoCashUpdateListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
@@ -163,6 +162,7 @@ public class DigitalCategoryListFragment extends
 
     @Override
     protected void setActionVar() {
+        presenter.processGetTokoCashData();
         if (digitalCategoryListDataState == null || digitalCategoryListDataState.isEmpty())
             refreshHandler.startRefresh();
         else renderDigitalCategoryDataList(digitalCategoryListDataState);
@@ -337,17 +337,25 @@ public class DigitalCategoryListFragment extends
             String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
             String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
                     getActivity());
-            openActivationTokoCashWebView(seamlessUrl);
+            Bundle bundle = new Bundle();
+            bundle.putString("url", seamlessUrl);
+            if (getActivity() != null) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .goToWallet(getActivity(), bundle);
+                }
+            }
         } else {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter)
                 if (((IDigitalModuleRouter) getActivity().getApplication())
                         .isSupportedDelegateDeepLink(itemData.getAppLinks())) {
-                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                            .appLinks(itemData.getAppLinks())
-                            .categoryId(itemData.getCategoryId())
-                            .categoryName(itemData.getName())
-                            .url(itemData.getRedirectValue())
-                            .build();
+                    DigitalCategoryDetailPassData passData =
+                            new DigitalCategoryDetailPassData.Builder()
+                                    .appLinks(itemData.getAppLinks())
+                                    .categoryId(itemData.getCategoryId())
+                                    .categoryName(itemData.getName())
+                                    .url(itemData.getRedirectValue())
+                                    .build();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
                     Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
@@ -388,14 +396,4 @@ public class DigitalCategoryListFragment extends
         else return tokoCashData.getData().getAction().getRedirectUrl();
     }
 
-    private void openActivationTokoCashWebView(String seamlessUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", seamlessUrl);
-        if (getActivity() != null) {
-            if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) getActivity().getApplication())
-                        .goToWallet(getActivity(), bundle);
-            }
-        }
-    }
 }

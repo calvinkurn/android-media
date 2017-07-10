@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.ArrayList;
 import java.util.List;

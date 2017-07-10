@@ -4,7 +4,7 @@ import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.entity.homeMenu.LayoutRow;
 import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
 import com.tokopedia.digital.exception.MapperDataException;
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,9 @@ public class CategoryDigitalListDataMapper implements ICategoryDigitalListDataMa
         for (LayoutSection layoutSection : homeCategoryMenuItem.getData().getLayoutSections()) {
             if (layoutSection.getId() == 4)
                 for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
-                    if (layoutRow.getType().equalsIgnoreCase("Digital")) {
+                    if (layoutRow.getType().equalsIgnoreCase(
+                            DigitalCategoryItemData.DEFAULT_TYPE_DIGITAL
+                    )) {
                         DigitalCategoryItemData data = new DigitalCategoryItemData();
                         data.setName(layoutRow.getName());
                         data.setImageUrl(layoutRow.getImageUrl());

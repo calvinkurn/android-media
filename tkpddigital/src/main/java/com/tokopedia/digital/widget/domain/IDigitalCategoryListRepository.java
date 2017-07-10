@@ -1,6 +1,6 @@
 package com.tokopedia.digital.widget.domain;
 
-import com.tokopedia.digital.widget.data.entity.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
 
