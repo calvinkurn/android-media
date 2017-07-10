@@ -12,7 +12,10 @@ import java.util.Locale;
  */
 
 public class ReceiptEntityMapper {
+    private PendingPaymentEntityMapper pendingPaymentEntityMapper;
+
     public ReceiptEntityMapper() {
+        pendingPaymentEntityMapper = new PendingPaymentEntityMapper();
     }
 
     public Receipt transform(ReceiptEntity entity) {
@@ -24,6 +27,7 @@ public class ReceiptEntityMapper {
             receipt.setDistanceUnit(entity.getDistanceLabel());
             receipt.setDuration(entity.getDuration());
             receipt.setDuratuinInMinute(transformDurationToMinute(entity.getDuration()));
+            receipt.setPendingPayment(pendingPaymentEntityMapper.transform(entity.getPendingPayment()));
             receipt.setRequestId(entity.getRequestId());
             receipt.setSubtotal(entity.getSubtotal());
             receipt.setTotalFare(formatDisplayPrice(entity.getTotalFare()));
