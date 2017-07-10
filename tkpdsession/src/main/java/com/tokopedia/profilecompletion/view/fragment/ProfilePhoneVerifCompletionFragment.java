@@ -22,7 +22,7 @@ import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragme
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
@@ -39,7 +39,7 @@ public class ProfilePhoneVerifCompletionFragment
     private ProfileCompletionFragment parentView;
     private View skip;
     private GetUserInfoDomainData data;
-    private ProfileCompletionPresenter parentPresenter;
+    private ProfileCompletionContract.Presenter parentPresenter;
     private View instruction;
 
 

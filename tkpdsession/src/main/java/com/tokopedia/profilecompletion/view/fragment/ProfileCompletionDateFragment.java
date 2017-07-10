@@ -2,28 +2,33 @@ package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 /**
  * Created by stevenfredian on 7/3/17.
  */
 
-public class ProfileCompletionDateFragment extends BasePresenterFragment<ProfileCompletionPresenter> {
+public class ProfileCompletionDateFragment extends BaseDaggerFragment {
 
 
     public static final String TAG = "date";
@@ -35,6 +40,8 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
     private View proceed;
     private View skip;
     private int position;
+    private Unbinder unbinder;
+    private ProfileCompletionContract.Presenter presenter;
 
     public static ProfileCompletionDateFragment createInstance(ProfileCompletionFragment view) {
         ProfileCompletionDateFragment fragment = new ProfileCompletionDateFragment();
@@ -42,52 +49,23 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
         return fragment;
     }
 
+    @Nullable
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout.fragment_profile_completion_dob, container, false);
+        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
+        setViewListener();
+        initialVar();
+        return parentView;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = view.getPresenter();
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_profile_completion_dob;
-    }
-
-    @Override
     protected void initView(View view) {
         date = (TextInputEditText) view.findViewById(R.id.date);
         month = (AutoCompleteTextView) view.findViewById(R.id.month);
@@ -97,13 +75,12 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
         skip = this.view.getView().findViewById(R.id.skip);
     }
 
-    @Override
     protected void setViewListener() {
         actvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 month.showDropDown();
-                KeyboardHandler.DropKeyboard(context, getView());
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
             }
         });
 
@@ -111,7 +88,7 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
             @Override
             public void onClick(View v) {
                 month.showDropDown();
-                KeyboardHandler.DropKeyboard(context, getView());
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
             }
         });
 
@@ -140,16 +117,21 @@ public class ProfileCompletionDateFragment extends BasePresenterFragment<Profile
         });
     }
 
-    @Override
     protected void initialVar() {
         String[] monthsIndo = new DateFormatSymbols(Locale.getDefault()).getMonths();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (getActivity(), R.layout.select_dialog_item_material, monthsIndo);
         month.setAdapter(adapter);
+        presenter = view.getPresenter();
     }
 
     @Override
-    protected void setActionVar() {
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
 
     }
 }

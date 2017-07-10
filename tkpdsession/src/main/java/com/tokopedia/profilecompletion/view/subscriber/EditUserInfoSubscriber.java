@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.view.subscriber;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
 import com.tokopedia.profilecompletion.view.listener.EditProfileListener;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 
 /**
  * @author by nisie on 7/3/17.
@@ -10,13 +11,14 @@ import com.tokopedia.profilecompletion.view.listener.EditProfileListener;
 
 public class EditUserInfoSubscriber extends rx.Subscriber<EditUserInfoDomainModel> {
 
+    private final ProfileCompletionContract.View listener;
     private int edit;
-    private EditProfileListener listener;
 
-    public EditUserInfoSubscriber(EditProfileListener listener, int edit) {
-        this.listener = listener;
+    public EditUserInfoSubscriber(ProfileCompletionContract.View view, int edit) {
+        this.listener = view;
         this.edit = edit;
     }
+
 
     @Override
     public void onCompleted() {

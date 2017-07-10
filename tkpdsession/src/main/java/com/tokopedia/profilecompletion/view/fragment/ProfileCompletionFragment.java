@@ -1,45 +1,44 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
+import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.ProgressBarAnimation;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.profilecompletion.view.listener.EditProfileListener;
-import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletion;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenterImpl;
 import com.tokopedia.session.R;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by stevenfredian on 6/22/17.
  */
 
-public class ProfileCompletionFragment extends BasePresenterFragment<ProfileCompletionPresenter>
-        implements GetProfileListener, EditProfileListener, ProfileCompletion.View {
+public class ProfileCompletionFragment extends BaseDaggerFragment
+        implements ProfileCompletionContract.View {
 
     ProgressBar progressBar;
     ViewPager viewPager;
@@ -50,86 +49,31 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
     private String filled;
     private TextView skip;
 
+    @Inject
+    ProfileCompletionPresenter presenter;
+    private Unbinder unbinder;
+
 
     public static ProfileCompletionFragment createInstance() {
         return new ProfileCompletionFragment();
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
+    @Nullable
     @Override
-    protected void onFirstTimeLaunched() {
-        presenter.getUserInfo();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout.fragment_profile_completion, container, false);
+        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
+        initialVar();
+        presenter.attachView(this);
+        return parentView;
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(getActivity());
-        String authKey = sessionHandler.getAccessToken(getActivity());
-        authKey = sessionHandler.getTokenType(getActivity()) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        getActivity(),
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        new EditUserInfoMapper()
-                );
-
-        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
-
-        EditUserProfileUseCase editUserProfileUseCase = new EditUserProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
-
-        presenter = new ProfileCompletionPresenterImpl(this, getUserInfoUseCase, editUserProfileUseCase);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_profile_completion;
-    }
-
-    @Override
     protected void initView(View view) {
         progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
@@ -140,18 +84,27 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
     }
 
     @Override
-    protected void setViewListener() {
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        presenter.detachView();
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        presenter.onSaveDataBeforeRotate(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+//        presenter.onViewStateRestored(savedInstanceState);
+    }
+
     protected void initialVar() {
         animation = new ProgressBarAnimation(progressBar);
         filled = "filled";
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -180,7 +133,7 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         int[] colors = getResources().getIntArray(R.array.green_indicator);
         int indexColor = (newValue - 50) / 10;
 
-        LayerDrawable shape = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.horizontal_progressbar);
+        LayerDrawable shape = (LayerDrawable) ContextCompat.getDrawable(getActivity(), R.drawable.horizontal_progressbar);
         GradientDrawable runningBar = (GradientDrawable) ((ScaleDrawable) shape.findDrawableByLayerId(R.id.progress_col)).getDrawable();
         runningBar.setColor(colors[indexColor]);
         runningBar.mutate();
@@ -193,10 +146,11 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
         }
-        if (!getUserInfoDomainData.isPhoneVerified()) {
-            ProfilePhoneVerifCompletionFragment verifCompletionFragment = ProfilePhoneVerifCompletionFragment.createInstance(this);
-            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfilePhoneVerifCompletionFragment.TAG).commit();
-        }else if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
+//        if (!getUserInfoDomainData.isPhoneVerified()) {
+//            ProfilePhoneVerifCompletionFragment verifCompletionFragment = ProfilePhoneVerifCompletionFragment.createInstance(this);
+//            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfilePhoneVerifCompletionFragment.TAG).commit();
+//        }else
+            if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
             ProfileCompletionDateFragment dateFragment = ProfileCompletionDateFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG).commit();
         }else if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
@@ -211,7 +165,7 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
         return item == null || item.length() == 0 || item.equals("0");
     }
 
-    public ProfileCompletionPresenter getPresenter() {
+    public ProfileCompletionContract.Presenter getPresenter() {
         return presenter;
     }
 
@@ -257,5 +211,23 @@ public class ProfileCompletionFragment extends BasePresenterFragment<ProfileComp
 
     public GetUserInfoDomainData getData() {
         return data;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+                .appModule(new AppModule(getContext()))
+                .activityModule(new ActivityModule(getActivity()))
+                .build();
+        DaggerProfileCompletionComponent daggerProfileCompletionComponent
+                = (DaggerProfileCompletionComponent) DaggerProfileCompletionComponent.builder()
+                .appComponent(daggerAppComponent)
+                .build();
+        daggerProfileCompletionComponent.inject(this);
     }
 }

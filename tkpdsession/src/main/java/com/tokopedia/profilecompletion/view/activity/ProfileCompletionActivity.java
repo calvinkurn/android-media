@@ -1,9 +1,9 @@
 package com.tokopedia.profilecompletion.view.activity;
 
-import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
@@ -41,7 +41,7 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         ProfileCompletionFragment fragment = ProfileCompletionFragment.createInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
@@ -65,7 +65,7 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
 
     public void onFinishedForm() {
         ProfileCompletionFinishedFragment fragment = ProfileCompletionFinishedFragment.createInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }

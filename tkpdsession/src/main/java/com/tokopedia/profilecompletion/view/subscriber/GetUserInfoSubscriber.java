@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.view.subscriber;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 
 import rx.Subscriber;
 
@@ -12,11 +13,12 @@ import rx.Subscriber;
 
 public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
 
-    private GetProfileListener listener;
+    private ProfileCompletionContract.View listener;
 
-    public GetUserInfoSubscriber(GetProfileListener listener) {
-        this.listener = listener;
+    public GetUserInfoSubscriber(ProfileCompletionContract.View view) {
+        this.listener = view;
     }
+
 
     @Override
     public void onCompleted() {

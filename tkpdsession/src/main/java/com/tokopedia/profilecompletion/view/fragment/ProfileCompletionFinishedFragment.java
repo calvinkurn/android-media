@@ -2,21 +2,26 @@ package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RadioGroup;
+import android.view.ViewGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
+
+import butterknife.ButterKnife;
 
 
 /**
  * Created by stevenfredian on 7/3/17.
  */
 
-public class ProfileCompletionFinishedFragment extends BasePresenterFragment<ProfileCompletionPresenter> {
+public class ProfileCompletionFinishedFragment extends BaseDaggerFragment {
 
     public static final String TAG = "finished";
     private View finish;
@@ -26,63 +31,25 @@ public class ProfileCompletionFinishedFragment extends BasePresenterFragment<Pro
         return new ProfileCompletionFinishedFragment();
     }
 
+    @Nullable
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout.fragment_profile_completion_finish, container, false);
+        initView(parentView);
+        setViewListener();
+        return parentView;
     }
 
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_profile_completion_finish;
-    }
-
-    @Override
     protected void initView(View view) {
         finish = view.findViewById(R.id.done);
     }
 
-    @Override
     protected void setViewListener() {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(
-                        PeopleInfoDrawerActivity.createInstance(context, SessionHandler.getLoginID(context))
+                getActivity().startActivity(
+                        PeopleInfoDrawerActivity.createInstance(getActivity(), SessionHandler.getLoginID(getActivity()))
                 );
                 getActivity().finish();
             }
@@ -90,12 +57,12 @@ public class ProfileCompletionFinishedFragment extends BasePresenterFragment<Pro
     }
 
     @Override
-    protected void initialVar() {
-
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    protected void setActionVar() {
+    protected void initInjector() {
 
     }
 }

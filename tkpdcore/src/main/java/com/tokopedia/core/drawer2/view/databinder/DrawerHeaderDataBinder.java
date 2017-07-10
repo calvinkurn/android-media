@@ -179,7 +179,12 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         holder.name.setText(data.getDrawerProfile().getUserName());
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
-        holder.layoutProgress.setVisibility(View.VISIBLE);
+        data.setProfileCompletion(50);
+        if(data.getProfileCompletion() == 100) {
+            holder.layoutProgress.setVisibility(View.GONE);
+        }else {
+            holder.layoutProgress.setVisibility(View.VISIBLE);
+        }
 
         setDeposit(holder);
         setTopPoints(holder);
