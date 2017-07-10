@@ -205,7 +205,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -237,8 +236,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
-
     }
 
     @Override
@@ -255,7 +252,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetTokoCash(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
+
     }
 
     @Override
@@ -271,7 +268,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetTopPoints(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -288,7 +284,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override

@@ -1051,7 +1051,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -1082,7 +1081,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -1117,7 +1115,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     public static class SellerHomeNewOrderView {
