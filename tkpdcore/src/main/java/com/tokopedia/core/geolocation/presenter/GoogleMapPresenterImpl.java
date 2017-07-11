@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -80,11 +81,9 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 .build();
         this.isAllowGenerateAddress = true;
         this.locationPass = locationPass;
-        CommonUtils.dumper("theresult google map fragment");
         if(locationPass!=null)
         {
-            CommonUtils.dumper("theresult locationpass enter");
-            Location location = new Location("default");
+            Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
             LocationCache.saveLocation(location);
@@ -94,7 +93,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
-        CommonUtils.dumper("theresult save location onlocationchanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
         LocationCache.saveLocation(location);
         removeLocationUpdate();
@@ -115,6 +113,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void getExistingLocation() {
+        checkLocationSettings();
         setExistingLocationState(true);
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
@@ -124,13 +123,14 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void checkLocationSettings() {
-        LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
-                .build();
+        LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        locationSettingsRequest.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi
-                        .checkLocationSettings(googleApiClient, locationSettingsRequest);
+                        .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
 
         view.checkLocationSettings(result);
     }
@@ -169,7 +169,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                CommonUtils.dumper("theresult save location getLastLocation");
                 LocationCache.saveLocation(location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
