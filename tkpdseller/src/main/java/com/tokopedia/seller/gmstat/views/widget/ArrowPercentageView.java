@@ -8,12 +8,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 
@@ -32,6 +31,7 @@ public class ArrowPercentageView extends FrameLayout {
     private int redColor = R.color.arrow_down;
     private int greenColor = R.color.arrow_up;
     private int greyColor = R.color.grey_400;
+    private PercentageUtil percentageUtil;
 
     public ArrowPercentageView(Context context) {
         super(context);
@@ -68,23 +68,19 @@ public class ArrowPercentageView extends FrameLayout {
     }
 
     private void setUIPercentage(){
-        if (mPercentage < -100 || mPercentage > 100) {
-            this.view.setVisibility(View.GONE);
-        } else {
-            if (mPercentage < 0) {
-                ivArrowIcon.setImageResource(downDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(),redColor));
-            } else if (mPercentage > 0) {
-                ivArrowIcon.setImageResource(upDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(),greenColor));
-            } else { // percentage is 0
-                ivArrowIcon.setImageResource(stagnantDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(),greyColor));
-            }
-            tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
-                    KMNumbers.formatString(mPercentage).replace("-", "")));
-            this.view.setVisibility(View.VISIBLE);
+        if (mPercentage < 0) {
+            ivArrowIcon.setImageResource(downDrawableSrc);
+            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
+        } else if (mPercentage > 0) {
+            ivArrowIcon.setImageResource(upDrawableSrc);
+            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
+        } else { // percentage is 0
+            ivArrowIcon.setImageResource(stagnantDrawableSrc);
+            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
         }
+        tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
+                KMNumbers.formatString(mPercentage).replace("-", "")));
+        this.view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -95,7 +91,15 @@ public class ArrowPercentageView extends FrameLayout {
 
     public void setPercentage(double percentage){
         mPercentage = percentage;
-        setUIPercentage();
+        if (percentageUtil != null) {
+            percentageUtil.calculatePercentage(percentage, ivArrowIcon, tvPercentage);
+        } else {
+            setUIPercentage();
+        }
+
     }
 
+    public void setPercentageUtil(PercentageUtil percentageUtil) {
+        this.percentageUtil = percentageUtil;
+    }
 }

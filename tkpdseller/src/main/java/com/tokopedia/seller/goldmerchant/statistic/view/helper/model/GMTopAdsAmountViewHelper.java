@@ -16,6 +16,7 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticTransactionFragment;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper2;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
@@ -34,6 +35,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
     private LinearLayout gmStatisticTopAdsGraphContainerInner;
     private HorizontalScrollView gmStatisticTopAdsGraphContainer;
     private BaseWilliamChartConfig baseWilliamChartConfig;
+    private GMPercentageViewHelper2 gmPercentageViewHelper2;
 
 
     private String[] monthNamesAbrev;
@@ -43,6 +45,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
     public GMTopAdsAmountViewHelper(@Nullable Context context) {
         super(context);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
+        gmPercentageViewHelper2 = new GMPercentageViewHelper2(context);
     }
 
     @Override
@@ -53,6 +56,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
         gmStatisticTopAdsGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_topads_graph_container_inner);
         gmStatisticTopAdsGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_topads_graph_container);
         gmStatisticTopAdsCardView = (StatisticCardView) itemView.findViewById(R.id.topads_statistic_card_view);
+        gmStatisticTopAdsCardView.setPercentageUtil(gmPercentageViewHelper2);
     }
 
     private void setTopAdsCardView(GMTopAdsAmountViewModel data) {

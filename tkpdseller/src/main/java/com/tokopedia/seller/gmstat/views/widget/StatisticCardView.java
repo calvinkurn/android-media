@@ -5,15 +5,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 
 /**
  * Created by User on 7/10/2017.
@@ -29,6 +28,7 @@ public class StatisticCardView extends CardView {
     private ArrowPercentageView arrowPercentageView;
     private TextView tvSubtitle;
     private TextView tvPercentageDesc;
+
     public StatisticCardView(Context context) {
         super(context);
         apply(null, 0);
@@ -130,12 +130,8 @@ public class StatisticCardView extends CardView {
     }
 
     public void setPercentage(Double percentage) {
-        if (percentage<-100 || percentage > 100) {
-            arrowPercentageView.setVisibility(View.GONE);
-        } else {
-            arrowPercentageView.setPercentage(percentage);
-            arrowPercentageView.setVisibility(View.VISIBLE);
-        }
+        arrowPercentageView.setPercentage(percentage);
+        arrowPercentageView.setVisibility(View.VISIBLE);
     }
 
     public void setSubtitle(CharSequence subtitle) {
@@ -154,6 +150,10 @@ public class StatisticCardView extends CardView {
             tvPercentageDesc.setText(percentageDesc);
             tvPercentageDesc.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setPercentageUtil(PercentageUtil percentageUtil) {
+        arrowPercentageView.setPercentageUtil(percentageUtil);
     }
 
     public interface OnArrowDownClickListener {
