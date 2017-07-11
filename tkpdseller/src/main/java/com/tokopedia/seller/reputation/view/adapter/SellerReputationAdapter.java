@@ -279,8 +279,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public void onClickHeader() {
             if (fragment != null) {
-                reputationViewHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                reputationViewHelper.onClick(fragment, true);
+                reputationViewHelper.onClick(fragment);
                 return;
             }
         }
@@ -346,8 +345,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 @Override
                 public void onClick(View v) {
                     if (getFragment() != null) {
-                        dateUtilHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                        dateUtilHelper.onClick(fragment, true);
+                        dateUtilHelper.onClick(fragment);
                     }
                 }
             });

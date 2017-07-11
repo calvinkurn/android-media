@@ -331,6 +331,9 @@
             android:label="@string/title_shop_score"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".reputation.view.activity.SellerReputationDatePickerActivity"
+            android:label="@string/set_date" />
+        <activity
             android:name=".reputation.view.activity.SellerReputationActivity"
             android:label="@string/title_activity_reputation"
             android:theme="@style/AppTheme" />

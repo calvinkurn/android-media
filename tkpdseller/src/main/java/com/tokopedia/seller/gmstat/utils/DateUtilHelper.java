@@ -9,6 +9,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,27 +26,18 @@ import java.util.Locale;
  */
 public class DateUtilHelper {
     public static final int MOVE_TO_SET_DATE = 1;
-    public static final String YYYY_M_MDD = "yyyyMMdd";
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25/07/2015";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
-    private static final Locale locale = new Locale("in", "ID");
-    private String[] monthNamesAbrev;
     private long sDate;
     private long eDate;
-    private int lastSelection;
-    private int selectionType = DatePickerConstant.SELECTION_TYPE_PERIOD_DATE;
 
     public DateUtilHelper(Context context) {
-        monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+
     }
 
-    public void setSelectionType(int selectionType) {
-        this.selectionType = selectionType;
-    }
-
-    public void onClick(Fragment fragment, boolean isForceSelection) {
-        Intent intent = new Intent(fragment.getActivity(), DatePickerActivity.class);
+    public void onClick(Fragment fragment) {
+        Intent intent = new Intent(fragment.getActivity(), SellerReputationDatePickerActivity.class);
         Calendar maxCalendar = getMaxCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
@@ -65,11 +57,9 @@ public class DateUtilHelper {
         intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, MAX_DATE_RANGE);
 
         intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList(fragment.getActivity()));
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, lastSelection);
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date));
-        intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 

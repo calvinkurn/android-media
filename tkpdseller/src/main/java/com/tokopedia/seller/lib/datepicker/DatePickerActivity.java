@@ -32,36 +32,31 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
 
     public static final int RESULT_CODE = 1;
 
-    private int selectionPeriod;
-    private int selectionType;
-    private long startDate;
-    private long endDate;
-    private long minStartDate;
-    private long maxStartDate;
-    private int maxDateRange;
+    protected int selectionPeriod;
+    protected int selectionType;
+    protected long startDate;
+    protected long endDate;
+    protected long minStartDate;
+    protected long maxStartDate;
+    protected int maxDateRange;
 
-    private ArrayList<PeriodRangeModel> periodRangeModelList;
-    private DatePickerPeriodFragment datePickerPeriodFragment;
-    private DatePickerCustomFragment mDatePickerCustomFragment;
-    private boolean forceDisplaySelection;
+    protected ArrayList<PeriodRangeModel> periodRangeModelList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        fetchIntent(getIntent().getExtras());
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void setupLayout() {
         super.setupLayout();
-        fetchIntent(getIntent().getExtras());
-        if (forceDisplaySelection) {
-            viewPager.setAdapter(getViewPagerAdapter(selectionType));
-            tabLayout.setVisibility(View.GONE);
-        } else {
-            viewPager.setAdapter(getViewPagerAdapter());
-            viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
-            tabLayout.setOnTabSelectedListener(tabListener);
-            tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
-            tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
-            viewPager.setCurrentItem(selectionType);
-        }
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
+        tabLayout.setOnTabSelectedListener(tabListener);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
+        viewPager.setCurrentItem(selectionType);
         String title = getIntent().getExtras().getString(DatePickerConstant.EXTRA_PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
@@ -71,34 +66,17 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
 
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
-
-    }
-
-    private PagerAdapter getViewPagerAdapter(int forceSelectionType) {
-        List<Fragment> fragmentList = new ArrayList<>();
-        switch (forceSelectionType) {
-            case DatePickerConstant.SELECTION_TYPE_PERIOD_DATE:
-                datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
-                datePickerPeriodFragment.setCallback(this);
-                fragmentList.add(datePickerPeriodFragment);
-                break;
-            case DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE:
-                mDatePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-                mDatePickerCustomFragment.setCallback(this);
-                fragmentList.add(mDatePickerCustomFragment);
-                break;
-        }
-        return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
+        // Do nothing
     }
 
     protected PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
-        datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
+        DatePickerPeriodFragment datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
         datePickerPeriodFragment.setCallback(this);
         fragmentList.add(datePickerPeriodFragment);
-        mDatePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-        mDatePickerCustomFragment.setCallback(this);
-        fragmentList.add(mDatePickerCustomFragment);
+        DatePickerCustomFragment datePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
+        datePickerCustomFragment.setCallback(this);
+        fragmentList.add(datePickerCustomFragment);
         return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
     }
 
@@ -132,7 +110,6 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
             maxStartDate = extras.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
-            forceDisplaySelection = extras.getBoolean(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, false);
         }
     }
 
