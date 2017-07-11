@@ -430,6 +430,7 @@ public class WishListImpl implements WishList {
             @Override
             public void run() {
                 wishListView.dismissProgressDialog();
+                data.remove(position);
                 wishListView.onSuccessDeleteWishlist(
                         params.getString(SearchWishlistUsecase.KEY_QUERY, ""), position);
             }
