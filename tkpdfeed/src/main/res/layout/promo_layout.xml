@@ -11,7 +11,8 @@
         android:layout_height="1dp"
         android:background="@color/grey_300"/>
 
-    <include layout="@layout/promo_header"/>
+    <include android:id="@+id/promo_header"
+        layout="@layout/promo_header"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"

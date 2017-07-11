@@ -30,18 +30,20 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
     TextView promoterName;
     TextView promoterDesc;
     ImageView promoterAva;
+    View promoHeader;
 
     private PromoAdapter adapter;
     private FeedPlus.View viewListener;
 
     private PromoCardViewModel promoViewModel;
 
-    public PromoViewHolder(View itemView, FeedPlus.View viewListener) {
+    public PromoViewHolder(View itemView, final FeedPlus.View viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         promoterName = (TextView) itemView.findViewById(R.id.shop_name);
         promoterDesc = (TextView) itemView.findViewById(R.id.shop_desc);
         promoterAva = (ImageView) itemView.findViewById(R.id.user_ava);
+        promoHeader = itemView.findViewById(R.id.promo_header);
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext()
                 , LinearLayoutManager.HORIZONTAL, false);
@@ -63,6 +65,13 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
         });
         adapter = new PromoAdapter(viewListener);
         recyclerView.setAdapter(adapter);
+
+        promoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToPromoPageFromHeader();
+            }
+        });
     }
 
     @Override

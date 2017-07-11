@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.adapter.viewholder;
+package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
 import android.os.Build;
@@ -14,11 +14,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.imageutils.ImageWorker;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.network.HttpMethod;
-import com.tokopedia.topads.sdk.network.HttpRequest;
-import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;

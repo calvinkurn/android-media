@@ -38,6 +38,9 @@ public class CheckNewFeedSubscriber extends Subscriber<FeedResult> {
                 && !feedDomain.getListFeed().isEmpty()
                 && !feedDomain.getListFeed().get(0).getCursor().equals(firstCursor)){
             viewListener.onShowNewFeed();
+        }else{
+            viewListener.onHideNewFeed();
+
         }
     }
 }

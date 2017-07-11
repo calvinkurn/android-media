@@ -11,7 +11,8 @@ public class InspirationProductViewModel {
     private String imageSource;
     private String url;
 
-    public InspirationProductViewModel(String productId, String name, String price, String imageSource, String url) {
+    public InspirationProductViewModel(String productId, String name, String price, String
+            imageSource, String url) {
         this.productId = productId;
         this.name = name;
         this.price = price;

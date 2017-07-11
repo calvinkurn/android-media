@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by stevenfredian on 5/17/17.
  */
 
-public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_MORE = 234;
     private static final int VIEW_LAYOUT = 344;
@@ -34,7 +34,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        switch (viewType){
+        switch (viewType) {
             case VIEW_MORE:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.promo_more_layout, parent, false);
@@ -49,7 +49,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(getItemViewType(position) == VIEW_MORE) {
+        if (getItemViewType(position) == VIEW_MORE) {
             final ViewMoreViewHolder temp = (ViewMoreViewHolder) holder;
             temp.container.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -57,15 +57,15 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     viewListener.onViewMorePromoClicked();
                 }
             });
-        }else {
+        } else {
             final LayoutViewHolder temp = (LayoutViewHolder) holder;
-            if(getItemCount()==1){
+            if (getItemCount() == 1) {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
                 int marginPixels = (int) (10 * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
-            }else{
+            } else {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 int widthPixels = (int) (285 * scale + 0.5f);
                 CardView.LayoutParams params = new CardView.LayoutParams(widthPixels, CardView.LayoutParams.WRAP_CONTENT);
@@ -80,7 +80,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             temp.copyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onCopyClicked(temp.promoCode.getText().toString());
+                    viewListener.onCopyClicked(temp.promoCode.getText().toString(),
+                            list.get(position).getName());
                 }
             });
 
@@ -89,24 +90,26 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             temp.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink());
+                    viewListener.onSeePromo(list.get(position).getLink(),
+                            list.get(position).getName());
                 }
             });
 
             temp.seeArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink());
+                    viewListener.onSeePromo(list.get(position).getLink(),
+                            list.get(position).getName());
                 }
             });
         }
     }
 
     private void setActionArea(LayoutViewHolder holder, String promoCode) {
-        if(promoCode == null || promoCode.length() == 0){
+        if (promoCode == null || promoCode.length() == 0) {
             holder.seeArea.setVisibility(View.VISIBLE);
             holder.copyArea.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.copyArea.setVisibility(View.VISIBLE);
             holder.seeArea.setVisibility(View.GONE);
         }
@@ -128,14 +131,14 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        if(list.size()>1 && position == getItemCount()-1){
+        if (list.size() > 1 && position == getItemCount() - 1) {
             return VIEW_MORE;
-        }else{
+        } else {
             return VIEW_LAYOUT;
         }
     }
 
-    public class LayoutViewHolder extends RecyclerView.ViewHolder{
+    public class LayoutViewHolder extends RecyclerView.ViewHolder {
 
         private CardView container;
         private View copyButton;
@@ -159,7 +162,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
-    public class ViewMoreViewHolder extends RecyclerView.ViewHolder{
+    public class ViewMoreViewHolder extends RecyclerView.ViewHolder {
 
         private View container;
 

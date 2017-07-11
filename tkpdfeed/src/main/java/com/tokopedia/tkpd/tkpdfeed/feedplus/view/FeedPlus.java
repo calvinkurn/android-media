@@ -26,11 +26,15 @@ public interface FeedPlus{
 
         void onGoToProductDetail(String productId);
 
+        void onGoToProductDetailFromRecentView(String productID);
+
+        void onGoToProductDetailFromInspiration(String productId);
+
         void onGoToFeedDetail(String feedId);
 
         void onGoToShopDetail(Integer shopId, String url);
 
-        void onCopyClicked(String s);
+        void onCopyClicked(String s, String name);
 
         void onGoToBlogWebView(String url);
 
@@ -66,7 +70,7 @@ public interface FeedPlus{
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
 
-        void onSeePromo(String link);
+        void onSeePromo(String link, String name);
 
         void onRetryClicked();
 
@@ -95,6 +99,10 @@ public interface FeedPlus{
         void unsetEndlessScroll();
 
         void onShowNewFeed();
+
+        void onGoToPromoPageFromHeader();
+
+        void onHideNewFeed();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

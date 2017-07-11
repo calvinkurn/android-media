@@ -90,7 +90,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onGoToProductDetail(data.get(position).getId());
+                viewListener.onGoToProductDetailFromRecentView(data.get(position).getId());
             }
         };
     }

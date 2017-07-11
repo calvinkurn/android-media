@@ -22,12 +22,16 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.inboxreputation.adapter.viewbinder.ShareAdapter;
 import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ShareFeedAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 
@@ -113,20 +117,57 @@ public class ShareBottomDialog {
     protected void setShareList() {
 
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_g), "Google+", shareGoogle()));
+                R.drawable.ic_btn_g), activity.getString(R.string.share_gplus), shareGoogle()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_fb), "Facebook", shareFb()));
+                R.drawable.ic_btn_fb), activity.getString(R.string.share_fb), shareFb()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_twitter), "Twitter", shareTwitter()));
+                R.drawable.ic_btn_twitter), activity.getString(R.string.share_twitter), shareTwitter()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_line), "Line", shareLine()));
+                R.drawable.ic_btn_line), activity.getString(R.string.share_line), shareLine()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_wa), "Whatsapp", shareWhatsapp()));
+                R.drawable.ic_btn_wa), activity.getString(R.string.share_wa), shareWhatsapp()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_sms), "SMS", shareSMS()));
+                R.drawable.ic_btn_sms), activity.getString(R.string.share_sms), shareSMS()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_copy), "Copy Link", shareCopyLink()));
+                R.drawable.ic_btn_copy), activity.getString(R.string.share_copy), shareCopyLink()));
+        list.add(new ShareItem(MethodChecker.getDrawable(activity,
+                R.drawable.ic_more_share), activity.getString(R.string.share_others),
+                shareOthers()));
         adapter.setList(list);
+    }
+
+    private String getTrackingLabel(String method) {
+        if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
+            return FeedTrackingEventLabel.Click.SHARE
+                    + " "
+                    + FeedTrackingEventLabel.PAGE_FEED
+                    + " / "
+                    + method;
+        } else if (fragmentV4 != null && fragmentV4 instanceof FeedPlusDetailFragment) {
+            return FeedTrackingEventLabel.Click.SHARE
+                    + " "
+                    + FeedTrackingEventLabel.PAGE_PRODUCT_LIST
+                    + " / "
+                    + method;
+        } else return "";
+    }
+
+    private View.OnClickListener shareOthers() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+                sendIntent.setType("text/plain");
+                activity.startActivity(sendIntent);
+
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.OTHERS));
+
+            }
+        };
     }
 
     private View.OnClickListener shareSMS() {
@@ -135,19 +176,23 @@ public class ShareBottomDialog {
             public void onClick(View v) {
 
                 String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
-
                 Intent smsIntent = MethodChecker.getSmsIntent(activity, shareText);
                 activity.startActivity(smsIntent);
+
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.SMS));
 
             }
         };
     }
+
 
     private View.OnClickListener shareTwitter() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shareToApp("com.twitter.android");
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .TWITTER));
 
             }
         };
@@ -158,6 +203,8 @@ public class ShareBottomDialog {
             @Override
             public void onClick(View v) {
                 shareToApp("com.whatsapp");
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .WHATSAPP));
             }
         };
     }
@@ -188,7 +235,8 @@ public class ShareBottomDialog {
             @Override
             public void onClick(View v) {
                 shareToApp("jp.naver.line.android");
-
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .LINE));
             }
         };
     }
@@ -217,6 +265,8 @@ public class ShareBottomDialog {
                 else
                     activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
 
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .GOOGLEPLUS));
             }
         };
     }
@@ -231,6 +281,9 @@ public class ShareBottomDialog {
                 dismissDialog();
                 ClipboardHandler.CopyToClipboard((Activity) activity, shareModel.getUrl());
                 Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .COPY));
             }
         };
     }
@@ -288,6 +341,9 @@ public class ShareBottomDialog {
 
                     shareDialog.show(linkContent);
                 }
+
+                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                        .FACEBOOK));
             }
         };
     }

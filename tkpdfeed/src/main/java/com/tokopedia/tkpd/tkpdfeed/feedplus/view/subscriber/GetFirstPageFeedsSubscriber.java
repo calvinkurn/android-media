@@ -269,7 +269,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             domain.getPeriode(),
                             domain.getCode(),
                             domain.getThumbnail(),
-                            domain.getUrl()));
+                            domain.getUrl(),
+                            domain.getName()));
         }
         addSeeMorePromo(dataFeedDomain, listPromo);
 

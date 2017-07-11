@@ -19,6 +19,7 @@ public class InspirationRecommendationDomain {
 
     private final @Nullable String price;
 
+
     public InspirationRecommendationDomain(String id,
                                            String name,
                                            String url,

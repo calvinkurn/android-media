@@ -41,17 +41,21 @@
         tools:visibility="visible">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_arrow_up"/>
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:src="@drawable/ic_arrow_upward_white_24px"/>
 
         <TextView
             android:id="@+id/new_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/you_have_new_feed"
+            android:fontFamily="sans-serif"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/fontvs"/>
     </LinearLayout>
 
 </RelativeLayout>
