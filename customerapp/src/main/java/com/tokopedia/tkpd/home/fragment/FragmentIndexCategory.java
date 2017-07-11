@@ -730,11 +730,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             bottomSheetDialogTokoCash.setActivationUrl(tokoCashData.getData().getRedirectUrl());
             holder.tokoCashHeaderView.showPendingTokoCash(cashBackData.getAmountText());
         }
-        /*bottomSheetDialogTokoCash = new BottomSheetTokoCash(getActivity());
-        bottomSheetDialogTokoCash.setCashBackText(cashBackData.getAmountText());
-        bottomSheetDialogTokoCash.setActivationUrl(tokoCashData.getData().getRedirectUrl());
-        holder.tokoCashHeaderView.showPendingTokoCash(cashBackData.getAmountText());*/
-
     }
 
     @Override

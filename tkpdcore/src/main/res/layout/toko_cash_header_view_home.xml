@@ -101,7 +101,7 @@
                 android:drawablePadding="@dimen/margin_vvs"
                 android:drawableRight="@drawable/info_icon"
                 android:gravity="center_vertical"
-                android:text="Pending Cashback"
+                android:text="@string/pending_cashback_info"
                 android:textSize="@dimen/fontvvs" />
 
         </LinearLayout>
