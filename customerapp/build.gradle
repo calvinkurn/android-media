@@ -74,8 +74,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2080106;
-        defaultVersionName = "2.8.1.6";
+        defaultVersionCode = 2080104;
+        defaultVersionName = "2.8.1";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -233,6 +233,12 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile getTopAdsSdk()
+
+//    compile rootProject.ext.tkpdDependencies.discovery
+//    compile rootProject.ext.tkpdDependencies.transaction
+//    compile rootProject.ext.tkpdDependencies.seller
+//    compile rootProject.ext.tkpdDependencies.session
+//    compile rootProject.ext.tkpdDependencies.inbox
 
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

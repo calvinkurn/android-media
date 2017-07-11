@@ -61,7 +61,8 @@ ext {
             location   : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps       : "com.google.android.gms:play-services-maps:${playServiceVersion}",
             auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places     : "com.google.android.gms:play-services-places:${playServiceVersion}"
+            places     : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils  : "com.google.maps.android:android-maps-utils:0.4"
     ]
 
     butterKnifeDependencies = [
@@ -117,8 +118,7 @@ ext {
             trueCaller            : "true.caller.sdk:truecaller:0.5",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
-            slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
-            circularimageview     : "com.pkmmte.view:circularimageview:1.1"
+            slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1"
     ]
 
     testDependencies = [

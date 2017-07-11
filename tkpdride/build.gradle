@@ -62,7 +62,6 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.slidinguppanel
-    compile rootProject.ext.miscDependencies.circularimageview
-    compile 'com.google.maps.android:android-maps-utils:0.4'
+    compile rootProject.ext.playServicesDependencies.mapsUtils
     testCompile 'junit:junit:4.12'
 }
