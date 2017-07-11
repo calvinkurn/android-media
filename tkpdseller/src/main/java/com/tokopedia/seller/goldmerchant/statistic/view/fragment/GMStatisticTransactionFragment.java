@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +23,19 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatisticTransactionApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewHelper;
 import com.tokopedia.seller.lib.widget.GMDateRangeView;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -84,87 +83,10 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     private GMDateRangeView gmStatisticTransactionRangeMain;
     private GMDateRangeView gmStatisticTransactionRangeCompare;
     private GMTopAdsAmountViewHelper gmTopAdsAmountViewHelper;
+    private LabelView gmStatisticProductListText;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
-    }
-
-    public static List<Integer> indexToDisplay(float[] values) {
-        final List<Integer> indexToDisplay = new ArrayList<>();
-        int divide = values.length / 10;
-        for (int j = 1; j <= divide - 1; j++) {
-            indexToDisplay.add((j * 10) - 1);
-        }
-        return indexToDisplay;
-    }
-
-    /**
-     * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
-     * https://github.com/diogobernardino/WilliamChart/issues/152
-     *
-     * @param numChart
-     */
-    public static void resizeChart(int numChart, LineChartView chartView, Activity activity) {
-        Log.d(TAG, "resizeChart " + numChart);
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) DataTransactionViewHelper.dpToPx(activity, 360); //displaymetrics.widthPixels;
-        /*
-            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
-            layout Params of linechart .
-        */
-        double newSizeRatio = ((double) numChart) / 7;
-        if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
-        } else {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
-        }
-    }
-
-    private static List<Pair<Integer, String>> joinDateAndGraph(List<Integer> dateGraph, List<Integer> graph) {
-        List<Pair<Integer, String>> pairs = new ArrayList<>();
-        if (dateGraph == null || graph == null || dateGraph.isEmpty() || graph.isEmpty())
-            return null;
-
-        int lowerSize;
-        if (dateGraph.size() > graph.size()) {
-            lowerSize = graph.size();
-        } else {
-            lowerSize = dateGraph.size();
-        }
-
-        for (int i = 0; i < lowerSize; i++) {
-            Integer date = dateGraph.get(i);
-            Integer gross = graph.get(i);
-
-            pairs.add(new Pair<>(gross, GoldMerchantDateUtils.getDate(date)));
-        }
-
-        return pairs;
-    }
-
-    private static Pair<String[], float[]> joinDateAndGraph2(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
-        List<Pair<Integer, String>> pairs = joinDateAndGraph(dateGraph, graph);
-        if (pairs == null)
-            return null;
-
-        String[] labels = new String[pairs.size()];
-        float[] values = new float[pairs.size()];
-        int i = 0;
-        for (Pair<Integer, String> integerStringPair : pairs) {
-            labels[i] = GoldMerchantDateUtils.getDateRaw(integerStringPair.getModel2(), monthNamesAbrev);
-            values[i] = integerStringPair.getModel1();
-            i++; // increment the index here
-        }
-
-        return new Pair<>(labels, values);
-    }
-
-    public static BaseWilliamChartModel joinDateAndGraph3(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
-        Pair<String[], float[]> pair = joinDateAndGraph2(dateGraph, graph, monthNamesAbrev);
-        return (pair != null) ? new BaseWilliamChartModel(pair.getModel1(), pair.getModel2()) : null;
     }
 
     @Nullable
@@ -198,6 +120,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
         gmStatisticTransactionRangeMain = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_main);
         gmStatisticTransactionRangeCompare = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_compare);
+        gmStatisticProductListText = (LabelView) rootView.findViewById(R.id.gm_statistic_label_sold_product_list_view);
     }
 
     @Override
@@ -326,30 +249,20 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         return result;
     }
 
-    protected void processAdsGraph(List<Integer> adsGraph, List<Integer> dateGraph) {
-        final BaseWilliamChartModel baseWilliamChartModel
-                = joinDateAndGraph3(dateGraph, adsGraph, monthNamesAbrev);
-
-        // get index to display
-        final List<Integer> indexToDisplay = indexToDisplay(baseWilliamChartModel.getValues());
-
-
-    }
-
     protected void processTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         // create model for chart
         final BaseWilliamChartModel baseWilliamChartModel
-                = joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
+                = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
 
         BaseWilliamChartModel secondWilliamChartModel =
                 new BaseWilliamChartModel(baseWilliamChartModel);
         secondWilliamChartModel.increment(25);
 
         // resize linechart according to data
-        resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph, getActivity());
+        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph, getActivity());
 
         // get index to display
-        final List<Integer> indexToDisplay = indexToDisplay(baseWilliamChartModel.getValues());
+        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
 
         // get tooltip
         Tooltip tooltip = getTooltip(

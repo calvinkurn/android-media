@@ -14,7 +14,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticTransactionFragment;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper2;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewModel;
@@ -73,7 +73,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
 
         // create model for chart
         final BaseWilliamChartModel baseWilliamChartModel
-                = GMStatisticTransactionFragment.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
+                = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
 
         BaseWilliamChartModel secondWilliamChartModel =
                 new BaseWilliamChartModel(baseWilliamChartModel);
@@ -81,10 +81,10 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
 
         // resize linechart according to data
         if (context != null && context instanceof Activity)
-            GMStatisticTransactionFragment.resizeChart(baseWilliamChartModel.size(), gmStatisticTopAdsGraph, (Activity) context);
+            GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticTopAdsGraph, (Activity) context);
 
         // get index to display
-        final List<Integer> indexToDisplay = GMStatisticTransactionFragment.indexToDisplay(baseWilliamChartModel.getValues());
+        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
 
         baseWilliamChartConfig
                 .reset()
