@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -21,6 +22,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -53,6 +55,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         implements FeedPlusDetail.View, WishlistListener {
 
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
+    private static final int REQUEST_OPEN_PDP = 111;
 
     RecyclerView recyclerView;
     TextView shareButton;
@@ -366,9 +369,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId) {
+    public void onGoToProductDetail(String productId, boolean isWishlist, int adapterPosition) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetailForResult(this,
+                    productId, adapterPosition, REQUEST_OPEN_PDP);
             UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
         }
     }
@@ -396,4 +400,27 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         outState.putString(ARGS_DETAIL_ID, detailId);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_OPEN_PDP
+                && data != null
+                && data.getExtras() != null
+                && data.getExtras().getInt(ProductDetailRouter
+                .WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
+            int position = data.getExtras().getInt(ProductDetailRouter
+                    .WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
+                    .WIHSLIST_STATUS_IS_WISHLIST, false);
+
+            updateWishlistFromPDP(position, isWishlist);
+        }
+    }
+
+    private void updateWishlistFromPDP(int position, boolean isWishlist) {
+        if (adapter.getList().get(position) instanceof FeedDetailViewModel) {
+            ((FeedDetailViewModel) adapter.getList().get(position)).setWishlist(isWishlist);
+            adapter.notifyItemChanged(position);
+        }
+    }
 }

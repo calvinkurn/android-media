@@ -112,6 +112,15 @@ public class ConsumerRouterApplication extends MainApplication implements
         return fragment;
     }
 
+    @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition,
+                                           int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
 
     @Override
     public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {

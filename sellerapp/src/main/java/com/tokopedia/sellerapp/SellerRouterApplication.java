@@ -206,6 +206,14 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
     public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(url);

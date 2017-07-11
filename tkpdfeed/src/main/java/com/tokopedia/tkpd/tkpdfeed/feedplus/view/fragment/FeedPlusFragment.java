@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -222,24 +224,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Item item = null;
-                    if (itemIsFullScreen()) {
-                        item = topAdsRecyclerAdapter.getPlacer()
-                                .getItem(layoutManager.findLastVisibleItemPosition());
-                    } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                        item = topAdsRecyclerAdapter.getPlacer()
-                                .getItem(layoutManager.findFirstCompletelyVisibleItemPosition());
+                try {
+                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        Item item = null;
+                        if (itemIsFullScreen()) {
+                            item = topAdsRecyclerAdapter.getPlacer()
+                                    .getItem(layoutManager.findLastVisibleItemPosition());
+                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
+                            item = topAdsRecyclerAdapter.getPlacer()
+                                    .getItem(layoutManager.findFirstCompletelyVisibleItemPosition());
 
-                    } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                        item = topAdsRecyclerAdapter.getPlacer()
-                                .getItem(layoutManager.findLastCompletelyVisibleItemPosition());
-                    }
+                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
+                            item = topAdsRecyclerAdapter.getPlacer()
+                                    .getItem(layoutManager.findLastCompletelyVisibleItemPosition());
+                        }
 
-                    if (item != null && !isTopads(item)) {
-                        trackImpression(item);
+                        if (item != null && !isTopads(item)) {
+                            trackImpression(item);
+                        }
                     }
+                } catch (IndexOutOfBoundsException e) {
+                    Log.d(FeedPlusFragment.TAG, e.toString());
                 }
+
             }
 
         });
@@ -271,8 +278,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private boolean itemIsFullScreen() {
         return layoutManager.findLastVisibleItemPosition() -
-                layoutManager.findFirstVisibleItemPosition() == 0
-                ;
+                layoutManager.findFirstVisibleItemPosition() == 0;
     }
 
     @Override

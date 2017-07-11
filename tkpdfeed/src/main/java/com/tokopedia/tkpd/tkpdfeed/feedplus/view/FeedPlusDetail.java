@@ -37,7 +37,7 @@ public interface FeedPlusDetail {
 
         String getString(int resId);
 
-        void onGoToProductDetail(String productId);
+        void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
 
         int getColor(int resId);
 
