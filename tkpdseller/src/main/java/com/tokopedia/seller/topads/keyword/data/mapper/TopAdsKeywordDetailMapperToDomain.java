@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.keyword.data.mapper;
 
-import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
 

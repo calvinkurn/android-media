@@ -46,7 +46,8 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
                     if (filterViewModel.getListChild().get(getAdapterPosition()).isExpanded()) {
                         collapseGroup(getAdapterPosition());
                     } else {
-                        expandGroup(getAdapterPosition());
+                        expandGroup(getAdapterPosition(), filterViewModel.getListChild().get(getAdapterPosition()));
+                        notifyDataSetChanged();
                     }
                     listener.onFilterExpanded(getAdapterPosition(), filterViewModel);
                 }
@@ -130,23 +131,37 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-    private void expandGroup(int position) {
-        filterViewModel.getListChild().get(position).setExpanded(true);
-        filterViewModel.getListChild().addAll(position + 1,
-                filterViewModel.getListChild().get(position).getListChild());
-        notifyDataSetChanged();
+    private void expandGroup(int position, OptionViewModel parentModel) {
+        parentModel.setExpanded(true);
+
+        for (int i = 0;
+             i < parentModel.getListChild().size();
+             i++) {
+            OptionViewModel viewModel = parentModel.getListChild().get(i);
+            if (viewModel.getListChild().size() > 0 &&
+                    viewModel.isExpanded()) {
+                filterViewModel.getListChild().add(position + i + 1,
+                        viewModel);
+                expandGroup(i+ 1, viewModel);
+                position += viewModel.getListChild().size() - 1;
+            }
+            else
+                filterViewModel.getListChild().add(position + i + 1,
+                        viewModel);
+        }
 
     }
 
     private void collapseGroup(int position) {
         filterViewModel.getListChild().get(position).setExpanded(false);
-        for (int i = position + +getAllOpenChild(position); i > position; i--) {
+        for (int i = position + getAllOpenChild(position); i > position; i--) {
             if (filterViewModel.getListChild().get(i).isExpanded()) {
-                collapseGroup(i);
+                filterViewModel.getListChild().get(i).setExpanded(false);
             }
             filterViewModel.getListChild().remove(i);
         }
         notifyDataSetChanged();
+
     }
 
     private int getAllOpenChild(int position) {

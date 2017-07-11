@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
 
 import java.text.SimpleDateFormat;

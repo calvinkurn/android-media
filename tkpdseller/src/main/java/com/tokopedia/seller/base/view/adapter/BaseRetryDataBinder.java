@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.

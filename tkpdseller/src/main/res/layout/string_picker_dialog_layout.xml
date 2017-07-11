@@ -10,7 +10,7 @@
         android:id="@+id/string_picker_dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_seventy_percent"
+        android:textColor="@color/font_black_primary_70"
         android:textSize="20sp" />
 
     <android.support.design.widget.TextInputLayout

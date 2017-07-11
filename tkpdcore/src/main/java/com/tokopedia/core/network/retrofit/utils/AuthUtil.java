@@ -56,6 +56,8 @@ public class AuthUtil {
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
 
 
+
+
     /**
      * default key is KEY_WSV$
      */
@@ -178,7 +180,6 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
-
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
                                                                      String contentType, String authKey, String dateFormat) {
 
@@ -332,7 +333,6 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        //     params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
@@ -403,7 +403,6 @@ public class AuthUtil {
             mac.init(signingKey);
             byte[] rawHmac = mac.doFinal(authString.getBytes());
             String asB64 = Base64.encodeToString(rawHmac, Base64.DEFAULT);
-            System.out.println(asB64);
             return asB64;
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();

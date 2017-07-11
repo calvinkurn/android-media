@@ -311,6 +311,15 @@ public class ShopInfoActivity extends BaseActivity
         unregisterReceiver(loginReceiver);
     }
 
+    @Override
+    public boolean isOfficialStore() {
+        if(shopModel != null && shopModel.info != null) {
+            return shopModel.info.shopIsOfficial == 1;
+        }
+
+        return false;
+    }
+
     private void clearVariable() {
         shopModel = null;
     }
@@ -588,6 +597,10 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent = getIntent();
         if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
             actionFirstLaunched(intent.getExtras());
+        }
+
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
         // switch to product tab if ETALASE_NAME not empty
