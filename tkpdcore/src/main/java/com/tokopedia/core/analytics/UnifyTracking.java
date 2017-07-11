@@ -1589,6 +1589,60 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDraftProductListClickedFromNavigationDrawer() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DRAFT_PRODUCT
+        ).getEvent());
+    }
+
+    public static void eventDraftProductListClickedFromManageProductPage() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DRAFT_PRODUCT
+        ).getEvent());
+    }
+
+    public static void eventAddProductClickedFromDraftProductListPage() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.ADD_PRODUCT
+        ).getEvent());
+    }
+
+    public static void eventSaveDraftClickedFromAddProductPage() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_ADD_PRODUCT,
+                AppEventTracking.Category.ADD_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.SAVE_DRAFT
+        ).getEvent());
+    }
+
+    public static void eventDeleteDraftClickedFromDraftProductListPage() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DELETE_DRAFT
+        ).getEvent());
+    }
+
+    public static void eventEditDraftClickedFromDraftProductListPage() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.EDIT_DRAFT
+        ).getEvent());
+    }
+
     public static void eventClickBeli(String ec, String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

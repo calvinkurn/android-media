@@ -20,6 +20,7 @@ import android.view.View;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
@@ -29,6 +30,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
@@ -61,7 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
+public class ProductDraftListFragment extends BaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
         implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
@@ -101,6 +103,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
                                     // go to empty state if all data has been deleted
                                     searchData();
                                 }
+                                UnifyTracking.eventDeleteDraftClickedFromDraftProductListPage();
                             }
                         }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -146,11 +149,11 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-
                 if (id == com.tokopedia.core.R.id.action_gallery) {
+                    UnifyTracking.eventAddProductClickedFromDraftProductListPage();
                     ProductDraftListFragmentPermissionsDispatcher.onAddFromGalleryWithCheck(ProductDraftListFragment.this);
-
                 } else if (id == com.tokopedia.core.R.id.action_camera) {
+                    UnifyTracking.eventAddProductClickedFromDraftProductListPage();
                     ProductDraftListFragmentPermissionsDispatcher.onAddFromCameraWithCheck(ProductDraftListFragment.this);
                 }
                 return false;
@@ -246,7 +249,8 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
             intent = ProductDraftAddActivity.createInstance(getActivity(),
                     String.valueOf(productDraftViewModel.getProductId()));
         }
-        ProductDraftListFragment.this.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
+        UnifyTracking.eventEditDraftClickedFromDraftProductListPage();
+        startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
     @Override
@@ -275,11 +279,6 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
             }
         }, requestCode, resultCode, intent);
 
-    }
-
-    @Override
-    protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return null;
     }
 
     @Override
@@ -351,6 +350,7 @@ public class ProductDraftListFragment extends TopAdsBaseListFragment<ProductDraf
 
     @Override
     public void onEmptyButtonClicked() {
+        UnifyTracking.eventAddProductClickedFromDraftProductListPage();
         ProductAddActivity.start(getActivity());
     }
 

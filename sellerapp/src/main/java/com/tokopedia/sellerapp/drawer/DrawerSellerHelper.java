@@ -346,6 +346,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
+                    UnifyTracking.eventDraftProductListClickedFromNavigationDrawer();
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:

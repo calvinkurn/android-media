@@ -109,6 +109,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CLICK_DRAFT_PRODUCT = "clickDraftProduct";
         String CATEGORY_PAGE = "clickKategori";
         String INTERMEDIARY_PAGE = "clickIntermediary";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
@@ -174,6 +175,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String DRAFT_PRODUCT = "Draft Product";
         String CATEGORY_PAGE = "Category Page";
         String INTERMEDIAR_PAGE = "IntermediaryPage";
         String CATEGORY_PRODUCT = "Kategori";
@@ -376,6 +378,10 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String ADD_PRODUCT_PLUS = "Add Product - Plus";
         String ADD_PRODUCT_TOP = "Add Product - Top";
+        String DRAFT_PRODUCT = "Draft Product";
+        String SAVE_DRAFT = "Save Draft";
+        String DELETE_DRAFT = "Delete Draft";
+        String EDIT_DRAFT = "Edit Draft";
         String INSTOPED = "Instoped";
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
