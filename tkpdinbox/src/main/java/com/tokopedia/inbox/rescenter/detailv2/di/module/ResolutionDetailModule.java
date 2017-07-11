@@ -10,6 +10,7 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
@@ -263,7 +264,7 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
-    ResCenterActApi provideResCenterActService(@WsV4Qualifier Retrofit retrofit) {
+    ResCenterActApi provideResCenterActService(@UploadWsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ResCenterActApi.class);
     }
 
