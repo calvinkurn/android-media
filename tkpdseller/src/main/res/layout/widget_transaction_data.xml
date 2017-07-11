@@ -180,10 +180,14 @@
         android:id="@+id/separator_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/data_transaction_header_loading"
+        android:layout_below="@id/separator_2_transaction_data"
         android:layout_marginTop="6dp"
         android:background="#1E000000" />
 
-    <include layout="@layout/widget_gm_see_detail" />
+    <include
+        layout="@layout/widget_gm_see_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator_2" />
 
 </RelativeLayout>

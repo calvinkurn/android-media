@@ -31,6 +31,18 @@ public class GoldMerchantDateUtils {
         return day + " " + month + " " + year;
     }
 
+    public static String getDateWithoutYear(int date, String[] monthNames) {
+        List<String> dateRaw = getDateRaw(date);
+        String year = dateRaw.get(2);
+        String month = dateRaw.get(1);
+        month = monthNames[Integer.parseInt(month) - 1];
+
+        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
+        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
+
+        return day + " " + month;
+    }
+
     public static long getDateWithYear(int date) {
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
@@ -173,5 +185,12 @@ public class GoldMerchantDateUtils {
             return null;
 
         return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithYear(dateGraph.get(position), monthNames));
+    }
+
+    public static Pair<Long, String> getDateStringWithoutYear(List<Integer> dateGraph, String[] monthNames, int position) {
+        if (dateGraph == null || dateGraph.size() <= 0)
+            return null;
+
+        return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithoutYear(dateGraph.get(position), monthNames));
     }
 }

@@ -32,6 +32,8 @@ import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransact
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
+import com.tokopedia.seller.lib.widget.GMDateRangeView;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -76,6 +78,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
     private BaseWilliamChartConfig baseWilliamChartConfig;
+    private GMDateRangeView gmStatisticTransactionRangeMain;
+    private GMDateRangeView gmStatisticTransactionRangeCompare;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -107,6 +111,9 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         gmStatisticIncomeGraph = (LineChartView) rootView.findViewById(R.id.gm_statistic_transaction_income_graph);
 
         gmPercentageViewHelper.initView(rootView);
+
+        gmStatisticTransactionRangeMain = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_main);
+        gmStatisticTransactionRangeCompare = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_compare);
     }
 
     @Override
@@ -144,7 +151,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
                         // get range from network
                         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-                        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
                                 GMStatisticTransactionFragment.this.monthNamesAbrev,
                                 0);
                         Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
@@ -153,8 +160,24 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         if (startDateString.getModel2() == null || endDateString.getModel2() == null)
                             return;
 
+
                         // currently not used
                         String dateRangeFormatString = getString(R.string.gold_merchant_date_range_format_text, startDateString.getModel2(), endDateString.getModel2());
+
+                        GMDateRangeDateViewModel gmDateRangeDateViewModel
+                                = new GMDateRangeDateViewModel();
+                        gmDateRangeDateViewModel.setStartDate(startDateString);
+                        gmDateRangeDateViewModel.setEndDate(endDateString);
+
+                        GMDateRangeDateViewModel gmDateRangeDateViewModel2
+                                = new GMDateRangeDateViewModel(gmDateRangeDateViewModel);
+
+                        if (gmStatisticTransactionRangeMain != null)
+                            gmStatisticTransactionRangeMain.bind(gmDateRangeDateViewModel);
+
+                        gmStatisticTransactionRangeCompare.bind(gmDateRangeDateViewModel2);
+                        gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
+
 
                         // display percentage demo
                         processTransactionGraph(getTransactionGraph.getGrossGraph(), dateGraph);
@@ -207,6 +230,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         );
 
         baseWilliamChartConfig
+                .reset()
                 .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
                 .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
                 .setBasicGraphConfiguration(new GrossGraphChartConfig())

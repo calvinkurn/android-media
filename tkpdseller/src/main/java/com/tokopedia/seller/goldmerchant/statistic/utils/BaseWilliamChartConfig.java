@@ -106,6 +106,7 @@ public class BaseWilliamChartConfig {
         if (pairConfigs == null || pairConfigs.isEmpty())
             throw new RuntimeException("please pass the data !! BaseWilliamChartConfig");
 
+        chart.clearData();
         chart.reset();
         chart.resetYRndr();
 
@@ -134,6 +135,11 @@ public class BaseWilliamChartConfig {
         }
 
         return chart;
+    }
+
+    public BaseWilliamChartConfig reset() {
+        pairConfigs.clear();
+        return this;
     }
 
     public void buildChart(LineChartView chart) {
