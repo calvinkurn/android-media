@@ -1,7 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.di.module;
 
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatisticTransactionApi;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticTransactionScope;
 
 import dagger.Module;
@@ -17,7 +17,7 @@ public class GMStatisticTransactionModule {
 
     @GMStatisticTransactionScope
     @Provides
-    GMStatisticTransactionApi provideGmStatisticTransactionApi(@GoldMerchantQualifier Retrofit retrofit) {
-        return retrofit.create(GMStatisticTransactionApi.class);
+    GMStatApi provideGmStatisticTransactionApi(@GoldMerchantQualifier Retrofit retrofit) {
+        return retrofit.create(GMStatApi.class);
     }
 }

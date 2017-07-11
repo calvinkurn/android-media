@@ -26,7 +26,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatisticTransactionApi;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
@@ -68,7 +68,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     ImageHandler imageHandler;
 
     @Inject
-    GMStatisticTransactionApi gmStatisticTransactionApi;
+    GMStatApi gmStatApi;
 
     @Inject
     SessionHandler sessionHandler;
@@ -211,7 +211,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Override
     public void onResume() {
         super.onResume();
-        gmStatisticTransactionApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
+        gmStatApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -289,7 +289,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                     }
                 });
 
-        gmStatisticTransactionApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
+        gmStatApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
