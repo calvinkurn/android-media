@@ -521,7 +521,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (mCurrentLocation != null) {
+                        if (mCurrentLocation != null && getView() != null) {
                             getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                             PlacePassViewModel placeVm = new PlacePassViewModel();
                             placeVm.setAddress(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
@@ -534,7 +534,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
                     @Override
                     public void onNext(Place place) {
-                        if (place != null) {
+                        if (place != null && getView() != null) {
                             getView().moveMapToLocation(place.getLatLng().latitude, place.getLatLng().longitude);
                             PlacePassViewModel placeVm = new PlacePassViewModel();
                             placeVm.setAddress(String.valueOf(place.getName()));

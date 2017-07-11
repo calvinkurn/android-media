@@ -352,11 +352,11 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     public static String formatStringToPriceString(String numberString, String currency) {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance("IDR"));
+            format.setCurrency(Currency.getInstance(currency));
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(Float.parseFloat(numberString)).replace(",", ".");
+                result = format.format(Float.parseFloat(numberString)).replace(",", ".").replace("IDR", "Rp");
             } else {
                 result = format.format(Float.parseFloat(numberString));
             }
@@ -366,14 +366,14 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         }
     }
 
-    public static String formatNumberToPriceString(float number, String currency) {
+    public static String formaNumberToPriceString(float number, String currency) {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance("IDR"));
+            format.setCurrency(Currency.getInstance(currency));
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(number).replace(",", ".");
+                result = format.format(number).replace(",", ".").replace("IDR", "Rp");
             } else {
                 result = format.format(number);
             }

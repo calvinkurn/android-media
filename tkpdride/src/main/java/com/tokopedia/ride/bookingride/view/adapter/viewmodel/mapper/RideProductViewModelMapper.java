@@ -176,11 +176,11 @@ public class RideProductViewModelMapper {
     private String formatNumber(String number, String currency) {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance("IDR"));
+            format.setCurrency(Currency.getInstance("Rp"));
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(Float.parseFloat(number)).replace(",", ".");
+                result = format.format(Float.parseFloat(number)).replace(",", ".").replace("IDR", "Rp");
             } else {
                 result = format.format(number);
             }

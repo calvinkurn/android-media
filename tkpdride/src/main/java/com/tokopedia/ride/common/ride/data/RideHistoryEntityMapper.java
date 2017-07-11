@@ -63,10 +63,18 @@ public class RideHistoryEntityMapper {
         Payment payment = null;
         if (paymentEntity != null) {
             payment = new Payment();
-            payment.setCurrency(paymentEntity.getCurrencyCode());
+            payment.setCurrency(transformCurrency(paymentEntity.getCurrencyCode()));
             payment.setTotalAmount(paymentEntity.getTotalAmount());
         }
         return payment;
+    }
+
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
     }
 
 

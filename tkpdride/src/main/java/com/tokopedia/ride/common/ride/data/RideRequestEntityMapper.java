@@ -109,10 +109,18 @@ public class RideRequestEntityMapper {
         Payment payment = null;
         if (entity != null) {
             payment = new Payment();
-            payment.setCurrency(entity.getCurrencyCode());
+            payment.setCurrency(transformCurrency(entity.getCurrencyCode()));
             payment.setTotalAmount(entity.getTotalAmount());
             payment.setReceiptReady(entity.isReceiptReady());
         }
         return payment;
+    }
+
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
     }
 }

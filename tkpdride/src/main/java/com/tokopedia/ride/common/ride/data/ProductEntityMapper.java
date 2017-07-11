@@ -17,9 +17,9 @@ public class ProductEntityMapper {
     public ProductEntityMapper() {
     }
 
-    public Product transform(ProductEntity entity){
+    public Product transform(ProductEntity entity) {
         Product product = null;
-        if (entity != null){
+        if (entity != null) {
             product = new Product();
             product.setProductId(entity.getProductId());
             product.setCapacity(entity.getCapacity());
@@ -35,16 +35,16 @@ public class ProductEntityMapper {
         return product;
     }
 
-    private PriceDetail transform(PriceDetailEntity entity){
+    private PriceDetail transform(PriceDetailEntity entity) {
         PriceDetail priceDetail = null;
-        if (entity != null){
+        if (entity != null) {
             priceDetail = new PriceDetail();
             priceDetail.setBase(entity.getBase());
             priceDetail.setCancellationFee(entity.getCancellationFee());
             priceDetail.setCostPerDistance(entity.getCostPerDistance());
             priceDetail.setCostPerMinute(entity.getCostPerMinute());
             priceDetail.setCostPerDistance(entity.getCostPerDistance());
-            priceDetail.setCurrencyCode(entity.getCurrencyCode());
+            priceDetail.setCurrencyCode(transformCurrency(entity.getCurrencyCode()));
             priceDetail.setDistanceUnit(entity.getDistanceUnit());
             priceDetail.setMinimum(entity.getMinimum());
             priceDetail.setServiceFees(entity.getServiceFees());
@@ -52,14 +52,22 @@ public class ProductEntityMapper {
         return priceDetail;
     }
 
-    public List<Product> transform(List<ProductEntity> entities){
+    public List<Product> transform(List<ProductEntity> entities) {
         List<Product> products = new ArrayList<>();
         Product product;
-        for (ProductEntity entity : entities){
+        for (ProductEntity entity : entities) {
             product = transform(entity);
             if (product != null)
                 products.add(product);
         }
         return products;
+    }
+
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
     }
 }
