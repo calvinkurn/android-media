@@ -316,7 +316,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void hideErrorMessageLayout() {
         if (mErrorLayout != null) {
-            mErrorLayout.setVisibility(View.VISIBLE);
+            mErrorLayout.setVisibility(View.GONE);
         }
     }
 
