@@ -1262,30 +1262,15 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventChangeCurrencyProductList() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST);
     }
 
     public static void eventChangeCurrencyDropDown() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN);
     }
 
     public static void eventCopyProduct() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.COPY_PRODUCT
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.COPY_PRODUCT);
     }
 
     public static void eventMoRegistrationStart(String medium) {
@@ -1310,75 +1295,35 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventChangeCategoryProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR);
     }
 
     public static void eventChangeCategoryProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU);
     }
 
     public static void eventChangeEtalaseProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR);
     }
 
     public static void eventChangeEtalaseProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU);
     }
 
     public static void eventChangeInsuranceProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR);
     }
 
     public static void eventChangeInsuranceProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU);
     }
 
     public static void eventDeleteProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR);
     }
 
     public static void eventDeleteProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU);
     }
 
     public static void eventClickPopularSearch(String label){
@@ -1589,57 +1534,21 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDraftProductListClickedFromNavigationDrawer() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.NAVIGATION_DRAWER,
-                AppEventTracking.Category.HAMBURGER,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DRAFT_PRODUCT
-        ).getEvent());
-    }
-
-    public static void eventDraftProductListClickedFromManageProductPage() {
+    public static void eventManageProductClicked(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DRAFT_PRODUCT
+                label
         ).getEvent());
     }
 
-    public static void eventAddProductClickedFromDraftProductListPage() {
+    public static void eventDraftProductClicked(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
                 AppEventTracking.Category.DRAFT_PRODUCT,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.ADD_PRODUCT
-        ).getEvent());
-    }
-
-    public static void eventSaveDraftClickedFromAddProductPage() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_ADD_PRODUCT,
-                AppEventTracking.Category.ADD_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SAVE_DRAFT
-        ).getEvent());
-    }
-
-    public static void eventDeleteDraftClickedFromDraftProductListPage() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
-                AppEventTracking.Category.DRAFT_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DELETE_DRAFT
-        ).getEvent());
-    }
-
-    public static void eventEditDraftClickedFromDraftProductListPage() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
-                AppEventTracking.Category.DRAFT_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.EDIT_DRAFT
+                label
         ).getEvent());
     }
 

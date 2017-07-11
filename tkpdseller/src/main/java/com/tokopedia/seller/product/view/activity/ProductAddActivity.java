@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -135,7 +136,8 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                     public void onClick(DialogInterface dialog, int which) {
                         boolean doSave = saveProducttoDraft();
                         if (!doSave) {
-                            UnifyTracking.eventSaveDraftClickedFromAddProductPage();
+                            UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
+                                    AppEventTracking.EventLabel.SAVE_DRAFT);
                             ProductAddActivity.super.onBackPressed();
                         }
                     }
