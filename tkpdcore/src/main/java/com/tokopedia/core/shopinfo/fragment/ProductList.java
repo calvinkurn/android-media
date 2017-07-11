@@ -77,7 +77,7 @@ public class ProductList extends V2BaseFragment {
     private GetShopProductRetrofit facadeShopProd;
     private GetShopProductCampaignRetrofit facadeShopProdCampaign;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
-
+    private boolean isConnectionErrorShow = false;
     private ProductListCallback callback;
 
     public static ProductList newInstance() {
@@ -384,7 +384,7 @@ public class ProductList extends V2BaseFragment {
         holder.list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (isAtBottom() && canLoadItem()) {
+                if (isAtBottom() && canLoadItem() && !isConnectionErrorShow) {
                     setLoading();
                     getProductNextPage();
                 }
@@ -493,11 +493,12 @@ public class ProductList extends V2BaseFragment {
                 switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
                         if (productShopParam.getPage() == 1 && productModel.list.size() == 0) {
-
+                            isConnectionErrorShow = true;
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
                                     adapter.removeEmptyState();
+                                    isConnectionErrorShow = false;
                                     refreshProductList();
                                 }
                             });
