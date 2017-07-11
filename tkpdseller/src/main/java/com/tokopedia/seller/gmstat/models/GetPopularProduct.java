@@ -22,7 +22,7 @@ public class GetPopularProduct {
     private int wishlistCount;
     @SerializedName("ConversionRate")
     @Expose
-    private int conversionRate;
+    private double conversionRate;
     @SerializedName("ProductName")
     @Expose
     private String productName;
@@ -106,14 +106,14 @@ public class GetPopularProduct {
     /**
      * @return The conversionRate
      */
-    public int getConversionRate() {
+    public double getConversionRate() {
         return conversionRate;
     }
 
     /**
      * @param conversionRate The ConversionRate
      */
-    public void setConversionRate(int conversionRate) {
+    public void setConversionRate(double conversionRate) {
         this.conversionRate = conversionRate;
     }
 

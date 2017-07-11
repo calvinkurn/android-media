@@ -522,6 +522,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             BaseWilliamChartModel baseWilliamChartModel =
                     new BaseWilliamChartModel(mLabels, mValues);
             baseWilliamChartConfig
+                    .reset()
                     .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
                     .setBasicGraphConfiguration(new GrossGraphChartConfig())
                     .setDotDrawable(oval2Copy6)

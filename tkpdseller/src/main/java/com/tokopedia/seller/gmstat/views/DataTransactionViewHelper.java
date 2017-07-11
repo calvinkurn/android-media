@@ -2,7 +2,9 @@ package com.tokopedia.seller.gmstat.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -15,10 +17,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
+import com.tokopedia.seller.gmstat.utils.GMStatConstant;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMSeeDetailViewHelper;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
@@ -36,13 +39,16 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
  */
 
 public class DataTransactionViewHelper {
-    private int transparantColor;
     private LineChartView transactionChart;
     private TextView percentage;
     private ImageView transactionCountIcon;
     private TextView transactionCount;
+    private int arrowDown;
+    private int arrowUp;
     private LinearLayout transactionDataContainerGoldMerchant;
     private LinearLayout transactionDataContainerNonGoldMerchant;
+    private Drawable icRectagleDown;
+    private Drawable icRectagleUp;
     private View itemView;
     private boolean isGoldMerchant;
     private float[] mValues = new float[10];
@@ -50,8 +56,6 @@ public class DataTransactionViewHelper {
     private LinearLayout separator2;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private DataTransactionChartConfig dataTransactionChartConfig;
-    // gm percentage helper
-    private GMPercentageViewHelper gmPercentageViewHelper;
     private GMSeeDetailViewHelper gmSeeDetailViewHelper;
     private int greyColor;
 
@@ -60,14 +64,16 @@ public class DataTransactionViewHelper {
 
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
-        initView(itemView);
-
-        gmPercentageViewHelper = new GMPercentageViewHelper(itemView.getContext());
-        gmPercentageViewHelper.initView(itemView);
 
         gmSeeDetailViewHelper = new GMSeeDetailViewHelper(itemView.getContext());
         gmSeeDetailViewHelper.initView(itemView);
 
+        initView(itemView);
+
+        icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_down);
+        icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_up);
         for (int i = 0; i < mLabels.length; i++) {
             mLabels[i] = "";
         }
@@ -101,13 +107,15 @@ public class DataTransactionViewHelper {
 
         transactionCount = (TextView) itemView.findViewById(R.id.transaction_count);
 
+        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
+
+        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+
         transactionDataContainerGoldMerchant = (LinearLayout) itemView.findViewById(R.id.transaction_data_container_gold_merchant);
 
         transactionDataContainerNonGoldMerchant = (LinearLayout) itemView.findViewById(R.id.transaction_data_container_non_gold_merchant);
 
         separator2 = (LinearLayout) itemView.findViewById(R.id.separator_2_transaction_data);
-
-        transparantColor = ResourcesCompat.getColor(itemView.getResources(), android.R.color.transparent, null);
 
         greyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
@@ -170,7 +178,33 @@ public class DataTransactionViewHelper {
         transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
 
         Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans() * 100;
-        gmPercentageViewHelper.bind(diffSuccessTrans);
+        boolean isDefault;
+        if (diffSuccessTrans == 0) {
+            transactionCountIcon.setVisibility(View.GONE);
+            percentage.setTextColor(arrowUp);
+            isDefault = true;
+        } else if (diffSuccessTrans < 0) {// down here
+            if (diffSuccessTrans == GMStatConstant.NoDataAvailable * 100) {
+                transactionCountIcon.setVisibility(View.GONE);
+                percentage.setTextColor(greyColor);
+                isDefault = false;
+            } else {
+                transactionCountIcon.setImageDrawable(icRectagleDown);
+                percentage.setTextColor(arrowDown);
+                isDefault = true;
+            }
+        } else {// up here
+            transactionCountIcon.setImageDrawable(icRectagleUp);
+            percentage.setTextColor(arrowUp);
+            isDefault = true;
+        }
+
+        if (isDefault) {
+            double d = diffSuccessTrans;
+            percentage.setText(String.format(GMStatConstant.PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
+        } else {
+            percentage.setText(R.string.no_data);
+        }
 
         displayGraphic(getTransactionGraph, false);
     }
@@ -213,6 +247,7 @@ public class DataTransactionViewHelper {
 
         BaseWilliamChartModel baseWilliamChartModel
                 = new BaseWilliamChartModel(mLabels, mValues);
+        baseWilliamChartConfig.reset();
         baseWilliamChartConfig.setBasicGraphConfiguration(dataTransactionChartConfig);
 
         if (emptyState) {
