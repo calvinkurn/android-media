@@ -46,11 +46,6 @@ public class TopAdsKeywordDetailActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordDetailActivity.class.getSimpleName();
-    }
-
-    @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsKeywordDetailActivity.class.getName();
 //        if (ShowCasePreference.hasShown(this, showCaseTag)){
@@ -69,7 +64,6 @@ public class TopAdsKeywordDetailActivity extends BaseSimpleActivity
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         if (toolbar.getHeight() > 0) {
             int height = toolbar.getHeight();
             int width = toolbar.getWidth();

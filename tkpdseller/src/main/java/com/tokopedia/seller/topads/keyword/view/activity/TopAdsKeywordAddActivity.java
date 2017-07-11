@@ -87,11 +87,6 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordAddFragment.TAG;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         @KeywordTypeDef int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);

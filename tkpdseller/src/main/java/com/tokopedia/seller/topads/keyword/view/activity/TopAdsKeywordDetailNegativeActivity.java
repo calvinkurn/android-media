@@ -30,9 +30,4 @@ public class TopAdsKeywordDetailNegativeActivity extends BaseSimpleActivity impl
         String adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         return TopAdsKeywordDetailNegativeFragment.createInstance(keywordAd, adId);
     }
-
-    @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordDetailNegativeActivity.class.getSimpleName();
-    }
 }

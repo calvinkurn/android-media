@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseTabActivity;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.fragment.DatePickerCustomFragment;
 import com.tokopedia.seller.lib.datepicker.fragment.DatePickerPeriodFragment;
@@ -25,13 +26,11 @@ import java.util.List;
  * Created by normansyahputa on 12/7/16.
  */
 
-public class DatePickerActivity extends TActivity implements DatePickerPeriodFragment.Callback, DatePickerCustomFragment.Callback {
+public class DatePickerActivity extends BaseTabActivity implements DatePickerPeriodFragment.Callback, DatePickerCustomFragment.Callback {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
     public static final int RESULT_CODE = 1;
-
-    private ViewPager viewPager;
 
     private int selectionPeriod;
     private int selectionType;
@@ -47,26 +46,12 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
     private boolean forceDisplaySelection;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_date_picker);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-
-        setSupportActionBar(toolbar);
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setDisplayShowHomeEnabled(true);
-            supportActionBar.setHomeButtonEnabled(true);
-        }
-
+    protected void setupLayout() {
+        super.setupLayout();
         fetchIntent(getIntent().getExtras());
         if (forceDisplaySelection) {
-            tabLayout.setVisibility(View.GONE);
             viewPager.setAdapter(getViewPagerAdapter(selectionType));
+            tabLayout.setVisibility(View.GONE);
         } else {
             viewPager.setAdapter(getViewPagerAdapter());
             viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
@@ -82,6 +67,10 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
             getSupportActionBar().setTitle(title);
             getSupportActionBar().show();
         }
+    }
+
+    @Override
+    protected void setupFragment(Bundle savedinstancestate) {
 
     }
 
@@ -102,7 +91,7 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
         return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
     }
 
-    private PagerAdapter getViewPagerAdapter() {
+    protected PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
         datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
         datePickerPeriodFragment.setCallback(this);
@@ -111,6 +100,11 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
         mDatePickerCustomFragment.setCallback(this);
         fragmentList.add(mDatePickerCustomFragment);
         return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
+    }
+
+    @Override
+    protected int getPageLimit() {
+        return OFFSCREEN_PAGE_LIMIT;
     }
 
     @Override

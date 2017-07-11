@@ -46,9 +46,4 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
         boolean isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
         return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive);
     }
-
-    @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
-    }
 }
