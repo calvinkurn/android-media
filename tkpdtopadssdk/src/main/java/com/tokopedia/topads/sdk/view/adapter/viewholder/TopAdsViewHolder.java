@@ -25,9 +25,8 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
+import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
@@ -91,9 +90,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             if(clickListener != null){
                 clickListener.onInfoClicked();
             }else {
-                TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-                Activity activity = (Activity) context;
-                infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+                TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(context);
+                infoBottomSheet.show();
             }
         }
     }

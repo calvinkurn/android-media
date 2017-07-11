@@ -39,6 +39,8 @@
         android:layout_marginTop="@dimen/margin_vs"
         android:minHeight="@dimen/product_title_min_height"
         android:fontFamily="sans-serif-medium"
+        android:textSize="@dimen/text_size_s_medium"
+        android:lineSpacingExtra="5sp"
         android:textStyle="normal"
         tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/black_70"/>
@@ -56,6 +58,7 @@
         android:paddingTop="@dimen/padding_vs"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
+        android:textSize="@dimen/text_size_s_medium"
         android:textColor="@color/orange_red"
         tools:text="Rp 3.121.500" />
 
