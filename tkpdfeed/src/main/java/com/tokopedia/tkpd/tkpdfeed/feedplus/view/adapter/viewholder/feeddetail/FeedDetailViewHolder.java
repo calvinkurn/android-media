@@ -11,7 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 /**
  * @author by nisie on 5/18/17.
@@ -21,6 +21,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_detail;
+    protected static final String CASHBACK = "Cashback";
 
     public TextView productName;
     public TextView productPrice;
@@ -33,7 +34,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
     public ImageView freeReturn;
     public View mainView;
 
-    private final FeedPlusDetail.View viewListener;
+    protected final FeedPlusDetail.View viewListener;
 
     public FeedDetailViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
@@ -75,7 +76,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
             cashback.setVisibility(View.GONE);
         else {
             cashback.setVisibility(View.VISIBLE);
-            cashback.setText(feedDetailViewModel.getCashback());
+            cashback.setText(CASHBACK + " " + feedDetailViewModel.getCashback());
         }
 
         if (feedDetailViewModel.isWholesale())

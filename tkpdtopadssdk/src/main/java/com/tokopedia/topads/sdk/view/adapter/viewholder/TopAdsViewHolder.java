@@ -8,10 +8,15 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -76,6 +81,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         }
         adapter.setList(list);
         adapter.setAdapterPosition(getAdapterPosition());
+        adapter.setPosition(getAdapterPosition());
     }
 
     @Override
@@ -104,6 +110,13 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
+                TextView textView = (TextView) adsHeader.findViewById(R.id.title_promote);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.getContext().getResources().getDimension(R.dimen.font_small));
+                ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
+                imageView.setImageResource(R.drawable.icon_info);
+                imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
+                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);

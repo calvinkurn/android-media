@@ -27,18 +27,20 @@ public class FeedDetailListMapper implements Func1<FeedDetail.Data, List<DataFee
 
     private List<DataFeedDetailDomain> convertToDataFeedDomain(List<FeedDetail.Data.Datum> data) {
         List<DataFeedDetailDomain> list = new ArrayList<>();
-        for (FeedDetail.Data.Datum datum : data) {
-            DataFeedDetailDomain domainData =
-                    new DataFeedDetailDomain(
-                            datum.id(),
-                            datum.create_time(),
-                            datum.type(),
-                            datum.cursor(),
-                            getFeedDetailSourceDomain(datum.source()),
-                            getFeedDetailContentDomain(datum.content()),
-                            getFeedDetailMetaDomain(datum.meta())
-                    );
-            list.add(domainData);
+        if (data != null && !data.isEmpty()) {
+            for (FeedDetail.Data.Datum datum : data) {
+                DataFeedDetailDomain domainData =
+                        new DataFeedDetailDomain(
+                                datum.id(),
+                                datum.create_time(),
+                                datum.type(),
+                                datum.cursor(),
+                                getFeedDetailSourceDomain(datum.source()),
+                                getFeedDetailContentDomain(datum.content()),
+                                getFeedDetailMetaDomain(datum.meta())
+                        );
+                list.add(domainData);
+            }
         }
         return list;
     }

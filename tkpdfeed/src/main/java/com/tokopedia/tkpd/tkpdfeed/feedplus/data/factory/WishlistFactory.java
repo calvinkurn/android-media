@@ -1,11 +1,9 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RemoveWishlistMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.AddWishlistCloudSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.AddWishlistCloudSource;
 
 /**
  * @author by nisie on 5/30/17.

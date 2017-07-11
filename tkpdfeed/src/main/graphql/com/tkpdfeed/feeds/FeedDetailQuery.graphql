@@ -1,5 +1,5 @@
-query FeedDetail ($detailID: String!, $pageDetail: Int!, $limitDetail: Int!){
-    feed(detailID: $detailID, pageDetail: $pageDetail, limitDetail: $limitDetail) {
+query FeedDetail ($userID: Int!, $detailID: String!, $pageDetail: Int!, $limitDetail: Int!){
+    feed(userID: $userID, detailID: $detailID, pageDetail: $pageDetail, limitDetail: $limitDetail) {
         data {
             id
             create_time

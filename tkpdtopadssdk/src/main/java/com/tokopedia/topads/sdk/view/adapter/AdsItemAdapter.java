@@ -26,11 +26,12 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Item> list;
     private AdsAdapterTypeFactory typeFactory;
+    private int clickPosition;
     private int adapterPosition;
 
     public AdsItemAdapter(Context context) {
         this.list = new ArrayList<>();
-        this.typeFactory = new AdsAdapterTypeFactory(context);
+        this.typeFactory = new AdsAdapterTypeFactory(context, clickPosition);
     }
 
     public void setList(List<Item> list) {
@@ -79,6 +80,10 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void clearData() {
         list.clear();
+    }
+
+    public void setPosition(int adapterPosition) {
+        typeFactory.setClickPosition(adapterPosition);
     }
 
     public void setAdapterPosition(int adapterPosition) {

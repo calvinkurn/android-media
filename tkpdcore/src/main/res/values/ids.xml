@@ -26,6 +26,7 @@
     <item name="tv_weight" type="id" />
     <item name="tv_minimum" type="id" />
     <item name="tv_preorder" type="id" />
+    <item name="tv_success_rate" type="id" />
     <item name="tv_insurance" type="id" />
     <item name="tv_catalog" type="id" />
     <item name="tv_etalase" type="id" />

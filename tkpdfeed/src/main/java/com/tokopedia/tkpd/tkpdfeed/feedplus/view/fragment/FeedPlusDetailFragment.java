@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,20 +20,24 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.DetailFeedAdapter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -45,16 +48,18 @@ import javax.inject.Inject;
  */
 
 public class FeedPlusDetailFragment extends BaseDaggerFragment
-        implements FeedPlusDetail.View {
+        implements FeedPlusDetail.View, WishlistListener {
 
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
 
     RecyclerView recyclerView;
     TextView shareButton;
     TextView seeShopButon;
+    View footer;
 
     @Inject
     FeedPlusDetailPresenter presenter;
+
 
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
@@ -123,8 +128,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerView = (RecyclerView) parentView.findViewById(R.id.detail_list);
         shareButton = (TextView) parentView.findViewById(R.id.share_button);
         seeShopButon = (TextView) parentView.findViewById(R.id.see_shop);
+        footer = parentView.findViewById(R.id.footer);
         prepareView();
-        presenter.attachView(this);
+        presenter.attachView(this, this);
         return parentView;
 
     }
@@ -186,7 +192,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
-
         }
     }
 
@@ -201,11 +206,70 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetFeedDetail(String errorMessage) {
         finishLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        footer.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getFeedDetail(detailId, pagingHandler.getPage());
+                    }
+                });
     }
 
     private void finishLoading() {
         adapter.dismissLoading();
+    }
+
+    @Override
+    public void onEmptyFeedDetail() {
+        finishLoading();
+        adapter.showEmpty();
+        footer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        getActivity().onBackPressed();
+    }
+
+    @Override
+    public void onGoToBuyProduct(String productId) {
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setProductId(productId)
+                .build();
+
+        Intent intent = TransactionAddToCartRouter
+                .createInstanceAddToCartActivity(getActivity(), pass);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessGetSingleFeedDetail(final FeedDetailHeaderViewModel header,
+                                             SingleFeedDetailViewModel singleFeedDetailViewModel) {
+        finishLoading();
+        footer.setVisibility(View.VISIBLE);
+
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
+        }
+
+        adapter.add(singleFeedDetailViewModel);
+
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopId());
+            }
+        });
+
+        pagingHandler.setHasNext(false);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -214,37 +278,30 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
         finishLoading();
+        footer.setVisibility(View.VISIBLE);
 
-        if (listDetail.size() == 0) {
-//            adapter.showEmpty();
-            getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra("message", getString(R.string.feed_deleted)));
-            getActivity().finish();
-        } else {
-            if (pagingHandler.getPage() == 1) {
-                adapter.add(header);
-            }
-
-            adapter.addList(listDetail);
-
-            shareButton.setOnClickListener(onShareClicked(
-                    header.getShareLinkURL(),
-                    header.getShopName(),
-                    header.getShopAvatar(),
-                    header.getShareLinkDescription()));
-
-            seeShopButon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onGoToShopDetail(header.getShopId());
-                }
-            });
-
-            pagingHandler.setHasNext(hasNextPage);
-
-            adapter.notifyDataSetChanged();
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
         }
 
+        adapter.addList(listDetail);
 
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopId());
+            }
+        });
+
+        pagingHandler.setHasNext(hasNextPage);
+
+        adapter.notifyDataSetChanged();
     }
 
     @Override

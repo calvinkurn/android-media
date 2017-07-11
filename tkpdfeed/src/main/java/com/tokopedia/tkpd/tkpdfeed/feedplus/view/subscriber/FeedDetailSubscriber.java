@@ -1,18 +1,23 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
+
+import static android.R.attr.data;
 
 /**
  * @author by nisie on 5/24/17.
@@ -32,21 +37,65 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetFeedDetail(e.toString());
+        if (e instanceof ApolloNetworkException)
+            viewListener.onErrorGetFeedDetail(viewListener.getString(R.string.msg_network_error));
+        else viewListener.onErrorGetFeedDetail(e.toString());
     }
 
     @Override
     public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+        if (hasFeed(dataFeedDetailDomains)
+                && dataFeedDetailDomains.get(0).getContent().getProducts().size() == 1) {
+            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+            viewListener.onSuccessGetSingleFeedDetail(
+                    createHeaderViewModel(
+                            dataFeedDetailDomain.getCreate_time(),
+                            dataFeedDetailDomain.getSource().getShop(),
+                            dataFeedDetailDomain.getContent().getStatus_activity()),
+                    convertToSingleViewModel(dataFeedDetailDomain));
+        } else if (hasFeed(dataFeedDetailDomains)) {
+            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+            viewListener.onSuccessGetFeedDetail(
+                    createHeaderViewModel(
+                            dataFeedDetailDomain.getCreate_time(),
+                            dataFeedDetailDomain.getSource().getShop(),
+                            dataFeedDetailDomain.getContent().getStatus_activity()),
+                    convertToViewModel(dataFeedDetailDomain),
+                    checkHasNextPage(dataFeedDetailDomains));
+        } else {
+            viewListener.onEmptyFeedDetail();
+        }
 
-        viewListener.onSuccessGetFeedDetail(
-                createHeaderViewModel(
-                        dataFeedDetailDomain.getCreate_time(),
-                        dataFeedDetailDomain.getSource().getShop(),
-                        dataFeedDetailDomain.getContent().getStatus_activity()),
-                convertToViewModel(dataFeedDetailDomain),
-                checkHasNextPage(dataFeedDetailDomains));
+    }
 
+    private SingleFeedDetailViewModel convertToSingleViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
+        FeedDetailProductDomain productDomain = dataFeedDetailDomain.getContent().getProducts()
+                .get(0);
+        return createSingleProductViewModel(productDomain);
+    }
+
+    private SingleFeedDetailViewModel createSingleProductViewModel(FeedDetailProductDomain productDomain) {
+        return new SingleFeedDetailViewModel(
+                productDomain.getId(),
+                productDomain.getName(),
+                productDomain.getPrice(),
+                productDomain.getImage(),
+                productDomain.getProductLink(),
+                productDomain.getCashback(),
+                getIsWholesale(productDomain.getWholesale()),
+                productDomain.getPreorder(),
+                productDomain.getFreereturns(),
+                productDomain.getWishlist(),
+                productDomain.getRating()
+        );
+    }
+
+    private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {
+        return !dataFeedDetailDomain.isEmpty()
+                && dataFeedDetailDomain.get(0) != null
+                && dataFeedDetailDomain.get(0).getContent() != null
+                && dataFeedDetailDomain.get(0).getContent().getProducts() != null
+                && !dataFeedDetailDomain.get(0).getContent().getProducts().isEmpty();
     }
 
     private boolean checkHasNextPage(List<DataFeedDetailDomain> dataFeedDetailDomains) {
@@ -57,9 +106,10 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
         ArrayList<Visitable> listDetail = new ArrayList<>();
 
-        for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
-            listDetail.add(createProductViewModel(productDomain));
-        }
+        if (dataFeedDetailDomain.getContent() != null && dataFeedDetailDomain.getContent().getProducts() != null)
+            for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
+                listDetail.add(createProductViewModel(productDomain));
+            }
         return listDetail;
     }
 

@@ -1,18 +1,16 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.view.View;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
@@ -60,13 +58,15 @@ public interface FeedPlus{
 
         void showRefresh();
 
+        void finishLoading();
+
         void updateCursor(String currentCursor);
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
-        void onSeePromo(String link);
+        void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
 
-        void onErrorGetFeed();
+        void onSeePromo(String link);
 
         void onRetryClicked();
 
@@ -83,6 +83,18 @@ public interface FeedPlus{
         int getColor(int black);
 
         Resources getResources();
+
+        void onSeeAllRecentView();
+
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
+
+        void onShowEmpty();
+
+        void clearData();
+
+        void unsetEndlessScroll();
+
+        void onShowNewFeed();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
@@ -92,6 +104,8 @@ public interface FeedPlus{
         void fetchNextPage();
 
         void refreshPage();
+
+        void checkNewFeed(String cursor);
 
     }
 }

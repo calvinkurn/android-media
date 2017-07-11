@@ -26,6 +26,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
 
     private DescriptionTextView tvDesc;
     private LinearLayout descriptionContainer;
+    private LinearLayout container;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
     String description = "";
@@ -62,6 +63,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         descriptionContainer = (LinearLayout) findViewById(R.id.tv_desc);
         productVideoHorizontalScroll
                 = (ProductVideoHorizontalScroll) findViewById(R.id.product_video_horizontal_scroll);
+        container = (LinearLayout) findViewById(R.id.ll_wrapper);
     }
 
     @Override
@@ -78,7 +80,9 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     public void renderData(@NonNull ProductDetailData data) {
         description = data.getInfo().getProductDescription() == null ? "" :
                 data.getInfo().getProductDescription();
-        tvDesc.setOnClickListener(new VideoDescriptionLayout.ClickToggle());
+        ClickToggle clickToggleDescription = new VideoDescriptionLayout.ClickToggle();
+        container.setOnClickListener(clickToggleDescription);
+        tvDesc.setOnClickListener(clickToggleDescription);
         tvDesc.setText(description == null
                 || description.equals("")
                 || description.equals("0")

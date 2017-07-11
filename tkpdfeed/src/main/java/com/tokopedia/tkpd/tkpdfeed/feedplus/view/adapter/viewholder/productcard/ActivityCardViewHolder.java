@@ -1,25 +1,17 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.DynamicDrawableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
-import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,8 +24,7 @@ import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 
 /**
  * @author by nisie on 5/16/17.
@@ -47,6 +38,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     TextView title;
     View header;
     ImageView shopAvatar;
+    ImageView gmBadge;
+    ImageView osBadge;
     TextView time;
     View shareButton;
     View buyButton;
@@ -66,6 +59,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         time = (TextView) itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
         buyButton = itemView.findViewById(R.id.buy_button);
+        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         container = itemView.findViewById(R.id.container);
 
@@ -126,7 +121,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         StringBuilder titleText = new StringBuilder();
 
         if (activityCardViewModel.getHeader().isGoldMerchant() || activityCardViewModel.getHeader().isOfficialStore())
-            titleText.append("  ");
+            titleText.append("     ");
 
         titleText
                 .append(shopNameString)
@@ -179,9 +174,14 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
         if (activityCardViewModel.getHeader().isOfficialStore()) {
-            setBadge(actionSpanString, R.drawable.ic_badge_official);
-        }else if (activityCardViewModel.getHeader().isGoldMerchant()) {
-            setBadge(actionSpanString, R.drawable.ic_shop_gold);
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.VISIBLE);
+        } else if (activityCardViewModel.getHeader().isGoldMerchant()) {
+            gmBadge.setVisibility(View.VISIBLE);
+            osBadge.setVisibility(View.GONE);
+        } else {
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.GONE);
         }
 
         title.setText(actionSpanString);
@@ -206,14 +206,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
-    }
-
-    private void setBadge(SpannableString actionSpanString, int resId) {
-        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
-        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
-        badge.setBounds(0, 0, size, size);
-        ImageSpan is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
-        actionSpanString.setSpan(is, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {

@@ -22,10 +22,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
-
-import static com.tokopedia.core.R.id.title;
-import static com.tokopedia.core.R.id.view;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 
 /**
  * @author by nisie on 5/19/17.
@@ -40,6 +37,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     TextView shopName;
     ImageView shopAvatar;
     TextView shopSlogan;
+    ImageView gmBadge;
+    ImageView osBadge;
 
     private final static String ADD_STRING = "tambah";
     private final static String EDIT_STRING = "ubah";
@@ -49,6 +48,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
+        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
         this.viewListener = viewListener;
     }
 
@@ -61,7 +62,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         StringBuilder titleText = new StringBuilder();
 
         if (viewModel.isGoldMerchant() || viewModel.isOfficialStore())
-            titleText.append("  ");
+            titleText.append("     ");
 
         titleText.append(shopNameString)
                 .append(" ")
@@ -97,13 +98,15 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
 
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
 
-        //Need this to count line
-        shopName.setText(actionSpanString);
-
         if (viewModel.isOfficialStore()) {
-            setBadge(actionSpanString, shopName, R.drawable.ic_badge_official);
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.VISIBLE);
         } else if (viewModel.isGoldMerchant()) {
-            setBadge(actionSpanString, shopName, R.drawable.ic_shop_gold);
+            gmBadge.setVisibility(View.VISIBLE);
+            osBadge.setVisibility(View.GONE);
+        }else {
+            gmBadge.setVisibility(View.GONE);
+            osBadge.setVisibility(View.GONE);
         }
 
         shopName.setText(actionSpanString);
@@ -134,19 +137,5 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
                     , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
-
-
-    private void setBadge(SpannableString actionSpanString, TextView shopName, int resId) {
-        int size = viewListener.getResources().getDimensionPixelOffset(R.dimen.ic_badge_size);
-        Drawable badge = MethodChecker.getDrawable(viewListener.getActivity(), resId);
-        badge.setBounds(0, 0, size, size);
-        ImageSpan is;
-        if (shopName.getLineCount() == 1)
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BOTTOM);
-        else
-            is = new ImageSpan(badge, DynamicDrawableSpan.ALIGN_BASELINE);
-        actionSpanString.setSpan(is, 0, 1, 0);
-    }
-
 
 }

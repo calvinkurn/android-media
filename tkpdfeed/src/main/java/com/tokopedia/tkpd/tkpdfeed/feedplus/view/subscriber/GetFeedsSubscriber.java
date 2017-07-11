@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
     @Override
     public void onNext(FeedResult feedResult) {
-        ArrayList<Visitable> list = convertToViewModel(feedResult.getDataFeedDomainList());
+        ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
 //        if (list.size() > 0) {
 //            if(getCurrentCursor(feedResult) != null){
@@ -49,18 +49,18 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 //        }
 
         if (list.size() == 0) {
-            viewListener.shouldLoadTopAds(false);
             viewListener.onShowAddFeedMore();
             viewListener.hideTopAdsAdapterLoading();
+            viewListener.unsetEndlessScroll();
         }else {
             if (feedResult.isHasNext()) {
                 viewListener.updateCursor(getCurrentCursor(feedResult));
                 viewListener.onSuccessGetFeed(list);
             } else {
-                viewListener.shouldLoadTopAds(false);
                 viewListener.onSuccessGetFeed(list);
                 viewListener.onShowAddFeedMore();
                 viewListener.hideTopAdsAdapterLoading();
+                viewListener.unsetEndlessScroll();
             }
         }
     }

@@ -5,14 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 
 import java.util.ArrayList;
 
@@ -63,14 +62,14 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             if(getItemCount()==1){
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
-                int marginPixels = (int) (3.3 * scale + 0.5f);
+                int marginPixels = (int) (10 * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
             }else{
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 int widthPixels = (int) (285 * scale + 0.5f);
                 CardView.LayoutParams params = new CardView.LayoutParams(widthPixels, CardView.LayoutParams.WRAP_CONTENT);
-                int marginPixels = (int) (3.3 * scale + 0.5f);
+                int marginPixels = (int) (10 * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
             }

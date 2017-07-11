@@ -4,18 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_sm"
-    android:background="@drawable/cards_feed_plus"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/feed_product_header"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+    <include layout="@layout/feed_product_header" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
-    <include layout="@layout/feed_share_button"/>
+    <include layout="@layout/feed_share_button" />
 
-    <include layout="@layout/buy_button"/>
+    <include layout="@layout/buy_button" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
 </LinearLayout>

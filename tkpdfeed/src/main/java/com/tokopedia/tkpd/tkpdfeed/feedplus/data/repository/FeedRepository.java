@@ -1,8 +1,9 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface FeedRepository {
 
     Observable<List<DataFeedDetailDomain>> getFeedsDetail(RequestParams requestParams);
 
-
+    Observable<List<RecentViewProductDomain>> getRecentViewProduct(RequestParams requestParams);
 }
