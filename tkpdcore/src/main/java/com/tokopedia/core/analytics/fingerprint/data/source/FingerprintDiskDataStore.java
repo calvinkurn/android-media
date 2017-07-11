@@ -57,8 +57,8 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .ipAddres(ipAddress)
                                 .screenReso(screenReso)
                                 .language(deviceLanguage)
-//                                .deviceLat(LocationCache.getLocation().getLatitude())
-//                                .deviceLng(LocationCache.getLocation().getLongitude())
+                                .deviceLat(LocationCache.getLocation().getLatitude())
+                                .deviceLng(LocationCache.getLocation().getLongitude())
                                 .build();
 
                         return fp;
