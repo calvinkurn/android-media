@@ -6,6 +6,11 @@
 
     <include layout="@layout/widget_gm_percentage" />
 
+    <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF0000" />
+
     <LinearLayout
         android:id="@+id/chart_container"
         android:layout_width="match_parent"
@@ -20,7 +25,8 @@
         <HorizontalScrollView
             android:id="@+id/gm_statistic_transaction_graph_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp">
 
             <LinearLayout
                 android:id="@+id/gm_statistic_transaction_graph_container_inner"
