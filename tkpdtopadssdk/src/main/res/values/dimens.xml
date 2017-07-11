@@ -31,5 +31,6 @@
     <dimen name="text_size_xsmall">11sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_s_medium">13sp</dimen>
+    <dimen name="padding_info">16dp</dimen>
 
 </resources>

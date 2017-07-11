@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.adapter.viewholder;
+package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
 import android.os.Build;
