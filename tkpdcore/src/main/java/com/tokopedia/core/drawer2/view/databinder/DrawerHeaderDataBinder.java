@@ -1,6 +1,7 @@
 package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
@@ -50,6 +52,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         private final TextView percentText;
         private final TextView completeProfile;
+        private final TextView verifiedIcon;
         private final View layoutProgress;
 
         @BindView(R2.id.user_avatar)
@@ -106,6 +109,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             percentText = (TextView) itemView.findViewById(R.id.percent_text);
             completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
             layoutProgress = itemView.findViewById(R.id.layout_progress);
+            verifiedIcon = (TextView) itemView.findViewById(R.id.verified);
+
         }
     }
 
@@ -165,6 +170,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.drawerPointsLayout.setVisibility(View.GONE);
         holder.percentText.setVisibility(View.GONE);
         holder.layoutProgress.setVisibility(View.GONE);
+        holder.verifiedIcon.setVisibility(View.GONE);
     }
 
     protected void bindDrawerHeader(ViewHolder holder) {
@@ -182,8 +188,13 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         data.setProfileCompletion(50);
         if(data.getProfileCompletion() == 100) {
             holder.layoutProgress.setVisibility(View.GONE);
+            Drawable drawable = MethodChecker.getDrawable(context, R.drawable.ic_verified);
+            drawable.setBounds(0, 0, 30, 30);
+            holder.verifiedIcon.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            holder.verifiedIcon.setVisibility(View.VISIBLE);
         }else {
             holder.layoutProgress.setVisibility(View.VISIBLE);
+            holder.verifiedIcon.setVisibility(View.GONE);
         }
 
         setDeposit(holder);

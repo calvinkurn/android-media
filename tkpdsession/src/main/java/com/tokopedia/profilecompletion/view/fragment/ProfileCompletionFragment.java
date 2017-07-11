@@ -146,17 +146,17 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
         }
-//        if (!getUserInfoDomainData.isPhoneVerified()) {
-//            ProfilePhoneVerifCompletionFragment verifCompletionFragment = ProfilePhoneVerifCompletionFragment.createInstance(this);
-//            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfilePhoneVerifCompletionFragment.TAG).commit();
-//        }else
+        if (!getUserInfoDomainData.isPhoneVerified()) {
+            ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
+            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfilePhoneVerifCompletionFragment.TAG).commit();
+        }else
             if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
             ProfileCompletionDateFragment dateFragment = ProfileCompletionDateFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG).commit();
         }else if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
             ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG).commit();
-        }  else {
+        }  else if(getUserInfoDomainData.getCompletion()==100){
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
         }
     }

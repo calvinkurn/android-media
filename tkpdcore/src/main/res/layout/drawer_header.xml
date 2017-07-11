@@ -44,20 +44,39 @@
                     tools:src="@drawable/ic_loading_toped"
                     />
 
-                <TextView
-                    android:id="@+id/name_text"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_toRightOf="@id/user_avatar"
-                    android:layout_centerHorizontal="true"
-                    android:padding="@dimen/padding_small"
-                    android:layout_marginLeft="@dimen/margin_small"
+                    android:paddingLeft="@dimen/margin_small"
                     android:layout_centerVertical="true"
-                    android:text="Loading.."
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:textStyle="normal"
-                    android:textColor="@color/black_70"/>
+                    android:layout_centerHorizontal="true">
+                    <TextView
+                        android:id="@+id/name_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading.."
+                        android:textSize="@dimen/text_size_l_medium"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal"
+                        android:textColor="@color/black_70"/>
+
+                    <TextView
+                        android:id="@+id/verified"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="1dp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="italic"
+                        android:textColor="@color/black_54"
+                        android:lineSpacingExtra="8sp"
+                        android:text="Verified Account"
+                        android:drawableRight="@drawable/ic_verified"/>
+
+                </LinearLayout>
+
             </RelativeLayout>
         </RelativeLayout>
 
@@ -71,7 +90,8 @@
         android:background="@color/grey_100"
         android:paddingLeft="@dimen/padding_small"
         android:paddingRight="@dimen/padding_small"
-        android:layout_below="@+id/drawer_header">
+        android:layout_below="@+id/drawer_header"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -116,7 +136,6 @@
                 />
 
         </RelativeLayout>
-
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"

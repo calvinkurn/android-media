@@ -17,7 +17,8 @@ import javax.inject.Inject;
  * Created by stevenfredian on 6/22/17.
  */
 
-public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompletionContract.View> implements ProfileCompletionContract.Presenter {
+public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompletionContract.View>
+        implements ProfileCompletionContract.Presenter {
 
     private final EditUserProfileUseCase editUserProfileUseCase;
     private GetUserInfoUseCase getUserInfoUseCase;
