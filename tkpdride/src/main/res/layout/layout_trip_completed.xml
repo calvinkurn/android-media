@@ -10,8 +10,10 @@
         android:id="@+id/on_trip_complete_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?actionBarSize"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:layout_below="@+id/layout_loader"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

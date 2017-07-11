@@ -30,7 +30,7 @@ public class ReceiptEntityMapper {
             receipt.setPendingPayment(pendingPaymentEntityMapper.transform(entity.getPendingPayment()));
             receipt.setRequestId(entity.getRequestId());
             receipt.setSubtotal(entity.getSubtotal());
-            receipt.setTotalFare(formatDisplayPrice(entity.getTotalFare()));
+            receipt.setTotalFare(formatNumber(Float.parseFloat(entity.getTotalFare()), entity.getPayment().getCurrencyCode()));
             receipt.setTotalOwe(entity.getTotalOwe());
 
             String totalCharged = entity.getCurrencyCode() + " 0";
