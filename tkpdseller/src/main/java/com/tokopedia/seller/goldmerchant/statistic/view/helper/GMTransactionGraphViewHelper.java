@@ -66,6 +66,12 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     @Override
     public void initView(@Nullable View itemView) {
         gmStatisticCardView = (StatisticCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
+        gmStatisticCardView.setOnArrowDownClickListener(new StatisticCardView.OnArrowDownClickListener() {
+            @Override
+            public void onArrowDownClicked() {
+
+            }
+        });
         gmStatisticGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_transaction_graph_container);
         gmStatisticGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
@@ -80,8 +86,9 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     @Override
     public void bind(@Nullable GMTransactionGraphViewModel data) {
         if (data.isCompare) {
-
+            gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
         } else {
+            gmStatisticTransactionRangeCompare.setVisibility(View.GONE);
             gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
             processTransactionGraph(data.values, data.dates);
         }
