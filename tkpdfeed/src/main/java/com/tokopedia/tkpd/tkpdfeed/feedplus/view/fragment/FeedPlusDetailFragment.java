@@ -238,9 +238,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToBuyProduct(String productId) {
+    public void onGoToBuyProduct(String productId, String price) {
         ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
                 .setProductId(productId)
+                .setPrice(price)
                 .build();
 
         Intent intent = TransactionAddToCartRouter
