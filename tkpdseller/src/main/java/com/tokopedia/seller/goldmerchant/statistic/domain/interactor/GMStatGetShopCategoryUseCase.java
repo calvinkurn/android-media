@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
 
@@ -21,6 +20,7 @@ public class GMStatGetShopCategoryUseCase extends CompositeUseCase<GetShopCatego
     public static final String END_DATE = "edt";
 
     private GMStatRepository gmStatRepository;
+
     @Inject
     public GMStatGetShopCategoryUseCase(
             ThreadExecutor threadExecutor,

@@ -5,8 +5,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
 
 import javax.inject.Inject;
@@ -20,6 +18,7 @@ import rx.Observable;
 public class GMStatGetKeywordUseCase extends CompositeUseCase<GetKeyword> {
     public static final String CATEGORY_ID = "cat_id";
     private GMStatRepository gmStatRepository;
+
     @Inject
     public GMStatGetKeywordUseCase(
             ThreadExecutor threadExecutor,

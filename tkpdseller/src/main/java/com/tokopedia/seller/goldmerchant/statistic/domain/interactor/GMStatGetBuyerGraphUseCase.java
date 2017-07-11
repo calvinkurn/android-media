@@ -20,6 +20,7 @@ public class GMStatGetBuyerGraphUseCase extends CompositeUseCase<GetBuyerData> {
     public static final String END_DATE = "edt";
 
     private GMStatRepository gmStatRepository;
+
     @Inject
     public GMStatGetBuyerGraphUseCase(
             ThreadExecutor threadExecutor,

@@ -2,19 +2,10 @@ package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
 
 import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
-import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,6 +20,7 @@ public class GMStatGetProductGraphUseCase extends CompositeUseCase<GetProductGra
     public static final String END_DATE = "edt";
 
     private GMStatRepository gmStatRepository;
+
     @Inject
     public GMStatGetProductGraphUseCase(
             ThreadExecutor threadExecutor,

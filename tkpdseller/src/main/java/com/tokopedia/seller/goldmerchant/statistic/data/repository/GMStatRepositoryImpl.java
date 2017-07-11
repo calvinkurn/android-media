@@ -6,6 +6,8 @@ import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 
 import javax.inject.Inject;
 
@@ -17,36 +19,46 @@ import rx.Observable;
 
 public class GMStatRepositoryImpl implements GMStatRepository {
 
-    private GMStatDataSource gMStatDataSource;
+    private GMStatDataSource gmStatDataSource;
 
     @Inject
-    public GMStatRepositoryImpl(GMStatDataSource gMStatDataSource) {
-        this.gMStatDataSource = gMStatDataSource;
+    public GMStatRepositoryImpl(GMStatDataSource gmStatDataSource) {
+        this.gmStatDataSource = gmStatDataSource;
+    }
+
+    @Override
+    public Observable<GetTransactionGraph> getTransactionGraph(long startDate, long endDate) {
+        return gmStatDataSource.getTransactionGraph(startDate, endDate);
+    }
+
+    @Override
+    public Observable<GetTransactionTable> getTransactionTable(long startDate, long endDate) {
+        return gmStatDataSource.getTransactionTable(startDate, endDate);
     }
 
     @Override
     public Observable<GetProductGraph> getProductGraph(long startDate, long endDate) {
-        return gMStatDataSource.getProductGraph(startDate, endDate);
+        return gmStatDataSource.getProductGraph(startDate, endDate);
     }
 
     @Override
     public Observable<GetPopularProduct> getPopularProduct(long startDate, long endDate) {
-        return gMStatDataSource.getPopularProduct(startDate, endDate);
+        return gmStatDataSource.getPopularProduct(startDate, endDate);
     }
 
     @Override
     public Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate) {
-        return gMStatDataSource.getBuyerGraph(startDate, endDate);
+        return gmStatDataSource.getBuyerGraph(startDate, endDate);
     }
 
     @Override
     public Observable<GetKeyword> getKeywordModel(String categoryId) {
-        return gMStatDataSource.getKeywordModel(categoryId);
+        return gmStatDataSource.getKeywordModel(categoryId);
     }
 
     @Override
     public Observable<GetShopCategory> getShopCategory(long startDate, long endDate) {
-        return gMStatDataSource.getShopCategory(startDate, endDate);
+        return gmStatDataSource.getShopCategory(startDate, endDate);
     }
 
 }
