@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
@@ -62,6 +63,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
+    private LocationUtils locationUtils;
 
     private DaggerAppComponent.Builder daggerBuilder;
 
@@ -101,8 +103,16 @@ public class MainApplication extends TkpdMultiDexApplication {
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
+        locationUtils = new LocationUtils(this);
+        locationUtils.initLocationBackground();
     }
 
+    @Override
+    public void onTerminate() {
+        CommonUtils.dumper("theresult app terminated");
+        super.onTerminate();
+        locationUtils.deInitLocationBackground();
+    }
 
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
