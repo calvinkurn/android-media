@@ -18,6 +18,7 @@ import com.tokopedia.payment.R;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayPresenter;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.webview.ScroogeWebView;
 
 /**
@@ -35,6 +36,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private ScroogeWebView scroogeWebView;
     private ProgressBar progressBar;
     private PaymentPassData paymentPassData;
+    private IPaymentModuleRouter paymentModuleRouter;
 
     private View btnBack;
     private View btnClose;
@@ -80,6 +82,9 @@ public class TopPayActivity extends Activity implements ITopPayView {
         initVar();
         setViewListener();
         setActionVar();
+        if (getApplication() instanceof IPaymentModuleRouter) {
+            paymentModuleRouter = (IPaymentModuleRouter) getApplication();
+        }
     }
 
     private void setActionVar() {
@@ -92,8 +97,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  onBackPressed();
-                scroogeWebView.loadUrl("javascript:handlePop();");
+                if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                        && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
+                    scroogeWebView.loadUrl("javascript:handlePopAndroid();");
+                else
+                    onBackPressed();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +160,20 @@ public class TopPayActivity extends Activity implements ITopPayView {
     @Override
     public PaymentPassData getPaymentPassData() {
         return paymentPassData;
+    }
+
+    @Override
+    public IPaymentModuleRouter getPaymentModuleRouter() {
+        if (getApplication() instanceof IPaymentModuleRouter) {
+            return (IPaymentModuleRouter) getApplication();
+        } else
+            return null;
+    }
+
+    @Override
+    public void navigateToCart(Intent intentCart) {
+        startActivity(intentCart);
+        finish();
     }
 
     @Override

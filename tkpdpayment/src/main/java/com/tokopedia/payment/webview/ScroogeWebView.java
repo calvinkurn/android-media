@@ -2,6 +2,7 @@ package com.tokopedia.payment.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -18,6 +19,7 @@ import android.webkit.WebViewClient;
 
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import java.net.URLDecoder;
@@ -65,7 +67,7 @@ public class ScroogeWebView extends WebView {
     }
 
     public boolean isEndThanksPage() {
-        return isEndThanksPage;
+        return isEndThanksPage || getUrl().contains("thanks") || getUrl().contains("thank");
     }
 
     private class TopPayWebViewClient extends WebViewClient {
@@ -79,8 +81,7 @@ public class ScroogeWebView extends WebView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //       view.invalidate();
-            Log.d(TAG, "URL payment " + url);
+            Log.d(TAG, "URL redirect " + url);
             isEndThanksPage = url.contains("thanks") || url.contains("thank");
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -99,7 +100,23 @@ public class ScroogeWebView extends WebView {
                 topPayView.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                return false;
+                IPaymentModuleRouter paymentModuleRouter = topPayView.getPaymentModuleRouter();
+                if (paymentModuleRouter == null) {
+                    return super.shouldOverrideUrlLoading(view, url);
+                } else if (paymentModuleRouter.isSupportedDelegateDeepLink(url)) {
+                    String appLinkScheme = paymentModuleRouter.getSchemeAppLinkCartPayment();
+                    Intent intentCart = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
+                    if (appLinkScheme != null && appLinkScheme.equalsIgnoreCase(url)
+                            && intentCart != null) {
+                        intentCart.setData(Uri.parse(url));
+                        topPayView.navigateToCart(intentCart);
+                        return true;
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, url);
+                    }
+                } else {
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
             }
         }
 
@@ -134,6 +151,7 @@ public class ScroogeWebView extends WebView {
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+            Log.d(TAG, "URL initial " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {

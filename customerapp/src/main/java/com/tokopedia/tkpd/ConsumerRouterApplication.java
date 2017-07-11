@@ -12,6 +12,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -20,9 +21,10 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -31,6 +33,8 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -46,7 +50,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  */
 
 public class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter {
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
+        IPaymentModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -124,6 +129,22 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLinks);
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return new Intent(this, DeeplinkHandlerActivity.class);
+    }
+
+    @Override
+    public String getBaseUrlDomainPayment() {
+        return ConsumerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
+    @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariable(activity);
     }
@@ -134,8 +155,8 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
@@ -209,4 +230,10 @@ public class ConsumerRouterApplication extends MainApplication implements
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
+
+    @Override
+    public String getSchemeAppLinkCartPayment() {
+        return Constants.Applinks.CART;
+    }
+
 }
