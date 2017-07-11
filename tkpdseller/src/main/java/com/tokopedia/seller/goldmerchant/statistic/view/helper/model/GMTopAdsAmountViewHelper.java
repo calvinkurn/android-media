@@ -11,6 +11,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticTransactionFragment;
@@ -37,6 +38,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
 
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
+    private StatisticCardView gmStatisticTopAdsCardView;
 
     public GMTopAdsAmountViewHelper(@Nullable Context context) {
         super(context);
@@ -50,10 +52,21 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
         gmStatisticTopAdsGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_topads_graph);
         gmStatisticTopAdsGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_topads_graph_container_inner);
         gmStatisticTopAdsGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_topads_graph_container);
+        gmStatisticTopAdsCardView = (StatisticCardView) itemView.findViewById(R.id.topads_statistic_card_view);
+    }
+
+    private void setTopAdsCardView(GMTopAdsAmountViewModel data) {
+        gmStatisticTopAdsCardView.setTitle(context.getString(R.string.gold_merchant_top_ads_amount_title_text));
+        gmStatisticTopAdsCardView.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
+
+        gmStatisticTopAdsCardView.setPercentage((double) (data.percentage * 100));
+        gmStatisticTopAdsCardView.setAmount(Integer.toString(data.amount));
     }
 
     @Override
     public void bind(@Nullable GMTopAdsAmountViewModel data) {
+        setTopAdsCardView(data);
+
         // create model for chart
         final BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticTransactionFragment.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);

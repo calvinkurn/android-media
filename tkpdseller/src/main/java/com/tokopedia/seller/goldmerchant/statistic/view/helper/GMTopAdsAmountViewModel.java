@@ -9,4 +9,8 @@ import java.util.List;
 public class GMTopAdsAmountViewModel {
     public List<Integer> values;
     public List<Integer> dates;
+    public String title;
+    public String subtitle;
+    public float percentage;
+    public int amount;
 }

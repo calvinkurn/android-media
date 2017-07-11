@@ -273,6 +273,15 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                                 = new GMTopAdsAmountViewModel();
                         gmTopAdsAmountViewModel.dates = dateGraph;
                         gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
+                        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
+                        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
+
+                        // TODO get topads percentage maybe cpc
+                        gmTopAdsAmountViewModel.percentage = 1f;
+
+                        // TODO get topads amount
+                        gmTopAdsAmountViewModel.amount = 1_00_000;
+
                         gmTopAdsAmountViewHelper.bind(
                                 gmTopAdsAmountViewModel
                         );

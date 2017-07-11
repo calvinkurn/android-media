@@ -69,34 +69,40 @@
         </HorizontalScrollView>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/topads_chart_container"
+    <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+        android:id="@+id/topads_statistic_card_view"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:layout_marginBottom="@dimen/gmstat_margin_bottom"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/gmstat_padding_item_left_right"
-        android:paddingLeft="@dimen/gmstat_padding_item_left_right"
-        android:paddingRight="@dimen/gmstat_padding_item_left_right">
+        android:layout_height="wrap_content">
 
-        <HorizontalScrollView
-            android:id="@+id/gm_statistic_topads_graph_container"
+        <LinearLayout
+            android:id="@+id/topads_chart_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="260dp"
+            android:layout_marginBottom="@dimen/gmstat_margin_bottom"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/gmstat_padding_item_left_right"
+            android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+            android:paddingRight="@dimen/gmstat_padding_item_left_right">
 
-            <LinearLayout
-                android:id="@+id/gm_statistic_topads_graph_container_inner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <HorizontalScrollView
+                android:id="@+id/gm_statistic_topads_graph_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <com.tokopedia.seller.lib.williamchart.view.LineChartView
-                    android:id="@+id/gm_statistic_topads_graph"
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp" />
-            </LinearLayout>
-        </HorizontalScrollView>
-    </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/gm_statistic_topads_graph_container_inner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.seller.lib.williamchart.view.LineChartView
+                        android:id="@+id/gm_statistic_topads_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
 
 </LinearLayout>
