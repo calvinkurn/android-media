@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
 
 /**
  * Created by User on 7/10/2017.
@@ -22,20 +20,13 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
 public class StatisticCardView extends CardView {
 
     FrameLayout mFrameLayout;
-
+    OnArrowDownClickListener onArrowDownClickListener;
     private TextView tvTitle;
     private ImageView ivArrowDown;
     private TextView tvAmount;
     private ArrowPercentageView arrowPercentageView;
     private TextView tvSubtitle;
     private TextView tvPercentageDesc;
-
-
-    OnArrowDownClickListener onArrowDownClickListener;
-    public interface OnArrowDownClickListener{
-        void onArrowDownClicked();
-    }
-
     public StatisticCardView(Context context) {
         super(context);
         apply(null, 0);
@@ -109,7 +100,8 @@ public class StatisticCardView extends CardView {
 
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
-        mFrameLayout.addView(child);
+        super.addView(child, index, params);
+//        mFrameLayout.addView(child);
     }
 
     public void setTitle(CharSequence title){
@@ -156,5 +148,9 @@ public class StatisticCardView extends CardView {
             tvPercentageDesc.setText(percentageDesc);
             tvPercentageDesc.setVisibility(View.VISIBLE);
         }
+    }
+
+    public interface OnArrowDownClickListener {
+        void onArrowDownClicked();
     }
 }
