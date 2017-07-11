@@ -55,6 +55,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     private static final String TAG = "addressautocomplete";
     private static final String SHOW_AUTO_DETECT_LOCATION = "SHOW_AUTO_DETECT_LOCATION";
     private static final String SHOW_SELECT_LOCATION_ON_MAP = "SHOW_SELECT_LOCATION_ON_MAP";
+    public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 101;
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
@@ -175,6 +176,15 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 presenter.actionGetPeopleAddresses(true);
             }
         }*/
+    }
+
+    /**
+     * This function handles location alert result, initiated from Activity class
+     *
+     * @param resultCode
+     */
+    public void handleLocationAlertResult(int resultCode) {
+        mPresenter.handleEnableLocationDialogResult(resultCode);
     }
 
     @Override

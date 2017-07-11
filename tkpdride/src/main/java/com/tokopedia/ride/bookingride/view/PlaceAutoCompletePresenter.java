@@ -1,6 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,10 +18,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.data.DataBufferUtils;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
@@ -48,6 +53,7 @@ import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
+import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
 import com.tokopedia.ride.common.place.data.entity.Element;
@@ -55,7 +61,6 @@ import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +71,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by alvarisi on 3/15/17.
@@ -86,6 +93,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private GetUserAddressUseCase getUserAddressUseCase;
     private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
     private GetDistanceMatrixUseCase getDistanceMatrixUseCase;
+    private boolean mAutoDetectLocation;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
@@ -309,7 +317,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 mCurrentLocation = getFuzedLocation();
                                 startLocationUpdates();
                             } else {
-                                getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
+                                //do not do anything
+                                //getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
                             }
                         }
 
@@ -331,6 +340,53 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         mGoogleApiClient.connect();
     }
 
+    /**
+     * This functions checks if locations is not enabledm shows a dialog to enable to location
+     */
+    private void checkLocationSettings() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+                //final LocationSettingsStates s= result.getLocationSettingsStates();
+
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        onLocationSuccess(mCurrentLocation);
+                        startLocationUpdates();
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(getView().getActivity(), PlaceAutocompleteFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        //getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location));
+                        break;
+                }
+            }
+        });
+    }
+
     private void startLocationUpdates() {
         if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
@@ -341,7 +397,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                mCurrentLocation = location;
+                onLocationSuccess(location);
             }
         });
     }
@@ -367,6 +423,30 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         }
 
         return true;
+    }
+
+    @Override
+    public void handleEnableLocationDialogResult(int resultCode) {
+        if (resultCode == RESULT_OK) {
+            if (getFuzedLocation() != null) {
+                onLocationSuccess(mCurrentLocation);
+                startLocationUpdates();
+            } else {
+                startLocationUpdates();
+            }
+        } else {
+            getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
+        }
+    }
+
+    private void onLocationSuccess(Location currentLocation) {
+        mCurrentLocation = currentLocation;
+
+        //get current place if auto detect location was clicked
+        if (mCurrentLocation != null && mAutoDetectLocation) {
+            mAutoDetectLocation = false;
+            getCurrentPlace();
+        }
     }
 
     @Override
@@ -412,8 +492,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     }
                 })
         );*/
-
-
     }
 
     private class AutoCompletePlaceTextChanged extends Subscriber<String> {
@@ -431,9 +509,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         public void onNext(String keyword) {
             if (isViewAttached() && !isUnsubscribed()) {
                 getView().showListPlaces();
-//            if (!isLoadingPlaces) {
                 getPlacesAndRenderViewByKeyword(keyword);
-//            }
             }
         }
     }
@@ -596,52 +672,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionAutoDetectLocation() {
         if (mCurrentLocation != null || ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            /*compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    try {
-                        subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                                mCurrentLocation.getLatitude(),
-                                mCurrentLocation.getLongitude()
-                        ));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
-                    }
-                }
-            }).onErrorReturn(new Func1<Throwable, String>() {
-                @Override
-                public String call(Throwable throwable) {
-                    return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
-                }
-            }).subscribe(new Subscriber<String>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onNext(String currentAddress) {
-                    if (isViewAttached() && !isUnsubscribed()) {
-                        PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                        placePassViewModel.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                        placePassViewModel.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                        placePassViewModel.setTitle(currentAddress);
-                        //placePassViewModel.setPlaceId(mCurrentLocation);
-//                        placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
-                        placePassViewModel.setAddress(currentAddress);
-                        getView().onPlaceSelectedFound(placePassViewModel);
-                    }
-                }
-            }));*/
             getCurrentPlace();
-        } else {
-            getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
+        } else if (mGoogleApiClient != null) {
+            checkLocationSettings();
+            mAutoDetectLocation = true;
+            //getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
         }
     }
 

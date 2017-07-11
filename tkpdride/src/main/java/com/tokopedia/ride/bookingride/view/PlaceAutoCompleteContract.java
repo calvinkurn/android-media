@@ -101,5 +101,7 @@ public interface PlaceAutoCompleteContract {
         void onStart();
 
         void onPlaceSelected(PlaceAutoCompeleteViewModel addressId);
+
+        void handleEnableLocationDialogResult(int resultCode);
     }
 }
