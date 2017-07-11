@@ -5,9 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.review.var.Const;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 /**
@@ -15,6 +24,29 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
  */
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
+
+    @SuppressWarnings("unused")
+    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
+    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        if (extras != null && extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(context);
+            }
+            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            taskStackBuilder.addNextIntent(homeIntent);
+        }
+
+        Intent destination = DigitalCategoryListActivity.newInstance(context);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
+    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, DigitalCategoryListActivity.class);
