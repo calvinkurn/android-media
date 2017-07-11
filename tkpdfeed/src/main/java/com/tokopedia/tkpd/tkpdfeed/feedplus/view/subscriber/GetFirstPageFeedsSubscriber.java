@@ -56,7 +56,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     @Override
     public void onNext(FeedResult feedResult) {
 
-        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+//        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.clearData();
 
         FeedDomain feedDomain = feedResult.getFeedDomain();

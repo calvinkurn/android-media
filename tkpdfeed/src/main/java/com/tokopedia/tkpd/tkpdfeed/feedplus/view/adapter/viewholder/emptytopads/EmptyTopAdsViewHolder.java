@@ -36,6 +36,7 @@ public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> 
 
     @Override
     public void bind(EmptyTopAdsModel element) {
+        container.removeAllViews();
         for (int i = START_PAGE; i <= MAX_TOPADS; i++) {
             TopAdsParams params = new TopAdsParams();
             params.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.SRC_PRODUCT_FEED);

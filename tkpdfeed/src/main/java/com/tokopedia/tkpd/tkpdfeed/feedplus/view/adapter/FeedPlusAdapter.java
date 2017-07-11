@@ -73,7 +73,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void clearData() {
         this.list.clear();
-        notifyDataSetChanged();
     }
 
     public void showEmpty() {

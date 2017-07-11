@@ -466,13 +466,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
         adapter.addList(listFeed);
         adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
-        adapter.notifyItemRangeInserted(0, adapter.getItemCount());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -482,8 +483,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.showEmpty();
         adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
-        adapter.notifyItemRangeInserted(0, adapter.getItemCount());
-
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -491,7 +491,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void clearData() {
         adapter.clearData();
         topAdsRecyclerAdapter.reset();
-        topAdsRecyclerAdapter.shouldLoadAds(true);
+//        topAdsRecyclerAdapter.shouldLoadAds(true);
     }
 
     @Override
