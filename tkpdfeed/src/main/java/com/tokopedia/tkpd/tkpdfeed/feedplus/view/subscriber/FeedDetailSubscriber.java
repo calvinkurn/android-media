@@ -8,7 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDeta
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
-
-import static android.R.attr.data;
 
 /**
  * @author by nisie on 5/24/17.

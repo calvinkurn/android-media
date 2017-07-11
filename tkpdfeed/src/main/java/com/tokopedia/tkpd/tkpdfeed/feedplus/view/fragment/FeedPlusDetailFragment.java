@@ -37,7 +37,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 

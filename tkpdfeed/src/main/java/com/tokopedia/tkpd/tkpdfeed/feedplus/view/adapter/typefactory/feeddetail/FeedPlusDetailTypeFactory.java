@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 

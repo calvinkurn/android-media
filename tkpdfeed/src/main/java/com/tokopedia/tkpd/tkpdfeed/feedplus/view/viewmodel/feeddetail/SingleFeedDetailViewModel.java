@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;

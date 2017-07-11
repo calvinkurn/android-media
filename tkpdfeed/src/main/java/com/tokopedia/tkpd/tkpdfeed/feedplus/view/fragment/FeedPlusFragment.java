@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -57,6 +56,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -81,8 +81,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * @author by nisie on 5/15/17.
@@ -224,7 +222,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Item item = null;
                     if (itemIsFullScreen()) {
                         item = topAdsRecyclerAdapter.getPlacer()
@@ -462,20 +460,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
-        adapter.showEmpty();
-        adapter.addList(listFeed);
-        adapter.notifyItemRangeInserted(0, 2);
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
+        adapter.showEmpty();
+        adapter.addList(listFeed);
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        adapter.notifyItemRangeInserted(0, adapter.getItemCount());
     }
 
     @Override
     public void onShowEmpty() {
-        adapter.showEmpty();
-        adapter.notifyItemRangeInserted(0, 1);
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
+        adapter.showEmpty();
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        adapter.notifyItemRangeInserted(0, adapter.getItemCount());
+
 
     }
 
@@ -553,7 +555,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
         adapter.removeEmpty();
+        int posStart = adapter.getItemCount();
         adapter.addList(listFeed);
+        adapter.notifyItemRangeInserted(posStart, listFeed.size());
     }
 
     @Override

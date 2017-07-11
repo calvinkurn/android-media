@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.E
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.SingleFeedDetailViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
