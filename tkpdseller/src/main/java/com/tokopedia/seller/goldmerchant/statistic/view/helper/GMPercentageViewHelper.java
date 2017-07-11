@@ -48,8 +48,8 @@ public class GMPercentageViewHelper extends BaseGMViewHelper<Double> {
     public void initView(View itemView) {
         this.itemView = itemView; // save view
 
-        percentageText = (TextView) itemView.findViewById(R.id.percentage);
-        arrowIconImage = (ImageView) itemView.findViewById(R.id.arrow_icon);
+        percentageText = (TextView) itemView.findViewById(R.id.tv_percentage);
+        arrowIconImage = (ImageView) itemView.findViewById(R.id.iv_arrow_icon);
     }
 
     @Override
