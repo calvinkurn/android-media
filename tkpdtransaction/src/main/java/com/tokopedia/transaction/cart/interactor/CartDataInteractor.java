@@ -441,16 +441,8 @@ public class CartDataInteractor implements ICartDataInteractor {
         return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, cartItem));
     }
 
-    private Observable<Response<String>> cartItemObservableMock(String token, CartItem cartItem) {
-        return keroAuthService.getApi().calculateShippingRate(mockParam());
-    }
-
     private TKPDMapParam<String, String> keroRatesCartParam(String token, CartItem cartItem) {
         return KeroppiParam.paramsKeroCart(token, cartItem);
-    }
-
-    private TKPDMapParam<String, String> mockParam() {
-        return KeroppiParam.keroCartMock();
     }
 
     private boolean isInsuranced(CartItem cartItem) {
