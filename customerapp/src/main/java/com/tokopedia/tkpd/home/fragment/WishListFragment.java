@@ -315,6 +315,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 .show();
         displayPull(false);
         adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
     }
 
     @Override
