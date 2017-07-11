@@ -32,7 +32,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     String description = "";
     VideoData videoData;
 
-    public static final int MAX_CHAR = 134;
+    public static final int MAX_CHAR = 900;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
 
     public VideoDescriptionLayout(Context context) {
