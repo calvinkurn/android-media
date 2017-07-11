@@ -351,16 +351,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public static String formatStringToPriceString(String numberString, String currency) {
         try {
-            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance(currency));
-            String result = "";
-            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
-                format.setMaximumFractionDigits(0);
-                result = format.format(Float.parseFloat(numberString)).replace(",", ".").replace("IDR", "Rp");
-            } else {
-                result = format.format(Float.parseFloat(numberString));
-            }
-            return result;
+            return formaNumberToPriceString(Float.parseFloat(numberString), currency);
         } catch (Exception ex) {
             return currency + " " + numberString;
         }
@@ -368,6 +359,10 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public static String formaNumberToPriceString(float number, String currency) {
         try {
+            if (currency.equalsIgnoreCase("RP")) {
+                currency = "IDR";
+            }
+
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance(currency));
             String result = "";

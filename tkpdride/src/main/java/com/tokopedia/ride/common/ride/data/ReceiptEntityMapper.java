@@ -92,6 +92,10 @@ public class ReceiptEntityMapper {
 
     private String formatNumber(float number, String currency) {
         try {
+            if (currency.equalsIgnoreCase("RP")) {
+                currency = "IDR";
+            }
+
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance(currency));
             String result = "";

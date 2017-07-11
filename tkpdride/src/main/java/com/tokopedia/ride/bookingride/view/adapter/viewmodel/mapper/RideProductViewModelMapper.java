@@ -175,8 +175,12 @@ public class RideProductViewModelMapper {
 
     private String formatNumber(String number, String currency) {
         try {
+            if (currency.equalsIgnoreCase("RP")) {
+                currency = "IDR";
+            }
+
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance("Rp"));
+            format.setCurrency(Currency.getInstance(currency));
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
