@@ -1,8 +1,11 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
@@ -26,6 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by alvarisi on 3/14/17.
@@ -38,6 +42,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPromoUseCase getPromoUseCase;
+    private CompositeSubscription compositeSubscription;
 
     public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase,
                                 GetFareEstimateUseCase getFareEstimateUseCase,
@@ -46,6 +51,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         this.productViewModelMapper = new RideProductViewModelMapper();
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getPromoUseCase = getPromoUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -88,6 +94,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         //getView().hideProductList();
 
         //format existing list to not show time and price when updating
+        actionSetProductListWhenItsAvailable(destination);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
+        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+        getActionGetProducts(source, destination, requestParams, null, null);
+    }
+
+    private void actionSetProductListWhenItsAvailable(PlacePassViewModel destination) {
         List<Visitable> existingProductList = getView().getProductList();
         if (existingProductList != null && existingProductList.size() > 0) {
             List<Visitable> updatedList = new ArrayList<>();
@@ -109,10 +124,9 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             getView().renderProductList(updatedList);
         }
+    }
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
-        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+    private void getActionGetProducts(final PlacePassViewModel source, final PlacePassViewModel destination, RequestParams requestParams, final String key, final String value) {
         getProductAndEstimatedUseCase.execute(requestParams, new Subscriber<List<ProductEstimate>>() {
             @Override
             public void onCompleted() {
@@ -153,7 +167,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 //                            }
 //                        }
                         if (destination != null) {
-                            actionGetFareProduct2(source, destination, productEstimates);
+                            actionGetFareProduct(source, destination, productEstimates, key, value);
                         } else {
                             getView().hideProgress();
                             getView().hideErrorMessage();
@@ -186,31 +200,19 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         getView().actionMinimumTimeEstResult(minTime / 60 + "\nmin");
     }
 
-    private void actionGetFareProduct(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates) {
-        for (int i = 0; i < productEstimates.size(); i++) {
-            actionFareProductEstimate(
-                    productEstimates.get(i),
-                    source,
-                    destination,
-                    productEstimates.get(i).getProduct().getProductId(),
-                    i
-            );
-        }
-    }
-
-    private void actionGetFareProduct2(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates) {
+    private void actionGetFareProduct(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates, String key, String value) {
         List<Observable<RideProductViewModel>> observables = new ArrayList<>();
         for (int i = 0; i < productEstimates.size(); i++) {
-
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(source.getLatitude()));
             requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(source.getLongitude()));
             requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(destination.getLatitude()));
             requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(destination.getLongitude()));
-            requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(productEstimates.get(i).getProduct().getProductId()));
             requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(1));
-
-
+            requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(productEstimates.get(i).getProduct().getProductId()));
+            if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value)) {
+                requestParams.putString(key, value);
+            }
             observables.add(Observable.zip(Observable.just(productEstimates.get(i)),
                     getFareEstimateUseCase.createObservable(requestParams),
                     new Func2<ProductEstimate, FareEstimate, RideProductViewModel>() {
@@ -218,16 +220,10 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         public RideProductViewModel call(ProductEstimate productEstimate, FareEstimate fareEstimate) {
                             return productViewModelMapper.transformRide(productEstimate, fareEstimate);
                         }
-                    })
-                    .onErrorReturn(new Func1<Throwable, RideProductViewModel>() {
-                        @Override
-                        public RideProductViewModel call(Throwable throwable) {
-                            return null;
-                        }
                     }));
         }
 
-        Observable.merge(observables)
+        compositeSubscription.add(Observable.merge(observables)
                 .filter(new Func1<RideProductViewModel, Boolean>() {
                     @Override
                     public Boolean call(RideProductViewModel rideProductViewModel) {
@@ -251,11 +247,19 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().hideProductList();
 
                             String message = e.getMessage();
-                            if (e instanceof UnknownHostException) {
-                                message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                            if (e instanceof InterruptConfirmationHttpException) {
+                                getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+                                if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                                    getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                                } else {
+                                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
+                                }
+                            } else {
+                                if (e instanceof UnknownHostException) {
+                                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                }
+                                getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                             }
-
-                            getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                         }
                     }
 
@@ -278,53 +282,17 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         }
 
                     }
-                });
-
+                })
+        );
     }
 
-
     @Override
-    public void actionFareProductEstimate(final ProductEstimate productEstimate, PlacePassViewModel source, PlacePassViewModel destination, final String productId, final int position) {
+    public void actionGetRideProducts(String value, String key, PlacePassViewModel source, PlacePassViewModel destination) {
+        actionSetProductListWhenItsAvailable(destination);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(source.getLatitude()));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(source.getLongitude()));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(destination.getLatitude()));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(destination.getLongitude()));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(productId));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(1));
-        getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (e instanceof InterruptConfirmationHttpException) {
-                    //show Interrupt Confirmation Dialog
-                } else {
-                    //show error message
-                    getView().hideProductList();
-
-                    String message = e.getMessage();
-                    if (e instanceof UnknownHostException) {
-                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
-                    }
-
-                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
-                }
-            }
-
-            @Override
-            public void onNext(FareEstimate fareEstimate) {
-                if (isViewAttached() && !isUnsubscribed()) {
-                    getView().hideErrorMessage();
-                    getView().showProductList();
-                    getView().renderFareProduct(productViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
-                }
-            }
-        });
+        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
+        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+        getActionGetProducts(source, destination, requestParams, key, value);
     }
 
     @Override
@@ -332,6 +300,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         getFareEstimateUseCase.unsubscribe();
         getProductAndEstimatedUseCase.unsubscribe();
         getPromoUseCase.unsubscribe();
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.detachView();
     }
 }

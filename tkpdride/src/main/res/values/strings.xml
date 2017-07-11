@@ -146,4 +146,6 @@
     <string name="pending_fare_choose_nominal">Nominal</string>
     <string name="complete_trip_payment_failed">Payment failed</string>
     <string name="please_wait_message">Please wait...</string>
+    <string name="uber_product_confirm_tos">You must confirm your information to take ride</string>
+    <string name="uber_product_confirm_btn_text">OK</string>
 </resources>

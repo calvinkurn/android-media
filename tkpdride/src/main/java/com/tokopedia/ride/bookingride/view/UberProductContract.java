@@ -50,6 +50,10 @@ public interface UberProductContract {
         Context getActivity();
 
         RequestParams getPromoParams();
+
+        void openInterruptConfirmationWebView(String tosUrl);
+
+        void showErrorTosConfirmation(String tosUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -57,6 +61,6 @@ public interface UberProductContract {
 
         void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
 
-        void actionFareProductEstimate(ProductEstimate productEstimate, PlacePassViewModel source, PlacePassViewModel destination, String productId, int position);
+        void actionGetRideProducts(String value, String key, PlacePassViewModel source, PlacePassViewModel destination);
     }
 }

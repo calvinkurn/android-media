@@ -20,6 +20,8 @@ public class InterruptConfirmationHttpException extends IOException {
     private String message;
     private String type;
 
+    public static String TOS_CONFIRMATION_INTERRUPT = "tos_accept_confirmation";
+
     public InterruptConfirmationHttpException() {
         super("Request data is invalid, please check message");
     }

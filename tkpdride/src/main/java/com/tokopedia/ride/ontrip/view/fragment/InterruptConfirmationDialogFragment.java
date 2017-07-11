@@ -131,7 +131,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
             Log.d(TAG, "shouldOverrideUrlLoading: " + urlString);
 
             Uri uri = Uri.parse(urlString);
-            if (urlString.endsWith("action_back")) {
+            if (urlString.endsWith("action_back") || (uri.getScheme().equals("tokopedia") && uri.getLastPathSegment().equalsIgnoreCase("back"))) {
                 isProgramaticallyDismissed = true;
                 getTargetFragment().onActivityResult(
                         getTargetRequestCode(),
