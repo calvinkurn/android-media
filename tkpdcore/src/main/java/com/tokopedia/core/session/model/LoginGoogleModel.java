@@ -1,7 +1,6 @@
 package com.tokopedia.core.session.model;
 
 import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
 
 /**
  * Created by m.normansyah on 17/11/2015.
@@ -15,20 +14,6 @@ public class LoginGoogleModel {
     String birthday;
     String imageUrl;
     String uuid;
-
-    public LoginGoogleModel() {
-    }
-
-    @ParcelConstructor
-    public LoginGoogleModel(String fullName, String googleId, String email, String gender,
-                            String birthday, String imageUrl) {
-        this.fullName = fullName;
-        this.googleId = googleId;
-        this.email = email;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.imageUrl = imageUrl;
-    }
 
     public String getFullName() {
         return fullName;

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.session">
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -65,7 +64,6 @@
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait" />
-
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />

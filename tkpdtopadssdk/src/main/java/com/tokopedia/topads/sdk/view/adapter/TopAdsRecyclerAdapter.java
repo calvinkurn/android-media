@@ -70,7 +70,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mContext = context;
         typeFactory = new TopAdsAdapterTypeFactory(context);
         placer = new TopAdsPlacer(context, typeFactory, this);
-
         mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
 
             @Override
