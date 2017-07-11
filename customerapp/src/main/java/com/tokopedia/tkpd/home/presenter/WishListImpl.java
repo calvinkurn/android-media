@@ -239,7 +239,7 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void deleteWishlist(final Context context, String productId) {
+    public void deleteWishlist(final Context context, String productId, int position) {
         wishListView.showProgressDialog();
         Observable<Response<Void>> observable = mojitoAuthService.getApi()
                 .deleteWishlist(productId, SessionHandler.getLoginID(context));
@@ -258,7 +258,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(Response<Void> voidResponse) {
-                onFinishedDeleteWishlist();
+                onFinishedDeleteWishlist(position);
             }
         };
 
@@ -425,12 +425,13 @@ public class WishListImpl implements WishList {
         return products;
     }
 
-    private void onFinishedDeleteWishlist() {
+    private void onFinishedDeleteWishlist(final int position) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 wishListView.dismissProgressDialog();
-                wishListView.onSuccessDeleteWishlist(params.getString(SearchWishlistUsecase.KEY_QUERY, ""));
+                wishListView.onSuccessDeleteWishlist(
+                        params.getString(SearchWishlistUsecase.KEY_QUERY, ""), position);
             }
         }, CacheDuration.onSecond(5));
     }
