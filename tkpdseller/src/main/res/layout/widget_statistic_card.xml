@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:divider="@drawable/line_separator"
+    android:showDividers="middle"
+    android:addStatesFromChildren="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Subheading.Bold"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            tools:text="Title"/>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_arrow_down"
+            android:layout_width="15dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center_vertical|end"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_arrow_down"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small">
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Subheading"
+            tools:text="Total Pengeluaran TopAds" />
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Title"
+            tools:text="Rp900.000" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView
+                android:id="@+id/view_arrow_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_percentage_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="dari periode sebelumnya"
+                android:layout_toRightOf="@id/view_arrow_percentage"/>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!-- will be infalted programmatically -->
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

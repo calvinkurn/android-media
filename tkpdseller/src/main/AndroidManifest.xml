@@ -317,6 +317,7 @@
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionActivity"
             android:exported="true"
             android:label="@string/gold_merchant_transaction_label"
+            android:exported="true"
             android:theme="@style/BasicThemeActionBar" />
 
         <activity
