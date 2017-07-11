@@ -16,8 +16,12 @@ import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -27,9 +31,10 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class GMFragmentPresenterImpl implements GMFragmentPresenter {
-
     public static final String IS_FETCH_DATA = "IS_FETCH_DATA";
     public static final String IS_FIRST_TIME = "IS_FIRST_TIME";
+    private static final String TAG = "GMFragmentPresenterImpl";
+    private static final Locale locale = new Locale("in", "ID");
     private boolean isFetchData = false, isFirstTime = false;
     @IntRange(from = 0, to = 2)
     private
@@ -202,9 +207,17 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         startCalendar.set(Calendar.SECOND, 0);
         startCalendar.set(Calendar.MILLISECOND, 0);
 
+
         sDate = startCalendar.getTimeInMillis();
         eDate = endCalendar.getTimeInMillis();
+        Log.d(TAG, String.format("resetDateSelection : %s - %s ", getFormattedDate(sDate), getFormattedDate(eDate)));
         isFirstTime = false;
+    }
+
+    public String getFormattedDate(long dateLong) {
+        Date date = new Date(dateLong);
+        DateFormat formatter = new SimpleDateFormat("yyyyMMdd", locale);// "HH:mm:ss:SSS"
+        return formatter.format(date);
     }
 
     public void setsDate(long sDate) {

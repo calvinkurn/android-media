@@ -469,6 +469,12 @@ public abstract class ChartView extends RelativeLayout {
         data.add(set);
     }
 
+    public void clearData() {
+        if (data != null && !data.isEmpty()) {
+            data.clear();
+        }
+    }
+
     /**
      * set new data to display dot tooltip
      *
