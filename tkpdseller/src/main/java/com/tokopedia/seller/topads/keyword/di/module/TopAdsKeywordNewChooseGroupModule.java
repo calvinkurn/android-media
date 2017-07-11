@@ -1,14 +1,11 @@
 package com.tokopedia.seller.topads.keyword.di.module;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4Auth;
-import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
-import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
+import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenterImpl;

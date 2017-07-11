@@ -32,7 +32,8 @@ public class TkpdState {
 		public static final int INDEX_HOME = 5;
 		public static final int LOGIN = 6;
 		public static final int MANAGE_PEOPLE = 7;
-		public static final int MANAGE_PRODUCT = 8;
+        public static final int MANAGE_PRODUCT = 8;
+        public static final int DRAFT_PRODUCT = 54;
 		public static final int MANAGE_SHOP = 9;
 		public static final int PEOPLE = 10;
 		public static final int PEOPLE_DEPOSIT = 11;
@@ -76,6 +77,7 @@ public class TkpdState {
         public static final int REGISTER_INITIAL = 45;
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+        public static final int SELLER_PRODUCT_EXTEND = 53;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;

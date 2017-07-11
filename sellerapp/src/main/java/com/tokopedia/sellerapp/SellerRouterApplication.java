@@ -23,14 +23,12 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -69,7 +67,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProduct.class);
+        Intent intent = new Intent(context, ManageProductSeller.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -205,18 +203,6 @@ public class SellerRouterApplication extends MainApplication
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(url);
-        paymentPassData.setQueryString(parameter);
-        paymentPassData.setCallbackSuccessUrl(callbackUrl);
-        paymentPassData.setPaymentId(String.valueOf(paymentId));
-        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
-        context.startActivity(intent);
-
     }
 
     private void goToDefaultRoute(Context context) {

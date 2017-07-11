@@ -125,6 +125,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_add_product">Tambah Produk</string>
     <string name="title_activity_duplicate_product">Salin Produk</string>
     <string name="title_activity_edit_product">Ubah Produk</string>
+    <string name="title_activity_draft_product">Draft Produk</string>
     <string name="submit_but">Simpan</string>
     <string name="submit_but2">Simpan dan Tambah </string>
     <string name="prompt_product_name">Nama Produk</string>
@@ -1970,6 +1971,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_developer_option">Developer Options</string>
     <string name="drawer_title_seller">Penjualan</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
+    <string name="drawer_title_product">Produk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
@@ -1978,6 +1980,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
     <string name="drawer_title_opportunity">Peluang</string>
     <string name="drawer_title_product_list">Daftar Produk</string>
+    <string name="drawer_title_draft_list">Draft Produk</string>
     <string name="drawer_title_etalase_list">Etalase Toko</string>
     <string name="drawer_title_draft_product">Draft Produk</string>
     <string name="drawer_title_inbox_message">Pesan</string>
