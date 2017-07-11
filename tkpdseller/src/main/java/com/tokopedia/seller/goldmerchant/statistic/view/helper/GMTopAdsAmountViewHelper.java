@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper.model;
+package com.tokopedia.seller.goldmerchant.statistic.view.helper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,9 +15,7 @@ import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper2;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;

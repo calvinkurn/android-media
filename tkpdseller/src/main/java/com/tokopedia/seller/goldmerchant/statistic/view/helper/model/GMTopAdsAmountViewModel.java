@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper;
+package com.tokopedia.seller.goldmerchant.statistic.view.helper.model;
 
 import java.util.List;
 
@@ -13,4 +13,5 @@ public class GMTopAdsAmountViewModel {
     public String subtitle;
     public float percentage;
     public int amount;
+    public GMDateRangeDateViewModel dateRangeModel;
 }

@@ -8,7 +8,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+            android:id="@+id/gold_merchant_statistic_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -23,9 +28,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
-
-        <include layout="@layout/widget_gm_percentage" />
 
         <LinearLayout
             android:id="@+id/chart_container"
@@ -57,6 +59,8 @@
                 </LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
+
+        </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
 
         <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
             android:id="@+id/topads_statistic_card_view"
