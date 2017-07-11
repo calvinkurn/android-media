@@ -116,7 +116,7 @@
     <string name="label_cashback">Cashback</string>
     <string name="open_map_done">DONE</string>
     <string name="trip_completed_rate_your_ride">Rate Your Ride</string>
-    <string name="complete_trip_write_comments">Write comments...</string>
+    <string name="complete_trip_write_comments">Write suggestions...</string>
     <string name="complete_trip_submit">SUBMIT</string>
     <string name="complete_trip_rating_successfully">Rating Successfully sent</string>
     <string name="complete_trip_you_rate">You rated</string>

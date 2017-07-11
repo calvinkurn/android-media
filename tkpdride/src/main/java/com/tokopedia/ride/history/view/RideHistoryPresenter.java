@@ -103,8 +103,8 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
         viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
-        viewModel.setCashbackDisplayFormat(RideHistoryViewModel.formatNumberToPriceString(rideHistory.getCashbackAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setDiscountDisplayFormat(RideHistoryViewModel.formatNumberToPriceString(rideHistory.getDiscountAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setCashbackDisplayFormat(RideHistoryViewModel.formaNumberToPriceString(rideHistory.getCashbackAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setDiscountDisplayFormat(RideHistoryViewModel.formaNumberToPriceString(rideHistory.getDiscountAmount(), rideHistory.getPayment().getCurrency()));
 
         viewModel.setRequestTime(rideHistory.getRequestTime());
         viewModel.setRequestId(rideHistory.getRequestId());

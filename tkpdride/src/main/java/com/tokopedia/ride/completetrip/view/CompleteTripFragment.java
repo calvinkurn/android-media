@@ -312,7 +312,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     public void renderReceipt(Receipt receipt) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
-        totalChargedTopTextView.setText(receipt.getTotalCharged());
+        totalChargedTopTextView.setText(receipt.getTotalFare());
         totalFareValueTextView.setText(receipt.getTotalFare());
 
         if (receipt.getUberSignupText() != null) {

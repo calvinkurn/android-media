@@ -13,7 +13,7 @@ public class PendingPaymentEntityMapper {
         if (entity != null) {
             pendingPayment = new PendingPayment();
             pendingPayment.setBalance(entity.getBalance());
-            pendingPayment.setCurrencyCode(entity.getCurrencyCode());
+            pendingPayment.setCurrencyCode(transformCurrency(entity.getCurrencyCode()));
             pendingPayment.setPendingAmount(entity.getPendingAmount());
             pendingPayment.setTopUpOptions(entity.getTopUpOptions());
             pendingPayment.setTopupUrl(entity.getTopupUrl());
@@ -21,5 +21,13 @@ public class PendingPaymentEntityMapper {
             pendingPayment.setCategoryId(entity.getCategoryId());
         }
         return pendingPayment;
+    }
+
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
     }
 }

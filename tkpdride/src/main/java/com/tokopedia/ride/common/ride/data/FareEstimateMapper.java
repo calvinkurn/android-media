@@ -72,7 +72,7 @@ public class FareEstimateMapper {
         Fare fare1 = null;
         if (entity != null) {
             fare1 = new Fare();
-            fare1.setCurrencyCode(entity.getCurrencyCode());
+            fare1.setCurrencyCode(transformCurrency(entity.getCurrencyCode()));
             fare1.setDisplay(formatDisplayPrice(entity.getDisplay()));
             fare1.setExpiresAt(entity.getExpiresAt());
             fare1.setFareId(entity.getFareId());
@@ -85,7 +85,7 @@ public class FareEstimateMapper {
         Estimate estimate = null;
         if (entity != null) {
             estimate = new Estimate();
-            estimate.setCurrencyCode(entity.getCurrencyCode());
+            estimate.setCurrencyCode(transformCurrency(entity.getCurrencyCode()));
             estimate.setDisplay(entity.getDisplay());
             estimate.setHighEstimate(entity.getHighEstimate());
             estimate.setLowEstimate(entity.getLowEstimate());
@@ -96,6 +96,14 @@ public class FareEstimateMapper {
         return estimate;
     }
 
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
+    }
+
     /**
      * This function added a space after IDR currency if not provided
      *
@@ -104,7 +112,7 @@ public class FareEstimateMapper {
     private String formatDisplayPrice(String price) {
         //format display to add space after currency
         if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
-            price = price.replace("IDR", "IDR ").replace(",", ".");
+            price = price.replace("IDR", "Rp ").replace(",", ".");
         }
 
         if (price != null && price.contains("Rp") && !price.contains("Rp ")) {

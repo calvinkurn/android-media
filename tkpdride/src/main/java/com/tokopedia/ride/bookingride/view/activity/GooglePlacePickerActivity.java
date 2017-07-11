@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.location.places.Place;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
@@ -107,6 +108,18 @@ public class GooglePlacePickerActivity extends BaseActivity
 //            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PlaceAutocompleteFragment.REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE) {
+            PlaceAutocompleteFragment fragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.container);
+            if (fragment != null) {
+                fragment.handleLocationAlertResult(resultCode);
+            }
         }
     }
 }

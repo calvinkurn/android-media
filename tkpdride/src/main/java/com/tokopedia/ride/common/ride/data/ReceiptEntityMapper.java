@@ -22,7 +22,7 @@ public class ReceiptEntityMapper {
         Receipt receipt = null;
         if (entity != null) {
             receipt = new Receipt();
-            receipt.setCurrency(entity.getCurrencyCode());
+            receipt.setCurrency(transformCurrency(entity.getCurrencyCode()));
             receipt.setDistance(entity.getDistance());
             receipt.setDistanceUnit(entity.getDistanceLabel());
             receipt.setDuration(entity.getDuration());
@@ -30,20 +30,20 @@ public class ReceiptEntityMapper {
             receipt.setPendingPayment(pendingPaymentEntityMapper.transform(entity.getPendingPayment()));
             receipt.setRequestId(entity.getRequestId());
             receipt.setSubtotal(entity.getSubtotal());
-            receipt.setTotalFare(formatNumber(Float.parseFloat(entity.getTotalFare()), entity.getPayment().getCurrencyCode()));
+            receipt.setTotalFare(formatDisplayPrice(entity.getTotalFare()));
             receipt.setTotalOwe(entity.getTotalOwe());
 
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
                 totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
             }
+            receipt.setTotalCharged(totalCharged);
 
             receipt.setCashback(entity.getCashbackAmount());
             receipt.setDiscount(entity.getDiscountAmount());
             receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
             receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
 
-            receipt.setTotalCharged(totalCharged);
 
             if (entity.getRideOffer() != null) {
                 receipt.setUberSignupUrl(entity.getRideOffer().getUrl());
@@ -78,7 +78,7 @@ public class ReceiptEntityMapper {
     private String formatDisplayPrice(String price) {
         //format display to add space after currency
         if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
-            price = price.replace("IDR", "IDR ");
+            price = price.replace("IDR", "Rp ");
             price.replace(",", ".");
         }
 
@@ -93,11 +93,11 @@ public class ReceiptEntityMapper {
     private String formatNumber(float number, String currency) {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            format.setCurrency(Currency.getInstance("IDR"));
+            format.setCurrency(Currency.getInstance(currency));
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(number).replace(",", ".");
+                result = format.format(number).replace(",", ".").replace("IDR", "Rp");
             } else {
                 result = format.format(number);
             }
@@ -105,5 +105,13 @@ public class ReceiptEntityMapper {
         } catch (Exception ex) {
             return currency + " " + number;
         }
+    }
+
+    public String transformCurrency(String currencyCode) {
+        if (currencyCode != null && currencyCode.equalsIgnoreCase("IDR")) {
+            return "Rp";
+        }
+
+        return currencyCode;
     }
 }
