@@ -7,10 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.tkpd.library.utils.CommonUtils;
 
 import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
@@ -21,37 +24,63 @@ import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.FASTES
 
 public class LocationUtils implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private final GoogleApiClient googleApiClient;
-    private final LocationRequest locationRequest;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
     private Context context;
     boolean isConnected;
 
     public LocationUtils(Context ctx){
 
         context = ctx;
+        CommonUtils.dumper("theresult initiated");
+    }
 
-        googleApiClient = new GoogleApiClient.Builder(ctx)
+    public void initLocationBackground(){
+        googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        googleApiClient.connect();
 
         locationRequest = LocationRequest.create().setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         isConnected = false;
+    }
 
+    public void deInitLocationBackground(){
+        if(googleApiClient.isConnected()){
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
+        CommonUtils.dumper("theresult save location get location changed");
+        LocationCache.saveLocation(location);
+        removeLocationUpdates();
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         isConnected = true;
+        CommonUtils.dumper("theresult save location connected");
+        getLastLocation();
+        requestLocationUpdates();
+    }
+
+    private void getLastLocation(){
+        if (isLocationServiceConnected()) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            CommonUtils.dumper("theresult save location getLastLocation");
+            if(location!=null){
+                LocationCache.saveLocation(location);
+            }else{
+                CommonUtils.dumper("theresult location null");
+            }
+        }
     }
 
     @Override
@@ -62,5 +91,31 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private boolean isLocationServiceConnected() {
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+
+        int resultCode = availability.isGooglePlayServicesAvailable(context);
+
+        if (ConnectionResult.SUCCESS == resultCode) {
+            CommonUtils.dumper("Google play services available");
+            return true;
+        } else {
+            CommonUtils.dumper("Google play services unavailable");
+            return false;
+        }
+    }
+
+    private void requestLocationUpdates(){
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        }
+    }
+
+    private void removeLocationUpdates(){
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        }
     }
 }
