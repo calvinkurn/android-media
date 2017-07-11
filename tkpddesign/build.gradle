@@ -81,4 +81,9 @@ android {
 
 dependencies {
     compile rootProject.ext.supportLibDependencies.design
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
 }
