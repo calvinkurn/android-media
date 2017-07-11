@@ -335,7 +335,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }
 
                     @Override
@@ -374,7 +374,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
                     }
 
                     @Override
