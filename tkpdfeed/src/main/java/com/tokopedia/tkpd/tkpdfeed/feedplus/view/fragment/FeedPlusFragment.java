@@ -465,6 +465,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.showEmpty();
         adapter.addList(listFeed);
         adapter.notifyItemRangeInserted(0, 2);
+        topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
     }
@@ -473,6 +474,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShowEmpty() {
         adapter.showEmpty();
         adapter.notifyItemRangeInserted(0, 1);
+        topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
     }
