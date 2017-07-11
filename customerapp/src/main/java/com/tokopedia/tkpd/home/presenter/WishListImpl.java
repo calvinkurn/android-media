@@ -239,7 +239,7 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void deleteWishlist(final Context context, String productId, int position) {
+    public void deleteWishlist(final Context context, String productId, final int position) {
         wishListView.showProgressDialog();
         Observable<Response<Void>> observable = mojitoAuthService.getApi()
                 .deleteWishlist(productId, SessionHandler.getLoginID(context));
