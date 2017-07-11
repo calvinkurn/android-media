@@ -79,7 +79,8 @@ public class KeroppiParam {
 
     public static TKPDMapParam<String, String> paramsKeroCart(String token, CartItem cartItem) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(NAMES, cartItem.getCartShipments().getShipmentCode());
+        if(cartItem.getCartShipments() != null)
+            params.put(NAMES, cartItem.getCartShipments().getShipmentCode());
         if(cartItem.getCartShop() != null) {
             params.put(ORIGIN, generatePath(cartItem.getCartShop().getAddressId()
                             + "", cartItem.getCartShop().getPostalCode(),
