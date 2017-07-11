@@ -36,6 +36,9 @@ import java.util.List;
 
 public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransactionGraphViewModel> {
 
+    private final String[] gmStatTransactionEntries;
+    private int gmStatGraphSelection;
+
     private LineChartView gmStatisticIncomeGraph;
     private LinearLayout gmStatisticGraphContainerInner;
     private HorizontalScrollView gmStatisticGraphContainer;
@@ -52,6 +55,9 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     public GMTransactionGraphViewHelper(@Nullable Context context) {
         super(context);
 
+        gmStatGraphSelection = 0;
+        gmStatTransactionEntries = context.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
+
         monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
         oval2Copy6 = ResourcesCompat.getDrawable(context.getResources(), R.drawable.oval_2_copy_6, null);
@@ -67,13 +73,17 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmStatisticTransactionRangeCompare = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_compare);
     }
 
+    public int selection() {
+        return gmStatGraphSelection;
+    }
+
     @Override
     public void bind(@Nullable GMTransactionGraphViewModel data) {
         if (data.isCompare) {
 
         } else {
             gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
-            processTransactionGraph(data.dates, data.values);
+            processTransactionGraph(data.values, data.dates);
         }
     }
 

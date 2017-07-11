@@ -97,4 +97,19 @@ public final class GMStatisticUtil {
         Pair<String[], float[]> pair = joinDateAndGraph2(dateGraph, graph, monthNamesAbrev);
         return (pair != null) ? new BaseWilliamChartModel(pair.getModel1(), pair.getModel2()) : null;
     }
+
+    public static List<Integer> sumTwoGraph(List<Integer> firstGraph, List<Integer> secondGraph) {
+        if (firstGraph == null || secondGraph == null || firstGraph.size() != secondGraph.size()) {
+            return null;
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < secondGraph.size(); i++) {
+            Integer product = firstGraph.get(i);
+            Integer shop = secondGraph.get(i);
+
+            result.add(product + shop);
+        }
+        return result;
+    }
 }

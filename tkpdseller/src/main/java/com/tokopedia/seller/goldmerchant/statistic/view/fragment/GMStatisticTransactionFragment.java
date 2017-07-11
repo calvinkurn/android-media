@@ -3,6 +3,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,32 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatisticTransactionApi;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.lib.widget.LabelView;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author normansyahputa on 7/6/17.
@@ -94,7 +109,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Override
     public void onResume() {
         super.onResume();
-        /*gmStatisticTransactionApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
+        gmStatisticTransactionApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -137,8 +152,32 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         // display percentage demo
                         GMTransactionGraphViewModel gmTransactionGraphViewModel
                                 = new GMTransactionGraphViewModel();
-                        gmTransactionGraphViewModel.values = getTransactionGraph.getGrossGraph();
                         gmTransactionGraphViewModel.dates = dateGraph;
+                        switch (gmTransactionGraphViewHelper.selection()) {
+                            case GMTransactionGraphType.GROSS_REVENUE:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getGrossGraph();
+                                break;
+                            case GMTransactionGraphType.NET_REVENUE:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getNetGraph();
+                                break;
+                            case GMTransactionGraphType.REJECT_TRANS:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedTransGraph();
+                                break;
+                            case GMTransactionGraphType.REJECTED_AMOUNT:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedAmtGraph();
+                                break;
+                            case GMTransactionGraphType.SHIPPING_COST:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getShippingGraph();
+                                break;
+                            case GMTransactionGraphType.SUCCESS_TRANS:
+                                gmTransactionGraphViewModel.values = getTransactionGraph.getSuccessTransGraph();
+                                break;
+                            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                                gmTransactionGraphViewModel.values = GMStatisticUtil.sumTwoGraph(
+                                        getTransactionGraph.getSuccessTransGraph(),
+                                        getTransactionGraph.getRejectedTransGraph());
+                                break;
+                        }
                         gmTransactionGraphViewModel.dateRangeModel = gmDateRangeDateViewModel;
                         gmTransactionGraphViewHelper.bind(gmTransactionGraphViewModel);
 
@@ -182,22 +221,11 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                     public void onNext(Response<GetTransactionTable> stringResponse) {
                         Log.e(TAG, stringResponse.body().toString());
                     }
-                });*/
+                });
     }
 
     private List<Integer> joinAdsGraph(List<Integer> adsPGraph, List<Integer> adsSGraph) {
-        if (adsPGraph == null || adsSGraph == null || adsPGraph.size() != adsSGraph.size()) {
-            return null;
-        }
-
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < adsSGraph.size(); i++) {
-            Integer product = adsPGraph.get(i);
-            Integer shop = adsSGraph.get(i);
-
-            result.add(product + shop);
-        }
-        return result;
+        return GMStatisticUtil.sumTwoGraph(adsPGraph, adsSGraph);
     }
 
     @Override
