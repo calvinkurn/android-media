@@ -79,7 +79,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     protected void initView() {
         super.initView();
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_TOP_ADS);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
         datePickerPresenter.resetDate();
@@ -184,9 +183,9 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDashboardActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-            return;
-        }
+//        if (ShowCasePreference.hasShown(this, showCaseTag)) {
+//            return;
+//        }
         if (showCaseDialog!= null) {
             return;
         }

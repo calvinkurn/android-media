@@ -59,11 +59,11 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
-import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
@@ -416,13 +416,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToRegisterInitial() {
-        Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
-
-        // Change the header
-        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
-        setToolbarTitle();
-        invalidateOptionsMenu();
+        finish();
+        startActivity(RegisterInitialActivity.getCallingIntent(this));
     }
 
     @Override
@@ -481,18 +476,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
                 } else {
                     Log.d(TAG, messageTAG + LoginFragment.class.getSimpleName() + " is not created !!!");
-                }
-                break;
-            case TkpdState.DrawerPosition.REGISTER:
-                if (isFragmentCreated(REGISTER_FRAGMENT_TAG)) {
-                    Fragment fragment = RegisterInitialFragment.newInstance();
-                    moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
-
-                    session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
-                    setToolbarTitle();
-                    invalidateOptionsMenu();
-                } else {
-                    Log.d(TAG, messageTAG + RegisterInitialFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
             case TkpdState.DrawerPosition.SECURITY_QUESTION:
@@ -635,9 +618,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
                 // [START] pass some data to register fragment
                 fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-                if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
-                    ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
-                }
+//                if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
+//                    ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
+//                }
                 // [END] pass some data to register fragment
 
                 // Show users' email address (which requires GET_ACCOUNTS permission)

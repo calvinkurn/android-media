@@ -26,7 +26,8 @@ import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView;
 
 
-public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BaseDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
+public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends
+        BaseDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     private SwipeToRefresh swipeToRefresh;

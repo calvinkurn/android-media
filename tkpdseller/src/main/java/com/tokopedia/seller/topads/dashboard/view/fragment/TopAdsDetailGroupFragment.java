@@ -125,8 +125,8 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof OnTopAdsDetailGroupListener) {
             listener = (OnTopAdsDetailGroupListener) context;
         }

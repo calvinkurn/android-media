@@ -40,8 +40,10 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener, BaseListAdapter.Callback<U> {
+public abstract class TopAdsAdListFragment<T extends
+        TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
+        AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener,
+        BaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
@@ -300,8 +302,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U ex
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof OnAdListFragmentListener) {
             listener = (OnAdListFragmentListener) context;
         }

@@ -23,6 +23,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
@@ -190,6 +191,12 @@ public class BrandsWebViewFragment extends Fragment {
                     return true;
                 case DeepLinkChecker.SHOP:
                     DeepLinkChecker.openShop(url, getActivity());
+                    return true;
+                case DeepLinkChecker.ETALASE:
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ShopInfoActivity.ETALASE_NAME,
+                            DeepLinkChecker.getLinkSegment(url).get(2));
+                    DeepLinkChecker.openShopWithParameter(url, getActivity(), bundle);
                     return true;
                 default:
                     return false;

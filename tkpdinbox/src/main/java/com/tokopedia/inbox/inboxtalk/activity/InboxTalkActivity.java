@@ -198,7 +198,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @Override
     protected void initView() {
         super.initView();
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
+//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
         ButterKnife.bind(this);
         setContent();
         adapter = new PagerAdapter(getFragmentManager(), getFragmentList());
@@ -250,12 +250,12 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
     @Override
     public void onGetNotif() {
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
+//        if (MainApplication.getNotificationStatus()) {
+//            drawer.getNotification();
+//        }
+//        if (MainApplication.getDrawerStatus()) {
+//            drawer.updateData();
+//        }
     }
 
     @Override
@@ -304,7 +304,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        drawer.getNotification();
+//        drawer.getNotification();
     }
 
     public void followTalk(Bundle param) {

@@ -599,6 +599,10 @@ public class ShopInfoActivity extends BaseActivity
             actionFirstLaunched(intent.getExtras());
         }
 
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        }
+
         // switch to product tab if ETALASE_NAME not empty
         if(intent.getStringExtra(ETALASE_NAME) != null) {
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
