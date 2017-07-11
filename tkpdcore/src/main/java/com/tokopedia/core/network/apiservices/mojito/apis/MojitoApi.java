@@ -35,10 +35,8 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU)
     Observable<Response<String>> getHomeCategoryMenu(@Header("X-User-ID") String user_id);
 
-    @GET(TkpdBaseURL.Mojito.API_V1_BRANDS)
-    Observable<Response<Brands>> getBrands(
-            @Query(DEVICE) String device
-    );
+    @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
+    Observable<Response<Brands>> getBrands();
 
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
     Observable<Response<MojitoBrandsModel>> getBrandsCategory(

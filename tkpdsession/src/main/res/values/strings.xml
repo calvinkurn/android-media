@@ -57,4 +57,5 @@
     <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
+    <string name="register_now">Daftar Sekarang di Tokopedia</string>
 </resources>

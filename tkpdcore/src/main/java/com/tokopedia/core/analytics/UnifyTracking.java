@@ -1440,7 +1440,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.TOP_SELLER,
                 AppEventTracking.Category.GM_SWITCHER,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+                label
         ).getEvent());
     }
 
@@ -1671,6 +1671,42 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.IMPRESSION,
                 AppEventTracking.EventLabel.TRUECALLER
+        ).getEvent());
+    }
+
+    public static void eventGMSwitcherManageShop(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.SHOP_MANAGE_GM_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventTopAdsSwitcher(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.TOPADS_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+        ).getEvent());
+    }
+
+    public static void eventOpenShopSwitcher(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.OPENSHOP_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDownloadFromSwitcher(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DOWNLOAD_APP
         ).getEvent());
     }
 }

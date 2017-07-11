@@ -31,7 +31,7 @@ public interface HomeMenuInteractor {
 
     void fetchTopPicksNetworkNetwork(Map<String, String> params, Subscriber<Response<String>> networksubscriber);
 
-    void fetchBrands(String params, Subscriber<Response<Brands>> brandsSubscriber);
+    void fetchBrands(Subscriber<Response<Brands>> brandsSubscriber);
 
 
 }
