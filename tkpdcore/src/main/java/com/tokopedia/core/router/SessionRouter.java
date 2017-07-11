@@ -27,6 +27,7 @@ public class SessionRouter {
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
     private static final String CHANGE_PHONE_NUMBER_REQUEST_ACTIVITY = "com.tokopedia.session.changephonenumber.activity.ChangePhoneNumberRequestActivity";
     public static final String PARAM_FORCE_LOGOUT_MESSAGE = "PARAM_FORCE_LOGOUT_MESSAGE";
+    public static final String ARGS_GOOGLE_LOGIN = "ARGS_GOOGLE_LOGIN";
 
     /////////// INTENT
     public static Intent getLoginActivityIntent(Context context) {

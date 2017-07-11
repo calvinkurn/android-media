@@ -7,11 +7,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,7 +36,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.drawer.model.DrawerItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -44,6 +47,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
@@ -62,10 +66,12 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by stevenfredian on 10/18/16.
  */
 @RuntimePermissions
-public class RegisterInitialFragment extends BasePresenterFragment<RegisterInitialPresenter>
+public class RegisterInitialFragment extends Fragment
         implements RegisterInitialView {
 
     private static final String ARGS_MESSAGE = "message";
+
+    protected RegisterInitialPresenter presenter;
 
     LinearLayout linearLayout;
     LoginTextView registerButton;
@@ -84,32 +90,24 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initialPresenter();
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        setViewListener();
     }
 
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
     protected void initView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
 
@@ -156,22 +154,16 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
         loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
-    @Override
     protected void setViewListener() {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
-                        (TkpdState.DrawerPosition.LOGIN));
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().startActivity(intent);
+                getActivity().startActivity(Login.getCallingIntent(getActivity()));
                 getActivity().finish();
             }
         });
     }
 
-    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_REGISTER;
     }
@@ -365,8 +357,6 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
                     NetworkErrorHelper.showSnackbar(getActivity(), bundle.getString(ARGS_MESSAGE));
                 } else if (bundle.getString("path").contains("code")) {
                     presenter.loginWebView(getActivity(), bundle);
-                } else if (bundle.getString("path").contains("activation-social")) {
-//                    ((SessionView) getActivity()).moveToActivationResend(registerName.getText().toString());
                 }
                 break;
             default:
@@ -422,40 +412,12 @@ public class RegisterInitialFragment extends BasePresenterFragment<RegisterIniti
         if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
     }
 
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
         presenter = new RegisterInitialPresenterImpl(this);
     }
 
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_register_initial;
-    }
-
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

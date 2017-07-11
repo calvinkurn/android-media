@@ -20,8 +20,10 @@ import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -37,11 +39,11 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -148,7 +150,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        Intent intent = Login.getRegisterIntent(context);
         context.startActivity(intent);
     }
 
