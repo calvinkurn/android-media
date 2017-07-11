@@ -37,6 +37,6 @@ public class LocationCache {
         if(isLocationCached())
             return new GlobalCacheManager().getConvertObjData(TkpdCache.Key.KEY_LOCATION, Location.class);
         else
-            return new Location()
+            return location;
     }
 }
