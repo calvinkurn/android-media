@@ -119,6 +119,7 @@ public interface AppEventTracking {
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
         String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
+        String R3 = "r3";
     }
 
     interface Category {
@@ -184,6 +185,7 @@ public interface AppEventTracking {
         String OS_AD_BANNER = "OS Ad Banner";
         String RECHARGE = "Recharge - ";
         String PRODUCT_FEED = "Product Feed";
+        String R3USER = "r3User";
     }
 
     interface Action {
@@ -244,6 +246,7 @@ public interface AppEventTracking {
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
+        String COPY_CODE = "Copy Code";
     }
 
     interface EventLabel {

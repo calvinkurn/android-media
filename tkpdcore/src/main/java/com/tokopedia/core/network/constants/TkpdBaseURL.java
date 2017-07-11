@@ -47,6 +47,7 @@ public class TkpdBaseURL {
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
+    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";

@@ -15,13 +15,16 @@ public class PromoViewModel{
     private String period;
     private String promoCode;
     private String imageUrl;
+    private String name;
 
-    public PromoViewModel(String description, String period, String promoCode, String imageUrl, String link) {
+    public PromoViewModel(String description, String period, String promoCode, String imageUrl,
+                          String link, String name) {
         this.description = description;
         this.period = period;
         this.promoCode = promoCode;
         this.imageUrl = imageUrl;
         this.link = link;
+        this.name = name;
     }
 
     public PromoViewModel() {
@@ -70,5 +73,13 @@ public class PromoViewModel{
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -525,6 +525,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter.notifyDataSetChanged();
         }
 
+        setScrollFeedListener();
+        invalidateOptionsMenu();
+        MainApplication.setCurrentActivity(this);
+        super.onResume();
+
+        sendNotifLocalyticsCallback();
+
+        NotificationModHandler.showDialogNotificationIfNotShowing(this);
+    }
+
+    private void setScrollFeedListener() {
         if (sessionHandler != null
                 && sessionHandler.isV4Login()
                 && indicator != null) {
@@ -549,13 +560,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 }
             });
         }
-        invalidateOptionsMenu();
-        MainApplication.setCurrentActivity(this);
-        super.onResume();
-
-        sendNotifLocalyticsCallback();
-
-        NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override

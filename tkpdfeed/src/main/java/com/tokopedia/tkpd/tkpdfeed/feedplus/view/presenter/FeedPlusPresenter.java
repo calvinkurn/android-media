@@ -61,6 +61,10 @@ public class FeedPlusPresenter
     @Override
     public void detachView() {
         super.detachView();
+        getFeedsUseCase.unsubscribe();
+        getFirstPageFeedsUseCase.unsubscribe();
+        doFavoriteShopUseCase.unsubscribe();
+        refreshFeedUseCase.unsubscribe();
     }
 
 

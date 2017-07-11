@@ -23,9 +23,10 @@
     <dimen name="cactus_height">100dp</dimen>
     <dimen name="small_badge_size">11dp</dimen>
 
-    <dimen name="label_new_feed_width">110dp</dimen>
+    <dimen name="label_new_feed_width">120dp</dimen>
 
     <dimen name="padding_small">10dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
     <dimen name="feed_detail_buy_height">32dp</dimen>
+    <dimen name="arrow_size">14dp</dimen>
 </resources>

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -25,6 +26,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -190,17 +192,20 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onWishlistClicked(int adapterPosition, Integer productId, boolean isWishlist) {
         if (!isWishlist) {
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
+            UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
+                    FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
+            UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
+                    FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         }
     }
 
     @Override
     public void onGoToShopDetail(Integer shopId) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
-        intent.putExtras(bundle);
-        startActivity(intent);
+        goToShopDetail(shopId);
+        UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
+
     }
 
     @Override
@@ -261,12 +266,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 header.getShopAvatar(),
                 header.getShareLinkDescription()));
 
-        seeShopButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGoToShopDetail(header.getShopId());
-            }
-        });
+        seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.getShopId()));
 
         pagingHandler.setHasNext(false);
         adapter.notifyDataSetChanged();
@@ -292,16 +292,29 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 header.getShopAvatar(),
                 header.getShareLinkDescription()));
 
-        seeShopButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGoToShopDetail(header.getShopId());
-            }
-        });
+        seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.getShopId()));
 
         pagingHandler.setHasNext(hasNextPage);
 
         adapter.notifyDataSetChanged();
+    }
+
+    private View.OnClickListener onGoToShopDetailFromButton(final Integer shopId) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToShopDetail(shopId);
+                UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.VISIT_SHOP);
+            }
+        };
+    }
+
+
+    private void goToShopDetail(Integer shopId) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -355,6 +368,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
             ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
         }
     }
 
