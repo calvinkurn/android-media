@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
-import android.util.Log;
-
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -212,10 +210,8 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         RequestParams params = RequestParams.create();
         params.putString(ReplyDiscussionSubmitUseCase.PARAM_FILE_UPLOADED,
                 requestParams.getString(PARAM_FILE_UPLOADED, ""));
-        Log.d("hangnadi", "post_key xx3: " + requestParams.getString(PARAM_POST_KEY, ""));
         params.putString(ReplyDiscussionSubmitUseCase.PARAM_POST_KEY,
                 requestParams.getString(PARAM_POST_KEY, ""));
-        Log.d("hangnadi", "post_key xx4: " + params.getString(ReplyDiscussionSubmitUseCase.PARAM_POST_KEY, ""));
         params.putString(ReplyDiscussionSubmitUseCase.PARAM_RESOLUTION_ID,
                 requestParams.getString(PARAM_RESOLUTION_ID, ""));
         return params;
@@ -289,10 +285,8 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                     @Override
                     public Observable<RequestParams> call(ReplyDiscussionValidationModel result) {
                         if (isHasAttachment(requestParams)) {
-                            Log.d("hangnadi", "post_key xx1: " + result.getReplyDiscussionData().getPostKey());
                             requestParams.putString(PARAM_POST_KEY,
                                     result.getReplyDiscussionData().getPostKey());
-                            Log.d("hangnadi", "post_key xx2: " + requestParams.getString(PARAM_POST_KEY, ""));
                         } else {
                             requestParams.putObject(PARAM_REPLY_DATA,
                                     mappingValidationViewModel(result.getReplyDiscussionData()));

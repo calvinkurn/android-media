@@ -27,6 +27,10 @@ public interface UploadImageRepository {
                                              Map<String, RequestBody> params,
                                              RequestBody imageFile);
 
+    Observable<UploadImageModel> newUploadImage(String url,
+                                                Map<String, RequestBody> params,
+                                                RequestBody imageFile);
+
     Observable<UploadImageModel> uploadVideo(String url,
                                              Map<String, RequestBody> params,
                                              MultipartBody.Part body);

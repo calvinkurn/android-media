@@ -10,10 +10,14 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by nisie on 4/3/17.
+ * Created by hangnadi on 7/12/17.
  */
 
-public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadImageModel> {
+public class UploadImageV2Mapper implements Func1<Response<TkpdResponse>, UploadImageModel> {
+
+    public UploadImageV2Mapper() {
+    }
+
     @Override
     public UploadImageModel call(Response<TkpdResponse> response) {
         UploadImageModel domainData = new UploadImageModel();
@@ -39,7 +43,8 @@ public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadIm
 
     private UploadImageData mappingEntityDomain(UploadImageEntity entity) {
         UploadImageData data = new UploadImageData();
-        data.setImageUrl(entity.getFilePath());
+        data.setPicObj(entity.getPicObj());
+        data.setPicSrc(entity.getPicSrc());
         return data;
     }
 }

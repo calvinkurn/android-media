@@ -57,7 +57,7 @@ public class UploadImageV2UseCase extends UseCase<UploadImageModel> {
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
         String url = "https://" + requestParams.getString(PARAM_URL, "") + TkpdBaseURL.Upload.PATH_UPLOAD_ATTACHMENT;
 
-        return uploadImageRepository.uploadImage(url, generateRequestBody(requestParams), getUploadImageFile(requestParams));
+        return uploadImageRepository.newUploadImage(url, generateRequestBody(requestParams), getUploadImageFile(requestParams));
     }
 
     private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {

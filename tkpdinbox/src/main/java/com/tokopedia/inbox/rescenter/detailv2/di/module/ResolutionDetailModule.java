@@ -37,6 +37,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageV2Mapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
@@ -329,6 +330,7 @@ public class ResolutionDetailModule {
                                                              ResCenterActApi resCenterActApi,
                                                              GenerateHostMapper generateHostMapper,
                                                              UploadImageMapper uploadImageMapper,
+                                                             UploadImageV2Mapper uploadImageV2Mapper,
                                                              UploadVideoMapper uploadVideoMapper,
                                                              CreatePictureMapper createPictureMapper,
                                                              SubmitImageMapper submitImageMapper) {
@@ -338,6 +340,7 @@ public class ResolutionDetailModule {
                 resCenterActApi,
                 generateHostMapper,
                 uploadImageMapper,
+                uploadImageV2Mapper,
                 uploadVideoMapper,
                 createPictureMapper,
                 submitImageMapper
@@ -360,6 +363,12 @@ public class ResolutionDetailModule {
     @Provides
     UploadImageMapper provideUploadImageMapper() {
         return new UploadImageMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageV2Mapper provideUploadImageV2Mapper() {
+        return new UploadImageV2Mapper();
     }
 
     @ResolutionDetailScope
