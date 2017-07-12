@@ -711,7 +711,6 @@ public class TkpdBaseURL {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
-        public static String HMAC_KEY = "CPAnAGpC3NIg7ZSj";
     }
 
     public class TkpdCart {

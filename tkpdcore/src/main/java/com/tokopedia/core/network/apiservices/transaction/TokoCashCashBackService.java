@@ -5,6 +5,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import retrofit2.Retrofit;
 
@@ -34,7 +35,7 @@ public class TokoCashCashBackService extends AuthService<TokoCashApi>{
         return RetrofitFactory.createRetrofitDigitalConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                 .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTokoCashAuth(TkpdBaseURL.TopCash.HMAC_KEY))
+                        .buildClientTokoCashAuth(AuthUtil.KEY.TOKO_CASH_HMAC))
                 .build();
     }
 }
