@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
@@ -40,12 +41,14 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-        CommonUtils.dumper("FCM messaging moengage " + message.getData().toString());
-        if(message.getData().containsKey(Constants.ARG_NOTIFICATION_APPLINK)){
+        CommonUtils.dumper("FCM messaging moengage " + message.getData().toString()+" "+message.getData().get("gcm_webUrl"));
+        if(message.getData().containsKey(Constants.ARG_NOTIFICATION_APPLINK)|| !TextUtils.isEmpty(message.getData().get("gcm_webUrl"))){
+            CommonUtils.dumper("FCM messaging moengage enter");
             Map<String, String> appLinkData = message.getData();
             appLinkData.put(Constants.KEY_ORIGIN,Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(GCMUtils.convertMap(appLinkData)));
         }else {
+            CommonUtils.dumper("FCM messaging moengage enter else");
             PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
         }
     }
