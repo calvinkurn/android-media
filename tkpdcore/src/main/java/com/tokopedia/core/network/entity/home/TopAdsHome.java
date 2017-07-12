@@ -18,8 +18,11 @@ public class TopAdsHome {
     }
 
     public static class ImageShop {
-        @SerializedName("cover_ecs")
+        @SerializedName("cover")
         public String cover;
+
+        @SerializedName("cover_ecs")
+        public String coverEcs;
 
         // This is very small size of photo profile.
         @SerializedName("xs_url")
