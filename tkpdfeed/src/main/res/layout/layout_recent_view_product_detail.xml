@@ -64,8 +64,8 @@
         android:layout_toRightOf="@id/product_image"
         android:isIndicator="true"
         android:numStars="5"
-        android:rating="4"
-        tools:visibility="gone"/>
+        tools:rating="3.3"
+        tools:visibility="visible"/>
 
     <View
         android:id="@+id/separator"

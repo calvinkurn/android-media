@@ -24,6 +24,7 @@ import rx.Subscriber;
 public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>> {
     private final FeedPlusDetail.View viewListener;
     private static final int MAX_RATING = 100;
+    private static final int NUM_STARS = 5;
 
     public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
         this.viewListener = viewListener;
@@ -89,8 +90,8 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
         );
     }
 
-    private float getRating(int rating){
-        return rating / MAX_RATING;
+    private float getRating(int rating) {
+        return (float) rating / MAX_RATING * NUM_STARS;
     }
 
     private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {

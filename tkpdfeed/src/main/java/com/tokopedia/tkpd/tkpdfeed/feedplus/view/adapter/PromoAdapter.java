@@ -23,6 +23,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private static final int VIEW_MORE = 234;
     private static final int VIEW_LAYOUT = 344;
+    private static final float MARGIN_CARD = 10;
+    private static final float WIDTH_CARD = 285;
     private ArrayList<PromoViewModel> list;
 
     private FeedPlus.View viewListener;
@@ -62,15 +64,15 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (getItemCount() == 1) {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
-                int marginPixels = (int) (5 * scale + 0.5f);
+                int marginPixels = (int) (MARGIN_CARD * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
             } else {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
-                int widthPixels = (int) (285 * scale + 0.5f);
+                int widthPixels = (int) (WIDTH_CARD * scale + 0.5f);
                 CardView.LayoutParams params = new CardView.LayoutParams(widthPixels, CardView.LayoutParams.WRAP_CONTENT);
-                int marginPixels = (int) (5 * scale + 0.5f);
-                params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
+                int marginPixels = (int) (MARGIN_CARD * scale + 0.5f);
+                params.setMargins(marginPixels, marginPixels, 0, marginPixels);
                 temp.container.setLayoutParams(params);
             }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());

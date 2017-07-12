@@ -105,7 +105,8 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                             List<PromotionFeedDomain> promotionFeedDomains) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
-                content.total_product(), productFeedDomains, promotionFeedDomains,
+                content.total_product() != null ? content.total_product() : 0, productFeedDomains,
+                promotionFeedDomains,
                 content.status_activity());
     }
 
