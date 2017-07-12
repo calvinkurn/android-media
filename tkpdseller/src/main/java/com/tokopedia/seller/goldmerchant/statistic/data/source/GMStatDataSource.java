@@ -21,6 +21,7 @@ import rx.Observable;
 public class GMStatDataSource {
 
     private GMStatCloud gmStatCloud;
+
     @Inject
     public GMStatDataSource(
             GMStatCloud gmStatCloud) {

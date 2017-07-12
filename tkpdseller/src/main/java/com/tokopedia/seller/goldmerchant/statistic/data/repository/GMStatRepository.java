@@ -16,10 +16,16 @@ import rx.Observable;
 
 public interface GMStatRepository {
     Observable<GetTransactionGraph> getTransactionGraph(long startDate, long endDate);
+
     Observable<GetTransactionTable> getTransactionTable(long startDate, long endDate);
+
     Observable<GetProductGraph> getProductGraph(long startDate, long endDate);
+
     Observable<GetPopularProduct> getPopularProduct(long startDate, long endDate);
+
     Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate);
+
     Observable<GetKeyword> getKeywordModel(String categoryId);
+
     Observable<GetShopCategory> getShopCategory(long startDate, long endDate);
 }

@@ -31,17 +31,17 @@ public class GMStatGetTransactionGraphUseCase extends CompositeUseCase<GetTransa
         this.gmStatRepository = gmStatRepository;
     }
 
-    @Override
-    public Observable<GetTransactionGraph> createObservable(RequestParams requestParams) {
-        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
-        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
-        return gmStatRepository.getTransactionGraph(startDate, endDate);
-    }
-
     public static RequestParams createRequestParam(long startDate, long endDate) {
         RequestParams params = RequestParams.create();
         params.putLong(START_DATE, startDate);
         params.putLong(END_DATE, endDate);
         return params;
+    }
+
+    @Override
+    public Observable<GetTransactionGraph> createObservable(RequestParams requestParams) {
+        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
+        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
+        return gmStatRepository.getTransactionGraph(startDate, endDate);
     }
 }

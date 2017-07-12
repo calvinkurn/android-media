@@ -65,7 +65,8 @@ public class GMStatCloud {
 
     public Observable<Response<GetBuyerData>> getBuyerGraph(long startDate, long endDate) {
         String shopId = sessionHandler.getShopID();
-        Map<String, String> param = generateStartEndDateMap(startDate, endDate);;
+        Map<String, String> param = generateStartEndDateMap(startDate, endDate);
+        ;
         return gmStatApi.getBuyerGraph(shopId, param);
     }
 
@@ -82,7 +83,7 @@ public class GMStatCloud {
         return gmStatApi.getShopCategory(shopId, param).take(1);
     }
 
-    private Map<String, String> generateStartEndDateMap(long startDate, long endDate){
+    private Map<String, String> generateStartEndDateMap(long startDate, long endDate) {
         Map<String, String> param = new HashMap<>();
         param.put(S_DATE, getFormattedDate(startDate));
         param.put(E_DATE, getFormattedDate(endDate));

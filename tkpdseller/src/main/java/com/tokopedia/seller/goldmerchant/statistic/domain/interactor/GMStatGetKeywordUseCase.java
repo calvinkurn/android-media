@@ -29,16 +29,16 @@ public class GMStatGetKeywordUseCase extends CompositeUseCase<GetKeyword> {
         this.gmStatRepository = gmStatRepository;
     }
 
-    @Override
-    public Observable<GetKeyword> createObservable(RequestParams requestParams) {
-        String categoryId = requestParams.getString(CATEGORY_ID,"");
-        return gmStatRepository.getKeywordModel(categoryId);
-    }
-
     public static RequestParams createRequestParam(String categoryId) {
         RequestParams params = RequestParams.create();
         params.putString(CATEGORY_ID, categoryId);
         return params;
+    }
+
+    @Override
+    public Observable<GetKeyword> createObservable(RequestParams requestParams) {
+        String categoryId = requestParams.getString(CATEGORY_ID, "");
+        return gmStatRepository.getKeywordModel(categoryId);
     }
 
 
