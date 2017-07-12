@@ -21,6 +21,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -358,6 +359,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                                     .build();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, true);
                     ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(), itemData.getAppLinks(), bundle);
                     /*Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
                             .getIntentDeepLinkHandlerActivity());
