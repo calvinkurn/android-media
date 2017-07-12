@@ -3,7 +3,6 @@ package com.tokopedia.ride.bookingride.data;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
-import com.tokopedia.ride.common.exception.ResponseErrorException;
 
 import java.util.Map;
 
@@ -32,12 +31,12 @@ public class CloudPeopleAddressDataStore implements PeopleAddressDataStore {
                 if (response.isSuccessful()) {
                     TkpdResponse tkpdResponse = response.body();
                     if (tkpdResponse.isError()) throw new RuntimeException(
-                            new ResponseErrorException(tkpdResponse.getErrorMessageJoined())
+                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
                     );
                     return tkpdResponse.convertDataObj(PeopleAddressResponse.class);
                 } else {
                     throw new RuntimeException(
-                            new ResponseErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
                     );
                 }
             }

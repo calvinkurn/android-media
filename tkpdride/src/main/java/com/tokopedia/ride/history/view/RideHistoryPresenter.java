@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -22,12 +21,9 @@ import rx.Subscriber;
 public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContract.View>
         implements RideHistoryContract.Presenter {
     private GetRideHistoriesUseCase mGetRideHistoriesUseCase;
-    private GetOverviewPolylineUseCase mGetOverviewPolylineUseCase;
 
-    public RideHistoryPresenter(GetRideHistoriesUseCase getRideHistoriesUseCase,
-                                GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
+    public RideHistoryPresenter(GetRideHistoriesUseCase getRideHistoriesUseCase) {
         mGetRideHistoriesUseCase = getRideHistoriesUseCase;
-        mGetOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }
 
     @Override

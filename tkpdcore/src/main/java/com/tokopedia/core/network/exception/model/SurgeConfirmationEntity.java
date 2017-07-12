@@ -1,4 +1,4 @@
-package com.tokopedia.ride.common.exception.model;
+package com.tokopedia.core.network.exception.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

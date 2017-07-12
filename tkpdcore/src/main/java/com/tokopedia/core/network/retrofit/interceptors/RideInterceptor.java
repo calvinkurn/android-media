@@ -1,22 +1,27 @@
-package com.tokopedia.ride.common.network;
+package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Intent;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
-import com.tokopedia.ride.common.exception.UnProcessableHttpException;
-import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,24 +31,24 @@ import okhttp3.ResponseBody;
  * Created by alvarisi on 3/14/17.
  */
 
-public class RideInterceptor extends TkpdBaseInterceptor {
+public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = RideInterceptor.class.getSimpleName();
-    private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
+    private static final String HEADER_DATE_FORMAT = "dd MMM yy HH:mm ZZZ";
+    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String HEADER_DATE = "X-Date";
+    private static final String HEADER_DEVICE = "X-Device";
+    private static final String HEADER_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
+    private static final String AUTO_RIDE = "AUTO_RIDE";
     private String authorizationString;
-    private String userId;
 
     public RideInterceptor(String authorizationString, String userId) {
         this.authorizationString = authorizationString;
-        this.userId = userId;
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request.Builder newRequest = getBearerHeaderBuilder(chain.request(), authorizationString, userId);
-
-        final Request finalRequest = newRequest.build();
-        Response response = getResponse(chain, finalRequest);
-
+    public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String bodyResponse = response.body().string();
         try {
             JSONObject jsonResponse = new JSONObject(bodyResponse);
@@ -68,7 +73,6 @@ public class RideInterceptor extends TkpdBaseInterceptor {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return constructNewResponse(response, bodyResponse);
     }
 
     private void handleError(String errorMessage) throws SessionExpiredException,
@@ -78,8 +82,7 @@ public class RideInterceptor extends TkpdBaseInterceptor {
             intent.setAction(BaseActivity.FORCE_LOGOUT);
             MainApplication.getAppContext().sendBroadcast(intent);
             throw new SessionExpiredException(errorMessage);
-        } else
-            throw new UnprocessableEntityHttpException(errorMessage);
+        }
     }
 
     private Response constructNewResponse(Response response, String responseString) {
@@ -115,7 +118,7 @@ public class RideInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
-    private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
+    /*private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
 
         return request.newBuilder()
                 .header("Tkpd-UserId", userId)
@@ -124,13 +127,28 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 //TODO remove skip payment and auto ride
                 //.header("tkpd-skip-payment", "true")
-                .header("AUTO_RIDE", "true")
+                .header("", "true")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
                 .method(request.method(), request.body());
+    }*/
+
+    @Override
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, HEADER_DATE_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.ENGLISH);
+        String date = dateFormat.format(new Date());
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+
+        headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
+        headerMap.put(HEADER_AUTHORIZATION, authorizationString);
+        headerMap.put(AUTO_RIDE, "true");
+        return headerMap;
     }
 
-
     protected Response getResponse(Chain chain, Request request) throws IOException {
+        super.getResponse(chain, request);
         Response response = chain.proceed(request);
         if (!response.isSuccessful()) {
             switch (response.code()) {
@@ -168,6 +186,6 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         }
-        return response;
+        return constructNewResponse(response, response.body().string());
     }
 }

@@ -55,10 +55,12 @@ public class ProductEntityMapper {
     public List<Product> transform(List<ProductEntity> entities) {
         List<Product> products = new ArrayList<>();
         Product product;
-        for (ProductEntity entity : entities) {
-            product = transform(entity);
-            if (product != null)
-                products.add(product);
+        if (entities != null) {
+            for (ProductEntity entity : entities) {
+                product = transform(entity);
+                if (product != null)
+                    products.add(product);
+            }
         }
         return products;
     }

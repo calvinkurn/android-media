@@ -1,4 +1,4 @@
-package com.tokopedia.ride.common.exception;
+package com.tokopedia.core.network.exception.model;
 
 import org.json.JSONArray;
 import org.json.JSONException;

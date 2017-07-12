@@ -1,10 +1,9 @@
-package com.tokopedia.ride.common.exception;
+package com.tokopedia.core.network.exception.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.ride.common.exception.model.InterruptConfirmationExceptionEntity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -11,13 +11,17 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
-import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;
 import com.tokopedia.ride.common.place.data.PlaceDataStoreFactory;
@@ -39,8 +43,6 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 import com.tokopedia.ride.ontrip.view.SendCancelReasonPresenter;
-
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -102,32 +104,6 @@ public class OnTripDependencyInjection {
                 .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
     }
 
-    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.interceptors().add(rideInterceptor);
-        clientBuilder.interceptors().add(loggingInterceptor);
-        clientBuilder.interceptors().add(chuckInterceptor);
-        return clientBuilder.build();
-    }
-
-    private Retrofit provideRideRetrofit(OkHttpClient client,
-                                         GeneratedHostConverter hostConverter,
-                                         TkpdResponseConverter tkpdResponseConverter,
-                                         StringResponseConverter stringResponseConverter,
-                                         GsonConverterFactory gsonConverterFactory,
-                                         RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
-        return createRetrofit(RideUrl.BASE_URL,
-                client,
-                hostConverter,
-                tkpdResponseConverter,
-                stringResponseConverter,
-                gsonConverterFactory,
-                rxJavaCallAdapterFactory);
-    }
-
     private RideApi provideRideApi(Retrofit retrofit) {
         return retrofit.create(RideApi.class);
     }
@@ -166,16 +142,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(),
-                                                        provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -191,15 +165,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -215,15 +188,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -266,15 +238,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -298,15 +269,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -322,15 +292,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
@@ -346,15 +315,14 @@ public class OnTripDependencyInjection {
                 provideBookingRideRepository(
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
                                 )
                         ),
                         new ProductEntityMapper(),
