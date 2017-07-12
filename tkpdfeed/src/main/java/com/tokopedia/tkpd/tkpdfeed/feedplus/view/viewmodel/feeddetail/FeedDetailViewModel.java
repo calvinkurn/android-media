@@ -18,7 +18,7 @@ public class FeedDetailViewModel implements Visitable<FeedPlusDetailTypeFactory>
     private boolean isPreorder;
     private boolean isFreeReturn;
     private boolean isWishlist;
-    private int rating;
+    private float rating;
     private Integer productId;
 
 
@@ -32,7 +32,7 @@ public class FeedDetailViewModel implements Visitable<FeedPlusDetailTypeFactory>
                                boolean isPreorder,
                                boolean isFreeReturn,
                                boolean isWishlist,
-                               int rating) {
+                               float rating) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -123,11 +123,11 @@ public class FeedDetailViewModel implements Visitable<FeedPlusDetailTypeFactory>
         isWishlist = wishlist;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 

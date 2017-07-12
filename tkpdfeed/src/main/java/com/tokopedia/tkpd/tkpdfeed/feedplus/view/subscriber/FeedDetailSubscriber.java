@@ -23,6 +23,7 @@ import rx.Subscriber;
 
 public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>> {
     private final FeedPlusDetail.View viewListener;
+    private static final int MAX_RATING = 100;
 
     public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
         this.viewListener = viewListener;
@@ -84,8 +85,12 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
                 productDomain.getPreorder(),
                 productDomain.getFreereturns(),
                 productDomain.getWishlist(),
-                productDomain.getRating()
+                getRating(productDomain.getRating())
         );
+    }
+
+    private float getRating(int rating){
+        return rating / MAX_RATING;
     }
 
     private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {
@@ -123,7 +128,7 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
                 productDomain.getPreorder(),
                 productDomain.getFreereturns(),
                 productDomain.getWishlist(),
-                productDomain.getRating()
+                getRating(productDomain.getRating())
         );
     }
 
