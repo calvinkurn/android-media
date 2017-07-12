@@ -21,6 +21,10 @@ public interface ProfileCompletionContract extends CustomerView {
         void onSuccessEditProfile(int edit);
 
         void onFailedEditProfile(String errorMessage);
+
+        String getString(int id);
+
+        void disableView();
     }
 
     interface Presenter extends CustomerPresenter<View>{

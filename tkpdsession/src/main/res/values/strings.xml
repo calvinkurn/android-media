@@ -14,6 +14,8 @@
     <string name="november">November</string>
     <string name="december">Desember</string>
     <string name="wrong_input">inputan salah</string>
+    <string name="invalid_date">Tanggal Lahir tidak valid</string>
+    <string name="invalid_gender">Jenis Kelamin tidak valid</string>
 
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>

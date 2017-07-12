@@ -95,26 +95,24 @@
                     android:textColor="@color/black_38"
                     android:lineSpacingExtra="8sp"
                     android:gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/space_large"
                     android:text="@string/tokocash_phone_verification_text"
                     />
-
-                <android.support.v4.widget.Space
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/space_large" />
 
                 <TextView
                     android:id="@id/send_otp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="190dp"
                     android:textSize="@dimen/text_size_13"
                     android:fontFamily="sans-serif-medium"
                     android:textStyle="normal"
                     android:textColor="@color/white"
                     android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:background="@color/medium_green"
                     android:text="@string/send_otp_sms"
-                    tools:visibility="gone"
                     />
             </LinearLayout>
 
@@ -137,7 +135,8 @@
                     android:textColor="@color/black_54"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:background="@drawable/white_button_rounded"
+                    android:background="@drawable/bg_white_border_grey"
+                    android:padding="@dimen/padding_small"
                     android:backgroundTint="@color/white"
                     android:text="@string/title_resend_otp_sms"
                     />

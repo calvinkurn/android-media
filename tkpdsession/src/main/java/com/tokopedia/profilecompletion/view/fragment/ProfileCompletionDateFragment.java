@@ -39,6 +39,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     private ProfileCompletionFragment view;
     private View proceed;
     private View skip;
+    private View progress;
     private int position;
     private Unbinder unbinder;
     private ProfileCompletionContract.Presenter presenter;
@@ -73,6 +74,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer);
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
+        progress = this.view.getView().findViewById(R.id.progress);
     }
 
     protected void setViewListener() {

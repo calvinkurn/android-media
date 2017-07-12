@@ -185,11 +185,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         holder.name.setText(data.getDrawerProfile().getUserName());
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
-        data.setProfileCompletion(50);
         if(data.getProfileCompletion() == 100) {
             holder.layoutProgress.setVisibility(View.GONE);
-            Drawable drawable = MethodChecker.getDrawable(context, R.drawable.ic_verified);
-            drawable.setBounds(0, 0, 30, 30);
+            Drawable drawable = MethodChecker.getDrawable(context, R.drawable.ic_verified_wrapped);
             holder.verifiedIcon.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
             holder.verifiedIcon.setVisibility(View.VISIBLE);
         }else {

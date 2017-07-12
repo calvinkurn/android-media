@@ -10,6 +10,7 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
 import com.tokopedia.profilecompletion.view.subscriber.EditUserInfoSubscriber;
 import com.tokopedia.profilecompletion.view.subscriber.GetUserInfoSubscriber;
+import com.tokopedia.session.R;
 
 import javax.inject.Inject;
 
@@ -50,13 +51,23 @@ public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompl
 
     @Override
     public void editUserInfo(String date, int month, String year) {
-        editUserProfileUseCase.execute(EditUserProfileUseCase.generateParamDOB(date, String.valueOf(month), year), new EditUserInfoSubscriber(getView(), EditUserProfileUseCase.EDIT_DOB));
+        if(date.isEmpty() || year.isEmpty() || month == 0){
+            getView().onFailedEditProfile(getView().getString(R.string.invalid_date));
+        }else {
+            getView().disableView();
+            editUserProfileUseCase.execute(EditUserProfileUseCase.generateParamDOB(date, String.valueOf(month), year), new EditUserInfoSubscriber(getView(), EditUserProfileUseCase.EDIT_DOB));
+        }
     }
 
     @Override
     public void editUserInfo(int gender) {
-        editUserProfileUseCase.execute(EditUserProfileUseCase.generateParamGender(gender), new EditUserInfoSubscriber(getView()
-                , EditUserProfileUseCase.EDIT_GENDER));
+        if(gender == -1) {
+            getView().onFailedEditProfile(getView().getString(R.string.invalid_gender));
+        }else {
+            getView().disableView();
+            editUserProfileUseCase.execute(EditUserProfileUseCase.generateParamGender(gender), new EditUserInfoSubscriber(getView()
+                    , EditUserProfileUseCase.EDIT_GENDER));
+        }
     }
 
     @Override

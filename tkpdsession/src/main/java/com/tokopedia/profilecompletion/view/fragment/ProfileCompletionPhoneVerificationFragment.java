@@ -320,14 +320,12 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
             public void afterTextChanged(Editable s) {
                 if (s.length() == 6) {
                     verifyButton.setEnabled(true);
-                    MethodChecker.setBackground(verifyButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
+                    verifyButton.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
 
                 } else {
                     verifyButton.setEnabled(false);
-                    MethodChecker.setBackground(verifyButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
+                    verifyButton.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.grey_300));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
             }
@@ -457,7 +455,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                 instruction.setVisibility(View.GONE);
                 countdownText.setVisibility(View.VISIBLE);
                 countdownText.setText(
-                        "Kirim Ulang (" + String.format(FORMAT,
+                        "Kirim SMS Ulang (" + String.format(FORMAT,
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished))
                                 + ")");
                 requestOtpCallButton.setVisibility(View.GONE);
@@ -471,8 +469,10 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     }
 
     protected void enableOtpButton() {
-        requestOtpButton.setVisibility(View.VISIBLE);
+        instruction.setVisibility(View.VISIBLE);
+        tokocashText.setVisibility(View.GONE);
         countdownText.setVisibility(View.GONE);
+        requestOtpButton.setVisibility(View.VISIBLE);
         MethodChecker.setBackground(requestOtpButton,
                 MethodChecker.getDrawable(getActivity(),
                         com.tokopedia.core.R.drawable.cards_ui));

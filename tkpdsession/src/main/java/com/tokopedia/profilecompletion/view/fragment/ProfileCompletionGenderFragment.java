@@ -35,6 +35,7 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
     private View avaWoman;
     private View avaMan;
     private View skip;
+    private View progress;
     private Unbinder unbinder;
     private ProfileCompletionContract.Presenter presenter;
 
@@ -72,6 +73,7 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
         radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
+        progress = this.view.getView().findViewById(R.id.progress);
     }
 
     protected void setViewListener() {

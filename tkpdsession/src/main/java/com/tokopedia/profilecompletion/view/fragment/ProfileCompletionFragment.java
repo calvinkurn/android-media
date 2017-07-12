@@ -20,6 +20,7 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.ProgressBarAnimation;
@@ -48,6 +49,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private GetUserInfoDomainData data;
     private String filled;
     private TextView skip;
+    View progress;
 
     @Inject
     ProfileCompletionPresenter presenter;
@@ -75,6 +77,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
+        progress = view.findViewById(R.id.progress);
         progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         percentText = (TextView) view.findViewById(R.id.percentText);
@@ -119,7 +122,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         data.setCompletion(50);
         data.setPhoneVerified(false);
         data.setGender(0);
-//        data.setBday("0");
+        data.setBday("0");
     }
 
     private void updateProgressBar(int oldValue, int newValue) {
@@ -132,7 +135,9 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
         int[] colors = getResources().getIntArray(R.array.green_indicator);
         int indexColor = (newValue - 50) / 10;
-
+        if (indexColor < 0) {
+            indexColor = 0;
+        }
         LayerDrawable shape = (LayerDrawable) ContextCompat.getDrawable(getActivity(), R.drawable.horizontal_progressbar);
         GradientDrawable runningBar = (GradientDrawable) ((ScaleDrawable) shape.findDrawableByLayerId(R.id.progress_col)).getDrawable();
         runningBar.setColor(colors[indexColor]);
@@ -145,19 +150,21 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         FragmentTransaction transaction = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         if (!getUserInfoDomainData.isPhoneVerified()) {
             ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
-            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfilePhoneVerifCompletionFragment.TAG).commit();
-        }else
-            if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
+            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG).commit();
+        } else if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
             ProfileCompletionDateFragment dateFragment = ProfileCompletionDateFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG).commit();
-        }else if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
+        } else if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
             ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG).commit();
-        }  else if(getUserInfoDomainData.getCompletion()==100){
+        } else if (getUserInfoDomainData.getCompletion() == 100) {
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
+        } else {
+            getActivity().finish();
         }
     }
 
@@ -181,17 +188,37 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             data.setPhoneVerified(true);
             updateProgressBar(data.getCompletion(), data.getCompletion() + 30);
         }
+        setViewEnabled();
         loadFragment(data);
+    }
+
+    private void setViewEnabled() {
+        progress.setVisibility(View.GONE);
+        proceed.setVisibility(View.VISIBLE);
+        proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
+        proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        proceed.setEnabled(true);
+        skip.setEnabled(true);
+    }
+
+
+    @Override
+    public void disableView() {
+        progress.setVisibility(View.VISIBLE);
+        proceed.setVisibility(View.GONE);
+        skip.setEnabled(false);
     }
 
     @Override
     public void onFailedEditProfile(String errorMessage) {
+        setViewEnabled();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void skipView(String tag) {
-        switch (tag){
+        setViewEnabled();
+        switch (tag) {
             case ProfileCompletionGenderFragment.TAG:
                 data.setGender(3);
                 loadFragment(data);
@@ -200,7 +227,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
                 data.setBday(filled);
                 loadFragment(data);
                 break;
-            case ProfilePhoneVerifCompletionFragment.TAG:
+            case ProfileCompletionPhoneVerificationFragment.TAG:
                 data.setPhoneVerified(true);
                 loadFragment(data);
                 break;
