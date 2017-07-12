@@ -132,7 +132,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     protected void loadData() {
         swipeToRefresh.setRefreshing(true);
-        dateLabelView.setDate(startDate, endDate);
+        dateLabelView.setContent(startDate, endDate);
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();

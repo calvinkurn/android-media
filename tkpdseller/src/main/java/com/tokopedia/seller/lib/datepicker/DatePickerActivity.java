@@ -55,12 +55,17 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
-        viewPager.setCurrentItem(selectionType);
         String title = getIntent().getExtras().getString(DatePickerConstant.EXTRA_PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
             getSupportActionBar().show();
         }
+    }
+
+    @Override
+    protected void setupFragment(Bundle savedinstancestate) {
+        super.setupFragment(savedinstancestate);
+        viewPager.setCurrentItem(selectionType);
     }
 
     protected PagerAdapter getViewPagerAdapter() {

@@ -153,7 +153,7 @@ public abstract class TopAdsAdListFragment<T extends
     }
 
     protected void updateDateLabelViewText() {
-        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
+        dateLabelView.setContent(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
     }
 
     @Override

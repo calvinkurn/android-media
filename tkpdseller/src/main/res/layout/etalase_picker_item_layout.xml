@@ -16,7 +16,7 @@
 
     <RadioButton
         android:id="@+id/etalase_picker_radio_button"
-        style="@style/TopAdsRadioButton"
+        style="@style/RadioButton"
         android:layout_width="20dp"
         android:layout_height="20dp" />
 
