@@ -18,7 +18,6 @@ import rx.functions.Func1;
  */
 
 public class ReplyConversationValidationMapper implements Func1<Response<TkpdResponse>, ReplyDiscussionValidationModel> {
-    private boolean hasAttachment = false;
 
     @Override
     public ReplyDiscussionValidationModel call(Response<TkpdResponse> response) {
@@ -27,14 +26,12 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
             if (!response.body().isError()) {
                 domainData.setSuccess(true);
 
-                if (hasAttachment) {
-                    ReplyDiscussionValidationImageEntity entity = response.body()
-                            .convertDataObj(ReplyDiscussionValidationImageEntity.class);
+                ReplyDiscussionValidationImageEntity entity = response.body().convertDataObj(ReplyDiscussionValidationImageEntity.class);
+                if (entity.getPostKey() != null) {
                     domainData.setReplyDiscussionData(mappingImageEntityDomain(entity));
                 } else {
-                    ReplyDiscussionValidationEntity entity = response.body()
-                            .convertDataObj(ReplyDiscussionValidationEntity.class);
-                    domainData.setReplyDiscussionData(mappingEntityDomain(entity));
+                    ReplyDiscussionValidationEntity replyDiscussionValidationEntity = response.body().convertDataObj(ReplyDiscussionValidationEntity.class);
+                    domainData.setReplyDiscussionData(mappingEntityDomain(replyDiscussionValidationEntity));
                 }
 
             } else {
@@ -81,11 +78,4 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
         return data;
     }
 
-    public void setHasAttachment(boolean hasAttachment) {
-        this.hasAttachment = hasAttachment;
-    }
-
-    public boolean isHasAttachment() {
-        return hasAttachment;
-    }
 }
