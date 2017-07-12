@@ -76,9 +76,9 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailProductActivity.class.getName();
-//        if (ShowCasePreference.hasShown(this, showCaseTag)){
-//            return;
-//        }
+        if (ShowCasePreference.hasShown(this, showCaseTag)){
+            return;
+        }
         if (showCaseDialog != null) {
             return;
         }

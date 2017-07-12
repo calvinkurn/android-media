@@ -56,7 +56,7 @@
     <string name="top_ads_spent_separator">/</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
     <string name="top_ads_empty_shop_content_text">Promosikan toko Anda untuk menambah banyak pengunjung dan mendapatkan banyak favorit.</string>
-    <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil tidak ditemukan</string>
+    <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil Tidak Ditemukan</string>
     <string name="top_ads_empty_promo_not_found_content_empty_text">Silahkan coba lagi atau ganti kata kunci</string>
     <string name="top_ads_empty_group_title_promo_text">Grup Promo Anda Kosong</string>
     <string name="top_ads_empty_product_title_promo_text">Promo Produk Anda Kosong</string>
@@ -226,8 +226,8 @@
     <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
-    <string name="top_ads_keyword_please_use">Gunakan Kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai</string>
-    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai</string>
+    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai.</string>
+    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai.</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
     <string name="top_ads_keyword_add_group_promo">Tambahkan Grup Promo</string>
