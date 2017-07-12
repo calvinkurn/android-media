@@ -363,9 +363,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 } else {
                     getView().setTitle(R.string.title_trip_accepted);
                 }
-                if (getView().isAlreadyRouteDrawed()) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
                     List<LatLng> latLngs = new ArrayList<>();
-                    latLngs.add(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                    latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
                 }
@@ -381,6 +381,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderArrivingDriverEvent(result);
                 getView().showCurrentLocationIndicator();
                 updatePolylineIfResetedByUiLifecycle(result);
+
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                    List<LatLng> latLngs = new ArrayList<>();
+                    latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
+                    latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
+                    getView().zoomMapFitByDriverAndCustomer(latLngs);
+                }
+
                 break;
             case RideStatus.IN_PROGRESS:
                 getView().saveActiveRequestId(result.getRequestId());

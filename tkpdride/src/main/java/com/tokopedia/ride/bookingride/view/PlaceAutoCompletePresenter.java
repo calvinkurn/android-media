@@ -434,8 +434,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             } else {
                 startLocationUpdates();
             }
-        } else {
-            getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
         }
     }
 
@@ -746,6 +744,15 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (mCurrentLocation != null && isViewAttached() && !isUnsubscribed()) {
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            String address = String.format("%s,%s", mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                            placeVm.setAddress(address);
+                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setTitle(address);
+                            getView().onPlaceSelectedFound(placeVm);
+                        }
                     }
 
                     @Override

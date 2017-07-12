@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -1331,17 +1332,22 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             builder.include(latLng);
         }
         int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
+        int boundHeight = 0;
 
-        int heightPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
         if (bottomContainer.getVisibility() == View.VISIBLE) {
             int topYAxis = mSrcDestLayout.getBottom();
             int bottomYAxis = bottomContainer.getTop();
-            heightPixels = bottomYAxis - topYAxis;
+            boundHeight = bottomYAxis - (heightPixels - bottomYAxis);
         }
 
-        mGoogleMap.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(builder.build(), 150),
-                1000, null
-        );
+        try {
+            mGoogleMap.animateCamera(
+                    CameraUpdateFactory.newLatLngBounds(builder.build(), widthPixels, boundHeight, getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)),
+                    1000, null
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

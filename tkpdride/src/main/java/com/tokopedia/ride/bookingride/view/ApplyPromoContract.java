@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -47,6 +49,8 @@ public interface ApplyPromoContract {
         void enableApplyButton();
 
         void disableApplyButton();
+
+        Context getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {

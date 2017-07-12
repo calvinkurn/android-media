@@ -3,11 +3,13 @@ package com.tokopedia.ride.bookingride.view;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 import rx.Subscriber;
@@ -51,7 +53,12 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 getView().showApplyPromoLayout();
                 getView().hideApplyPromoLoading();
                 getView().enableApplyButton();
-                getView().onFailedApplyPromo(e.getMessage());
+
+                String message = e.getMessage();
+                if (e instanceof UnknownHostException) {
+                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                }
+                getView().onFailedApplyPromo(message);
             }
 
             @Override
