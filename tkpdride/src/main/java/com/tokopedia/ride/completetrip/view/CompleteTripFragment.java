@@ -552,7 +552,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
     }
 
-    @OnClick(R2.id.pending_fare_layout)
+    @OnClick(R2.id.layout_tokocash_option)
     public void actionFareLayout() {
         List<TokoCashProduct> products = transformProductsFromJson(receipt.getPendingPayment().getTopUpOptions(), receipt.getCurrency());
         startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
