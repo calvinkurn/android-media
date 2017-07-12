@@ -56,6 +56,18 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
     }
 
     @Override
+    public Observable<UploadImageModel> newUploadImage(String url,
+                                                    Map<String, RequestBody> params,
+                                                    RequestBody imageFile) {
+        return uploadImageSourceFactory
+                .createCloudUploadImageDataStore()
+                .newUploadImage(
+                        url,
+                        params,
+                        imageFile);
+    }
+
+    @Override
     public Observable<UploadImageModel> uploadVideo(String url,
                                                     Map<String, RequestBody> params,
                                                     MultipartBody.Part part) {
