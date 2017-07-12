@@ -47,10 +47,8 @@
                     android:maxLines="2"
                     android:fontFamily="sans-serif-medium"
                     tools:text="town_fashion"
-                    android:lineSpacingExtra="4sp"
                     android:textColor="@color/black_70"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/shop_subtitle"
@@ -59,7 +57,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     tools:text="kacamata kualitas premium / line @towns_fashion"
-                    android:textColor="@color/black_36"
+                    android:textColor="@color/black_38"
                     android:textSize="12sp" />
             </LinearLayout>
 
