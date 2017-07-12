@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.discussion.data.pojo.generatehost;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,35 +9,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class GenerateHostEntity {
 
+    @SerializedName("generated_host")
+    @Expose
+    private GeneratedHost generatedHost;
 
-    @SerializedName("server_id")
-    private String serverId;
-    @SerializedName("upload_host")
-    private String uploadHost;
-    @SerializedName("token")
-    private String token;
-
-    public String getServerId() {
-        return serverId;
+    public GeneratedHost getGeneratedHost() {
+        return generatedHost;
     }
 
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
-    }
-
-    public String getUploadHost() {
-        return uploadHost;
-    }
-
-    public void setUploadHost(String uploadHost) {
-        this.uploadHost = uploadHost;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public void setGeneratedHost(GeneratedHost generatedHost) {
+        this.generatedHost = generatedHost;
     }
 }

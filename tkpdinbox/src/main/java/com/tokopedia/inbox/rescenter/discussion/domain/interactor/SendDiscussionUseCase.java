@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
+import android.util.Log;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
