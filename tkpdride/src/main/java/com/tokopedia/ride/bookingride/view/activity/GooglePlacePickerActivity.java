@@ -92,8 +92,6 @@ public class GooglePlacePickerActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         if (getFragmentManager().findFragmentById(R.id.container) instanceof SelectLocationOnMapFragment) {
-            //hideBlockTranslucentLayout();
-            //hideSeatPanelLayout();
             getFragmentManager().popBackStack();
 
             boolean showAutoDetectLocation = true;
@@ -104,8 +102,6 @@ public class GooglePlacePickerActivity extends BaseActivity
             }
 
             replaceFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap));
-//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
-//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
         }

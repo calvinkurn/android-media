@@ -451,8 +451,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void actionQueryPlacesByKeyword(final String keyword) {
-//        if (isLoadingPlaces) return;
-//        isLoadingPlaces = true;
         getView().showAutoCompleteLoadingCross();
         getView().hideClearButton();
         getView().hideAutoDetectLocationButton();
@@ -463,35 +461,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (mOnQueryListener != null) {
             mOnQueryListener.onQuerySubmit(keyword);
         }
-        /*mCompositeSubscription.add(getAutocompleteObservable(keyword).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<ArrayList<AutocompletePrediction>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(ArrayList<AutocompletePrediction> results) {
-                        ArrayList<Visitable> addresses = new ArrayList<>();
-                        for (AutocompletePrediction autocompletePrediction : results) {
-                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                            address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-                            address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-                            address.setAddressId(autocompletePrediction.getPlaceId());
-                            addresses.add(address);
-                        }
-                        getView().renderPlacesList(addresses);
-                        getView().hideAutoCompleteLoadingCross();
-                    }
-                })
-        );*/
     }
 
     private class AutoCompletePlaceTextChanged extends Subscriber<String> {
@@ -647,7 +616,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
                                 placePassViewModel.setTitle((String) myPlace.getName());
                                 placePassViewModel.setPlaceId(myPlace.getId());
-//                                placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
                                 placePassViewModel.setAddress(String.valueOf(myPlace.getAddress()));
                                 getView().onPlaceSelectedFound(placePassViewModel);
                             } else {
@@ -663,7 +631,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             placePassViewModel.setAndFormatLongitude(adress.getLongitude());
             placePassViewModel.setTitle(adress.getTitle());
             placePassViewModel.setPlaceId(adress.getAddressId());
-//            placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
             placePassViewModel.setAddress(adress.getAddress());
             getView().onPlaceSelectedFound(placePassViewModel);
         }
@@ -676,7 +643,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         } else if (mGoogleApiClient != null) {
             checkLocationSettings();
             mAutoDetectLocation = true;
-            //getView().showMessage(getView().getActivity().getString(R.string.invalid_current_location));
         }
     }
 
@@ -734,11 +700,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionHomeLocation() {
         PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-//        placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
-//        placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
         placePassViewModel.setTitle("Home");
-//        placePassViewModel.setPlaceId(myPlace.getId());
-//        placePassViewModel.setType(PlacePassViewModel.TYPE.HOME);
         placePassViewModel.setAddress("Home");
         getView().onPlaceSelectedFound(placePassViewModel);
     }
@@ -746,11 +708,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionWorkLocation() {
         PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-//        placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
-//        placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
         placePassViewModel.setTitle("Work");
-//        placePassViewModel.setPlaceId(myPlace.getId());
-//        placePassViewModel.setType(PlacePassViewModel.TYPE.WORK);
         placePassViewModel.setAddress("Work");
         getView().onPlaceSelectedFound(placePassViewModel);
     }

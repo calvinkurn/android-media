@@ -15,7 +15,6 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.CancelReasons;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
@@ -226,18 +225,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<ApplyPromo> applyPromo(TKPDMapParam<String, Object> parameters) {
-        return mBookingRideDataStoreFactory.createCloudDataStore()
-                .applyPromo(parameters)
-                .map(new Func1<PromoEntity, ApplyPromo>() {
-                    @Override
-                    public ApplyPromo call(PromoEntity promoEntity) {
-                        return new ApplyPromo();
-                    }
-                });
-    }
-
-    @Override
     public Observable<List<RideAddress>> getAddresses(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getAddresses(parameters)
@@ -275,15 +262,13 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<CancelReasons> getCancelReasons(TKPDMapParam<String, Object> parameters) {
+    public Observable<List<String>> getCancelReasons(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getCancelReasons(parameters)
-                .map(new Func1<CancelReasonsResponseEntity, CancelReasons>() {
+                .map(new Func1<CancelReasonsResponseEntity, List<String>>() {
                     @Override
-                    public CancelReasons call(CancelReasonsResponseEntity cancelReasonsResponseEntity) {
-                        CancelReasons cancelReasons = new CancelReasons();
-                        cancelReasons.setReasons(cancelReasonsResponseEntity.getReasons());
-                        return cancelReasons;
+                    public List<String> call(CancelReasonsResponseEntity cancelReasonsResponseEntity) {
+                        return cancelReasonsResponseEntity.getReasons();
                     }
                 });
     }

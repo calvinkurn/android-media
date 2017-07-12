@@ -21,13 +21,5 @@ public class ShareEtaReceiver extends BroadcastReceiver {
         String url = intent.getStringExtra("share");
         TaskStackBuilder stackBuilder = OnTripActivity.getCallingIntentWithShareAction(context, url);
         stackBuilder.startActivities();
-//
-//        String shareUrl = intent.getStringExtra("share");
-//        Intent share = new Intent(Intent.ACTION_SEND);
-//        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//        share.setType("text/plain");
-//        share.putExtra(Intent.EXTRA_SUBJECT, "Klik link ini untuk menemukan perjalanan anda dari Tokopedia.");
-//        share.putExtra(Intent.EXTRA_TEXT, shareUrl);
-//        context.startActivity(Intent.createChooser(share, "Bagikan Link!").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 }

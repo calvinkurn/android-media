@@ -54,22 +54,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-//                    getView().hideCheckPendingRequestLoading();
                     getView().showMainLayout();
                     getView().hideCheckPendingRequestLoading();
                     getView().inflateMapAndProductFragment();
-//                    if (e instanceof UnprocessableEntityHttpException) {
-//                        getView().hideCheckPendingRequestLoading();
-//                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
-//                    } else if (e instanceof UnProcessableHttpException) {
-//                        getView().hideCheckPendingRequestLoading();
-//                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
-//                    } else {
-////                        getView().hideCheckPendingRequestLoading();
-////                        getView().showRetryCheckPendingRequestLayout();
-//                        getView().hideCheckPendingRequestLoading();
-//                        getView().inflateMapAndProductFragment();
-//                    }
                 }
 
             }
@@ -93,9 +80,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 // if user didnt see about driver canceled his ride
                                 if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())) {
                                     getView().showDialogDriverCancelled();
-                                    //getView().inflateMapAndProductFragment();
+                                    getView().inflateMapAndProductFragment();
                                 } else {
-                                    //getView().inflateMapAndProductFragment();
+                                    getView().inflateMapAndProductFragment();
                                 }
                                 break;
                             case RideStatus.COMPLETED:

@@ -24,7 +24,6 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ApplyPromoDependencyInjection;
-import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
@@ -32,7 +31,6 @@ import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
 import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.adapter.OnGoingPromoAdapter;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
-import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.Date;
@@ -154,22 +152,6 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     }
 
     @Override
-    public RequestParams getApplyPromoParams() {
-        //TODO : change param when api created
-        String deviceId = GCMHandler.getRegistrationId(getActivity());
-        String userId = SessionHandler.getLoginID(getActivity());
-        String hash = md5(userId + "~" + deviceId);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(ApplyPromoUseCase.PARAM_USER_ID, userId);
-        requestParams.putString(ApplyPromoUseCase.PARAM_DEVICE_ID, deviceId);
-        requestParams.putString(ApplyPromoUseCase.PARAM_HASH, hash);
-        requestParams.putString(ApplyPromoUseCase.PARAM_OS_TYPE, "1");
-        requestParams.putString(ApplyPromoUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        requestParams.putString(ApplyPromoUseCase.PARAM_PROMO, getPromo());
-        return requestParams;
-    }
-
-    @Override
     public void hideApplyPromoLoading() {
         progressBar.setVisibility(View.GONE);
     }
@@ -186,12 +168,6 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         Intent intent = getActivity().getIntent();
         intent.putExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM, confirmBookingViewModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-    }
-
-    @Override
-    public void onFailedApplyPromo(ApplyPromo applyPromo) {
-        getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
 

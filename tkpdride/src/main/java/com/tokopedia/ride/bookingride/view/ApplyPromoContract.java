@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
-import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
@@ -17,13 +16,9 @@ public interface ApplyPromoContract {
     interface View extends CustomerView {
         String getPromo();
 
-        RequestParams getApplyPromoParams();
-
         void hideApplyPromoLoading();
 
         void onSuccessApplyPromo(FareEstimate applyPromo);
-
-        void onFailedApplyPromo(ApplyPromo applyPromo);
 
         void showApplyPromoLoading();
 

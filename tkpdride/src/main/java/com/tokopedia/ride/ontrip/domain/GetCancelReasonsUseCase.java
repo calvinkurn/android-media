@@ -26,12 +26,6 @@ public class GetCancelReasonsUseCase extends UseCase<List<String>> {
 
     @Override
     public Observable<List<String>> createObservable(RequestParams requestParams) {
-        return bookingRideRepository.getCancelReasons(requestParams.getParameters())
-                .map(new Func1<CancelReasons, List<String>>() {
-                    @Override
-                    public List<String> call(CancelReasons cancelReasons) {
-                        return cancelReasons.getReasons();
-                    }
-                });
+        return bookingRideRepository.getCancelReasons(requestParams.getParameters());
     }
 }

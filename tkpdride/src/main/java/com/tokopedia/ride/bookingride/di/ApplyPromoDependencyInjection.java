@@ -15,7 +15,6 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
@@ -155,31 +154,6 @@ public class ApplyPromoDependencyInjection {
         GetFareEstimateUseCase provideGetFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
         GetPromoUseCase promoUseCase = injection.getPromoUseCase(token, userId);
         return new ApplyPromoPresenter(provideGetFareEstimateUseCase, promoUseCase);
-    }
-
-    private ApplyPromoUseCase provideApplyPromoUseCase(String token, String userId) {
-        return new ApplyPromoUseCase(
-                provideThreadExecutor(),
-                providePostExecutionThread(),
-                provideBookingRideRepository(
-                        provideBookingRideDataStoreFactory(
-                                provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory(),
-                                                        provideChuckInterceptor()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
-                                )
-                        ),
-                        new ProductEntityMapper(),
-                        new TimeEstimateEntityMapper()
-                )
-        );
     }
 
     private GetPromoUseCase getPromoUseCase(String token, String userId) {

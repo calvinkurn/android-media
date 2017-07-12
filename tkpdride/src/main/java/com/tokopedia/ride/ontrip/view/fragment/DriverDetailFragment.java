@@ -56,8 +56,6 @@ public class DriverDetailFragment extends BaseFragment {
     TextView driverRatingTextView;
     @BindView(R2.id.driver_eta_text)
     TextView driverEtaTextView;
-    //@BindView(R2.id.call_driver_layout)
-    //RelativeLayout callDriverLayout;
     @BindView(R2.id.layout_cancel_ride)
     LinearLayout cancelRideLayout;
     @BindView(R2.id.tv_pool_status)

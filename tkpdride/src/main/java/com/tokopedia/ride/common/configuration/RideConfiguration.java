@@ -30,96 +30,11 @@ public class RideConfiguration {
 
     private static final int STATE_WAITING_FOR_DRIVER = 1;
 
-    private GlobalCacheManager cacheManager;
 
     private Context context;
 
     public RideConfiguration(Context context) {
-        cacheManager = new GlobalCacheManager();
         this.context = context;
-    }
-
-    public void clearActiveRequest() {
-        cacheManager.delete(RIDE_CONFIGURATION);
-        cacheManager.delete(RIDE_SOURCE);
-        cacheManager.delete(RIDE_DESTINATION);
-    }
-
-    public boolean isWaitingDriverState() {
-        RideRequestEntity entity = null;
-        PlacePassViewModel source, destination;
-        try {
-            destination = cacheManager.getConvertObjData(RIDE_DESTINATION, PlacePassViewModel.class);
-            source = cacheManager.getConvertObjData(RIDE_SOURCE, PlacePassViewModel.class);
-            entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
-        } catch (RuntimeException e) {
-            return false;
-        }
-        return entity != null && source != null && destination != null;
-    }
-
-    public void setActiveRequest(RideRequest request) {
-        // initialize class you want to be converted from string
-        Type type = new TypeToken<RideRequest>() {
-        }.getType();
-        // set value
-        cacheManager.setKey(RIDE_CONFIGURATION);
-        cacheManager.setValue(CacheUtil.convertModelToString(request, type));
-        cacheManager.setCacheDuration(5000);
-        cacheManager.store();
-    }
-
-    public String getActiveRequest() {
-        RideRequestEntity entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
-        RideRequestEntityMapper mapper = new RideRequestEntityMapper();
-        RideRequest request = mapper.transform(entity);
-        return request.getRequestId();
-    }
-
-    public RideRequest getActiveRequestObj() {
-        RideRequestEntity entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
-        RideRequestEntityMapper mapper = new RideRequestEntityMapper();
-        return mapper.transform(entity);
-    }
-
-    public void setActiveSource(PlacePassViewModel activeSource) {
-        Type type = new TypeToken<PlacePassViewModel>() {
-        }.getType();
-        // set value
-        cacheManager.setKey(RIDE_SOURCE);
-        cacheManager.setValue(CacheUtil.convertModelToString(activeSource, type));
-        cacheManager.setCacheDuration(5000);
-        cacheManager.store();
-    }
-
-    public void setActiveDestination(PlacePassViewModel activeDestination) {
-        Type type = new TypeToken<PlacePassViewModel>() {
-        }.getType();
-        // set value
-        cacheManager.setKey(RIDE_DESTINATION);
-        cacheManager.setValue(CacheUtil.convertModelToString(activeDestination, type));
-        cacheManager.setCacheDuration(5000);
-        cacheManager.store();
-    }
-
-    public PlacePassViewModel getActiveSource() {
-        PlacePassViewModel place = null;
-        try {
-            place = cacheManager.getConvertObjData(RIDE_SOURCE, PlacePassViewModel.class);
-        } catch (RuntimeException e) {
-            return null;
-        }
-        return place;
-    }
-
-    public PlacePassViewModel getActiveDestination() {
-        PlacePassViewModel place = null;
-        try {
-            place = cacheManager.getConvertObjData(RIDE_DESTINATION, PlacePassViewModel.class);
-        } catch (RuntimeException e) {
-            return null;
-        }
-        return place;
     }
 
     public void setActiveRequestId(String requestId) {

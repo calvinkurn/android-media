@@ -152,52 +152,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
         }
 
         return urlBuffer.toString();
-
-        //String mapImageUrl = "https://maps.googleapis.com/maps/api/staticmap?size=500x140&markers=color:green|label:S|" + pickupLatLonString + "&zoom=13&key=" + getView().getMapKey();
-        //return mapImageUrl;
     }
-
-    /*private void actionGetOverviewPolyline(ArrayList<Visitable> histories) {
-        for (int position = 0; position < histories.size(); position++) {
-            final RideHistoryViewModel viewModel = (RideHistoryViewModel) histories.get(position);
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putString("origin", String.format("%s,%s",
-                    viewModel.getStartLatitude(),
-                    viewModel.getStartLongitude()
-            ));
-            requestParams.putString("destination", String.format("%s,%s",
-                    viewModel.getEndLatitude(),
-                    viewModel.getEndLongitude()
-            ));
-            requestParams.putString("sensor", "false");
-            final int finalPosition = position;
-            mGetOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(List<String> strings) {
-                    if (isViewAttached() && !isUnsubscribed()) {
-                        List<List<LatLng>> routes = new ArrayList<>();
-                        for (String route : strings) {
-                            routes.add(PolyUtil.decode(route));
-                        }
-                        if (routes.size() > 0) {
-                            viewModel.setLatLngs(routes.get(0));
-                            getView().renderUpdatedHistoryRow(finalPosition, viewModel);
-                        }
-                    }
-                }
-            });
-        }
-    }*/
 
     @Override
     public void actionRefreshHistoriesData() {
