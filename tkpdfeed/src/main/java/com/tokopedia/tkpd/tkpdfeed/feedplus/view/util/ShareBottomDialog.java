@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -23,7 +21,6 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.inboxreputation.adapter.viewbinder.ShareAdapter;
 import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
@@ -131,7 +128,7 @@ public class ShareBottomDialog {
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
                 R.drawable.ic_btn_copy), activity.getString(R.string.share_copy), shareCopyLink()));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_more_share), activity.getString(R.string.share_others),
+                R.drawable.ic_btn_other), activity.getString(R.string.share_others),
                 shareOthers()));
         adapter.setList(list);
     }
