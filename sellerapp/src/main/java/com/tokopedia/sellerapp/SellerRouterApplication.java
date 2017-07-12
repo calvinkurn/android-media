@@ -150,7 +150,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = Login.getRegisterIntent(context);
+        Intent intent = Login.getSellerRegisterIntent(context);
         context.startActivity(intent);
     }
 

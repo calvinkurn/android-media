@@ -126,7 +126,9 @@ public class RegisterInitialFragment extends Fragment
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(
                         AppEventTracking.GTMCacheValue.EMAIL);
                 UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
+                finishActivity();
                 startActivity(new Intent(getActivity(), RegisterEmailActivity.class));
+
             }
         });
         String sourceString = "Sudah punya akun? Masuk";
@@ -158,8 +160,8 @@ public class RegisterInitialFragment extends Fragment
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().startActivity(Login.getCallingIntent(getActivity()));
                 getActivity().finish();
+                getActivity().startActivity(Login.getCallingIntent(getActivity()));
             }
         });
     }
