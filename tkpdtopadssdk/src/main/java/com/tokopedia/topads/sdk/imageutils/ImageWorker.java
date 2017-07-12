@@ -74,7 +74,7 @@ public abstract class ImageWorker {
      * @param imageView The ImageView to bind the downloaded image to.
      * @param listener  A listener that will be called back once the image has been loaded.
      */
-    public void loadImage(Object data, ImageView imageView, OnImageLoadedListener listener) {
+    public void loadImage(Object data, ImageView imageView, OnImageLoadedListener listener, boolean loadOnMemory) {
         if (data == null) {
             return;
         }
@@ -88,7 +88,7 @@ public abstract class ImageWorker {
         if (value != null) {
             // Bitmap found in memory cache
             imageView.setImageDrawable(value);
-            if (listener != null) {
+            if (listener != null && loadOnMemory) {
                 listener.onImageLoaded(true);
             }
         } else if (cancelPotentialWork(data, imageView)) {
@@ -118,7 +118,7 @@ public abstract class ImageWorker {
      * @param imageView The ImageView to bind the downloaded image to.
      */
     public void loadImage(Object data, ImageView imageView) {
-        loadImage(data, imageView, null);
+        loadImage(data, imageView, null, true);
     }
 
     /**
