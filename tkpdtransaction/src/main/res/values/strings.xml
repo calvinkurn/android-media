@@ -63,4 +63,6 @@
     <string name="mulai_belanja">Mulai belanja</string>
     <string name="cancel_replacement">Batalkan Pesanan</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
+    <string name="error_cannot_send_to_destination">Tidak dapat mengirim ke tujuan</string>
+    <string name="error_check_cart">Mohon periksa keranjang belanjaan anda</string>
 </resources>
