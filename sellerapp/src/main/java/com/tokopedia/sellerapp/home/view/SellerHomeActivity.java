@@ -216,7 +216,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     String messageExceptionDescription;
     private boolean isInit = false;
     private SellerHomePresenterImpl presenter;
-    private SessionHandler sessionHandler;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {

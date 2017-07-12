@@ -9,7 +9,7 @@ import java.util.Locale;
  * Created by normansyahputa on 1/18/17.
  */
 
-public class SuccessfulTransaction extends CommomGMModel {
+public class SuccessfulTransaction extends CommonGMModel {
     public static final int TYPE = 1282912;
 
     /**
@@ -18,7 +18,6 @@ public class SuccessfulTransaction extends CommomGMModel {
      * @param successTrans
      */
     public SuccessfulTransaction(long successTrans) {
-        type = TYPE;
         if (successTrans < 1_000_000) {
             Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
@@ -27,5 +26,10 @@ public class SuccessfulTransaction extends CommomGMModel {
             text = KMNumbers.formatNumbers(successTrans);
         }
         textDescription = "Transaksi Sukses";
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

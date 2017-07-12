@@ -92,120 +92,71 @@ public abstract class ChartView extends RelativeLayout {
      * list data string to displaye on tooltip
      */
     ArrayList<TooltipModel> dataDisplayTooltip;
-
+    XRenderer.XRendererListener xRendererListener;
     /**
      * Chart orientation
      */
     private Orientation mOrientation;
-
     /**
      * Chart borders including padding
      */
     private int mChartLeft;
-
     private int mChartTop;
-
     private int mChartRight;
-
     private int mChartBottom;
-
     /**
      * Threshold limit line value
      */
     private boolean mHasThresholdValue;
-
     private float mThresholdStartValue;
-
     private float mThresholdEndValue;
-
     private boolean mHasThresholdLabel;
-
     private int mThresholdStartLabel;
-
     private int mThresholdEndLabel;
-
     /**
      * Chart data to be displayed
      */
     private ArrayList<ArrayList<Region>> mRegions;
-
     /**
      * Gestures detector to trigger listeners callback
      */
     private GestureDetector mGestureDetector;
-
     /**
      * Listener callback on entry click
      */
     private OnEntryClickListener mEntryListener;
-
     /**
      * Listener callback on chart click, no entry intersection
      */
     private OnClickListener mChartListener;
-
     /**
      * Drawing flag
      */
     private boolean mReadyToDraw;
-
     /**
      * Drawing flag
      */
     private boolean mIsDrawing;
-
     /**
      * Chart animation
      */
     private Animation mAnim;
-
     /**
      * for grid align with data position
      */
     private boolean xDataGrid;
-
-    public ChartView setxDataGrid(boolean xDataGrid) {
-        this.xDataGrid = xDataGrid;
-        return this;
-    }
-
     /**
      * for margin so we can push down the chart below the canvas
      */
     private int topMargin = 50;
-
-    public ChartView setTopMargin(int topMargin) {
-        this.topMargin = topMargin;
-        return this;
-    }
-
     /**
      * for bottom margin
      */
     private int bottomMargin = 0;
-
-    public ChartView setBottomMargin(int bottomMargin) {
-        this.bottomMargin = bottomMargin;
-        return this;
-    }
-
     /**
      * for right margin we can push left the canvas
      */
     private int rightMargin = 50;
-
-    public ChartView setRightMargin(int rightMargin) {
-        this.rightMargin = rightMargin;
-        return this;
-    }
-
-    XRenderer.XRendererListener xRendererListener;
-
-    public ChartView setXRendererListener(XRenderer.XRendererListener xRendererListener) {
-        this.xRendererListener = xRendererListener;
-        return this;
-    }
-
     /**
      * Executed only before the chart is drawn for the first time.
      * . borders are defined
@@ -278,21 +229,16 @@ public abstract class ChartView extends RelativeLayout {
             return mReadyToDraw = true;
         }
     };
-
     /**
      * Grid attributes
      */
     private GridType mGridType;
-
     private int mGridNRows;
-
     private int mGridNColumns;
-
     /**
      * Tooltip
      */
     private Tooltip mTooltip;
-
 
     public ChartView(Context context, AttributeSet attrs) {
 
@@ -306,7 +252,6 @@ public abstract class ChartView extends RelativeLayout {
                 context.getTheme().obtainStyledAttributes(attrs, R.styleable.ChartAttrs, 0, 0));
     }
 
-
     public ChartView(Context context) {
 
         super(context);
@@ -316,6 +261,31 @@ public abstract class ChartView extends RelativeLayout {
         xRndr = new XRenderer();
         yRndr = new YRenderer();
         style = new Style();
+    }
+
+    public ChartView setxDataGrid(boolean xDataGrid) {
+        this.xDataGrid = xDataGrid;
+        return this;
+    }
+
+    public ChartView setTopMargin(int topMargin) {
+        this.topMargin = topMargin;
+        return this;
+    }
+
+    public ChartView setBottomMargin(int bottomMargin) {
+        this.bottomMargin = bottomMargin;
+        return this;
+    }
+
+    public ChartView setRightMargin(int rightMargin) {
+        this.rightMargin = rightMargin;
+        return this;
+    }
+
+    public ChartView setXRendererListener(XRenderer.XRendererListener xRendererListener) {
+        this.xRendererListener = xRendererListener;
+        return this;
     }
 
     public ChartView putXRndrStringFormatter(StringFormatRenderer stringFormatRenderer) {
@@ -499,6 +469,12 @@ public abstract class ChartView extends RelativeLayout {
         data.add(set);
     }
 
+    public void clearData() {
+        if (data != null && !data.isEmpty()) {
+            data.clear();
+        }
+    }
+
     /**
      * set new data to display dot tooltip
      *
@@ -529,6 +505,15 @@ public abstract class ChartView extends RelativeLayout {
 
         this.getViewTreeObserver().addOnPreDrawListener(drawListener);
         postInvalidate();
+    }
+
+    public void dotVisibility(boolean value, int position) {
+        if (position >= 0 && position < data.size()) {
+            ChartSet chartSet = data.get(position);
+            chartSet.setmPointVisible(value);
+
+            data.set(position, chartSet);
+        }
     }
 
 
@@ -914,6 +899,20 @@ public abstract class ChartView extends RelativeLayout {
         return mOrientation;
     }
 
+    /**
+     * Sets the chart's orientation.
+     *
+     * @param orien Orientation.HORIZONTAL | Orientation.VERTICAL
+     */
+    void setOrientation(Orientation orien) {
+
+        mOrientation = orien;
+        if (mOrientation == Orientation.VERTICAL) {
+            yRndr.setHandleValues(true);
+        } else {
+            xRndr.setHandleValues(true);
+        }
+    }
 
     /**
      * Inner Chart refers only to the area where chart data will be draw,
@@ -926,7 +925,6 @@ public abstract class ChartView extends RelativeLayout {
         return yRndr.getInnerChartBottom();
     }
 
-
     /**
      * Inner Chart refers only to the area where chart data will be draw,
      * excluding labels, axis, etc.
@@ -937,7 +935,6 @@ public abstract class ChartView extends RelativeLayout {
 
         return xRndr.getInnerChartLeft();
     }
-
 
     /**
      * Inner Chart refers only to the area where chart data will be draw,
@@ -950,7 +947,6 @@ public abstract class ChartView extends RelativeLayout {
         return xRndr.getInnerChartRight();
     }
 
-
     /**
      * Inner Chart refers only to the area where chart data will be draw,
      * excluding labels, axis, etc.
@@ -961,7 +957,6 @@ public abstract class ChartView extends RelativeLayout {
 
         return yRndr.getInnerChartTop();
     }
-
 
     /**
      * Returns the position of 0 value on chart.
@@ -981,7 +976,6 @@ public abstract class ChartView extends RelativeLayout {
         return rndr.parsePos(0, 0);
     }
 
-
     /**
      * Get the step used between Y values.
      *
@@ -992,259 +986,6 @@ public abstract class ChartView extends RelativeLayout {
         if (mOrientation == Orientation.VERTICAL) return yRndr.getStep();
         else return xRndr.getStep();
     }
-
-
-    /**
-     * Get chart's border spacing.
-     *
-     * @return spacing
-     */
-    float getBorderSpacing() {
-
-        if (mOrientation == Orientation.VERTICAL) return xRndr.getBorderSpacing();
-        else return yRndr.getBorderSpacing();
-    }
-
-
-    /**
-     * Get the whole data owned by the chart.
-     *
-     * @return List of {@link ChartSet} owned by the chart
-     */
-    public ArrayList<ChartSet> getData() {
-
-        return data;
-    }
-
-
-    /**
-     * Get the list of {@link Rect} associated to each entry of a ChartSet.
-     *
-     * @param index {@link ChartSet} index
-     * @return The list of {@link Rect} for the specified dataset
-     */
-    public ArrayList<Rect> getEntriesArea(int index) {
-
-        ArrayList<Rect> result = new ArrayList<>(mRegions.get(index).size());
-        for (Region r : mRegions.get(index))
-            result.add(getEntryRect(r));
-
-        return result;
-    }
-
-
-    /**
-     * Get the area, {@link Rect}, of an entry from the entry's {@link
-     * Region}
-     *
-     * @param region Region covering {@link ChartEntry} area
-     * @return {@link Rect} specifying the area of an {@link ChartEntry}
-     */
-    Rect getEntryRect(Region region) {
-        // Subtract the view left/top padding to correct position
-        return new Rect(region.getBounds().left - getPaddingLeft(),
-                region.getBounds().top - getPaddingTop(), region.getBounds().right - getPaddingLeft(),
-                region.getBounds().bottom - getPaddingTop());
-    }
-
-
-    /**
-     * Get the current {@link Animation}
-     * held by {@link ChartView}.
-     * Useful, for instance, to define another endAction.
-     *
-     * @return Current {@link Animation}
-     */
-    public Animation getChartAnimation() {
-
-        return mAnim;
-    }
-
-
-    /**
-     * Sets the chart's orientation.
-     *
-     * @param orien Orientation.HORIZONTAL | Orientation.VERTICAL
-     */
-    void setOrientation(Orientation orien) {
-
-        mOrientation = orien;
-        if (mOrientation == Orientation.VERTICAL) {
-            yRndr.setHandleValues(true);
-        } else {
-            xRndr.setHandleValues(true);
-        }
-    }
-
-
-    /**
-     * Show/Hide Y labels and respective axis.
-     *
-     * @param position NONE - No labels
-     *                 OUTSIDE - Labels will be positioned outside the chart
-     *                 INSIDE - Labels will be positioned inside the chart
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setYLabels(YRenderer.LabelPosition position) {
-
-        yRndr.setLabelsPositioning(position);
-        return this;
-    }
-
-
-    /**
-     * Show/Hide X labels and respective axis.
-     *
-     * @param position NONE - No labels
-     *                 OUTSIDE - Labels will be positioned outside the chart
-     *                 INSIDE - Labels will be positioned inside the chart
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setXLabels(XRenderer.LabelPosition position) {
-
-        xRndr.setLabelsPositioning(position);
-        return this;
-    }
-
-
-    /**
-     * Set the format to be added to Y labels.
-     *
-     * @param format Format to be applied
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setLabelsFormat(DecimalFormat format) {
-
-        if (mOrientation == Orientation.VERTICAL) yRndr.setLabelsFormat(format);
-        else xRndr.setLabelsFormat(format);
-
-        return this;
-    }
-
-
-    /**
-     * Set color to be used in labels.
-     *
-     * @param color Color to be applied to labels
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setLabelsColor(@ColorInt int color) {
-
-        style.labelsColor = color;
-        return this;
-    }
-
-
-    /**
-     * Set size of font to be used in labels.
-     *
-     * @param size Font size to be applied to labels
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setFontSize(@IntRange(from = 0) int size) {
-
-        style.fontSize = size;
-        return this;
-    }
-
-
-    /**
-     * Set typeface to be used in labels.
-     *
-     * @param typeface To be applied to labels
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setTypeface(Typeface typeface) {
-
-        style.typeface = typeface;
-        return this;
-    }
-
-
-    /**
-     * Show/Hide X axis.
-     *
-     * @param bool If true axis won't be visible
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setXAxis(boolean bool) {
-
-        style.hasXAxis = bool;
-        return this;
-    }
-
-
-    /**
-     * Show/Hide Y axis.
-     *
-     * @param bool If true axis won't be visible
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setYAxis(boolean bool) {
-
-        style.hasYAxis = bool;
-        return this;
-    }
-
-
-    /**
-     * A step is seen as the step to be defined between 2 labels. As an
-     * example a step of 2 with a maxAxisValue of 6 will end up with
-     * {0, 2, 4, 6} as labels.
-     *
-     * @param minValue The minimum value that Y axis will have as a label
-     * @param maxValue The maximum value that Y axis will have as a label
-     * @param step     (real) value distance from every label
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setAxisBorderValues(int minValue, int maxValue, int step) {
-
-        if (mOrientation == Orientation.VERTICAL) yRndr.setBorderValues(minValue, maxValue, step);
-        else xRndr.setBorderValues(minValue, maxValue, step);
-
-        return this;
-    }
-
-
-    /**
-     * @param minValue The minimum value that Y axis will have as a label
-     * @param maxValue The maximum value that Y axis will have as a label
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setAxisBorderValues(int minValue, int maxValue) {
-
-        if (mOrientation == Orientation.VERTICAL) yRndr.setBorderValues(minValue, maxValue);
-        else xRndr.setBorderValues(minValue, maxValue);
-
-        return this;
-    }
-
-
-    /**
-     * Define the thickness of the axis.
-     *
-     * @param thickness size of the thickness
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setAxisThickness(@FloatRange(from = 0.f) float thickness) {
-
-        style.axisThickness = thickness;
-        return this;
-    }
-
-
-    /**
-     * Define the color of the axis.
-     *
-     * @param color color of the axis
-     * @return {@link ChartView} self-reference.
-     */
-    public ChartView setAxisColor(@ColorInt int color) {
-
-        style.axisColor = color;
-        return this;
-    }
-
 
     /**
      * A step is seen as the step to be defined between 2 labels.
@@ -1264,29 +1005,16 @@ public abstract class ChartView extends RelativeLayout {
         return this;
     }
 
-
     /**
-     * Register a listener to be called when an {@link ChartEntry} is clicked.
+     * Get chart's border spacing.
      *
-     * @param listener Listener to be used for callback.
+     * @return spacing
      */
-    public void setOnEntryClickListener(OnEntryClickListener listener) {
+    float getBorderSpacing() {
 
-        this.mEntryListener = listener;
+        if (mOrientation == Orientation.VERTICAL) return xRndr.getBorderSpacing();
+        else return yRndr.getBorderSpacing();
     }
-
-
-    /**
-     * Register a listener to be called when the {@link ChartView} is clicked.
-     *
-     * @param listener Listener to be used for callback.
-     */
-    @Override
-    public void setOnClickListener(OnClickListener listener) {
-
-        this.mChartListener = listener;
-    }
-
 
     /**
      * @param spacing Spacing between left/right of the chart and the first/last label
@@ -1300,6 +1028,234 @@ public abstract class ChartView extends RelativeLayout {
         return this;
     }
 
+    /**
+     * Get the whole data owned by the chart.
+     *
+     * @return List of {@link ChartSet} owned by the chart
+     */
+    public ArrayList<ChartSet> getData() {
+
+        return data;
+    }
+
+    /**
+     * Get the list of {@link Rect} associated to each entry of a ChartSet.
+     *
+     * @param index {@link ChartSet} index
+     * @return The list of {@link Rect} for the specified dataset
+     */
+    public ArrayList<Rect> getEntriesArea(int index) {
+
+        ArrayList<Rect> result = new ArrayList<>(mRegions.get(index).size());
+        for (Region r : mRegions.get(index))
+            result.add(getEntryRect(r));
+
+        return result;
+    }
+
+    /**
+     * Get the area, {@link Rect}, of an entry from the entry's {@link
+     * Region}
+     *
+     * @param region Region covering {@link ChartEntry} area
+     * @return {@link Rect} specifying the area of an {@link ChartEntry}
+     */
+    Rect getEntryRect(Region region) {
+        // Subtract the view left/top padding to correct position
+        return new Rect(region.getBounds().left - getPaddingLeft(),
+                region.getBounds().top - getPaddingTop(), region.getBounds().right - getPaddingLeft(),
+                region.getBounds().bottom - getPaddingTop());
+    }
+
+    /**
+     * Get the current {@link Animation}
+     * held by {@link ChartView}.
+     * Useful, for instance, to define another endAction.
+     *
+     * @return Current {@link Animation}
+     */
+    public Animation getChartAnimation() {
+
+        return mAnim;
+    }
+
+    /**
+     * Show/Hide Y labels and respective axis.
+     *
+     * @param position NONE - No labels
+     *                 OUTSIDE - Labels will be positioned outside the chart
+     *                 INSIDE - Labels will be positioned inside the chart
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setYLabels(YRenderer.LabelPosition position) {
+
+        yRndr.setLabelsPositioning(position);
+        return this;
+    }
+
+    /**
+     * Show/Hide X labels and respective axis.
+     *
+     * @param position NONE - No labels
+     *                 OUTSIDE - Labels will be positioned outside the chart
+     *                 INSIDE - Labels will be positioned inside the chart
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setXLabels(XRenderer.LabelPosition position) {
+
+        xRndr.setLabelsPositioning(position);
+        return this;
+    }
+
+    /**
+     * Set the format to be added to Y labels.
+     *
+     * @param format Format to be applied
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setLabelsFormat(DecimalFormat format) {
+
+        if (mOrientation == Orientation.VERTICAL) yRndr.setLabelsFormat(format);
+        else xRndr.setLabelsFormat(format);
+
+        return this;
+    }
+
+    /**
+     * Set color to be used in labels.
+     *
+     * @param color Color to be applied to labels
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setLabelsColor(@ColorInt int color) {
+
+        style.labelsColor = color;
+        return this;
+    }
+
+    /**
+     * Set size of font to be used in labels.
+     *
+     * @param size Font size to be applied to labels
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setFontSize(@IntRange(from = 0) int size) {
+
+        style.fontSize = size;
+        return this;
+    }
+
+    /**
+     * Set typeface to be used in labels.
+     *
+     * @param typeface To be applied to labels
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setTypeface(Typeface typeface) {
+
+        style.typeface = typeface;
+        return this;
+    }
+
+    /**
+     * Show/Hide X axis.
+     *
+     * @param bool If true axis won't be visible
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setXAxis(boolean bool) {
+
+        style.hasXAxis = bool;
+        return this;
+    }
+
+    /**
+     * Show/Hide Y axis.
+     *
+     * @param bool If true axis won't be visible
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setYAxis(boolean bool) {
+
+        style.hasYAxis = bool;
+        return this;
+    }
+
+    /**
+     * A step is seen as the step to be defined between 2 labels. As an
+     * example a step of 2 with a maxAxisValue of 6 will end up with
+     * {0, 2, 4, 6} as labels.
+     *
+     * @param minValue The minimum value that Y axis will have as a label
+     * @param maxValue The maximum value that Y axis will have as a label
+     * @param step     (real) value distance from every label
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setAxisBorderValues(int minValue, int maxValue, int step) {
+
+        if (mOrientation == Orientation.VERTICAL) yRndr.setBorderValues(minValue, maxValue, step);
+        else xRndr.setBorderValues(minValue, maxValue, step);
+
+        return this;
+    }
+
+    /**
+     * @param minValue The minimum value that Y axis will have as a label
+     * @param maxValue The maximum value that Y axis will have as a label
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setAxisBorderValues(int minValue, int maxValue) {
+
+        if (mOrientation == Orientation.VERTICAL) yRndr.setBorderValues(minValue, maxValue);
+        else xRndr.setBorderValues(minValue, maxValue);
+
+        return this;
+    }
+
+    /**
+     * Define the thickness of the axis.
+     *
+     * @param thickness size of the thickness
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setAxisThickness(@FloatRange(from = 0.f) float thickness) {
+
+        style.axisThickness = thickness;
+        return this;
+    }
+
+    /**
+     * Define the color of the axis.
+     *
+     * @param color color of the axis
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setAxisColor(@ColorInt int color) {
+
+        style.axisColor = color;
+        return this;
+    }
+
+    /**
+     * Register a listener to be called when an {@link ChartEntry} is clicked.
+     *
+     * @param listener Listener to be used for callback.
+     */
+    public void setOnEntryClickListener(OnEntryClickListener listener) {
+
+        this.mEntryListener = listener;
+    }
+
+    /**
+     * Register a listener to be called when the {@link ChartView} is clicked.
+     *
+     * @param listener Listener to be used for callback.
+     */
+    @Override
+    public void setOnClickListener(OnClickListener listener) {
+
+        this.mChartListener = listener;
+    }
 
     /**
      * @param spacing Spacing between top of the chart and the first label
@@ -1407,6 +1363,28 @@ public abstract class ChartView extends RelativeLayout {
         return this;
     }
 
+    /**
+     * Set spacing between Labels and Axis. Will be applied to X.
+     *
+     * @param spacing Spacing between labels and axis
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setXAxisLabelSpacing(float spacing) {
+        xRndr.setAxisLabelsSpacing(spacing);
+        return this;
+    }
+
+    /**
+     * Set spacing between Labels and Axis. Will be applied to Y.
+     *
+     * @param spacing Spacing between labels and axis
+     * @return {@link ChartView} self-reference.
+     */
+    public ChartView setYAxisLabelSpacing(float spacing) {
+        xRndr.setAxisLabelsSpacing(spacing);
+        return this;
+    }
+
 
     /**
      * Mandatory horizontal border when necessary (ex: BarCharts)
@@ -1466,6 +1444,10 @@ public abstract class ChartView extends RelativeLayout {
                         color[1], color[2], color[3]));
     }
 
+    protected boolean isContainsRegion(MotionEvent ev, int i, int j) {
+        return mRegions.get(i).get(j).contains((int) ev.getX(), (int) ev.getY());
+    }
+
 
     public enum GridType {
         FULL, VERTICAL, HORIZONTAL, NONE
@@ -1475,7 +1457,6 @@ public abstract class ChartView extends RelativeLayout {
     public enum Orientation {
         HORIZONTAL, VERTICAL
     }
-
 
     /**
      * Class responsible to style the Graph!
@@ -1655,7 +1636,7 @@ public abstract class ChartView extends RelativeLayout {
                 int nEntries = mRegions.get(0).size();
                 for (int i = 0; i < nSets; i++)
                     for (int j = 0; j < nEntries; j++)
-                        if (mRegions.get(i).get(j).contains((int) ev.getX(), (int) ev.getY())) {
+                        if (isContainsRegion(ev, i, j)) {
                             if (mEntryListener != null)  // Trigger entry callback
                                 mEntryListener.onClick(i, j, getEntryRect(mRegions.get(i).get(j)));
                             if (mTooltip != null) {  // Toggle tooltip

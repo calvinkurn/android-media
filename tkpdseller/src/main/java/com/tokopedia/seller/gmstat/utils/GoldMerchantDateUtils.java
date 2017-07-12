@@ -2,6 +2,8 @@ package com.tokopedia.seller.gmstat.utils;
 
 import android.util.Log;
 
+import com.tokopedia.core.util.Pair;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,9 +15,9 @@ import java.util.Locale;
  * Created by normansyahputa on 1/19/17.
  */
 public class GoldMerchantDateUtils {
+    public static final String YYYY_M_MDD = "yyyyMMdd";
     private static final Locale locale = new Locale("in", "ID");
     private static final String TAG = "GoldMerchantDateUtils";
-    public static final String YYYY_M_MDD = "yyyyMMdd";
 
     public static String getDateWithYear(int date, String[] monthNames) {
         List<String> dateRaw = getDateRaw(date);
@@ -27,6 +29,18 @@ public class GoldMerchantDateUtils {
         Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
 
         return day + " " + month + " " + year;
+    }
+
+    public static String getDateWithoutYear(int date, String[] monthNames) {
+        List<String> dateRaw = getDateRaw(date);
+        String year = dateRaw.get(2);
+        String month = dateRaw.get(1);
+        month = monthNames[Integer.parseInt(month) - 1];
+
+        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
+        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
+
+        return day + " " + month;
     }
 
     public static long getDateWithYear(int date) {
@@ -164,5 +178,19 @@ public class GoldMerchantDateUtils {
 
             return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
         }
+    }
+
+    public static Pair<Long, String> getDateString(List<Integer> dateGraph, String[] monthNames, int position) {
+        if (dateGraph == null || dateGraph.size() <= 0)
+            return null;
+
+        return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithYear(dateGraph.get(position), monthNames));
+    }
+
+    public static Pair<Long, String> getDateStringWithoutYear(List<Integer> dateGraph, String[] monthNames, int position) {
+        if (dateGraph == null || dateGraph.size() <= 0)
+            return null;
+
+        return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithoutYear(dateGraph.get(position), monthNames));
     }
 }

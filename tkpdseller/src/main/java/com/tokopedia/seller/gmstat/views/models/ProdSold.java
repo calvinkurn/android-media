@@ -9,7 +9,11 @@ public class ProdSold extends SuccessfulTransaction {
 
     public ProdSold(long successTrans) {
         super(successTrans);
-        type = TYPE;
         textDescription = "Produk Terjual";
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

@@ -21,4 +21,5 @@
     <string name="default_exception_description">Kesalahan tidak diketahui</string>
     <string name="prefix_footer_market_insight">Kata kunci ini berdasarkan kategori dari </string>
     <string name="last_thirty_days_ago">Data dalam 30 hari terakhir</string>
+    <string name="see_detail_gm_description">Lihat Detail</string>
 </resources>

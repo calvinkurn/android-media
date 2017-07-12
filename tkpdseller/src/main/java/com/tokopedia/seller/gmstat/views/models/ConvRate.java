@@ -15,7 +15,6 @@ public class ConvRate extends SuccessfulTransaction {
      */
     public ConvRate(double convRate) {
         super(0);
-        type = TYPE;
         convRate *= 100;
 
         text = KMNumbers.formatString(convRate) + "%";
@@ -24,5 +23,10 @@ public class ConvRate extends SuccessfulTransaction {
 
     private ConvRate(long successTrans) {
         super(successTrans);
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

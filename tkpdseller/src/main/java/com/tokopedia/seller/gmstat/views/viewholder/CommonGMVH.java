@@ -10,11 +10,11 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
+import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.models.CommomGMModel;
+import com.tokopedia.seller.gmstat.views.models.CommonGMModel;
 
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 
 /**
  * Created by normansyahputa on 1/18/17.
@@ -61,7 +61,7 @@ public class CommonGMVH extends RecyclerView.ViewHolder {
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
     }
 
-    public void bind(CommomGMModel commomGMModel) {
+    public void bind(CommonGMModel commomGMModel) {
         text.setText(commomGMModel.text);
         textDescription.setText(commomGMModel.textDescription);
 
@@ -73,7 +73,7 @@ public class CommonGMVH extends RecyclerView.ViewHolder {
             percentage.setTextColor(arrowUp);
             isDefault = true;
         } else if (commomGMModel.percentage < 0) {// down here
-            if (commomGMModel.percentage == NoDataAvailable * 100) {
+            if (commomGMModel.percentage == GMStatConstant.NoDataAvailable * 100) {
                 arrowIcon.setVisibility(View.GONE);
                 percentage.setTextColor(gredyColor);
                 isDefault = false;

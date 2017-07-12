@@ -23,7 +23,9 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
@@ -37,14 +39,12 @@ import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
-import com.tokopedia.seller.gmstat.utils.GrossGraphChartConfig;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
 import com.tokopedia.seller.gmstat.views.helper.PopularProductLoading;
 import com.tokopedia.seller.gmstat.views.helper.TransactionDataLoading;
-import com.tokopedia.seller.gmstat.views.models.BaseGMModel;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
@@ -52,9 +52,15 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
+import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
+import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
+import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.net.UnknownHostException;
@@ -67,8 +73,6 @@ import java.util.TreeMap;
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.SHOP_ID;
-import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
-import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -76,7 +80,6 @@ import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
  */
 public class GMStatActivityFragment extends BasePresenterFragment implements GMFragmentView {
 
-    public static final double NoDataAvailable = -2147483600;
     public static final String TAG = "GMStatActivityFragment";
     private static final Locale locale = new Locale("in", "ID");
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
@@ -118,7 +121,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private DataTransactionViewHelper dataTransactionViewHelper;
     private BuyerDataViewHelper buyerDataViewHelper;
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
-    private GrossGraphChartConfig grossGraphChartConfig;
+    private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
     private long shopId;
     private boolean isGoldMerchant;
@@ -275,7 +278,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private void resetEmptyAdapter() {
         gmStatWidgetAdapter.clear();
 
-        List<BaseGMModel> loadingBases = new ArrayList<>();
+        List<ItemType> loadingBases = new ArrayList<>();
         for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
@@ -285,7 +288,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     protected void initEmptyAdapter() {
-        List<BaseGMModel> loadingBases = new ArrayList<>();
+        List<ItemType> loadingBases = new ArrayList<>();
         for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
@@ -340,7 +343,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         initEmptyAdapter();
         initChartLoading();
         popularProductViewHelper = new PopularProductViewHelper(rootView);
-        dataTransactionViewHelper = new DataTransactionViewHelper(rootView, gmstat.getImageHandler(), gmstat.isGoldMerchant());
+        dataTransactionViewHelper = new DataTransactionViewHelper(rootView, gmstat.isGoldMerchant());
         buyerDataViewHelper = new BuyerDataViewHelper(rootView);
         gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
         marketInsightViewHelper = new MarketInsightViewHelper(rootView, gmstat.isGoldMerchant());
@@ -353,8 +356,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         initMarketInsightLoading();
         initMarketInsightLoading2();
         gmFragmentPresenter.initInstance();
-        grossGraphChartConfig = new GrossGraphChartConfig(
-                gmFragmentPresenter.getmLabels(), gmFragmentPresenter.getmValues());
+        baseWilliamChartConfig = new BaseWilliamChartConfig();
+        dataTransactionViewHelper.setDataTransactionChartConfig(new DataTransactionChartConfig(context));
         return rootView;
     }
 
@@ -400,12 +403,12 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
      *
      * @param numChart
      */
-    private void resizeChart(int numChart) {
+    private void resizeChart(int numChart, LineChartView chartView) {
         Log.d(TAG, "resizeChart " + numChart);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
+        int width = (int) DataTransactionViewHelper.dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
         /*
             set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
             is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
@@ -413,9 +416,9 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         */
         double newSizeRatio = ((double) numChart) / 7;
         if (newSizeRatio > 1) {
-            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680), grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(getActivity(), 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         } else {
-            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams(width, grossIncomeGraph2.getLayoutParams().height));
+            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
         }
     }
 
@@ -459,14 +462,22 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
-        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        List<ItemType> baseGMModels = new ArrayList<>();
         baseGMModels.add(grossIncome);
 
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
         //[START] use date from network
-        List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
-        if (dates != null) {
-            grossIncome.textDescription = dates.get(0) + " - " + dates.get(1);
+        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatActivityFragment.this.monthNamesAbrev,
+                0);
+        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatActivityFragment.this.monthNamesAbrev,
+                dateGraph.size() - 1);
+        if (startDateString != null || endDateString != null) {
+            if (startDateString.getModel2() == null || endDateString.getModel2() == null)
+                return;
+
+            grossIncome.textDescription = getString(R.string.gold_merchant_date_range_format_text, startDateString.getModel2(), endDateString.getModel2());
         }
         //[END] use date from network
         //[START] override sDate and eDate with local selection.
@@ -486,7 +497,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         if (nExcels != null) {
             //[]START] try used willam chart
             displayChart();
-            resizeChart(nExcels.size());
+            resizeChart(nExcels.size(), grossIncomeGraph2);
             int i = 0;
             String[] mLabels = new String[nExcels.size()];
             final float[] mValues = new float[nExcels.size()];
@@ -508,9 +519,23 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                 layoutTooltip = R.layout.gm_stat_tooltip;
             }
 
-            grossGraphChartConfig
-                    .setmLabels(mLabels)
-                    .setmValues(mValues, new XRenderer.XRendererListener() {
+            BaseWilliamChartModel baseWilliamChartModel =
+                    new BaseWilliamChartModel(mLabels, mValues);
+            baseWilliamChartConfig
+                    .reset()
+                    .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
+                    .setBasicGraphConfiguration(new GrossGraphChartConfig())
+                    .setDotDrawable(oval2Copy6)
+                    .setTooltip(new Tooltip(getActivity(),
+                            layoutTooltip,
+                            R.id.gm_stat_tooltip_textview,
+                            new StringFormatRenderer() {
+                                @Override
+                                public String formatString(String s) {
+                                    return KMNumbers.formatNumbers(Float.valueOf(s));
+                                }
+                            }), new DefaultTooltipConfiguration())
+                    .setxRendererListener(new XRenderer.XRendererListener() {
                         @Override
                         public boolean filterX(@IntRange(from = 0L) int i) {
                             if (i == 0 || mValues.length - 1 == i)
@@ -523,18 +548,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                             return indexToDisplay.contains(i);
 
                         }
-                    })
-                    .setDotDrawable(oval2Copy6)
-                    .setTooltip(new Tooltip(getActivity(),
-                            layoutTooltip,
-                            R.id.gm_stat_tooltip_textview,
-                            new StringFormatRenderer() {
-                                @Override
-                                public String formatString(String s) {
-                                    return KMNumbers.formatNumbers(Float.valueOf(s));
-                                }
-                            }))
-                    .buildChart(grossGraphChartConfig.buildLineChart(grossIncomeGraph2));
+                    }).buildChart(grossIncomeGraph2);
             //[END] try used willam chart
         }
 
@@ -558,7 +572,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime) {
-        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        List<ItemType> baseGMModels = new ArrayList<>();
         SuccessfulTransaction successfulTransaction
                 = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
         successfulTransaction.percentage = getProductGraph.getDiffTrans() * 100;

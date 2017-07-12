@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+            android:id="@+id/gold_merchant_statistic_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:tag="@string/chart_tag">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.seller.lib.widget.GMDateRangeView
+                        android:id="@+id/gm_statistic_transaction_range_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.tokopedia.seller.lib.widget.GMDateRangeView
+                        android:id="@+id/gm_statistic_transaction_range_compare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/chart_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_marginBottom="@dimen/gmstat_margin_bottom"
+                    android:background="@android:color/white"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/gmstat_padding_item_left_right"
+                    android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+                    android:paddingRight="@dimen/gmstat_padding_item_left_right">
+
+                    <HorizontalScrollView
+                        android:id="@+id/gm_statistic_transaction_graph_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:id="@+id/gm_statistic_transaction_graph_container_inner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.tokopedia.seller.lib.williamchart.view.LineChartView
+                                android:id="@+id/gm_statistic_transaction_income_graph"
+                                android:layout_width="match_parent"
+                                android:layout_height="240dp" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </LinearLayout>
+
+        </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
+
+        <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+            android:id="@+id/topads_statistic_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/topads_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_marginBottom="@dimen/gmstat_margin_bottom"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/gmstat_padding_item_left_right"
+                android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+                android:paddingRight="@dimen/gmstat_padding_item_left_right"
+                android:tag="@string/chart_tag">
+
+                <HorizontalScrollView
+                    android:id="@+id/gm_statistic_topads_graph_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/gm_statistic_topads_graph_container_inner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.tokopedia.seller.lib.williamchart.view.LineChartView
+                            android:id="@+id/gm_statistic_topads_graph"
+                            android:layout_width="match_parent"
+                            android:layout_height="240dp" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
+
+        <com.tokopedia.seller.lib.widget.LabelView
+            android:id="@+id/gm_statistic_label_sold_product_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/product_margin_cards"
+            app:content_color="@color/tkpd_main_green"
+            app:label_show_arrow="true"
+            app:title="@string/gold_merchant_sold_product_list_text" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

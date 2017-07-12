@@ -43,18 +43,23 @@ public abstract class ChartSet {
 	/** Whether the set will be visible or not */
 	private boolean mIsVisible;
 
+	private boolean mPointVisible;
+
 
 	ChartSet() {
 
 		mEntries = new ArrayList<>();
 		mAlpha = 1;
 		mIsVisible = false;
+		mPointVisible = true;
 	}
 
 
 	void addEntry(ChartEntry e) {
 
 		if (e == null) throw new IllegalArgumentException("Chart entry added can't be null object.");
+
+		e.setVisible(mPointVisible);
 
 		mEntries.add(e);
 	}
@@ -181,6 +186,17 @@ public abstract class ChartSet {
 		return mAlpha;
 	}
 
+	/**
+	 * Set set's alpha.
+	 *
+	 * @param alpha alpha value from 0 to 1.
+	 *              If you need to make the set invisible than consider
+	 *              using the method setVisible().
+	 */
+	public void setAlpha(@FloatRange(from = 0.f, to = 1.f) float alpha) {
+
+		mAlpha = (alpha < 1) ? alpha : 1;
+	}
 
 	/**
 	 * Get whether the set should be presented or not.
@@ -191,39 +207,6 @@ public abstract class ChartSet {
 
 		return mIsVisible;
 	}
-	
-	
-	
-	/*
-	 * --------
-	 * Setters
-	 * --------
-	 */
-
-
-	/**
-	 * Set {@link ChartEntry} value at specific index position.
-	 *
-	 * @param index Value's index where value will be placed
-	 */
-	private void setValue(int index, float value) {
-
-		mEntries.get(index).setValue(value);
-	}
-
-
-	/**
-	 * Set set's alpha.
-	 *
-	 * @param alpha alpha value from 0 to 1.
-	 * If you need to make the set invisible than consider
-	 * using the method setVisible().
-	 */
-	public void setAlpha(@FloatRange(from = 0.f, to = 1.f) float alpha) {
-
-		mAlpha = (alpha < 1) ? alpha : 1;
-	}
-
 
 	/**
 	 * Set whether the set should be visible or not.
@@ -235,6 +218,29 @@ public abstract class ChartSet {
 		mIsVisible = visible;
 	}
 
+	/*
+	 * --------
+	 * Setters
+	 * --------
+	 */
+
+	public boolean ismPointVisible() {
+		return mPointVisible;
+	}
+
+	public void setmPointVisible(boolean mPointVisible) {
+		this.mPointVisible = mPointVisible;
+	}
+
+	/**
+	 * Set {@link ChartEntry} value at specific index position.
+	 *
+	 * @param index Value's index where value will be placed
+	 */
+	private void setValue(int index, float value) {
+
+		mEntries.get(index).setValue(value);
+	}
 
 	/**
 	 * @param radius

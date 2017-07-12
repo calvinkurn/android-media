@@ -64,6 +64,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static MainApplication instance;
 
     private DaggerAppComponent.Builder daggerBuilder;
+    private AppComponent appComponent;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -297,7 +298,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         HUDIntent.unbindService(context, hudConnection);
     }
 
-    private void initializeAnalytics() {
+    protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
@@ -348,8 +349,16 @@ public class MainApplication extends TkpdMultiDexApplication {
 	}
 
     public AppComponent getApplicationComponent(ActivityModule activityModule) {
-        return daggerBuilder.activityModule(activityModule)
+        return appComponent = daggerBuilder.activityModule(activityModule)
                 .build();
+    }
+
+    public AppComponent getAppComponent(){
+        return appComponent;
+    }
+
+    public void setAppComponent(AppComponent appComponent){
+        this.appComponent = appComponent;
     }
 
     public void initStetho() {
