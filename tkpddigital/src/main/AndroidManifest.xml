@@ -30,6 +30,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".widget.activity.DigitalCategoryListActivity"
+            android:label="@string/title_activity_category_list_digital_module"
             android:screenOrientation="portrait"/>
     </application>
 
