@@ -51,6 +51,10 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 11/3/16.
  */
 public class CartPresenter implements ICartPresenter {
+
+
+    private static final int MUST_INSURANCE_MODE = 3;
+    public static final int OPTIONAL_INSURANCE_MODE = 2;
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -713,11 +717,11 @@ public class CartPresenter implements ICartPresenter {
             if (currentKeroShipmentServiceId == shipmentServiceId) {
                 courierPrices.setShipmentPrice(keroShipmentServices.get(i).getPrice());
                 courierPrices.setInsuranceMode(keroShipmentServices.get(i).getInsuranceMode());
-                if (courierPrices.getInsuranceMode() == 3) {
+                if (courierPrices.getInsuranceMode() == MUST_INSURANCE_MODE) {
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());
                     courierPrices.setCartSubtotal(true);
-                } else if (courierPrices.getInsuranceMode() == 2){
+                } else if (courierPrices.getInsuranceMode() == OPTIONAL_INSURANCE_MODE){
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());
                     courierPrices.setCartSubtotal(cartRatesData.isInsuranced());
