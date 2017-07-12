@@ -714,7 +714,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             if (!SessionHandler.isV4Login(getActivity())) {
                 Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                //intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                 intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
             } else {

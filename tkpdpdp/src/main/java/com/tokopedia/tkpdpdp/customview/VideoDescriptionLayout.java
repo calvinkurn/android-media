@@ -90,8 +90,9 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         tvDesc.setAutoLinkMask(0);
         Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
         if (MethodChecker.fromHtml(tvDesc.getText().toString()).length() > MAX_CHAR) {
-            String subDescription = MethodChecker.fromHtml(tvDesc.getText().toString()).subSequence(0, MAX_CHAR).toString();
-            tvDesc.setText(MethodChecker.fromHtml(subDescription + "..." + MORE_DESCRIPTION));
+            String subDescription = MethodChecker.fromHtml(description).toString().substring(0, MAX_CHAR);
+            tvDesc.setText(MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "..."
+                    + MORE_DESCRIPTION));
         } else {
             tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
         }
