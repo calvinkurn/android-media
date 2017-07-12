@@ -3,12 +3,17 @@ package com.tokopedia.profilecompletion.view.fragment;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -48,12 +53,15 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private ProgressBarAnimation animation;
     private GetUserInfoDomainData data;
     private String filled;
-    private TextView skip;
+    private View skip;
     View progress;
+    FragmentTransaction transaction;
+    MenuInflater menuInflater;
 
     @Inject
     ProfileCompletionPresenter presenter;
     private Unbinder unbinder;
+    private Pair<Integer, Integer> pair;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -76,6 +84,24 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         return parentView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.menu_skip, menu);
+//        skip = menu.getItem(0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_skip) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     protected void initView(View view) {
         progress = view.findViewById(R.id.progress);
         progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar);
@@ -83,7 +109,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         percentText = (TextView) view.findViewById(R.id.percentText);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         proceed = (TextView) view.findViewById(R.id.proceed);
-        skip = (TextView) view.findViewById(R.id.skip);
+        skip = view.findViewById(R.id.skip);
     }
 
     @Override
@@ -108,6 +134,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     protected void initialVar() {
         animation = new ProgressBarAnimation(progressBar);
         filled = "filled";
+        pair = new Pair<>(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     @Override
@@ -115,7 +142,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         this.data = getUserInfoDomainData;
         testDummyData();
         updateProgressBar(0, data.getCompletion());
-        loadFragment(getUserInfoDomainData);
+        loadFragment(getUserInfoDomainData, new Pair<>(0, 0));
     }
 
     private void testDummyData() {
@@ -145,13 +172,11 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         progressBar.setProgressDrawable(shape);
     }
 
-    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData) {
-
-        FragmentTransaction transaction = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData, Pair<Integer,Integer> pair) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         }
+        transaction.setCustomAnimations(pair.first, pair.second);
         if (!getUserInfoDomainData.isPhoneVerified()) {
             ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG).commit();
@@ -189,7 +214,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             updateProgressBar(data.getCompletion(), data.getCompletion() + 30);
         }
         setViewEnabled();
-        loadFragment(data);
+        loadFragment(data, pair);
     }
 
     private void setViewEnabled() {
@@ -209,6 +234,18 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         skip.setEnabled(false);
     }
 
+    public void canProceed(boolean can){
+        proceed.setEnabled(can);
+        if(can){
+            proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        }
+        else{
+            proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.grey_300));
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+        }
+    }
+
     @Override
     public void onFailedEditProfile(String errorMessage) {
         setViewEnabled();
@@ -221,15 +258,15 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         switch (tag) {
             case ProfileCompletionGenderFragment.TAG:
                 data.setGender(3);
-                loadFragment(data);
+                loadFragment(data, pair);
                 break;
             case ProfileCompletionDateFragment.TAG:
                 data.setBday(filled);
-                loadFragment(data);
+                loadFragment(data, pair);
                 break;
             case ProfileCompletionPhoneVerificationFragment.TAG:
                 data.setPhoneVerified(true);
-                loadFragment(data);
+                loadFragment(data, pair);
                 break;
             default:
                 break;
@@ -257,4 +294,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
                 .build();
         daggerProfileCompletionComponent.inject(this);
     }
+//
+//    public MenuItem getSkipButton() {
+//        return skip;
+//    }
 }

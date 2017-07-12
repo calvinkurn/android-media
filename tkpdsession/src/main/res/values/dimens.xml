@@ -7,7 +7,7 @@
     <dimen name="space_slightly_med">19dp</dimen>
     <dimen name="space_large">30dp</dimen>
     <dimen name="space_very_large">43dp</dimen>
-    <dimen name="image_size">85dp</dimen>
+    <dimen name="image_size">90dp</dimen>
 
     <dimen name="padding_textview_prof_comp">2dp</dimen>
     <dimen name="padding_vsmall_prof_comp">6dp</dimen>

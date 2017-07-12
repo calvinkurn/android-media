@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,9 +75,18 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
         progress = this.view.getView().findViewById(R.id.progress);
+        this.view.canProceed(false);
     }
 
     protected void setViewListener() {
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                view.canProceed(true);
+            }
+        });
+
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

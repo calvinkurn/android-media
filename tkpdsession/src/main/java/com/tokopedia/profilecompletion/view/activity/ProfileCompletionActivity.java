@@ -1,11 +1,13 @@
 package com.tokopedia.profilecompletion.view.activity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfilePhoneVerifCompletionFragment;
@@ -40,6 +42,13 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
+
         ProfileCompletionFragment fragment = ProfileCompletionFragment.createInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {

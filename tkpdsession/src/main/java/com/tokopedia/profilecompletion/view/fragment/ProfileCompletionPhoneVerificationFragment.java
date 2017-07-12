@@ -30,6 +30,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -41,6 +44,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
+import com.tokopedia.profilecompletion.di.DaggerPhoneVerifComponent;
+import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationContract;
@@ -76,7 +81,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     private ProfileCompletionContract.Presenter parentPresenter;
     private View instruction;
 
-//    @Inject
+    @Inject
     ProfileCompletionPhoneVerificationPresenter presenter;
     private ProfileCompletionPhoneVerificationFragment view;
 
@@ -88,7 +93,15 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     @Override
     protected void initInjector() {
-
+        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+                .appModule(new AppModule(getContext()))
+                .activityModule(new ActivityModule(getActivity()))
+                .build();
+        DaggerPhoneVerifComponent daggerPhoneVerifComponent
+                = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
+                .appComponent(daggerAppComponent)
+                .build();
+        daggerPhoneVerifComponent.inject(this);
     }
 
     protected static final String FORMAT = "%02d";
@@ -128,8 +141,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         initialVar();
         onFirstTimeLaunched();
         setViewListener();
-        presenter = new ProfileCompletionPhoneVerificationPresenter(this);
-//        presenter.attachView(this);
+        presenter.attachView(this);
         return parentView;
     }
 

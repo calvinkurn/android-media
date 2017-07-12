@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -74,6 +75,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer);
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
+//        skip = this.view.getSkipButton();
         progress = this.view.getView().findViewById(R.id.progress);
     }
 
