@@ -37,5 +37,8 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
         return SessionHandler.getShopID(context);
     }
 
-
+    @Override
+    public Observable<Boolean> clearCacheShopInfo() {
+        return Observable.just(shopInfoDataSource.clearCacheShopInfo());
+    }
 }

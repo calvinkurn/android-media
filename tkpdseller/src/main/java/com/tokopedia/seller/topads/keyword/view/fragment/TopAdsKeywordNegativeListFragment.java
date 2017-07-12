@@ -7,8 +7,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
-import com.tokopedia.seller.topads.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 
 /**
  * @author normansyahputa on 5/19/17.

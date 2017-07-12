@@ -421,14 +421,18 @@ public class CartPresenter implements ICartPresenter {
         String voucherCode = view.getVoucherCodeCheckoutData();
         boolean isUseVoucher = view.isCheckoutDataUseVoucher();
 
-        if (isUseVoucher && voucherCode.isEmpty()) {
-            view.renderErrorCheckVoucher(
-                    view.getStringFromResource(R.string.label_error_form_voucher_code_empty)
-            );
-            return;
-        } else if (isUseVoucher && !voucherCode.isEmpty()) {
-            view.renderDisableErrorCheckVoucher();
-            checkoutDataBuilder.voucherCode(voucherCode);
+        if (isUseVoucher) {
+            if (voucherCode.isEmpty()) {
+                view.renderErrorCheckVoucher(
+                        view.getStringFromResource(R.string.label_error_form_voucher_code_empty)
+                );
+                return;
+            } else {
+                view.renderDisableErrorCheckVoucher();
+                checkoutDataBuilder.voucherCode(voucherCode);
+            }
+        } else {
+            checkoutDataBuilder.voucherCode("");
         }
 
         String depositCheckout = view.getDepositCheckoutData();
