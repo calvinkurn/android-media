@@ -23,7 +23,6 @@ import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -42,6 +41,7 @@ import com.tokopedia.digital.widget.domain.DigitalCategoryListRepository;
 import com.tokopedia.digital.widget.interactor.DigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemDataError;
 import com.tokopedia.digital.widget.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.widget.presenter.IDigitalCategoryListPresenter;
 
@@ -178,50 +178,22 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void renderErrorGetDigitalCategoryList(String message) {
-        refreshHandler.finishRefresh();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
-                    }
-                });
+        renderErrorStateData(message);
     }
 
     @Override
     public void renderErrorHttpGetDigitalCategoryList(String message) {
-        refreshHandler.finishRefresh();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
-                    }
-                });
+        renderErrorStateData(message);
     }
 
     @Override
     public void renderErrorNoConnectionGetDigitalCategoryList(String message) {
-        refreshHandler.finishRefresh();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
-                    }
-                });
+        renderErrorStateData(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetDigitalCategoryList(String message) {
-        refreshHandler.finishRefresh();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
-                    }
-                });
+        renderErrorStateData(message);
     }
 
     @Override
@@ -377,6 +349,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
+    public void onDigitalCategoryRetryClicked() {
+        refreshHandler.startRefresh();
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing()) presenter.processGetDigitalCategoryList();
     }
@@ -394,6 +371,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
         if (tokoCashData.getData().getAction() == null) return "";
         else return tokoCashData.getData().getAction().getRedirectUrl();
+    }
+
+    private void renderErrorStateData(String message) {
+        refreshHandler.finishRefresh();
+        rvDigitalCategoryList.setLayoutManager(linearLayoutManager);
+        adapter.addErrorData(new DigitalCategoryItemDataError.Builder().message(message).build());
     }
 
 }

@@ -66,15 +66,15 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
                     );
                 } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     digitalCategoryListView.renderErrorNoConnectionGetDigitalCategoryList(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     digitalCategoryListView.renderErrorTimeoutConnectionGetDigitalCategoryList(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
                     );
                 } else {
                     digitalCategoryListView.renderErrorGetDigitalCategoryList(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT
                     );
                 }
             }

@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemDataError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
             R.layout.view_holder_digital_category_item_digital_module;
     private static final int TYPE_HOLDER_CATEGORY_ITEM_EMPTY =
             R.layout.view_holder_digital_category_item_empty_digital_module;
+    private static final int TYPE_HOLDER_CATEGORY_ITEM_ERROR =
+            R.layout.view_holder_item_empty;
 
 
     private List<Object> dataList = new ArrayList<>();
@@ -57,6 +61,13 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
+    public void addErrorData(DigitalCategoryItemDataError dataError) {
+        dataList.clear();
+        notifyDataSetChanged();
+        dataList.add(dataError);
+        notifyDataSetChanged();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_CATEGORY_ITEM) {
@@ -65,6 +76,10 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
             ));
         } else if (viewType == TYPE_HOLDER_CATEGORY_ITEM_EMPTY) {
             return new DigitalCategoryItemEmpty(LayoutInflater.from(
+                    hostFragment.getActivity()).inflate(viewType, parent, false
+            ));
+        } else if (viewType == TYPE_HOLDER_CATEGORY_ITEM_ERROR) {
+            return new DigitalCategoryErrorResult(LayoutInflater.from(
                     hostFragment.getActivity()).inflate(viewType, parent, false
             ));
         } else {
@@ -88,6 +103,16 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
                     }
             );
+        } else if (type == TYPE_HOLDER_CATEGORY_ITEM_ERROR) {
+            final DigitalCategoryItemDataError dataError =
+                    (DigitalCategoryItemDataError) dataList.get(position);
+            NetworkErrorHelper.showEmptyState(hostFragment.getActivity(),
+                    holder.itemView, dataError.getMessage(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            actionListener.onDigitalCategoryRetryClicked();
+                        }
+                    });
         } else {
             DigitalCategoryItemEmpty holderItemEmpty = (DigitalCategoryItemEmpty) holder;
             holderItemEmpty.tvName.setVisibility(View.INVISIBLE);
@@ -103,8 +128,11 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemViewType(int position) {
         Object object = dataList.get(position);
-        return object != null && object instanceof DigitalCategoryItemData
-                ? TYPE_HOLDER_CATEGORY_ITEM : TYPE_HOLDER_CATEGORY_ITEM_EMPTY;
+        if (object != null && object instanceof DigitalCategoryItemData) {
+            return TYPE_HOLDER_CATEGORY_ITEM;
+        } else if (object != null && object instanceof DigitalCategoryItemDataError) {
+            return TYPE_HOLDER_CATEGORY_ITEM_ERROR;
+        } else return TYPE_HOLDER_CATEGORY_ITEM_EMPTY;
     }
 
     static class DigitalCategoryItem extends RecyclerView.ViewHolder {
@@ -131,8 +159,17 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    static class DigitalCategoryErrorResult extends RecyclerView.ViewHolder {
+        DigitalCategoryErrorResult(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
     public interface ActionListener {
         void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData);
+
+        void onDigitalCategoryRetryClicked();
     }
 
 
