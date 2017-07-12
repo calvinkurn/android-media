@@ -1,14 +1,18 @@
-package com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost;
+package com.tokopedia.inbox.rescenter.discussion.data.pojo.generatehost;
 
-/**
- * Created by nisie on 4/3/17.
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-public class GenerateHostData {
+public class GeneratedHost {
 
+    @SerializedName("upload_host")
+    @Expose
     private String uploadHost;
+    @SerializedName("server_id")
+    @Expose
     private String serverId;
-    private String token;
+    @SerializedName("user_id")
+    @Expose
     private Integer userId;
 
     public String getUploadHost() {
@@ -27,19 +31,12 @@ public class GenerateHostData {
         this.serverId = serverId;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public Integer getUserId() {
+        return userId;
     }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
 }
