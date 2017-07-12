@@ -52,7 +52,7 @@
 
     <!-- Tokopedia Login Page -->
     <dimen name="btn_height">44dp</dimen>
-    <dimen name="btn_login_height">48dp</dimen>
+    <dimen name="btn_login_height">52dp</dimen>
     <dimen name="button_otp">175dp</dimen>
     <!-- Shop Editor Page Dimens -->
     <dimen name="se_img_size">200dp</dimen>
@@ -206,5 +206,4 @@
 
     <dimen name="intermediary_brand">86dp</dimen>
     <dimen name="intermediary_card">100dp</dimen>
-    <dimen name="btn_login_height">52dp</dimen>
 </resources>
