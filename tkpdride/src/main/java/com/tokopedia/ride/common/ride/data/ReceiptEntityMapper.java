@@ -78,13 +78,11 @@ public class ReceiptEntityMapper {
     private String formatDisplayPrice(String price) {
         //format display to add space after currency
         if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
-            price = price.replace("IDR", "Rp ");
-            price.replace(",", ".");
+            price = price.replace("IDR", "Rp ").replace(",", ".");
         }
 
         if (price != null && price.contains("Rp") && !price.contains("Rp ")) {
-            price = price.replace("Rp", "Rp ");
-            price.replace(",", ".");
+            price = price.replace("Rp", "Rp ").replace(",", ".");
         }
 
         return price;
