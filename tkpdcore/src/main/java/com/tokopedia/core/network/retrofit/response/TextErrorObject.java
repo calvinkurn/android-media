@@ -3,24 +3,26 @@ package com.tokopedia.core.network.retrofit.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
- * Created by User on 7/6/2017.
+ * Created by Hendry on 7/6/2017.
  */
 
 public class TextErrorObject {
     @SerializedName("text")
     @Expose
-    private String text;
+    private List<String> textList;
     @SerializedName("type")
     @Expose
     private int type;
 
-    public String getText() {
-        return text;
+    public List<String> getTextList() {
+        return textList;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setText(List<String> textList) {
+        this.textList = textList;
     }
 
     public int getType() {

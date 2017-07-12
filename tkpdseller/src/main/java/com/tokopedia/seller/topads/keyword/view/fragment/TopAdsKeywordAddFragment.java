@@ -230,10 +230,11 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
             return tempErrorStringList;
         }
         for (int i = 0, sizei = errorList.size(); i < sizei; i++) {
-            List<TextErrorObject> textErrorObjectList = errorList.get(i).getObjectListParse(TextErrorObject[].class);
-            if (textErrorObjectList != null && textErrorObjectList.size() > 0) {
-                for (int j=0, sizej= textErrorObjectList.size(); j <sizej ; j++) {
-                    tempErrorStringList.add(textErrorObjectList.get(j).getText());
+            TextErrorObject textErrorObject = errorList.get(i).getObjectParse(TextErrorObject.class);
+            if (textErrorObject != null) {
+                List<String> textList = textErrorObject.getTextList();
+                if ( textList != null && textList.size() > 0) {
+                    tempErrorStringList.addAll(textList);
                 }
             }
         }
