@@ -358,11 +358,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                                     .build();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-                    Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
+                    ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(), itemData.getAppLinks(), bundle);
+                    /*Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
                             .getIntentDeepLinkHandlerActivity());
                     intent.putExtras(bundle);
                     intent.setData(Uri.parse(itemData.getAppLinks()));
-                    startActivity(intent);
+                    startActivity(intent);*/
                 } else {
                     String redirectValueUrl = itemData.getRedirectValue();
                     if (redirectValueUrl != null && redirectValueUrl.length() > 0) {

@@ -18,6 +18,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.fragment.DigitalProductFragment;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
@@ -41,7 +42,7 @@ public class DigitalProductActivity extends BasePresenterActivity
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras != null && extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
             Intent homeIntent;
             if (GlobalConfig.isSellerApp()) {
                 homeIntent = SellerAppRouter.getSellerHomeActivity(context);
@@ -51,6 +52,17 @@ public class DigitalProductActivity extends BasePresenterActivity
             homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                     HomeRouter.INIT_STATE_FRAGMENT_HOME);
             taskStackBuilder.addNextIntent(homeIntent);
+        } else {
+            Intent homeIntent;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(context);
+            }
+            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            taskStackBuilder.addNextIntent(homeIntent);
+            taskStackBuilder.addNextIntent(DigitalCategoryListActivity.newInstance(context));
         }
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                 .appLinks(uri.toString())
