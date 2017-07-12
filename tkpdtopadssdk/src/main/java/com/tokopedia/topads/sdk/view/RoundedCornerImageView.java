@@ -29,6 +29,11 @@ public class RoundedCornerImageView extends SquareImageView {
         init();
     }
 
+    public RoundedCornerImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs);
+        init();
+    }
+
     private void init() {
         path = new Path();
     }
