@@ -41,8 +41,6 @@ import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.util.MethodChecker;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -502,12 +500,14 @@ public class ProductList extends V2BaseFragment {
                                 }
                             });
                         } else {
-                            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    refreshProductList();
-                                }
-                            }).showRetrySnackbar();
+                            if (getActivity() != null && isAdded()) {
+                                NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        refreshProductList();
+                                    }
+                                }).showRetrySnackbar();
+                            }
                         }
                         break;
                     case GetShopProductRetrofit.WS_TYPE_ERROR:

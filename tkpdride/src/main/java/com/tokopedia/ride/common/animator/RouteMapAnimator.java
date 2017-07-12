@@ -182,7 +182,6 @@ public class RouteMapAnimator {
             }
         });
         foregroundRouteAnimator.setDuration(1600);
-//        foregroundRouteAnimator.start();
 
         firstRunAnimSet.playSequentially(foregroundRouteAnimator,
                 percentageCompletion);
@@ -194,7 +193,7 @@ public class RouteMapAnimator {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-//                secondLoopRunAnimSet.start();
+
             }
 
             @Override
@@ -207,33 +206,6 @@ public class RouteMapAnimator {
 
             }
         });
-        /*
-        secondLoopRunAnimSet.playSequentially(colorAnimation,
-                percentageCompletion);
-        secondLoopRunAnimSet.setStartDelay(200);
-
-        secondLoopRunAnimSet.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                secondLoopRunAnimSet.start();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });*/
-
         firstRunAnimSet.start();
     }
 

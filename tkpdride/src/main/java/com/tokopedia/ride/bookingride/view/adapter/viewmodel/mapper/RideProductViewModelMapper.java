@@ -20,28 +20,6 @@ public class RideProductViewModelMapper {
     public RideProductViewModelMapper() {
     }
 
-    /*public Visitable transform(Product product) {
-        RideProductViewModel rideProductViewModel = null;
-        if (product != null) {
-            rideProductViewModel = new RideProductViewModel();
-            rideProductViewModel.setProductName(product.getDisplayName());
-            rideProductViewModel.setProductId(product.getProductId());
-            rideProductViewModel.setProductImage(product.getImage());
-        }
-        return rideProductViewModel;
-    }
-
-    public List<Visitable> transform(List<Product> products) {
-        List<Visitable> rideProductViewModels = new ArrayList<>();
-        Visitable productViewModel = null;
-        for (Product product : products) {
-            productViewModel = transform(product);
-            if (productViewModel != null)
-                rideProductViewModels.add(productViewModel);
-        }
-        return rideProductViewModels;
-    }*/
-
     public List<Visitable> transform(List<ProductEstimate> products) {
         List<Visitable> rideProductViewModels = new ArrayList<>();
         Visitable productViewModel = null;

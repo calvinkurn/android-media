@@ -25,7 +25,7 @@
                 android:id="@+id/mapview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/history_map_height"
-                android:background="#F2F2E9"
+                android:background="@color/grey_map_background"
                 android:clickable="false"
                 android:scaleType="centerCrop" />
         </RelativeLayout>

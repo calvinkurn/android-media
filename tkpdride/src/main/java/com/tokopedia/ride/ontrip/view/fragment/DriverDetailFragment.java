@@ -155,12 +155,7 @@ public class DriverDetailFragment extends BaseFragment {
             driverEtaTextView.setVisibility(View.GONE);
         }
 
-//        if (getArguments().getBoolean(EXTRA_SHARED)) {
         shareRideLayout.setVisibility(View.VISIBLE);
-//        } else {
-//            shareRideLayout.setVisibility(View.GONE);
-//        }
-
         Glide.with(getActivity()).load(driver.getPictureUrl())
                 .asBitmap()
                 .centerCrop()
@@ -180,11 +175,6 @@ public class DriverDetailFragment extends BaseFragment {
         vehicleDetailTextView.setText(String.format("%s %s", vehicle.getMake(), vehicle.getVehicleModel()));
         vehiclePlateTextView.setText(vehicle.getLicensePlate());
     }
-
-//    @OnClick(R2.id.call_driver_layout)
-//    public void actionCallDriver() {
-//        onFragmentInteractionListener.actionContactDriver(driver.getPhoneNumber());
-//    }
 
     @OnClick(R2.id.icon_call)
     public void actionCallDriver() {

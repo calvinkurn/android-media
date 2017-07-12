@@ -30,4 +30,5 @@
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
     <color name="grey_dropbox">#7B8994</color>
+    <color name="grey_map_background">#F2F2E9</color>
 </resources>

@@ -31,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -74,6 +73,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -99,12 +99,15 @@ import com.tokopedia.tkpd.home.presenter.CategoryImpl;
 import com.tokopedia.tkpd.home.presenter.CategoryView;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenter;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenterImpl;
+import com.tokopedia.tkpd.home.presenter.TokoCashPresenter;
+import com.tokopedia.tkpd.home.presenter.TokoCashPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
+import com.tokopedia.tkpd.home.tokocash.BottomSheetTokoCash;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,8 +151,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private TokoCashPresenter tokoCashPresenter;
     private SnackbarRetry messageSnackbar;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
+    private BottomSheetTokoCash bottomSheetDialogTokoCash;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -178,6 +183,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onActivationTokoCashClicked() {
 
+    }
+
+    @Override
+    public void onRequestPendingCashBack() {
+        tokoCashPresenter.onRequestCashBackPending();
+    }
+
+    @Override
+    public void onShowTokoCashBottomSheet() {
+        bottomSheetDialogTokoCash.show();
     }
 
     private class ViewHolder {
@@ -358,6 +373,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
+        tokoCashPresenter = new TokoCashPresenterImpl(this);
         brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
             @Override
             public void onSuccess(Brands brands) {
@@ -708,6 +724,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onReceivePendingCashBack(CashBackData cashBackData) {
+        //TODO Uncomment Later
+        if (cashBackData.getAmount() > 0) {
+            bottomSheetDialogTokoCash = new BottomSheetTokoCash(getActivity());
+            bottomSheetDialogTokoCash.setCashBackText(cashBackData.getAmountText());
+            bottomSheetDialogTokoCash.setActivationUrl(tokoCashData.getData().getRedirectUrl());
+            holder.tokoCashHeaderView.showPendingTokoCash(cashBackData.getAmountText());
+        }
+    }
+
+    @Override
     public void showGetCatMenuLoading() {
         //TODO create loading view when fetch request
     }
@@ -802,6 +829,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
+        tokoCashPresenter.onDestroy();
         getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
@@ -1004,7 +1032,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onReceivedTokoCashData(TopCashItem tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         holder.tokoCashHeaderView.renderData(tokoCashData);
-        CommonUtils.dumper("PORING RECEIVED");
         this.tokoCashData = tokoCashData;
     }
 
