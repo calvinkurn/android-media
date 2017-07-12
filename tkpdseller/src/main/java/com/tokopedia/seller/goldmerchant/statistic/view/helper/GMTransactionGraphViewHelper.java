@@ -83,6 +83,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
                 showGraphSelectionDialog();
             }
         });
+        gmStatisticCardView.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_transaction_graph_container);
         gmStatisticGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
@@ -125,6 +126,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
                 .addTitleItem(context.getString(R.string.gold_merchant_transaction_summary_text));
+
         for (int i = 0; i < gmStatTransactionEntries.length; i++) {
             bottomSheetBuilder.addItem(i, gmStatTransactionEntries[i], null);
         }
@@ -167,6 +169,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     }
 
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
+        setHeaderValue(data);
         if (data.isCompare) {
             gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
         } else {
@@ -174,6 +177,13 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
             gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
             processTransactionGraph(data.values, data.dates);
         }
+    }
+
+    private void setHeaderValue(GMGraphViewWithPreviousModel data) {
+        gmStatisticCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
+
+        gmStatisticCardView.setPercentage((double) (data.percentage * 100));
+        gmStatisticCardView.setAmount(Integer.toString(data.amount));
     }
 
     protected void processTransactionGraph(List<Integer> data, List<Integer> dateGraph) {

@@ -222,26 +222,40 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         switch (gmTransactionType) {
             case GMTransactionGraphType.GROSS_REVENUE:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getGrossGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffGrossRevenue();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getGrossRevenue();
                 break;
             case GMTransactionGraphType.NET_REVENUE:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getNetGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffNetRevenue();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getNetRevenue();
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedTransGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffRejectedTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getRejectedTrans();
                 break;
             case GMTransactionGraphType.REJECTED_AMOUNT:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedAmtGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffRejectedAmount();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getRejectedAmount();
                 break;
             case GMTransactionGraphType.SHIPPING_COST:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getShippingGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffShippingCost();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getShippingCost();
                 break;
             case GMTransactionGraphType.SUCCESS_TRANS:
                 gmGraphViewWithPreviousModel.values = getTransactionGraph.getSuccessTransGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffSuccessTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getSuccessTrans();
                 break;
             case GMTransactionGraphType.TOTAL_TRANSACTION:
                 gmGraphViewWithPreviousModel.values = GMStatisticUtil.sumTwoGraph(
                         getTransactionGraph.getSuccessTransGraph(),
                         getTransactionGraph.getRejectedTransGraph());
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffFinishedTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getFinishedTrans();
                 break;
         }
     }

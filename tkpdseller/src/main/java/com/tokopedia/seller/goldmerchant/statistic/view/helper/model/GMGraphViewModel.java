@@ -11,7 +11,7 @@ public class GMGraphViewModel {
     public List<Integer> dates;
     public String title;
     public String subtitle;
-    public float percentage;
+    public double percentage;
     public int amount;
     public GMDateRangeDateViewModel dateRangeModel;
 }
