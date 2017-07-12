@@ -27,9 +27,7 @@ public class SellerReputationDatePickerActivity extends DatePickerActivity {
 
     protected PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
-        DatePickerCustomFragment datePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-        datePickerCustomFragment.setCallback(this);
-        fragmentList.add(datePickerCustomFragment);
+        fragmentList.add(getDatePickerCustomFragment());
         return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
     }
 
