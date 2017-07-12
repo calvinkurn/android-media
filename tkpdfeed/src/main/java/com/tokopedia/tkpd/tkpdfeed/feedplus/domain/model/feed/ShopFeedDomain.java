@@ -30,7 +30,7 @@ public class ShopFeedDomain {
 
     private
     @Nullable
-    Object url;
+    String url;
 
     private
     @Nullable
@@ -46,7 +46,8 @@ public class ShopFeedDomain {
 
 
     public ShopFeedDomain(@Nullable Integer id, @Nullable String name, @Nullable String avatar,
-                          @Nullable Boolean isOfficial, @Nullable Boolean isGold, @Nullable Object url,
+                          @Nullable Boolean isOfficial, @Nullable Boolean isGold, @Nullable String
+                                  url,
                           @Nullable String shopLink, @Nullable String shareLinkDescription,
                           @Nullable String shareLinkURL) {
         this.id = id;
@@ -106,11 +107,11 @@ public class ShopFeedDomain {
     }
 
     @Nullable
-    public Object getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(@Nullable Object url) {
+    public void setUrl(@Nullable String url) {
         this.url = url;
     }
 

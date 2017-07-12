@@ -21,6 +21,10 @@ public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreVie
 
     @LayoutRes
     public static final int LAYOUT = R.layout.official_store_layout;
+    private static final int SPAN_1_PRODUCT = 6;
+    public static final int SPAN_3_PRODUCT = 2;
+    private static final int SPAN_2_PRODUCT = 3;
+    private static final int MAX_OFFICIAL_PRODUCT = 6;
     private final FeedPlus.View viewListener;
 
     RecyclerView recyclerView;
@@ -42,14 +46,16 @@ public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreVie
                 LinearLayoutManager.VERTICAL,
                 false);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
             @Override
             public int getSpanSize(int position) {
                 if (adapter.getList().size() == 1) {
-                    return 6;
-                } else if (adapter.getList().size() % 3 == 0 || adapter.getList().size() > 6) {
-                    return 2;
+                    return SPAN_1_PRODUCT;
+                } else if (adapter.getList().size() % 3 == 0
+                        || adapter.getList().size() > MAX_OFFICIAL_PRODUCT) {
+                    return SPAN_3_PRODUCT;
                 } else if (adapter.getList().size() % 2 == 0) {
-                    return 3;
+                    return SPAN_2_PRODUCT;
                 } else {
                     return 0;
                 }

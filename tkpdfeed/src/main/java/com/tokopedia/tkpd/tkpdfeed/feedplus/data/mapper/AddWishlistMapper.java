@@ -3,8 +3,6 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.pojo.WishlistData;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist.AddWishlistDomain;
 
 import org.json.JSONArray;

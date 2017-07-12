@@ -130,6 +130,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
 
     private ViewHolder holder;
+
     private Runnable tickerIncrementPage;
     private Handler tickerHandler;
     Category category;
@@ -334,7 +335,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra(BannerWebView.EXTRA_URL, "https://www.tokopedia.com/promo/?flag_app=1");
+                intent.putExtra(BannerWebView.EXTRA_URL, TkpdBaseURL.URL_PROMO);
                 startActivity(intent);
             }
         };

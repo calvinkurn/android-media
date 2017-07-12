@@ -29,6 +29,9 @@ import java.util.ArrayList;
 public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.ViewHolder> {
 
 
+    private static final int MAX_FEED_SIZE = 6;
+    private static final int LAST_FEED_POSITION = 5;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView productName;
@@ -93,10 +96,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 holder.productImage,
                 getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
 
-        if (list.size() > 6 && position == 5) {
+        if (list.size() > MAX_FEED_SIZE && position == LAST_FEED_POSITION) {
             holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
             holder.extraProduct.setVisibility(View.VISIBLE);
-            String extra = "+" + (activityCardViewModel.getTotalProduct() - 5);
+            String extra = "+" + (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION);
             holder.extraProduct.setText(extra);
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,8 +131,8 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public int getItemCount() {
-        if (activityCardViewModel.getListProduct().size() > 6)
-            return 6;
+        if (activityCardViewModel.getListProduct().size() > MAX_FEED_SIZE)
+            return MAX_FEED_SIZE;
         else
             return activityCardViewModel.getListProduct().size();
     }

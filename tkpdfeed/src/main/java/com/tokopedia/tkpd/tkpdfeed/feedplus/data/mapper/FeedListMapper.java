@@ -34,7 +34,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         if (product == null) return null;
         return new ProductFeedDomain(product.id(), product.name(), product.price(),
                 product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
-                product.preorder(), product.cashback(), product.url(),
+                product.preorder(), product.cashback(), (String) product.url(),
                 product.productLink(), product.wishlist(),
                 product.rating(), cursor);
     }
@@ -43,7 +43,8 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         if (promotion == null) return null;
         return new PromotionFeedDomain(promotion.id(), promotion.name(), promotion.type(),
                 promotion.thumbnail(), promotion.feature_image(), promotion.description(),
-                promotion.periode(), promotion.code(), promotion.url(), promotion.min_transcation());
+                promotion.periode(), promotion.code(), promotion.url().toString(), promotion
+                .min_transcation());
     }
 
     private WholesaleDomain createWholesaleDomain(Feeds.Data.Wholesale wholesale) {
@@ -67,6 +68,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         List<ProductFeedDomain> productFeedDomains = new ArrayList<>();
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
+
                 Feeds.Data.Product product = products.get(i);
 
                 List<WholesaleDomain> wholesaleDomains = convertToWholesaleDomain(product.wholesale());
@@ -93,7 +95,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     private ShopFeedDomain createShopFeedDomain(Feeds.Data.Shop shop) {
         if (shop == null) return null;
         return new ShopFeedDomain(shop.id(), shop.name(), shop.avatar(), shop.isOfficial(),
-                shop.isGold(), shop.url(), shop.shopLink(), shop.shareLinkDescription(),
+                shop.isGold(), (String) shop.url(), shop.shopLink(), shop.shareLinkDescription(),
                 shop.shareLinkURL());
     }
 

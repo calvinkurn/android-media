@@ -31,7 +31,7 @@ public class PromotionFeedDomain {
 
     public PromotionFeedDomain(@Nonnull String id, @Nonnull String name, @Nonnull String type,
                                @Nonnull String thumbnail, @Nonnull String feature_image, @Nonnull String description,
-                               @Nonnull String periode, @Nonnull String code, @Nonnull Object url,
+                               @Nonnull String periode, @Nonnull String code, @Nonnull String url,
                                @Nonnull String min_transcation) {
         this.id = id;
         this.name = name;
@@ -41,7 +41,7 @@ public class PromotionFeedDomain {
         this.description = description;
         this.periode = periode;
         this.code = code;
-        this.url = url.toString();
+        this.url = url;
         this.minTranscation = min_transcation;
     }
 

@@ -13,7 +13,7 @@ public class ContentFeedDomain {
     private final @Nullable
     String type;
 
-    private final @Nullable Integer totalProduct;
+    private final @Nullable int totalProduct;
 
     private final @Nullable
     List<ProductFeedDomain> products;
@@ -22,7 +22,7 @@ public class ContentFeedDomain {
 
     private final @Nullable String statusActivity;
 
-    public ContentFeedDomain(@Nullable String type, @Nullable Integer total_product,
+    public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                    @Nullable List<ProductFeedDomain> products, @Nullable List<PromotionFeedDomain> promotions,
                    @Nullable String status_activity) {
         this.type = type;
@@ -38,7 +38,7 @@ public class ContentFeedDomain {
     }
 
     @Nullable
-    public Integer getTotalProduct() {
+    public int getTotalProduct() {
         return totalProduct;
     }
 
