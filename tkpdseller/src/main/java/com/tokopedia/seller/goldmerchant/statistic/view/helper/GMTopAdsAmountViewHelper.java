@@ -15,7 +15,7 @@ import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
@@ -28,12 +28,12 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountViewModel> {
+public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel> {
     private LineChartView gmStatisticTopAdsGraph;
     private LinearLayout gmStatisticTopAdsGraphContainerInner;
     private HorizontalScrollView gmStatisticTopAdsGraphContainer;
     private BaseWilliamChartConfig baseWilliamChartConfig;
-    private GMPercentageViewHelper2 gmPercentageViewHelper2;
+    private GMPercentageViewHelper gmPercentageViewHelper2;
 
 
     private String[] monthNamesAbrev;
@@ -43,7 +43,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
     public GMTopAdsAmountViewHelper(@Nullable Context context) {
         super(context);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
-        gmPercentageViewHelper2 = new GMPercentageViewHelper2(context);
+        gmPercentageViewHelper2 = new GMPercentageViewHelper(context);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
         gmStatisticTopAdsCardView.setPercentageUtil(gmPercentageViewHelper2);
     }
 
-    private void setTopAdsCardView(GMTopAdsAmountViewModel data) {
+    private void setTopAdsCardView(GMGraphViewModel data) {
         gmStatisticTopAdsCardView.setTitle(context.getString(R.string.gold_merchant_top_ads_amount_title_text));
         gmStatisticTopAdsCardView.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
 
@@ -66,7 +66,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMTopAdsAmountVie
     }
 
     @Override
-    public void bind(@Nullable GMTopAdsAmountViewModel data) {
+    public void bind(@Nullable GMGraphViewModel data) {
         setTopAdsCardView(data);
 
         // create model for chart

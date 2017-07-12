@@ -24,8 +24,9 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTransactionGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.lib.widget.LabelView;
 
 import java.util.HashMap;
@@ -149,56 +150,21 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         gmDateRangeDateViewModel.setEndDate(endDateString);
 
 
-                        // display percentage demo
                         GMTransactionGraphViewModel gmTransactionGraphViewModel
                                 = new GMTransactionGraphViewModel();
-                        gmTransactionGraphViewModel.dates = dateGraph;
-                        switch (gmTransactionGraphViewHelper.selection()) {
-                            case GMTransactionGraphType.GROSS_REVENUE:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getGrossGraph();
-                                break;
-                            case GMTransactionGraphType.NET_REVENUE:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getNetGraph();
-                                break;
-                            case GMTransactionGraphType.REJECT_TRANS:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedTransGraph();
-                                break;
-                            case GMTransactionGraphType.REJECTED_AMOUNT:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedAmtGraph();
-                                break;
-                            case GMTransactionGraphType.SHIPPING_COST:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getShippingGraph();
-                                break;
-                            case GMTransactionGraphType.SUCCESS_TRANS:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getSuccessTransGraph();
-                                break;
-                            case GMTransactionGraphType.TOTAL_TRANSACTION:
-                                gmTransactionGraphViewModel.values = GMStatisticUtil.sumTwoGraph(
-                                        getTransactionGraph.getSuccessTransGraph(),
-                                        getTransactionGraph.getRejectedTransGraph());
-                                break;
+
+                        for (@GMTransactionGraphType int i = 0; i < 7; i++) {
+                            GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel
+                                    = new GMGraphViewWithPreviousModel();
+                            gmGraphViewWithPreviousModel.dates = dateGraph;
+                            gmGraphViewWithPreviousModel.dateRangeModel = gmDateRangeDateViewModel;
+                            fillGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, getTransactionGraph);
+                            putGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, gmTransactionGraphViewModel);
                         }
-                        gmTransactionGraphViewModel.dateRangeModel = gmDateRangeDateViewModel;
+
                         gmTransactionGraphViewHelper.bind(gmTransactionGraphViewModel);
 
-                        // set top ads amount
-                        GMTopAdsAmountViewModel gmTopAdsAmountViewModel
-                                = new GMTopAdsAmountViewModel();
-                        gmTopAdsAmountViewModel.dates = dateGraph;
-                        gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
-                        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
-                        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
-
-                        // TODO get topads percentage maybe cpc
-                        gmTopAdsAmountViewModel.percentage = 1f;
-
-                        // TODO get topads amount
-                        gmTopAdsAmountViewModel.amount = 100_000;
-
-                        gmTopAdsAmountViewHelper.bind(
-                                gmTopAdsAmountViewModel
-                        );
-
+                        processTopAdsAmount(getTransactionGraph, dateGraph);
                     }
                 });
 
@@ -222,6 +188,80 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         Log.e(TAG, stringResponse.body().toString());
                     }
                 });
+    }
+
+    private void putGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GMTransactionGraphViewModel gmTransactionGraphViewModel) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmTransactionGraphViewModel.grossRevenueModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmTransactionGraphViewModel.netRevenueModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmTransactionGraphViewModel.rejectTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmTransactionGraphViewModel.rejectedAmountModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmTransactionGraphViewModel.shippingCostModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmTransactionGraphViewModel.successTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmTransactionGraphViewModel.totalTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+        }
+    }
+
+    private void fillGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GetTransactionGraph getTransactionGraph) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getGrossGraph();
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getNetGraph();
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedTransGraph();
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedAmtGraph();
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getShippingGraph();
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getSuccessTransGraph();
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmGraphViewWithPreviousModel.values = GMStatisticUtil.sumTwoGraph(
+                        getTransactionGraph.getSuccessTransGraph(),
+                        getTransactionGraph.getRejectedTransGraph());
+                break;
+        }
+    }
+
+    protected void processTopAdsAmount(GetTransactionGraph getTransactionGraph, List<Integer> dateGraph) {
+        GMGraphViewModel gmTopAdsAmountViewModel
+                = new GMGraphViewModel();
+        gmTopAdsAmountViewModel.dates = dateGraph;
+        gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
+        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
+        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
+
+        // TODO get topads percentage maybe cpc, waiting for pcp
+        gmTopAdsAmountViewModel.percentage = 1f;
+
+        gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
+
+        gmTopAdsAmountViewHelper.bind(
+                gmTopAdsAmountViewModel
+        );
     }
 
     private List<Integer> joinAdsGraph(List<Integer> adsPGraph, List<Integer> adsSGraph) {

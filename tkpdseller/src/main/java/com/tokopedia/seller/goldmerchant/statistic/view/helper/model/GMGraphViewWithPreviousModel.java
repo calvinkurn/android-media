@@ -6,7 +6,7 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTransactionGraphViewModel extends GMTopAdsAmountViewModel {
+public class GMGraphViewWithPreviousModel extends GMGraphViewModel {
     public boolean isCompare;
     public List<Integer> pValues;
     public List<Integer> pDates;

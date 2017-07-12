@@ -2,22 +2,30 @@ package com.tokopedia.seller.goldmerchant.statistic.view.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTransactionGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.lib.widget.GMDateRangeView;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
@@ -52,6 +60,9 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     private GMDateRangeView gmStatisticTransactionRangeMain;
     private GMDateRangeView gmStatisticTransactionRangeCompare;
 
+    private boolean showingSimpleDialog;
+    private GMTransactionGraphViewModel data;
+
     public GMTransactionGraphViewHelper(@Nullable Context context) {
         super(context);
 
@@ -69,7 +80,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmStatisticCardView.setOnArrowDownClickListener(new StatisticCardView.OnArrowDownClickListener() {
             @Override
             public void onArrowDownClicked() {
-
+                showGraphSelectionDialog();
             }
         });
         gmStatisticGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_transaction_graph_container);
@@ -79,12 +90,83 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmStatisticTransactionRangeCompare = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_compare);
     }
 
+    @Override
+    public void bind(@Nullable GMTransactionGraphViewModel data) {
+        this.data = data;
+
+        switch (selection()) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                bind(data.grossRevenueModel);
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                bind(data.netRevenueModel);
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                bind(data.rejectTransactionModel);
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                bind(data.rejectedAmountModel);
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                bind(data.shippingCostModel);
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                bind(data.successTransactionModel);
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                bind(data.totalTransactionModel);
+                break;
+        }
+    }
+
+    private void showGraphSelectionDialog() {
+        showingSimpleDialog = true;
+        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(context)
+                .setMode(BottomSheetBuilder.MODE_LIST)
+                .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
+                .addTitleItem(context.getString(R.string.gold_merchant_transaction_summary_text));
+        for (int i = 0; i < gmStatTransactionEntries.length; i++) {
+            bottomSheetBuilder.addItem(i, gmStatTransactionEntries[i], null);
+        }
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(new BottomSheetItemClickListener() {
+                    @Override
+                    public void onBottomSheetItemClick(MenuItem item) {
+                        gmStatGraphSelection = findSelection(gmStatTransactionEntries, item.getTitle().toString());
+                        Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
+                        GMTransactionGraphViewHelper.this.bind(data);
+                        showingSimpleDialog = false;
+                    }
+                })
+                .createDialog();
+        bottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                showingSimpleDialog = false;
+            }
+        });
+        bottomSheetDialog.show();
+    }
+
+    private int findSelection(String[] values, String selection) {
+        int searchIndex = -1;
+
+        int count = 0;
+        for (String value : values) {
+            if (value.equals(selection)) {
+                return searchIndex = count;
+            }
+            count++;
+        }
+        return searchIndex;
+    }
+
     public int selection() {
         return gmStatGraphSelection;
     }
 
-    @Override
-    public void bind(@Nullable GMTransactionGraphViewModel data) {
+    private void bind(@Nullable GMGraphViewWithPreviousModel data) {
         if (data.isCompare) {
             gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
         } else {

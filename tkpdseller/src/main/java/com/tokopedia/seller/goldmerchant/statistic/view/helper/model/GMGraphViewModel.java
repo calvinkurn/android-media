@@ -6,7 +6,7 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTopAdsAmountViewModel {
+public class GMGraphViewModel {
     public List<Integer> values;
     public List<Integer> dates;
     public String title;
