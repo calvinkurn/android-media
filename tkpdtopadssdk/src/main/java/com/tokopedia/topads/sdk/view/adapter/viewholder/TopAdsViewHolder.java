@@ -14,11 +14,14 @@ import android.widget.TextView;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoDialog;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
@@ -76,10 +79,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         if (v.getId() == R.id.info_topads) {
             if(clickListener != null){
                 clickListener.onInfoClicked();
-            }else {
-                TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-                Activity activity = (Activity) context;
-                infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            } else {
+                TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(context);
+                infoBottomSheet.show();
             }
         }
     }
@@ -88,10 +90,10 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.displayMode = displayMode;
     }
 
-    private void switchDisplay(Item item){
+    private void switchDisplay(Item item) {
         switch (displayMode) {
             case FEED:
-                if(item instanceof ShopFeedViewModel){
+                if (item instanceof ShopFeedViewModel) {
                     recyclerView.setLayoutManager(linearLayoutManager);
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
