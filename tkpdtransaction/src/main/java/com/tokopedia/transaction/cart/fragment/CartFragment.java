@@ -398,6 +398,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        tvVoucherDesc.setText("");
         tilEtVoucherCode.setErrorEnabled(true);
         tilEtVoucherCode.setError(message);
     }

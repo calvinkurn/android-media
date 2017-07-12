@@ -43,6 +43,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -863,7 +864,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         switch (buttonIndex) {
                             case 0:
                                 context.startActivity(new Intent(
-                                        context, ManageProduct.class
+                                        context, ManageProductSeller.class
                                 ));
                                 break;
                             case 1:
@@ -1051,7 +1052,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -1082,7 +1082,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -1117,7 +1116,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     public static class SellerHomeNewOrderView {

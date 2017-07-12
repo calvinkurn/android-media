@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
@@ -596,11 +597,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK) {
-            Intent intent = SessionRouter.getLoginActivityIntent(this);
-            intent.putExtras(data.getExtras());
-            startActivity(intent);
-            finish();
+        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getExtras() != null) {
+            if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
+                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.LOGIN) {
+                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                intent.putExtras(data.getExtras());
+                startActivity(intent);
+                finish();
+            } else if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
+                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.REGISTER) {
+                ((TkpdCoreRouter) getApplication()).goToRegister(this);
+            }
         }
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(3);

@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 tools:text="Add Product"
                 android:textSize="@dimen/font_small"
-                android:textColor="@color/font_top_ads_black_54"
+                android:textColor="@color/font_black_secondary_54"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:gravity="center_horizontal" />

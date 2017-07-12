@@ -25,8 +25,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -37,6 +35,7 @@ import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -119,18 +118,6 @@ public class ConsumerRouterApplication extends MainApplication implements
         Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
                 adapterPosition);
         fragment.startActivityForResult(intent, requestCode);
-    }
-
-
-    @Override
-    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(url);
-        paymentPassData.setQueryString(parameter);
-        paymentPassData.setCallbackSuccessUrl(callbackUrl);
-        paymentPassData.setPaymentId(String.valueOf(paymentId));
-        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
-        context.startActivity(intent);
     }
 
     @Override
@@ -220,6 +207,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
