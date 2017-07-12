@@ -57,7 +57,6 @@ public class AuthUtil {
 
 
 
-
     /**
      * default key is KEY_WSV$
      */
@@ -65,7 +64,7 @@ public class AuthUtil {
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
-        public static final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
+        public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(

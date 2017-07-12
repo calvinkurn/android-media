@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
@@ -56,11 +57,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-        TkpdBaseURL.TOKO_CASH_DOMAIN = ConsumerAppBaseUrl.TOKO_CASH_DOMAIN;
+        TkpdBaseURL.TOKO_CASH_DOMAIN = ConsumerAppBaseUrl.BASE_TOKO_CASH_DOMAIN;
         TkpdBaseURL.BASE_ACTION = ConsumerAppBaseUrl.BASE_DOMAIN + "v4/action/";
 
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
-        TkpdBaseURL.TopCash.HMAC_KEY = ConsumerAppBaseUrl.TOKO_CASH_HMAC;
+        TkpdBaseURL.TopCash.HMAC_KEY = AuthUtil.KEY.TOKO_CASH_HMAC;
     }
 
     public void initializeDatabase() {

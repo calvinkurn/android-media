@@ -41,7 +41,6 @@ public class TokoCashRepository implements ITokoCashRepository{
         return new Func1<Response<TkpdDigitalResponse>, CashBackData>() {
             @Override
             public CashBackData call(Response<TkpdDigitalResponse> tkpdDigitalResponse) {
-                CommonUtils.dumper("PORING " + tkpdDigitalResponse.body().toString());
                 return tokoCashMapper.transformTokoCashCashbackData(tkpdDigitalResponse.body()
                         .convertDataObj(ResponseCashBack.class));
             }
