@@ -79,9 +79,9 @@ public class KeroppiParam {
 
     public static TKPDMapParam<String, String> paramsKeroCart(String token, CartItem cartItem) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        if(cartItem.getCartShipments() != null)
+        if (cartItem.getCartShipments() != null)
             params.put(NAMES, cartItem.getCartShipments().getShipmentCode());
-        if(cartItem.getCartShop() != null) {
+        if (cartItem.getCartShop() != null) {
             params.put(ORIGIN, generatePath(cartItem.getCartShop().getAddressId()
                             + "", cartItem.getCartShop().getPostalCode(),
                     cartItem.getCartShop().getLatitude(),
@@ -90,9 +90,9 @@ public class KeroppiParam {
         if (cartItem.getCartDestination() != null) {
             params.put(DESTINATION,
                     generatePath(cartItem.getCartDestination().getAddressDistrictId()
-                            + "", cartItem.getCartDestination().getAddressPostal(),
-                    cartItem.getCartDestination().getLatitude(),
-                    cartItem.getCartDestination().getLongitude()));
+                                    + "", cartItem.getCartDestination().getAddressPostal(),
+                            cartItem.getCartDestination().getLatitude(),
+                            cartItem.getCartDestination().getLongitude()));
         }
 
         params.put(WEIGHT, cartItem.getCartTotalWeight());
@@ -107,7 +107,7 @@ public class KeroppiParam {
         return params;
     }
 
-    private static String setInsurance (CartItem cartItem) {
+    private static String setInsurance(CartItem cartItem) {
         if (cartItem.getCartForceInsurance() == 1) {
             return "1";
         } else return "0";

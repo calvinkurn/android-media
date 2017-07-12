@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -661,12 +660,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         int grandTotal = 0;
         cartItemAdapter.notifyDataSetChanged();
         for (int i = 0; i < cartItemAdapter.getDataList().size(); i++) {
-            if(cartItemAdapter.getDataList().get(i).getCartCourierPrices() != null) {
+            if (cartItemAdapter.getDataList().get(i).getCartCourierPrices() != null) {
                 grandTotal += cartItemAdapter
                         .getDataList().get(i).getCartCourierPrices().getCartSubtotal();
             }
         }
-        if(grandTotal < 1)
+        if (grandTotal < 1)
             tvTotalPayment.setVisibility(View.GONE);
         else {
             tvTotalPayment.setVisibility(View.VISIBLE);

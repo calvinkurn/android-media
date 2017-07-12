@@ -1,19 +1,11 @@
 package com.tokopedia.transaction.cart.model.cartdata;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.utils.ValueConverter;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by kris on 5/23/17. Tokopedia

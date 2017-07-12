@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -32,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -728,7 +726,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onReceivePendingCashBack(CashBackData cashBackData) {
         //TODO Uncomment Later
-        if(cashBackData.getAmount() > 0) {
+        if (cashBackData.getAmount() > 0) {
             bottomSheetDialogTokoCash = new BottomSheetTokoCash(getActivity());
             bottomSheetDialogTokoCash.setCashBackText(cashBackData.getAmountText());
             bottomSheetDialogTokoCash.setActivationUrl(tokoCashData.getData().getRedirectUrl());

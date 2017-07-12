@@ -170,7 +170,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
-        if(cartCourierPrices == null) {
+        if (cartCourierPrices == null) {
             holder.holderDetailCartToggle.setVisibility(View.GONE);
         } else {
             holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
@@ -505,8 +505,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (isUseInsurance) {
             cartInsuranceList = CartInsurance.createListForAdapterUseInsurance();
             holder.insuranceLayout.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             cartInsuranceList = CartInsurance.createListForAdapterNotUseInsurance();
             holder.insuranceLayout.setVisibility(View.GONE);
         }
@@ -599,7 +598,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private boolean isInsuranced(CartItem cartItem) {
-        return  (cartItem.getCartForceInsurance() == 1
+        return (cartItem.getCartForceInsurance() == 1
                 || cartItem.getCartInsuranceProd() == 1
                 || isProductUseInsurance(cartItem.getCartProducts()));
     }
