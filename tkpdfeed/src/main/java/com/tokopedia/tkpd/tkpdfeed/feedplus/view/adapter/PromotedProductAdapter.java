@@ -53,7 +53,6 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-//        super.onBindViewHolder(holder, position);
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());

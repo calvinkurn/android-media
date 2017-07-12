@@ -39,8 +39,6 @@ public class ShareFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ShareItem item = list.get(position);
         if (item.getIcon() != null) {
             holder.icon.setBackgroundDrawable(item.getIcon());
-        } else {
-//                loadIcon();
         }
         holder.label.setText(item.getName());
 

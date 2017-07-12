@@ -491,7 +491,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void clearData() {
         adapter.clearData();
         topAdsRecyclerAdapter.reset();
-//        topAdsRecyclerAdapter.shouldLoadAds(true);
     }
 
     @Override

@@ -9,7 +9,7 @@
         android:id="@+id/filter_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_behavior="com.tokopedia.tkpd.talk.inboxtalk.ScrollAwareFABBehavior">
@@ -17,8 +17,7 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_med"
+            android:layout_height="@dimen/share_header_height"
             android:text="@string/title_share_feed"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black"/>
