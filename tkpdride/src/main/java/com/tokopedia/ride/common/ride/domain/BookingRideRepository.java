@@ -2,7 +2,6 @@ package com.tokopedia.ride.common.ride.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
-import com.tokopedia.ride.common.ride.domain.model.CancelReasons;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;

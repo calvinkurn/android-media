@@ -5,12 +5,10 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.common.ride.domain.model.CancelReasons;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by alvarisi on 6/14/17.

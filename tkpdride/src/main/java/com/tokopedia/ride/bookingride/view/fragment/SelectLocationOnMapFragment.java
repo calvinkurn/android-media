@@ -8,8 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -54,7 +52,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     TextView doneBtn;
 
     private SelectLocationOnMapContract.Presenter mPresenter;
-    //    private PlacePassViewModel source, destination;
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
     private PlacePassViewModel locationDragged;
@@ -114,7 +111,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putParcelable(EXTRA_SOURCE, source);
     }
 
     @Override
@@ -129,12 +125,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
     private void setViewListener() {
-        mapWrapperLayout.setListener(this);/*
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_arrow_back_24dp);
-        }*/
+        mapWrapperLayout.setListener(this);
     }
 
     @Override
@@ -179,22 +170,11 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @Override
     public void onStart() {
-        super.onStart();/*
-        if (googleMap != null && source != null) {
-            moveMapToLocation(source.getLatitude(), source.getLongitude());
-        }*/
+        super.onStart();
     }
 
     private void setInitialVariable() {
         mPresenter = new SelectLocationOnMapPresenter();
-        /*source = getArguments().getParcelable(EXTRA_SOURCE);
-        if (source == null) {
-            source = new PlacePassViewModel();
-            source.setAddress("Source");
-            source.setAddress("Source");
-            source.setAndFormatLatitude(DEFAULT_LATLNG.latitude);
-            source.setAndFormatLongitude(DEFAULT_LATLNG.longitude);
-        }*/
     }
 
     private void setMapViewListener() {
@@ -212,21 +192,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
 
-//        googleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-//            @Override
-//            public void onCameraMoveStarted(int i) {
-//                if (i == REASON_GESTURE) {
-//                    presenter.onMapMoveCameraStarted();
-//                }
-//            }
-//        });
-//
-//        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-//            @Override
-//            public void onCameraIdle() {
-//                presenter.onMapMoveCameraIdle();
-//            }
-//        });
     }
 
 

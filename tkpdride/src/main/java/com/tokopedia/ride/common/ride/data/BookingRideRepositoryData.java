@@ -15,7 +15,6 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.common.ride.domain.model.CancelReasons;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;

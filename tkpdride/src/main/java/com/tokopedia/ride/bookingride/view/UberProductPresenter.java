@@ -10,10 +10,8 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
-import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
-import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -41,57 +39,24 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private RideProductViewModelMapper productViewModelMapper;
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
-    private GetPromoUseCase getPromoUseCase;
+
     private CompositeSubscription compositeSubscription;
 
     public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase,
-                                GetFareEstimateUseCase getFareEstimateUseCase,
-                                GetPromoUseCase getPromoUseCase) {
+                                GetFareEstimateUseCase getFareEstimateUseCase) {
         this.getProductAndEstimatedUseCase = getUberProductsUseCase;
         this.productViewModelMapper = new RideProductViewModelMapper();
         this.getFareEstimateUseCase = getFareEstimateUseCase;
-        this.getPromoUseCase = getPromoUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void initialize() {
-        //actionGetPromo();
         getView().showProgress();
-    }
-
-    private void actionGetPromo() {
-        getPromoUseCase.execute(getView().getPromoParams(), new Subscriber<List<Promo>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    getView().hideAdsBadges();
-                }
-            }
-
-            @Override
-            public void onNext(List<Promo> promo) {
-                if (isViewAttached()) {
-                    if (promo.size() > 0) {
-                        getView().showAdsBadges(promo.get(0).getCode().toUpperCase() + ": " + promo.get(0).getOffer());
-                    } else {
-                        getView().hideAdsBadges();
-                    }
-                }
-            }
-        });
     }
 
     @Override
     public void actionGetRideProducts(final PlacePassViewModel source, final PlacePassViewModel destination) {
-        //getView().showProgress();
-        //getView().hideProductList();
 
         //format existing list to not show time and price when updating
         actionSetProductListWhenItsAvailable(destination);
@@ -159,13 +124,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                     } else {
-                        //check if currency code of any product is not IDR, show error message
-//                        for (ProductEstimate pe : productEstimates) {
-//                            if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
-//                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
-//                                return;
-//                            }
-//                        }
                         if (destination != null) {
                             actionGetFareProduct(source, destination, productEstimates, key, value);
                         } else {
@@ -299,7 +257,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     public void detachView() {
         getFareEstimateUseCase.unsubscribe();
         getProductAndEstimatedUseCase.unsubscribe();
-        getPromoUseCase.unsubscribe();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.detachView();
     }

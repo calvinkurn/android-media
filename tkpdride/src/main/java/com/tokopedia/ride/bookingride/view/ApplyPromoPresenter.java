@@ -28,12 +28,9 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
 
     @Override
     public void actionApplyPromo() {
-
-        //getView().hideApplyPromoLayout();
         getView().disableApplyButton();
 
         if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
-//            getView().setEmptyPromoError();
             return;
         } else {
             getView().clearEmptyPromoError();

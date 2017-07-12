@@ -33,7 +33,6 @@ import com.tokopedia.ride.bookingride.di.PlaceAutoCompleteDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
-import com.tokopedia.ride.bookingride.view.adapter.EndlessRecyclerViewScrollListener;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteAdapterTypeFactory;
@@ -59,7 +58,6 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private PeopleAddressPaging peopleAddressPaging;
     private boolean isMarketPlaceSource;
 
@@ -157,27 +155,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mAutoCompleteRecylerView.setLayoutManager(layoutManager);
         mAutoCompleteRecylerView.setHasFixedSize(true);
-
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                actionOnLoadMoreDetected(page + 1);
-            }
-        };
-        mAutoCompleteRecylerView.addOnScrollListener(endlessRecyclerViewScrollListener);
         mAutoCompleteRecylerView.setAdapter(mAdapter);
     }
-
-    private void actionOnLoadMoreDetected(int page) {
-        /*if (isMarketPlaceSource) {
-            if (!TextUtils.isEmpty(peopleAddressPaging.getNextUrl()) && !String.valueOf(peopleAddressPaging.getNextUrl()).equalsIgnoreCase("0")) {
-                peopleAddressPaging.setPage(page);
-                setActiveMarketplaceSource();
-                presenter.actionGetPeopleAddresses(true);
-            }
-        }*/
-    }
-
     /**
      * This function handles location alert result, initiated from Activity class
      *

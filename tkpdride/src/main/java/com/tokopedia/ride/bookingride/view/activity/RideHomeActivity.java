@@ -549,20 +549,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionAdsShowed() {
-        //mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx * 1.5);
-        //mSlidingUpPanelLayout.setPanelHeight(mSlidingPanelMinHeightInPx);
     }
 
     @Override
     public void actionAdsHidden() {
-        //mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx / 1.5);
     }
 
     @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
-        //mSlidingUpPanelLayout.setPanelHeight(50);
-        //mSlidingUpPanelLayout.setParallaxOffset(5);
 
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
         Slide slideTransition = null;
@@ -591,10 +586,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
 //            fragment.disablePickLocation();
-        } else {
-            fragment = RideHomeMapFragment.newInstance();
-            addFragment(R.id.top_container, fragment);
-//            fragment.disablePickLocation();
         }
     }
 
@@ -620,8 +611,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             hideBlockTranslucentLayout();
             hideSeatPanelLayout();
         } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
-            //hideBlockTranslucentLayout();
-            //hideSeatPanelLayout();
             getFragmentManager().popBackStack();
 
             onBottomContainerChangeToProductListScreen();
@@ -631,8 +620,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
-//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
-//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
         }

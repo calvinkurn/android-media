@@ -1996,4 +1996,10 @@ di Tokopedia Sekarang!</string>
     <string name="max_notif">999+</string>
     <string name="register_text_login">Belum punya akun? Daftar</string>
     <string name="or">Atau</string>
+    <string name="product_share_ride_trip">Bagikan Perjalanan Ini!</string>
+    <string name="product_share_product">Bagikan Produk Ini!</string>
+    <string name="product_share_search">Bagikan Pencarian Ini!</string>
+    <string name="product_share_hotlist">Bagikan Hotlist Ini!</string>
+    <string name="product_share_shop">Bagikan Toko Ini!</string>
+    <string name="product_share_catalog">Bagikan Katalog Ini!</string>
 </resources>

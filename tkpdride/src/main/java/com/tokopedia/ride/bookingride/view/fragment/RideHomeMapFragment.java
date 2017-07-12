@@ -316,30 +316,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
-//        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-//            @Override
-//            public void onCameraChange(CameraPosition cameraPosition) {
-//
-//            }
-//        });
-//        mapView.se
-//
-//        googleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-//            @Override
-//            public void onCameraMoveStarted(int i) {
-//                if (i == REASON_GESTURE) {
-//                    presenter.onMapMoveCameraStarted();
-//                }
-//            }
-//        });
-//
-//        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-//            @Override
-//            public void onCameraIdle() {
-//                presenter.onMapMoveCameraIdle();
-//            }
-//        });
-
         if (source != null && destination != null) {
             presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
