@@ -166,6 +166,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         items.clear();
+        setShouldLoadAds(true);
     }
 
     @Override
@@ -203,6 +204,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
         mNeedsPlacement = false;
+        observer.onStreamLoaded(observerType);
     }
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
@@ -273,6 +275,8 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         if (list.size() > 0) {
             arrayList.add(pos, new TopAdsViewModel(list));
             mPage++;
+        } else {
+            setShouldLoadAds(false);
         }
     }
 
