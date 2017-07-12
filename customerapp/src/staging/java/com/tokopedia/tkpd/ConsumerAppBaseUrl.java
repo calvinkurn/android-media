@@ -25,6 +25,6 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-staging.tokopedia.com/";
     public static final String BASE_RIDE_DOMAIN = "https://ride-staging.tokopedia.com/";
-
+    public static final String BASE_TOKO_CASH_DOMAIN = "https://wallet-staging.tokopedia.id/";
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
 }

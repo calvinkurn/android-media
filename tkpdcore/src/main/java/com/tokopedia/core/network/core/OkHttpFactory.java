@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -320,5 +321,14 @@ public class OkHttpFactory {
             tkpdbBuilder.addInterceptor(chuckInterceptor);
         }
         return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildClientTokoCashAuth(String authKey){
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new MsisdnInterceptor(authKey))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
     }
 }

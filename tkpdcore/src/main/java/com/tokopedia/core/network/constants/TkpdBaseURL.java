@@ -44,6 +44,8 @@ public class TkpdBaseURL {
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
+    public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
+
     public static final String URL_TOKOCASH = "https://tokocash.com/";
 
     public static class Product {
@@ -705,6 +707,7 @@ public class TkpdBaseURL {
     }
 
     public static class TopCash {
+        public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }

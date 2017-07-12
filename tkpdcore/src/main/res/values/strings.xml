@@ -1441,6 +1441,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="pending_cashback_info">Pending Cashback</string>
     <string name="toko_cash_top_up">Topup</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>

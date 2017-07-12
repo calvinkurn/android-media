@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/4/16.
@@ -25,6 +26,8 @@ public class CheckoutData implements Parcelable {
     private List<CheckoutDropShipperData> dropShipperDataList;
     private String voucherCode;
     private String donationValue;
+    private List<String> keroKeyParams;
+    private List<String> keroValueParams;
 
     private CheckoutData(Builder builder) {
         setLpFlag(builder.lpFlag);
@@ -40,6 +43,8 @@ public class CheckoutData implements Parcelable {
         setDropShipperDataList(builder.dropShipperDataList);
         setVoucherCode(builder.voucherCode);
         setDonationValue(builder.donationValue);
+        setKeroKeyParams(builder.keroKeyParams);
+        setKeroValueParams(builder.keroValueParams);
     }
 
     public List<CheckoutDropShipperData> getDropShipperDataList() {
@@ -149,6 +154,22 @@ public class CheckoutData implements Parcelable {
         this.donationValue = donationValue;
     }
 
+    public List<String> getKeroKeyParams() {
+        return keroKeyParams;
+    }
+
+    public void setKeroKeyParams(List<String> keroKeyParams) {
+        this.keroKeyParams = keroKeyParams;
+    }
+
+    public List<String> getKeroValueParams() {
+        return keroValueParams;
+    }
+
+    public void setKeroValueParams(List<String> keroValueParams) {
+        this.keroValueParams = keroValueParams;
+    }
+
     public static final class Builder {
         private String lpFlag = "1";
         private String depositAmount;
@@ -163,6 +184,8 @@ public class CheckoutData implements Parcelable {
         private List<CheckoutDropShipperData> dropShipperDataList;
         private String voucherCode;
         private String donationValue;
+        private List<String> keroKeyParams;
+        private List<String> keroValueParams;
 
         public Builder() {
         }
@@ -232,6 +255,16 @@ public class CheckoutData implements Parcelable {
             return this;
         }
 
+        public Builder keroKeyParams(List<String> keroKeyParams) {
+            this.keroKeyParams = keroKeyParams;
+            return this;
+        }
+
+        public Builder keroValueParams(List<String> keroValueParams) {
+            this.keroValueParams = keroValueParams;
+            return this;
+        }
+
         public CheckoutData build() {
             return new CheckoutData(this);
         }
@@ -258,6 +291,8 @@ public class CheckoutData implements Parcelable {
         dest.writeTypedList(this.dropShipperDataList);
         dest.writeString(this.voucherCode);
         dest.writeString(this.donationValue);
+        dest.writeStringList(keroKeyParams);
+        dest.writeStringList(keroValueParams);
     }
 
     protected CheckoutData(Parcel in) {
@@ -274,6 +309,8 @@ public class CheckoutData implements Parcelable {
         this.dropShipperDataList = in.createTypedArrayList(CheckoutDropShipperData.CREATOR);
         this.voucherCode = in.readString();
         this.donationValue = in.readString();
+        this.keroKeyParams = in.createStringArrayList();
+        this.keroValueParams = in.createStringArrayList();
     }
 
     public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {

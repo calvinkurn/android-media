@@ -156,6 +156,10 @@ public class TopPayIntentService extends IntentService {
         params.put("deposit_amt", checkoutData.getDepositAmount());
         params.put("partial_str", checkoutData.getPartialString());
         params.put("dropship_str", checkoutData.getDropShipString());
+        for (int i = 0; i < checkoutData.getKeroKeyParams().size(); i++) {
+            params.put(checkoutData.getKeroKeyParams().get(i),
+                    checkoutData.getKeroValueParams().get(i));
+        }
         params.put(GTMContainer.CLIENT_ID, TrackingUtils.getClientID());
 
         if (checkoutData.getVoucherCode() != null) {
