@@ -42,6 +42,7 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static final String URL_TOKOCASH = "https://tokocash.com/";
 
@@ -714,7 +715,8 @@ public class TkpdBaseURL {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
-    public static class Truecaller{
+
+    public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 
@@ -737,6 +739,12 @@ public class TkpdBaseURL {
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
+    }
+
+    public static class DigitalWebsite {
+        public static final String PATH_TRANSACTION_LIST = "order-list/";
+        public static final String PATH_PRODUCT_LIST = "products/";
+        public static final String PATH_SUBSCRIPTIONS = "subscribe/";
     }
 
     public static class HadesCategory {

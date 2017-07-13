@@ -33,6 +33,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.SessionRouter;
@@ -112,12 +113,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
-    private static final String URL_TRANSACTION_LIST_DIGITAL =
-            "https://pulsa.tokopedia.com/order-list/";
-    private static final String URL_PRODUCT_LIST_DIGITAL =
-            "https://pulsa.tokopedia.com/products/";
-    private static final String URL_SUBSCRIPTIONS_DIGITAL =
-            "https://pulsa.tokopedia.com/subscribe/";
+//    private static final String URL_TRANSACTION_LIST_DIGITAL =
+//            "https://pulsa.tokopedia.com/order-list/";
+//    private static final String URL_PRODUCT_LIST_DIGITAL =
+//            "https://pulsa.tokopedia.com/products/";
+//    private static final String URL_SUBSCRIPTIONS_DIGITAL =
+//            "https://pulsa.tokopedia.com/subscribe/";
 
 
     private Operator operatorSelectedState;
@@ -721,21 +722,24 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_PRODUCT_LIST_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
                     )
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_SUBSCRIPTIONS_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
                     )
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             navigateToActivity(
                     DigitalWebActivity.newInstance(
-                            getActivity(), URL_TRANSACTION_LIST_DIGITAL
+                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
                     )
             );
             return true;

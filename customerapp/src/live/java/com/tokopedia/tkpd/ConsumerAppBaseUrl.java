@@ -26,4 +26,5 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static final String BASE_DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
 }
