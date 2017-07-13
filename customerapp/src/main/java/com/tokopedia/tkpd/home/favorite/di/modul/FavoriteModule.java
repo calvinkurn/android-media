@@ -74,12 +74,13 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(ThreadExecutor threadExecutor,
+    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(@ActivityContext Context context,
+                                                            ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutor,
                                                             GetFavoriteShopUsecase favUseCase,
                                                             GetWishlistUsecase wishlistUseCase,
                                                             GetTopAdsShopUseCase topAdsShopUseCase){
-        return new GetAllDataFavoriteUseCase(
+        return new GetAllDataFavoriteUseCase(context,
                 threadExecutor, postExecutor, favUseCase, wishlistUseCase, topAdsShopUseCase);
     }
 

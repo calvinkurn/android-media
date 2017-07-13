@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -25,6 +26,7 @@ import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 
 import java.util.ArrayList;

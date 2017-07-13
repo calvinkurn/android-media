@@ -434,9 +434,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         NetworkParam.Product networkParam = ((BrowseProductActivity) getActivity()).getProductParam();
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, networkParam.source);
-        if(params.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
-            params.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
-        }
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, networkParam.sc);
         if (networkParam.keyword != null) {
             params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.keyword);
