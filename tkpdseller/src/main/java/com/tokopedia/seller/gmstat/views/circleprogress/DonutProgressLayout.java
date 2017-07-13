@@ -76,42 +76,42 @@ public class DonutProgressLayout extends FrameLayout {
         }
     }
 
-    private void setUI(){
+    private void setUI() {
         setAmount(amountString);
         setTitle(titleString);
     }
 
-    public void setAmount (CharSequence amount) {
+    public void setAmount(CharSequence amount) {
         amountString = amount;
         if (TextUtils.isEmpty(amount)) {
             tvAmount.setVisibility(View.GONE);
         } else {
             tvAmount.setText(amount);
-            if (amountTextSize!= 0) {
+            if (amountTextSize != 0) {
                 tvAmount.setTextSize(TypedValue.COMPLEX_UNIT_PX, amountTextSize);
             }
             tvAmount.setVisibility(View.VISIBLE);
         }
     }
 
-    public void setTitle (CharSequence title) {
+    public void setTitle(CharSequence title) {
         titleString = title;
         if (TextUtils.isEmpty(title)) {
             tvTitle.setVisibility(View.GONE);
         } else {
             tvTitle.setText(title);
-            if (titleTextSize!= 0) {
+            if (titleTextSize != 0) {
                 tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
             }
             tvTitle.setVisibility(View.VISIBLE);
         }
     }
 
-    public TextView getTitleTextView(){
+    public TextView getTitleTextView() {
         return tvTitle;
     }
 
-    public TextView getAmountTextView(){
+    public TextView getAmountTextView() {
         return tvAmount;
     }
 

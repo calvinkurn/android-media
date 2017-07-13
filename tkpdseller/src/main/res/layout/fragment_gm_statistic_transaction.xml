@@ -77,26 +77,28 @@
             android:id="@+id/not_done_trans_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:donut_pl_title="Judul"
+                android:tag="@string/chart_tag"
                 app:donut_pl_amount="200"
-                app:donut_pl_title_text_size="15sp"
                 app:donut_pl_amount_text_size="30sp"
-                android:tag="@string/chart_tag">
+                app:donut_pl_title="Judul"
+                app:donut_pl_title_text_size="15sp">
+
                 <com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress
                     android:id="@+id/donut_progress"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    app:donut_max="100"
+                    app:donut_circle_starting_degree="90"
                     app:donut_finished_color="#00FF00"
                     app:donut_finished_stroke_width="8dp"
+                    app:donut_max="100"
+                    app:donut_progress="85"
                     app:donut_show_text="false"
                     app:donut_unfinished_color="#FF0000"
-                    app:donut_unfinished_stroke_width="8dp"
-                    app:donut_progress="85"
-                    app:donut_circle_starting_degree="90"/>
+                    app:donut_unfinished_stroke_width="8dp" />
             </com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout>
         </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
 
