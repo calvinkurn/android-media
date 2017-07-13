@@ -259,7 +259,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void showTabLayout() {
-        if(browserSectionsPagerAdapter.getCount()>1){
+        if(browserSectionsPagerAdapter != null && browserSectionsPagerAdapter.getCount()>1){
             tabLayout.setVisibility(View.VISIBLE);
         } else {
             tabLayout.setVisibility(View.GONE);

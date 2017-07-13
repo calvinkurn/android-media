@@ -404,13 +404,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private DefaultCategoryAdapter categoryAdapter;
 
-        Context context;
-
-
         public DefaultCategoryHeaderViewHolder(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.context = context;
         }
 
         public void bind(final CategoryHeaderModel categoryHeaderModel) {
@@ -485,7 +481,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private static final long SLIDE_DELAY = 8000;
 
-        Context context;
+        private final Context context;
         private RelativeLayout imageHeaderContainer;
         private RelativeLayout bannerContainer;
         private ViewPager bannerViewPager;
