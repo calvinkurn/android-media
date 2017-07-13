@@ -6,6 +6,7 @@ import android.support.v7.widget.TintTypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -68,7 +69,11 @@ public class DonutProgressLayout extends FrameLayout {
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
         if (child instanceof DonutProgress) {
-            contentView.addView(child);
+            FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(params);
+            flp.gravity = Gravity.CENTER_VERTICAL | (flp.gravity & ~Gravity.VERTICAL_GRAVITY_MASK);
+            contentView.addView(child, flp);
+
+            contentView.setLayoutParams(params);
             setUI();
         } else {
             // Carry on adding the View...

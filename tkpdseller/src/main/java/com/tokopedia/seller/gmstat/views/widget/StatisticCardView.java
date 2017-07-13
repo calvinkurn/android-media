@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ public class StatisticCardView extends CardView {
     private ArrowPercentageView arrowPercentageView;
     private TextView tvSubtitle;
     private TextView tvPercentageDesc;
+    private ViewGroup vgTitle;
 
     public StatisticCardView(Context context) {
         super(context);
@@ -54,8 +56,9 @@ public class StatisticCardView extends CardView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_statistic_card, this);
-        tvTitle = (TextView) view.findViewById(R.id.tv_title);
-        ivArrowDown = (ImageView) view.findViewById(R.id.iv_arrow_down);
+        vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
+        tvTitle = (TextView) vgTitle.findViewById(R.id.tv_title);
+        ivArrowDown = (ImageView) vgTitle.findViewById(R.id.iv_arrow_down);
         tvAmount = (TextView) view.findViewById(R.id.tv_amount);
         arrowPercentageView = (ArrowPercentageView) view.findViewById(R.id.view_arrow_percentage);
         tvSubtitle = (TextView) view.findViewById(R.id.tv_subtitle);
@@ -77,19 +80,19 @@ public class StatisticCardView extends CardView {
         this.onArrowDownClickListener = onArrowDownClickListener;
         if (onArrowDownClickListener == null) {
             ivArrowDown.setVisibility(View.GONE);
-            tvTitle.setClickable(false);
-            tvTitle.setOnClickListener(null);
+            vgTitle.setClickable(false);
+            vgTitle.setOnClickListener(null);
             ivArrowDown.setOnClickListener(null);
         } else {
             ivArrowDown.setVisibility(View.VISIBLE);
-            tvTitle.setClickable(true);
+            vgTitle.setClickable(true);
             OnClickListener onClickListener = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onArrowDownClickListener.onArrowDownClicked();
                 }
             };
-            tvTitle.setOnClickListener(onClickListener);
+            vgTitle.setOnClickListener(onClickListener);
             ivArrowDown.setOnClickListener(onClickListener);
         }
     }
@@ -103,7 +106,10 @@ public class StatisticCardView extends CardView {
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
         if (getContext().getString(R.string.chart_tag).equals(child.getTag())) {
-            mFrameLayout.addView(child);
+            mFrameLayout.addView(child, params);
+            if (params.width > mFrameLayout.getLayoutParams().width) {
+                mFrameLayout.setLayoutParams(params);
+            }
         } else {
             // Carry on adding the View...
             super.addView(child, index, params);
