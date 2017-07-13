@@ -11,6 +11,8 @@ import android.support.v4.content.CursorLoader;
  */
 
 public class AlbumMediaLoader extends CursorLoader {
+    public static final String BUCKET_ID = "bucket_id";
+    public static final String BUCKET_DISPLAY_NAME = "bucket_display_name";
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
@@ -20,21 +22,23 @@ public class AlbumMediaLoader extends CursorLoader {
             MediaStore.MediaColumns.SIZE,
             "duration"};
     private static final String SELECTION_ALL =
-            "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " OR "
-                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+            String.format("(%s=? OR %s=?) AND %s>0",
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.MediaColumns.SIZE
+            );
     private static final String[] SELECTION_ALL_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
     };
     private static final String SELECTION_ALBUM =
-            "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " OR "
-                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND "
-                    + " bucket_id=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+            String.format("(%s=? OR %s=?) AND %s=? AND %s>0",
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    BUCKET_ID,
+                    MediaStore.MediaColumns.SIZE
+            );
+
     private static String[] getSelectionAlbumArgs(String albumId) {
         return new String[] {
                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),

@@ -83,9 +83,9 @@ public class AlbumItem implements Parcelable {
 
     public static AlbumItem valueOf(Cursor cursor) {
         return new AlbumItem(
-                cursor.getString(cursor.getColumnIndex("bucket_id")),
+                cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_ID)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
-                cursor.getString(cursor.getColumnIndex("bucket_display_name")),
+                cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_DISPLAY_NAME)),
                 cursor.getLong(cursor.getColumnIndex(AlbumLoader.COLUMN_COUNT)));
     }
 
