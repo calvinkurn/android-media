@@ -125,7 +125,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         showingSimpleDialog = true;
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(context)
                 .setMode(BottomSheetBuilder.MODE_LIST)
-//                .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
+                .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
                 .addTitleItem(context.getString(R.string.gold_merchant_transaction_summary_text));
 
         for (int i = 0; i < gmStatTransactionEntries.length; i++) {
