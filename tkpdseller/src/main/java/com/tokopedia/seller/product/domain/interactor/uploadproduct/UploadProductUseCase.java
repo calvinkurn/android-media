@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
-import com.tokopedia.seller.product.domain.ProductDraftRepository;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
@@ -67,7 +67,9 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository, new ProductDraftUpdate(productDraftRepository, productId)))
+                .flatMap(new UploadProduct(productId, listener, generateHostRepository,
+                        uploadProductRepository, imageProductUploadRepository,
+                        new ProductDraftUpdate(productDraftRepository, productId)))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 

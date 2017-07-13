@@ -17,7 +17,6 @@ import com.tokopedia.seller.product.view.fragment.ProductEditFragment;
 public class ProductEditActivity extends ProductDraftEditActivity {
 
     public static final String PRODUCT_ID = "PRODUCT_ID";
-    public static final String TAG = ProductEditFragment.class.getSimpleName();
 
     public static Intent createInstance(Context context, String productId){
         Intent intent = new Intent(context, ProductEditActivity.class);
@@ -35,18 +34,22 @@ public class ProductEditActivity extends ProductDraftEditActivity {
     }
 
     private void inflateFragment(String productId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment == null) {
             fragment = ProductEditFragment.createInstance(productId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, TAG);
+        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
         fragmentTransaction.commit();
     }
 
     @Override
     protected String getFragmentTAG() {
         return ProductEditFragment.class.getSimpleName();
+    }
+
+    protected int getCancelMessageRes(){
+        return R.string.product_draft_dialog_edit_cancel_message;
     }
 
     @Override

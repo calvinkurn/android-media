@@ -11,7 +11,7 @@
     <dimen name="top_ads_margin_layout_very_small">5dp</dimen>
     <dimen name="top_ads_margin_layout_small">15dp</dimen>
     <dimen name="top_ads_margin_layout_wide">24dp</dimen>
-    <dimen name="top_ads_textinput_margin_offset">-4dp</dimen>
+
     <dimen name="topads_detail_padding_item">16dp</dimen>
     <dimen name="topads_arrow_left_margin">8dp</dimen>
     <dimen name="topads_arrow_left_width">8dp</dimen>
@@ -64,7 +64,6 @@
 
     <dimen name="item_space">10dp</dimen>
 
-    <dimen name="spinner_decimal_spinner_width">80dp</dimen>
     <dimen name="image_add_video_url_remove_width">16dp</dimen>
     <dimen name="image_add_video_url_remove_height">18dp</dimen>
     <dimen name="text_add_video_url_description_height">22sp</dimen>
@@ -76,9 +75,10 @@
     <dimen name="image_add_video_url_container_margin">8dp</dimen>
     <dimen name="item_add_video_ll_2_height">92dp</dimen>
     <dimen name="image_add_video_url_remove_margin">7dp</dimen>
-	<dimen name="max_width_keyword">225dp</dimen>
+    <dimen name="max_width_keyword">225dp</dimen>
 
     <dimen name="product_add_padding_top_list_with_product_score">60dp</dimen>
     <dimen name="width_filter">128dp</dimen>
     <dimen name="sort_height">50dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

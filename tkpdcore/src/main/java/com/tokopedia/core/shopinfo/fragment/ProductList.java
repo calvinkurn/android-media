@@ -30,9 +30,6 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
-import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
@@ -44,6 +41,8 @@ import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.util.MethodChecker;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -372,7 +371,10 @@ public class ProductList extends V2BaseFragment {
                 etalaseIdList.add(etalaseModel.list.get(i).etalaseId);
             }
         } else {
-            etalaseNameList.add(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+            etalaseNameList.add(removeDash(
+                    getActivity().getIntent().getExtras().getString(
+                            ETALASE_NAME, getString(R.string.title_all_etalase))
+            ));
             etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
         }
     }
@@ -553,9 +555,7 @@ public class ProductList extends V2BaseFragment {
                 } else if(getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
                     for(int i = 0; i < etalaseNameList.size(); i++) {
                         if(etalaseNameList.get(i).equalsIgnoreCase(
-                                getActivity().getIntent().getExtras().getString(
-                                        ETALASE_NAME, getString(R.string.title_all_etalase)
-                                )
+                                removeDash(getActivity().getIntent().getExtras().getString(ETALASE_NAME))
                         )) {
                             index = i;
                             break;
@@ -570,6 +570,10 @@ public class ProductList extends V2BaseFragment {
             public void onFailure() {
             }
         };
+    }
+
+    private String removeDash(String param) {
+        return param.replace("-", " ");
     }
 
     private GetShopProductCampaignRetrofit.ProductsCampaignListener onGetProductCampaign() {

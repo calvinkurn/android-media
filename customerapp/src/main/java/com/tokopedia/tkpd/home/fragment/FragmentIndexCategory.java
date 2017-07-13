@@ -15,6 +15,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -68,9 +69,11 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -193,6 +196,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         TextView textViewAllBrands;
         LinearLayout wrapperLinearLayout;
         TextView seeAllProduct;
+        CardView containerRecharge;
 
         private ViewHolder() {
         }
@@ -462,6 +466,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.MainView = inflater.inflate(R.layout.fragment_category, container, false);
         holder.wrapperLinearLayout = (LinearLayout) holder.MainView.findViewById(R.id.wrapperLinearLayout);
         holder.bannerContainer = (RelativeLayout) holder.MainView.findViewById(R.id.banner_container);
+        holder.containerRecharge = (CardView) holder.MainView.findViewById(R.id.container_recharge);
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
@@ -624,11 +629,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 getActivity().startActivity(intent);
             }
         }, getBrandsMenuWidth());
-        holder.brandsRecyclerView.setLayoutManager(
-                new NonScrollLinearLayoutManager(getActivity(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false)
-        );
+        holder.brandsRecyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
+                GridLayoutManager.VERTICAL, false));
+        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),R.drawable.divider300));
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
         holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
@@ -841,6 +844,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (rechargeCategory.getData().size() == 0) {
             return;
         }
+        holder.containerRecharge.setVisibility(View.VISIBLE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.VISIBLE);
 
         List<Integer> newRechargePositions = new ArrayList<>();
@@ -886,6 +890,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void failedRenderDataRechargeCategory() {
+        holder.containerRecharge.setVisibility(View.GONE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
@@ -896,6 +901,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void hideRechargeWidget() {
+        holder.containerRecharge.setVisibility(View.GONE);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 

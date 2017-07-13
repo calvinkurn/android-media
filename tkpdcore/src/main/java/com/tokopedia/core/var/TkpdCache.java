@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 
 /**
  * Created by Nisie on 11/11/15.
@@ -52,7 +53,7 @@ public class TkpdCache {
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
-        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
         LocalCacheHandler.clearCache(context, TkpdCache.REGISTERED);
         LocalCacheHandler.clearCache(context, TkpdCache.VERIFICATION_NUMBER);

@@ -7,7 +7,4 @@ package com.tokopedia.seller.gmsubscribe.view.fragment;
 public interface GmHomeFragmentCallback {
     void goToGMProductFristTime();
 
-    void changeActionBarTitle(String title);
-
-    void setDrawer(boolean isShown);
 }

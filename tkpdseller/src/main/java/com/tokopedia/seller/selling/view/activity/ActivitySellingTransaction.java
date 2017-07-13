@@ -60,7 +60,9 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySellingTransaction extends TkpdActivity implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver {
+public class ActivitySellingTransaction extends TkpdActivity
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener,
+        DownloadResultReceiver.Receiver {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -119,7 +121,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         super.onCreate(savedInstanceState);
         clearNotif();
         inflateView(R.layout.activity_shop_transaction_v2);
-        initView();
+        setView();
         initVariable();
         setAdapter();
         openTab();
@@ -130,7 +132,12 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentManager = getFragmentManager();
     }
 
-    private void initView() {
+    @Override
+    public int getDrawerPosition() {
+        return 0;
+    }
+
+    private void setView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -154,6 +161,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     protected void onResume() {
         super.onResume();
         initSellerTicker();
+        setDrawerPosition(mViewPager.getCurrentItem());
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -286,19 +294,19 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void setDrawerPosition(int position) {
         switch (position) {
             case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
             case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
             case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
             case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
                 break;
             case 5:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:
                 break;

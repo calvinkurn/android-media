@@ -46,4 +46,13 @@ public class ShopInfoCache {
         }
     }
 
+    public static Boolean clearShopInfoCache() {
+        try {
+            GlobalCacheManager manager = new GlobalCacheManager();
+            manager.delete(SHOP_INFO_CACHE_NAME);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }

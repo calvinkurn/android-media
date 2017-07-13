@@ -39,7 +39,7 @@
             android:ellipsize="end"
             android:gravity="center|start"
             android:lines="2"
-            android:textColor="@color/black_fifty_four_percent"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/text_add_video_url_title_textSize"
             tools:text="Beruang Teddy\n makanya harus makan nasi banyak2 " />
 
@@ -50,7 +50,7 @@
             android:ellipsize="end"
             android:gravity="center|start"
             android:lines="1"
-            android:textColor="@color/thirty_eight_percent_black"
+            android:textColor="@color/font_black_disabled_38"
             android:textSize="@dimen/text_add_video_url_description_text_size"
             tools:text="Review produk baru keluaran toko souvenir dan makan nasi" />
 
