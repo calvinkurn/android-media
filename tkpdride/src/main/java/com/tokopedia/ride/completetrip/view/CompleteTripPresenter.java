@@ -59,6 +59,8 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().renderReceipt(receipt);
                     if (getView().isCameFromPushNotif()) {
                         actionCheckIfAlreadySendRating();
+                    } else if (receipt != null && receipt.getPendingPayment() != null) {
+                        getView().hideRatingLayout();
                     } else {
                         getView().showRatingLayout();
                     }
@@ -86,7 +88,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                             rideHistory.getRating() != null &&
                             !rideHistory.getRating().getStar().equalsIgnoreCase("0")) {
                         getView().showRatingResultLayout(Integer.parseInt(rideHistory.getRating().getStar()));
-                    }else {
+                    } else {
                         getView().showRatingLayout();
                     }
                 }
