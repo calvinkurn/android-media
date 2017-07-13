@@ -33,6 +33,7 @@ public interface Constants {
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
+    String EXTRA_APPLINK_FROM_INTERNAL = "EXTRA_APPLINK_FROM_INTERNAL";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
@@ -69,6 +70,7 @@ public interface Constants {
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
+        String DIGITAL_CATEGORY = "tokopedia://digital/category";
     }
 
     interface Settings {

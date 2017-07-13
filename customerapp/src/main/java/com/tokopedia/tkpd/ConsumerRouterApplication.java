@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -138,6 +139,15 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariable(activity);
     }
@@ -148,8 +158,8 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
 
     @Override
