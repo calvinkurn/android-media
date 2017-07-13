@@ -43,6 +43,7 @@ import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussi
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -512,7 +513,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
         int isMaximalContentVideoAllow = 1;
         int countVideo = 0;
-        if (item.isVideo() || item.isGif()) {
+        if (item.isVideo()) {
             for (AttachmentViewModel model :attachmentAdapter.getList()) {
                 if (model.isVideo()) {
                     countVideo++;
@@ -525,6 +526,18 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                     getActivity().getString(R.string.error_reply_discussion_resolution_reach_max)
             );
             return false;
+        }
+
+        if (item.isVideo()) {
+            File file = new File(item.getRealPath());
+            long length = file.length() / 1024;
+            if (length >= 20000) {
+                NetworkErrorHelper.showSnackbar(
+                        getActivity(),
+                        getActivity().getString(R.string.error_reply_discussion_resolution_reach_max_size)
+                );
+                return false;
+            }
         }
 
         return true;
