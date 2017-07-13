@@ -15,7 +15,7 @@
         android:background="@color/white"
         app:backgroundTint="@color/white"
         app:borderWidth="0dp"
-        android:elevation="2dp"/>
+        android:elevation="2dp" />
 
     <Space
         android:layout_width="wrap_content"
@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:maxLines="2"
-        android:text="@string/see_all_promo"
-        />
+        android:text="@string/see_all_promo" />
 
 </LinearLayout>

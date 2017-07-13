@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/main_view"
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:orientation="vertical">
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/product_image"
@@ -14,7 +14,7 @@
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
         android:background="@drawable/feed_container_rounded_corners_border"
-        tools:src="@drawable/product_no_photo_default"/>
+        tools:src="@drawable/product_no_photo_default" />
 
     <ImageView
         android:id="@+id/wishlist"
@@ -23,7 +23,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:elevation="5dp"
-        android:src="@drawable/wishlist_faved"/>
+        android:src="@drawable/wishlist_faved" />
 
     <TextView
         android:id="@+id/product_name"
@@ -42,7 +42,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:maxLines="2"
         android:textColor="@color/black_70"
-        tools:text="IKEA (R) Ringsjon - Tirai kamar  wadawdasd"/>
+        tools:text="IKEA (R) Ringsjon - Tirai kamar  wadawdasd" />
 
     <TextView
         android:id="@id/product_price"
@@ -54,7 +54,7 @@
         android:layout_toRightOf="@id/product_image"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/orange_red"
-        tools:text="Rp 89.000"/>
+        tools:text="Rp 89.000" />
 
     <RatingBar
         android:id="@+id/product_rating"
@@ -66,14 +66,14 @@
         android:layout_toRightOf="@id/product_image"
         android:isIndicator="true"
         android:numStars="5"
-        android:rating="4"/>
+        android:rating="4" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/fontvvs"
             tools:text="Cashback 4%"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/wholesale"
@@ -107,7 +107,7 @@
             android:background="@drawable/cards_ui"
             android:padding="@dimen/padding_vs"
             android:text="@string/wholesale"
-            android:textSize="@dimen/fontvvs"/>
+            android:textSize="@dimen/fontvvs" />
 
         <TextView
             android:id="@+id/preorder"
@@ -120,8 +120,7 @@
             android:padding="@dimen/padding_vs"
             android:text="@string/preorder"
             android:textSize="@dimen/fontvvs"
-            tools:visibility="gone"
-            />
+            tools:visibility="gone" />
 
         <ImageView
             android:id="@+id/free_return"
@@ -129,7 +128,7 @@
             android:layout_height="@dimen/icon_prod_size"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/preorder"
-            android:src="@drawable/ic_badge_free_return"/>
+            android:src="@drawable/ic_badge_free_return" />
 
     </RelativeLayout>
 

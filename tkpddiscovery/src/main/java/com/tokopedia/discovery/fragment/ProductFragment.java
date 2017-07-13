@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +20,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
@@ -32,7 +29,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -65,13 +61,10 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -420,11 +413,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                if (productAdapter.getPagingHandlerModel() != null) {
+                if (productAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
                             && productAdapter.getPagingHandlerModel().getUriNext() !=null
                             && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                } else {
+                    productAdapter.setIsLoading(false);
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }

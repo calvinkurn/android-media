@@ -31,8 +31,7 @@
             android:text="@string/placeholder_text"
             android:textColor="@color/black_70"
             android:textSize="@dimen/text_size_medium"
-            android:fontFamily="sans-serif-medium"
-             />
+            android:fontFamily="sans-serif-medium" />
 
         <TextView
             android:id="@id/shop_desc"
@@ -43,7 +42,7 @@
             android:layout_below="@id/shop_name"
             android:text="@string/title_promo"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/fontvs"/>
+            android:textSize="@dimen/fontvs" />
 
 
     </RelativeLayout>

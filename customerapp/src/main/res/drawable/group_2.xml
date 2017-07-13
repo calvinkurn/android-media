@@ -20,8 +20,7 @@
 3.91-3.915h13.311c2.161 0 3.912-2.13 3.912-4.307
 0-2.177-1.75-4.306-3.912-4.306h-.325c-2.16 0-3.911-1.348-3.911-3.524 0-2.177
 1.75-3.523 3.91-3.523" />
-    <group
-            android:translateY="52.731">
+    <group android:translateY="52.731">
         <path
             android:fillColor="#EAF4E5"
             android:fillType="evenOdd"

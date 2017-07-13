@@ -30,8 +30,6 @@ import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
-
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
         ProductInfoView,
         DetailFragmentInteractionListener,

@@ -1,22 +1,17 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.TextView;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -86,7 +81,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            Log.d(TAG, "Adapter Position "+getAdapterPosition());
+            Log.d(TAG, "Adapter Position " + getAdapterPosition());
             if(clickListener != null){
                 clickListener.onInfoClicked();
             }else {

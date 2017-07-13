@@ -14,9 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.tkpd.R;
