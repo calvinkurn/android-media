@@ -42,7 +42,7 @@
             android:layout_toRightOf="@id/user_avatar"
             android:fontFamily="sans-serif-medium"
             android:padding="@dimen/padding_small"
-            android:text="Loading.."
+            android:text="@string/drawer_loading"
             android:textColor="@color/black_70"
             android:textSize="16sp"
             android:textStyle="normal"/>
