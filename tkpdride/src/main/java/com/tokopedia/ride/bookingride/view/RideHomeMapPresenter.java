@@ -77,14 +77,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     @Override
     public void initialize() {
         if (getView().isUserLoggedIn()) {
-            if (getView().isUserPhoneNumberVerified()) {
-                if (checkPlayServices()) {
-                    createLocationRequest();
-                    initializeLocationService();
-                }
+            if (checkPlayServices()) {
+                createLocationRequest();
+                initializeLocationService();
             } else {
-                getView().showVerificationPhoneNumberPage();
+                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
+
         } else {
             getView().navigateToLoginPage();
         }
@@ -129,8 +129,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
                                 startLocationUpdates();
                             } else {
-                                //getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
-                                checkLocationSettings();
+                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+//                                checkLocationSettings();
                             }
                         }
 
@@ -175,9 +176,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
                         mCurrentLocation = getFuzedLocation();
-                        startLocationUpdates();
-                        if (!getView().isLaunchedWithLocation()) {
-                            setSourceAsCurrentLocation();
+                        if (mCurrentLocation != null) {
+                            startLocationUpdates();
+                            if (!getView().isLaunchedWithLocation()) {
+                                setSourceAsCurrentLocation();
+                            } else {
+                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                            }
                         }
 
                         break;
@@ -299,6 +305,13 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                 }
             }
         });
+    }
+
+    private boolean isLocationPermissionAvailable() {
+        return (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+                && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override

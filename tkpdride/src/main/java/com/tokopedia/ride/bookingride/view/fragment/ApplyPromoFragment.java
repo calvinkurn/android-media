@@ -118,8 +118,10 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
                     } else {
                         promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_normal_bg));
                     }
+                    descriptionTextView.setText("");
                     disableApplyButton();
                 } else {
+                    descriptionTextView.setText("");
                     enableApplyButton();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         promoEditText.setBackground(getResources().getDrawable(R.drawable.et_selected_bg));

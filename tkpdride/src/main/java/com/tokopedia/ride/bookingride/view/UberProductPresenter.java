@@ -6,6 +6,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
@@ -17,6 +18,8 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductV
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -213,7 +216,11 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                     getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                                 }
                             } else {
-                                if (e instanceof UnknownHostException) {
+                                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                } else if (e instanceof SocketTimeoutException) {
+                                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                                } else {
                                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                                 }
                                 getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));

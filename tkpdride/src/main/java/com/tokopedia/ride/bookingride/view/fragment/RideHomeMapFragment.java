@@ -72,7 +72,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private static final float DEFAULT_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
-    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
+    public static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
 

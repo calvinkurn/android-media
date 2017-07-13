@@ -52,6 +52,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
@@ -74,6 +75,7 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +83,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
@@ -358,6 +364,33 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolbar.setVisibility(View.GONE);
         addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+    }
+
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showDeniedForLocation() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
+        initFragment();
+    }
+
+    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showRationaleForLocation(final PermissionRequest request) {
+        List<String> listPermisConsumersion = new ArrayList<>();
+        listPermisConsumersion.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        listPermisConsumersion.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        RequestPermissionUtil.onShowRationale(this, request, listPermisConsumersion);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showNeverAskForLocation() {
+
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {

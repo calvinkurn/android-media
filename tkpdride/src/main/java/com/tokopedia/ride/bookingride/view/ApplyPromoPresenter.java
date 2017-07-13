@@ -3,12 +3,15 @@ package com.tokopedia.ride.bookingride.view;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -52,7 +55,11 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 getView().enableApplyButton();
 
                 String message = e.getMessage();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                } else if (e instanceof SocketTimeoutException) {
+                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                } else {
                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 }
                 getView().onFailedApplyPromo(message);
