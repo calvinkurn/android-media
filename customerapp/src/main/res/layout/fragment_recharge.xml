@@ -81,28 +81,28 @@
         android:id="@+id/buy_wrapper_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingTop="@dimen/padding_small"
         android:visibility="gone"
         android:weightSum="1">
 
         <CheckBox
             android:id="@+id/buy_with_credit_checkbox"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/btn_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_weight="0.50"
+            android:layout_weight="0.60"
             android:text="@string/instant_payment"
             android:textColor="@color/checkbox_text"
-            android:layout_gravity="center_vertical"
             android:textSize="@dimen/fontvs"
             android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_buy"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_weight="0.50"
+            android:layout_weight="0.40"
             android:background="@drawable/btn_buy"
             android:minHeight="0dp"
             android:text="@string/title_buy"
