@@ -74,6 +74,12 @@
         </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
 
         <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.tokopedia.seller.gmstat.views.widget.StatisticCardView>
+
+        <com.tokopedia.seller.gmstat.views.widget.StatisticCardView
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
