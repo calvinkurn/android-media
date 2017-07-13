@@ -52,4 +52,6 @@ public interface TkpdCoreRouter {
     void onLogout(AppComponent appComponent);
 
     void goToCreateMerchantRedirect(Context context);
+
+    void goToRegister(Context context);
 }

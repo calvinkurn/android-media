@@ -19,11 +19,11 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.widget.CounterInputView;
-import com.tokopedia.seller.product.view.widget.DecimalInputView;
+import com.tokopedia.design.text.CounterInputView;
+import com.tokopedia.design.text.DecimalInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
-import com.tokopedia.seller.util.NumberTextWatcher;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.Locale;

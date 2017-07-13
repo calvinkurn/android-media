@@ -10,6 +10,4 @@ import android.content.Intent;
 public interface SellerModuleRouter {
     void goToHome(Context context);
     void goToProductDetail(Context context, String productUrl);
-
-    void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId);
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.presenter;
 
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 
 /**
  * Created by ricoharisin on 3/29/16.
@@ -8,5 +9,7 @@ import com.tokopedia.core.network.entity.home.Banner;
 public interface CategoryView {
 
     void onSuccessFetchBanners(Banner banner);
+
+    void onReceivePendingCashBack(CashBackData cashBackData);
 
 }

@@ -28,7 +28,7 @@ public class BrandsPresenterImpl implements BrandsPresenter, ErrorListener {
     @Override
     public void fetchBrands() {
         Subscriber<Response<Brands>> subscriber = getSubscriber();
-        homeMenuInteractor.fetchBrands(CategoryApi.FILTER_ANDROID_DEVICE, subscriber);
+        homeMenuInteractor.fetchBrands(subscriber);
     }
 
     @Override

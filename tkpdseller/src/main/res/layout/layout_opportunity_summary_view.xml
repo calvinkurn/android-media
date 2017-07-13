@@ -27,7 +27,7 @@
         android:text="Rp 10.015.000,00"
         android:textStyle="bold"
         android:gravity="end"
-        android:textColor="@color/deep_orange_500"
+        android:textColor="@color/tkpd_main_orange"
         />
 
 </RelativeLayout>
