@@ -27,7 +27,7 @@
         android:layout_toRightOf="@+id/shop_avatar"
         android:src="@drawable/ic_gold"
         android:visibility="gone"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/official_store"
@@ -40,7 +40,7 @@
         android:layout_toRightOf="@+id/shop_avatar"
         android:src="@drawable/ic_official"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

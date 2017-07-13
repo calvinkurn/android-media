@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;

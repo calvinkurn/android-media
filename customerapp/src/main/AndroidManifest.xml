@@ -163,7 +163,8 @@
             android:name=".truecaller.TruecallerActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity"
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity"
             android:screenOrientation="portrait" />
 
         <service

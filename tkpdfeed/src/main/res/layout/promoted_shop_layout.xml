@@ -8,21 +8,23 @@
     android:background="@drawable/cards_ui_2">
 
 
-    <include layout="@layout/promoted_header"
+    <include
+        layout="@layout/promoted_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small"/>
+        android:paddingLeft="@dimen/padding_small" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_small" />
 
-    <include layout="@layout/promoted_shop_body"
+    <include
+        layout="@layout/promoted_shop_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small"/>
+        android:paddingLeft="@dimen/padding_small" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
@@ -31,7 +33,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
@@ -45,7 +47,13 @@
         android:paddingRight="@dimen/padding_small"
         android:paddingLeft="@dimen/padding_small"
         android:orientation="vertical">
-        <include android:id="@id/favorite" layout="@layout/favorite_button"/>
-        <include android:id="@id/favorited" layout="@layout/favorited_button"/>
+
+        <include
+            android:id="@id/favorite"
+            layout="@layout/favorite_button" />
+
+        <include
+            android:id="@id/favorited"
+            layout="@layout/favorited_button" />
     </LinearLayout>
 </LinearLayout>

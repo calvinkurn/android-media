@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         tools:foreground="@color/trans_black_40">
 
-        <include layout="@layout/list_feed_product_item"/>
+        <include layout="@layout/list_feed_product_item" />
 
     </FrameLayout>
 
@@ -29,7 +29,6 @@
         android:visibility="gone"
         tools:text="+2"
         tools:visibility="visible" />
-
 
 
 </RelativeLayout>

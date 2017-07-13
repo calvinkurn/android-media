@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.constants;
 
-import okhttp3.HttpUrl;
-
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
