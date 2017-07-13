@@ -5,15 +5,12 @@ import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
-import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
-import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.List;
 
@@ -49,8 +46,6 @@ public interface BookingRideDataStore {
     Observable<List<RideHistoryEntity>> getHistory(TKPDMapParam<String, Object> parameters);
 
     Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> parameters);
-
-    Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters);
 

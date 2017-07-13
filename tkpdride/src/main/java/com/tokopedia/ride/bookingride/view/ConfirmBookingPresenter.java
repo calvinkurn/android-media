@@ -2,9 +2,6 @@ package com.tokopedia.ride.bookingride.view;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer.interactor.NetworkInteractor;
-import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
@@ -21,11 +18,9 @@ import rx.Subscriber;
 public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingContract.View>
         implements ConfirmBookingContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
-    private NetworkInteractor networkInteractor;
 
     public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
-        this.networkInteractor = new NetworkInteractorImpl();
     }
 
     @Override
@@ -91,7 +86,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     @Override
     public void detachView() {
         getFareEstimateUseCase.unsubscribe();
-        networkInteractor.unsubscribe();
         super.detachView();
     }
 }

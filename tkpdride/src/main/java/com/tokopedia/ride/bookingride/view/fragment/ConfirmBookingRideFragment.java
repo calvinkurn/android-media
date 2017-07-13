@@ -302,31 +302,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void hideConfirmButton() {
-        bookingConfirmationTextView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public float getFarePrice() {
-        return confirmBookingViewModel.getPrice();
-    }
-
-    @Override
-    public void showTopupTokoCashButton() {
-        tokoCashTopupLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideTopupTokoCashButton() {
-        tokoCashTopupLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showConfirmButton() {
-        bookingConfirmationTextView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -356,13 +331,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void setBalanceText(String balance) {
-        tokoCashLabelTextView.setText(String.format("%s%s",
-                getString(R.string.confirm_booking_insuficient_balance_format),
-                balance));
-    }
-
-    @Override
     public void showProgress() {
         progressLayout.setVisibility(View.VISIBLE);
     }
@@ -370,24 +338,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void hideProgress() {
         progressLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void hideNotActivatedTokoCashLayout() {
-        tokoCashActivationLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showNotActivatedTokoCashLayout(final String redirectUrl) {
-//        tokoCashActivationLabelTextView.setText();
-        tokoCashActivationLayout.setVisibility(View.VISIBLE);
-        tokoCashActivationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), redirectUrl);
-                startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
-            }
-        });
     }
 
     @Override

@@ -1,19 +1,17 @@
 package com.tokopedia.ride.common.ride.data.source.cloud;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
-import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
-import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
@@ -21,7 +19,6 @@ import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -108,11 +105,6 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getCurrentRequest(parameters);
-    }
-
-    @Override
-    public Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters) {
-        return mRideApi.applyPromo(parameters);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -141,15 +142,15 @@ public class DriverDetailFragment extends BaseFragment {
         driverNameTextView.setText(driver.getName());
         driverRatingTextView.setText(driver.getRating());
 
-        if (status != null && (status.equalsIgnoreCase("accepted") || status.equalsIgnoreCase("arriving"))) {
+        if (status != null && (status.equalsIgnoreCase(RideStatus.ACCEPTED) || status.equalsIgnoreCase(RideStatus.ARRIVING))) {
             cancelRideLayout.setVisibility(View.VISIBLE);
             driverEtaTextView.setVisibility(View.VISIBLE);
-            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(eta > 1 ? R.string.minutes : R.string.minute) + " away");
-        } else if (status != null && status.equalsIgnoreCase("in_progress")) {
+            driverEtaTextView.setText(String.format("%s %s away", String.valueOf(eta), getResources().getString(eta > 1 ? R.string.minutes : R.string.minute)));
+        } else if (status != null && status.equalsIgnoreCase(RideStatus.IN_PROGRESS)) {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.VISIBLE);
             int duration = (int) destination.getEta();
-            driverEtaTextView.setText("ETA " + (duration > 1 ? duration + getString(R.string.mins) : duration + getString(R.string.min)));
+            driverEtaTextView.setText(String.format("ETA %s", duration > 1 ? duration + getString(R.string.mins) : duration + getString(R.string.min)));
         } else {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.GONE);

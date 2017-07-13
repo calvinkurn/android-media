@@ -33,11 +33,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
-import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
-import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
@@ -61,16 +59,13 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private final GetUberProductsUseCase mGetUberProductsUseCase;
     private final GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private boolean isMapDragging = false;
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
     private boolean mSourceIsCurrentLocation;
 
-    public RideHomeMapPresenter(GetUberProductsUseCase getUberProductsUseCase,
-                                GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
-        mGetUberProductsUseCase = getUberProductsUseCase;
+    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }
 
@@ -315,29 +310,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     }
 
     @Override
-    public void getAvailableProducts() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, "latitude");
-        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, "longitude");
-        mGetUberProductsUseCase.execute(requestParams, new Subscriber<List<Product>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<Product> products) {
-
-            }
-        });
-    }
-
-    @Override
     public void onMapMoveCameraStarted() {
         if (!isMapDragging) {
             getView().onMapDragStarted();
@@ -468,7 +440,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     @Override
     public void detachView() {
         getOverviewPolylineUseCase.unsubscribe();
-        mGetUberProductsUseCase.unsubscribe();
         super.detachView();
     }
 

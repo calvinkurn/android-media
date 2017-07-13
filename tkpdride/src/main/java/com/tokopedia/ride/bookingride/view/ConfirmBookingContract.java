@@ -16,29 +16,13 @@ public interface ConfirmBookingContract {
 
         void renderFareEstimate(String fareId, String display, float value, float surgeMultipliers, String surgeConfirmationHref, String code, String promoSuccessMessage);
 
-        void hideConfirmButton();
-
         Activity getActivity();
 
-        float getFarePrice();
-
-        void showTopupTokoCashButton();
-
-        void hideTopupTokoCashButton();
-
-        void showConfirmButton();
-
         void showMessage(String message);
-
-        void setBalanceText(String balance);
 
         void showProgress();
 
         void hideProgress();
-
-        void hideNotActivatedTokoCashLayout();
-
-        void showNotActivatedTokoCashLayout(String redirectUrl);
 
         void showErrorMessage(String message);
 

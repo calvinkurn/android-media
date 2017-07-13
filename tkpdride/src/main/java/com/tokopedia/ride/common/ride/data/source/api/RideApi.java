@@ -1,18 +1,16 @@
 package com.tokopedia.ride.common.ride.data.source.api;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
-import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
-import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -70,10 +67,6 @@ public interface RideApi {
 
     @GET(RideUrl.REQUEST_CURRENT)
     Observable<RideRequestEntity> getCurrentRequest(@QueryMap TKPDMapParam<String, Object> parameters);
-
-    @POST(RideUrl.PROMO_APPLY)
-    @FormUrlEncoded
-    Observable<PromoEntity> applyPromo(@FieldMap TKPDMapParam<String, Object> parameters);
 
     @GET(RideUrl.RIDE_ADDRESS)
     Observable<List<RideAddressEntity>> getAddresses(@QueryMap TKPDMapParam<String, Object> parameters);

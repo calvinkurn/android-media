@@ -7,7 +7,6 @@ import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
-import com.tokopedia.ride.common.ride.data.entity.RatingEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
@@ -94,11 +93,6 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
-        return null;
-    }
-
-    @Override
-    public Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters) {
         return null;
     }
 
