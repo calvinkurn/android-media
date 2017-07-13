@@ -1854,6 +1854,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
     <string name="error_upload_image">Gagal mengunggah gambar</string>
+    <string name="error_upload_video">Gagal mengunggah video</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
@@ -2003,4 +2004,6 @@ di Tokopedia Sekarang!</string>
     <string name="product_share_hotlist">Bagikan Hotlist Ini!</string>
     <string name="product_share_shop">Bagikan Toko Ini!</string>
     <string name="product_share_catalog">Bagikan Katalog Ini!</string>
+    <string name="album_name_all">Semua Media</string>
+    <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
 </resources>
