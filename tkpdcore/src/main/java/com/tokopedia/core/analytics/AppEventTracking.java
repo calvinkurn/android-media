@@ -120,6 +120,7 @@ public interface AppEventTracking {
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
         String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
+        String R3 = "r3";
     }
 
     interface Category {
@@ -190,6 +191,7 @@ public interface AppEventTracking {
         String TOPADS_SWITCHER = "TopAds Switcher";
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
+        String R3USER = "r3User";
     }
 
     interface Action {
@@ -250,6 +252,7 @@ public interface AppEventTracking {
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
+        String COPY_CODE = "Copy Code";
     }
 
     interface EventLabel {
@@ -475,6 +478,8 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String RESOLUTION_CENTER_UPLOAD_VIDEO   = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {

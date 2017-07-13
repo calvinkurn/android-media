@@ -26,6 +26,24 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
+    public static Intent newInstance(Context context, Bundle bundle) {
+        DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
+        passData.setAction(bundle.getString(DigitalCheckoutPassData.PARAM_ACTION));
+        passData.setCategoryId(bundle.getString(DigitalCheckoutPassData.PARAM_CATEGORY_ID));
+        passData.setClientNumber(bundle.getString(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER));
+        passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.PARAM_OPERATOR_ID));
+        passData.setProductId(bundle.getString(DigitalCheckoutPassData.PARAM_PRODUCT_ID));
+        passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.PARAM_IS_PROMO));
+        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
+        passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
+        passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_MEDIUM));
+        passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
+        passData.setUtmContent(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
+        passData.setIdemPotencyKey(bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY));
+        return new Intent(context, CartDigitalActivity.class)
+                .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 

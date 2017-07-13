@@ -542,7 +542,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onAddFavorite(Data shopData) {
+    public void onAddFavorite(int position, Data shopData) {
         //TODO: this listener not used in this sprint
     }
 

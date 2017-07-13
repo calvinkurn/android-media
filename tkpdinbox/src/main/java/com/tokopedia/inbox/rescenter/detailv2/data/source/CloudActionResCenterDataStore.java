@@ -7,8 +7,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostV2Mapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyConversationValidationMapper;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 
 import rx.Observable;
@@ -23,6 +24,7 @@ public class CloudActionResCenterDataStore {
     private final ResCenterActApi resCenterActApi;
     private final ResolutionCenterActionMapper resolutionCenterActionMapper;
     private final ReplyConversationValidationMapper replyConversationValidationMapper;
+    private final GenerateHostV2Mapper generateHostV2Mapper;
 
     public CloudActionResCenterDataStore(Context context, ResCenterActApi resCenterActApi) {
         super();
@@ -30,6 +32,7 @@ public class CloudActionResCenterDataStore {
         this.resCenterActApi = resCenterActApi;
         this.resolutionCenterActionMapper = new ResolutionCenterActionMapper();
         this.replyConversationValidationMapper = new ReplyConversationValidationMapper();
+        this.generateHostV2Mapper = new GenerateHostV2Mapper();
     }
 
     public Observable<ResolutionActionDomainData> cancelResolution(TKPDMapParam<String, Object> parameters) {
@@ -69,9 +72,14 @@ public class CloudActionResCenterDataStore {
 
     public Observable<ReplyDiscussionValidationModel> replyConversationValidation(
             TKPDMapParam<String, Object> parameters) {
-        replyConversationValidationMapper.setHasAttachment(parameters.containsKey(ReplyDiscussionValidationUseCase.PARAM_PHOTOS));
         return resCenterActApi.replyConversationValidation2(
                         AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(replyConversationValidationMapper);
+    }
+
+    public Observable<GenerateHostModel> generateTokenHost(TKPDMapParam<String, Object> parameters) {
+        return resCenterActApi.generateTokenHost(
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(generateHostV2Mapper);
     }
 }

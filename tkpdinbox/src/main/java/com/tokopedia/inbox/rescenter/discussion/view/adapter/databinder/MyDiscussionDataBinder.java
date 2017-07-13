@@ -97,10 +97,10 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (imageUpload.getImgThumb() != null && !imageUpload.getImgThumb().equals("")) {
-                            openProductPreview(list, position);
-                        } else if (imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")) {
+                        if (imageUpload.isVideo()) {
                             openVideoPlayer(imageUpload.getUrl());
+                        } else {
+                            openProductPreview(list, position);
                         }
                     }
                 };

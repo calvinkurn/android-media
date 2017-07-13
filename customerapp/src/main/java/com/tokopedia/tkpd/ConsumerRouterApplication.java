@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,16 +17,20 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -38,6 +43,7 @@ import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -112,6 +118,15 @@ public class ConsumerRouterApplication extends MainApplication implements
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition,
+                                           int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -208,13 +223,20 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
+        Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+        intent.setData(Uri.parse(linkUrl));
+        activity.startActivity(intent);
+    }
+
+    @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        Intent intent = Login.getRegisterIntent(context);
         context.startActivity(intent);
     }
 
@@ -243,4 +265,14 @@ public class ConsumerRouterApplication extends MainApplication implements
         return Constants.Applinks.CART;
     }
 
+
+    @Override
+    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
+        return CartDigitalActivity.newInstance(this, bundle);
+    }
+
+    @Override
+    public Intent getRidePhoneNumberActivityIntent(Activity activity) {
+        return RidePhoneNumberVerificationActivity.getCallingIntent(activity);
+    }
 }

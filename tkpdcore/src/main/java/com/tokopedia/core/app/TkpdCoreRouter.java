@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.base.di.component.AppComponent;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -38,6 +38,8 @@ public interface TkpdCoreRouter {
     void goToWallet(Context context, Bundle bundle);
 
     void goToMerchantRedirect(Context context);
+
+    void actionAppLink(Activity activity, String linkUrl);
 
     Intent getHomeIntent(Context context);
 
