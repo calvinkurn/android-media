@@ -6,7 +6,8 @@
     android:padding="@dimen/padding_small"
     android:background="@drawable/cards_ui_feed">
 
-    <include layout="@layout/header_title"
+    <include
+        layout="@layout/header_title"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
@@ -14,7 +15,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

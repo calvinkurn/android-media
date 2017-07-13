@@ -1,6 +1,5 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashCashBackService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -17,13 +16,13 @@ import rx.functions.Func1;
  * Created by kris on 6/16/17. Tokopedia
  */
 
-public class TokoCashRepository implements ITokoCashRepository{
+public class TokoCashRepository implements ITokoCashRepository {
 
     private final TokoCashCashBackService tokoCashCashBackService;
     private final ITokoCashMapper tokoCashMapper;
 
     public TokoCashRepository(TokoCashCashBackService tokoCashCashBackService,
-                       ITokoCashMapper iTokoCashMapper) {
+                              ITokoCashMapper iTokoCashMapper) {
         this.tokoCashCashBackService = tokoCashCashBackService;
         this.tokoCashMapper = iTokoCashMapper;
     }

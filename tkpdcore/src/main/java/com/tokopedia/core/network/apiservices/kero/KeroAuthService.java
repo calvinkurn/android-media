@@ -42,7 +42,7 @@ public class KeroAuthService extends GlobalAuthService<KeroApi> {
 
     @Override
     protected OkHttpRetryPolicy getOkHttpRetryPolicy() {
-        return new OkHttpRetryPolicy(45,45,45, numberOfRetry);
+        return new OkHttpRetryPolicy(45, 45, 45, numberOfRetry);
     }
 
 

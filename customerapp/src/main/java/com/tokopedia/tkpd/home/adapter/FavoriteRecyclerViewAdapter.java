@@ -12,11 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.core.var.TkpdState;

@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.constants;
 
-import okhttp3.HttpUrl;
-
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -44,6 +42,7 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
 
@@ -576,9 +575,7 @@ public class TkpdBaseURL {
         public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
-
-
-        public static final String API_HOME_CATEGORY_MENU = "/api/v1.1/layout/category";
+        public static final String API_HOME_CATEGORY_MENU = "/api/v1.2/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
@@ -721,7 +718,8 @@ public class TkpdBaseURL {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
-    public static class Truecaller{
+
+    public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 
