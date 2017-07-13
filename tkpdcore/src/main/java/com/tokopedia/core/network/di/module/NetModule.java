@@ -7,6 +7,7 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
@@ -15,8 +16,8 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
-import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -140,4 +141,11 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN).client(okHttpClient).build();
     }
 
+    @UploadWsV4Qualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
+                                              Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
 }

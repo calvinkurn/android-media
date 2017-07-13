@@ -1,10 +1,10 @@
 ext {
-    supportLibraryVersion = '24.2.1'
+    supportLibraryVersion = '25.3.1'
     playServiceVersion = '9.6.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
-    okHttpVersion = '3.4.1'
+    okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
