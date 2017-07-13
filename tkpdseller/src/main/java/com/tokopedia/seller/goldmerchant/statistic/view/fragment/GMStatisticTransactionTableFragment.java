@@ -45,6 +45,12 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStat
     }
 
     @Override
+    protected void initialPresenter() {
+        super.initialPresenter();
+        presenter.attachView(this);
+    }
+
+    @Override
     protected void searchData() {
         super.searchData();
         presenter.loadData(startDate, endDate);
@@ -98,5 +104,11 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStat
     @Override
     protected BaseListAdapter getNewAdapter() {
         return new GMStatisticTransactionTableAdapter();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
