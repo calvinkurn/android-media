@@ -77,6 +77,8 @@
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
     <string name="product_no_have_product_name_yet">Belum ada nama produk</string>

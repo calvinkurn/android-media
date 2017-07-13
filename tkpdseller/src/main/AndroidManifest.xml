@@ -387,6 +387,22 @@
         <service
             android:name=".product.view.service.UploadProductService"
             android:exported="false" />
+        <service
+            android:name=".selling.appwidget.presenter.GetOrderService"
+            android:exported="false" />
+        
+        <service android:name=".selling.appwidget.view.ListOrderViewServiceWidget"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <receiver android:name=".selling.appwidget.view.NewOrderWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_order_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
