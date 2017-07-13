@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,12 +25,15 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 7/13/17.
  */
-public class GMStatisticTransactionTableFragment extends TopAdsBaseListFragment<GMStatisticTransactionTablePresenter, GMStatisticTransactionTableModel>
+public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStatisticTransactionTablePresenter, GMStatisticTransactionTableModel>
         implements GMStatisticTransactionTableView {
     public static final String TAG = "GMStatisticTransactionT";
 
     @Inject
     GMStatisticTransactionTablePresenter presenter;
+
+    Date startDate;
+    Date endDate;
 
     public static Fragment createInstance(long startDate, long endDate) {
         Bundle bundle = new Bundle();
