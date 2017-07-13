@@ -125,7 +125,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onAddFavorite(Data data) {
+    public void onAddFavorite(int position, Data data) {
         Shop shop = data.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(

@@ -169,6 +169,8 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void onAttachListener(Context context) {
         super.onAttachListener(context);
-        onKeywordDetailListener = (OnKeywordDetailListener) context;
+        if (context instanceof OnKeywordDetailListener) {
+            onKeywordDetailListener = (OnKeywordDetailListener) context;
+        }
     }
 }
