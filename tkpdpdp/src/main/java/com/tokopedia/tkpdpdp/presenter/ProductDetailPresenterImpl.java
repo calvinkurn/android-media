@@ -531,9 +531,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     menuCart.setVisible(false);
                     menuCart.setEnabled(false);
                 } else {
+                    menuCart.setVisible(true);
+                    menuCart.setEnabled(true);
                     if (SessionHandler.isV4Login(context)) {
-                        menuCart.setVisible(true);
-                        menuCart.setEnabled(true);
                         LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
                         int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
                         if (CartCache > 0 && menuCart!=null) {

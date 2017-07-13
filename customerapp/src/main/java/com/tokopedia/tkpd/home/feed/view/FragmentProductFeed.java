@@ -20,7 +20,6 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
@@ -435,7 +434,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     @Override
-    public void onAddFavorite(Data dataShop) {
+    public void onAddFavorite(int position, Data dataShop) {
         Shop shop = dataShop.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(

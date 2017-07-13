@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
-import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
@@ -24,7 +23,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
-
 
 /**
  * @author by errysuprayogi on 4/11/17.
@@ -155,12 +153,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setTopAdsListener(TopAdsListener topAdsListener) {
         placer.setTopAdsListener(topAdsListener);
     }
-
-
-    public void setFavShopClickListener(TopAdsFavShopClickListener favShopClickListener) {
-        placer.setFavShopClickListener(favShopClickListener);
-    }
-
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -336,4 +328,5 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public TopAdsPlacer getPlacer() {
         return placer;
     }
+
 }

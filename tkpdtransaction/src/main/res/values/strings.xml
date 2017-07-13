@@ -59,10 +59,10 @@
     <string name="label_transaction_potential_cashback">Potensi Cashback</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
-    <string name="empty_chart_text">Bingung mau belanja apa?\nCek produk rekomendasi tokopedia</string>
-    <string name="mulai_belanja">Mulai belanja</string>
     <string name="cancel_replacement">Batalkan Pesanan</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="error_cannot_send_to_destination">Tidak dapat mengirim ke tujuan</string>
     <string name="error_check_cart">Mohon periksa keranjang belanjaan anda</string>
+    <string name="empty_chart_text">Bingung mau belanja apa?\nCek produk rekomendasi tokopedia</string>
+    <string name="mulai_belanja">Mulai belanja</string>
 </resources>
