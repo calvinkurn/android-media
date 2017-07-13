@@ -85,7 +85,7 @@ public class FeedDetailListMapper implements Func1<FeedDetail.Data, List<DataFee
     }
 
     private boolean productIsNotNull(FeedDetail.Data.Product product) {
-        return !product.id() != null
+        return product.id() != null
                 && !TextUtils.isEmpty(product.name())
                 && !TextUtils.isEmpty(product.price())
                 && !TextUtils.isEmpty(product.image())
