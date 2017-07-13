@@ -109,7 +109,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters) {
-        return mRideApi.getAddresses(parameters);
+        return mRideApi.getAddresses(parameters); 
     }
 
     @Override
