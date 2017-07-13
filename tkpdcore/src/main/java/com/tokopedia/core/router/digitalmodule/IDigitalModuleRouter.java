@@ -1,6 +1,8 @@
 package com.tokopedia.core.router.digitalmodule;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -30,5 +32,7 @@ public interface IDigitalModuleRouter {
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();
+
+    void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
 }
