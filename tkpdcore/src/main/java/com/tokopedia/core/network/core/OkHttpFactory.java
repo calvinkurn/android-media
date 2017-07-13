@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -314,6 +315,23 @@ public class OkHttpFactory {
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
                 .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientResolutionAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                        ResolutionInterceptor resolutionInterceptor,
+                                                        OkHttpRetryPolicy okHttpRetryPolicy,
+                                                        ChuckInterceptor chuckInterceptor,
+                                                        DebugInterceptor debugInterceptor) {
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(resolutionInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

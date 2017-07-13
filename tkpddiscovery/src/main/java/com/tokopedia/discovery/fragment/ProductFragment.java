@@ -413,11 +413,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                if (productAdapter.getPagingHandlerModel() != null) {
+                if (productAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
                             && productAdapter.getPagingHandlerModel().getUriNext() !=null
                             && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                } else {
+                    productAdapter.setIsLoading(false);
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }

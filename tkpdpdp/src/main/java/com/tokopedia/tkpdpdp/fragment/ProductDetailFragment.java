@@ -356,6 +356,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, CourierActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -363,6 +364,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -370,6 +372,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -377,6 +380,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override

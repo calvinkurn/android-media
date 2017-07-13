@@ -1,34 +1,33 @@
-package com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation;
+package com.tokopedia.inbox.rescenter.discussion.domain.model.reply;
+
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ByData;
+
+import java.util.List;
 
 /**
  * Created by nisie on 4/3/17.
  */
 
-public class ReplyDiscussionData {
+public class ReplyDiscussionDomainData {
 
     private String userImg;
-    private int conversationId;
+    private String conversationId;
     private int userLabelId;
     private int solutionFlag;
     private String userUrl;
     private String userName;
     private int actionBy;
     private String createTimeWib;
-    private String action;
-    private int isAppeal;
-    private String problemType;
     private String remark;
     private ByData by;
-    private int notificationFlag;
     private String remarkStr;
     private String userLabel;
-    private int chatFlag;
     private int systemFlag;
     private String createTime;
-    private int resetFlag;
     private String timeAgo;
 
     private String postKey;
+    private List<ReplyAttachmentDomainData> replyAttachmentDomainData;
 
     public String getUserImg() {
         return userImg;
@@ -38,11 +37,11 @@ public class ReplyDiscussionData {
         this.userImg = userImg;
     }
 
-    public int getConversationId() {
+    public String getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(int conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 
@@ -94,30 +93,6 @@ public class ReplyDiscussionData {
         this.createTimeWib = createTimeWib;
     }
 
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public int getIsAppeal() {
-        return isAppeal;
-    }
-
-    public void setIsAppeal(int isAppeal) {
-        this.isAppeal = isAppeal;
-    }
-
-    public String getProblemType() {
-        return problemType;
-    }
-
-    public void setProblemType(String problemType) {
-        this.problemType = problemType;
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -132,14 +107,6 @@ public class ReplyDiscussionData {
 
     public void setBy(ByData by) {
         this.by = by;
-    }
-
-    public int getNotificationFlag() {
-        return notificationFlag;
-    }
-
-    public void setNotificationFlag(int notificationFlag) {
-        this.notificationFlag = notificationFlag;
     }
 
     public String getRemarkStr() {
@@ -158,14 +125,6 @@ public class ReplyDiscussionData {
         this.userLabel = userLabel;
     }
 
-    public int getChatFlag() {
-        return chatFlag;
-    }
-
-    public void setChatFlag(int chatFlag) {
-        this.chatFlag = chatFlag;
-    }
-
     public int getSystemFlag() {
         return systemFlag;
     }
@@ -182,14 +141,6 @@ public class ReplyDiscussionData {
         this.createTime = createTime;
     }
 
-    public int getResetFlag() {
-        return resetFlag;
-    }
-
-    public void setResetFlag(int resetFlag) {
-        this.resetFlag = resetFlag;
-    }
-
     public String getTimeAgo() {
         return timeAgo;
     }
@@ -204,5 +155,13 @@ public class ReplyDiscussionData {
 
     public void setPostKey(String postKey) {
         this.postKey = postKey;
+    }
+
+    public void setReplyAttachmentDomainData(List<ReplyAttachmentDomainData> replyAttachmentDomainData) {
+        this.replyAttachmentDomainData = replyAttachmentDomainData;
+    }
+
+    public List<ReplyAttachmentDomainData> getReplyAttachmentDomainData() {
+        return replyAttachmentDomainData;
     }
 }
