@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWh
 
 import java.util.ArrayList;
 import java.util.List;
+import android.text.TextUtils;
 
 import rx.functions.Func1;
 
