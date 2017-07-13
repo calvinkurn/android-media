@@ -13,5 +13,7 @@
     <string name="promote_4">TopAds membantu Anda menjangkau calon pembeli yang sesuai, melalui pencarian produk dan penelusuran kategori produk</string>
     <string name="promote_5">Efektif dan Efisien</string>
     <string name="promote_6">Dengan TopAds, hasil yang Anda harapkan sesuai dengan biaya yang Anda keluarkan</string>
-
+    <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="close">Tutup</string>
+    <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.</string>
 </resources>

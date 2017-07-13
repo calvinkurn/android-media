@@ -4,7 +4,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.logout.di.module.TkpdSellerLogoutModule;
 import com.tokopedia.seller.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.ClearCategoryCacheUseCase;
-import com.tokopedia.seller.product.domain.interactor.productdraft.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 
 import dagger.Component;
 

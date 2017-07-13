@@ -40,9 +40,9 @@ import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Data;
-import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Image;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -280,7 +280,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+        public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
 
         }
     }

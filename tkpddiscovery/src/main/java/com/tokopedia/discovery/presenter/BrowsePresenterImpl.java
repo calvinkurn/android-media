@@ -21,7 +21,6 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -38,6 +37,7 @@ import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
@@ -106,6 +106,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private LocalCacheHandler cacheGridType;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     private boolean isBottomBarFirstTimeChange = true;
+    private boolean isFetchingDynamicAttribute = false;
     private String searchQuery;
     private Context context;
 
@@ -379,6 +380,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                             filterAttribute.setSelected(filterAttribute.getSort().get(0).getName());
                         }
                         browseView.setFilterAttribute(filterAttribute, activeTab);
+                        isFetchingDynamicAttribute = false;
                         switch (dest) {
                             case FILTER:
                                 openFilterPageIfNeeded(filterAttribute, source, activeTab);
@@ -506,7 +508,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void sendQuery(String query, String depId) {
+    public boolean sendQuery(String query, String depId) {
+
+        if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
+            browseView.launchOfficialStorePage();
+            return true;
+        }
+
         searchQuery = query;
         resetBrowseProductActivityModel();
         browseModel.setQ(query);
@@ -527,6 +535,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         } else if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_SHOP) {
             browseModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP);
         }
+        return false;
     }
 
     @Override
@@ -716,7 +725,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
             browseView.openFilter(filterAttribute, source,
                     browseModel.getParentDepartement(), browseModel.getDepartmentId(), filters);
-        } else {
+        } else if (!isFetchingDynamicAttribute) {
+            isFetchingDynamicAttribute = true;
             fetchDynamicAttribute(activeTab, source, FILTER);
         }
     }
@@ -727,7 +737,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 filterAttribute.setSelectedOb(browseModel.getOb());
             }
             browseView.openSort(filterAttribute, source);
-        } else {
+        } else if (!isFetchingDynamicAttribute) {
+            isFetchingDynamicAttribute = true;
             fetchDynamicAttribute(activeTab, source, SORT);
         }
     }
