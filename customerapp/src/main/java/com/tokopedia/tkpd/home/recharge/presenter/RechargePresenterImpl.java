@@ -7,6 +7,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
@@ -29,6 +30,7 @@ public class RechargePresenterImpl implements RechargePresenter,
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
     private final LocalCacheHandler cacheHandlerLastOrder;
+    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
     private RechargeView view;
     private RechargeNetworkInteractor interactor;
     private RechargeInteractor dbInteractor;
@@ -121,6 +123,28 @@ public class RechargePresenterImpl implements RechargePresenter,
         }
     }
 
+    @Override
+    public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        cacheHandlerRecentInstantCheckoutUsed.putBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+        );
+        cacheHandlerRecentInstantCheckoutUsed.applyEditor();
+    }
+
+    @Override
+    public boolean isRecentInstantCheckoutUsed(String categoryId) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+        );
+    }
 
     @Override
     public void saveLastInputToCache(String key, String userLastInput) {
