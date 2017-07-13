@@ -36,6 +36,7 @@ import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -172,11 +173,31 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         setHeaderValue(data);
         if (data.isCompare) {
             gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
+            gmStatisticTransactionRangeCompare.bind(data.pDateRangeModel);
+            gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
+            // create model for current Data
+            final BaseWilliamChartModel baseWilliamChartModel
+                    = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
+
+            // create model for previous Data
+            final BaseWilliamChartModel previousbaseWilliamChartModel
+                    = GMStatisticUtil.joinDateAndGraph3(data.pDates, data.pValues, monthNamesAbrev);
+
+            ArrayList<BaseWilliamChartModel> baseWilliamChartModels = new ArrayList<>();
+            baseWilliamChartModels.add(baseWilliamChartModel);
+            baseWilliamChartModels.add(previousbaseWilliamChartModel);
+
+            showTransactionGraph(baseWilliamChartModels);
         } else {
             gmStatisticTransactionRangeCompare.setVisibility(View.GONE);
-            gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
-            processTransactionGraph(data.values, data.dates);
+            fillTransactionGraphMain(data);
         }
+    }
+
+    private void fillTransactionGraphMain(@Nullable GMGraphViewWithPreviousModel data) {
+
+        gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
+        showTransactionGraph(data.values, data.dates);
     }
 
     private void setHeaderValue(GMGraphViewWithPreviousModel data) {
@@ -186,14 +207,53 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmStatisticCardView.setAmount(Integer.toString(data.amount));
     }
 
-    protected void processTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
+    protected void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
+        // resize linechart according to data
+//        if (context != null && context instanceof Activity)
+//            GMStatisticUtil.resizeChart(baseWilliamChartModels.get(0).size(), gmStatisticIncomeGraph, (Activity) context);
+
+        // get index to display
+        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModels.get(0).getValues());
+
+        // get tooltip
+        Tooltip tooltip = getTooltip(
+                context,
+                getTooltipResLayout()
+        );
+
+        baseWilliamChartConfig
+                .reset()
+                .addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig())
+                .addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig())
+                .setBasicGraphConfiguration(new GrossGraphChartConfig())
+                .setDotDrawable(oval2Copy6)
+                .setTooltip(tooltip, new DefaultTooltipConfiguration())
+                .setxRendererListener(new XRenderer.XRendererListener() {
+                    @Override
+                    public boolean filterX(@IntRange(from = 0L) int i) {
+                        if (i == 0 || baseWilliamChartModels.get(0).getValues().length - 1 == i)
+                            return true;
+
+                        if (baseWilliamChartModels.get(0).getValues().length <= 15) {
+                            return true;
+                        }
+
+                        return indexToDisplay.contains(i);
+
+                    }
+                }).buildChart(gmStatisticIncomeGraph);
+    }
+
+    /**
+     * display two {@link BaseWilliamChartModel} models
+     *
+     * @param data
+     * @param dateGraph
+     */
+    protected void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         // create model for chart
         final BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-
-        BaseWilliamChartModel secondWilliamChartModel =
-                new BaseWilliamChartModel(baseWilliamChartModel);
-        secondWilliamChartModel.increment(25);
 
         // resize linechart according to data
         if (context != null && context instanceof Activity)
@@ -211,7 +271,6 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         baseWilliamChartConfig
                 .reset()
                 .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
                 .setBasicGraphConfiguration(new GrossGraphChartConfig())
                 .setDotDrawable(oval2Copy6)
                 .setTooltip(tooltip, new DefaultTooltipConfiguration())

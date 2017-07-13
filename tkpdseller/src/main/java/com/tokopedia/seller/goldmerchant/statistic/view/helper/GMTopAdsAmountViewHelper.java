@@ -17,7 +17,6 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
@@ -73,10 +72,6 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
         final BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
 
-        BaseWilliamChartModel secondWilliamChartModel =
-                new BaseWilliamChartModel(baseWilliamChartModel);
-        secondWilliamChartModel.increment(25);
-
         // resize linechart according to data
         if (context != null && context instanceof Activity)
             GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticTopAdsGraph, (Activity) context);
@@ -87,7 +82,6 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
         baseWilliamChartConfig
                 .reset()
                 .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
                 .setDotDrawable(oval2Copy6)
                 .setBasicGraphConfiguration(new GrossGraphChartConfig())
                 .setxRendererListener(new XRenderer.XRendererListener() {
