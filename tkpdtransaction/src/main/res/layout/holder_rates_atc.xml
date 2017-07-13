@@ -54,7 +54,6 @@
         android:gravity="center"
         android:layout_margin="10dp"
         android:textSize="12sp"
-        tools:text="Pesanan akan sampai dalam waktu maksimal 8 jam sejak penjual melakukan pengiriman
-(berlaku untuk pengiriman sebelum pukul 16:00)."/>
+        tools:text="@string/holder_desc_atc"/>
 
 </LinearLayout>
