@@ -10,6 +10,7 @@
     <color name="green_100">#007014</color>
 
     <color name="black_12">#1e000000</color>
+    <color name="grey_hint">#2e000000</color>
 
     <array name="green_indicator">
         <item>@color/green_50</item>

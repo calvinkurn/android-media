@@ -111,7 +111,8 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
-                    android:background="@color/medium_green"
+                    android:background="@drawable/prof_comp_bg_textview_rounded"
+                    android:backgroundTint="@color/medium_green"
                     android:text="@string/send_otp_sms"
                     />
             </LinearLayout>
@@ -135,7 +136,7 @@
                     android:textColor="@color/black_54"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:background="@drawable/bg_white_border_grey"
+                    android:background="@drawable/prof_comp_bg_textview_rounded"
                     android:padding="@dimen/padding_small"
                     android:backgroundTint="@color/white"
                     android:text="@string/title_resend_otp_sms"

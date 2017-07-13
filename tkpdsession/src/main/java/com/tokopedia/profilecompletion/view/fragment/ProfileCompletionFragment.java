@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -78,6 +80,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_completion, container, false);
         unbinder = ButterKnife.bind(this, parentView);
+        setHasOptionsMenu(true);
         initView(parentView);
         initialVar();
         presenter.attachView(this);
@@ -90,6 +93,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.menu_skip, menu);
 //        skip = menu.getItem(0);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem settingsMenuItem = menu.findItem(R.id.action_skip);
+        SpannableString s = new SpannableString(settingsMenuItem.getTitle());
+        s.setSpan(new ForegroundColorSpan(MethodChecker.getColor(getActivity(), R.color.grey_hint)), 0, s.length(), 0);
+        settingsMenuItem.setTitle(s);
     }
 
     @Override
@@ -134,7 +147,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     protected void initialVar() {
         animation = new ProgressBarAnimation(progressBar);
         filled = "filled";
-        pair = new Pair<>(R.anim.slide_in_left, R.anim.slide_out_right);
+        pair = new Pair<>(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

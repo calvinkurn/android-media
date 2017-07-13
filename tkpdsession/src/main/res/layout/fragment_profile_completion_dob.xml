@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
                 android:maxLength="2"
+                android:textColorHint="@color/grey_hint"
                 android:inputType="numberDecimal"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -51,6 +52,7 @@
                 android:id="@+id/month"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
+                android:textColorHint="@color/grey_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -68,6 +70,7 @@
                 android:id="@+id/year"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
+                android:textColorHint="@color/grey_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="4"
