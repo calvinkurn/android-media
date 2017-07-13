@@ -406,7 +406,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                if (productAdapter.getPagingHandlerModel() != null && !productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                if (productAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
                             productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
@@ -416,7 +417,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                     productAdapter.setIsLoading(false);
                     topAdsRecyclerAdapter.hideLoading();
                     topAdsRecyclerAdapter.unsetEndlessScrollListener();
-                    ((BrowseProductActivity) getActivity()).showBottomBar();
+                    if (getActivity() instanceof  BrowseProductActivity) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
                 }
             }
         });
