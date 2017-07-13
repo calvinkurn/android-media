@@ -46,6 +46,8 @@ public class FragmentBannerWebView extends Fragment {
     private TkpdWebView webview;
     private static final String EXTRA_URL = "url";
     private static final String EXTRA_OVERRIDE_URL = "override_url";
+    private static final String LOGIN_TYPE = "login_type";
+    private static final String QUERY_PARAM_PLUS = "plus";
     private static final int LOGIN_GPLUS = 123453;
 
 
@@ -150,8 +152,8 @@ public class FragmentBannerWebView extends Fragment {
                 return false;
             }
         } else {
-            String query = Uri.parse(url).getQueryParameter("login_type");
-            if( query != null && query.equals("plus")){
+            String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
+            if( query != null && query.equals(QUERY_PARAM_PLUS)){
                 Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("login", DownloadService.GOOGLE);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
