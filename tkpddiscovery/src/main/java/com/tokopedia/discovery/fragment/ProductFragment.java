@@ -134,7 +134,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         if (topAdsRecyclerAdapter == null) {
             initTopAdsRecyclerAdapter();
         }
-        
+
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1: //List
