@@ -9,19 +9,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.tkpd.R;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.fragment.WishListFragment;
 import com.tokopedia.tkpd.home.presenter.SimpleHome;

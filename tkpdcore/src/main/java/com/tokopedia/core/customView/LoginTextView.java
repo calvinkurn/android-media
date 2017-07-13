@@ -39,6 +39,10 @@ public class LoginTextView extends LinearLayout {
     boolean imageEnabled;
     GradientDrawable shape;
     private Drawable drawable;
+    int backgroundColor;
+    private float myDefaultPadding;
+    private int padding;
+    private int height;
 
 
     public LoginTextView(Context context) {
@@ -84,6 +88,9 @@ public class LoginTextView extends LinearLayout {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LoginTextView, 0, 0);
         try {
+
+            padding = (int) (a.getDimension(R.styleable.LoginTextView_btn_padding,  myDefaultPadding));
+            height = (int) a.getDimension(R.styleable.LoginTextView_btn_height, getResources().getDimension(R.dimen.btn_height));
             customText = a.getString(R.styleable.LoginTextView_customText);
             textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);

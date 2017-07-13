@@ -35,7 +35,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.List;
 

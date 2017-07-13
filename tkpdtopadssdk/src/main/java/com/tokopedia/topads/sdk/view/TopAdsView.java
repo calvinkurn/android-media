@@ -90,9 +90,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
-            Activity activity = (Activity) getContext();
-            infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
+            TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
+            infoBottomSheet.show();
         }
     }
 
@@ -185,7 +184,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(dataShop);
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
 

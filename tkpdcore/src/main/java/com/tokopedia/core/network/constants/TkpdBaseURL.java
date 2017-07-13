@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.constants;
 
+import okhttp3.HttpUrl;
+
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -43,7 +45,11 @@ public class TkpdBaseURL {
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
+    public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
+
     public static final String URL_TOKOCASH = "https://tokocash.com/";
+    public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
+    public static final String URL_PROMO = "https://www.tokopedia.com/promo/?flag_app=1";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -576,6 +582,7 @@ public class TkpdBaseURL {
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
+        public static final String API_V2_BRANDS = "/os/api/v2/brands/list/widget/android";
         public static final String API_V1_BRANDS_CATEGORY = "/os/api/v1/brands/category/android/{categoryId}";
         public static final String PATH_USER_WISHLIST = "/users";
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
@@ -705,6 +712,7 @@ public class TkpdBaseURL {
     }
 
     public static class TopCash {
+        public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }

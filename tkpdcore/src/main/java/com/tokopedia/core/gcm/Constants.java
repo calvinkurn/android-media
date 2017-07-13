@@ -68,6 +68,8 @@ public interface Constants {
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
+        String PROMO = "tokopedia://promo/{promo_id}";
+        String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
     }
 
     interface Settings {

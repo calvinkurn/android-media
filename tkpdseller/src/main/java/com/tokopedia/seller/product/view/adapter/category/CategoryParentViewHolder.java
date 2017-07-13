@@ -43,7 +43,7 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
                     .getResources()
                     .getDrawable(R.drawable.chevron_up));
         } else {
-            setView(context.getResources().getColor(R.color.font_top_ads_black_70), context
+            setView(context.getResources().getColor(R.color.font_black_primary_70), context
                     .getResources()
                     .getDrawable(R.drawable.chevron_down));
         }

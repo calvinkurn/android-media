@@ -19,7 +19,7 @@ import static com.facebook.internal.NativeProtocol.EXTRA_USER_ID;
 public class SellerRouter {
 
     private static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
-    private static final String ACTIVITY_TOPADS_DASHBOARD = "com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity";
+    private static final String ACTIVITY_TOPADS_DASHBOARD = "com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity";
     private static final String ACTIVITY_MANAGE_SHOP = "com.tokopedia.seller.shopsettings.ManageShopActivity";
 
     private static final String FRAGMENT_SELLING_NEW_ORDER = "com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder";
