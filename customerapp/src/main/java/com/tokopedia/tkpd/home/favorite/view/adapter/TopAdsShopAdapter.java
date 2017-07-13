@@ -43,6 +43,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     private List<TopAdsShopItem> data;
     private FavoriteClickListener favoriteClickListener;
     private Context context;
+    private final String PATH_VIEW = "views";
 
     public TopAdsShopAdapter(FavoriteClickListener favoriteClickListener) {
         this.favoriteClickListener = favoriteClickListener;
@@ -99,7 +100,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache,
                                                        boolean isFirstResource) {
-                            new ImpresionTask().execute(coverUri);
+                            if(coverUri.contains(PATH_VIEW) && !isFromMemoryCache) {
+                                new ImpresionTask().execute(coverUri);
+                            }
                             return false;
                         }
                     })
