@@ -114,6 +114,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         if (SessionHandler.isV4Login(context)) {
             return new Intent(context, SellerHomeActivity.class);
@@ -203,6 +208,14 @@ public class SellerRouterApplication extends MainApplication
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private void goToDefaultRoute(Context context) {

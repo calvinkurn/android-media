@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
-import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.tkpd.R;
 

@@ -232,7 +232,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void onAddFavorite(Data data) {
+    public void onAddFavorite(int position, Data data) {
 
     }
 
@@ -407,4 +407,5 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         }
         return defaultColumnNumber;
     }
+
 }

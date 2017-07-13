@@ -234,7 +234,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(Data data) {
+        public void onAddFavorite(int position, Data data) {
 
         }
     }

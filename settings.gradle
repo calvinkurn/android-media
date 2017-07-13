@@ -1,5 +1,6 @@
 include ':customerapp'
 include ':tkpdride'
+include ':tkpdfeed'
 include ':tkpddigital'
 include ':tkpdcore'
 include ':tkpdinbox'

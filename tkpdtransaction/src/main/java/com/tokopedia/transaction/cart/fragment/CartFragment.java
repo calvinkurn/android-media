@@ -95,6 +95,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
+
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -462,7 +465,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onAddFavorite(Data shopData) {
+    public void onAddFavorite(int position, Data shopData) {
         //TODO: this listener not used in this sprint
     }
 
