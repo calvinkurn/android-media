@@ -651,6 +651,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_quantity">Jumlah</string>
     <string name="title_insurance_cost">Asuransi</string>
     <string name="title_remark">Keterangan</string>
+    <string name="title_catatan_penjual">Catatan untuk Penjual</string>
     <string name="title_shipping_dest">Tujuan Pengiriman</string>
     <string name="title_choose_address">Pilih Alamat Lain</string>
     <string name="title_new_address">Tambah Alamat Baru</string>
