@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout;
-import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.WidgetUnfinishedTransHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.UnFinishedTransViewHelperModel;
@@ -20,7 +20,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransact
 
 public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinishedTransactionViewModel> {
 
-    private StatisticCardView notDoneTransStatisticCardView;
+    private TitleCardView notDoneTransStatisticCardView;
     private DonutProgress gmStatisticTransDonutProgress;
     private DonutProgressLayout gmStatisticTransDonutProgressLayout;
     private RelativeLayout onHoldCountUnfinishedTransaction;
@@ -34,7 +34,7 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
 
     @Override
     public void initView(@Nullable View itemView) {
-        notDoneTransStatisticCardView = (StatisticCardView) itemView.findViewById(R.id.not_done_trans_statistic_card_view);
+        notDoneTransStatisticCardView = (TitleCardView) itemView.findViewById(R.id.not_done_trans_statistic_card_view);
         gmStatisticTransDonutProgress = (DonutProgress) itemView.findViewById(R.id.gm_statistic_trans_donut_progress);
         gmStatisticTransDonutProgressLayout = (DonutProgressLayout) itemView.findViewById(R.id.gm_statistic_trans_donut_progress_layout);
 

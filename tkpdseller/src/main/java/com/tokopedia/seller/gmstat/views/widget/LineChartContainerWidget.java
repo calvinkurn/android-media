@@ -2,48 +2,47 @@ package com.tokopedia.seller.gmstat.views.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.lib.widget.GMDateRangeView;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 /**
- * Created by User on 7/10/2017.
+ * Created by hendry on 7/10/2017.
  */
 
-public class StatisticCardView extends CardView {
+public class LineChartContainerWidget extends LinearLayout {
 
-    FrameLayout mFrameLayout;
-    OnArrowDownClickListener onArrowDownClickListener;
-    private TextView tvTitle;
-    private ImageView ivArrowDown;
     private TextView tvAmount;
     private ArrowPercentageView arrowPercentageView;
     private TextView tvSubtitle;
     private TextView tvPercentageDesc;
-    private ViewGroup vgTitle;
+    private GMDateRangeView gmStatisticTransactionRangeMain;
+    private GMDateRangeView gmStatisticTransactionRangeCompare;
 
-    public StatisticCardView(Context context) {
+    private ViewGroup chartInnerContainer;
+
+    public LineChartContainerWidget(Context context) {
         super(context);
         apply(null, 0);
         init();
     }
 
-    public StatisticCardView(Context context, @Nullable AttributeSet attrs) {
+    public LineChartContainerWidget(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         apply(attrs, 0);
         init();
     }
 
-    public StatisticCardView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public LineChartContainerWidget(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         apply(attrs, defStyleAttr);
         init();
@@ -55,75 +54,58 @@ public class StatisticCardView extends CardView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_statistic_card, this);
-        vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
-        tvTitle = (TextView) vgTitle.findViewById(R.id.tv_title);
-        ivArrowDown = (ImageView) vgTitle.findViewById(R.id.iv_arrow_down);
+        View view = inflate(getContext(), R.layout.widget_line_chart_container, this);
+
         tvAmount = (TextView) view.findViewById(R.id.tv_amount);
         arrowPercentageView = (ArrowPercentageView) view.findViewById(R.id.view_arrow_percentage);
         tvSubtitle = (TextView) view.findViewById(R.id.tv_subtitle);
         tvPercentageDesc = (TextView) view.findViewById(R.id.tv_percentage_description);
 
-        mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
+        View vgDateRange = view.findViewById(R.id.vg_date_range);
+        gmStatisticTransactionRangeMain = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_main);
+        gmStatisticTransactionRangeCompare = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_compare);
+        gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
 
-        ivArrowDown.setVisibility(View.GONE);
         tvSubtitle.setVisibility(View.GONE);
         tvPercentageDesc.setVisibility(View.GONE);
         arrowPercentageView.setVisibility(View.GONE);
         tvAmount.setVisibility(View.GONE);
 
+        chartInnerContainer = (ViewGroup) view.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
+
         setAddStatesFromChildren(true);
-        mFrameLayout.setAddStatesFromChildren(true);
-    }
-
-    public void setOnArrowDownClickListener(final OnArrowDownClickListener onArrowDownClickListener) {
-        this.onArrowDownClickListener = onArrowDownClickListener;
-        if (onArrowDownClickListener == null) {
-            ivArrowDown.setVisibility(View.GONE);
-            vgTitle.setClickable(false);
-            vgTitle.setOnClickListener(null);
-            ivArrowDown.setOnClickListener(null);
-        } else {
-            ivArrowDown.setVisibility(View.VISIBLE);
-            vgTitle.setClickable(true);
-            OnClickListener onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onArrowDownClickListener.onArrowDownClicked();
-                }
-            };
-            vgTitle.setOnClickListener(onClickListener);
-            ivArrowDown.setOnClickListener(onClickListener);
-        }
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        //TODO hendry setenabled
     }
 
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
-        if (getContext().getString(R.string.chart_tag).equals(child.getTag())) {
-            mFrameLayout.addView(child, params);
-            if (params.width > mFrameLayout.getLayoutParams().width) {
-                mFrameLayout.setLayoutParams(params);
+        if (child instanceof LineChartView) {
+            if (chartInnerContainer.getChildCount() > 0) {
+                // CAN ONLY HAS ONE CHILD
+                return;
             }
+            chartInnerContainer.addView(child, params);
         } else {
             // Carry on adding the View...
             super.addView(child, index, params);
         }
     }
 
-    public void setTitle(CharSequence title){
-        if (TextUtils.isEmpty(title)) {
-            tvTitle.setVisibility(View.GONE);
+    public void setMainDate(@Nullable GMGraphViewWithPreviousModel data) {
+        if (data == null) {
+            gmStatisticTransactionRangeMain.setVisibility(View.GONE);
         } else {
-            tvTitle.setText(title);
-            tvTitle.setVisibility(View.VISIBLE);
+            gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
+            gmStatisticTransactionRangeMain.setVisibility(View.VISIBLE);
         }
+    }
 
+    public void setCompareDate(@Nullable GMGraphViewWithPreviousModel data) {
+        if (data == null) {
+            gmStatisticTransactionRangeCompare.setVisibility(View.GONE);
+        } else {
+            gmStatisticTransactionRangeCompare.bind(data.dateRangeModel);
+            gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setAmount(CharSequence formattedAmount) {
@@ -134,6 +116,7 @@ public class StatisticCardView extends CardView {
             tvAmount.setVisibility(View.VISIBLE);
         }
     }
+
 
     public void setPercentage(Double percentage) {
         arrowPercentageView.setPercentage(percentage);
@@ -162,7 +145,9 @@ public class StatisticCardView extends CardView {
         arrowPercentageView.setPercentageUtil(percentageUtil);
     }
 
-    public interface OnArrowDownClickListener {
-        void onArrowDownClicked();
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        //TODO hendry setenabled
     }
 }

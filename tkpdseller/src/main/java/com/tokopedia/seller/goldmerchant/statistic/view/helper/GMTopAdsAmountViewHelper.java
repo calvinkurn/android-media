@@ -7,11 +7,10 @@ import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
+import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
@@ -29,15 +28,14 @@ import java.util.List;
 
 public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel> {
     private LineChartView gmStatisticTopAdsGraph;
-    private LinearLayout gmStatisticTopAdsGraphContainerInner;
-    private HorizontalScrollView gmStatisticTopAdsGraphContainer;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMPercentageViewHelper gmPercentageViewHelper2;
 
 
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
-    private StatisticCardView gmStatisticTopAdsCardView;
+    private TitleCardView gmStatisticTopAdsCardView;
+    private LineChartContainerWidget gmTopAdsLineChartWidget;
 
     public GMTopAdsAmountViewHelper(@Nullable Context context) {
         super(context);
@@ -50,18 +48,17 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
         oval2Copy6 = ResourcesCompat.getDrawable(itemView.getResources(), R.drawable.oval_2_copy_6, null);
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         gmStatisticTopAdsGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_topads_graph);
-        gmStatisticTopAdsGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_topads_graph_container_inner);
-        gmStatisticTopAdsGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_topads_graph_container);
-        gmStatisticTopAdsCardView = (StatisticCardView) itemView.findViewById(R.id.topads_statistic_card_view);
-        gmStatisticTopAdsCardView.setPercentageUtil(gmPercentageViewHelper2);
+        gmStatisticTopAdsCardView = (TitleCardView) itemView.findViewById(R.id.topads_statistic_card_view);
+        gmTopAdsLineChartWidget = (LineChartContainerWidget) gmStatisticTopAdsCardView.findViewById(R.id.topads_line_chart_container);
+        gmTopAdsLineChartWidget.setPercentageUtil(gmPercentageViewHelper2);
     }
 
     private void setTopAdsCardView(GMGraphViewModel data) {
         gmStatisticTopAdsCardView.setTitle(context.getString(R.string.gold_merchant_top_ads_amount_title_text));
-        gmStatisticTopAdsCardView.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
+        gmTopAdsLineChartWidget.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
 
-        gmStatisticTopAdsCardView.setPercentage((double) (data.percentage * 100));
-        gmStatisticTopAdsCardView.setAmount(Integer.toString(data.amount));
+        gmTopAdsLineChartWidget.setPercentage((double) (data.percentage * 100));
+        gmTopAdsLineChartWidget.setAmount(Integer.toString(data.amount));
     }
 
     @Override
