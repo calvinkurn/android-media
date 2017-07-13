@@ -121,8 +121,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
                         new DigitalCategoryListRepository(
-                                mojitoService, new GlobalCacheManager(), mapperData
-                        ), tokoCashService), this);
+                                mojitoService, new GlobalCacheManager(), mapperData,
+                                sessionHandler), tokoCashService), this);
     }
 
     @Override

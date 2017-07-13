@@ -8,6 +8,7 @@ import com.tokopedia.core.database.model.SimpleDatabaseModel;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
@@ -27,13 +28,16 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     private final GlobalCacheManager globalCacheManager;
     private final ICategoryDigitalListDataMapper digitalListDataMapper;
     private final MojitoService mojitoService;
+    private final SessionHandler sessionHandler;
 
     public DigitalCategoryListRepository(MojitoService mojitoService,
                                          GlobalCacheManager globalCacheManager,
-                                         ICategoryDigitalListDataMapper digitalListDataMapper) {
+                                         ICategoryDigitalListDataMapper digitalListDataMapper,
+                                         SessionHandler sessionHandler) {
         this.globalCacheManager = globalCacheManager;
         this.digitalListDataMapper = digitalListDataMapper;
         this.mojitoService = mojitoService;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -81,7 +85,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
 
     @NonNull
     private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork() {
-        return mojitoService.getApi().getHomeCategoryMenu().map(
+        return mojitoService.getApi().getHomeCategoryMenu(sessionHandler.getLoginID()).map(
                 getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
         );
     }
