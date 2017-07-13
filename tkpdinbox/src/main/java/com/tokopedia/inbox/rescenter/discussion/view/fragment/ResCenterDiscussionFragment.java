@@ -77,6 +77,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private static final String PARAM_IS_ERROR = "PARAM_IS_ERROR";
     private static final String PARAM_STRING_ERROR = "PARAM_STRING_ERROR";
     private static final int REQUEST_CODE_GALLERY = 1243;
+    private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
@@ -511,16 +512,15 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
             return false;
         }
 
-        int isMaximalContentVideoAllow = 1;
-        int countVideo = 0;
+        int countVideoAlreadyAdded = 0;
         if (item.isVideo()) {
             for (AttachmentViewModel model :attachmentAdapter.getList()) {
                 if (model.isVideo()) {
-                    countVideo++;
+                    countVideoAlreadyAdded++;
                 }
             }
         }
-        if (countVideo > isMaximalContentVideoAllow) {
+        if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
             NetworkErrorHelper.showSnackbar(
                     getActivity(),
                     getActivity().getString(R.string.error_reply_discussion_resolution_reach_max)
