@@ -1,5 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
@@ -100,7 +102,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -12,4 +12,5 @@
     <string name="trans_amount_text">Nominal Transaksi</string>
     <string name="trans_in_res_center_text">Transaksi di Pusat Resolusi</string>
     <string name="total_trans_text">Total Transaksi</string>
+    <string name="list_sold_product_text">Daftar Produk Terjual</string>
 </resources>
