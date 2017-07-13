@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/circle"/>
+        android:background="@drawable/circle" />
 
     <ImageView
         android:layout_width="25dp"
@@ -20,13 +20,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        tools:background="@drawable/ic_favorite"/>
+        tools:background="@drawable/ic_favorite" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small">
+
         <com.tokopedia.core.customwidget.SquareImageView
             android:id="@+id/product_image"
             android:layout_width="match_parent"
@@ -49,7 +50,6 @@
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:textColor="@color/orange"
-            tools:text="Rp 195.000"
-            />
+            tools:text="Rp 195.000" />
     </LinearLayout>
 </RelativeLayout>

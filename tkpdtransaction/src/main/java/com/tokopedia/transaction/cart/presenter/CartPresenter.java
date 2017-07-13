@@ -509,7 +509,7 @@ public class CartPresenter implements ICartPresenter {
             if (data.isPartialDeliver()) {
                 partialDeliverStringList.add(data.getCartStringForDeliverOption());
             }
-            if(data.getCartCourierPrices() != null) {
+            if (data.getCartCourierPrices() != null) {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             } else {
@@ -666,7 +666,7 @@ public class CartPresenter implements ICartPresenter {
         return new ICartDataInteractor.KeroRatesListener() {
             @Override
             public void onSuccess(CartRatesData cartRatesData) {
-                if(cartRatesData.getRatesResponse() == null) {
+                if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
                     Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
@@ -714,7 +714,7 @@ public class CartPresenter implements ICartPresenter {
 
         int shipmentServiceId = cartRatesData.getCourierServiceId();
 
-        for (int i = 0; i< keroShipmentServices.size(); i++) {
+        for (int i = 0; i < keroShipmentServices.size(); i++) {
             Integer currentKeroShipmentServiceId = Integer
                     .parseInt(keroShipmentServices.get(i).getShipperProductId());
 
@@ -725,7 +725,7 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());
                     courierPrices.setCartSubtotal(true);
-                } else if (courierPrices.getInsuranceMode() == OPTIONAL_INSURANCE_MODE){
+                } else if (courierPrices.getInsuranceMode() == OPTIONAL_INSURANCE_MODE) {
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());
                     courierPrices.setCartSubtotal(cartRatesData.isInsuranced());

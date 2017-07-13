@@ -74,8 +74,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2080104;
-        defaultVersionName = "2.8.1";
+        defaultVersionCode = 2080109;
+        defaultVersionName = "2.8.1.9";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -167,6 +167,7 @@ android {
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = true
     }
 
 
@@ -185,12 +186,9 @@ android {
 
     productFlavors {
         staging {
-            applicationIdSuffix ".staging"
-            versionNameSuffix "-staging"
+
         }
         alpha {
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
         }
         live {
 
@@ -231,6 +229,7 @@ dependencies {
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
+    compile project(':tkpdride')
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')

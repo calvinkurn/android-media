@@ -14,7 +14,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 6/15/17. Tokopedia
  */
 
-public class TokoCashHomeInteractorImpl implements TokoCashHomeInteractor{
+public class TokoCashHomeInteractorImpl implements TokoCashHomeInteractor {
 
     private final CompositeSubscription compositeSubscription;
     private final TokoCashCashBackService tokoCashCashBackService;

@@ -14,6 +14,8 @@ import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.ride.deeplink.RideDeeplinkModule;
+import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
@@ -29,7 +31,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
-        PdpApplinkModule.class
+        PdpApplinkModule.class,
+        RideDeeplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -41,7 +44,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new SellerApplinkModuleLoader(),
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
-                new PdpApplinkModuleLoader()
+                new PdpApplinkModuleLoader(),
+                new RideDeeplinkModuleLoader()
         );
     }
 
@@ -52,6 +56,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = intent.getData();
             presenter.processUTM(applink);
             deepLinkDelegate.dispatchFrom(this, intent);

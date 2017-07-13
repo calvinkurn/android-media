@@ -2,7 +2,6 @@ package com.tokopedia.transaction.cart.interactor;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
@@ -67,8 +66,11 @@ public interface ICartDataInteractor {
 
     interface KeroRatesListener {
         void onSuccess(CartRatesData cartRatesData);
+
         void onAllDataCompleted();
+
         void onRatesFailed(String errorMessage);
+
         void onConnectionFailed();
     }
 }

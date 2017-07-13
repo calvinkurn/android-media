@@ -3,8 +3,6 @@ package com.tokopedia.core.base.adapter.viewholders;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.Visitable;
-
 import butterknife.ButterKnife;
 
 /**

@@ -1,13 +1,11 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.digital.tokocash.mapper.TokoCashMapper;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.home.interactor.TokoCashHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.TokoCashHomeInteractorImpl;
 
 import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by kris on 6/15/17. Tokopedia

@@ -18,9 +18,10 @@ import com.tokopedia.tkpd.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * @author by mady on 9/23/16.
- * Modified by erry
+ *         Modified by erry
  */
 public class RecyclerViewCategoryMenuAdapter extends
         RecyclerView.Adapter<RecyclerViewCategoryMenuAdapter.ItemRowHolder> {
@@ -30,9 +31,9 @@ public class RecyclerViewCategoryMenuAdapter extends
     private int homeMenuWidth;
 
 
-
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
     private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;
+    private SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener;
 
     public RecyclerViewCategoryMenuAdapter(Context context) {
         this.mContext = context;
@@ -65,6 +66,7 @@ public class RecyclerViewCategoryMenuAdapter extends
                 homeMenuWidth);
         itemListDataAdapter.setCategoryClickedListener(onCategoryClickedListener);
         itemListDataAdapter.setGimmicClickedListener(onGimmicClickedListener);
+        itemListDataAdapter.setOnApplinkClickedListener(onApplinkClickedListener);
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
@@ -83,6 +85,10 @@ public class RecyclerViewCategoryMenuAdapter extends
             SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener) {
 
         this.onGimmicClickedListener = onGimmicClickedListener;
+    }
+
+    public void setOnApplinkClickedListener(SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener){
+        this.onApplinkClickedListener = onApplinkClickedListener;
     }
 
     public void setOnCategoryClickedListener(

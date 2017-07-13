@@ -278,7 +278,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_total_item"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/tv_weight"
@@ -289,7 +289,7 @@
                         android:gravity="end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small"
-                        tools:text="1 Kg"/>
+                        tools:text="1 Kg" />
 
                 </LinearLayout>
 
@@ -305,7 +305,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_sub_total"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/tv_sub_total"
@@ -316,7 +316,7 @@
                         android:gravity="end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small"
-                        tools:text="Rp 20.000,-"/>
+                        tools:text="Rp 20.000,-" />
 
                 </LinearLayout>
 
@@ -332,7 +332,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_shipping_cost"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/tv_shipping_cost"
@@ -343,7 +343,7 @@
                         android:gravity="end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small"
-                        tools:text="Rp 20.000,-"/>
+                        tools:text="Rp 20.000,-" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -359,7 +359,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_insurance_cost"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/tv_insurance_price"
@@ -370,7 +370,7 @@
                         android:gravity="end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small"
-                        tools:text="Rp 20.000,-"/>
+                        tools:text="Rp 20.000,-" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -385,7 +385,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_additional_cost"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/tv_additional_cost"
@@ -396,7 +396,7 @@
                         android:gravity="end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small"
-                        tools:text="Rp 20.000,-"/>
+                        tools:text="Rp 20.000,-" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -436,7 +436,7 @@
             android:textSize="@dimen/font_small"
             android:textStyle="bold"
             tools:text="Rp 20.000,-"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

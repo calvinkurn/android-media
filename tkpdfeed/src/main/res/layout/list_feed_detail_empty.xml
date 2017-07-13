@@ -43,8 +43,7 @@
             android:textStyle="normal"
             android:textColor="@color/white"
             android:gravity="center_horizontal"
-            android:text="@string/return_to_feed"
-            />
+            android:text="@string/return_to_feed" />
 
     </LinearLayout>
 

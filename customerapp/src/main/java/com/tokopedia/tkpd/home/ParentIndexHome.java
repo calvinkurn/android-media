@@ -57,10 +57,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;

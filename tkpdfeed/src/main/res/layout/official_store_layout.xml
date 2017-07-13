@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_small"
-              android:background="@drawable/cards_ui_feed"
-              android:backgroundTint="@color/light_blue_300">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small"
+    android:background="@drawable/cards_ui_feed"
+    android:backgroundTint="@color/light_blue_300">
 
-    <include layout="@layout/official_store_header"/>
+    <include layout="@layout/official_store_header" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -24,11 +24,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/feed_container_rounded_corners">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
             <include
                 android:id="@+id/footer"
