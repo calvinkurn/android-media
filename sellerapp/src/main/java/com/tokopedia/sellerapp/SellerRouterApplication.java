@@ -20,8 +20,10 @@ import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
@@ -35,6 +37,7 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
@@ -151,7 +154,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        Intent intent = Login.getSellerRegisterIntent(context);
         context.startActivity(intent);
     }
 
