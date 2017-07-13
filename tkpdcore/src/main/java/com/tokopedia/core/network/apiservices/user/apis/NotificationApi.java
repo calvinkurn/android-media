@@ -24,4 +24,7 @@ public interface NotificationApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_RESET_NOTIFICATION)
     Observable<Response<TkpdResponse>> resetNotification(@FieldMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.User.PATH_GET_NOTIFICATION)
+    Observable<Response<TkpdResponse>> getNotification2(@QueryMap Map<String, Object> params);
 }

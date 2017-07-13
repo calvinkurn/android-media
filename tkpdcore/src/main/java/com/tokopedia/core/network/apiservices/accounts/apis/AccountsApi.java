@@ -127,4 +127,7 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
     Call<String> makeLoginsynchronous(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
+    Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 }

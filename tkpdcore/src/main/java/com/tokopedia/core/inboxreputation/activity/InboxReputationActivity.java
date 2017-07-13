@@ -100,7 +100,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             SellerFragmentReputation applicationContext = (SellerFragmentReputation) getApplicationContext();
             sellerReputationFragment = applicationContext.getSellerReputationFragment(this);
         }
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_REVIEW);
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
