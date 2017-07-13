@@ -121,9 +121,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private HeaderInfoView headerInfoView;
     private DetailInfoView detailInfoView;
     private PictureView pictureView;
-    private ShopInfoViewV2 shopInfoView;
-    private OtherProductsView otherProductsView;
     private RatingTalkCourierView ratingTalkCourierView;
+    private PriceSimulationView priceSimulationView;
+    private ShopInfoViewV2 shopInfoView;
+    private TransactionDetailView transactionDetailView;
+    private VideoDescriptionLayout videoDescriptionLayout;
+    private OtherProductsView otherProductsView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
@@ -132,12 +135,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    TransactionDetailView transactionDetailView;
-    PriceSimulationView priceSimulationView;
     FloatingActionButton fabWishlist;
 
     private TextView tvTickerGTM;
-    private VideoDescriptionLayout videoDescriptionLayout;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -712,10 +712,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             return true;
         } else if (item.getItemId() == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivity(intent);
+                intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
+                navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
@@ -908,14 +908,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
-            if (SessionHandler.isV4Login(context)) {
-                LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
-                int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
-                if (CartCache > 0) {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
-                } else {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
-                }
+            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            if (CartCache > 0) {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+            } else {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
             }
         }
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
@@ -929,14 +927,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
             menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
-            if (SessionHandler.isV4Login(context)) {
-                LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
-                int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
-                if (CartCache > 0) {
-                    menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
-                } else {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
-                }
+            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            if (CartCache > 0) {
+                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+            } else {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
             }
             toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
         }

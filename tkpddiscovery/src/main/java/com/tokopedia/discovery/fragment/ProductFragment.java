@@ -32,6 +32,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -68,7 +69,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -470,7 +473,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
+    public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data shop) {
 
     }
 

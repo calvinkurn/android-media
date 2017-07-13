@@ -39,6 +39,8 @@ public interface TkpdCoreRouter {
 
     void goToMerchantRedirect(Context context);
 
+    void actionAppLink(Activity activity, String linkUrl);
+
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
