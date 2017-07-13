@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
+import android.support.annotation.Nullable;
+
 import com.tkpdfeed.feeds.FeedDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailContentDomain;
@@ -60,33 +62,53 @@ public class FeedDetailListMapper implements Func1<FeedDetail.Data, List<DataFee
     private List<FeedDetailProductDomain> getFeedDetailProductDomainList(List<FeedDetail.Data.Product> products) {
         List<FeedDetailProductDomain> listProduct = new ArrayList<>();
         for (FeedDetail.Data.Product product : products) {
-            FeedDetailProductDomain productDomain =
-                    new FeedDetailProductDomain(
-                            product.id(),
-                            product.name(),
-                            product.price(),
-                            product.image(),
-                            getFeedDetailWholesaleDomainList(product.wholesale()),
-                            product.freereturns(),
-                            product.preorder(),
-                            product.cashback(),
-                            product.url(),
-                            product.productLink(),
-                            product.wishlist(),
-                            product.rating());
-            listProduct.add(productDomain);
+            if(productIsNotNull(product)) {
+                FeedDetailProductDomain productDomain =
+                        new FeedDetailProductDomain(
+                                product.id(),
+                                product.name(),
+                                product.price(),
+                                product.image(),
+                                getFeedDetailWholesaleDomainList(product.wholesale()),
+                                product.freereturns(),
+                                product.preorder(),
+                                product.cashback(),
+                                product.url(),
+                                product.productLink(),
+                                product.wishlist(),
+                                product.rating());
+                listProduct.add(productDomain);
+            }
         }
         return listProduct;
     }
 
-    private List<FeedDetailWholesaleDomain> getFeedDetailWholesaleDomainList(List<FeedDetail.Data.Wholesale> wholesales) {
+    private boolean productIsNotNull(FeedDetail.Data.Product product) {
+        return product.id()!= null && !product.id().equals("")
+                && product.name() != null && product.name().equals("")
+                && product.price() != null && product.price().equals("")
+                && product.image() != null && product.image().equals("")
+                && product.wholesale() != null
+                && product.freereturns() != null
+                && product.preorder() != null
+                && product.name() != null
+                && product.url() != null && product.url().equals("")
+                && product.productLink() != null && product.productLink().equals("")
+                && product.wishlist() != null
+                && product.rating() != null;
+    }
+
+    private List<FeedDetailWholesaleDomain> getFeedDetailWholesaleDomainList(@Nullable List<FeedDetail
+            .Data.Wholesale> wholesales) {
         List<FeedDetailWholesaleDomain> listWholesale = new ArrayList<>();
 
-        for (FeedDetail.Data.Wholesale wholesale : wholesales) {
-            FeedDetailWholesaleDomain wholesaleDomain =
-                    new FeedDetailWholesaleDomain(
-                            wholesale.qty_min_fmt());
-            listWholesale.add(wholesaleDomain);
+        if (wholesales != null) {
+            for (FeedDetail.Data.Wholesale wholesale : wholesales) {
+                FeedDetailWholesaleDomain wholesaleDomain =
+                        new FeedDetailWholesaleDomain(
+                                wholesale.qty_min_fmt());
+                listWholesale.add(wholesaleDomain);
+            }
         }
 
         return listWholesale;
