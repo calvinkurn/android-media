@@ -24,4 +24,23 @@ public class UnFinishedTransactionViewModel {
     }
 
 
+    public long getTotalTransactionCount() {
+        return totalTransactionCount;
+    }
+
+    public String getOnHoldAmountText() {
+        return onHoldAmountText;
+    }
+
+    public long getOnHoldCount() {
+        return onHoldCount;
+    }
+
+    public long getResoCount() {
+        return resoCount;
+    }
+
+    public long getOnHoldAmount() {
+        return onHoldAmount;
+    }
 }
