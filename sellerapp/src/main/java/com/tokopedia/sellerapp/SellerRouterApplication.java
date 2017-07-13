@@ -11,17 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
@@ -32,14 +34,15 @@ import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -114,6 +117,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         if (SessionHandler.isV4Login(context)) {
             return new Intent(context, SellerHomeActivity.class);
@@ -146,7 +154,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        Intent intent = Login.getSellerRegisterIntent(context);
         context.startActivity(intent);
     }
 
@@ -203,6 +211,14 @@ public class SellerRouterApplication extends MainApplication
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private void goToDefaultRoute(Context context) {

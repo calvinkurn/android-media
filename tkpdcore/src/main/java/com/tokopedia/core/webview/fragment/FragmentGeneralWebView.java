@@ -3,6 +3,7 @@ package com.tokopedia.core.webview.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,9 +25,14 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.var.TkpdState;
 
 
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
@@ -34,6 +41,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
     private static final String SEAMLESS = "seamless";
+    private static final String LOGIN_TYPE = "login_type";
+    private static final String QUERY_PARAM_PLUS = "plus";
+    private static final int LOGIN_GPLUS = 123453;
 
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -215,7 +225,31 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     @Override
     public boolean onOverrideUrl(String url) {
+        String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
+        if( query != null && query.equals(QUERY_PARAM_PLUS)){
+            Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+            intent.putExtra("login", DownloadService.GOOGLE);
+            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            startActivityForResult(intent, LOGIN_GPLUS);
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOGIN_GPLUS){
+            String historyUrl="";
+            WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
+            if (mWebBackForwardList.getCurrentIndex() > 0)
+                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex()-1).getUrl();
+            if (!historyUrl.contains(SEAMLESS))
+                WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
+            else {
+                WebViewGeneral.loadAuthUrl(historyUrl);
+            }
+        }
     }
 
     public interface OnFragmentInteractionListener {

@@ -25,7 +25,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
     private CompositeSubscription compositeSubscription;
 
     public KeroNetInteractorImpl() {
-        keroService = new KeroAuthService();
+        keroService = new KeroAuthService(0);
         compositeSubscription = new CompositeSubscription();
     }
 
