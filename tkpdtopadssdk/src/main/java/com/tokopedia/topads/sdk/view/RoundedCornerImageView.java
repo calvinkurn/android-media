@@ -5,14 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-
+import android.widget.ImageView;
 
 
 /**
  * @author by nisie on 6/16/17.
  */
 
-public class RoundedCornerImageView extends SquareImageView {
+public class RoundedCornerImageView extends ImageView {
 
     private float radius = 5.0f;
     private Path path;
@@ -30,7 +30,7 @@ public class RoundedCornerImageView extends SquareImageView {
     }
 
     public RoundedCornerImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs);
+        super(context, attrs, defStyle);
         init();
     }
 
@@ -44,5 +44,10 @@ public class RoundedCornerImageView extends SquareImageView {
         path.addRoundRect(rect, radius, radius, Path.Direction.CW);
         canvas.clipPath(path);
         super.onDraw(canvas);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 }
