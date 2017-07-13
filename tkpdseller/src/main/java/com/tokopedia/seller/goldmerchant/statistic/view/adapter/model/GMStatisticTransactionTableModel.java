@@ -7,7 +7,10 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  */
 
 public class GMStatisticTransactionTableModel implements ItemType {
-    public static int TYPE = 199349;
+    public static final int TYPE = 199349;
+
+    public String rightText;
+    public String leftText;
 
     @Override
     public int getType() {

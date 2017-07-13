@@ -20,7 +20,6 @@ import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
@@ -32,6 +31,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphView
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.lib.widget.LabelView;
 
 import java.util.HashMap;
@@ -69,6 +69,9 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     private GMTransactionGraphViewHelper gmTransactionGraphViewHelper;
     private UnFinishedTransactionViewHolder unFinishedTransactionViewHolder;
 
+    private GMDateRangeDateViewModel gmDateRangeDateViewModel;
+    private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
+
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
     }
@@ -103,6 +106,8 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
+                intent.putExtra(GMStatisticTransactionTableView.START_DATE, gmDateRangeDateViewModel.getStartDate().getModel1());
+                intent.putExtra(GMStatisticTransactionTableView.END_DATE, gmDateRangeDateViewModel.getEndDate().getModel1());
                 startActivity(intent);
             }
         });
@@ -144,10 +149,12 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         // get range from network
                         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
 
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
+                        gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
                         if (gmDateRangeDateViewModel == null) return;
+                        gmDateRangeDateViewModel.dumpStartDateLong();
+                        gmDateRangeDateViewModel.dumpEndDateLong();
 
-                        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
+                        previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
 
                         GMTransactionGraphViewModel gmTransactionGraphViewModel
                                 = new GMTransactionGraphViewModel();
@@ -170,29 +177,6 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         processTopAdsAmount(getTransactionGraph, dateGraph);
 
                         processUnfinishedTransaction(getTransactionGraph);
-                    }
-
-
-                });
-
-        gmStatApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<GetTransactionTable>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onNext(Response<GetTransactionTable> stringResponse) {
-                        Log.e(TAG, stringResponse.body().toString());
                     }
                 });
     }

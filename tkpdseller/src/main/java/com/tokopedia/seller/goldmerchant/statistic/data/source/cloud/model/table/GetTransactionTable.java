@@ -36,13 +36,13 @@ public class GetTransactionTable {
 
     public static class Cell {
 
-        @SerializedName("product.product_id")
+        @SerializedName("product_id")
         @Expose
         private int productProductId;
-        @SerializedName("product.product_name")
+        @SerializedName("product_name")
         @Expose
         private String productProductName;
-        @SerializedName("product.product_link")
+        @SerializedName("product_link")
         @Expose
         private String productProductLink;
         @SerializedName("trans_sum")
