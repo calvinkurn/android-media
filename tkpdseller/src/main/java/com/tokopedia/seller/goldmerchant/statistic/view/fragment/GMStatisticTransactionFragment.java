@@ -1,20 +1,12 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -23,27 +15,20 @@ import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatisticTransactionApi;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
-import com.tokopedia.seller.lib.widget.GMDateRangeView;
-import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
-import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
+import com.tokopedia.seller.lib.widget.LabelView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,21 +50,18 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     ImageHandler imageHandler;
 
     @Inject
-    GMStatisticTransactionApi gmStatisticTransactionApi;
+    GMStatApi gmStatApi;
 
     @Inject
     SessionHandler sessionHandler;
-    // gm percentage helper
-    GMPercentageViewHelper gmPercentageViewHelper;
+
     private View rootView;
-    private LineChartView gmStatisticIncomeGraph;
-    private LinearLayout gmStatisticGraphContainerInner;
-    private HorizontalScrollView gmStatisticGraphContainer;
+
     private String[] monthNamesAbrev;
-    private Drawable oval2Copy6;
-    private BaseWilliamChartConfig baseWilliamChartConfig;
-    private GMDateRangeView gmStatisticTransactionRangeMain;
-    private GMDateRangeView gmStatisticTransactionRangeCompare;
+
+    private GMTopAdsAmountViewHelper gmTopAdsAmountViewHelper;
+    private LabelView gmStatisticProductListText;
+    private GMTransactionGraphViewHelper gmTransactionGraphViewHelper;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -96,24 +78,25 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
     private void initVar() {
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        baseWilliamChartConfig = new BaseWilliamChartConfig();
-        oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
 
-        gmPercentageViewHelper = new GMPercentageViewHelper(getActivity());
+        gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
+        gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());
     }
 
     private void initView() {
         if (rootView == null)
             return;
 
-        gmStatisticGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gm_statistic_transaction_graph_container);
-        gmStatisticGraphContainerInner = (LinearLayout) rootView.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
-        gmStatisticIncomeGraph = (LineChartView) rootView.findViewById(R.id.gm_statistic_transaction_income_graph);
+        gmTopAdsAmountViewHelper.initView(rootView);
+        gmTransactionGraphViewHelper.initView(rootView);
 
-        gmPercentageViewHelper.initView(rootView);
+        gmStatisticProductListText = (LabelView) rootView.findViewById(R.id.gm_statistic_label_sold_product_list_view);
+        gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        gmStatisticTransactionRangeMain = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_main);
-        gmStatisticTransactionRangeCompare = (GMDateRangeView) rootView.findViewById(R.id.gm_statistic_transaction_range_compare);
+            }
+        });
     }
 
     @Override
@@ -127,7 +110,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Override
     public void onResume() {
         super.onResume();
-        gmStatisticTransactionApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
+        gmStatApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -151,42 +134,35 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
                         // get range from network
                         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-                        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                0);
-                        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                dateGraph.size() - 1);
-                        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
-                            return;
 
+                        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
+                        if (gmDateRangeDateViewModel == null) return;
 
-                        // currently not used
-                        String dateRangeFormatString = getString(R.string.gold_merchant_date_range_format_text, startDateString.getModel2(), endDateString.getModel2());
+                        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
 
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel
-                                = new GMDateRangeDateViewModel();
-                        gmDateRangeDateViewModel.setStartDate(startDateString);
-                        gmDateRangeDateViewModel.setEndDate(endDateString);
+                        GMTransactionGraphViewModel gmTransactionGraphViewModel
+                                = new GMTransactionGraphViewModel();
 
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel2
-                                = new GMDateRangeDateViewModel(gmDateRangeDateViewModel);
+                        for (@GMTransactionGraphType int i = 0; i < 7; i++) {
+                            GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel
+                                    = new GMGraphViewWithPreviousModel();
+                            gmGraphViewWithPreviousModel.isCompare = true;
+                            gmGraphViewWithPreviousModel.dates = dateGraph;
+                            gmGraphViewWithPreviousModel.pDates = getTransactionGraph.getPDateGraph();
+                            gmGraphViewWithPreviousModel.dateRangeModel = gmDateRangeDateViewModel;
+                            gmGraphViewWithPreviousModel.pDateRangeModel = previousGmDateRangeDateViewModel;
+                            fillGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, getTransactionGraph);
+                            fillPreviousGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, getTransactionGraph);
+                            putGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, gmTransactionGraphViewModel);
+                        }
 
-                        if (gmStatisticTransactionRangeMain != null)
-                            gmStatisticTransactionRangeMain.bind(gmDateRangeDateViewModel);
+                        gmTransactionGraphViewHelper.bind(gmTransactionGraphViewModel);
 
-                        gmStatisticTransactionRangeCompare.bind(gmDateRangeDateViewModel2);
-                        gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
-
-
-                        // display percentage demo
-                        processTransactionGraph(getTransactionGraph.getGrossGraph(), dateGraph);
-
-                        gmPercentageViewHelper.bind(getTransactionGraph.getDiffGrossRevenue());
+                        processTopAdsAmount(getTransactionGraph, dateGraph);
                     }
                 });
 
-        gmStatisticTransactionApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
+        gmStatApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -208,149 +184,144 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                 });
     }
 
-    protected void processTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
-        // create model for chart
-        final BaseWilliamChartModel baseWilliamChartModel
-                = joinDateAndGraph3(dateGraph, data);
+    @Nullable
+    protected GMDateRangeDateViewModel getGmDateRangeDateViewModel(List<Integer> dateGraph) {
+        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
+                GMStatisticTransactionFragment.this.monthNamesAbrev,
+                0);
+        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatisticTransactionFragment.this.monthNamesAbrev,
+                dateGraph.size() - 1);
+        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
+            return null;
 
-        BaseWilliamChartModel secondWilliamChartModel =
-                new BaseWilliamChartModel(baseWilliamChartModel);
-        secondWilliamChartModel.increment(25);
+        // create object for range date.
+        GMDateRangeDateViewModel gmDateRangeDateViewModel
+                = new GMDateRangeDateViewModel();
+        gmDateRangeDateViewModel.setStartDate(startDateString);
+        gmDateRangeDateViewModel.setEndDate(endDateString);
+        return gmDateRangeDateViewModel;
+    }
 
-        // resize linechart according to data
-        resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph);
+    private void putGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GMTransactionGraphViewModel gmTransactionGraphViewModel) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmTransactionGraphViewModel.grossRevenueModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmTransactionGraphViewModel.netRevenueModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmTransactionGraphViewModel.rejectTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmTransactionGraphViewModel.rejectedAmountModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmTransactionGraphViewModel.shippingCostModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmTransactionGraphViewModel.successTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmTransactionGraphViewModel.totalTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+        }
+    }
 
-        // get index to display
-        final List<Integer> indexToDisplay = indexToDisplay(baseWilliamChartModel.getValues());
+    private void fillPreviousGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GetTransactionGraph getTransactionGraph) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPGrossGraph();
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPNetGraph();
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPRejectedTransGraph();
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPRejectedAmtGraph();
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPShippingGraph();
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPSuccessTransGraph();
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmGraphViewWithPreviousModel.pValues = GMStatisticUtil.sumTwoGraph(
+                        getTransactionGraph.getPSuccessTransGraph(),
+                        getTransactionGraph.getPRejectedTransGraph());
+                break;
+        }
+    }
 
-        // get tooltip
-        Tooltip tooltip = getTooltip(
-                GMStatisticTransactionFragment.this.getActivity(),
-                getTooltipResLayout()
+    private void fillGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GetTransactionGraph getTransactionGraph) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getGrossGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffGrossRevenue();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getGrossRevenue();
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getNetGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffNetRevenue();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getNetRevenue();
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedTransGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffRejectedTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getRejectedTrans();
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getRejectedAmtGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffRejectedAmount();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getRejectedAmount();
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getShippingGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffShippingCost();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getShippingCost();
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmGraphViewWithPreviousModel.values = getTransactionGraph.getSuccessTransGraph();
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffSuccessTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getSuccessTrans();
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmGraphViewWithPreviousModel.values = GMStatisticUtil.sumTwoGraph(
+                        getTransactionGraph.getSuccessTransGraph(),
+                        getTransactionGraph.getRejectedTransGraph());
+                gmGraphViewWithPreviousModel.percentage = getTransactionGraph.getDiffFinishedTrans();
+                gmGraphViewWithPreviousModel.amount = getTransactionGraph.getFinishedTrans();
+                break;
+        }
+    }
+
+    protected void processTopAdsAmount(GetTransactionGraph getTransactionGraph, List<Integer> dateGraph) {
+        GMGraphViewModel gmTopAdsAmountViewModel
+                = new GMGraphViewModel();
+        gmTopAdsAmountViewModel.dates = dateGraph;
+        gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
+        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
+        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
+
+        // TODO get topads percentage maybe cpc, waiting for pcp
+        gmTopAdsAmountViewModel.percentage = 1f;
+
+        gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
+
+        gmTopAdsAmountViewHelper.bind(
+                gmTopAdsAmountViewModel
         );
-
-        baseWilliamChartConfig
-                .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .addBaseWilliamChartModels(secondWilliamChartModel, new EmptyDataTransactionDataSetConfig())
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setDotDrawable(oval2Copy6)
-                .setTooltip(tooltip, new DefaultTooltipConfiguration())
-                .setxRendererListener(new XRenderer.XRendererListener() {
-                    @Override
-                    public boolean filterX(@IntRange(from = 0L) int i) {
-                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
-                            return true;
-
-                        if (baseWilliamChartModel.getValues().length <= 15) {
-                            return true;
-                        }
-
-                        return indexToDisplay.contains(i);
-
-                    }
-                }).buildChart(gmStatisticIncomeGraph);
     }
 
-    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
-        return new Tooltip(context,
-                layoutRes,
-                R.id.gm_stat_tooltip_textview,
-                new StringFormatRenderer() {
-                    @Override
-                    public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
-                    }
-                });
-    }
-
-    private
-    @LayoutRes
-    int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip;
-        }
-        return layoutTooltip;
-    }
-
-    private List<Integer> indexToDisplay(float[] values) {
-        final List<Integer> indexToDisplay = new ArrayList<>();
-        int divide = values.length / 10;
-        for (int j = 1; j <= divide - 1; j++) {
-            indexToDisplay.add((j * 10) - 1);
-        }
-        return indexToDisplay;
-    }
-
-    /**
-     * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
-     * https://github.com/diogobernardino/WilliamChart/issues/152
-     *
-     * @param numChart
-     */
-    private void resizeChart(int numChart, LineChartView chartView) {
-        Log.d(TAG, "resizeChart " + numChart);
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) DataTransactionViewHelper.dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
-        /*
-            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
-            layout Params of linechart .
-        */
-        double newSizeRatio = ((double) numChart) / 7;
-        if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(getActivity(), 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
-        } else {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
-        }
-    }
-
-    private List<Pair<Integer, String>> joinDateAndGraph(List<Integer> dateGraph, List<Integer> graph) {
-        List<Pair<Integer, String>> pairs = new ArrayList<>();
-        if (dateGraph == null || graph == null || dateGraph.isEmpty() || graph.isEmpty())
-            return null;
-
-        int lowerSize;
-        if (dateGraph.size() > graph.size()) {
-            lowerSize = graph.size();
-        } else {
-            lowerSize = dateGraph.size();
-        }
-
-        for (int i = 0; i < lowerSize; i++) {
-            Integer date = dateGraph.get(i);
-            Integer gross = graph.get(i);
-
-            pairs.add(new Pair<>(gross, GoldMerchantDateUtils.getDate(date)));
-        }
-
-        return pairs;
-    }
-
-    private Pair<String[], float[]> joinDateAndGraph2(List<Integer> dateGraph, List<Integer> graph) {
-        List<Pair<Integer, String>> pairs = joinDateAndGraph(dateGraph, graph);
-        if (pairs == null)
-            return null;
-
-        String[] labels = new String[pairs.size()];
-        float[] values = new float[pairs.size()];
-        int i = 0;
-        for (Pair<Integer, String> integerStringPair : pairs) {
-            labels[i] = GoldMerchantDateUtils.getDateRaw(integerStringPair.getModel2(), monthNamesAbrev);
-            values[i] = integerStringPair.getModel1();
-            i++; // increment the index here
-        }
-
-        return new Pair<>(labels, values);
-    }
-
-    private BaseWilliamChartModel joinDateAndGraph3(List<Integer> dateGraph, List<Integer> graph) {
-        Pair<String[], float[]> pair = joinDateAndGraph2(dateGraph, graph);
-        return (pair != null) ? new BaseWilliamChartModel(pair.getModel1(), pair.getModel2()) : null;
+    private List<Integer> joinAdsGraph(List<Integer> adsPGraph, List<Integer> adsSGraph) {
+        return GMStatisticUtil.sumTwoGraph(adsPGraph, adsSGraph);
     }
 
     @Override

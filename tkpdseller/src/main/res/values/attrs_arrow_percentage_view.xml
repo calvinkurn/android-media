@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="ArrowPercentageView">
+        <attr name="percentage" format="float" />
+    </declare-styleable>
+</resources>

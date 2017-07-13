@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.helper;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
@@ -15,11 +16,10 @@ import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 
 /**
- * Created by normansyahputa on 7/10/17.
+ * Created by normansyahputa on 7/11/17.
  */
 
-public class GMPercentageViewHelper extends BaseGMViewHelper<Double> {
-
+public class GMPercentageViewHelper extends BaseGMViewHelper implements PercentageUtil {
     private final int arrowDown;
     private final int arrowUp;
     private final int greyColor;
@@ -27,12 +27,8 @@ public class GMPercentageViewHelper extends BaseGMViewHelper<Double> {
     private Drawable icRectagleDown;
 
     private Drawable icRectagleUp;
-    private View itemView;
 
-    private TextView percentageText;
-    private ImageView arrowIconImage;
-
-    public GMPercentageViewHelper(Context context) {
+    public GMPercentageViewHelper(@Nullable Context context) {
         super(context);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(context,
@@ -45,43 +41,44 @@ public class GMPercentageViewHelper extends BaseGMViewHelper<Double> {
         greyColor = ResourcesCompat.getColor(context.getResources(), R.color.grey_400, null);
     }
 
-    public void initView(View itemView) {
-        this.itemView = itemView; // save view
-
-        percentageText = (TextView) itemView.findViewById(R.id.percentage);
-        arrowIconImage = (ImageView) itemView.findViewById(R.id.arrow_icon);
-    }
-
     @Override
-    public void bind(Double percentage) {
+    public void calculatePercentage(double percentage, ImageView ivArrowIcon, TextView tvPercentage) {
         // image for arrow is here
         boolean isDefault;
         if (percentage == 0) {
-            arrowIconImage.setVisibility(View.GONE);
-            percentageText.setTextColor(arrowUp);
+            ivArrowIcon.setVisibility(View.GONE);
+            tvPercentage.setTextColor(arrowUp);
             isDefault = true;
         } else if (percentage < 0) {// down here
             if (percentage == GMStatConstant.NoDataAvailable * 100) {
-                arrowIconImage.setVisibility(View.GONE);
-                percentageText.setTextColor(greyColor);
+                ivArrowIcon.setVisibility(View.GONE);
+                tvPercentage.setTextColor(greyColor);
                 isDefault = false;
             } else {
-                arrowIconImage.setVisibility(View.VISIBLE);
-                arrowIconImage.setImageDrawable(icRectagleDown);
-                percentageText.setTextColor(arrowDown);
+                ivArrowIcon.setVisibility(View.VISIBLE);
+                ivArrowIcon.setImageDrawable(icRectagleDown);
+                tvPercentage.setTextColor(arrowDown);
                 isDefault = true;
             }
         } else {// up here
-            arrowIconImage.setVisibility(View.VISIBLE);
-            arrowIconImage.setImageDrawable(icRectagleUp);
-            percentageText.setTextColor(arrowUp);
+            ivArrowIcon.setVisibility(View.VISIBLE);
+            ivArrowIcon.setImageDrawable(icRectagleUp);
+            tvPercentage.setTextColor(arrowUp);
             isDefault = true;
         }
 
         if (isDefault) {
-            percentageText.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(percentage).replace("-", "")));
+            tvPercentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(percentage).replace("-", "")));
         } else {
-            percentageText.setText(R.string.no_data);
+            tvPercentage.setText(R.string.no_data);
         }
     }
+
+    @Override
+    public void initView(@Nullable View itemView) {
+
+    }
+
+    @Override
+    public void bind(@Nullable Object data) { /* remain empty */ }
 }
