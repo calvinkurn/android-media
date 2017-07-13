@@ -28,4 +28,10 @@
     <string name="drawer_title_purchase_list">Daftar Pembelian</string>
     <string name="introducing">Memperkenalkan</string>
     <string name="download_topseller_app">Download Aplikasi TopSeller</string>
+
+    <!--tokocash cashback-->
+    <string name="toko_cash_pending_title">Bonus Cashback</string>
+    <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
+    <string name="toko_cash_pending_close_button">Tutup</string>
+
 </resources>
