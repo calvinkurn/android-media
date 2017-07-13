@@ -134,21 +134,11 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
                         // get range from network
                         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-                        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                0);
-                        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                dateGraph.size() - 1);
-                        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
-                            return;
 
-                        // create object for range date.
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel
-                                = new GMDateRangeDateViewModel();
-                        gmDateRangeDateViewModel.setStartDate(startDateString);
-                        gmDateRangeDateViewModel.setEndDate(endDateString);
+                        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
+                        if (gmDateRangeDateViewModel == null) return;
 
+                        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
 
                         GMTransactionGraphViewModel gmTransactionGraphViewModel
                                 = new GMTransactionGraphViewModel();
@@ -156,9 +146,13 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         for (@GMTransactionGraphType int i = 0; i < 7; i++) {
                             GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel
                                     = new GMGraphViewWithPreviousModel();
+                            gmGraphViewWithPreviousModel.isCompare = true;
                             gmGraphViewWithPreviousModel.dates = dateGraph;
+                            gmGraphViewWithPreviousModel.pDates = getTransactionGraph.getPDateGraph();
                             gmGraphViewWithPreviousModel.dateRangeModel = gmDateRangeDateViewModel;
+                            gmGraphViewWithPreviousModel.pDateRangeModel = previousGmDateRangeDateViewModel;
                             fillGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, getTransactionGraph);
+                            fillPreviousGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, getTransactionGraph);
                             putGMTransactionGraphViewModel(i, gmGraphViewWithPreviousModel, gmTransactionGraphViewModel);
                         }
 
@@ -190,6 +184,25 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                 });
     }
 
+    @Nullable
+    protected GMDateRangeDateViewModel getGmDateRangeDateViewModel(List<Integer> dateGraph) {
+        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
+                GMStatisticTransactionFragment.this.monthNamesAbrev,
+                0);
+        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
+                GMStatisticTransactionFragment.this.monthNamesAbrev,
+                dateGraph.size() - 1);
+        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
+            return null;
+
+        // create object for range date.
+        GMDateRangeDateViewModel gmDateRangeDateViewModel
+                = new GMDateRangeDateViewModel();
+        gmDateRangeDateViewModel.setStartDate(startDateString);
+        gmDateRangeDateViewModel.setEndDate(endDateString);
+        return gmDateRangeDateViewModel;
+    }
+
     private void putGMTransactionGraphViewModel(
             @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GMTransactionGraphViewModel gmTransactionGraphViewModel) {
         switch (gmTransactionType) {
@@ -213,6 +226,35 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                 break;
             case GMTransactionGraphType.TOTAL_TRANSACTION:
                 gmTransactionGraphViewModel.totalTransactionModel = gmGraphViewWithPreviousModel;
+                break;
+        }
+    }
+
+    private void fillPreviousGMTransactionGraphViewModel(
+            @GMTransactionGraphType int gmTransactionType, GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel, GetTransactionGraph getTransactionGraph) {
+        switch (gmTransactionType) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPGrossGraph();
+                break;
+            case GMTransactionGraphType.NET_REVENUE:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPNetGraph();
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPRejectedTransGraph();
+                break;
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPRejectedAmtGraph();
+                break;
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPShippingGraph();
+                break;
+            case GMTransactionGraphType.SUCCESS_TRANS:
+                gmGraphViewWithPreviousModel.pValues = getTransactionGraph.getPSuccessTransGraph();
+                break;
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmGraphViewWithPreviousModel.pValues = GMStatisticUtil.sumTwoGraph(
+                        getTransactionGraph.getPSuccessTransGraph(),
+                        getTransactionGraph.getPRejectedTransGraph());
                 break;
         }
     }
