@@ -21,6 +21,7 @@ import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean isFeed = false;
     private boolean mNeedsPlacement;
     private boolean shouldLoadAds = true; //default load ads
-    private TopAdsFavShopClickListener favShopClickListener;
 
     public TopAdsPlacer(
             Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
@@ -83,11 +83,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         this.topAdsListener = topAdsListener;
     }
 
-
-    public void setFavShopClickListener(TopAdsFavShopClickListener favShopClickListener) {
-        this.favShopClickListener = favShopClickListener;
-    }
-
     public void setShouldLoadAds(boolean shouldLoadAds) {
         this.shouldLoadAds = shouldLoadAds;
     }
@@ -115,6 +110,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         } else {
             renderItemWithoutAds(ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
         }
+    }
+
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+        observerType = ObserverType.ITEM_RANGE_CHANGE;
+
     }
 
     @Override
@@ -178,12 +178,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     public void displayAds(List<Item> list) {
         switch (observerType) {
             case ObserverType.CHANGE:
-                Log.d(TAG, "CHANGE");
                 reset();
                 renderItemsWithAds(list, ajustedPositionStart, ajustedItemCount);
                 break;
             case ObserverType.ITEM_RANGE_INSERTED:
-                Log.d(TAG, "ITEM_RANGE_INSERTED");
                 renderItemsWithAds(list, ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
                 break;
         }
@@ -195,7 +193,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private void renderItemWithoutAds(int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
-        Log.d(TAG, "renderItemWithoutAds start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
             ClientViewModel model = new ClientViewModel();
             model.setPosition(i);
@@ -291,8 +288,8 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void onAddFavorite(int position, Data dataShop) {
-        if (favShopClickListener != null) {
-            favShopClickListener.onAddShopFavorite(position, dataShop);
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
 

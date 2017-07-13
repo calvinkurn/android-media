@@ -30,6 +30,8 @@ import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
         ProductInfoView,
         DetailFragmentInteractionListener,
@@ -81,6 +83,16 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createInstance(Context context, String productId,
+                                        int adapterPosition) {
+        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+        bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         intent.putExtras(bundle);
         return intent;
     }
@@ -268,4 +280,5 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
+
 }
