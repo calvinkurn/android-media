@@ -218,7 +218,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return code >= 500;
     }
 
-    private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
+    protected Response createNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
         Response.Builder builder = new Response.Builder();

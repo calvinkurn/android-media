@@ -9,7 +9,6 @@ import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpExcep
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -23,7 +22,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -41,6 +39,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
     private static final String AUTO_RIDE = "AUTO_RIDE";
+    private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
     private String authorizationString;
 
     public RideInterceptor(String authorizationString, String userId) {
@@ -50,34 +49,46 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String bodyResponse = response.body().string();
-        try {
-            JSONObject jsonResponse = new JSONObject(bodyResponse);
-            String JSON_ERROR_KEY = "message_error";
-            if (jsonResponse.has(JSON_ERROR_KEY)) {
-                JSONArray messageErrorArray = jsonResponse.optJSONArray(JSON_ERROR_KEY);
-                if (messageErrorArray != null) {
-                    String message = "";
-                    for (int index = 0; index < messageErrorArray.length(); index++) {
-                        if (index > 0) {
-                            message += ", ";
+        int code = response.code();
+        switch (code) {
+            case 422:
+            case 500:
+                response.body().close();
+                throw new UnProcessableHttpException(bodyResponse);
+            case 409:
+                response.body().close();
+                throw new InterruptConfirmationHttpException(bodyResponse);
+            default:
+                try {
+                    JSONObject jsonResponse = new JSONObject(bodyResponse);
+                    String JSON_ERROR_KEY = "message_error";
+                    if (jsonResponse.has(JSON_ERROR_KEY)) {
+
+                        JSONArray messageErrorArray = jsonResponse.optJSONArray(JSON_ERROR_KEY);
+                        if (messageErrorArray != null) {
+                            String message = "";
+                            for (int index = 0; index < messageErrorArray.length(); index++) {
+                                if (index > 0) {
+                                    message += ", ";
+                                }
+                                message = message + messageErrorArray.getString(index);
+                            }
+                            handleError(response, message);
+
+                        } else {
+                            handleError(response, jsonResponse.getString(JSON_ERROR_KEY));
                         }
-
-                        message = message + messageErrorArray.getString(index);
                     }
-                    handleError(message);
-
-                } else {
-                    handleError(jsonResponse.getString(JSON_ERROR_KEY));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
-    private void handleError(String errorMessage) throws SessionExpiredException,
+    private void handleError(Response response, String errorMessage) throws SessionExpiredException,
             UnprocessableEntityHttpException {
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
+            response.body().close();
             Intent intent = new Intent();
             intent.setAction(BaseActivity.FORCE_LOGOUT);
             MainApplication.getAppContext().sendBroadcast(intent);
@@ -85,22 +96,21 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         }
     }
 
-    private Response constructNewResponse(Response response, String responseString) {
+    protected Response createNewResponse(Response response, String responseString) {
         try {
             JSONObject jsonObject = new JSONObject(responseString);
             if (jsonObject.has("data")) {
                 String newResponseString = jsonObject.getString("data");
-                return createNewResponse(response, newResponseString);
+                return constructNewResponse(response, newResponseString);
             }
         } catch (JSONException e) {
             e.printStackTrace();
             return response;
         }
-
         return response;
     }
 
-    private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
+    protected Response constructNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
         Response.Builder builder = new Response.Builder();
@@ -145,47 +155,5 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
         return headerMap;
-    }
-
-    protected Response getResponse(Chain chain, Request request) throws IOException {
-        super.getResponse(chain, request);
-        Response response = chain.proceed(request);
-        if (!response.isSuccessful()) {
-            switch (response.code()) {
-                case 422:
-                case 500:
-                    throw new UnProcessableHttpException(response.body().string());
-                case 409:
-                    throw new InterruptConfirmationHttpException(response.body().string());
-                default:
-                    try {
-                        String bodyResponse = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(bodyResponse);
-                        String JSON_ERROR_KEY = "message_error";
-                        if (jsonResponse.has(JSON_ERROR_KEY)) {
-
-                            JSONArray messageErrorArray = jsonResponse.optJSONArray(JSON_ERROR_KEY);
-                            if (messageErrorArray != null) {
-                                String message = "";
-                                for (int index = 0; index < messageErrorArray.length(); index++) {
-                                    if (index > 0) {
-                                        message += ", ";
-                                    }
-
-                                    message = message + messageErrorArray.getString(index);
-                                }
-                                handleError(message);
-
-                            } else {
-                                handleError(jsonResponse.getString(JSON_ERROR_KEY));
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-            }
-        }
-        return constructNewResponse(response, response.body().string());
     }
 }
