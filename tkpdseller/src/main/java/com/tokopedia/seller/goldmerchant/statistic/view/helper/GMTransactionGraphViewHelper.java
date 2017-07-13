@@ -175,6 +175,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
             gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
             gmStatisticTransactionRangeCompare.bind(data.pDateRangeModel);
             gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
+            gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
             // create model for current Data
             final BaseWilliamChartModel baseWilliamChartModel
                     = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);

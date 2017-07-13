@@ -39,7 +39,7 @@ public abstract class BaseSimpleActivity extends BaseActivity implements HasComp
         setupFragment(savedInstanceState);
     }
 
-    private void setupFragment(Bundle savedinstancestate) {
+    protected void setupFragment(Bundle savedinstancestate) {
         if (savedinstancestate == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.parent_view, getNewFragment(), getTagFragment())
