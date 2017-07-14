@@ -221,7 +221,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                 } else if (e instanceof SocketTimeoutException) {
                                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                                 } else {
-                                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                    message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
                                 }
                                 getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                             }
