@@ -124,9 +124,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
                                 startLocationUpdates();
                             } else {
-                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
-                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
-//                                checkLocationSettings();
+                                //getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                                //getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                                checkLocationSettings();
                             }
                         }
 
@@ -171,14 +171,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
                         mCurrentLocation = getFuzedLocation();
-                        if (mCurrentLocation != null) {
-                            startLocationUpdates();
-                            if (!getView().isLaunchedWithLocation()) {
-                                setSourceAsCurrentLocation();
-                            } else {
-                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
-                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
-                            }
+                        startLocationUpdates();
+                        if (!getView().isLaunchedWithLocation()) {
+                            setSourceAsCurrentLocation();
                         }
 
                         break;

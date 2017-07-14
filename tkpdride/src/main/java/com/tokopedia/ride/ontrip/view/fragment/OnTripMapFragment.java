@@ -51,7 +51,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -1343,7 +1342,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         try {
             mGoogleMap.animateCamera(
-                    CameraUpdateFactory.newLatLngBounds(builder.build(), widthPixels, boundHeight, getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)),
+                    CameraUpdateFactory.newLatLngBounds(builder.build(), widthPixels, boundHeight, getResources().getDimensionPixelSize(R.dimen.twenty_five_dp)),
                     1000, null
             );
         } catch (Exception ex) {
