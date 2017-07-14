@@ -66,10 +66,10 @@ public class LineChartContainerWidget extends LinearLayout {
         gmStatisticTransactionRangeCompare = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_compare);
         gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
 
-        tvSubtitle.setVisibility(View.GONE);
+        /*tvSubtitle.setVisibility(View.GONE);
         tvPercentageDesc.setVisibility(View.GONE);
         arrowPercentageView.setVisibility(View.GONE);
-        tvAmount.setVisibility(View.GONE);
+        tvAmount.setVisibility(View.GONE);*/
 
         chartInnerContainer = (ViewGroup) view.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
 

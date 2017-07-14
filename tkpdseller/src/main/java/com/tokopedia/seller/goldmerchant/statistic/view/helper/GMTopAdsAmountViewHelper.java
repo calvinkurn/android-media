@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tokopedia.seller.R;
@@ -54,6 +56,11 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
     }
 
     private void setTopAdsCardView(GMGraphViewModel data) {
+        // TODO remove, just example empty state
+        View emptyView = LayoutInflater.from(context).inflate(R.layout.empty_product_feed, gmStatisticTopAdsCardView, false);
+        gmStatisticTopAdsCardView.setEmptyView(emptyView);
+        gmStatisticTopAdsCardView.setEmptyState(true);
+
         gmStatisticTopAdsCardView.setTitle(context.getString(R.string.gold_merchant_top_ads_amount_title_text));
         gmTopAdsLineChartWidget.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
 
