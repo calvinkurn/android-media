@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalWishlistDataSource;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
@@ -90,7 +91,6 @@ public class FavoriteFactory {
     Observable<TopAdsShop> getFreshTopAdsShop(TKPDMapParam<String, Object> params) {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(context, gson, topAdsService);
-
         return topAdsShopDataSource.getTopAdsShop(params)
                 .onExceptionResumeNext(
                         getLocalTopAdsShopObservable().doOnNext(setTopAdsShopErrorNetwork()));

@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.view;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -87,7 +89,9 @@ public class FavoritePresenterTest {
 //}
 
     @Mock
-    PostExecutionThread postExecutionThread;
+    private Context context;
+    @Mock
+    private PostExecutionThread postExecutionThread;
     @Mock
     private DataFavoriteMapper favoriteMapper;
     @Mock
@@ -177,11 +181,11 @@ public class FavoritePresenterTest {
         getFavoriteShopUsecase
                 = new GetFavoriteShopUsecase(jobExecutor, postExecutionThread, repository);
 
-        getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(
+        getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(context,
                 jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUsecase,
                 getTopAdsShopUseCase);
 
-        getInitialDataPageUsecase = new GetInitialDataPageUsecase(jobExecutor, postExecutionThread,
+        getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
                 getFavoriteShopUsecase, getWishlistUsecase, getTopAdsShopUseCase);
     }
 
