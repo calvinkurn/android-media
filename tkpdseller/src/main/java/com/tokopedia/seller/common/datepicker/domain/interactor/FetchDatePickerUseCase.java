@@ -1,11 +1,11 @@
-package com.tokopedia.seller.common.domain.interactor;
+package com.tokopedia.seller.common.datepicker.domain.interactor;
 
 import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.common.domain.DatePickerRepository;
-import com.tokopedia.seller.common.domain.model.DatePickerDomainModel;
+import com.tokopedia.seller.common.datepicker.domain.DatePickerRepository;
+import com.tokopedia.seller.common.datepicker.domain.model.DatePickerDomainModel;
 
 import rx.Observable;
 

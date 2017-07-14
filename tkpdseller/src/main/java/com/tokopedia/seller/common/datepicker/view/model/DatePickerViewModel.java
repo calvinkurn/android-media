@@ -1,0 +1,10 @@
+package com.tokopedia.seller.common.datepicker.view.model;
+
+import com.tokopedia.seller.common.datepicker.domain.model.DatePickerDomainModel;
+
+/**
+ * Created by nathan on 7/13/17.
+ */
+
+public class DatePickerViewModel extends DatePickerDomainModel {
+}

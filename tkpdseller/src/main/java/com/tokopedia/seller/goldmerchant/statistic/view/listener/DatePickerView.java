@@ -1,12 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.common.view.model.DatePickerViewModel;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
-import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
-
-import java.util.List;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 
 /**
  * @author sebastianuskh on 4/13/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.domain.model;
+package com.tokopedia.seller.common.datepicker.domain.model;
 
 /**
  * @author sebastianuskh on 4/10/17.

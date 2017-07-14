@@ -8,7 +8,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.common.view.model.DatePickerViewModel;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.DatePickerView;
 import com.tokopedia.seller.common.datepicker.view.DatePickerResultListener;
 import com.tokopedia.seller.lib.widget.DateLabelView;
