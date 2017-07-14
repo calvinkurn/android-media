@@ -32,7 +32,7 @@ public class BrowseProductRouter {
     public static final int VALUES_INVALID_FRAGMENT_ID = -1;
 
 
-    public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hotlist";
+    public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
 
     public final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
     public final static String VALUES_DEFAULT_DEPARTMENT_NAME = "Kategori";
