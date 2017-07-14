@@ -27,9 +27,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -41,11 +41,7 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
-import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -63,7 +59,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        IPaymentModuleRouter {
+        OtpRouter, IPaymentModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
