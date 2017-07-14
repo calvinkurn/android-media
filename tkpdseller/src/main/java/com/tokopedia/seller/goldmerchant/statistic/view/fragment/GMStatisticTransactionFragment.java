@@ -61,6 +61,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     SessionHandler sessionHandler;
 
     private View rootView;
+    private DateLabelView dateLabelView;
 
     private String[] monthNamesAbrev;
 
@@ -80,13 +81,14 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
+        dateLabelView = (DateLabelView) rootView.findViewById(R.id.date_label_view);
         initVar();
         initView();
         return rootView;
     }
 
     private void initVar() {
-        monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        monthNamesAbrev = getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
         gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
         gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());

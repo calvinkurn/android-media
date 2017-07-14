@@ -18,7 +18,7 @@ public class GMStatisticDatePickerCustomFragment extends DatePickerCustomFragmen
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
+        View view = inflater.inflate(R.layout.fragment_gm_statistic_date_picker_custom, container, false);
         return view;
     }
 }
