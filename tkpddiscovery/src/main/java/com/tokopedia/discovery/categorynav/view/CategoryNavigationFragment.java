@@ -21,7 +21,8 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
  * @author by alifa on 7/6/17.
  */
 
-public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View, CategoryParentAdapter.OnItemClickListener{
+public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View,
+        CategoryParentAdapter.OnItemClickListener{
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
     private String departmentId = "";

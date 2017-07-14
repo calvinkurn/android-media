@@ -45,7 +45,6 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                 }
                 categoryList.add(categoryModel);
             }
-            categoryList.addAll(categoryList);
             categoryNavDomainModel.setCategories(categoryList);
 
         }

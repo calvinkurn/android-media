@@ -66,20 +66,20 @@ public class CategoryChildAdapter  extends RecyclerView.Adapter<CategoryChildAda
 
         ItemRowHolder(View view) {
             super(view);
-            this.categoryIcon = (ImageView) view.findViewById(R.id.category_parent_icon);
-            this.categoryName = (TextView) view.findViewById(R.id.category_parent_text);
-            this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_parent_container);
+//            this.categoryIcon = (ImageView) view.findViewById(R.id.category_parent_icon);
+//            this.categoryName = (TextView) view.findViewById(R.id.category_parent_text);
+//            this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_parent_container);
         }
 
         public void bindData(int position) {
-            Category category = categories.get(position);
-            this.categoryName.setText(category.getName());
-            ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
-            if (position == activePosition) {
-                this.categoryContainer.setSelected(true);
-            } else {
-                this.categoryContainer.setSelected(false);
-            }
+//            Category category = categories.get(position);
+//            this.categoryName.setText(category.getName());
+//            ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
+//            if (position == activePosition) {
+//                this.categoryContainer.setSelected(true);
+//            } else {
+//                this.categoryContainer.setSelected(false);
+//            }
         }
 
     }
