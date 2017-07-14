@@ -70,7 +70,7 @@ public class BuyerDataViewHelper {
 
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
-        gender = itemView.getResources().getStringArray(R.array.gender);
+        gender = itemView.getResources().getStringArray(R.array.gm_stat_gender);
 
         headerPieBuyerData = (TextView) itemView.findViewById(R.id.header_pie_buyer_data);
 

@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -24,7 +25,7 @@ public interface ICartPresenter {
     void processSubmitEditCart(@NonNull CartItem cartData,
                                @NonNull List<ProductEditData> cartProductEditDataList);
 
-    void processUpdateInsurance(@NonNull CartItem cartData, boolean useInsurance);
+    void processUpdateInsurance(@NonNull CartItemEditable cartItemEditable, boolean useInsurance);
 
     void processCheckVoucherCode();
 
@@ -34,4 +35,5 @@ public interface ICartPresenter {
 
     void unSubscribeObservable();
 
+    void processCartRates(String token, List<CartItem> cartItemList);
 }

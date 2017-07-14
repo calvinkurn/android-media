@@ -32,6 +32,14 @@ public class ShopProductCampaign implements Parcelable {
     @Expose
     private String originalPrice;
 
+    @SerializedName("original_price_idr")
+    @Expose
+    private String originalPriceIdr;
+
+    @SerializedName("discounted_price_idr")
+    @Expose
+    private String discountedPriceIdr;
+
     public int getProductId() {
         return productId;
     }
@@ -72,6 +80,26 @@ public class ShopProductCampaign implements Parcelable {
         this.originalPrice = originalPrice;
     }
 
+    public String getOriginalPriceIdr() {
+        return originalPriceIdr;
+    }
+
+    public void setOriginalPriceIdr(String originalPriceIdr) {
+        this.originalPriceIdr = originalPriceIdr;
+    }
+
+    public String getDiscountedPriceIdr() {
+        return discountedPriceIdr;
+    }
+
+    public void setDiscountedPriceIdr(String discountedPriceIdr) {
+        this.discountedPriceIdr = discountedPriceIdr;
+    }
+
+
+    public ShopProductCampaign() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,9 +112,8 @@ public class ShopProductCampaign implements Parcelable {
         dest.writeString(this.discountedPrice);
         dest.writeString(this.endDate);
         dest.writeString(this.originalPrice);
-    }
-
-    public ShopProductCampaign() {
+        dest.writeString(this.originalPriceIdr);
+        dest.writeString(this.discountedPriceIdr);
     }
 
     protected ShopProductCampaign(Parcel in) {
@@ -95,9 +122,11 @@ public class ShopProductCampaign implements Parcelable {
         this.discountedPrice = in.readString();
         this.endDate = in.readString();
         this.originalPrice = in.readString();
+        this.originalPriceIdr = in.readString();
+        this.discountedPriceIdr = in.readString();
     }
 
-    public static final Parcelable.Creator<ShopProductCampaign> CREATOR = new Parcelable.Creator<ShopProductCampaign>() {
+    public static final Creator<ShopProductCampaign> CREATOR = new Creator<ShopProductCampaign>() {
         @Override
         public ShopProductCampaign createFromParcel(Parcel source) {
             return new ShopProductCampaign(source);

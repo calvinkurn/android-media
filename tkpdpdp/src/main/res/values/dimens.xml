@@ -189,4 +189,7 @@
     <dimen name="drop_down_indicator_height">5dp</dimen>
     <dimen name="shopinfo_pdp">55dp</dimen>
     <dimen name="favorite_shop_pdp">100dp</dimen>
+
+    <dimen name="width_video_pdp">140dp</dimen>
+    <dimen name="height_video_pdp">80dp</dimen>
 </resources>

@@ -28,7 +28,7 @@
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
             android:singleLine="true"
-            android:textColor="@drawable/color_state_topads_disable_text"
+            android:textColor="@drawable/color_state_disable_text"
             android:textColorHighlight="@android:color/transparent"
             android:textSize="16sp" />
 

@@ -22,6 +22,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -475,8 +477,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void setCacheCart(@NonNull Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
-        cache.putInt(TkpdCache.Key.IS_HAS_CART, 1);
+        LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+        cache.putInt(DrawerNotification.IS_HAS_CART, 1);
         cache.applyEditor();
     }
 
