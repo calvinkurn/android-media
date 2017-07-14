@@ -34,8 +34,9 @@ public class ScroogeWebView extends WebView {
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final long FORCE_TIMEOUT = 90000L;
 
+    private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
+
     private ITopPayView topPayView;
-    private boolean isEndThanksPage;
 
     public ScroogeWebView(Context context) {
         super(context);
@@ -67,7 +68,12 @@ public class ScroogeWebView extends WebView {
     }
 
     public boolean isEndThanksPage() {
-        return isEndThanksPage || getUrl().contains("thanks") || getUrl().contains("thank");
+        for (String thanksUrl : THANK_PAGE_URL_LIST) {
+            if (getUrl().contains(thanksUrl)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class TopPayWebViewClient extends WebViewClient {
@@ -82,7 +88,6 @@ public class ScroogeWebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "URL redirect " + url);
-            isEndThanksPage = url.contains("thanks") || url.contains("thank");
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 processRedirectUrlContainsSuccessCallbackUrl(url);
