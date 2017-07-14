@@ -96,6 +96,7 @@ public class FavoriteModule {
     @FavoriteScope
     @Provides
     GetInitialDataPageUsecase provideFavoriteWishlitUsecase(
+            @ActivityContext Context context,
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,
@@ -103,6 +104,7 @@ public class FavoriteModule {
             GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         return new GetInitialDataPageUsecase(
+                context,
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
