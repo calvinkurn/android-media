@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground">
 
-    <com.tokopedia.seller.lib.datepicker.widget.DatePeriodView
+    <com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView
         android:id="@+id/date_period_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

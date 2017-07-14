@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.common.datepicker.view.DatePickerActivity;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;

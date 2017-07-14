@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.fragment.DatePickerCustomFragment;
+import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerCustomFragment;
 
 /**
  * Created by nathan on 7/12/17.

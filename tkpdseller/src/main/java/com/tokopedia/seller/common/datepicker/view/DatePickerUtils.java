@@ -1,9 +1,9 @@
-package com.tokopedia.seller.lib.datepicker;
+package com.tokopedia.seller.common.datepicker.view;
 
 import android.content.Context;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

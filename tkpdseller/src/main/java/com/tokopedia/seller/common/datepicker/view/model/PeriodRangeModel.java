@@ -1,10 +1,10 @@
-package com.tokopedia.seller.lib.datepicker.model;
+package com.tokopedia.seller.common.datepicker.view.model;
 
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.common.datepicker.view.DatePickerUtils;
 
 /**
  * Created by Nathaniel on 1/16/2017.

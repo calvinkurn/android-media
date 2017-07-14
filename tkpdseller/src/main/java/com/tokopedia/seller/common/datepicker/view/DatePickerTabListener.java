@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.datepicker;
+package com.tokopedia.seller.common.datepicker.view;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;

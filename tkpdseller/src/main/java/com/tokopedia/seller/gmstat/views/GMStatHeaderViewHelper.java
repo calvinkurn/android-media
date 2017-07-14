@@ -15,9 +15,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
-import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.common.datepicker.view.DatePickerActivity;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;

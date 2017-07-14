@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.datepicker.fragment;
+package com.tokopedia.seller.common.datepicker.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +11,9 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.adapter.DatePickerPeriodAdapter;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.common.datepicker.view.adapter.DatePickerPeriodAdapter;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 
 import java.util.ArrayList;
 

@@ -1,8 +1,8 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.activity;
 
-import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.lib.datepicker.fragment.DatePickerCustomFragment;
-import com.tokopedia.seller.lib.datepicker.fragment.DatePickerPeriodFragment;
+import com.tokopedia.seller.common.datepicker.view.DatePickerActivity;
+import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerCustomFragment;
+import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFragment;
 
 /**
  * Created by nathan on 7/11/17.

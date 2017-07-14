@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.datepicker.widget;
+package com.tokopedia.seller.common.datepicker.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.common.datepicker.view.DatePickerUtils;
 
 import java.util.Date;
 
