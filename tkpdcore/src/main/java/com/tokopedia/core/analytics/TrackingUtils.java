@@ -212,6 +212,16 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_CLICK_MAIN_CATEGORY_ICON);
     }
 
+    public static void sendMoEngageOpenDigitalCatScreen(String categoryName, String id) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.DIGITAL_CAT_ID, id);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.MOENGAGE.EVENT_DIGITAL_CAT_SCREEN_OPEN
+        );
+    }
+
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)){

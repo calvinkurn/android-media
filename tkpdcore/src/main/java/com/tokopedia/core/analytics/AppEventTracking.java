@@ -507,6 +507,7 @@ public interface AppEventTracking {
         String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
+        String DIGITAL_CAT_ID = "digital_category_id";
 
         String EVENT_LOGIN = "Login";
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
@@ -517,6 +518,7 @@ public interface AppEventTracking {
         String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
+        String EVENT_DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
 
 
         String REG_START = "Registration_Start";
