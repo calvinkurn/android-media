@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -14,10 +15,9 @@ import android.widget.LinearLayout;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.seller.base.view.fragment.BaseListFragment2;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 7/13/17.
  */
-public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStatisticTransactionTablePresenter, GMStatisticTransactionTableModel>
+public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMStatisticTransactionTableModel>
         implements GMStatisticTransactionTableView {
     public static final String TAG = "GMStatisticTransactionT";
 
@@ -65,8 +65,8 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStat
     }
 
     @Override
-    protected void initialPresenter() {
-        super.initialPresenter();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
     }
 
@@ -77,11 +77,16 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStat
     }
 
     @Override
+    protected Intent getDatePickerIntent() {
+        return null;
+    }
+
+    @Override
     protected void initInjector() {
         super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .datePickerComponent(datePickerComponent)
                 .build().inject(this);
     }
 
@@ -220,5 +225,8 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment<GMStat
         bottomSheetDialog.show();
     }
 
-
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 }

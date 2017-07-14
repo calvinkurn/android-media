@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.seller.base.di.component.DaggerDatePickerComponent;
+import com.tokopedia.seller.base.di.component.DatePickerComponent;
 import com.tokopedia.seller.base.di.module.DatePickerModule;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
@@ -13,7 +15,6 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.lib.widget.DateLabelView;
-import com.tokopedia.seller.base.di.component.DaggerDatePickerComponent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,27 +30,27 @@ import javax.inject.Inject;
 public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePickerView {
 
     public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
-
+    @Inject
+    public DatePickerPresenter datePickerPresenter;
     protected DateLabelView dateLabelView;
     protected String startDate;
     protected String endDate;
     protected DatePickerViewModel datePickerViewModel;
+    protected DatePickerComponent datePickerComponent;
 
     protected abstract void loadData();
 
     protected abstract Intent getDatePickerIntent();
 
-    @Inject
-    public DatePickerPresenter datePickerPresenter;
-
     @Override
     protected void initInjector() {
-        DaggerDatePickerComponent
+        datePickerComponent = DaggerDatePickerComponent
                 .builder()
                 .datePickerModule(new DatePickerModule())
                 .appComponent(getComponent(AppComponent.class))
-                .build()
-                .inject(this);
+                .build();
+
+        datePickerComponent.inject(this);
     }
 
     @Override
