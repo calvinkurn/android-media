@@ -48,6 +48,10 @@ public class ProductEditActivity extends ProductDraftEditActivity {
         return ProductEditFragment.class.getSimpleName();
     }
 
+    protected int getCancelMessageRes(){
+        return R.string.product_draft_dialog_edit_cancel_message;
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_EDIT_PRODUCT;

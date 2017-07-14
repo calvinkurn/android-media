@@ -26,9 +26,4 @@ public class TopAdsKeywordEditDetailPositiveActivity extends BaseSimpleActivity 
         KeywordAd keywordAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         return TopAdsKeywordEditDetailPositiveFragment.createInstance(keywordAd);
     }
-
-    @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordEditDetailPositiveActivity.class.getSimpleName();
-    }
 }

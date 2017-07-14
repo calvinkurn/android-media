@@ -95,6 +95,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     protected ProductInfoViewHolder productInfoViewHolder;
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
 
+    // view model to be compare later when we want to save as draft
+    private UploadProductInputViewModel firstTimeViewModel;
+
     /**
      * Url got from gallery or camera or other paths
      */
@@ -192,6 +195,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         });
+        saveDefaultModel();
         return view;
     }
 
@@ -201,22 +205,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         presenter.saveDraftAndAdd(viewModel, isUploading);
     }
 
+    protected void saveDefaultModel(){
+        //save default value here, so we can compare when we want to save draft
+        // will be overriden when not adding product
+        firstTimeViewModel = collectDataFromView();
+    }
+
     public boolean hasDataAdded(){
         // check if this fragment has any data
-        // return true if there is any data added
-        ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
-        List<ImageSelectModel> imageSelectModelList = imagesSelectView.getImageList();
-        if (imageSelectModelList!= null && imageSelectModelList.size() > 0) {
-            return true;
-        }
-        if (!TextUtils.isEmpty(productInfoViewHolder.getName() )){
-            return true;
-        }
-        List<String> videoIdList = productAdditionalInfoViewHolder.getVideoIdList();
-        if (videoIdList!= null && videoIdList.size() > 0) {
-            return true;
-        }
-        return false;
+        // will compare will the default value and the current value
+        // if there is the difference, then assume that the data has been added.
+        // will be overriden when not adding product
+        UploadProductInputViewModel model = collectDataFromView();
+        return !model.equalsDefault(firstTimeViewModel);
     }
 
     public void saveDraft(boolean isUploading) {
@@ -433,6 +434,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
         valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
+
+        saveDefaultModel();
     }
 
     @Override
@@ -664,11 +667,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.AppCompatAlertDialogStyle);
         builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
-        builder.setMessage(message);
+        if(hasDataAdded() ){
+            builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(message)));
+        }else{
+            builder.setMessage(message);
+        }
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                if(hasDataAdded()){
+                    saveDraft(false);
+                }
                 goToGoldMerchantPage();
+                getActivity().finish();
             }
         });
         builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {

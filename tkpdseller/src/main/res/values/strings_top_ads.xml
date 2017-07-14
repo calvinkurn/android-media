@@ -232,5 +232,7 @@
     <string name="top_ads_keyword_group_title">Grup</string>
     <string name="top_ads_keyword_add_group_promo">Tambahkan Grup Promo</string>
     <string name="top_ads_keyword_add_group_promo_desc">Untuk menggunakan fitur kata \nkunci Anda harus memiliki \ngrup promo</string>
+    <string name="top_ads_keyword_add_group_promo_yes">Tambah Promo</string>
+    <string name="top_ads_keyword_add_group_promo_no">Batal</string>
 
 </resources>

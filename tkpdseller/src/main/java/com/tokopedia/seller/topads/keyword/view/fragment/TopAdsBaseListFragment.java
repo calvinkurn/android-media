@@ -69,6 +69,9 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
 
     @Override
     public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        if (datePickerPresenter == null) {
+            return;
+        }
         datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
         datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
         if (startDate == null || endDate == null) {
@@ -78,6 +81,9 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
     }
 
     protected void openDatePicker() {
+        if (datePickerPresenter == null) {
+            return;
+        }
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
     }

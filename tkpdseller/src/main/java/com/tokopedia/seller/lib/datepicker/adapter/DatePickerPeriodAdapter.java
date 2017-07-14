@@ -4,14 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.lib.datepicker.widget.DatePeriodView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -81,16 +81,17 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindProduct(final ViewHolder holder, int position) {
         PeriodRangeModel periodRangeModel = data.get(position);
-        holder.radioButton.setChecked(position == selectedPosition);
-        holder.titleTextView.setText(periodRangeModel.getLabel());
-        holder.contentTextView.setText(periodRangeModel.getDescription(holder.contentTextView.getContext()));
+        holder.datePeriodView.setChecked(position == selectedPosition);
+        holder.datePeriodView.setTitle(periodRangeModel.getLabel());
+        holder.datePeriodView.setContent(
+                new Date(periodRangeModel.getStartDate()), new Date(periodRangeModel.getEndDate()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSelectItem(holder.getAdapterPosition());
             }
         });
-        holder.radioButton.setOnClickListener(new View.OnClickListener() {
+        holder.datePeriodView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSelectItem(holder.getAdapterPosition());
@@ -109,15 +110,11 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RadioButton radioButton;
-        public TextView titleTextView;
-        public TextView contentTextView;
+        public DatePeriodView datePeriodView;
 
         public ViewHolder(View view) {
             super(view);
-            radioButton = (RadioButton) view.findViewById(R.id.radio_button);
-            titleTextView = (TextView) view.findViewById(R.id.text_view_title);
-            contentTextView = (TextView) view.findViewById(R.id.text_view_content);
+            datePeriodView = (DatePeriodView) view.findViewById(R.id.date_period_view);
         }
     }
 }

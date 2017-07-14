@@ -18,6 +18,7 @@ import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -201,7 +202,7 @@ public class GMStatHeaderViewHelper {
         stopLoading();
     }
 
-    public void onClick(Activity activity, boolean isForceSelection) {
+    public void onClick(Activity activity) {
         if (!isLoading || !isGmStat) {
             return;
         }
@@ -234,15 +235,14 @@ public class GMStatHeaderViewHelper {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(R.string.set_date));
-        intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
         activity.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 
-    public void onClick(android.support.v4.app.Fragment fragment, boolean isForceSelection) {
+    public void onClick(Fragment fragment) {
         if (!isLoading || !isGmStat) {
             return;
         }
-        Intent intent = new Intent(fragment.getActivity(), DatePickerActivity.class);
+        Intent intent = new Intent(fragment.getActivity(), SellerReputationDatePickerActivity.class);
         Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
@@ -271,44 +271,6 @@ public class GMStatHeaderViewHelper {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date));
-        intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
-        fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
-    }
-
-    public void onClick(Fragment fragment, boolean isForceSelection) {
-        if (!isLoading || !isGmStat) {
-            return;
-        }
-        Intent intent = new Intent(fragment.getActivity(), DatePickerActivity.class);
-        Calendar maxCalendar = getMaxDateCalendar();
-
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        Date minDate = new Date();
-        try {
-            minDate = dateFormat.parse(MIN_DATE);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar minCalendar = Calendar.getInstance();
-        minCalendar.setTime(minDate);
-        minCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        minCalendar.set(Calendar.MINUTE, 0);
-        minCalendar.set(Calendar.SECOND, 0);
-        minCalendar.set(Calendar.MILLISECOND, 0);
-
-        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, sDate);
-        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, eDate);
-
-        intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, MAX_DATE_RANGE);
-
-        intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList(fragment.getActivity()));
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, lastSelection);
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
-
-        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date));
-        intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 

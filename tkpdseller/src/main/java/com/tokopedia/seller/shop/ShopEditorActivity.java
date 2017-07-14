@@ -17,11 +17,15 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.Router;
@@ -42,12 +46,11 @@ import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RE
 /**
  * Created by Zulfikar on 5/19/2016.
  */
-public class ShopEditorActivity extends TkpdActivity implements
+public class ShopEditorActivity extends TActivity implements
         ShopSettingView {
 
     FragmentManager supportFragmentManager;
     String FRAGMENT;
-    Toolbar toolbar;
 
     FrameLayout container;
     private String onBack;
@@ -63,9 +66,6 @@ public class ShopEditorActivity extends TkpdActivity implements
 
         inflateView(R.layout.activity_simple_fragment);
         container = (FrameLayout) findViewById(R.id.container);
-        toolbar = (Toolbar) this.findViewById(R.id.app_bar);
-        toolbar.removeAllViews();
-        setSupportActionBar(toolbar);
 
         fetchExtras(getIntent(), savedInstanceState);
 
@@ -103,7 +103,6 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, true, CREATE_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_open_shop));
-                drawer.setEnabled(false);
                 break;
             case EDIT_SHOP_FRAGMENT_TAG:
                 if (!isFragmentCreated(EDIT_SHOP_FRAGMENT_TAG)) {
@@ -113,7 +112,6 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, false, EDIT_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_shop_information_menu));
-                drawer.setEnabled(true);
                 break;
         }
     }
@@ -176,9 +174,6 @@ public class ShopEditorActivity extends TkpdActivity implements
         activity.startActivity(intent);
         if (activity instanceof AppCompatActivity) {
             ((AppCompatActivity) activity).finish();
-        }
-        if (activity instanceof TkpdActivity) {
-            ((TkpdActivity) activity).onGetNotif();
         }
         TrackingUtils.eventLoca("event : open store");
     }
@@ -248,8 +243,7 @@ public class ShopEditorActivity extends TkpdActivity implements
     }
 
     private void createCustomToolbar(String shopTitle) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(shopTitle);
+        toolbar.setTitle(shopTitle);
 
     }
 

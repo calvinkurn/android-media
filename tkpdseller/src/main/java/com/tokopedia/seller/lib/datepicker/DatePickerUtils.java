@@ -8,13 +8,19 @@ import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Nathaniel on 2/3/2017.
  */
 
 public class DatePickerUtils {
+
+    private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
+    private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";
 
     public static String getReadableDate(Context context, long date) {
         String[] monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
@@ -52,5 +58,24 @@ public class DatePickerUtils {
             reverse += split[i];
         }
         return reverse;
+    }
+
+    public static String getRangeDateFormatted(Context context, Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            return "";
+        }
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(startDate);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(endDate);
+        String startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
+        String endDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
+        if (startDateFormatted.equalsIgnoreCase(endDateFormatted)) {
+            return endDateFormatted;
+        }
+        if (startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)) {
+            startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT_WITHOUT_YEAR, Locale.ENGLISH).format(startDate);
+        }
+        return context.getString(R.string.top_ads_range_date_text, startDateFormatted, endDateFormatted);
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.expandable.ExpandableOptionSwitch
+        android:id="@+id/expandable_option_switch_compare_date"
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:eo_checked="false"
+        app:eo_theme="@style/ExpandableStyle"
+        app:eo_title="@string/gm_statistic_compare_date">
+
+        <com.tokopedia.design.text.SpinnerCounterInputView
+            android:id="@+id/spinner_counter_input_view_pre_order"
+            style="@style/LabelLayout.InnerExpandable"
+            app:spinner_decimal_entries="@array/product_pre_order_entries"
+            app:spinner_decimal_hint="@string/product_label_time_process"
+            app:spinner_decimal_spinner_width="100dp"
+            app:spinner_decimal_values="@array/product_pre_order_values" />
+    </com.tokopedia.expandable.ExpandableOptionSwitch>
+
+</LinearLayout>
