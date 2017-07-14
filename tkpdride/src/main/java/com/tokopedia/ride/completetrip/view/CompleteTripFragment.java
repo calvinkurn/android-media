@@ -579,28 +579,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
     }
 
-//    private List<TokoCashProduct> transformProductsFromJson(String jsonStr, String prefixCurrency) {
-//        List<TokoCashProduct> products = new ArrayList<>();
-//        if (!TextUtils.isEmpty(jsonStr)) {
-//            try {
-//                JSONObject jsonObject = new JSONObject(receipt.getPendingPayment().getTopUpOptions());
-//                Iterator<?> keys = jsonObject.keys();
-//                while (keys.hasNext()) {
-//                    TokoCashProduct product = new TokoCashProduct();
-//                    String key = (String) keys.next();
-//                    product.setValue(key);
-//                    JSONObject itemJsonObject = new JSONObject(jsonObject.getString(key));
-//                    product.setId(itemJsonObject.getString("product_id"));
-//                    product.setTitle(String.format("%s %s", prefixCurrency, itemJsonObject.getString("display_price")));
-//                    products.add(product);
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return products;
-//    }
-
     private Map<String, String> splitQuery(Uri url) {
         Map<String, String> queryPairs = new LinkedHashMap<>();
         String query = url.getQuery();

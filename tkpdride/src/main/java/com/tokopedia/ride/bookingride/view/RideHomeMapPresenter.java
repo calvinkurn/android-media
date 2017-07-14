@@ -124,8 +124,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
                                 startLocationUpdates();
                             } else {
-                                //getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
-                                //getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
                                 checkLocationSettings();
                             }
                         }
@@ -164,7 +162,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
             @Override
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
-                //final LocationSettingsStates s= result.getLocationSettingsStates();
 
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
@@ -257,7 +254,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                                 placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
                                 placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                                 placeVm.setTitle(sourceAddress);
-//                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
                                 getView().setSourceLocation(placeVm);
                             }
                         }
@@ -333,7 +329,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                 destinationLng
         ));
         requestParams.putString("sensor", "false");
-//        requestParams.putString("key", getView().getActivity().getString(R.string.GOOGLE_API_KEY));
         getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<OverviewPolyline>>() {
             @Override
             public void onCompleted() {

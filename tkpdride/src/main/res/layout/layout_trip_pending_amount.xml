@@ -10,17 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
+        android:paddingEnd="@dimen/keyline_1"
+        android:paddingLeft="@dimen/keyline_1"
+        android:paddingRight="@dimen/keyline_1"
+        android:paddingStart="@dimen/keyline_1">
 
         <ImageView
             android:id="@+id/pending_sep1"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_height="@dimen/five_dp"
+            android:layout_marginBottom="@dimen/twelve_dp"
+            android:layout_marginTop="@dimen/twelve_dp"
             android:layerType="software"
             android:src="@drawable/shape_dash_line" />
 
@@ -32,7 +32,7 @@
             android:gravity="center"
             android:text="@string/complete_trip_pending_fare"
             android:textColor="@color/red_600"
-            android:textSize="12sp" />
+            android:textSize="@dimen/fontvs" />
 
         <TextView
             android:id="@+id/tv_total_pending"
@@ -43,35 +43,35 @@
             android:layout_below="@id/pending_sep1"
             android:text="-"
             android:textColor="@color/red_600"
-            android:textSize="12sp"
+            android:textSize="@dimen/fontvs"
             tools:text="Rp. 15.000" />
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/pending_sep"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="@dimen/five_dp"
+        android:layout_marginBottom="@dimen/keyline_1"
+        android:layout_marginLeft="@dimen/keyline_1"
+        android:layout_marginRight="@dimen/keyline_1"
+        android:layout_marginTop="@dimen/twelve_dp"
         android:layerType="software"
         android:src="@drawable/shape_dash_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="@dimen/thirty_dp"
+        android:layout_marginRight="@dimen/thirty_dp"
         android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:paddingBottom="@dimen/eight_dp">
 
         <TextView
             android:id="@+id/tv_choose_tokocash_amount_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/complete_trip_choose_tokocash_amount"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_small" />
 
 
         <RelativeLayout
@@ -79,8 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
+            android:paddingBottom="@dimen/eight_dp"
+            android:paddingTop="@dimen/eight_dp">
 
             <TextView
                 android:id="@+id/tv_tokocash_selected_product"
@@ -101,8 +101,8 @@
 
             <ImageView
                 android:id="@+id/iv_arrow"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/width_iv_arrow_pending_fare_dropdown"
+                android:layout_height="@dimen/height_iv_arrow_pending_fare_dropdown"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -115,10 +115,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/eight_dp"
             android:text="@string/complete_trip_tip_top_up_more_tokocash_than_your_pending_fare_to_ease_your_booking_experience"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textSize="@dimen/fontvs" />
 
         <TextView
             android:id="@+id/btn_topup_tokocash"
@@ -131,7 +131,7 @@
             android:text="@string/complete_trip_top_up_tokocash"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/font_small" />
     </LinearLayout>
 
 </LinearLayout>
