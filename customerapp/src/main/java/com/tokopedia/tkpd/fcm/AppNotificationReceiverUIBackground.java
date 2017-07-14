@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -21,8 +22,10 @@ import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -48,6 +51,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
+
 
 /**
  * Created by alvarisi on 1/17/17.
@@ -99,6 +103,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
+        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification");
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
@@ -127,7 +132,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
+            if (data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
                 prepareAndExecuteApplinkPromoNotification(data);
             else
                 prepareAndExecuteApplinkNotification(data);
@@ -166,13 +171,17 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         new SavePushNotificationCallback()
                 );
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                push.processReceivedNotification(data);
+                break;
+
             default:
                 ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                 applinkBuildAndShowNotification.showApplinkNotification(data);
                 break;
         }
-
-
     }
 
 

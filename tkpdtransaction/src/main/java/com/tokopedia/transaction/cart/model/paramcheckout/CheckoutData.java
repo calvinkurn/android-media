@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/4/16.

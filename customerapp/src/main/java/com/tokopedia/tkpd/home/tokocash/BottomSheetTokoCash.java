@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.presenter.CategoryView;
 
 /**
  * Created by kris on 6/21/17. Tokopedia
@@ -51,7 +50,7 @@ public class BottomSheetTokoCash extends BottomSheetDialog {
 
     private void initView(Context context) {
         this.context = context;
-        View viewBottomSheetTokoCash = ((Activity)context).getLayoutInflater().inflate(R.layout.toko_cash_bottom_sheet, null);
+        View viewBottomSheetTokoCash = ((Activity) context).getLayoutInflater().inflate(R.layout.toko_cash_bottom_sheet, null);
         setContentView(viewBottomSheetTokoCash);
         TextView closeButton = (TextView) viewBottomSheetTokoCash.findViewById(R.id.button_bottom_sheet_close_cash_back);
         goToCashBackButton = (TextView) viewBottomSheetTokoCash.findViewById(R.id.button_bottom_sheet_to_cash_back);

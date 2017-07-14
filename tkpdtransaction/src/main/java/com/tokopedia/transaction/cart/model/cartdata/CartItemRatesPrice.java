@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by kris on 5/8/17. Tokopedia
  */
 
-public class CartItemRatesPrice implements Parcelable{
+public class CartItemRatesPrice implements Parcelable {
 
     private String insurancePrice = "0";
 

@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/cards_shop_ads"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@drawable/cards_shop_ads">
 
     <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/product_image"

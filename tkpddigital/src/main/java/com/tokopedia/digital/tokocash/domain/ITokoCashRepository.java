@@ -1,6 +1,5 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.digital.tokocash.entity.TokoCashCashBackModel;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 
 import rx.Observable;
