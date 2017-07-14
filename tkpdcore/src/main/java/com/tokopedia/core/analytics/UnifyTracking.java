@@ -541,7 +541,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFeedView(String action, String label){
+    public static void eventFeedView(String action, String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
