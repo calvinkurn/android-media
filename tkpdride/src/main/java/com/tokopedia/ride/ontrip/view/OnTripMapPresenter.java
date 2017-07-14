@@ -102,6 +102,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private LocationRequest locationRequest;
     private Location currentLocation;
     private CompositeSubscription subscription;
+    private boolean isZoomFitByDriverAndCustomer;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -363,11 +364,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 } else {
                     getView().setTitle(R.string.title_trip_accepted);
                 }
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
                 break;
             case RideStatus.ARRIVING:
@@ -382,11 +384,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCurrentLocationIndicator();
                 updatePolylineIfResetedByUiLifecycle(result);
 
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
 
                 break;
