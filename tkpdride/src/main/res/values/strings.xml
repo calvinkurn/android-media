@@ -148,4 +148,5 @@
     <string name="please_wait_message">Please wait...</string>
     <string name="uber_product_confirm_tos">You must confirm your information to take ride</string>
     <string name="uber_product_confirm_btn_text">OK</string>
+    <string name="error_please_try_again_later">Sorry, Please try again later</string>
 </resources>
