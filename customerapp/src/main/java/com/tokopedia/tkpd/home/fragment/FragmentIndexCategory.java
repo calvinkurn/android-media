@@ -594,12 +594,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void openActivationTokoCashWebView(String seamlessUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", seamlessUrl);
         if (getContext() instanceof Activity) {
             if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
-                        .goToWallet(getContext(), bundle);
+                        .goToWallet(getContext(), seamlessUrl);
             }
         }
     }
@@ -652,7 +650,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }, getBrandsMenuWidth());
         holder.brandsRecyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
                 GridLayoutManager.VERTICAL, false));
-        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),R.drawable.divider300));
+        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.divider300));
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
         holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }

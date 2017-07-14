@@ -113,12 +113,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
-//    private static final String URL_TRANSACTION_LIST_DIGITAL =
-//            "https://pulsa.tokopedia.com/order-list/";
-//    private static final String URL_PRODUCT_LIST_DIGITAL =
-//            "https://pulsa.tokopedia.com/products/";
-//    private static final String URL_SUBSCRIPTIONS_DIGITAL =
-//            "https://pulsa.tokopedia.com/subscribe/";
 
 
     private Operator operatorSelectedState;

@@ -310,12 +310,10 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
             String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
             String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
                     getActivity());
-            Bundle bundle = new Bundle();
-            bundle.putString("url", seamlessUrl);
             if (getActivity() != null) {
                 if (getActivity().getApplication() instanceof TkpdCoreRouter) {
                     ((TkpdCoreRouter) getActivity().getApplication())
-                            .goToWallet(getActivity(), bundle);
+                            .goToWallet(getActivity(), seamlessUrl);
                 }
             }
         } else {
