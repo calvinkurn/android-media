@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
@@ -33,10 +34,13 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+
+import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -471,6 +475,104 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void unSubscribeObservable() {
         cartDataInteractor.unSubscribeObservable();
+    }
+
+    @Override
+    public void processValidationPayment(String paymentId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
+                TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
+        bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
+        view.executeIntentService(bundle, TopPayIntentService.class);
+    }
+
+    @Override
+    public void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway) {
+        Gson afGSON = new Gson();
+        Checkout checkoutData = afGSON.fromJson(
+                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {
+                }.getType());
+        checkoutData.setCheckoutOption(gateway);
+        PaymentTracking.eventCartCheckout(checkoutData);
+    }
+
+    @Override
+    public void processPaymentAnalytics(LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData) {
+        Gson afGSON = new Gson();
+        Map[] mapResult = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS),
+                new TypeToken<Map[]>() {
+                }.getType()
+        );
+        ArrayList<com.tokopedia.core.analytics.model.Product> locaProducts = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS),
+                new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
+                }.getType()
+        );
+        ArrayList<Purchase> purchases = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE),
+                new TypeToken<ArrayList<Purchase>>() {
+                }.getType()
+        );
+
+        JSONArray arrJas = new JSONArray(
+                cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
+        );
+        String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
+        int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
+        String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
+
+        /*
+          GTM Block
+         */
+        if (purchases != null) {
+            if (!purchases.isEmpty()) {
+                for (Purchase purchase : purchases) {
+                    purchase.setTransactionID(thanksTopPayData.getParameter().getPaymentId());
+                    PaymentTracking.eventTransactionGTM(purchase);
+                }
+            }
+        }
+
+
+        /*
+          Localytics Block
+
+         */
+        Map<String, String> values = new HashMap<>();
+        values.put(
+                view.getStringFromResource(com.tokopedia.core.R.string.event_payment_method),
+                thanksTopPayData.getParameter().getGatewayName());
+        values.put(
+                view.getStringFromResource(
+                        com.tokopedia.core.R.string.event_value_total_transaction
+                ), revenue
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_total_quantity), qty + ""
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_shipping_fee), totalShipping + ""
+        );
+
+        PaymentTracking.eventTransactionLoca(values, locaProducts);
+
+        /*
+          AppsFlyer Block
+
+         */
+        PaymentTracking.eventTransactionAF(
+                thanksTopPayData.getParameter().getPaymentId(),
+                revenue, arrJas, qty, mapResult
+        );
+    }
+
+    @Override
+    public void clearNotificationCart() {
+        LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
+        cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
+        cache.applyEditor();
     }
 
     @NonNull

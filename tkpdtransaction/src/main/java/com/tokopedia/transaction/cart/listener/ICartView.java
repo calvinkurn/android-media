@@ -102,6 +102,7 @@ public interface ICartView extends IBaseView {
 
     LocalCacheHandler getLocalCacheHandlerNotificationData();
 
+
     void setCartSubTotal(CartCourierPrices cartCourierPrices);
 
     void setCartError(int cartIndex);
