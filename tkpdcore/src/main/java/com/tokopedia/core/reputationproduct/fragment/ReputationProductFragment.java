@@ -3,21 +3,17 @@ package com.tokopedia.core.reputationproduct.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +28,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -44,6 +40,10 @@ import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.model.LikeDislike;
+import com.tokopedia.core.reputationproduct.model.ViewHolderComment;
+import com.tokopedia.core.reputationproduct.model.ViewHolderMain;
+import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewFragmentPresenter;
+import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewFragmentPresenterImpl;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.review.model.product_review.ReviewProductDetailModel;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
@@ -65,8 +65,7 @@ import java.util.Map;
 /**
  * Created by hangnadi on 8/19/15.
  */
-public class FragmentReputationProductView extends Fragment {
-
+public class ReputationProductFragment extends BasePresenterFragment<ReputationProductViewFragmentPresenter> implements ReputationProductFragmentView {
     public static final int SMILEY_BAD = -1;
     public static final int SMILEY_DEFAULT = 0;
     public static final int SMILEY_NETRAL = 1;
@@ -78,15 +77,14 @@ public class FragmentReputationProductView extends Fragment {
     private TkpdProgressDialog progressDialog;
     private ViewHolderMain holder;
     private ViewHolderComment holderComment;
-    private View rootView;
     private LabelUtils labelHeader;
     private LabelUtils labelResponder;
     private ImageUploadAdapter imageUploadAdapter;
     private ActReputationRetrofitInteractor actNetworkInteractor;
     private InboxReputationRetrofitInteractor networkInteractor;
 
-    public static FragmentReputationProductView createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
-        FragmentReputationProductView fragment = new FragmentReputationProductView();
+    public static ReputationProductFragment createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
+        ReputationProductFragment fragment = new ReputationProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString("product_id", ProductID);
         bundle.putString("shop_id", ShopID);
@@ -95,128 +93,31 @@ public class FragmentReputationProductView extends Fragment {
         return fragment;
     }
 
-    private class ViewHolderMain {
-        ImageView avatar;
-        ImageView smiley;
-        ImageView overFlow;
-        LinearLayout starQuality;
-        LinearLayout starAccuracy;
-        TextView username;
-        TextView counterComment;
-        TextView counterLike;
-        TextView counterDislike;
-        LinearLayout counterSmiley;
-        TextView comment;
-        TextView date;
-        View viewLikeDislike;
-        ProgressBar loading;
-        ImageView iconDislike;
-        ImageView iconLike;
-        TextView textPercentage;
-        ImageView iconPercentage;
-        View viewReputation;
-        RecyclerView imageHolder;
-    }
-
-    private class ViewHolderComment {
-        View commentView;
-        ImageView commentAvatar;
-        LinearLayout commentBadges;
-        ImageView buttonOverflow;
-        TextView commentUsername;
-        TextView commentMessage;
-        TextView date;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initVariable();
-        setRetainInstance(true);
-    }
-
-    private void initVariable() {
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        model = ((ReviewProductModel) getArguments().getParcelable("data"));
-        shopID = getArguments().getString("shop_id");
-        productID = getArguments().getString("product_id");
-        holder = new ViewHolderMain();
-        holderComment = new ViewHolderComment();
+    protected void initialPresenter() {
         actNetworkInteractor = new ActReputationRetrofitInteractorImpl();
         networkInteractor = new InboxReputationRetrofitInteractorImpl();
+        presenter = new ReputationProductViewFragmentPresenterImpl(this, actNetworkInteractor, networkInteractor);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_reputation_product_view, container, false);
-        initData();
-        initView();
-        setModelToView();
-        setListener();
-        return rootView;
+    protected void initialListener(Activity activity) {
+
     }
 
-    private void initData() {
-        model.detail = new ReviewProductDetailModel();
-        getLikeDislike();
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
     }
 
-    private void getLikeDislike() {
-        networkInteractor.getLikeDislikeReview(getActivity(), getLikeDislikeParam(), new InboxReputationRetrofitInteractor.LikeDislikeListener() {
-            @Override
-            public void onSuccess(@NonNull LikeDislike result) {
-                setResultToModel(result);
-                setModelToView();
-            }
-
-            @Override
-            public void onTimeout() {
-
-            }
-
-            @Override
-            public void onFailAuth() {
-
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-
-            }
-        });
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_reputation_product_view;
     }
 
-    private void setResultToModel(LikeDislike result) {
-        model.detail.isGetLikeDislike = true;
-        model.detail.statusLikeDislike = result.getLikeDislikeReview().get(0).getLikeStatus();
-        model.detail.counterDislike = result.getLikeDislikeReview().get(0).getTotalLikeDislike().getTotalDislike();
-        model.detail.counterLike = result.getLikeDislikeReview().get(0).getTotalLikeDislike().getTotalLike();
-    }
-
-    private Map<String, String> getLikeDislikeParam() {
-        HashMap<String, String> param = new HashMap<>();
-        param.put("shop_id", model.getReviewShopId());
-        param.put("review_ids", String.valueOf(model.getReviewId()));
-        return param;
-    }
-
-    private void initView() {
+    @Override
+    protected void initView(View rootView) {
+        holder = new ViewHolderMain();
         holder.avatar = (ImageView) rootView.findViewById(R.id.user_avatar);
         holder.username = (TextView) rootView.findViewById(R.id.username);
         holder.date = (TextView) rootView.findViewById(R.id.date);
@@ -241,6 +142,7 @@ public class FragmentReputationProductView extends Fragment {
         holder.imageHolder.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         // Comment Area;
+        holderComment = new ViewHolderComment();
         holderComment.commentView = rootView.findViewById(R.id.comment_area);
         holderComment.commentAvatar = (ImageView) rootView.findViewById(R.id.user_ava_comment);
         holderComment.commentBadges = (LinearLayout) rootView.findViewById(R.id.badges);
@@ -250,6 +152,81 @@ public class FragmentReputationProductView extends Fragment {
         holderComment.commentUsername = (TextView) rootView.findViewById(R.id.comment_username);
         labelResponder = LabelUtils.getInstance(getActivity(), holderComment.commentUsername);
     }
+
+    @Override
+    protected void setViewListener() {
+        holder.username.setOnClickListener(OnUserNameClickListener());
+        holder.avatar.setOnClickListener(OnUserNameClickListener());
+        holder.overFlow.setOnClickListener(onOverFlowClickListener(R.menu.report_menu));
+        holderComment.buttonOverflow.setOnClickListener(onOverFlowClickListener(R.menu.delete_menu));
+
+        holder.counterLike.setOnClickListener(OnLikeClickListener());
+        holder.iconLike.setOnClickListener(OnLikeClickListener());
+        holder.counterDislike.setOnClickListener(OnDislikeClickListener());
+        holder.iconDislike.setOnClickListener(OnDislikeClickListener());
+        holder.counterSmiley.setOnClickListener(OnViewReputationClickListener());
+
+        holderComment.commentUsername.setOnClickListener(OnShopNameClickListener());
+        holderComment.commentAvatar.setOnClickListener(OnShopNameClickListener());
+    }
+
+    @Override
+    protected void initialVar() {
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        model = ((ReviewProductModel) getArguments().getParcelable("data"));
+        shopID = getArguments().getString("shop_id");
+        productID = getArguments().getString("product_id");
+        initData();
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+
+    @Override
+    protected boolean isRetainInstance() {
+        return true;
+    }
+
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    private void initData() {
+        model.detail = new ReviewProductDetailModel();
+        presenter.getLikeDislike(getActivity(), getLikeDislikeParam());
+    }
+
+    @Override
+    public void setResultToModel(LikeDislike result) {
+        model.detail.isGetLikeDislike = true;
+        model.detail.statusLikeDislike = result.getLikeDislikeReview().get(0).getLikeStatus();
+        model.detail.counterDislike = result.getLikeDislikeReview().get(0).getTotalLikeDislike().getTotalDislike();
+        model.detail.counterLike = result.getLikeDislikeReview().get(0).getTotalLikeDislike().getTotalLike();
+        setModelToView();
+    }
+
+    private Map<String, String> getLikeDislikeParam() {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("shop_id", model.getReviewShopId());
+        param.put("review_ids", String.valueOf(model.getReviewId()));
+        return param;
+    }
+
 
     private void setModelToView() {
         imageUploadAdapter = ImageUploadAdapter.createAdapter(getActivity());
@@ -470,21 +447,6 @@ public class FragmentReputationProductView extends Fragment {
         return !model.getReviewResponse().getResponseMessage().toString().equals("0");
     }
 
-    private void setListener() {
-        holder.username.setOnClickListener(OnUserNameClickListener());
-        holder.avatar.setOnClickListener(OnUserNameClickListener());
-        holder.overFlow.setOnClickListener(onOverFlowClickListener(R.menu.report_menu));
-        holderComment.buttonOverflow.setOnClickListener(onOverFlowClickListener(R.menu.delete_menu));
-
-        holder.counterLike.setOnClickListener(OnLikeClickListener());
-        holder.iconLike.setOnClickListener(OnLikeClickListener());
-        holder.counterDislike.setOnClickListener(OnDislikeClickListener());
-        holder.iconDislike.setOnClickListener(OnDislikeClickListener());
-        holder.counterSmiley.setOnClickListener(OnViewReputationClickListener());
-
-        holderComment.commentUsername.setOnClickListener(OnShopNameClickListener());
-        holderComment.commentAvatar.setOnClickListener(OnShopNameClickListener());
-    }
 
     private View.OnClickListener OnViewReputationClickListener() {
         return new View.OnClickListener() {
@@ -634,56 +596,12 @@ public class FragmentReputationProductView extends Fragment {
                 break;
         }
         UpdateFacade(UnUpdatedModel);
+
     }
 
     private void UpdateFacade(final ReviewProductModel model) {
         progressDialog.showDialog();
-        actNetworkInteractor.likeDislikeReview(getActivity(), getActionLikeDislikeParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
-            @Override
-            public void onSuccess(ActResult result) {
-                progressDialog.dismiss();
-                Intent intent = new Intent();
-                intent.putExtra("is_success", 1);
-                intent.putExtra("action", "update_product");
-                getActivity().setResult(Activity.RESULT_OK, intent);
-            }
-
-            @Override
-            public void onTimeout() {
-                progressDialog.dismiss();
-                revertBack(model);
-                showNetworkErrorSnackbar();
-            }
-
-            @Override
-            public void onFailAuth() {
-
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-                progressDialog.dismiss();
-                revertBack(model);
-                showSnackbar(error);
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-                progressDialog.dismiss();
-                revertBack(model);
-                showNetworkErrorSnackbar();
-            }
-        });
+        presenter.updateFacade(getActivity(), getActionLikeDislikeParam(), model);
     }
 
     private Map<String, String> getActionLikeDislikeParam() {
@@ -792,46 +710,7 @@ public class FragmentReputationProductView extends Fragment {
 
     private void reportReview(ActReviewPass pass) {
         progressDialog.showDialog();
-        actNetworkInteractor.postReport(getActivity(), pass.getReportParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
-            @Override
-            public void onSuccess(ActResult result) {
-                progressDialog.dismiss();
-                showSnackbar(getActivity().getString(R.string.toast_success_report));
-            }
-
-            @Override
-            public void onTimeout() {
-                progressDialog.dismiss();
-                showNetworkErrorSnackbar();
-            }
-
-            @Override
-            public void onFailAuth() {
-
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-                progressDialog.dismiss();
-                showSnackbar(error);
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-                progressDialog.dismiss();
-                showNetworkErrorSnackbar();
-            }
-        });
+        presenter.postReport(getActivity(), pass.getReportParam());
     }
 
     private void showNetworkErrorSnackbar() {
@@ -843,54 +722,9 @@ public class FragmentReputationProductView extends Fragment {
     }
 
     private void deleteComment() {
-        actNetworkInteractor.deleteComment(getActivity(), getDeleteCommentParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
-            @Override
-            public void onSuccess(ActResult result) {
-                progressDialog.dismiss();
-                CommonUtils.UniversalToast(getActivity(), getString(R.string.msg_delete_comment));
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putString("last_action", "delete_comment_review");
-                intent.putExtras(bundle);
-                getActivity().setResult(getActivity().RESULT_OK, intent);
-                getActivity().finish();
-            }
-
-            @Override
-            public void onTimeout() {
-                progressDialog.dismiss();
-                showNetworkErrorSnackbar();
-            }
-
-            @Override
-            public void onFailAuth() {
-
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-                progressDialog.dismiss();
-                showSnackbar(error);
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-                progressDialog.dismiss();
-                showNetworkErrorSnackbar();
-
-            }
-        });
+        presenter.deleteComment(getActivity(), getDeleteCommentParam());
     }
+
 
     private Map<String, String> getDeleteCommentParam() {
         ActReviewPass pass = new ActReviewPass();
@@ -928,4 +762,65 @@ public class FragmentReputationProductView extends Fragment {
         super.onDestroyView();
         actNetworkInteractor.unSubscribeObservable();
     }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+
+
+    @Override
+    public void onSuccessDeleteComment(ActResult result) {
+        progressDialog.dismiss();
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.msg_delete_comment));
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString("last_action", "delete_comment_review");
+        intent.putExtras(bundle);
+        getActivity().setResult(getActivity().RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onSuccessLikeDislikeReview(ActResult result) {
+        progressDialog.dismiss();
+        showNetworkErrorSnackbar();
+    }
+
+    @Override
+    public void onSuccessGetLikeDislikeReview() {
+        progressDialog.dismiss();
+        Intent intent = new Intent();
+        intent.putExtra("is_success", 1);
+        intent.putExtra("action", "update_product");
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void onErrorGetLikeDislikeReview(ReviewProductModel model, String err) {
+        progressDialog.dismiss();
+        revertBack(model);
+        showSnackbar(err);
+    }
+
+    @Override
+    public void onErrorConnectionGetLikeDislikeReview(ReviewProductModel model) {
+        progressDialog.dismiss();
+        revertBack(model);
+        showNetworkErrorSnackbar();
+    }
+
+    @Override
+    public void onError(String error) {
+        progressDialog.dismiss();
+        showSnackbar(error);
+    }
+
+    @Override
+    public void onErrorConnection() {
+        progressDialog.dismiss();
+        showNetworkErrorSnackbar();
+    }
+
 }

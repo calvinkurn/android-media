@@ -8,8 +8,7 @@ import android.os.PersistableBundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.reputationproduct.fragment.FragmentReputationProductView;
+import com.tokopedia.core.reputationproduct.fragment.ReputationProductFragment;
 import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewPresenter;
 import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewPresenterImpl;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
@@ -17,7 +16,7 @@ import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 /**
  * Created by hangnadi on 7/7/15.
  */
-public class ReputationProductView extends BasePresenterActivity<ReputationProductViewPresenter> {
+public class ReputationProductActivity extends BasePresenterActivity<ReputationProductViewPresenter> {
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -73,7 +72,7 @@ public class ReputationProductView extends BasePresenterActivity<ReputationProdu
     }
 
     private Fragment getFragment() {
-        return FragmentReputationProductView.createInstance(getIntentProductID(), getIntentShopID(), getIntentModelData());
+        return ReputationProductFragment.createInstance(getIntentProductID(), getIntentShopID(), getIntentModelData());
     }
 
     private String getIntentProductID() {
