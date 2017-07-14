@@ -12,14 +12,13 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.widget.StatisticCardView;
+import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
@@ -49,14 +48,12 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     private int gmStatGraphSelection;
 
     private LineChartView gmStatisticIncomeGraph;
-    private LinearLayout gmStatisticGraphContainerInner;
-    private HorizontalScrollView gmStatisticGraphContainer;
-
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
 
     private BaseWilliamChartConfig baseWilliamChartConfig;
-    private StatisticCardView gmStatisticCardView;
+    private TitleCardView gmTitleCardView;
+    private LineChartContainerWidget gmLineChartContainer;
 
     private GMDateRangeView gmStatisticTransactionRangeMain;
     private GMDateRangeView gmStatisticTransactionRangeCompare;
@@ -77,16 +74,15 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
 
     @Override
     public void initView(@Nullable View itemView) {
-        gmStatisticCardView = (StatisticCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
-        gmStatisticCardView.setOnArrowDownClickListener(new StatisticCardView.OnArrowDownClickListener() {
+        gmTitleCardView = (TitleCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
+        gmTitleCardView.setOnArrowDownClickListener(new TitleCardView.OnArrowDownClickListener() {
             @Override
             public void onArrowDownClicked() {
                 showGraphSelectionDialog();
             }
         });
-        gmStatisticCardView.setPercentageUtil(new GMPercentageViewHelper(context));
-        gmStatisticGraphContainer = (HorizontalScrollView) itemView.findViewById(R.id.gm_statistic_transaction_graph_container);
-        gmStatisticGraphContainerInner = (LinearLayout) itemView.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
+        gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
+        gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
         gmStatisticTransactionRangeMain = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_main);
         gmStatisticTransactionRangeCompare = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_compare);
@@ -196,16 +192,15 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     }
 
     private void fillTransactionGraphMain(@Nullable GMGraphViewWithPreviousModel data) {
-
         gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
         showTransactionGraph(data.values, data.dates);
     }
 
     private void setHeaderValue(GMGraphViewWithPreviousModel data) {
-        gmStatisticCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
+        gmTitleCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
 
-        gmStatisticCardView.setPercentage((double) (data.percentage * 100));
-        gmStatisticCardView.setAmount(Integer.toString(data.amount));
+        gmLineChartContainer.setPercentage((double) (data.percentage * 100));
+        gmLineChartContainer.setAmount(Integer.toString(data.amount));
     }
 
     protected void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
