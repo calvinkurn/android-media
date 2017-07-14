@@ -10,6 +10,21 @@ import java.util.List;
  * @author normansyahputa on 7/6/17.
  */
 public class GetTransactionGraph {
+    @SerializedName("p_cpc_product")
+    @Expose
+    private long pCpcProduct;
+    @SerializedName("p_cpc_shop")
+    @Expose
+    private long pCpcShop;
+    @SerializedName("onhold_count")
+    @Expose
+    private long onholdCount;
+    @SerializedName("onhold_amt")
+    @Expose
+    private long onholdAmt;
+    @SerializedName("reso_count")
+    @Expose
+    private long resoCount;
     @SerializedName("success_trans")
     @Expose
     private int successTrans;
@@ -449,5 +464,45 @@ public class GetTransactionGraph {
 
     public void setPAdsSGraph(List<Integer> pAdsSGraph) {
         this.pAdsSGraph = pAdsSGraph;
+    }
+
+    public long getpCpcProduct() {
+        return pCpcProduct;
+    }
+
+    public void setpCpcProduct(long pCpcProduct) {
+        this.pCpcProduct = pCpcProduct;
+    }
+
+    public long getpCpcShop() {
+        return pCpcShop;
+    }
+
+    public void setpCpcShop(long pCpcShop) {
+        this.pCpcShop = pCpcShop;
+    }
+
+    public long getOnholdCount() {
+        return onholdCount;
+    }
+
+    public void setOnholdCount(long onholdCount) {
+        this.onholdCount = onholdCount;
+    }
+
+    public long getOnholdAmt() {
+        return onholdAmt;
+    }
+
+    public void setOnholdAmt(long onholdAmt) {
+        this.onholdAmt = onholdAmt;
+    }
+
+    public long getResoCount() {
+        return resoCount;
+    }
+
+    public void setResoCount(long resoCount) {
+        this.resoCount = resoCount;
     }
 }

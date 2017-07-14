@@ -4,6 +4,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
 import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticTransactionFragment;
+import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticTransactionTableFragment;
 
 import dagger.Component;
 
@@ -15,4 +16,6 @@ import dagger.Component;
 public interface GMTransactionComponent {
 
     void inject(GMStatisticTransactionFragment gmStatisticTransactionFragment);
+
+    void inject(GMStatisticTransactionTableFragment gmStatisticTransactionTableFragment);
 }

@@ -43,6 +43,7 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
 
     @Override
     public void calculatePercentage(double percentage, ImageView ivArrowIcon, TextView tvPercentage) {
+
         // image for arrow is here
         boolean isDefault;
         if (percentage == 0) {

@@ -48,9 +48,7 @@ public final class GMStatisticUtil {
         */
         double newSizeRatio = ((double) numChart) / 7;
         if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
-        } else {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
+            chartView.setLayoutParams(new LinearLayout.LayoutParams ((int) DataTransactionViewHelper.dpToPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         }
     }
 

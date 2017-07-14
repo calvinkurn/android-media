@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:addStatesFromChildren="true"
+    android:divider="@drawable/line_separator_medium"
+    android:id="@+id/vg_title_card_view"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/vg_title"
+        android:background="?attr/selectableItemBackground">
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/TextView.Subheading.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/margin_small"
+            tools:text="Title"/>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_arrow_down"
+            android:layout_width="15dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_arrow_down" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!-- will be inflated programmatically -->
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,19 +15,23 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.lib.widget.LabelView;
 
 import java.util.HashMap;
@@ -62,6 +67,10 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     private GMTopAdsAmountViewHelper gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
     private GMTransactionGraphViewHelper gmTransactionGraphViewHelper;
+    private UnFinishedTransactionViewHolder unFinishedTransactionViewHolder;
+
+    private GMDateRangeDateViewModel gmDateRangeDateViewModel;
+    private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -81,6 +90,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
         gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
         gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());
+        unFinishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
     }
 
     private void initView() {
@@ -89,12 +99,16 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
         gmTopAdsAmountViewHelper.initView(rootView);
         gmTransactionGraphViewHelper.initView(rootView);
+        unFinishedTransactionViewHolder.initView(rootView);
 
         gmStatisticProductListText = (LabelView) rootView.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
+                intent.putExtra(GMStatisticTransactionTableView.START_DATE, gmDateRangeDateViewModel.getStartDate().getModel1());
+                intent.putExtra(GMStatisticTransactionTableView.END_DATE, gmDateRangeDateViewModel.getEndDate().getModel1());
+                startActivity(intent);
             }
         });
     }
@@ -135,10 +149,12 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         // get range from network
                         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
 
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
+                        gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
                         if (gmDateRangeDateViewModel == null) return;
+                        gmDateRangeDateViewModel.dumpStartDateLong();
+                        gmDateRangeDateViewModel.dumpEndDateLong();
 
-                        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
+                        previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
 
                         GMTransactionGraphViewModel gmTransactionGraphViewModel
                                 = new GMTransactionGraphViewModel();
@@ -159,29 +175,20 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         gmTransactionGraphViewHelper.bind(gmTransactionGraphViewModel);
 
                         processTopAdsAmount(getTransactionGraph, dateGraph);
+
+                        processUnfinishedTransaction(getTransactionGraph);
                     }
                 });
+    }
 
-        gmStatApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<GetTransactionTable>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onNext(Response<GetTransactionTable> stringResponse) {
-                        Log.e(TAG, stringResponse.body().toString());
-                    }
-                });
+    private void processUnfinishedTransaction(GetTransactionGraph getTransactionGraph) {
+        UnFinishedTransactionViewModel unFinishedTransactionViewModel = new UnFinishedTransactionViewModel(
+                getTransactionGraph.getOnholdCount(),
+                getTransactionGraph.getResoCount(),
+                getTransactionGraph.getOnholdAmt(),
+                getString(R.string.rupiah_format_text)
+        );
+        unFinishedTransactionViewHolder.bind(unFinishedTransactionViewModel);
     }
 
     @Nullable
@@ -310,10 +317,15 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
         gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
 
-        // TODO get topads percentage maybe cpc, waiting for pcp
-        gmTopAdsAmountViewModel.percentage = 1f;
-
         gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
+
+        long previousAmount = getTransactionGraph.getpCpcProduct() + getTransactionGraph.getpCpcShop();
+        try {
+            gmTopAdsAmountViewModel.percentage = gmTopAdsAmountViewModel.amount - previousAmount / gmTopAdsAmountViewModel.amount;
+        } catch (Exception e) {
+            Log.e(TAG, String.format("amount %s previous amount %s", Integer.toString(gmTopAdsAmountViewModel.amount), Long.toString(previousAmount)));
+            gmTopAdsAmountViewModel.percentage = -GMStatConstant.NoDataAvailable * 100;
+        }
 
         gmTopAdsAmountViewHelper.bind(
                 gmTopAdsAmountViewModel

@@ -6,6 +6,9 @@ import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatReposit
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,4 +33,14 @@ public class GMStatisticModule {
             GMStatDataSource gmStatDataSource) {
         return new GMStatRepositoryImpl(gmStatDataSource);
     }
+
+    @GMStatisticScope
+    @Provides
+    GMStatisticTransactionTablePresenter provideGmStatisticTransactionTablePresenter(
+            GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase
+    ) {
+        return new GMStatisticTransactionTablePresenterImpl(gmStatGetTransactionTableUseCase);
+    }
+
+
 }
