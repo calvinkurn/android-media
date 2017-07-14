@@ -737,7 +737,7 @@ public class TkpdBaseURL {
     public static class HadesCategory {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
-        public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+        public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
         public static final String FETCH_CATEGORIES = "/v1/categories?filter=type==tree";
     }
 
