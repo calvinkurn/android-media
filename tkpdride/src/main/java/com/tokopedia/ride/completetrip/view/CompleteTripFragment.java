@@ -362,8 +362,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             if (maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT) != null)
                 passData.setInstantCheckout(maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
 
-            pendingFareLayout.setVisibility(View.VISIBLE);
+
+            if (receipt.getPendingPayment().getTopUpOptions() != null && receipt.getPendingPayment().getTopUpOptions().size() > 0) {
+                TokoCashProduct product = receipt.getPendingPayment().getTopUpOptions().get(0);
+                tokocashSelectedProductTextView.setText(product.getTitle());
+                passData.setProductId(product.getId());
+            }
+
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
+            pendingFareLayout.setVisibility(View.VISIBLE);
+        } else {
+            pendingFareLayout.setVisibility(View.GONE);
         }
     }
 

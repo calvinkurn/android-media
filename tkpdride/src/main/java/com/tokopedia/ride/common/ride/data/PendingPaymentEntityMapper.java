@@ -53,7 +53,7 @@ public class PendingPaymentEntityMapper {
     }
 
     public String transformPendingAmount(String amount, String currencyCode) {
-        if (amount != null && amount.length() > 0) {
+        if (amount == null || amount.length() == 0) {
             amount = "0";
         }
 

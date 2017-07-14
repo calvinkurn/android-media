@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="35dp"
     android:orientation="vertical">
 
 
@@ -16,13 +15,14 @@
         android:paddingRight="16dp"
         android:paddingStart="16dp">
 
-        <View
+        <ImageView
             android:id="@+id/pending_sep1"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/grey_200" />
+            android:layout_height="5dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:layerType="software"
+            android:src="@drawable/shape_dash_line" />
 
         <TextView
             android:id="@+id/label_total_pending"
@@ -47,15 +47,16 @@
             tools:text="Rp. 15.000" />
     </RelativeLayout>
 
-    <View
+    <ImageView
         android:id="@+id/pending_sep"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="5dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/grey_200" />
+        android:layout_marginTop="12dp"
+        android:layerType="software"
+        android:src="@drawable/shape_dash_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,15 +70,17 @@
             android:id="@+id/tv_choose_tokocash_amount_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="@string/complete_trip_choose_tokocash_amount"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
 
         <RelativeLayout
             android:id="@+id/layout_tokocash_option"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
 
             <TextView
                 android:id="@+id/tv_tokocash_selected_product"
@@ -88,7 +91,7 @@
                 android:padding="@dimen/padding_vs"
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_small"
-                tools:text="Rp 25.000" />
+                tools:text="Loading..." />
 
             <View
                 android:layout_width="match_parent"
@@ -112,7 +115,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:text="@string/complete_trip_tip_top_up_more_tokocash_than_your_pending_fare_to_ease_your_booking_experience"
             android:textAlignment="center"
             android:textSize="12sp" />
@@ -122,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_filled_theme_disable_bttn"
+            android:background="@drawable/rounded_filled_green_bttn"
             android:gravity="center"
             android:text="@string/complete_trip_top_up_tokocash"
             android:textAllCaps="false"
