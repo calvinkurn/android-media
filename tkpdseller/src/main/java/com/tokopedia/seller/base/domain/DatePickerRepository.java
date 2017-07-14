@@ -1,6 +1,6 @@
-package com.tokopedia.seller.common.datepicker.domain;
+package com.tokopedia.seller.base.domain;
 
-import com.tokopedia.seller.common.datepicker.domain.model.DatePickerDomainModel;
+import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
 
 import rx.Observable;
 

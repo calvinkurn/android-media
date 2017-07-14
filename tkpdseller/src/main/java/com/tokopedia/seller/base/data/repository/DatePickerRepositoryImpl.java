@@ -1,8 +1,8 @@
-package com.tokopedia.seller.common.datepicker.data.repository;
+package com.tokopedia.seller.base.data.repository;
 
-import com.tokopedia.seller.common.datepicker.data.source.DatePickerDataSource;
-import com.tokopedia.seller.common.datepicker.domain.DatePickerRepository;
-import com.tokopedia.seller.common.datepicker.domain.model.DatePickerDomainModel;
+import com.tokopedia.seller.base.data.source.DatePickerDataSource;
+import com.tokopedia.seller.base.domain.DatePickerRepository;
+import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
 
 import rx.Observable;
 

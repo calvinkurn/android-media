@@ -1,7 +1,7 @@
-package com.tokopedia.seller.common.datepicker.data.mapper;
+package com.tokopedia.seller.base.data.mapper;
 
-import com.tokopedia.seller.common.datepicker.data.source.cache.model.DatePickerCacheModel;
-import com.tokopedia.seller.common.datepicker.domain.model.DatePickerDomainModel;
+import com.tokopedia.seller.base.data.source.cache.model.DatePickerCacheModel;
+import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
 
 import rx.functions.Func1;
 

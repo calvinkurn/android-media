@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.presenter;
+package com.tokopedia.seller.topads.common.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;

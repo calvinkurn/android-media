@@ -21,8 +21,8 @@ import com.tokopedia.seller.topads.common.view.fragment.TopAdsBaseDatePickerFrag
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelView;
 
 

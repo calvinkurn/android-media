@@ -25,12 +25,11 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardFragme
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardTabListener;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;

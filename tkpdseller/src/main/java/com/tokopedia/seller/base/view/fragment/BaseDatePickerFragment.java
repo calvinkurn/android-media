@@ -6,14 +6,17 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.base.view.constant.ConstantView;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.Date;
+
+import javax.inject.Inject;
 
 /**
  * @author normansyahputa on 5/17/17.
@@ -36,6 +39,9 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     }
 
     protected abstract void loadData();
+
+    @Inject
+    public ProductAddPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
