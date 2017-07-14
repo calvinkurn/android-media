@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 
-public class LoaderTextView extends TextView implements LoaderView {
+public class LoaderTextView extends TextView implements ILoaderView {
 
     private LoaderController loaderController;
 

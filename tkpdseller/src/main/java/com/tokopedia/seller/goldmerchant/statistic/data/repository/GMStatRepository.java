@@ -28,4 +28,6 @@ public interface GMStatRepository {
     Observable<GetKeyword> getKeywordModel(String categoryId);
 
     Observable<GetShopCategory> getShopCategory(long startDate, long endDate);
+
+    Observable<Boolean> clearCache();
 }

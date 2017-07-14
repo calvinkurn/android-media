@@ -13,7 +13,7 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/circle_green" />
 
-    <TextView
+    <com.tokopedia.seller.gmstat.library.LoaderTextView
         android:id="@+id/date_range_percentage_dot_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

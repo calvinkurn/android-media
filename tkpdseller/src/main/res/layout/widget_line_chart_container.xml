@@ -6,20 +6,21 @@
     android:paddingBottom="@dimen/gmstat_padding_item_left_right"
     android:paddingLeft="@dimen/gmstat_padding_item_left_right"
     android:paddingRight="@dimen/gmstat_padding_item_left_right"
+    android:id="@+id/line_chart_container"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <com.tokopedia.seller.gmstat.library.LoaderTextView
         android:id="@+id/tv_subtitle"
         style="@style/TextView.Subheading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Total Pengeluaran TopAds" />
-    <TextView
+    <com.tokopedia.seller.gmstat.library.LoaderTextView
         android:id="@+id/tv_amount"
         style="@style/TextView.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Rp900.000" />
+        tools:text="Rp900.000"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -27,7 +28,7 @@
             android:id="@+id/view_arrow_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <TextView
+        <com.tokopedia.seller.gmstat.library.LoaderTextView
             android:id="@+id/tv_percentage_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
