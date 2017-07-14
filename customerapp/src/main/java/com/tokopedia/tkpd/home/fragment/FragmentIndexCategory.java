@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
@@ -213,6 +214,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
         LinearLayout wrapperLinearLayout;
+        TextView seeAllProduct;
         CardView containerRecharge;
 
         private ViewHolder() {
@@ -495,10 +497,29 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView = (TokoCashHeaderView) holder
                 .MainView.findViewById(R.id.toko_cash_header_layout);
         holder.tokoCashHeaderView.setActionListener(this);
+        holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
+        holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
 
+    }
+
+    @NonNull
+    private View.OnClickListener getClickListenerShowAllDigitalProducts() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                    IDigitalModuleRouter digitalModuleRouter =
+                            (IDigitalModuleRouter) getActivity().getApplication();
+                    startActivityForResult(
+                            digitalModuleRouter.instanceIntentDigitalCategoryList(),
+                            IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+                    );
+                }
+            }
+        };
     }
 
     private void initCategoryRecyclerView() {
@@ -573,12 +594,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void openActivationTokoCashWebView(String seamlessUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", seamlessUrl);
         if (getContext() instanceof Activity) {
             if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
-                        .goToWallet(getContext(), bundle);
+                        .goToWallet(getContext(), seamlessUrl);
             }
         }
     }
@@ -631,7 +650,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }, getBrandsMenuWidth());
         holder.brandsRecyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
                 GridLayoutManager.VERTICAL, false));
-        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),R.drawable.divider300));
+        holder.brandsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.divider300));
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
         holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
