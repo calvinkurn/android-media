@@ -188,8 +188,8 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                     .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            PhoneVerificationFragmentPermissionsDispatcher
-//                                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+                            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
 
                         }
                     })
@@ -203,8 +203,8 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                     })
                     .show();
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-//            PhoneVerificationFragmentPermissionsDispatcher
-//                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
         }
     }
 
@@ -458,6 +458,11 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         }
 
         runAnimation();
+        if (inputOtpView.getVisibility() == View.VISIBLE){
+            verifyButton.setText(getResources().getString(R.string.title_confirm_otp));
+        }else {
+            verifyButton.setText(getResources().getString(R.string.continue_form));
+        }
         otpEditText.requestFocus();
     }
 
@@ -466,6 +471,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
             public void onTick(long millisUntilFinished) {
                 instruction.setVisibility(View.GONE);
                 countdownText.setVisibility(View.VISIBLE);
+                MethodChecker.setBackground(countdownText, MethodChecker.getDrawable(getActivity(), R.drawable.prof_comp_bg_textview_rounded_white));
                 countdownText.setText(
                         "Kirim SMS Ulang (" + String.format(FORMAT,
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished))
@@ -485,10 +491,10 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         tokocashText.setVisibility(View.GONE);
         countdownText.setVisibility(View.GONE);
         requestOtpButton.setVisibility(View.VISIBLE);
-        MethodChecker.setBackground(requestOtpButton,
-                MethodChecker.getDrawable(getActivity(),
-                        com.tokopedia.core.R.drawable.cards_ui));
-        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
+//        MethodChecker.setBackground(requestOtpButton,
+//                MethodChecker.getDrawable(getActivity(),
+//                        com.tokopedia.core.R.drawable.cards_ui));
+        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         requestOtpButton.setText(R.string.title_resend_otp_sms);
         requestOtpCallButton.setVisibility(View.VISIBLE);
         changePhoneNumberButton.setVisibility(View.VISIBLE);
@@ -530,8 +536,8 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        PhoneVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
-//                ProfileCompletionPhoneVerificationFragment.this, requestCode, grantResults);
+        ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                ProfileCompletionPhoneVerificationFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.READ_SMS)

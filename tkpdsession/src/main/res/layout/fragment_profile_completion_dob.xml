@@ -31,6 +31,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/grey_hint"
+            android:theme="@style/Theme.TextInputLayout"
             android:hint="@string/profile_completion_date">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/date"
@@ -38,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
                 android:maxLength="2"
-                android:textColorHint="@color/grey_hint"
                 android:inputType="numberDecimal"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -47,12 +48,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/grey_hint"
+            android:theme="@style/Theme.TextInputLayout"
             android:hint="@string/profile_completion_month">
             <AutoCompleteTextView
                 android:id="@+id/month"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
-                android:textColorHint="@color/grey_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -65,12 +67,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:theme="@style/Theme.TextInputLayout"
+            android:textColorHint="@color/grey_hint"
             android:hint="@string/profile_completion_year">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/year"
                 android:paddingLeft="@dimen/padding_textview_prof_comp"
                 android:layout_margin="@dimen/padding_textview_prof_comp"
-                android:textColorHint="@color/grey_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="4"

@@ -1,26 +1,33 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
+import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.AttributeSet;
 import android.util.Pair;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -35,6 +42,8 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.session.R;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -64,6 +73,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     ProfileCompletionPresenter presenter;
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
+    private MenuItem skipItem;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -78,6 +88,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        // inflate the layout using the cloned inflater, not default inflater
         View parentView = inflater.inflate(R.layout.fragment_profile_completion, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         setHasOptionsMenu(true);
@@ -89,26 +101,25 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(MethodChecker.getColor(getActivity(), R.color.black_70));
+        SpannableStringBuilder title = new SpannableStringBuilder("Lewati");
+        title.setSpan(colorSpan, 0, title.length(), 0);
+        menu.add(Menu.NONE, R.id.action_skip, 0, title);
+        MenuItem menuItem = menu.findItem(R.id.action_skip); // OR THIS
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setTitle(title);
+
         super.onCreateOptionsMenu(menu, inflater);
-        menuInflater = getActivity().getMenuInflater();
-        menuInflater.inflate(R.menu.menu_skip, menu);
-//        skip = menu.getItem(0);
+//        menuInflater = getActivity().getMenuInflater();
+//        menuInflater.inflate(R.menu.menu_skip, menu);
+//        skipItem = menu.findItem(R.id.action_skip);
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem settingsMenuItem = menu.findItem(R.id.action_skip);
-        SpannableString s = new SpannableString(settingsMenuItem.getTitle());
-        s.setSpan(new ForegroundColorSpan(MethodChecker.getColor(getActivity(), R.color.grey_hint)), 0, s.length(), 0);
-        settingsMenuItem.setTitle(s);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_skip) {
+            skipView(findChildTag());
             return true;
         }
 
@@ -186,6 +197,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     }
 
     private void loadFragment(GetUserInfoDomainData getUserInfoDomainData, Pair<Integer,Integer> pair) {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
         }
@@ -235,8 +247,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         proceed.setVisibility(View.VISIBLE);
         proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
         proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        proceed.setText(getString(R.string.continue_form));
         proceed.setEnabled(true);
         skip.setEnabled(true);
+//        skipItem.setEnabled(true);
     }
 
 
@@ -245,6 +259,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         progress.setVisibility(View.VISIBLE);
         proceed.setVisibility(View.GONE);
         skip.setEnabled(false);
+//        skipItem.setEnabled(false);
     }
 
     public void canProceed(boolean can){
@@ -264,6 +279,12 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         setViewEnabled();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
+
+    private String findChildTag() {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fragment_container);
+        return fragment.getTag();
+    }
+
 
     @Override
     public void skipView(String tag) {

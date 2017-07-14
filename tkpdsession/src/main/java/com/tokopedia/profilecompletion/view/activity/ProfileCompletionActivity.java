@@ -25,6 +25,12 @@ import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 public class ProfileCompletionActivity extends BasePresenterActivity {
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppBarTheme);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }
@@ -46,19 +52,18 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.core.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
+//        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            toolbar.setElevation(10);
+//        }
+//
+//        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+//        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+//        if (upArrow != null) {
+//            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.core.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+//            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+//        }
 
         ProfileCompletionFragment fragment = ProfileCompletionFragment.createInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

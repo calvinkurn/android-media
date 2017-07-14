@@ -37,6 +37,6 @@
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:padding="@dimen/padding_large_prof_comp"
-        />
+        android:visibility="gone" />
 
 </LinearLayout>

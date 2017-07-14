@@ -15,6 +15,8 @@ import android.widget.AutoCompleteTextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.profilecompletion.view.Events;
+import com.tokopedia.profilecompletion.view.Properties;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
@@ -23,6 +25,11 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func3;
+import rx.subjects.PublishSubject;
 
 
 /**
@@ -44,6 +51,9 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     private int position;
     private Unbinder unbinder;
     private ProfileCompletionContract.Presenter presenter;
+    private Observable<String> dateObservable;
+    private Observable<String> yearObservable;
+    private Observable<Integer> monthObservable;
 
     public static ProfileCompletionDateFragment createInstance(ProfileCompletionFragment view) {
         ProfileCompletionDateFragment fragment = new ProfileCompletionDateFragment();
@@ -59,6 +69,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         initView(parentView);
         setViewListener();
         initialVar();
+        setUpFields();
         return parentView;
     }
 
@@ -77,6 +88,8 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         skip = this.view.getView().findViewById(R.id.skip);
 //        skip = this.view.getSkipButton();
         progress = this.view.getView().findViewById(R.id.progress);
+        proceed.setEnabled(false);
+        this.view.canProceed(false);
     }
 
     protected void setViewListener() {
@@ -127,6 +140,58 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
                 (getActivity(), R.layout.select_dialog_item_material, monthsIndo);
         month.setAdapter(adapter);
         presenter = view.getPresenter();
+
+        dateObservable = Events.text(date);
+        yearObservable = Events.text(year);
+        monthObservable = Events.select(month);
+
+        Observable<Boolean> dateMapper = dateObservable.map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String text) {
+                return !text.trim().equals("");
+            }
+        });
+
+
+        Observable<Boolean> yearMapper = yearObservable.map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String text) {
+                return !text.trim().equals("");
+            }
+        });
+
+        Observable<Boolean> monthMapper = monthObservable.map(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                position = integer;
+                return integer!=0;
+            }
+        });
+
+        Observable<Boolean> allField = Observable.combineLatest(dateMapper, yearMapper, monthMapper, new Func3<Boolean, Boolean, Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean date, Boolean year, Boolean month) {
+                return date && month && year;
+            }
+        }).map(new Func1<Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean aBoolean) {
+                return aBoolean;
+            }
+        });
+
+        allField.subscribe(Properties.enabledFrom(proceed));
+        allField.subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                view.canProceed(aBoolean);
+            }
+        });
+    }
+
+
+    private void setUpFields() {
+
     }
 
     @Override
