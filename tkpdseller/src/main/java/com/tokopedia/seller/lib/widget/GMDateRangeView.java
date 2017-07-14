@@ -44,16 +44,24 @@ public class GMDateRangeView extends RelativeLayout {
         View view = inflate(getContext(), R.layout.widget_date_range_percentage, this);
         dateRangePercentageDotImage = (ImageView) view.findViewById(R.id.date_range_percentage_dot_image);
         dateRangePercentageDotText = (TextView) view.findViewById(R.id.date_range_percentage_dot_text);
+        dateRangePercentageDotImage.setVisibility(View.GONE);
     }
 
     public void bind(@Nullable GMDateRangeDateViewModel data) {
         // currently not used
-        String dateRangeFormatString = getContext().getString(
-                R.string.gold_merchant_date_range_format_text,
-                data.getStartDate().getModel2(),
-                data.getEndDate().getModel2());
+        if (data == null) {
+            dateRangePercentageDotText.setVisibility(View.GONE);
+            dateRangePercentageDotImage.setVisibility(View.GONE);
+        } else {
+            String dateRangeFormatString = getContext().getString(
+                    R.string.gold_merchant_date_range_format_text,
+                    data.getStartDate().getModel2(),
+                    data.getEndDate().getModel2());
 
-        dateRangePercentageDotText.setText(dateRangeFormatString);
+            dateRangePercentageDotText.setText(dateRangeFormatString);
+            dateRangePercentageDotText.setVisibility(View.VISIBLE);
+            dateRangePercentageDotImage.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setDrawable(@DrawableRes int drawableRes) {

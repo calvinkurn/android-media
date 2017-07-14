@@ -55,9 +55,6 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     private TitleCardView gmTitleCardView;
     private LineChartContainerWidget gmLineChartContainer;
 
-    private GMDateRangeView gmStatisticTransactionRangeMain;
-    private GMDateRangeView gmStatisticTransactionRangeCompare;
-
     private boolean showingSimpleDialog;
     private GMTransactionGraphViewModel data;
 
@@ -84,8 +81,6 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
         gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
-        gmStatisticTransactionRangeMain = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_main);
-        gmStatisticTransactionRangeCompare = (GMDateRangeView) itemView.findViewById(R.id.gm_statistic_transaction_range_compare);
     }
 
     @Override
@@ -168,10 +163,8 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
         setHeaderValue(data);
         if (data.isCompare) {
-            gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
-            gmStatisticTransactionRangeCompare.bind(data.pDateRangeModel);
-            gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
-            gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
+            gmLineChartContainer.setCompareDate(data);
+            gmLineChartContainer.setMainDate(data);
             // create model for current Data
             final BaseWilliamChartModel baseWilliamChartModel
                     = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
@@ -186,13 +179,13 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
 
             showTransactionGraph(baseWilliamChartModels);
         } else {
-            gmStatisticTransactionRangeCompare.setVisibility(View.GONE);
             fillTransactionGraphMain(data);
         }
     }
 
     private void fillTransactionGraphMain(@Nullable GMGraphViewWithPreviousModel data) {
-        gmStatisticTransactionRangeMain.bind(data.dateRangeModel);
+        gmLineChartContainer.setMainDate(data);
+        gmLineChartContainer.setCompareDate(null);
         showTransactionGraph(data.values, data.dates);
     }
 

@@ -20,5 +20,6 @@
         android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
+        android:minWidth="100dp"
         tools:text="26 Jul 2016 - 25 Des 2016" />
 </LinearLayout>

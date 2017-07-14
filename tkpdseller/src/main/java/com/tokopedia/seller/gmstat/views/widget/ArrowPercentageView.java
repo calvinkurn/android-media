@@ -55,7 +55,9 @@ public class ArrowPercentageView extends FrameLayout {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ArrowPercentageView);
-        mPercentage = a.getFloat(R.styleable.ArrowPercentageView_percentage, -101);
+        if (a.hasValue(R.styleable.ArrowPercentageView_percentage)) {
+            mPercentage = a.getFloat(R.styleable.ArrowPercentageView_percentage, 0);
+        }
         a.recycle();
     }
 
@@ -69,21 +71,27 @@ public class ArrowPercentageView extends FrameLayout {
     }
 
     private void setUIPercentage(){
-        if (mPercentage < 0) {
-            ivArrowIcon.setImageResource(downDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
-        } else if (mPercentage > 0) {
-            ivArrowIcon.setImageResource(upDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
-        } else if (mPercentage == 0) { // percentage is 0
-            ivArrowIcon.setImageResource(stagnantDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+        if (percentageUtil != null) {
+            percentageUtil.calculatePercentage(mPercentage, ivArrowIcon, tvPercentage);
         } else {
-            ivArrowIcon.setVisibility(View.GONE);
+            if (mPercentage==GMStatConstant.NoDataAvailable * 100){
+                ivArrowIcon.setVisibility(View.GONE);
+                tvPercentage.setText(null);
+            } else if (mPercentage < 0) {
+                ivArrowIcon.setImageResource(downDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
+            } else if (mPercentage > 0) {
+                ivArrowIcon.setImageResource(upDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
+            } else if (mPercentage == 0) { // percentage is 0
+                ivArrowIcon.setImageResource(stagnantDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+            }
+            if (mPercentage!=GMStatConstant.NoDataAvailable * 100) {
+                tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
+                        KMNumbers.formatString(mPercentage).replace("-", "")));
+            }
         }
-        tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
-                KMNumbers.formatString(mPercentage).replace("-", "")));
-        this.view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,11 +102,7 @@ public class ArrowPercentageView extends FrameLayout {
 
     public void setPercentage(double percentage){
         mPercentage = percentage;
-        if (percentageUtil != null) {
-            percentageUtil.calculatePercentage(percentage, ivArrowIcon, tvPercentage);
-        } else {
-            setUIPercentage();
-        }
+        setUIPercentage();
 
     }
 

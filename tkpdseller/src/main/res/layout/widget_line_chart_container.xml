@@ -11,16 +11,21 @@
 
     <com.tokopedia.seller.gmstat.library.LoaderTextView
         android:id="@+id/tv_subtitle"
-        style="@style/TextView.Subheading"
-        android:layout_width="match_parent"
+        style="@style/TextView.Body1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Total Pengeluaran TopAds" />
+        tools:text="Total Pengeluaran TopAds"
+        android:minWidth="100dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="2dp"/>
     <com.tokopedia.seller.gmstat.library.LoaderTextView
         android:id="@+id/tv_amount"
         style="@style/TextView.Title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Rp900.000"/>
+        android:width="120dp"
+        tools:text="Rp900.000"
+        android:layout_marginBottom="2dp"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -30,8 +35,9 @@
             android:layout_height="wrap_content"/>
         <com.tokopedia.seller.gmstat.library.LoaderTextView
             android:id="@+id/tv_percentage_description"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="80dp"
             android:layout_toRightOf="@id/view_arrow_percentage"
             android:layout_marginLeft="5dp"
             tools:text="dari periode sebelumnya" />
@@ -46,7 +52,7 @@
         <com.tokopedia.seller.lib.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_main"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <com.tokopedia.seller.lib.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_compare"
