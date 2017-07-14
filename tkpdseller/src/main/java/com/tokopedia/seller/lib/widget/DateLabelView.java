@@ -8,11 +8,9 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.datepicker.DatePickerUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -20,11 +18,8 @@ import java.util.Locale;
 
 public class DateLabelView extends BaseCustomView {
 
-    private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
-    private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";
-
-    private TextView dateRangeTextView;
-    private String dateRange;
+    private TextView contentTextView;
+    private String content;
     private Date startDate;
     private Date endDate;
 
@@ -45,9 +40,9 @@ public class DateLabelView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DatePickerLabelView);
         try {
-            dateRange = styledAttributes.getString(R.styleable.LabelView_title);
+            content = styledAttributes.getString(R.styleable.DatePickerLabelView_date_picker_content);
         } finally {
             styledAttributes.recycle();
         }
@@ -55,51 +50,26 @@ public class DateLabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_date_label_view, this);
-        dateRangeTextView = (TextView) view.findViewById(R.id.text_view_date_range);
+        contentTextView = (TextView) view.findViewById(R.id.text_view_content);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        dateRangeTextView.setText(dateRange);
+        contentTextView.setText(content);
         invalidate();
         requestLayout();
     }
 
-    public void setTitle(String textTitle) {
-        dateRangeTextView.setText(textTitle);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setDate(Date startDate, Date endDate) {
+    public void setContent(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
         updateDateView();
     }
 
     private void updateDateView() {
-        dateRangeTextView.setText(getRangeDateFormated());
+        contentTextView.setText(DatePickerUtils.getRangeDateFormatted(contentTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
-    }
-
-    private String getRangeDateFormated() {
-        if (startDate == null || endDate == null) {
-            return "";
-        }
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(startDate);
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endDate);
-        String startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
-        String endDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
-        if (startDateFormatted.equalsIgnoreCase(endDateFormatted)) {
-            return endDateFormatted;
-        }
-        if (startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)) {
-            startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT_WITHOUT_YEAR, Locale.ENGLISH).format(startDate);
-        }
-        return dateRangeTextView.getContext().getString(R.string.top_ads_range_date_text, startDateFormatted, endDateFormatted);
     }
 }

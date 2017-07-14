@@ -24,4 +24,6 @@ public interface DepositApi {
     @GET(TkpdBaseURL.Transaction.PATH_GET_WITHDRAW_FORM)
     Observable<Response<TkpdResponse>> getWithDrawForm(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.Transaction.PATH_GET_DEPOSIT)
+    Observable<Response<TkpdResponse>> getDeposit2(@QueryMap Map<String, Object> params);
 }

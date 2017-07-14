@@ -27,6 +27,14 @@ public class ProductCampaign implements Parcelable {
     @Expose
     private String originalPrice;
 
+    @SerializedName("original_price_idr")
+    @Expose
+    private String originalPriceIdr;
+
+    @SerializedName("discounted_price_idr")
+    @Expose
+    private String discountedPriceIdr;
+
     public int getPercentageAmount() {
         return percentageAmount;
     }
@@ -59,6 +67,25 @@ public class ProductCampaign implements Parcelable {
         this.originalPrice = originalPrice;
     }
 
+    public String getOriginalPriceIdr() {
+        return originalPriceIdr;
+    }
+
+    public void setOriginalPriceIdr(String originalPriceIdr) {
+        this.originalPriceIdr = originalPriceIdr;
+    }
+
+    public String getDiscountedPriceIdr() {
+        return discountedPriceIdr;
+    }
+
+    public void setDiscountedPriceIdr(String discountedPriceIdr) {
+        this.discountedPriceIdr = discountedPriceIdr;
+    }
+
+    public ProductCampaign() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,9 +97,8 @@ public class ProductCampaign implements Parcelable {
         dest.writeString(this.discountedPrice);
         dest.writeString(this.endDate);
         dest.writeString(this.originalPrice);
-    }
-
-    public ProductCampaign() {
+        dest.writeString(this.originalPriceIdr);
+        dest.writeString(this.discountedPriceIdr);
     }
 
     protected ProductCampaign(Parcel in) {
@@ -80,9 +106,11 @@ public class ProductCampaign implements Parcelable {
         this.discountedPrice = in.readString();
         this.endDate = in.readString();
         this.originalPrice = in.readString();
+        this.originalPriceIdr = in.readString();
+        this.discountedPriceIdr = in.readString();
     }
 
-    public static final Parcelable.Creator<ProductCampaign> CREATOR = new Parcelable.Creator<ProductCampaign>() {
+    public static final Creator<ProductCampaign> CREATOR = new Creator<ProductCampaign>() {
         @Override
         public ProductCampaign createFromParcel(Parcel source) {
             return new ProductCampaign(source);

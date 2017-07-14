@@ -184,6 +184,10 @@ public interface AppEventTracking {
         String OS_AD_BANNER = "OS Ad Banner";
         String RECHARGE = "Recharge - ";
         String PRODUCT_FEED = "Product Feed";
+        String SHOP_MANAGE_GM_SWITCHER = "Manage Shop - GM Switcher";
+        String TOPADS_SWITCHER = "TopAds Switcher";
+        String OPENSHOP_SWITCHER = "Open Shop Switcher";
+        String SWITCHER = "Switcher";
     }
 
     interface Action {
@@ -377,6 +381,8 @@ public interface AppEventTracking {
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
         String OPEN_TOP_SELLER = "Open TopSeller - ";
+        String OPEN_OPENSHOP = "Open OpenShop - ";
+        String OPEN_GM = "Open GM - ";
         String OPEN_APP = "Open App";
         String DOWNLOAD_APP = "Download App";
         String OTP = "OTP";
@@ -463,8 +469,6 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
-
-        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
     }
 
     interface MOENGAGE {

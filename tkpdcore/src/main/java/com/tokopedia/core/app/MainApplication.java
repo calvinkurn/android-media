@@ -23,7 +23,6 @@ import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.analytics.TrackingConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
@@ -32,7 +31,6 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.NotificationVariable;
 
 import java.util.List;
 
@@ -55,7 +53,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static Boolean isResetCart = false;
     private static Boolean isResetTickerState = true;
 	private static int currActivityState;
-	private static NotificationVariable nv;
 	private static String currActivityName;
     private static IntentService RunningService;
     public static HUDIntent hudIntent;
@@ -81,7 +78,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         MainApplication.context = getApplicationContext();
         //Track.setDebugMode(true);
         //Feature.enableDebug(true);
-        nv = new NotificationVariable();
         init();
 //		initImageLoader();
         initFacebook();
@@ -203,11 +199,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     public static Boolean getCartStatus() {
         return isResetCart;
-    }
-
-
-    public static NotificationVariable getNotifInstance() {
-        return nv;
     }
 
     public static void setActivityState(int param) {

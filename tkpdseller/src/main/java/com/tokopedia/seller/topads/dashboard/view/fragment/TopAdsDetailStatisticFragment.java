@@ -63,7 +63,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailPresen
     }
 
     protected void updateDateLabelViewText() {
-        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
+        dateLabelView.setContent(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
     }
 
     @Override

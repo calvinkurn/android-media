@@ -57,8 +57,14 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
+    }
+
+    @Override
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context != null && context instanceof KeywordListListener.Listener) {
             keywordAdListener = (KeywordListListener.Listener) context;
         }
@@ -196,10 +202,11 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     private void showExitDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity()
+                , R.style.AppCompatAlertDialogStyle);
         myAlertDialog.setMessage(getString(R.string.top_ads_keyword_add_group_promo_desc));
 
-        myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
+        myAlertDialog.setPositiveButton(getString(R.string.top_ads_keyword_add_group_promo_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
@@ -207,7 +214,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             }
         });
 
-        myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
+        myAlertDialog.setNegativeButton(getString(R.string.top_ads_keyword_add_group_promo_no), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
 
             }

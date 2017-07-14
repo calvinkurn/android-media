@@ -3,6 +3,7 @@ package com.tokopedia.digital.cart.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -460,6 +461,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
+        attributes.setClientId(TrackingUtils.getClientID());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

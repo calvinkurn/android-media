@@ -24,13 +24,6 @@ import dagger.Provides;
 @Module
 class ReloginModule {
 
-//    @ReloginScope
-//    @Provides
-//    SessionHandler provideSessionHandler(@ActivityContext Context context) {
-//
-//        return new SessionHandler(context);
-//    }
-
     @ReloginScope
     @Provides
     Bundle provideAccountsBundle(@ActivityContext Context context,

@@ -104,8 +104,8 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
     }
 
     @Override
-    protected void initialListener(Context context) {
-        super.initialListener(context);
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context != null && context instanceof TopAdsKeywordGroupListListener) {
             groupListAdapterListener = (TopAdsKeywordGroupListListener) context;
         }

@@ -21,15 +21,15 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailPresenter;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
@@ -37,7 +37,9 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BaseDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends
+        BaseDatePickerFragment<T> implements TopAdsDetailViewListener,
+        CompoundButton.OnCheckedChangeListener {
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
@@ -109,12 +111,13 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_AD_EDIT) {
-            setResultAdDetailChanged();
+        if (intent != null && requestCode == REQUEST_CODE_AD_EDIT &&
+                intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
             if (startDate == null || endDate == null) {
                 return;
             }
-            if(intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)){
+            setResultAdDetailChanged();
+            if (intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)) {
                 adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
             }
             refreshAd();
@@ -174,7 +177,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     private void hideLoading() {
-        if (progressDialog!= null) {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
         swipeToRefresh.setRefreshing(false);
@@ -197,7 +200,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onAdEmpty() {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(),getString(R.string.error_data_not_found));
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_data_not_found));
         getActivity().finish();
     }
 
