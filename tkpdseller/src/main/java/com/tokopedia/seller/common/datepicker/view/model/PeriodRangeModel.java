@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.DatePickerUtils;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 
 /**
  * Created by Nathaniel on 1/16/2017.

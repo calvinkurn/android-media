@@ -9,7 +9,7 @@ import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
-import com.tokopedia.seller.common.datepicker.view.DatePickerActivity;
+import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 
 import java.text.SimpleDateFormat;

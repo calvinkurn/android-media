@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.seller.base.view.constant.ConstantView;
-import com.tokopedia.seller.common.datepicker.view.DatePickerResultListener;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 
 import java.util.Date;
