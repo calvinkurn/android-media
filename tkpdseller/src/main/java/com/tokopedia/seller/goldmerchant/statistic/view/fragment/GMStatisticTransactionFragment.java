@@ -47,7 +47,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject

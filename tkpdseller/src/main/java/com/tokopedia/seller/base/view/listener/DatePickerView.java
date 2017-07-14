@@ -17,7 +17,7 @@ public interface DatePickerView extends CustomerView {
 
     void onErrorSaveDatePicker(Throwable throwable);
 
-    void onSuccessResetDatePicker();
+    void onSuccessClearDatePicker();
 
-    void onErrorResetDatePicker(Throwable throwable);
+    void onErrorClearDatePicker(Throwable throwable);
 }
