@@ -3,6 +3,8 @@ package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
@@ -25,7 +27,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
         this.gmStatGetTransactionTableUseCase = gmStatGetTransactionTableUseCase;
     }
 
-    public void loadData(Date startDate, Date endDate) {
+    public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
         RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(startDate.getTime(), endDate.getTime());
         gmStatGetTransactionTableUseCase.execute(requestParam, new Subscriber<GetTransactionTable>() {
             @Override
