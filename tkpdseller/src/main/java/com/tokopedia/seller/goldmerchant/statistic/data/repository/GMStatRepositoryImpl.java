@@ -61,4 +61,10 @@ public class GMStatRepositoryImpl implements GMStatRepository {
         return gmStatDataSource.getShopCategory(startDate, endDate);
     }
 
+    @Override
+    public Observable<Boolean> clearCache() {
+        return gmStatDataSource.clearAllCache();
+    }
+
+
 }
