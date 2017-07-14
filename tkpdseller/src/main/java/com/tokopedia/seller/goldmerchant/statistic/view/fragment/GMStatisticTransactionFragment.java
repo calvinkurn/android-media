@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -47,7 +48,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment {
+public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -79,7 +80,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
-        dateLabelView = (DateLabelView) rootView.findViewById(R.id.date_label_view);
         initVar();
         initView();
         return rootView;
@@ -119,11 +119,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
                 .builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build().inject(this);
-    }
-
-    @Override
-    protected void loadData() {
-
     }
 
     @Override

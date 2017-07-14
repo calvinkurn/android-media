@@ -8,6 +8,8 @@ import com.tokopedia.seller.base.domain.DatePickerRepository;
 import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class SaveDatePickerUseCase extends CompositeUseCase<Boolean> {
 
     private DatePickerRepository datePickerRepository;
 
+    @Inject
     public SaveDatePickerUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                  DatePickerRepository datePickerRepository) {
         super(threadExecutor, postExecutionThread);

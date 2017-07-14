@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.DatePickerRepository;
 import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -16,6 +18,7 @@ import rx.Observable;
 public class FetchDatePickerUseCase extends CompositeUseCase<DatePickerDomainModel> {
     private DatePickerRepository datePickerRepository;
 
+    @Inject
     public FetchDatePickerUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                   DatePickerRepository datePickerRepository) {
         super(threadExecutor, postExecutionThread);

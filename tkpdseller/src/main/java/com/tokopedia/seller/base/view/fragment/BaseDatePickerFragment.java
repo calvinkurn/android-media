@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.seller.base.di.module.DatePickerModule;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.seller.base.di.component.DaggerDatePickerComponent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +40,17 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     protected abstract Intent getDatePickerIntent();
 
     @Inject
-    public DatePickerPresenter presenter;
+    public DatePickerPresenter datePickerPresenter;
+
+    @Override
+    protected void initInjector() {
+        DaggerDatePickerComponent
+                .builder()
+                .datePickerModule(new DatePickerModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +61,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     @Override
     public void onResume() {
         super.onResume();
-        presenter.fetchDatePickerSetting();
+        datePickerPresenter.fetchDatePickerSetting();
     }
 
     @Override
@@ -110,7 +123,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
         datePickerViewModel.setEndDate(new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(new Date(eDate)));
         datePickerViewModel.setDatePickerSelection(lastSelection);
         datePickerViewModel.setDatePickerType(selectionType);
-        presenter.saveDateSetting(datePickerViewModel);
+        datePickerPresenter.saveDateSetting(datePickerViewModel);
         if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)) {
             return;
         }

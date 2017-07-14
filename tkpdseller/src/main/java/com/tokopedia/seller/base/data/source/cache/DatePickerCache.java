@@ -8,6 +8,8 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.seller.base.data.source.cache.model.DatePickerCacheModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +23,7 @@ public class DatePickerCache {
 
     private final GlobalCacheManager cacheManager;
 
+    @Inject
     public DatePickerCache(GlobalCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
