@@ -61,7 +61,6 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-//        super.onBindViewHolder(holder, position);
         ImageHandler.LoadImage(holder.shopAva, list.get(position).getShopAva());
         holder.favoriteButton.setBackgroundResource(list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
         holder.shopName.setText(list.get(position).getShopName());

@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -39,6 +40,9 @@ public interface FeedPlusTypeFactory  {
     int type(RecentViewViewModel recentViewViewModel);
 
     int type(EmptyModel emptyModel);
+
+    int type(EmptyTopAdsModel emptyModel);
+
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

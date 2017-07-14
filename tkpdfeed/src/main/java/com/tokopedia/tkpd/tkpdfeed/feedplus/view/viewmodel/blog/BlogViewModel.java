@@ -23,22 +23,6 @@ public class BlogViewModel implements Visitable<FeedPlusTypeFactory> {
         return typeFactory.type(this);
     }
 
-    public BlogViewModel(String imageUrl, String title) {
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.videoUrl = "";
-        this.url = "https://tokopedia.com";
-        this.content = "Berani tentukan Mimpi - #Lanjutkan Mimpi atau #Ubah Mimipi";
-    }
-
-    public BlogViewModel(String videoUrl) {
-        this.title = "Video post";
-        this.imageUrl = "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg";
-        this.videoUrl = videoUrl;
-        this.url = "https://tokopedia.com";
-        this.content = "Ini isinya video loh";
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }

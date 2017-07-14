@@ -228,7 +228,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     protected ProductCardHeaderViewModel convertToProductCardHeaderViewModel(DataFeedDomain domain) {
         return new ProductCardHeaderViewModel(
                 domain.getSource().getShop().getId(),
-                (String) domain.getSource().getShop().getUrl(),
+                domain.getSource().getShop().getUrl(),
                 domain.getSource().getShop().getName(),
                 domain.getSource().getShop().getAvatar(),
                 domain.getSource().getShop().getGold(),
@@ -248,7 +248,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             domain.getPrice(),
                             domain.getImage(),
                             domain.getImageSingle(),
-                            (String) domain.getUrl(),
+                            domain.getUrl(),
                             dataFeedDomain.getSource().getShop().getName(),
                             dataFeedDomain.getSource().getShop().getAvatar(),
                             domain.getWishlist()));

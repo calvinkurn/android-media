@@ -6,7 +6,7 @@
     <string name="favorite">Favoritkan</string>
     <string name="favorited">Favorit</string>
     <string name="period">Periode: "</string>
-    <string name="title_code">Kode:  </string>
+    <string name="title_code">Kode:</string>
     <string name="title_copy">Salin</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Detail Feed</string>
@@ -17,10 +17,13 @@
     <string name="action_share">Bagikan</string>
     <string name="action_buy">Beli</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
-    <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.</string>
+    <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.
+    </string>
     <string name="copy_promo_success">Kode promo berhasil disalin.</string>
     <string name="string_empty_feed">Oops, feed masih kosong</string>
-    <string name="empty_feed_subtitle">Segera favoritkan toko yang Anda sukai untuk  mendapatkan update produk terbaru di isini.</string>
+    <string name="empty_feed_subtitle">Segera favoritkan toko yang Anda sukai untuk mendapatkan
+        update produk terbaru di isini.
+    </string>
     <string name="search_shop">Cari Toko</string>
     <string name="feed_deleted">Feed ini telah dihapus.</string>
     <string name="feed_retry">Mohon maaf terjadi kendala, silakan coba lagi.</string>

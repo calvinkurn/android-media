@@ -6,6 +6,8 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.product.AddFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
@@ -95,6 +97,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(EmptyTopAdsModel emptyModel) {
+        return EmptyTopAdsViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -128,6 +135,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == RecentViewViewHolder.LAYOUT)
             viewHolder = new RecentViewViewHolder(view, viewListener);
+        else  if (type == EmptyTopAdsViewHolder.LAYOUT)
+            viewHolder = new EmptyTopAdsViewHolder(view);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

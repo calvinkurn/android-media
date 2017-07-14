@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list">
 
-    <include layout="@layout/list_feed_product_item"/>
+    <include layout="@layout/list_feed_product_item" />
 
 </RelativeLayout>
 

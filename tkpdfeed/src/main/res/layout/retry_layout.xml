@@ -14,11 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/feed_retry"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_info"/>
+        android:layout_height="@dimen/padding_info" />
 
     <TextView
         android:id="@+id/retry"
@@ -29,6 +29,6 @@
         android:textColor="@color/white"
         android:gravity="center"
         android:padding="@dimen/padding_small"
-        android:text="@string/feed_retry_button"/>
+        android:text="@string/feed_retry_button" />
 
 </LinearLayout>

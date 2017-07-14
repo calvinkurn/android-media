@@ -4,25 +4,20 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Space;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by stevenfredian on 6/2/16.
@@ -46,40 +41,39 @@ public class LoginTextView extends LinearLayout {
 
     public LoginTextView(Context context) {
         super(context);
-        init(context,null);
+        init(context, null);
     }
 
     public LoginTextView(Context context, int color) {
         super(context);
         this.color = color;
-        init(context,null);
+        init(context, null);
     }
 
     public LoginTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context,attrs);
+        init(context, attrs);
     }
 
     public LoginTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context,attrs);
+        init(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public LoginTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context,attrs);
+        init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.provider_login_text_view, this);
         shape = new GradientDrawable();
         shape.setColor(Color.TRANSPARENT);
-        myDefaultPadding = getResources().getDimension(R.dimen.padding_small);
-        if(attrs == null){
+        if (attrs == null) {
             setDefaultShape();
-        }else{
-            setAttrs(context,attrs);
+        } else {
+            setAttrs(context, attrs);
         }
         setUp();
     }
@@ -89,32 +83,24 @@ public class LoginTextView extends LinearLayout {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LoginTextView, 0, 0);
         try {
 
-            padding = (int) (a.getDimension(R.styleable.LoginTextView_btn_padding,  myDefaultPadding));
+            padding = (int) (a.getDimension(R.styleable.LoginTextView_btn_padding, myDefaultPadding));
             height = (int) a.getDimension(R.styleable.LoginTextView_btn_height, getResources().getDimension(R.dimen.btn_height));
             customText = a.getString(R.styleable.LoginTextView_customText);
-            backgroundColor = a.getColor(R.styleable.LoginTextView_backgroundColor,Color.WHITE);
-            textColor = a.getColor(R.styleable.LoginTextView_textColor,Color.WHITE);
-            borderColor = a.getInt(R.styleable.LoginTextView_borderColor,0);
-            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize,3);
-            borderSize = a.getInt(R.styleable.LoginTextView_borderSize,1);
-            imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled,true);
+            textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
+            borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);
+            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
+            borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
+            imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
             drawable = a.getDrawable(R.styleable.LoginTextView_iconButton);
         } finally {
             a.recycle();
         }
 
-        if(!TextUtils.isEmpty(customText)) {
-            ((TextView)findViewById(R.id.provider_name)).setText(customText);
+        if (!TextUtils.isEmpty(customText)) {
+            ((TextView) findViewById(R.id.provider_name)).setText(customText);
         }
 
-        ((TextView)findViewById(R.id.provider_name)).setTextColor(textColor);
-        (findViewById(R.id.provider_layout)).setBackgroundColor(backgroundColor);
-
-        (findViewById(R.id.provider_layout)).setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT
-                , height == 0? LayoutParams.WRAP_CONTENT : height));
-
-        (findViewById(R.id.provider_layout)).setPadding(padding, padding, padding, padding);
-
+        ((TextView) findViewById(R.id.provider_name)).setTextColor(textColor);
         shape.setCornerRadii(new float[]{cornerSize, cornerSize, cornerSize, cornerSize
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 
@@ -122,7 +108,7 @@ public class LoginTextView extends LinearLayout {
         if (drawable != null)
             (findViewById(R.id.provider_image)).setBackgroundDrawable(drawable);
 
-        if(!imageEnabled || drawable==null) {
+        if (!imageEnabled || drawable == null) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
             Space space = (Space) findViewById(R.id.space);
             space.setVisibility(GONE);
@@ -132,16 +118,17 @@ public class LoginTextView extends LinearLayout {
     public void setUp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             setBackground(shape);
-        }else {
+        } else {
             setBackgroundDrawable(shape);
         }
     }
 
-    private void setDefaultShape(){
+    private void setDefaultShape() {
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());
-        if (getBackgroundColor() == Color.WHITE) shape.setStroke(1, Color.BLACK);
+        if (getBackgroundColor() == Color.WHITE) shape.setStroke(1,
+                MethodChecker.getColor(getContext(), R.color.black_12));
     }
 
     private int getInverseColor(int color) {
@@ -178,13 +165,13 @@ public class LoginTextView extends LinearLayout {
         textView.setTextColor(getInverseColor(temp));
     }
 
-    public void setColor(int color){
+    public void setColor(int color) {
         this.color = color;
         shape.setColor(color);
         setUp();
     }
 
-    public int getBackgroundColor(){
+    public int getBackgroundColor() {
         return color;
     }
 
@@ -212,7 +199,7 @@ public class LoginTextView extends LinearLayout {
         space.setVisibility(visibility);
     }
 
-    public void setImageNextToText(){
+    public void setImageNextToText() {
         TextView textView = (TextView) findViewById(R.id.provider_name);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1));
     }

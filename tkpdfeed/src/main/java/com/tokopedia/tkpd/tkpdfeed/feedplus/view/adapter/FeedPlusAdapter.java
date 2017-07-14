@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 
 import java.util.ArrayList;
@@ -67,14 +68,11 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addList(List<Visitable> list) {
-        int positionStart = getItemCount();
         this.list.addAll(list);
-        notifyItemRangeInserted(positionStart, list.size());
     }
 
     public void clearData() {
         this.list.clear();
-        notifyDataSetChanged();
     }
 
     public void showEmpty() {
@@ -128,5 +126,9 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeAddFeed(){
         this.list.remove(addFeedModel);
+    }
+
+    public void addItem(Visitable item) {
+        this.list.add(item);
     }
 }

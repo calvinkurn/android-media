@@ -8,7 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDeta
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
@@ -17,14 +17,14 @@ import java.util.List;
 
 import rx.Subscriber;
 
-import static android.R.attr.data;
-
 /**
  * @author by nisie on 5/24/17.
  */
 
 public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>> {
     private final FeedPlusDetail.View viewListener;
+    private static final int MAX_RATING = 100;
+    private static final int NUM_STARS = 5;
 
     public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
         this.viewListener = viewListener;
@@ -86,8 +86,12 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
                 productDomain.getPreorder(),
                 productDomain.getFreereturns(),
                 productDomain.getWishlist(),
-                productDomain.getRating()
+                getRating(productDomain.getRating())
         );
+    }
+
+    private float getRating(int rating) {
+        return (float) rating / MAX_RATING * NUM_STARS;
     }
 
     private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {
@@ -125,7 +129,7 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
                 productDomain.getPreorder(),
                 productDomain.getFreereturns(),
                 productDomain.getWishlist(),
-                productDomain.getRating()
+                getRating(productDomain.getRating())
         );
     }
 

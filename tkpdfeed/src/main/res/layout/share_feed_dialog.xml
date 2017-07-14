@@ -9,7 +9,7 @@
         android:id="@+id/filter_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_behavior="com.tokopedia.tkpd.talk.inboxtalk.ScrollAwareFABBehavior">
@@ -17,25 +17,29 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_med"
+            android:layout_height="@dimen/share_header_height"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="6sp"
             android:text="@string/title_share_feed"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/fontm"
+            android:textStyle="normal" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/grey_500"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/padding_large"
-            />
+            android:paddingBottom="@dimen/padding_large" />
 
 
     </LinearLayout>

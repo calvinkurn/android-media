@@ -6,9 +6,8 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.SingleFeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ public interface FeedPlusDetail {
 
         String getString(int resId);
 
-        void onGoToProductDetail(String productId);
+        void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
 
         int getColor(int resId);
 

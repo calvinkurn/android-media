@@ -10,6 +10,8 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageV2Mapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 
 /**
  * Created by nisie on 4/3/17.
@@ -22,6 +24,8 @@ public class UploadImageSourceFactory {
     private final ResCenterActApi resCenterActApi;
     private final GenerateHostMapper generateHostMapper;
     private final UploadImageMapper uploadImageMapper;
+    private final UploadImageV2Mapper uploadImageV2Mapper;
+    private final UploadVideoMapper uploadVideoMapper;
     private final CreatePictureMapper createPictureMapper;
     private final SubmitImageMapper submitImageMapper;
 
@@ -30,6 +34,8 @@ public class UploadImageSourceFactory {
                                     ResCenterActApi resCenterActApi,
                                     GenerateHostMapper generateHostMapper,
                                     UploadImageMapper uploadImageMapper,
+                                    UploadImageV2Mapper uploadImageV2Mapper,
+                                    UploadVideoMapper uploadVideoMapper,
                                     CreatePictureMapper createPictureMapper,
                                     SubmitImageMapper submitImageMapper) {
         this.context = context;
@@ -38,6 +44,8 @@ public class UploadImageSourceFactory {
 
         this.generateHostMapper = generateHostMapper;
         this.uploadImageMapper = uploadImageMapper;
+        this.uploadVideoMapper = uploadVideoMapper;
+        this.uploadImageV2Mapper = uploadImageV2Mapper;
         this.createPictureMapper = createPictureMapper;
         this.submitImageMapper = submitImageMapper;
     }
@@ -47,7 +55,7 @@ public class UploadImageSourceFactory {
     }
 
     public CloudUploadImageDataSource createCloudUploadImageDataStore() {
-        return new CloudUploadImageDataSource(context, resCenterActApi, uploadImageMapper);
+        return new CloudUploadImageDataSource(context, resCenterActApi, uploadImageMapper, uploadImageV2Mapper);
     }
 
     public CloudCreatePictureDataSource createCloudCreatePictureDataStore() {
@@ -56,5 +64,9 @@ public class UploadImageSourceFactory {
 
     public CloudSubmitImageDataSource createCloudSubmitImageDataStore(){
         return new CloudSubmitImageDataSource(context, resCenterActApi, submitImageMapper);
+    }
+
+    public CloudUploadVideoDataSource createCloudUploadVideoDataStore() {
+        return new CloudUploadVideoDataSource(context, resCenterActApi, uploadVideoMapper);
     }
 }

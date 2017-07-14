@@ -11,11 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
-
 import com.tokopedia.core.database.recharge.product.Attributes;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.product.Promo;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 
 import java.util.List;

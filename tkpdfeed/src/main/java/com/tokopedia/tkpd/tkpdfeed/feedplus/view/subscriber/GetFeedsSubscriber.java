@@ -32,22 +32,6 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
     public void onNext(FeedResult feedResult) {
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
-//        if (list.size() > 0) {
-//            if(getCurrentCursor(feedResult) != null){
-//                viewListener.updateCursor(getCurrentCursor(feedResult));
-//            }else {
-//                viewListener.onShowAddFeedMore();
-//            }
-//            viewListener.onSuccessGetFeed(list);
-//        }else{
-//            if(feedResult.isHasNext())
-//                viewListener.onShowRetryGetFeed();
-//            else {
-//
-//       viewListener.onShowAddFeedMore();
-//            }
-//        }
-
         if (list.size() == 0) {
             viewListener.onShowAddFeedMore();
             viewListener.hideTopAdsAdapterLoading();

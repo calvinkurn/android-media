@@ -11,7 +11,6 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsFavShopClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
@@ -20,7 +19,6 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
-
 
 import java.util.ArrayList;
 import java.util.Collections;

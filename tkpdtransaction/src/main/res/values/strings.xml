@@ -61,6 +61,10 @@
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
     <string name="cancel_replacement">Batalkan Pesanan</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
+    <string name="error_cannot_send_to_destination">Tidak dapat mengirim ke tujuan</string>
+    <string name="error_check_cart">Mohon periksa keranjang belanjaan anda</string>
     <string name="empty_chart_text">Bingung mau belanja apa?\nCek produk rekomendasi tokopedia</string>
     <string name="mulai_belanja">Mulai belanja</string>
+    <string name="holder_desc_atc">Pesanan akan sampai dalam waktu maksimal 8 jam sejak penjual melakukan pengiriman
+(berlaku untuk pengiriman sebelum pukul 16:00).</string>
 </resources>

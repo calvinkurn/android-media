@@ -20,6 +20,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -217,11 +218,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     }
 
     private void goToRegister() {
-        Intent intent;
-        intent = SessionRouter.getLoginActivityIntent(context);
-        intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-        intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-        context.startActivity(intent);
+        ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(context);
         getActivity().finish();
     }
 

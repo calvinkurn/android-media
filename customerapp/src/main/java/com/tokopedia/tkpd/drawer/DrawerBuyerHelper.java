@@ -15,6 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
@@ -207,7 +208,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 0,
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
-
+        sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_product),
+                0,
+                TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT,
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         return sellerMenu;
     }
 
@@ -447,14 +451,26 @@ public class DrawerBuyerHelper extends DrawerHelper
                     startIntent(context, EtalaseShopEditor.class);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
+                case TkpdState.DrawerPosition.MANAGE_DRAFT_PRODUCT:
+                    Intent draftProductIntent = context.getPackageManager()
+                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+                    if (draftProductIntent != null) {
+                        context.startActivity(draftProductIntent);
+                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                    }
+                    break;
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
                             .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
                     if (launchIntent != null) {
                         context.startActivity(launchIntent);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                     } else if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                        UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
@@ -463,8 +479,10 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     if (topadsIntent != null) {
                         context.startActivity(topadsIntent);
+                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
                     } else if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
                     }
                     break;
                 default:
@@ -537,8 +555,10 @@ public class DrawerBuyerHelper extends DrawerHelper
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
         if (launchIntent != null) {
+            UnifyTracking.eventOpenShopSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
             context.startActivity(launchIntent);
         } else if (context.getApplication() instanceof TkpdCoreRouter) {
+            UnifyTracking.eventOpenShopSwitcher(AppEventTracking.EventLabel.OPEN_OPENSHOP+AppEventTracking.Category.SWITCHER);
             ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
         }
     }

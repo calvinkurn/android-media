@@ -12,67 +12,75 @@ import javax.annotation.Nullable;
 
 public class ProductFeedDomain {
 
-    private
-    @Nullable
-    Integer id;
 
-    private
     @Nullable
-    String name;
+    private int id;
 
-    private
-    @Nullable
-    String price;
 
-    private
     @Nullable
-    String image;
+    private String name;
 
-    private
-    @Nullable
-    String imageSingle;
 
-    private
     @Nullable
-    List<WholesaleDomain> wholesale;
+    private String price;
 
-    private
-    @Nullable
-    Boolean freeReturns;
 
-    private
     @Nullable
-    Boolean preorder;
+    private String image;
 
-    private
-    @Nullable
-    String cashback;
 
-    private
     @Nullable
-    Object url;
+    private String imageSingle;
 
-    private
-    @Nullable
-    String productLink;
 
-    private
     @Nullable
-    Boolean wishlist;
+    private List<WholesaleDomain> wholesale;
 
-    private
+
     @Nullable
-    Integer rating;
-    private
+    private boolean freeReturns;
+
+
+    @Nullable
+    private boolean preorder;
+
+
+    @Nullable
+    private String cashback;
+
+
+    @Nullable
+    private String url;
+
+
+    @Nullable
+    private String productLink;
+
+
+    @Nullable
+    private boolean wishlist;
+
+
+    @Nullable
+    private int rating;
+
     @NonNull
-    String cursor;
+    private String cursor;
 
-    public ProductFeedDomain(@Nullable Integer id, @Nullable String name, @Nullable String price,
-                             @Nullable String image, @Nullable String image_single,
-                             @Nullable List<WholesaleDomain> wholesale, @Nullable Boolean freereturns,
-                             @Nullable Boolean preorder, @Nullable String cashback, @Nullable Object url,
-                             @Nullable String productLink, @Nullable Boolean wishlist, @Nullable Integer
-                                     rating, @NonNull String cursor) {
+    public ProductFeedDomain(@Nullable int id,
+                             @Nullable String name,
+                             @Nullable String price,
+                             @Nullable String image,
+                             @Nullable String image_single,
+                             @Nullable List<WholesaleDomain> wholesale,
+                             @Nullable boolean freereturns,
+                             @Nullable boolean preorder,
+                             @Nullable String cashback,
+                             @Nullable String url,
+                             @Nullable String productLink,
+                             @Nullable boolean wishlist,
+                             @Nullable int rating,
+                             @NonNull String cursor) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -90,11 +98,11 @@ public class ProductFeedDomain {
     }
 
     @Nullable
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(@Nullable Integer id) {
+    public void setId(@Nullable int id) {
         this.id = id;
     }
 
@@ -135,20 +143,20 @@ public class ProductFeedDomain {
     }
 
     @Nullable
-    public Boolean getFreeReturns() {
+    public boolean getFreeReturns() {
         return freeReturns;
     }
 
-    public void setFreeReturns(@Nullable Boolean freeReturns) {
+    public void setFreeReturns(@Nullable boolean freeReturns) {
         this.freeReturns = freeReturns;
     }
 
     @Nullable
-    public Boolean getPreorder() {
+    public boolean getPreorder() {
         return preorder;
     }
 
-    public void setPreorder(@Nullable Boolean preorder) {
+    public void setPreorder(@Nullable boolean preorder) {
         this.preorder = preorder;
     }
 
@@ -162,11 +170,11 @@ public class ProductFeedDomain {
     }
 
     @Nullable
-    public Object getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(@Nullable Object url) {
+    public void setUrl(@Nullable String url) {
         this.url = url;
     }
 
@@ -180,20 +188,20 @@ public class ProductFeedDomain {
     }
 
     @Nullable
-    public Boolean getWishlist() {
+    public boolean getWishlist() {
         return wishlist;
     }
 
-    public void setWishlist(@Nullable Boolean wishlist) {
+    public void setWishlist(@Nullable boolean wishlist) {
         this.wishlist = wishlist;
     }
 
     @Nullable
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(@Nullable Integer rating) {
+    public void setRating(@Nullable int rating) {
         this.rating = rating;
     }
 

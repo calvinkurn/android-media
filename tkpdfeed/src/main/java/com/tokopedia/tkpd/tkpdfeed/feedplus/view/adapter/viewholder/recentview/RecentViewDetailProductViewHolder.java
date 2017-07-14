@@ -69,7 +69,6 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
 //            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist_faved);
 //        } else {
 //            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist);
-//
 //        }
 
         productName.setText(MethodChecker.fromHtml(element.getName()));

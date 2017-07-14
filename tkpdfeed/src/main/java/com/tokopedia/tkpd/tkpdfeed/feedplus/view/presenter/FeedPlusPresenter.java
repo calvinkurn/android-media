@@ -163,4 +163,7 @@ public class FeedPlusPresenter
     }
 
 
+    public String getUserId() {
+        return sessionHandler.getLoginID();
+    }
 }

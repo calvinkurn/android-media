@@ -17,6 +17,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -27,17 +28,19 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 public class BannerWebView extends TActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
+    private static final String FLAG_APP = "?flag_app=1";
+    private static final java.lang.String ARGS_PROMO_ID = "promo_id";
     private FragmentBannerWebView fragment;
     public static final String EXTRA_URL = "url";
 
     @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_WITH_DASH})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString("promo_id", "");
-        String result = "https://www.tokopedia.com/promo/";
+        String promoId = bundle.getString(ARGS_PROMO_ID, "");
+        String result = TkpdBaseURL.URL_PROMO;
         if (!TextUtils.isEmpty(promoId)) {
             result += promoId;
         }
-        result+="?flag_app=1";
+        result += FLAG_APP;
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, BannerWebView.class)
                 .setData(uri.build())
