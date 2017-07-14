@@ -1,14 +1,14 @@
 package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * @author by errysuprayogi on 3/27/17.
  */
 
-public class SquareImageView extends ImageView {
+public class SquareImageView extends AppCompatImageView {
 
     public SquareImageView(Context context) {
         super(context);
@@ -16,10 +16,6 @@ public class SquareImageView extends ImageView {
 
     public SquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
     }
 
     @Override

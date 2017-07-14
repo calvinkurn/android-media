@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.recharge.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.database.recharge.product.Attributes;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.product.Promo;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpd.R;
 
 import java.util.List;
 

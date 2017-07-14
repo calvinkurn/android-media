@@ -425,8 +425,6 @@ public abstract class ChartView extends RelativeLayout {
 
             // Draw axis X
             xRndr.draw(canvas);
-
-            //System.out.println("Time drawing "+(System.currentTimeMillis() - time));
         }
 
         mIsDrawing = false;

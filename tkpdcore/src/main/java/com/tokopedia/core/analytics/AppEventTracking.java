@@ -109,6 +109,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CLICK_DRAFT_PRODUCT = "clickDraftProduct";
         String CATEGORY_PAGE = "clickKategori";
         String INTERMEDIARY_PAGE = "clickIntermediary";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
@@ -119,6 +120,7 @@ public interface AppEventTracking {
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
         String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
+        String R3 = "r3";
     }
 
     interface Category {
@@ -174,6 +176,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String DRAFT_PRODUCT = "Draft Product";
         String CATEGORY_PAGE = "Category Page";
         String INTERMEDIAR_PAGE = "IntermediaryPage";
         String CATEGORY_PRODUCT = "Kategori";
@@ -184,6 +187,11 @@ public interface AppEventTracking {
         String OS_AD_BANNER = "OS Ad Banner";
         String RECHARGE = "Recharge - ";
         String PRODUCT_FEED = "Product Feed";
+        String SHOP_MANAGE_GM_SWITCHER = "Manage Shop - GM Switcher";
+        String TOPADS_SWITCHER = "TopAds Switcher";
+        String OPENSHOP_SWITCHER = "Open Shop Switcher";
+        String SWITCHER = "Switcher";
+        String R3USER = "r3User";
     }
 
     interface Action {
@@ -244,6 +252,7 @@ public interface AppEventTracking {
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
+        String COPY_CODE = "Copy Code";
     }
 
     interface EventLabel {
@@ -372,11 +381,17 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String ADD_PRODUCT_PLUS = "Add Product - Plus";
         String ADD_PRODUCT_TOP = "Add Product - Top";
+        String DRAFT_PRODUCT = "Draft Product";
+        String SAVE_DRAFT = "Save Draft";
+        String DELETE_DRAFT = "Delete Draft";
+        String EDIT_DRAFT = "Edit Draft";
         String INSTOPED = "Instoped";
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
         String OPEN_TOP_SELLER = "Open TopSeller - ";
+        String OPEN_OPENSHOP = "Open OpenShop - ";
+        String OPEN_GM = "Open GM - ";
         String OPEN_APP = "Open App";
         String DOWNLOAD_APP = "Download App";
         String OTP = "OTP";
@@ -464,7 +479,7 @@ public interface AppEventTracking {
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
 
-        String SELLER_TOP_ADS_SHOW_KEYWORD  = "is_show_keyword_topads";
+        String RESOLUTION_CENTER_UPLOAD_VIDEO   = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {

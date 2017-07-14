@@ -30,11 +30,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.intermediary.Child;
-import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -52,6 +52,7 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
@@ -60,8 +61,8 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
@@ -72,8 +73,6 @@ import java.util.Locale;
 import butterknife.BindView;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -81,7 +80,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLI
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener, TopAdsListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -132,6 +131,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
+        if (topAdsRecyclerAdapter == null) {
+            initTopAdsRecyclerAdapter();
+        }
+
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1: //List
@@ -208,9 +211,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if (!productAdapter.checkHasNext()) {
-            topAdsRecyclerAdapter.hideLoading();
-        }
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
 
@@ -220,8 +220,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             TrackingUtils.eventLocaSearched(browseModel.q);
 
         }
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
@@ -251,7 +249,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void updateWishListStatus(boolean isWishlist, int position) {
-        productAdapter.updateWishlistStatus(isWishlist, position);
+        if (productAdapter != null) productAdapter.updateWishlistStatus(isWishlist, position);
     }
 
     @Override
@@ -311,7 +309,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -320,7 +317,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
@@ -328,23 +324,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
         productAdapter.notifyDataSetChanged();
-        if (model.size() == 0)
-            displayTopAds();
     }
 
     @Override
     public int getDataSize(String TAG) {
-        if (TAG != null && ProductFragment.TAG.equals(TAG)) {
-            return productAdapter.getItemCount();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public void displayTopAds() {
-        //TODO implement on next
-//        productAdapter.setSearchNotFound();
+        if (productAdapter == null) return -1;
+        return productAdapter.getData() != null ? productAdapter.getData().size() : -1;
     }
 
     @Override
@@ -353,6 +338,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
+        productAdapter.setTopAdsListener(this);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -406,6 +392,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public boolean setupRecyclerView() {
+        initTopAdsRecyclerAdapter();
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+        return true;
+    }
+
+    private void initTopAdsRecyclerAdapter() {
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
@@ -416,23 +408,30 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                if (productAdapter.getPagingHandlerModel() != null) {
+                if (productAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
-                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
-                            productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
+                            && productAdapter.getPagingHandlerModel().getUriNext() !=null
+                            && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                } else {
+                    productAdapter.setIsLoading(false);
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
             }
         });
         mRecyclerView.setAdapter(topAdsRecyclerAdapter);
-        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
-        return true;
     }
 
     private TopAdsParams populatedNetworkParams() {
@@ -453,15 +452,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onInfoClicked() {
-
-    }
-
-    @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
-        getActivity().startActivity(intent);
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        navigateToActivityRequest(intent, ProductFragment.GOTO_PRODUCT_DETAIL);
     }
 
     @Override
@@ -473,13 +474,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
+    public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data shop) {
 
     }
 
     @Override
     public void onCallNetwork() {
-
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
+        }
     }
 
     @Override
@@ -499,7 +503,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.loadMore(getActivity());
+                if (getActivity() != null && getActivity() instanceof BrowseView) {
+                    BrowseView browseView = (BrowseView) getActivity();
+                    presenter.callNetwork(browseView);
+                }
             }
         };
         if (listener != null) {
@@ -659,11 +666,39 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 topAdsRecyclerAdapter.setHasHeader(true);
                 productAdapter.addOfficialStoreBanner(new OsBannerAdapter.OsBannerViewModel(model));
                 productAdapter.notifyDataSetChanged();
-                topAdsRecyclerAdapter.notifyDataSetChanged();
                 backToTop();
-
                 UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
             }
         }
+    }
+
+    @Override
+    public void setLoading(boolean isLoading) {
+        if (topAdsRecyclerAdapter == null) {
+            initTopAdsRecyclerAdapter();
+        }
+
+        if (isLoading) {
+            topAdsRecyclerAdapter.showLoading();
+        } else {
+            topAdsRecyclerAdapter.hideLoading();
+        }
+    }
+
+    @Override
+    public void displayEmptyResult() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        productAdapter.setSearchNotFound();
+        productAdapter.setIsLoading(false);
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        setLoading(false);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        setLoading(false);
     }
 }

@@ -90,7 +90,7 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     @Override
     protected void initView() {
         super.initView();
-        presenter.initView();
+        presenter.initView(this);
     }
 
     @Override

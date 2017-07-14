@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.var.*;
+import com.tokopedia.core.var.Badge;
 
 import java.util.ArrayList;
 
@@ -108,6 +110,10 @@ public class List implements Parcelable {
     @Expose
     public java.util.List<Label> labels;
 
+    public ShopProductCampaign shopProductCampaign;
+
+    public List() {
+    }
 
     @Override
     public int describeContents() {
@@ -147,10 +153,8 @@ public class List implements Parcelable {
         dest.writeString(this.productPreorder);
         dest.writeString(this.productWholesale);
         dest.writeTypedList(this.badges);
-        dest.writeList(this.labels);
-    }
-
-    public List() {
+        dest.writeTypedList(this.labels);
+        dest.writeParcelable(this.shopProductCampaign, flags);
     }
 
     protected List(Parcel in) {
@@ -184,12 +188,12 @@ public class List implements Parcelable {
         this.productName = in.readString();
         this.productPreorder = in.readString();
         this.productWholesale = in.readString();
-        this.badges = in.createTypedArrayList(com.tokopedia.core.var.Badge.CREATOR);
-        this.labels = new ArrayList<Label>();
-        in.readList(this.labels, Label.class.getClassLoader());
+        this.badges = in.createTypedArrayList(Badge.CREATOR);
+        this.labels = in.createTypedArrayList(Label.CREATOR);
+        this.shopProductCampaign = in.readParcelable(ShopProductCampaign.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<List> CREATOR = new Parcelable.Creator<List>() {
+    public static final Creator<List> CREATOR = new Creator<List>() {
         @Override
         public List createFromParcel(Parcel source) {
             return new List(source);

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -81,6 +82,8 @@ public interface ProductDetailPresenter {
     void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values);
 
     void saveStateVideoData(Bundle outState, String key, VideoData value);
+
+    void saveStateProductCampaign(Bundle outState, String key, ProductCampaign productCampaign);
 
     void processStateData(Bundle savedInstanceState);
 

@@ -30,6 +30,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
@@ -103,8 +104,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void onProductItemClicked(Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
@@ -117,7 +125,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onAddFavorite(Data data) {
+    public void onAddFavorite(int position, Data data) {
         Shop shop = data.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(
@@ -252,7 +260,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void displayDeleteWishlistDialog(final String productId) {
+    public void displayDeleteWishlistDialog(final String productId, final int position) {
         if (!isDeleteDialogShown) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -260,7 +268,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    wishList.deleteWishlist(getActivity(), productId);
+                    wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
             });
@@ -300,17 +308,14 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onSuccessDeleteWishlist(String searchTerm) {
+    public void onSuccessDeleteWishlist(String searchTerm, int position) {
         SnackbarManager.make(getActivity(),
                 MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
                 Snackbar.LENGTH_SHORT)
                 .show();
         displayPull(false);
-        if (searchTerm.isEmpty()) {
-            wishList.refreshData(getActivity());
-        } else {
-            wishList.refreshDataOnSearch(searchTerm);
-        }
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
     }
 
     @Override

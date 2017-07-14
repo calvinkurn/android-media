@@ -292,6 +292,11 @@
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
+-keep class com.tokopedia.ride.common.animator.RouteMapAnimator
+-keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
+   public <methods>;
+   public <fields>;
+}
 
 # Parceler configuration
 -keep interface org.parceler.Parcel
@@ -302,7 +307,7 @@
 -keep class com.tokopedia.core.home.model.** { *; }
 
 -keep class com.tokopedia.core.util.GlobalConfig
-
+-keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 
