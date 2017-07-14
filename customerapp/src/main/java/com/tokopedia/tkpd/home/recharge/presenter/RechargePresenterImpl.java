@@ -114,7 +114,7 @@ public class RechargePresenterImpl implements RechargePresenter,
             String temp = cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
             try {
                 LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
-                return (lastOrder.getData().getId() == categoryId);
+                return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);
             } catch (Exception e) {
                 return false;
             }
