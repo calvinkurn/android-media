@@ -78,15 +78,16 @@ public class LineChartContainerWidget extends LinearLayout {
 
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
-        if (child instanceof LineChartView) {
-            if (chartInnerContainer.getChildCount() > 0) {
-                // CAN ONLY HAS ONE CHILD
-                return;
-            }
-            chartInnerContainer.addView(child, params);
-        } else {
+        if (child.getId() == R.id.line_chart_container) {
             // Carry on adding the View...
             super.addView(child, index, params);
+        } else {
+            // remove the link between child and previous parent before add (if any)
+            if (child.getParent()!= null) {
+                ViewGroup viewParent = (ViewGroup) child.getParent();
+                viewParent.removeView(child);
+            }
+            chartInnerContainer.addView(child, params);
         }
     }
 

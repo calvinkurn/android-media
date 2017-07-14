@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ public class TitleCardView extends CardView {
     private TextView tvTitle;
     private ImageView ivArrowDown;
     private ViewGroup vgTitle;
+
+    private View emptyView;
 
     public TitleCardView(Context context) {
         super(context);
@@ -99,9 +102,10 @@ public class TitleCardView extends CardView {
             // Carry on adding the View...
             super.addView(child, index, params);
         } else {
-            if (mFrameLayout.getChildCount() > 0) {
-                // CAN ONLY HAS ONE CHILD
-                return;
+            // remove the link between child and previous parent before add (if any)
+            if (child.getParent()!= null) {
+                ViewGroup viewParent = (ViewGroup) child.getParent();
+                viewParent.removeView(child);
             }
             mFrameLayout.addView(child, params);
         }
