@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.listener;
+package com.tokopedia.seller.base.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;

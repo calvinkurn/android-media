@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
+package com.tokopedia.seller.base.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.DatePickerView;
+import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 
@@ -20,7 +20,7 @@ import java.util.Date;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class GMStatisticBaseFragment extends BaseDaggerFragment implements DatePickerView,
+public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePickerView,
         DatePickerResultListener.DatePickerResult {
 
     protected DateLabelView dateLabelView;

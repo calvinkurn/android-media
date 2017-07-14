@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -48,7 +47,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends GMStatisticBaseFragment {
+public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
