@@ -133,7 +133,7 @@
     <string name="error_timeout">Connection timeout, Please try again in a few moments</string>
     <string name="error_default">Error occurred, try again in a few moments</string>
     <string name="error_cannot_cancel">Sorry! cancel booking is not allowed after trip start.</string>
-    <string name="uber_product_header_all_cabs">All Cabs</string>
+    <string name="uber_product_header_all_cabs">All Options</string>
     <string name="uber_product_header_time">Time</string>
     <string name="uber_product_header_fare">Fare</string>
     <string name="ontrip_cancellation_fee">Cancellation Fee:</string>
