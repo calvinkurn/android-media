@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.constant.ConstantView;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.common.view.model.DatePickerViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.DatePickerView;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 
 import java.util.Date;
 
@@ -19,9 +20,10 @@ import java.util.Date;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class GMStatisticBaseFragment extends BaseDaggerFragment implements
+public abstract class GMStatisticBaseFragment extends BaseDaggerFragment implements DatePickerView,
         DatePickerResultListener.DatePickerResult {
 
+    protected DateLabelView dateLabelView;
     protected Date startDate;
     protected Date endDate;
     protected DatePickerResultListener datePickerResultListener;
@@ -46,7 +48,7 @@ public abstract class GMStatisticBaseFragment extends BaseDaggerFragment impleme
     @Override
     public void onResume() {
         super.onResume();
-        if (datePickerPresenter!= null && datePickerPresenter.isDateUpdated(startDate, endDate)) {
+        if (datePickerPresenter != null && datePickerPresenter.isDateUpdated(startDate, endDate)) {
             startDate = datePickerPresenter.getStartDate();
             endDate = datePickerPresenter.getEndDate();
             loadData();
@@ -80,6 +82,36 @@ public abstract class GMStatisticBaseFragment extends BaseDaggerFragment impleme
         }
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, ConstantView.REQUEST_CODE_DATE);
+    }
+
+    @Override
+    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
+
+    }
+
+    @Override
+    public void onErrorLoadDatePicker(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onSuccessSaveDatePicker() {
+
+    }
+
+    @Override
+    public void onErrorSaveDatePicker(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onSuccessResetDatePicker() {
+
+    }
+
+    @Override
+    public void onErrorResetDatePicker(Throwable throwable) {
+
     }
 
     @Override

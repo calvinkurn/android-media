@@ -1,58 +1,56 @@
 package com.tokopedia.seller.common.domain.model;
 
-import java.util.Date;
-
 /**
  * @author sebastianuskh on 4/10/17.
  */
 
 public class DatePickerDomainModel {
 
-    private Date startDate;
-    private Date endDate;
-    private Date comparedStartDate;
-    private Date comparedEndDate;
-    private int datePickertype;
+    private String startDate;
+    private String endDate;
+    private String comparedStartDate;
+    private String comparedEndDate;
+    private int datePickerType;
     private int datePickerSelection;
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public Date getComparedStartDate() {
+    public String getComparedStartDate() {
         return comparedStartDate;
     }
 
-    public void setComparedStartDate(Date comparedStartDate) {
+    public void setComparedStartDate(String comparedStartDate) {
         this.comparedStartDate = comparedStartDate;
     }
 
-    public Date getComparedEndDate() {
+    public String getComparedEndDate() {
         return comparedEndDate;
     }
 
-    public void setComparedEndDate(Date comparedEndDate) {
+    public void setComparedEndDate(String comparedEndDate) {
         this.comparedEndDate = comparedEndDate;
     }
 
-    public int getDatePickertype() {
-        return datePickertype;
+    public int getDatePickerType() {
+        return datePickerType;
     }
 
-    public void setDatePickertype(int datePickertype) {
-        this.datePickertype = datePickertype;
+    public void setDatePickerType(int datePickerType) {
+        this.datePickerType = datePickerType;
     }
 
     public int getDatePickerSelection() {

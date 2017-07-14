@@ -48,7 +48,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDaggerFragment {
+public class GMStatisticTransactionFragment extends GMStatisticBaseFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -61,7 +61,6 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     SessionHandler sessionHandler;
 
     private View rootView;
-    private DateLabelView dateLabelView;
 
     private String[] monthNamesAbrev;
 
@@ -121,6 +120,11 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                 .builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build().inject(this);
+    }
+
+    @Override
+    protected void loadData() {
+
     }
 
     @Override
