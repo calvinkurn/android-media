@@ -94,7 +94,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     }
 
     private void initVar() {
-        monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        monthNamesAbrev = getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
         gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
         gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());

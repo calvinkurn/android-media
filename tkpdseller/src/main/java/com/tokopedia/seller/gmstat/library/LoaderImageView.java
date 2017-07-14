@@ -30,7 +30,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.seller.R;
 
-public class LoaderImageView extends ImageView implements LoaderView {
+public class LoaderImageView extends ImageView implements ILoaderView {
 
     private LoaderController loaderController;
 

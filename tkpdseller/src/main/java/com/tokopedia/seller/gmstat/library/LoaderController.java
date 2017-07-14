@@ -30,7 +30,7 @@ public class LoaderController {
 
     private final static int MAX_COLOR_CONSTANT_VALUE = 255;
     private final static int ANIMATION_CYCLE_DURATION = 750; //milis
-    private LoaderView loaderView;
+    private ILoaderView ILoaderView;
     private Paint rectPaint;
     private LinearGradient linearGradient;
     private float progress;
@@ -40,14 +40,14 @@ public class LoaderController {
     private boolean useGradient = LoaderConstant.USE_GRADIENT_DEFAULT;
     private int gravity = LoaderConstant.DEFAULT_GRAVITY;
 
-    public LoaderController(LoaderView view) {
-        loaderView = view;
+    public LoaderController(ILoaderView view) {
+        ILoaderView = view;
         init();
     }
 
     private void init() {
         rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        loaderView.setRectColor(rectPaint);
+        ILoaderView.setRectColor(rectPaint);
         setValueAnimator(0.5f, 1, ObjectAnimator.INFINITE);
     }
 
@@ -83,7 +83,7 @@ public class LoaderController {
     }
 
     public void startLoading() {
-        if (valueAnimator != null && !loaderView.valueSet()) {
+        if (valueAnimator != null && !ILoaderView.valueSet()) {
             valueAnimator.cancel();
             init();
             valueAnimator.start();
@@ -126,7 +126,7 @@ public class LoaderController {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 progress = (float) animation.getAnimatedValue();
-                loaderView.invalidate();
+                ILoaderView.invalidate();
             }
         });
     }

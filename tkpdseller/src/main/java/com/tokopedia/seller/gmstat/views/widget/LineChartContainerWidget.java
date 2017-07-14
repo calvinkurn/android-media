@@ -66,10 +66,10 @@ public class LineChartContainerWidget extends LinearLayout {
         gmStatisticTransactionRangeCompare = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_compare);
         gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
 
-        tvSubtitle.setVisibility(View.GONE);
+        /*tvSubtitle.setVisibility(View.GONE);
         tvPercentageDesc.setVisibility(View.GONE);
         arrowPercentageView.setVisibility(View.GONE);
-        tvAmount.setVisibility(View.GONE);
+        tvAmount.setVisibility(View.GONE);*/
 
         chartInnerContainer = (ViewGroup) view.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
 
@@ -78,15 +78,16 @@ public class LineChartContainerWidget extends LinearLayout {
 
     @Override
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
-        if (child instanceof LineChartView) {
-            if (chartInnerContainer.getChildCount() > 0) {
-                // CAN ONLY HAS ONE CHILD
-                return;
-            }
-            chartInnerContainer.addView(child, params);
-        } else {
+        if (child.getId() == R.id.line_chart_container) {
             // Carry on adding the View...
             super.addView(child, index, params);
+        } else {
+            // remove the link between child and previous parent before add (if any)
+            if (child.getParent()!= null) {
+                ViewGroup viewParent = (ViewGroup) child.getParent();
+                viewParent.removeView(child);
+            }
+            chartInnerContainer.addView(child, params);
         }
     }
 
