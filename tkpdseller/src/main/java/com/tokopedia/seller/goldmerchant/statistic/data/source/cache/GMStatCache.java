@@ -16,6 +16,9 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase_Table;
+
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -23,6 +26,12 @@ import rx.Observable;
  */
 
 public class GMStatCache {
+    private static final long EXPIRED_TIME = 3600; // 1 HOUR
+
+    @Inject
+    public GMStatCache() {
+
+    }
 
     public Observable<GetTransactionGraph> getTransactionGraph(long startDate, long endDate) {
         return getObservable(GMStatActionType.TRANS_GRAPH, startDate, endDate, GetTransactionGraph.class);
@@ -61,7 +70,7 @@ public class GMStatCache {
             gmStatDataBase.setStartDate(startDate);
             gmStatDataBase.setEndDate(endDate);
             gmStatDataBase.setData(jsonData);
-            gmStatDataBase.setTimeStamp(System.currentTimeMillis());
+            gmStatDataBase.setTimeStamp(System.currentTimeMillis() / 1000L);
             gmStatDataBase.save();
             return Observable.just(true);
         }
@@ -70,22 +79,17 @@ public class GMStatCache {
         }
     }
 
-    public Observable<Boolean> clearAllCache(){
-        new Delete().from(GMStatDataBase.class).execute();
-        return Observable.just(true);
-    }
-
-    public Observable<Boolean> clearOldCache() {
-        //TODO hendry clear old cache
-        return Observable.just(true);
-    }
-
     private <T> Observable<T> getObservable (@GMStatActionType int action,
                                                        long startDate,
                                                        long endDate,
                                                        @NonNull Class<T> responseObjectErrorClass ){
         GMStatDataBase gmStatDataBase = retrieveGMStatDatabase(action, startDate, endDate);
         if (gmStatDataBase == null){
+            return null;
+        }
+        // check if expired
+        if ((System.currentTimeMillis()/1000L) - gmStatDataBase.getTimeStamp() > EXPIRED_TIME) {
+            deleteGMStatRow(gmStatDataBase);
             return null;
         }
         T response = getObjectParse(gmStatDataBase.getData(), responseObjectErrorClass);
@@ -111,6 +115,19 @@ public class GMStatCache {
         } catch (JsonSyntaxException e) { // the json might not be the instance, so just return it
             return null;
         }
+    }
+
+    public Observable<Boolean> deleteGMStatRow(GMStatDataBase gmStatDataBaseRow) {
+        if (gmStatDataBaseRow != null) {
+            gmStatDataBaseRow.delete();
+            return Observable.just(true);
+        }
+        return Observable.just(false);
+    }
+
+    public Observable<Boolean> clearAllCache(){
+        new Delete().from(GMStatDataBase.class).execute();
+        return Observable.just(true);
     }
 
 }
