@@ -284,10 +284,8 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
-                    if (browseProductModel.getCategoryData() != null
-                            && browseProductModel.getCategoryData().getIsRevamp()
-                            && source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        view.showTabLayout(false);
+                    if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
+                        view.showTabLayout();
                     }
                 } else {
                     view.redirectUrl(browseProductModel);

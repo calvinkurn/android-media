@@ -13,7 +13,7 @@ import retrofit2.Retrofit;
  * Created by kris on 6/15/17. Tokopedia
  */
 
-public class TokoCashCashBackService extends AuthService<TokoCashApi>{
+public class TokoCashCashBackService extends AuthService<TokoCashApi> {
 
     @Override
     protected void initApiService(Retrofit retrofit) {
@@ -34,7 +34,7 @@ public class TokoCashCashBackService extends AuthService<TokoCashApi>{
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
         return RetrofitFactory.createRetrofitDigitalConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
-                .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
                         .buildClientTokoCashAuth(AuthUtil.KEY.TOKO_CASH_HMAC))
                 .build();
     }

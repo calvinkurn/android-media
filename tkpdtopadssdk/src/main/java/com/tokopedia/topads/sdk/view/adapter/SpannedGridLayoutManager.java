@@ -29,7 +29,6 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.tokopedia.topads.sdk.R;
 
 import java.util.ArrayList;
@@ -204,7 +203,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state){
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0 || dy == 0) return 0;
 
         int scrolled;
@@ -345,7 +344,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
 
             SpanInfo spanInfo;
             int adapterPosition = recycler.convertPreLayoutPositionToPostLayout(position);
-            if (adapterPosition !=  RecyclerView.NO_POSITION) {
+            if (adapterPosition != RecyclerView.NO_POSITION) {
                 spanInfo = spanLookup.getSpanInfo(adapterPosition);
             } else {
                 // item removed from adapter, retrieve its previous span info

@@ -15,7 +15,7 @@
         android:layout_marginTop="-75dp"
         app:lottie_autoPlay="true"
         app:lottie_fileName="empty_cactus.json"
-        app:lottie_loop="true"/>
+        app:lottie_loop="true" />
 
     <LinearLayout
         android:layout_marginTop="150dp"

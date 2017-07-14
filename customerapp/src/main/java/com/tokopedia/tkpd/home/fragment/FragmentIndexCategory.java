@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -32,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -116,18 +114,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
  * modified by alifa add Top Picks, ticker enhancement
  */
-public class
-FragmentIndexCategory extends TkpdBaseV4Fragment implements
+
+
+public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView, RechargeCategoryView, SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
         TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener,
-        TokoCashHeaderView.ActionListener {
+        TokoCashHeaderView.ActionListener,
+        SectionListCategoryAdapter.OnApplinkClickedListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -512,6 +513,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
         recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
+        recyclerViewCategoryMenuAdapter.setOnApplinkClickedListener(this);
 
         holder.categoriesRecylerview.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -725,7 +727,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onReceivePendingCashBack(CashBackData cashBackData) {
         //TODO Uncomment Later
-        if(cashBackData.getAmount() > 0) {
+        if (cashBackData.getAmount() > 0) {
             bottomSheetDialogTokoCash = new BottomSheetTokoCash(getActivity());
             bottomSheetDialogTokoCash.setCashBackText(cashBackData.getAmountText());
             bottomSheetDialogTokoCash.setActivationUrl(tokoCashData.getData().getRedirectUrl());
@@ -1021,6 +1023,13 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onApplinkClicked(CategoryItemModel categoryItemModel) {
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(categoryItemModel.getAppLinks()));
+        DeepLinkDelegate delegate = DeeplinkHandlerActivity.getDelegateInstance();
+        delegate.dispatchFrom(getActivity(), intent);
+    }
+
     public void onReceivedTokoCashData(TopCashItem tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         holder.tokoCashHeaderView.renderData(tokoCashData);
@@ -1035,5 +1044,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
         if (tokoCashData.getData().getAction() == null) return "";
         else return tokoCashData.getData().getAction().getRedirectUrl();
+    }
+
+    @Override
+    public String getUserId() {
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        return sessionHandler.getLoginID();
     }
 }

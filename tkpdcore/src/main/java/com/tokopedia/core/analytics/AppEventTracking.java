@@ -478,6 +478,8 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String RESOLUTION_CENTER_UPLOAD_VIDEO   = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {

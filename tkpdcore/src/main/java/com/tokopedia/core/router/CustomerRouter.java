@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
- * @author  by alvarisi on 11/24/16.
+ * @author by alvarisi on 11/24/16.
  */
 
 public class CustomerRouter {
@@ -15,8 +15,9 @@ public class CustomerRouter {
 
     private static final String DEEPLINK_ACTIVITY = "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity";
     private static final String TRUECALLER_ACTIVITY = "com.tokopedia.tkpd.truecaller.TruecallerActivity";
+    private static final String SPLASH_SCREEN_ACTIVITY = "com.tokopedia.tkpd.ConsumerSplashScreen";
 
-    public static Class<?> getDeeplinkClass(){
+    public static Class<?> getDeeplinkClass() {
         try {
             return Class.forName(DEEPLINK_ACTIVITY);
         } catch (ClassNotFoundException e) {
@@ -27,6 +28,11 @@ public class CustomerRouter {
 
     public static Intent getTruecallerIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRUECALLER_ACTIVITY);
+        return intent;
+    }
+
+    public static Intent getSplashScreenIntent(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, SPLASH_SCREEN_ACTIVITY);
         return intent;
     }
 

@@ -46,7 +46,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
@@ -62,10 +61,8 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
-import com.tokopedia.tkpdpdp.customview.ErrorShopView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
-import com.tokopedia.tkpdpdp.customview.ManageView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -359,6 +356,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, CourierActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -366,6 +364,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -373,6 +372,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -380,6 +380,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override

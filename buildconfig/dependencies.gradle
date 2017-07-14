@@ -1,10 +1,10 @@
 ext {
     supportLibraryVersion = '24.2.1'
-    playServiceVersion = '9.0.1'
+    playServiceVersion = '9.6.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
-    okHttpVersion = '3.4.1'
+    okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
@@ -62,7 +62,9 @@ ext {
             firebase   : "com.google.firebase:firebase-messaging:${playServiceVersion}",
             location   : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps       : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}"
+            auth       : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places     : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils  : "com.google.maps.android:android-maps-utils:0.4"
     ]
 
     butterKnifeDependencies = [
@@ -89,10 +91,10 @@ ext {
 
     analyticsDependencies = [
             localytics : "com.localytics.android:library:4.2.1",
-            appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar",
-            moengage : "com.moengage:moe-android-sdk:7.7.02",
-            moengageFCM : "com.moengage:moe-push-firebase:1.1.01",
-            moengageMSG : "com.moengage:addon-messaging:1.1.01"
+            appsflyer  : "com.appsflyer:af-android-sdk:4.6.1@aar",
+            moengage   : "com.moengage:moe-android-sdk:7.7.02",
+            moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
+            moengageMSG: "com.moengage:addon-messaging:1.1.01"
     ]
 
     deeplinkDispatchDependencies = [
@@ -127,6 +129,7 @@ ext {
             trueCaller            : "true.caller.sdk:truecaller:0.5",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
+            slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion"
     ]
 
@@ -170,7 +173,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
-            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 
 }
