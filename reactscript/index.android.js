@@ -15,7 +15,7 @@ import { ContactUs_Stack, HotList_Stack, Favorite_Stack, OfficialStore } from '.
 
 class Home extends Component { 
   componentWillMount() {
-    console.log(this.props.message)
+    console.log(this.props.Screen)
   }
 
   render(){ 
@@ -25,8 +25,8 @@ class Home extends Component {
       return <HotList_Stack /> 
     } else if (this.props.message == 'favorite'){
       return <Favorite_Stack /> 
-    } else if (this.props.message == 'os') {
-      return <OfficialStore />
+    } else if (this.props.Screen == 'official-store') {
+      return <OfficialStore />ot
     } else {
       return(
         <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
@@ -50,5 +50,5 @@ var styles = StyleSheet.create({
 
 
 module.exports = Home;
-AppRegistry.registerComponent('Home', () => Home);
+AppRegistry.registerComponent('MAIN', () => Home);
 

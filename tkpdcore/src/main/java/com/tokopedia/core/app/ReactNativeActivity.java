@@ -1,23 +1,31 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.react.ReactSingleton;
 
 /**
  * @author ricoharisin .
  */
 
-public abstract class ReactNativeActivity extends BaseActivity implements DefaultHardwareBackBtnHandler {
+public class ReactNativeActivity extends BaseActivity implements DefaultHardwareBackBtnHandler {
 
     protected ReactRootView reactRootView;
     protected ReactInstanceManager reactInstanceManager;
 
-    public abstract String getModuleName();
+    public static Intent createReactNativeActivity(Context context, String reactScreenName) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        intent.putExtras(extras);
+        return intent;
+    }
 
     @Override
     public void onPause() {
@@ -55,8 +63,9 @@ public abstract class ReactNativeActivity extends BaseActivity implements Defaul
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         reactRootView = new ReactRootView(this);
+        Bundle initialProps = getIntent().getExtras();
         reactInstanceManager = ReactSingleton.getReactInstanceManager();
-        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), null);
+        reactRootView.startReactApplication(reactInstanceManager, ReactConst.MAIN_MODULE, initialProps);
         setContentView(reactRootView);
     }
 

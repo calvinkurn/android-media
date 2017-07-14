@@ -355,6 +355,11 @@
             android:name="com.tokopedia.core.home.BrandsWebViewActivity"
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.core.app.ReactNativeActivity"
+            android:label="@string/title_official_store"
+            android:screenOrientation="portrait" />
+
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
