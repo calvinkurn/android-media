@@ -17,7 +17,7 @@ import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
+import com.tokopedia.seller.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
@@ -27,7 +27,7 @@ import com.tokopedia.seller.topads.dashboard.view.widget.TopAdsStatisticLabelVie
 
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends
-        BaseDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
+        TopAdsBaseDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     private SwipeToRefresh swipeToRefresh;
