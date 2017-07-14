@@ -139,7 +139,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
-                    p.source = "hot_product";
+                    p.source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                     p.source = "directory";

@@ -11,6 +11,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridVie
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;

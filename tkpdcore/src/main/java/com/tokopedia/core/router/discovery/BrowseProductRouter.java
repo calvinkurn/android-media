@@ -25,14 +25,14 @@ public class BrowseProductRouter {
     public static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     public static final String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
 
-    public static final String VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT = "search";
-    public static final String VALUES_DYNAMIC_FILTER_SEARCH_CATALOG = "catalog";
-    public static final String VALUES_DYNAMIC_FILTER_SEARCH_SHOP = "shop";
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT = "search_product";
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_CATALOG = "search_catalog";
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_SHOP = "search_shop";
     public static final String VALUES_DYNAMIC_FILTER_DIRECTORY = "directory";
     public static final int VALUES_INVALID_FRAGMENT_ID = -1;
 
 
-    public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
+    public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hotlist";
 
     public final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
     public final static String VALUES_DEFAULT_DEPARTMENT_NAME = "Kategori";
