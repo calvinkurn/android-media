@@ -3,6 +3,7 @@ package com.tokopedia.seller.util;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 /**
  * Created by Nathaniel on 3/3/2017.

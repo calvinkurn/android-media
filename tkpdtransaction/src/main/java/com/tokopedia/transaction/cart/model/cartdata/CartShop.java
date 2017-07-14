@@ -32,7 +32,18 @@ public class CartShop implements Parcelable {
     @SerializedName("lucky_merchant")
     @Expose
     private Integer luckyMerchant;
-
+    @SerializedName("address_id")
+    @Expose
+    private String addressId;
+    @SerializedName("postal_code")
+    @Expose
+    private String postalCode;
+    @SerializedName("latitude")
+    @Expose
+    private String latitude;
+    @SerializedName("longitude")
+    @Expose
+    private String longitude;
 
     public String getShopUrl() {
         return shopUrl;
@@ -90,6 +101,37 @@ public class CartShop implements Parcelable {
         this.shopPayGateway = shopPayGateway;
     }
 
+    public String getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
     @Override
     public int describeContents() {
@@ -105,6 +147,10 @@ public class CartShop implements Parcelable {
         dest.writeString(this.shopImage);
         dest.writeValue(this.shopStatus);
         dest.writeValue(this.luckyMerchant);
+        dest.writeString(this.addressId);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
     }
 
     public CartShop() {
@@ -119,6 +165,10 @@ public class CartShop implements Parcelable {
         this.shopImage = in.readString();
         this.shopStatus = (Integer) in.readValue(Integer.class.getClassLoader());
         this.luckyMerchant = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.addressId = in.readString();
+        this.postalCode = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
     }
 
     public static final Creator<CartShop> CREATOR = new Creator<CartShop>() {

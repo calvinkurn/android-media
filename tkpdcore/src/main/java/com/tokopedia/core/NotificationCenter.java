@@ -15,6 +15,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -308,8 +311,8 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
-        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), TkpdCache.NOTIFICATION_DATA);
-        int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+        int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
 
         if (CartCache > 0) {
             menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
@@ -321,12 +324,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 
     @Override
     public void onGetNotif() {
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
+
     }
 
     @Override
@@ -336,12 +334,6 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
             finish();
         }
         MainApplication.setCurrentActivity(this);
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
         super.onResume();
     }
 
@@ -354,8 +346,8 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
+        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
@@ -386,5 +378,10 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         }
         super.onBackPressed();
 
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return 0;
     }
 }

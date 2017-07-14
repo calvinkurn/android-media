@@ -24,6 +24,7 @@ public class CategoryItemModel {
     public CategoryItemModel() {
 
     }
+
     public CategoryItemModel(String name, String imageUrl, TYPE type, String redirectValue) {
         this.name = name;
         this.imageUrl = imageUrl;

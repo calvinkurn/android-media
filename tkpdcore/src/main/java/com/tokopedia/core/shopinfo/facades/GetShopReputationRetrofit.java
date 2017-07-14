@@ -2,7 +2,6 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
-import android.text.Html;
 
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -130,7 +129,7 @@ public class GetShopReputationRetrofit {
         model.reputationId = review.optString("review_reputation_id", "");
         model.userLabel = review.getString("review_user_label");
 //        model.shopReputation = getScoreMedal(review);
-        model.shopAvatarUrl = review.getString("review_shop_reputation_set");
+        model.shopAvatarUrl = review.getString("review_suser_label_idhop_reputation_set");
         model.typeMedal = getMedalType(review);
         model.levelMedal = getMedalLevel(review);
         model.shopReputation = getScoreMedal(review);

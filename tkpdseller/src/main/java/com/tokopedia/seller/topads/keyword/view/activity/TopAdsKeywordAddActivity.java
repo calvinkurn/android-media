@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
+public class TopAdsKeywordAddActivity extends BaseSimpleActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
@@ -75,12 +76,12 @@ public class TopAdsKeywordAddActivity extends TopAdsBaseSimpleActivity
     }
 
     @Override
-    protected Fragment getNewFragment(Bundle savedinstancestate) {
+    protected Fragment getNewFragment() {
         String groupId = getIntent().getStringExtra(EXTRA_GROUP_ID);
         String groupName = getIntent().getStringExtra(EXTRA_GROUP_NAME);
         int keywordType = getIntent().getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
         int serverCount = getIntent().getIntExtra(EXTRA_SERVER_COUNT, 0);
-        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.topads_max_keyword_in_group));
+        int maxWords = getIntent().getIntExtra(EXTRA_MAX_WORDS, getResources().getInteger(R.integer.top_ads_keyword_max_in_group));
         ArrayList<String> localWords = getIntent().getStringArrayListExtra(EXTRA_LOCAL_WORDS);
         return TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords);
     }

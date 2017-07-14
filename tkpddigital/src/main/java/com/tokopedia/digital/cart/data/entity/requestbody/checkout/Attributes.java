@@ -25,6 +25,9 @@ public class Attributes {
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
+    @SerializedName("client_id")
+    @Expose
+    private String clientId;
 
     public void setIdentifier(RequestBodyIdentifier identifier) {
         this.identifier = identifier;
@@ -46,4 +49,7 @@ public class Attributes {
         this.userAgent = userAgent;
     }
 
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 }
