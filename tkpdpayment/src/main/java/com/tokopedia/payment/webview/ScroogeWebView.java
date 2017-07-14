@@ -68,6 +68,7 @@ public class ScroogeWebView extends WebView {
     }
 
     public boolean isEndThanksPage() {
+        if (getUrl() == null || getUrl().isEmpty()) return false;
         for (String thanksUrl : THANK_PAGE_URL_LIST) {
             if (getUrl().contains(thanksUrl)) {
                 return true;
