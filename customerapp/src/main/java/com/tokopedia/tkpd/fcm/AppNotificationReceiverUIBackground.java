@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -72,11 +73,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     //TODO this function for divide the new and old flow(that still supported)
                     // next if complete new plz to delete
                     if (isSupportedApplinkNotification(bundle)) {
+                        CommonUtils.dumper("FCM go to supported");
                         handleApplinkNotification(bundle);
                     } else {
                         if (isDedicatedNotification(bundle)) {
+                            CommonUtils.dumper("FCM go to dedicated");
                             handleDedicatedNotification(bundle);
                         } else {
+                            CommonUtils.dumper("FCM go to promo");
                             prepareAndExecutePromoNotification(bundle);
                         }
                     }
@@ -130,10 +134,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
+            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
                 prepareAndExecuteApplinkPromoNotification(data);
-            else
+            }
+            else {
                 prepareAndExecuteApplinkNotification(data);
+            }
         }
     }
 
