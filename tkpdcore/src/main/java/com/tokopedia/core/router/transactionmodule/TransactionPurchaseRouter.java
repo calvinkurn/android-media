@@ -21,7 +21,6 @@ public class TransactionPurchaseRouter {
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
-    public static final String EXTRA_UPDATE_BALANCE = "EXTRA_UPDATE_BALANCE";
 
     public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
     public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;
@@ -51,7 +50,6 @@ public class TransactionPurchaseRouter {
     public static Intent createIntentTxSummary(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SUMMARY);
-        intent.putExtra(EXTRA_UPDATE_BALANCE, true);
         return intent;
     }
 

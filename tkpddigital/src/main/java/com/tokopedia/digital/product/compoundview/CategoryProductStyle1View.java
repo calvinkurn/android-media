@@ -156,6 +156,9 @@ public class CategoryProductStyle1View extends
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
+            cbInstantCheckout.setChecked(
+                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+            );
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);
@@ -276,6 +279,11 @@ public class CategoryProductStyle1View extends
             if (productSelected.getPromo() != null) {
                 preCheckoutProduct.setPromo(true);
             }
+        }
+        if (canBeCheckout) {
+            actionListener.storeLastInstantCheckoutUsed(
+                    data.getCategoryId(), cbInstantCheckout.isChecked()
+            );
         }
         preCheckoutProduct.setCategoryId(data.getCategoryId());
         preCheckoutProduct.setCategoryName(data.getName());
