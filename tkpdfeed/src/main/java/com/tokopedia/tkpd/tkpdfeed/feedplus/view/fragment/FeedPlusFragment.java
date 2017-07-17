@@ -444,7 +444,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-        topAdsRecyclerAdapter.shouldLoadAds(true);
         topAdsRecyclerAdapter.showLoading();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
@@ -714,6 +713,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         onRefresh();
         UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
 
+    }
+
+    @Override
+    public void showTopAds(boolean isTopAdsShown) {
+        topAdsRecyclerAdapter.shouldLoadAds(isTopAdsShown);
     }
 
 
