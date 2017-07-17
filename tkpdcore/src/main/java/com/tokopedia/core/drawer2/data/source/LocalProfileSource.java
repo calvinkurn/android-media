@@ -45,9 +45,9 @@ public class LocalProfileSource {
                         return profileModel != null
                                 && profileModel.getProfileData() != null
                                 && profileModel.getProfileData().getUserInfo() != null
-                                && TextUtils.isEmpty(profileModel.getProfileData().getUserInfo()
+                                && !TextUtils.isEmpty(profileModel.getProfileData().getUserInfo()
                                 .getUserName())
-                                && TextUtils.isEmpty(profileModel.getProfileData().getUserInfo()
+                                && !TextUtils.isEmpty(profileModel.getProfileData().getUserInfo()
                                 .getUserImage());
                     }
                 });
