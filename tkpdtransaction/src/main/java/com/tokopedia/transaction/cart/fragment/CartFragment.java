@@ -1088,7 +1088,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         Glide.with(getActivity())
                 .load(donation.getDonationPopupImg())
                 .into(imgDonation);
-        title.setText(donation.getDonationNoteTitle());
+        title.setText(donation.getDonationPopupTitle());
         content.setText(donation.getDonationPopupInfo());
         closeDialog.setOnClickListener(new View.OnClickListener() {
             @Override
