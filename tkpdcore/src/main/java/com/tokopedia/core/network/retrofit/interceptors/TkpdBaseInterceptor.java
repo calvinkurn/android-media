@@ -3,7 +3,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 import android.util.Log;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -25,18 +24,14 @@ public class TkpdBaseInterceptor implements Interceptor {
     }
 
     protected Response getResponse(Chain chain, Request request) throws IOException {
-        try {
-            Response response = chain.proceed(request);
-            int count = 0;
-            while (!response.isSuccessful() && count < maxRetryAttempt) {
-                Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
-                count++;
-                response = chain.proceed(request);
-            }
-            return response;
-        } catch (Error e) {
-            throw new UnknownHostException("tidak ada koneksi internet");
+        Response response = chain.proceed(request);
+        int count = 0;
+        while (!response.isSuccessful() && count < maxRetryAttempt) {
+            Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
+            count++;
+            response = chain.proceed(request);
         }
+        return response;
     }
 
     public int getMaxRetryAttempt() {
