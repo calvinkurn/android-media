@@ -208,18 +208,15 @@ public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
                 DataDeposit data = dataDepositDataResponse.getData();
                 if (data.isAdUsage()) {
                     if (isNoAdsData(gmTopAdsAmountViewModel)) {
-                        // TODO paling kanan
-                        Log.d(TAG, "TopAdsAmount Empty state paling kanan");
+                        gmTopAdsAmountViewHelper.bindNoData(gmTopAdsAmountViewModel);
                     } else {
                         gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
                     }
                 } else {
                     if (gmTopAdsAmountViewModel.amount == 0) {
-                        // TODO paling kiri
-                        Log.d(TAG, "TopAdsAmount Empty state paling kiri");
+                        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
                     } else {
-                        // TODO tengah
-                        Log.d(TAG, "TopAdsAmount Empty state tengah");
+                        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
                     }
                 }
             }

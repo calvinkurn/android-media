@@ -19,7 +19,7 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 
 /**
- * Created by User on 7/10/2017.
+ * Created by hendry on 7/10/2017.
  */
 
 public class TitleCardView extends CardView {
@@ -148,6 +148,9 @@ public class TitleCardView extends CardView {
     }
 
     public void setLoadingState (boolean isLoading){
+        if (loadingView == null) {
+            setDefaultLoadingView();
+        }
         if (isLoading && this.loadingView != null) {
             if (contentView!= null) {
                 contentView.setVisibility(View.GONE);
@@ -158,14 +161,6 @@ public class TitleCardView extends CardView {
             loadingView.setVisibility(View.VISIBLE);
         } else {
             setContentVisible();
-        }
-    }
-
-    public void setLoaderState(boolean isLoading){
-        if (isLoading) {
-            tvTitle.resetLoader();
-        } else {
-            tvTitle.stopLoading();
         }
     }
 
@@ -194,7 +189,7 @@ public class TitleCardView extends CardView {
     }
 
     public void setDefaultLoadingView(){
-        this.loadingView = LayoutInflater.from(getContext()).inflate(R.layout.layout_loading_view, mFrameLayout, false);
+        this.loadingView = LayoutInflater.from(getContext()).inflate(R.layout.widget_line_chart_container_loading, mFrameLayout, false);
         loadingView.setVisibility(View.GONE);
         addView(loadingView);
     }

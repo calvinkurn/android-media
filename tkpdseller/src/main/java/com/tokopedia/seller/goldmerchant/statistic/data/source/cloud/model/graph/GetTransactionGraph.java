@@ -81,7 +81,7 @@ public class GetTransactionGraph {
     private double diffNetRevenue;
     @SerializedName("diff_rejected_amount")
     @Expose
-    private int diffRejectedAmount;
+    private double diffRejectedAmount;
     @SerializedName("diff_shipping_cost")
     @Expose
     private double diffShippingCost;
@@ -290,11 +290,11 @@ public class GetTransactionGraph {
         this.diffNetRevenue = diffNetRevenue;
     }
 
-    public int getDiffRejectedAmount() {
+    public double getDiffRejectedAmount() {
         return diffRejectedAmount;
     }
 
-    public void setDiffRejectedAmount(int diffRejectedAmount) {
+    public void setDiffRejectedAmount(double diffRejectedAmount) {
         this.diffRejectedAmount = diffRejectedAmount;
     }
 

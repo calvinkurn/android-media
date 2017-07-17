@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -81,6 +82,8 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
         gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
+
+        gmTitleCardView.setLoadingState(true);
     }
 
     @Override
@@ -148,6 +151,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     }
 
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
+        gmTitleCardView.setLoadingState(false);
         setHeaderValue(data);
         if (data.isCompare) {
             gmLineChartContainer.setCompareDate(data);

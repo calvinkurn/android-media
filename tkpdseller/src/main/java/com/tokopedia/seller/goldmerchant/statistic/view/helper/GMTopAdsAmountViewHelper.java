@@ -33,7 +33,6 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMPercentageViewHelper gmPercentageViewHelper2;
 
-
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
     private TitleCardView gmStatisticTopAdsCardView;
@@ -102,5 +101,19 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
 
                     }
                 }).buildChart(gmStatisticTopAdsGraph);
+    }
+
+    public void bindNoData(@Nullable GMGraphViewModel data) {
+        //TODO hendry
+    }
+
+
+    public void bindNoTopAdsCredit(@Nullable GMGraphViewModel data) {
+        //TODO hendry
+    }
+
+
+    public void bindTopAdsCreditNotUsed(@Nullable GMGraphViewModel data) {
+        //TODO hendry
     }
 }

@@ -97,7 +97,8 @@
             <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
                 android:id="@+id/topads_line_chart_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:hasDescription="true">
                 <com.tokopedia.seller.lib.williamchart.view.LineChartView
                     android:id="@+id/gm_statistic_topads_graph"
                     android:layout_width="match_parent"

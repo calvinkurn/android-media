@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.views.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -66,10 +67,10 @@ public class LineChartContainerWidget extends LinearLayout {
         gmStatisticTransactionRangeCompare = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_compare);
         gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
 
-        /*tvSubtitle.setVisibility(View.GONE);
-        tvPercentageDesc.setVisibility(View.GONE);
+        tvSubtitle.setVisibility(View.GONE);
+        tvAmount.setVisibility(View.GONE);
         arrowPercentageView.setVisibility(View.GONE);
-        tvAmount.setVisibility(View.GONE);*/
+        tvPercentageDesc.setVisibility(View.GONE);
 
         chartInnerContainer = (ViewGroup) view.findViewById(R.id.gm_statistic_transaction_graph_container_inner);
 
