@@ -689,6 +689,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void displayEmptyResult() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         productAdapter.setSearchNotFound();
+        productAdapter.notifyItemInserted(1);
         setLoading(false);
         ((BrowseProductActivity) getActivity()).showLoading(false);
     }
