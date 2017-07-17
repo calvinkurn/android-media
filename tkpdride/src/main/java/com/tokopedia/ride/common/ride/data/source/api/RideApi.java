@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.ride.data.source.api;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -31,6 +32,9 @@ import rx.Observable;
 public interface RideApi {
     @GET(RideUrl.PRODUCTS)
     Observable<ProductResponseEntity> getProducts(@QueryMap Map<String, Object> param);
+
+    @GET(RideUrl.ESTIMATED_PRICE)
+    Observable<PriceResponseEntity> getPrices(@QueryMap Map<String, Object> param);
 
     @GET(RideUrl.ESTIMATED_TIME)
     Observable<TimesEstimateResponseEntity> getEstimateds(@QueryMap Map<String, Object> param);

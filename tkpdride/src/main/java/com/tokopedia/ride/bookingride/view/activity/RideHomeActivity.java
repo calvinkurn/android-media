@@ -64,6 +64,7 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -589,10 +590,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
-    public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
+    public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
-        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
+        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(confirmBookingPassData);
         Slide slideTransition = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition = new Slide(Gravity.RIGHT);

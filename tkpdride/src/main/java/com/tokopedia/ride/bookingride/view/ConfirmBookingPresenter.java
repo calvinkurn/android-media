@@ -26,14 +26,15 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     @Override
     public void initialize() {
         actionGetFareAndEstimate(false);
+        getView().renderInitialView();
     }
 
     @Override
     public void actionGetFareAndEstimate(boolean showProgress) {
+        getView().showProgress();
+        getView().hidePromoLayout();
         if (showProgress) {
-            getView().showProgress();
             getView().hideConfirmLayout();
-            getView().hidePromoLayout();
         }
 
         RequestParams requestParams = getView().getParam();
@@ -76,7 +77,8 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                         display = fareEstimate.getFare().getDisplay();
                     }
 
-                    getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref , fareEstimate.getCode() , fareEstimate.getMessageSuccess());
+                    getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
+                    getView().setViewListener();
                 }
 
             }

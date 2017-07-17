@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -33,7 +32,7 @@ import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
-import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
@@ -51,7 +50,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 public class UberProductFragment extends BaseFragment implements UberProductContract.View, RideProductItemClickListener {
     OnFragmentInteractionListener mInteractionListener;
-    UberProductContract.Presenter mPresenter;
+    UberProductContract.Presenter presenter;
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
@@ -86,7 +85,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     RideProductAdapter mAdapter;
 
     public interface OnFragmentInteractionListener {
-        void onProductClicked(ConfirmBookingViewModel rideProductViewModel);
+        void onProductClicked(ConfirmBookingPassData confirmBookingPassData);
 
         void onMinimumTimeEstCalculated(String timeEst);
 
@@ -121,9 +120,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext());
-        mPresenter.attachView(this);
-        mPresenter.initialize();
+        presenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext());
+        presenter.attachView(this);
+        presenter.initialize();
         setViewListener();
         if (getArguments() != null) {
             source = getArguments().getParcelable(EXTRA_SOURCE);
@@ -181,28 +180,24 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                 return;
             }
 
-            ConfirmBookingViewModel confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
-            confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
-            confirmBookingViewModel.setSource(source);
-            confirmBookingViewModel.setDestination(destination);
-            confirmBookingViewModel.setProductDisplayName(rideProductViewModel.getProductName());
-            confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
-            confirmBookingViewModel.setPriceFmt(rideProductViewModel.getProductPriceFmt());
-            confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
-            confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
-            confirmBookingViewModel.setHeaderTitle(
+            ConfirmBookingPassData confirmBookingPassData = new ConfirmBookingPassData();
+            confirmBookingPassData.setSeatCount(1);
+            confirmBookingPassData.setSource(source);
+            confirmBookingPassData.setDestination(destination);
+            confirmBookingPassData.setProductDisplayName(rideProductViewModel.getProductName());
+            confirmBookingPassData.setProductId(rideProductViewModel.getProductId());
+            confirmBookingPassData.setPriceFmt(rideProductViewModel.getProductPriceFmt());
+
+            confirmBookingPassData.setProductImage(rideProductViewModel.getProductImage());
+            confirmBookingPassData.setHeaderTitle(
                     String.format(
                             getString(R.string.confirm_booking_header_title_format),
                             rideProductViewModel.getProductName(),
                             rideProductViewModel.getTimeEstimate())
             );
-            confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
-            confirmBookingViewModel.setSurgeMultiplier(rideProductViewModel.getSurgeMultiplier());
-            confirmBookingViewModel.setSurgeConfirmationHref(rideProductViewModel.getSurgeConfirmationHref());
-            confirmBookingViewModel.setCancellationFee(rideProductViewModel.getCancellationFee());
-            confirmBookingViewModel.setPromoCode(rideProductViewModel.getPromoCode());
-            confirmBookingViewModel.setPromoDescription(rideProductViewModel.getPromoMessage());
-            mInteractionListener.onProductClicked(confirmBookingViewModel);
+            confirmBookingPassData.setMaxCapacity(rideProductViewModel.getCapacity());
+            confirmBookingPassData.setCancellationFee(rideProductViewModel.getCancellationFee());
+            mInteractionListener.onProductClicked(confirmBookingPassData);
         } else {
             //show message to enter destianation
             mInteractionListener.showEnterDestError();
@@ -214,7 +209,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         this.destination = destination;
         this.source = source;
         isCompleteLocations = source != null && destination != null;
-        mPresenter.actionGetRideProducts(source, destination);
+        if (source != null && destination != null)
+            presenter.actionGetRideProducts(source, destination);
+        else
+            presenter.actionGetRideProducts(source);
     }
 
     @Override
@@ -241,7 +239,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         if (source != null) {
             hideErrorMessageLayout();
             showProgress();
-            mPresenter.actionGetRideProducts(source, destination);
+            presenter.actionGetRideProducts(source, destination);
         } else {
             //open a dialog to enter source location
             mInteractionListener.showEnterSourceLocationActiity();
@@ -336,7 +334,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPresenter.detachView();
+        presenter.detachView();
     }
 
     @OnClick(R2.id.layout_cab_booking_header)
@@ -389,27 +387,5 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                 openInterruptConfirmationWebView(tosUrl);
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_INTERRUPT_DIALOG:
-                isOpenInterruptWebviewDialog = false;
-                if (resultCode == Activity.RESULT_OK) {
-                    hideErrorMessageLayout();
-                    showProgress();
-                    String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
-                    String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
-                    if (key != null && key.length() > 0) {
-                        mPresenter.actionGetRideProducts(id, key, source, destination);
-                    } else {
-                        mPresenter.actionGetRideProducts(source, destination);
-                    }
-                }
-                break;
-            default:
-        }
     }
 }

@@ -6,7 +6,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -59,8 +58,8 @@ public interface UberProductContract {
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
-        void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
+        void actionGetRideProducts(PlacePassViewModel source);
 
-        void actionGetRideProducts(String value, String key, PlacePassViewModel source, PlacePassViewModel destination);
+        void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
     }
 }

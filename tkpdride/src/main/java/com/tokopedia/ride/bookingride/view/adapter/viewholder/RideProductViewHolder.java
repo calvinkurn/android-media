@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -46,7 +47,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     ProgressBar timeProgress;
 
     private RideProductItemClickListener mItemClickListener;
-    private RideProductViewModel mRideProductViewModel;
+    private RideProductViewModel rideProductViewModel;
     private Context mContext;
 
     public RideProductViewHolder(View parent, RideProductItemClickListener itemClickListener) {
@@ -57,12 +58,12 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
 
     @Override
     public void bind(RideProductViewModel element) {
-        mRideProductViewModel = element;
+        rideProductViewModel = element;
         productNameTextView.setText(element.getProductName());
         surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
         productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
-        baseFareTextView.setVisibility(element.getProductPrice() == 0.0 ? View.VISIBLE : View.GONE);
+        baseFareTextView.setVisibility(!element.isEnabled() ? View.VISIBLE : View.GONE);
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
 
         if (element.getTimeEstimate() != null) {
@@ -74,7 +75,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
             timeProgress.setVisibility(View.VISIBLE);
         }
 
-        if (element.getProductPrice() == -1 && element.getProductPriceFmt() == null) {
+        if (element.getProductPriceFmt() == null) {
             priceProgress.setVisibility(View.VISIBLE);
         } else {
             priceProgress.setVisibility(View.GONE);
@@ -90,6 +91,10 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
 
     @OnClick(R2.id.row_cab_list)
     public void actionOnProductClicked() {
-        mItemClickListener.onProductSelected(mRideProductViewModel);
+        if (rideProductViewModel.isEnabled()) {
+            mItemClickListener.onProductSelected(rideProductViewModel);
+        } else {
+            Toast.makeText(mContext, "Product Not Available", Toast.LENGTH_SHORT).show();
+        }
     }
 }
