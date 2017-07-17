@@ -31,8 +31,13 @@ public class ReputationProductViewFragmentPresenterImpl implements ReputationPro
     }
 
     @Override
-    public void getLikeDislike(Context context, Map<String, String> param) {
-        networkInteractor.getLikeDislikeReview(context, param, new InboxReputationRetrofitInteractor.LikeDislikeListener() {
+    public void getLikeDislike(@NonNull Context context,
+                               @NonNull String shopId,
+                               @NonNull String reviewId) {
+        networkInteractor.getLikeDislikeReview(context,
+                networkInteractor.getLikeDislikeParam(shopId,
+                        reviewId),
+                new InboxReputationRetrofitInteractor.LikeDislikeListener() {
             @Override
             public void onSuccess(@NonNull LikeDislike result) {
                 reputationProductFragmentView.setResultToModel(result);
@@ -71,8 +76,18 @@ public class ReputationProductViewFragmentPresenterImpl implements ReputationPro
     }
 
     @Override
-    public void updateFacade(Context context, Map<String, String> param, final ReviewProductModel model) {
-        actNetworkInteractor.likeDislikeReview(context, param, new ActReputationRetrofitInteractor.ActReputationListener() {
+    public void updateFacade(@NonNull Context context,
+                             int reviewId,
+                             @NonNull String productId,
+                             @NonNull String shopId,
+                             int statusLikeDislike,
+                             @NonNull final ReviewProductModel model) {
+        actNetworkInteractor.likeDislikeReview(context,
+                actNetworkInteractor.getActionLikeDislikeParam(String.valueOf(reviewId),
+                        productId,
+                        shopId,
+                        String.valueOf(statusLikeDislike)),
+                new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
                 reputationProductFragmentView.onSuccessGetLikeDislikeReview();
@@ -111,8 +126,15 @@ public class ReputationProductViewFragmentPresenterImpl implements ReputationPro
     }
 
     @Override
-    public void postReport(Context context, Map<String, String> param) {
-        actNetworkInteractor.postReport(context, param, new ActReputationRetrofitInteractor.ActReputationListener() {
+    public void postReport(@NonNull Context context,
+                           @NonNull String reviewId,
+                           @NonNull String shopId,
+                           @NonNull String reportMessage) {
+        actNetworkInteractor.postReport(context,
+                actNetworkInteractor.getReportParam(reviewId,
+                        shopId,
+                        reportMessage),
+                new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
                 reputationProductFragmentView.onSuccessLikeDislikeReview(result);
@@ -151,8 +173,15 @@ public class ReputationProductViewFragmentPresenterImpl implements ReputationPro
     }
 
     @Override
-    public void deleteComment(Context context, Map<String, String> param) {
-        actNetworkInteractor.deleteComment(context, param, new ActReputationRetrofitInteractor.ActReputationListener() {
+    public void deleteComment(@NonNull Context context,
+                              @NonNull String reputationId,
+                              int reviewId,
+                              @NonNull String shopId) {
+        actNetworkInteractor.deleteComment(context,
+                actNetworkInteractor.getDeleteCommentParam(reputationId,
+                        String.valueOf(reviewId),
+                        shopId),
+                new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
                 reputationProductFragmentView.onSuccessDeleteComment(result);

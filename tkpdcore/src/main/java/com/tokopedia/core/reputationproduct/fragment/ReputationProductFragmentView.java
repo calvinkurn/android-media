@@ -12,12 +12,17 @@ public interface ReputationProductFragmentView {
 
     void setResultToModel(LikeDislike resultToModel);
 
-
     void onSuccessDeleteComment(ActResult result);
+
     void onSuccessLikeDislikeReview(ActResult result);
+
     void onSuccessGetLikeDislikeReview();
+
     void onErrorGetLikeDislikeReview(ReviewProductModel model, String err);
+
     void onErrorConnectionGetLikeDislikeReview(ReviewProductModel model);
+
     void onError(String error);
+
     void onErrorConnection();
 }

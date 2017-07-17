@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,11 @@ public class ActReputationRetrofitInteractorImpl implements
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
     private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
+
+    private static final String PARAM_REVIEW_ID = "review_id";
+    private static final String PARAM_SHOP_ID = "shop_id";
+    private static final String PARAM_PRODUCT_ID = "product_id";
+    private static final String PARAM_REPORT_MESSAGE = "text_message";
 
     private final CompositeSubscription compositeSubscription;
     private final ReputationActService reputationActService;
@@ -945,5 +951,35 @@ public class ActReputationRetrofitInteractorImpl implements
         compositeSubscription.unsubscribe();
     }
 
+
+    //params section
+
+    @Override
+    public Map<String, String> getActionLikeDislikeParam(String reviewId, String productID, String shopID, String statusLikeDislike) {
+        ActReviewPass pass = new ActReviewPass();
+        pass.setReviewId(String.valueOf(reviewId));
+        pass.setProductId(productID);
+        pass.setShopId(shopID);
+        pass.setLikeStatus(statusLikeDislike);
+        return pass.getLikeDislikeParam();
+    }
+
+    @Override
+    public Map<String, String> getReportParam(String reviewId, String shopId, String reportMessage) {
+        Map<String, String> params = new HashMap<>();
+        params.put(PARAM_REVIEW_ID, reviewId);
+        params.put(PARAM_SHOP_ID, shopId);
+        params.put(PARAM_REPORT_MESSAGE, reportMessage);
+        return params;
+    }
+
+    @Override
+    public Map<String, String> getDeleteCommentParam(String reputationId, String reviewId, String shopId) {
+        ActReviewPass pass = new ActReviewPass();
+        pass.setReputationId(reputationId);
+        pass.setReviewId(String.valueOf(reviewId));
+        pass.setShopId(shopId);
+        return pass.getDeleteParam();
+    }
 
 }

@@ -208,7 +208,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private void initData() {
         model.detail = new ReviewProductDetailModel();
-        presenter.getLikeDislike(getActivity(), getLikeDislikeParam());
+        presenter.getLikeDislike(getActivity(), model.getReviewShopId(), String.valueOf(model.getReviewId()));
     }
 
     @Override
@@ -220,12 +220,12 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         setModelToView();
     }
 
-    private Map<String, String> getLikeDislikeParam() {
-        HashMap<String, String> param = new HashMap<>();
-        param.put("shop_id", model.getReviewShopId());
-        param.put("review_ids", String.valueOf(model.getReviewId()));
-        return param;
-    }
+//    private Map<String, String> getLikeDislikeParam() {
+//        HashMap<String, String> param = new HashMap<>();
+//        param.put("shop_id", model.getReviewShopId());
+//        param.put("review_ids", String.valueOf(model.getReviewId()));
+//        return param;
+//    }
 
 
     private void setModelToView() {
@@ -601,7 +601,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private void UpdateFacade(final ReviewProductModel model) {
         progressDialog.showDialog();
-        presenter.updateFacade(getActivity(), getActionLikeDislikeParam(), model);
+        presenter.updateFacade(getActivity(), model.getReviewId(), productID, shopID, model.detail.statusLikeDislike, model);
     }
 
     private Map<String, String> getActionLikeDislikeParam() {
@@ -710,7 +710,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private void reportReview(ActReviewPass pass) {
         progressDialog.showDialog();
-        presenter.postReport(getActivity(), pass.getReportParam());
+        presenter.postReport(getActivity(), pass.getReviewId(), pass.getShopId(), pass.getReportMessage());
     }
 
     private void showNetworkErrorSnackbar() {
@@ -722,17 +722,17 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     }
 
     private void deleteComment() {
-        presenter.deleteComment(getActivity(), getDeleteCommentParam());
+        presenter.deleteComment(getActivity(), model.getReviewReputationId(), model.getReviewId(), model.getReviewShopId());
     }
 
 
-    private Map<String, String> getDeleteCommentParam() {
-        ActReviewPass pass = new ActReviewPass();
-        pass.setReputationId(model.getReviewReputationId());
-        pass.setReviewId(String.valueOf(model.getReviewId()));
-        pass.setShopId(model.getReviewShopId());
-        return pass.getDeleteParam();
-    }
+//    private Map<String, String> getDeleteCommentParam() {
+//        ActReviewPass pass = new ActReviewPass();
+//        pass.setReputationId(model.getReviewReputationId());
+//        pass.setReviewId(String.valueOf(model.getReviewId()));
+//        pass.setShopId(model.getReviewShopId());
+//        return pass.getDeleteParam();
+//    }
 
     private View.OnClickListener OnUserNameClickListener() {
         return new View.OnClickListener() {

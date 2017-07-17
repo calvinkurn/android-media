@@ -6,6 +6,9 @@ import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 import java.util.Map;
 
+import android.support.annotation.NonNull;
+
+
 
 /**
  * Created by yoasfs on 13/07/17.
@@ -13,13 +16,24 @@ import java.util.Map;
 
 public interface ReputationProductViewFragmentPresenter {
 
+    void getLikeDislike(@NonNull Context context,
+                        @NonNull String shopId,
+                        @NonNull String reviewId);
 
-    void getLikeDislike(Context context, Map<String, String> param);
+    void updateFacade(@NonNull Context context,
+                      int reviewId,
+                      @NonNull String productId,
+                      @NonNull String shopId,
+                       int statusLikeDislike,
+                      @NonNull final ReviewProductModel model);
 
-    void updateFacade(Context context, Map<String, String> param, ReviewProductModel model);
+    void postReport(@NonNull Context context,
+                    @NonNull String reviewId,
+                    @NonNull String shopId,
+                    @NonNull String reportMessage);
 
-    void postReport(Context context, Map<String, String> param);
-
-
-    void deleteComment(Context context, Map<String, String> param);
+    void deleteComment(@NonNull Context context,
+                       @NonNull String reputationId,
+                       int reviewId,
+                       @NonNull String shopId);
 }

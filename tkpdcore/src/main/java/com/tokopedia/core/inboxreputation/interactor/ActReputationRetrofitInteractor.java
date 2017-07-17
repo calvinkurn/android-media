@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -65,4 +66,10 @@ public interface ActReputationRetrofitInteractor {
         void onNoConnection();
     }
 
+    //params section
+    Map<String, String> getActionLikeDislikeParam(String reviewId, String productID, String shopID, String statusLikeDislike);
+
+    Map<String, String> getReportParam(String reviewId, String shopId, String reportMessage);
+
+    Map<String, String> getDeleteCommentParam(String reputationId, String reviewId, String shopId);
 }

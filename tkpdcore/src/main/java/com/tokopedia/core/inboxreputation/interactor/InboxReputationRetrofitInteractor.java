@@ -7,6 +7,7 @@ import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputation;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetail;
 import com.tokopedia.core.inboxreputation.model.inboxreputationsingle.SingleReview;
 import com.tokopedia.core.reputationproduct.model.LikeDislike;
+import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 import java.util.Map;
 
@@ -92,6 +93,10 @@ public interface InboxReputationRetrofitInteractor {
     boolean isRequesting();
 
     void setRequesting(boolean isRequesting);
+
+
+    //params section
+    Map<String, String> getLikeDislikeParam(String shopId, String reviewId);
 
 
 }
