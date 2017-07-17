@@ -18,7 +18,7 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 
 /**
  * Created by errysuprayogi on 3/27/17.
