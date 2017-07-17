@@ -261,7 +261,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     } else if (e instanceof SocketTimeoutException) {
                         error = getView().getActivity().getString(R.string.error_timeout);
                     } else {
-                        error = e.getMessage();
+                        error = e.getmessage();
                     }
                     getView().failedToRequestRide(error);
                 }
