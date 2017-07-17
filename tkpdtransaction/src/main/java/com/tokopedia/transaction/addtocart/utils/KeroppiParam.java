@@ -77,7 +77,7 @@ public class KeroppiParam {
         return districtID + SEPARATOR + postalCode + SEPARATOR + lat + CO_SEPARATOR + lng;
     }
 
-    public static TKPDMapParam<String, String> paramsKeroCart(String token, CartItem cartItem) {
+    public static TKPDMapParam<String, String> paramsKeroCart(String token, String ut, CartItem cartItem) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         if (cartItem.getCartShipments() != null)
             params.put(NAMES, cartItem.getCartShipments().getShipmentCode());
@@ -102,6 +102,7 @@ public class KeroppiParam {
         params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
         params.put(CAT_ID, cartItem.getCartCatId());
         params.put(PRODUCT_INSURANCE, setInsurance(cartItem));
+        params.put(UT, ut);
         params.put(INSURANCE, "1");
 
         return params;
