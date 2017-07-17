@@ -85,6 +85,9 @@ public class UberSignupDialogFragment extends DialogFragment {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
             Log.d(TAG, "shouldOverrideUrlLoading: " + urlString);
+            if (urlString.endsWith("action_back")) {
+                dismiss();
+            }
             return false;
         }
 
