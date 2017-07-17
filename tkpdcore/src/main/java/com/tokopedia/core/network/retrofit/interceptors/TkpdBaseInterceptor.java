@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -29,7 +27,6 @@ public class TkpdBaseInterceptor implements Interceptor {
             Response response = chain.proceed(request);
             int count = 0;
             while (!response.isSuccessful() && count < maxRetryAttempt) {
-                Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
                 count++;
                 response = chain.proceed(request);
             }
