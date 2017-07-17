@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.di.component;
+package com.tokopedia.seller.goldmerchant.common.di.component;
 
 import android.content.Context;
 
@@ -23,8 +23,8 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.di.module.DatePickerModule;
-import com.tokopedia.seller.base.di.scope.DatePickerScope;
+import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
+import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 
@@ -35,9 +35,9 @@ import retrofit2.Retrofit;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@DatePickerScope
-@Component(modules = DatePickerModule.class, dependencies = AppComponent.class)
-public interface DatePickerComponent {
+@GoldMerchantScope
+@Component(modules = GoldMerchantModule.class, dependencies = AppComponent.class)
+public interface GoldMerchantComponent {
     void inject(BaseDatePickerFragment datePickerFragment);
 
     DatePickerPresenter datePickerPresenter();

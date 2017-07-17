@@ -10,16 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.component.GMTransactionComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
@@ -51,7 +55,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -132,10 +136,10 @@ public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .datePickerComponent(datePickerComponent)
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
     }
 
