@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
@@ -24,7 +25,7 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT
 public class ArrowPercentageView extends FrameLayout {
     private double mPercentage = GMStatConstant.NoDataAvailable * 100;
     private ImageView ivArrowIcon;
-    private LoaderTextView tvPercentage;
+    private TextView tvPercentage;
     private View view;
     private int downDrawableSrc = R.drawable.ic_rectangle_down;
     private int upDrawableSrc = R.drawable.ic_rectangle_up;
@@ -65,7 +66,7 @@ public class ArrowPercentageView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_gm_percentage, this);
         this.view = view;
         ivArrowIcon = (ImageView) view.findViewById(R.id.iv_arrow_icon);
-        tvPercentage = (LoaderTextView) view.findViewById(R.id.tv_percentage);
+        tvPercentage = (TextView) view.findViewById(R.id.tv_percentage);
         setUIPercentage();
         setAddStatesFromChildren(true);
     }

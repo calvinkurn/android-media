@@ -6,11 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
@@ -55,15 +57,9 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
     }
 
     private void setTopAdsCardView(GMGraphViewModel data) {
-        // TODO remove, just example empty state
-        View emptyView = LayoutInflater.from(context).inflate(R.layout.empty_product_feed, gmStatisticTopAdsCardView, false);
-        gmStatisticTopAdsCardView.setEmptyView(emptyView);
-        gmStatisticTopAdsCardView.setEmptyState(true);
-
-        gmStatisticTopAdsCardView.setTitle(context.getString(R.string.gold_merchant_top_ads_amount_title_text));
         gmTopAdsLineChartWidget.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
 
-        gmTopAdsLineChartWidget.setPercentage((double) (data.percentage * 100));
+        gmTopAdsLineChartWidget.setPercentage(data.percentage * 100);
         gmTopAdsLineChartWidget.setAmount(Integer.toString(data.amount));
     }
 
@@ -104,16 +100,116 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
     }
 
     public void bindNoData(@Nullable GMGraphViewModel data) {
-        //TODO hendry
+        gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
+        EmptyViewHolder emptyNoDataViewHolder = new EmptyNoDataViewHolder(gmStatisticTopAdsCardView.getEmptyView());
+        emptyNoDataViewHolder.bind(data);
+        gmStatisticTopAdsCardView.setEmptyState(true);
     }
 
 
     public void bindNoTopAdsCredit(@Nullable GMGraphViewModel data) {
-        //TODO hendry
+        gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
+        EmptyViewHolder emptyNoDataViewHolder = new EmptyNoTopAdsCreditHolder(gmStatisticTopAdsCardView.getEmptyView());
+        emptyNoDataViewHolder.bind(data);
+        gmStatisticTopAdsCardView.setEmptyState(true);
     }
 
 
     public void bindTopAdsCreditNotUsed(@Nullable GMGraphViewModel data) {
-        //TODO hendry
+        gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
+        EmptyViewHolder emptyNoDataViewHolder = new EmptyTopAdsCreditNotUsedHolder(gmStatisticTopAdsCardView.getEmptyView());
+        emptyNoDataViewHolder.bind(data);
+        gmStatisticTopAdsCardView.setEmptyState(true);
+    }
+
+    abstract class EmptyViewHolder {
+        ImageView ivIcon;
+        TextView tvTitle;
+        TextView tvSubtitle;
+        TextView tvAction;
+        View button;
+        public EmptyViewHolder(View itemView){
+            ivIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            tvSubtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
+            tvAction = (TextView) itemView.findViewById(R.id.tv_action);
+            button = itemView.findViewById(R.id.button_action);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO hendry dafter topads sekarang ke mana.?
+                }
+            });
+        }
+        public abstract void bind(@Nullable GMGraphViewModel data);
+    }
+
+    class EmptyNoDataViewHolder extends EmptyViewHolder {
+
+        public EmptyNoDataViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(@Nullable GMGraphViewModel data) {
+            tvTitle.setText(context.getString(R.string.gm_stat_top_ads_empty_title_no_data));
+            tvSubtitle.setText(context.getString(R.string.gm_stat_top_ads_empty_desc_no_data));
+            tvAction.setText(MethodChecker.fromHtml(context.getString(R.string.change_date)));
+            tvAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO hendry ubah tanggal
+                }
+            });
+            button.setVisibility(View.GONE);
+        }
+    }
+
+    class EmptyNoTopAdsCreditHolder extends EmptyViewHolder {
+
+        public EmptyNoTopAdsCreditHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(@Nullable GMGraphViewModel data) {
+            tvTitle.setText(context.getString(R.string.gm_stat_top_ads_empty_title_no_topads_credit));
+            tvSubtitle.setText(context.getString(R.string.gm_stat_top_ads_empty_desc_no_topads_credit));
+            tvAction.setText(context.getString(R.string.find_out));
+            tvAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO hendry cari tahu topads ke mana?
+                }
+            });
+            button.setVisibility(View.VISIBLE);
+        }
+    }
+
+    class EmptyTopAdsCreditNotUsedHolder extends EmptyViewHolder {
+
+        public EmptyTopAdsCreditNotUsedHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(@Nullable GMGraphViewModel data) {
+            tvTitle.setText(context.getString(R.string.gm_stat_top_ads_empty_title_credit_not_used));
+            if (data == null) {
+                tvSubtitle.setVisibility(View.GONE);
+            } else {
+                tvSubtitle.setText(MethodChecker.fromHtml(context.getString(R.string.gm_stat_top_ads_empty_desc_credit_not_used,
+                        KMNumbers.formatString((double) data.amount))));
+                tvSubtitle.setVisibility(View.VISIBLE);
+            }
+            tvAction.setText(context.getString(R.string.find_out));
+            tvAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO hendry cari tahu topads ke mana?
+                }
+            });
+            button.setVisibility(View.VISIBLE);
+        }
     }
 }

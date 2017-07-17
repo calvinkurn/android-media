@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.views.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -26,13 +27,15 @@ public class TitleCardView extends CardView {
 
     FrameLayout mFrameLayout;
     OnArrowDownClickListener onArrowDownClickListener;
-    private LoaderTextView tvTitle;
+    private TextView tvTitle;
     private ImageView ivArrowDown;
     private ViewGroup vgTitle;
 
     private View emptyView;
     private View loadingView;
     private View contentView;
+
+    private String mTitleString;
 
     public TitleCardView(Context context) {
         super(context);
@@ -54,17 +57,20 @@ public class TitleCardView extends CardView {
 
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
-
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
+        mTitleString = a.getString(R.styleable.TitleCardView_title);
+        a.recycle();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_title_card, this);
         vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
-        tvTitle = (LoaderTextView) vgTitle.findViewById(R.id.tv_title);
+        tvTitle = (TextView) vgTitle.findViewById(R.id.tv_title);
         ivArrowDown = (ImageView) vgTitle.findViewById(R.id.iv_arrow_down);
 
         mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
 
+        setTitle(mTitleString);
         ivArrowDown.setVisibility(View.GONE);
 
         this.setPreventCornerOverlap(false);
@@ -138,6 +144,15 @@ public class TitleCardView extends CardView {
         addView(loadingView);
     }
 
+    public void setLoadingViewRes(int loadingViewRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, mFrameLayout, false);;
+        setLoadingView(emptyView);
+    }
+
+    public View getLoadingView() {
+        return loadingView;
+    }
+
     public void setEmptyView(View emptyView) {
         if (this.emptyView!= null) {
             mFrameLayout.removeView(this.emptyView);
@@ -145,6 +160,15 @@ public class TitleCardView extends CardView {
         this.emptyView = emptyView;
         emptyView.setVisibility(View.GONE);
         addView(emptyView);
+    }
+
+    public void setEmptyViewRes(int emptyViewRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, mFrameLayout, false);;
+        setEmptyView(emptyView);
+    }
+
+    public View getEmptyView() {
+        return emptyView;
     }
 
     public void setLoadingState (boolean isLoading){
