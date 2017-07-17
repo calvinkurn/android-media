@@ -3,7 +3,6 @@ package com.tokopedia.core.home.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -138,12 +137,10 @@ public class TokoCashHeaderView extends RelativeLayout {
     }
 
     private void openTokoCashWebView(String redirectURL) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TOKO_CASH_URL, redirectURL);
         if (getContext() instanceof Activity) {
             if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
-                        .goToWallet(getContext(), bundle);
+                        .goToWallet(getContext(), redirectURL);
             }
         }
     }

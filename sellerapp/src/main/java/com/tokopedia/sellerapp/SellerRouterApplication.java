@@ -96,7 +96,7 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
         //no route to wallet on seller, go to default
         goToDefaultRoute(context);
     }
