@@ -17,6 +17,7 @@ import rx.functions.Func1;
 
 public class LocalProfileSource {
 
+    private static final String CACHE_EXPIRED = "Cache has expired";
     private final GlobalCacheManager peopleCache;
 
     public LocalProfileSource(GlobalCacheManager peopleCache) {
@@ -35,7 +36,7 @@ public class LocalProfileSource {
                                     new TypeToken<ProfileModel>() {
                                     }.getType());
                         } else
-                            throw new RuntimeException("Cache has expired");
+                            throw new RuntimeException(CACHE_EXPIRED);
 
                     }
                 })
