@@ -86,6 +86,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     }
 
+    private boolean checkCanShowTopads(int dataSource) {
+        return dataSource == FeedResult.SOURCE_CLOUD;
+    }
+
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
         if (hasFeed(feedResult.getFeedDomain())
@@ -93,6 +97,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
         } else {
+            viewListener.showTopAds(checkCanShowTopads(feedResult.getDataSource()));
             viewListener.onSuccessGetFeedFirstPage(listFeedView);
         }
     }

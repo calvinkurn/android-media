@@ -17,6 +17,7 @@ public class TopAdsShopItem {
     private String luckyShop;
     private String shopUri;
     private String shopImageCover;
+    private String shopImageCoverEcs;
     private String shopImageUrl;
     private String shopDomain;
 
@@ -117,6 +118,14 @@ public class TopAdsShopItem {
 
     public void setShopImageCover(String shopImageCover) {
         this.shopImageCover = shopImageCover;
+    }
+
+    public String getShopImageCoverEcs() {
+        return shopImageCoverEcs;
+    }
+
+    public void setShopImageCoverEcs(String shopImageCoverEcs) {
+        this.shopImageCoverEcs = shopImageCoverEcs;
     }
 
     public String getShopImageUrl() {

@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -56,11 +58,11 @@ public final class TooLargeTool {
      */
     @NonNull
     public static String bundleBreakdown(@NonNull Bundle bundle) {
+        float totalBundleSize = KB(sizeAsParcel(bundle));
         String result = String.format(
                 Locale.UK,
                 "Bundle@%d contains %d keys and measures %,.1f KB when serialized as a Parcel",
-                System.identityHashCode(bundle), bundle.size(), KB(sizeAsParcel(bundle))
-        );
+                System.identityHashCode(bundle), bundle.size(), totalBundleSize);
         for (Map.Entry<String, Integer> entry: valueSizes(bundle).entrySet()) {
             result += String.format(
                     Locale.UK,
@@ -160,5 +162,9 @@ public final class TooLargeTool {
      */
     public static void startLogging(Application application, int priority, @NonNull String tag) {
         application.registerActivityLifecycleCallbacks(new ActivitySavedStateLogger(priority, tag, true));
+    }
+
+    public static Boolean isPotentialCrash(Bundle bundle) {
+        return KB(sizeAsParcel(bundle)) > 500.0;
     }
 }

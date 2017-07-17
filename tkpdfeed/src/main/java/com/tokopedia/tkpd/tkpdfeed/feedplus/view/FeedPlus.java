@@ -111,6 +111,8 @@ public interface FeedPlus{
         boolean hasFeed();
 
         void updateFavoriteFromEmpty();
+
+        void showTopAds(boolean isTopAdsShown);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

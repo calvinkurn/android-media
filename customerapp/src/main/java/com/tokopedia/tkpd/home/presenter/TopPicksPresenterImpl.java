@@ -1,25 +1,17 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
-import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
-import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
-import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
 import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.TopPicksResponse;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.interactor.HomeMenuInteractor;
 import com.tokopedia.tkpd.home.interactor.HomeMenuInteractorImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;

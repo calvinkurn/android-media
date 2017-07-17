@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private TopAdsPlacer placer;
     private int itemTreshold = 5;
+
     private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
+
         @Override
         public void onLoadMore(int page, int totalItemsCount) {
             if (loadMore)
