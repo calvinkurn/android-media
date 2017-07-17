@@ -9,7 +9,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 
 public class Config {
 
-    public static final String TOPADS_URL = "https://ta.tokopedia.com/promo/";
+    public static final String TOPADS_URL = "https://ta-staging.tokopedia.com/promo/";
     public static final int ERROR_CODE_INVALID_RESPONSE = 911;
     public static final String DEFAULT_DEVICE = "android";
     public static final String DEFAULT_CLIENT_ID = "12";
