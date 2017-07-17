@@ -52,6 +52,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.TransparentVideoActivi
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.product.AddFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
@@ -410,6 +411,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onFavoritedClicked(int adapterPosition) {
         adapter.getItemViewType(adapterPosition);
+    }
+
+    @Override
+    public void onFavoriteShopClicked(Data dataShop, EmptyTopAdsViewHolder.FavoriteShopCallback callback) {
+        presenter.favoriteShop(dataShop, 0, callback);
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.CheckNewFeedSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
@@ -95,7 +96,11 @@ public class FeedPlusPresenter
                 new GetFeedsSubscriber(viewListener));
     }
 
-    public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
+    public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition){
+        favoriteShop(promotedShopViewModel, adapterPosition, null);
+    }
+
+    public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition, final EmptyTopAdsViewHolder.FavoriteShopCallback callback) {
         RequestParams params = RequestParams.create();
         AuthUtil.generateParamsNetwork2(viewListener.getActivity(), params.getParameters());
         params.putString(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShop().getId());
@@ -130,11 +135,11 @@ public class FeedPlusPresenter
                     stringBuilder.append(viewListener.getString(R.string.msg_network_error));
                 }
                 viewListener.showSnackbar(stringBuilder.toString());
-
-                if (viewListener.hasFeed())
+                if(callback!=null){
+                    callback.onFinish(isSuccess);
+                } else {
                     viewListener.updateFavorite(adapterPosition);
-                else
-                    viewListener.updateFavoriteFromEmpty();
+                }
             }
         });
     }

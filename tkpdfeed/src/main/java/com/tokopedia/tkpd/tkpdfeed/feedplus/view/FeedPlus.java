@@ -7,7 +7,9 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,8 @@ public interface FeedPlus{
         void onSearchShopButtonClicked();
 
         void onFavoritedClicked(int adapterPosition);
+
+        void onFavoriteShopClicked(Data dataShop, EmptyTopAdsViewHolder.FavoriteShopCallback callback);
 
         void showSnackbar(String s);
 

@@ -30,7 +30,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewMo
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 /**
  * @author by nisie on 5/15/17.
@@ -39,12 +38,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
 
     private final FeedPlus.View viewListener;
-    private final TopAdsItemClickListener topAdsItemClickListener;
 
-    public FeedPlusTypeFactoryImpl(FeedPlus.View viewListener,
-                                   TopAdsItemClickListener topAdsItemClickListener) {
+    public FeedPlusTypeFactoryImpl(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
-        this.topAdsItemClickListener = topAdsItemClickListener;
     }
 
     @Override
@@ -140,7 +136,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         else if (type == RecentViewViewHolder.LAYOUT)
             viewHolder = new RecentViewViewHolder(view, viewListener);
         else  if (type == EmptyTopAdsViewHolder.LAYOUT)
-            viewHolder = new EmptyTopAdsViewHolder(view, topAdsItemClickListener);
+            viewHolder = new EmptyTopAdsViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
