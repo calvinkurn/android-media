@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
@@ -24,13 +25,16 @@ public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> 
 
     private static final int START_PAGE = 1;
     private static final int MAX_TOPADS = 3;
+    private final TopAdsItemClickListener viewListener;
     public LinearLayout container;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_topads_empty;
 
-    public EmptyTopAdsViewHolder(View itemView) {
+    public EmptyTopAdsViewHolder(View itemView,
+                                 TopAdsItemClickListener viewListener) {
         super(itemView);
+        this.viewListener = viewListener;
         container = (LinearLayout) itemView.findViewById(R.id.container);
     }
 
@@ -56,6 +60,7 @@ public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> 
             adsView.setMaxItems(1);
             adsView.setDisplayMode(DisplayMode.FEED);
             adsView.loadTopAds();
+            adsView.setAdsItemClickListener(viewListener);
             container.addView(adsView);
         }
     }

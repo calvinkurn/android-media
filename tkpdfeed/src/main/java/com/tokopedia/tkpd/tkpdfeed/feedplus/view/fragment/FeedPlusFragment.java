@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -134,7 +133,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, this);
         adapter = new FeedPlusAdapter(typeFactory);
 
         Config config = new Config.Builder()
@@ -445,6 +444,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+        topAdsRecyclerAdapter.showLoading();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
@@ -700,7 +701,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private boolean hasFeed() {
+    @Override
+    public boolean hasFeed() {
         return adapter.getlist() != null
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1

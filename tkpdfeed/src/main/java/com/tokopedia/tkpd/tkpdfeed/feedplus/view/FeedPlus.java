@@ -103,6 +103,8 @@ public interface FeedPlus{
         void onGoToPromoPageFromHeader();
 
         void onHideNewFeed();
+
+        boolean hasFeed();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
