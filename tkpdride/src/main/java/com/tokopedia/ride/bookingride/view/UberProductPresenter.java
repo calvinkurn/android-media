@@ -185,70 +185,68 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         }
 
         compositeSubscription.add(Observable.merge(observables)
-                        .filter(new Func1<RideProductViewModel, Boolean>() {
-                            @Override
-                            public Boolean call(RideProductViewModel rideProductViewModel) {
-                                return rideProductViewModel != null;
-                            }
-                        })
-                        .toList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<RideProductViewModel>>() {
-                            @Override
-                            public void onCompleted() {
+                .filter(new Func1<RideProductViewModel, Boolean>() {
+                    @Override
+                    public Boolean call(RideProductViewModel rideProductViewModel) {
+                        return rideProductViewModel != null;
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<RideProductViewModel>>() {
+                    @Override
+                    public void onCompleted() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                if (isViewAttached()) {
-                                    getView().hideProgress();
-                                    getView().hideProductList();
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().hideProgress();
+                            getView().hideProductList();
 
-                                    String message = e.getMessage();
-                                    if (e instanceof InterruptConfirmationHttpException) {
-                                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
-                                        if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
-                                            getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
-                                        } else {
-                                            getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
-                                        }
-                                    } else {
-                                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                                            message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
-                                        } else if (e instanceof SocketTimeoutException) {
-                                            message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                                        }
-//                                else {
-//                                    message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
-//                                }
-                                        getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
-                                    }
+                            String message = e.getMessage();
+                            if (e instanceof InterruptConfirmationHttpException) {
+                                getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+                                if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                                    getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                                } else {
+                                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                                 }
-                            }
-
-                            @Override
-                            public void onNext(List<RideProductViewModel> rideProductViewModels) {
-                                if (isViewAttached()) {
-                                    getView().hideProgress();
-                                    getView().hideErrorMessage();
-                                    if (rideProductViewModels.size() > 0) {
-                                        getView().showProductList();
-                                        List<Visitable> visitables = new ArrayList<>();
-                                        visitables.addAll(rideProductViewModels);
-                                        getView().renderProductList(visitables);
-                                    } else {
-                                        getView().hideProductList();
-                                        getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
-                                                getView().getActivity().getString(R.string.btn_text_retry)
-                                        );
-                                    }
+                            } else {
+                                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                } else if (e instanceof SocketTimeoutException) {
+                                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                                 }
 
+                                getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                             }
-                        })
+                        }
+                    }
+
+                    @Override
+                    public void onNext(List<RideProductViewModel> rideProductViewModels) {
+                        if (isViewAttached()) {
+                            getView().hideProgress();
+                            getView().hideErrorMessage();
+                            if (rideProductViewModels.size() > 0) {
+                                getView().showProductList();
+                                List<Visitable> visitables = new ArrayList<>();
+                                visitables.addAll(rideProductViewModels);
+                                getView().renderProductList(visitables);
+                            } else {
+                                getView().hideProductList();
+                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
+                                        getView().getActivity().getString(R.string.btn_text_retry)
+                                );
+                            }
+                        }
+
+                    }
+                })
         );
     }
 
