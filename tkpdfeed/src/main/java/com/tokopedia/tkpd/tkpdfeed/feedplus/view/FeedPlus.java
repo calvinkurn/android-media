@@ -105,6 +105,8 @@ public interface FeedPlus{
         void onHideNewFeed();
 
         boolean hasFeed();
+
+        void updateFavoriteFromEmpty();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

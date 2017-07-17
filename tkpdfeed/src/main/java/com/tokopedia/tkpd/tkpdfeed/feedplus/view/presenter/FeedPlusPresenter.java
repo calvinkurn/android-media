@@ -134,7 +134,7 @@ public class FeedPlusPresenter
                 if (viewListener.hasFeed())
                     viewListener.updateFavorite(adapterPosition);
                 else
-                    refreshPage();
+                    viewListener.updateFavoriteFromEmpty();
             }
         });
     }

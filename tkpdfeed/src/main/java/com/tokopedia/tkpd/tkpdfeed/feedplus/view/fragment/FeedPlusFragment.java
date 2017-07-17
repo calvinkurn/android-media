@@ -709,5 +709,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
     }
 
+    @Override
+    public void updateFavoriteFromEmpty() {
+        onRefresh();
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
+
+    }
+
 
 }
