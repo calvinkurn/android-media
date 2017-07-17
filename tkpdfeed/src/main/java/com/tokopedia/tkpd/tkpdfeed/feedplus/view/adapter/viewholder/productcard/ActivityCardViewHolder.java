@@ -108,9 +108,11 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
     @Override
     public void bind(ActivityCardViewModel activityCardViewModel) {
-        setHeader(activityCardViewModel);
-        adapter.setData(activityCardViewModel);
-        setFooter(activityCardViewModel);
+        if (activityCardViewModel != null) {
+            setHeader(activityCardViewModel);
+            adapter.setData(activityCardViewModel);
+            setFooter(activityCardViewModel);
+        }
     }
 
     public void setHeader(final ActivityCardViewModel activityCardViewModel) {
