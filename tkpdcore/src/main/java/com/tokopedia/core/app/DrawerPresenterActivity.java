@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -253,8 +254,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerTokoCash(tokoCash);
-
+        Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+        intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
+                tokoCash);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+        sendBroadcast(intent);
     }
 
     @Override
