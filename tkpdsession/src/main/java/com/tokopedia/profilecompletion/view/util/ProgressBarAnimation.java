@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.view;
+package com.tokopedia.profilecompletion.view.util;
 
 import android.view.animation.Animation;
 import android.view.animation.Transformation;

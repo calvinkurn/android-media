@@ -1,11 +1,9 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,10 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.profilecompletion.view.Events;
-import com.tokopedia.profilecompletion.view.Properties;
+import com.tokopedia.profilecompletion.view.util.Events;
+import com.tokopedia.profilecompletion.view.util.Properties;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
@@ -29,7 +26,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func3;
-import rx.subjects.PublishSubject;
 
 
 /**

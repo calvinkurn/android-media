@@ -8,26 +8,43 @@
     android:background="@color/white"
     android:padding="@dimen/padding_medium_prof_comp">
 
-    <include
-        android:id="@id/header"
-        layout="@layout/fragment_profile_completion_header"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+    <ProgressBar
+        android:id="@+id/loading_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        tools:visibility="gone"/>
 
     <LinearLayout
-        tools:background="@color/colorAccent"
-        android:id="@+id/fragment_container"
+        android:id="@+id/layout_main"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_below="@id/header"
-        android:layout_above="@id/footer">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include
+            android:id="@id/header"
+            layout="@layout/fragment_profile_completion_header"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            tools:background="@color/colorAccent"
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_below="@id/header"
+            android:layout_above="@id/footer">
+        </LinearLayout>
+
+        <include
+            android:id="@id/footer"
+            layout="@layout/fragment_profile_completion_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <include
-        android:id="@id/footer"
-        layout="@layout/fragment_profile_completion_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+
+
+
 </LinearLayout>

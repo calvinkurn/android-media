@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
@@ -11,19 +12,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
 import android.util.Pair;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,13 +34,12 @@ import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.view.ProgressBarAnimation;
+import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
+import com.tokopedia.profilecompletion.view.util.TextDrawable;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.session.R;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -66,14 +62,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private String filled;
     private View skip;
     View progress;
+
+    View main;
+    View loading;
+
     FragmentTransaction transaction;
-    MenuInflater menuInflater;
 
     @Inject
     ProfileCompletionPresenter presenter;
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
-    private MenuItem skipItem;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -108,12 +106,18 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         menu.add(Menu.NONE, R.id.action_skip, 0, title);
         MenuItem menuItem = menu.findItem(R.id.action_skip); // OR THIS
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getDraw());
+
         menuItem.setTitle(title);
 
         super.onCreateOptionsMenu(menu, inflater);
-//        menuInflater = getActivity().getMenuInflater();
-//        menuInflater.inflate(R.menu.menu_skip, menu);
-//        skipItem = menu.findItem(R.id.action_skip);
+    }
+
+    private Drawable getDraw(){
+        TextDrawable drawable = new TextDrawable(getActivity());
+        drawable.setText(getResources().getString(R.string.skip_form));
+        drawable.setTextColor(R.color.black_70);
+        return drawable;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -134,6 +138,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         proceed = (TextView) view.findViewById(R.id.proceed);
         skip = view.findViewById(R.id.skip);
+        main = view.findViewById(R.id.layout_main);
+        loading = view.findViewById(R.id.loading_layout);
     }
 
     @Override
@@ -166,6 +172,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         this.data = getUserInfoDomainData;
         testDummyData();
         updateProgressBar(0, data.getCompletion());
+        loading.setVisibility(View.GONE);
         loadFragment(getUserInfoDomainData, new Pair<>(0, 0));
     }
 
@@ -245,12 +252,11 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private void setViewEnabled() {
         progress.setVisibility(View.GONE);
         proceed.setVisibility(View.VISIBLE);
-        proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
+        proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
         proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         proceed.setText(getString(R.string.continue_form));
         proceed.setEnabled(true);
         skip.setEnabled(true);
-//        skipItem.setEnabled(true);
     }
 
 
@@ -259,17 +265,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         progress.setVisibility(View.VISIBLE);
         proceed.setVisibility(View.GONE);
         skip.setEnabled(false);
-//        skipItem.setEnabled(false);
     }
 
     public void canProceed(boolean can){
         proceed.setEnabled(can);
         if(can){
-            proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
             proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         }
         else{
-            proceed.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.grey_300));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
             proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         }
     }
@@ -328,8 +333,5 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
                 .build();
         daggerProfileCompletionComponent.inject(this);
     }
-//
-//    public MenuItem getSkipButton() {
-//        return skip;
-//    }
+
 }

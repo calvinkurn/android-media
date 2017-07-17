@@ -65,6 +65,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.view.View.GONE;
+
 /**
  * Created by nisie on 2/22/17.
  */
@@ -219,11 +221,11 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected void onFirstTimeLaunched() {
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
                 SessionHandler.getPhoneNumber()));
-        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
-            inputOtpView.setVisibility(View.VISIBLE);
-            changePhoneNumberButton.setVisibility(View.GONE);
-            startTimer();
-        }
+//        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+//            inputOtpView.setVisibility(View.VISIBLE);
+//            changePhoneNumberButton.setVisibility(View.GONE);
+//            startTimer();
+//        }
     }
 
     protected void initView(View view) {
@@ -231,10 +233,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         data = parentView.getData();
         verifyButton = (TextView) parentView.getView().findViewById(R.id.proceed);
         verifyButton.setText(getResources().getString(R.string.continue_form));
-        verifyButton.setEnabled(false);
-
-        verifyButton.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.grey_300));
-        verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+        parentView.canProceed(false);
 
         skipButton = (TextView) parentView.getView().findViewById(R.id.skip);
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
@@ -331,14 +330,10 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 6) {
-                    verifyButton.setEnabled(true);
-                    verifyButton.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
-                    verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+                    parentView.canProceed(true);
 
                 } else {
-                    verifyButton.setEnabled(false);
-                    verifyButton.setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.grey_300));
-                    verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+                    parentView.canProceed(false);
                 }
             }
         });
@@ -369,7 +364,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
-        changePhoneNumberButton.setVisibility(View.GONE);
+//        changePhoneNumberButton.setVisibility(View.GONE);
         setViewEnabled(true);
         startTimer();
     }
@@ -466,17 +461,26 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         otpEditText.requestFocus();
     }
 
+    protected void stopTimer() {
+        instruction.setVisibility(View.VISIBLE);
+        tokocashText.setVisibility(View.VISIBLE);
+        requestOtpButton.setVisibility(View.VISIBLE);
+        inputOtpView.setVisibility(View.GONE);
+        verifyButton.setText(getResources().getString(R.string.continue_form));
+        parentView.canProceed(false);
+    }
+
     protected void runAnimation() {
         countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, COUNTDOWN_INTERVAL_SECOND) {
             public void onTick(long millisUntilFinished) {
-                instruction.setVisibility(View.GONE);
+                instruction.setVisibility(GONE);
                 countdownText.setVisibility(View.VISIBLE);
                 MethodChecker.setBackground(countdownText, MethodChecker.getDrawable(getActivity(), R.drawable.prof_comp_bg_textview_rounded_white));
                 countdownText.setText(
                         "Kirim SMS Ulang (" + String.format(FORMAT,
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished))
                                 + ")");
-                requestOtpCallButton.setVisibility(View.GONE);
+                requestOtpCallButton.setVisibility(GONE);
             }
 
             public void onFinish() {
@@ -488,8 +492,8 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     protected void enableOtpButton() {
         instruction.setVisibility(View.VISIBLE);
-        tokocashText.setVisibility(View.GONE);
-        countdownText.setVisibility(View.GONE);
+        tokocashText.setVisibility(GONE);
+        countdownText.setVisibility(GONE);
         requestOtpButton.setVisibility(View.VISIBLE);
 //        MethodChecker.setBackground(requestOtpButton,
 //                MethodChecker.getDrawable(getActivity(),
@@ -505,6 +509,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         if (requestCode == ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER &&
                 resultCode == Activity.RESULT_OK) {
             phoneNumberEditText.setText(data.getStringExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER));
+            stopTimer();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -90,4 +90,8 @@
     <color name="bright_red">#eb3c0d</color>
     <color name="black_36">#5C000000</color>
     <color name="price_pdp">#ff5722</color>
+
+
+    <color name="grey_hint">#e0e0e0</color>
+
 </resources>

@@ -15,8 +15,9 @@
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:padding="@dimen/padding_large_prof_comp"
-        android:background="@color/medium_green"
-        android:textColor="@color/white"
+        android:background="@drawable/prof_comp_bg_textview_rounded"
+        android:backgroundTint="@color/grey_300"
+        android:textColor="@color/grey_500"
         />
 
     <ProgressBar
