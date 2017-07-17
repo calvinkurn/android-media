@@ -81,16 +81,16 @@ public class GetTransactionGraph {
     private double diffNetRevenue;
     @SerializedName("diff_rejected_amount")
     @Expose
-    private int diffRejectedAmount;
+    private double diffRejectedAmount;
     @SerializedName("diff_shipping_cost")
     @Expose
     private double diffShippingCost;
     @SerializedName("diff_cpc_shop")
     @Expose
-    private int diffCpcShop;
+    private double diffCpcShop;
     @SerializedName("diff_cpc_prod")
     @Expose
-    private int diffCpcProd;
+    private double diffCpcProd;
     @SerializedName("date_graph")
     @Expose
     private List<Integer> dateGraph = null;
@@ -290,11 +290,11 @@ public class GetTransactionGraph {
         this.diffNetRevenue = diffNetRevenue;
     }
 
-    public int getDiffRejectedAmount() {
+    public double getDiffRejectedAmount() {
         return diffRejectedAmount;
     }
 
-    public void setDiffRejectedAmount(int diffRejectedAmount) {
+    public void setDiffRejectedAmount(double diffRejectedAmount) {
         this.diffRejectedAmount = diffRejectedAmount;
     }
 
@@ -306,19 +306,19 @@ public class GetTransactionGraph {
         this.diffShippingCost = diffShippingCost;
     }
 
-    public int getDiffCpcShop() {
+    public double getDiffCpcShop() {
         return diffCpcShop;
     }
 
-    public void setDiffCpcShop(int diffCpcShop) {
+    public void setDiffCpcShop(double diffCpcShop) {
         this.diffCpcShop = diffCpcShop;
     }
 
-    public int getDiffCpcProd() {
+    public double getDiffCpcProd() {
         return diffCpcProd;
     }
 
-    public void setDiffCpcProd(int diffCpcProd) {
+    public void setDiffCpcProd(double diffCpcProd) {
         this.diffCpcProd = diffCpcProd;
     }
 

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment2;
@@ -24,9 +22,12 @@ import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransact
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
+import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +54,9 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     private LinearLayout sortTypeContainer;
     private boolean showingSimpleDialog;
     private String[] gmStatSortBy;
+    private boolean[] sortBySelections;
     private String[] gmStatSortType;
+    private boolean[] sortTypeSelections;
 
     public static Fragment createInstance(long startDate, long endDate) {
         Bundle bundle = new Bundle();
@@ -120,7 +123,12 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         });
 
         gmStatSortBy = getResources().getStringArray(R.array.gm_stat_sort_by);
+        sortBySelections = new boolean[gmStatSortBy.length];
+        sortBySelections[0] = true;
+
         gmStatSortType = getResources().getStringArray(R.array.gm_stat_sort_type);
+        sortTypeSelections = new boolean[gmStatSortBy.length];
+        sortTypeSelections[0] = true;
     }
 
     @Override
@@ -159,7 +167,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     }
 
     private void showSortBy() {
-        showBottomSheetDialog(gmStatSortBy, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 switch (GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
@@ -183,7 +191,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     }
 
     private void showSortType() {
-        showBottomSheetDialog(gmStatSortType, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
                 switch (GMStatisticUtil.findSelection(gmStatSortBy, menuItem.getTitle().toString())) {
@@ -202,15 +210,18 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         });
     }
 
-    private void showBottomSheetDialog(final String[] text, BottomSheetItemClickListener bottomSheetItemClickListener) {
+    private void showBottomSheetDialog(final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
         showingSimpleDialog = true;
-        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
                 .addTitleItem(getString(R.string.gold_merchant_transaction_summary_text));
 
         for (int i = 0; i < text.length; i++) {
-            bottomSheetBuilder.addItem(i, text[i], null);
+            if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(i, text[i], null, selections[i]);
+            } else {
+                bottomSheetBuilder.addItem(i, text[i], null);
+            }
         }
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
