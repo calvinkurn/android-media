@@ -380,7 +380,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
 
     private void firstRequest() {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = true;
         presenter.refreshInboxTalk(getActivity(), getParam());
     }
