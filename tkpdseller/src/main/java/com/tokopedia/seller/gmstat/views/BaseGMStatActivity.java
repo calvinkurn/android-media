@@ -17,7 +17,7 @@ import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 
 import javax.inject.Inject;
 

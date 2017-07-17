@@ -30,7 +30,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;

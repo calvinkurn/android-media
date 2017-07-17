@@ -127,7 +127,7 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
                 .setItemClickListener(new BottomSheetItemClickListener() {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
-                        gmStatGraphSelection = findSelection(gmStatTransactionEntries, item.getTitle().toString());
+                        gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
                         Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
                         GMTransactionGraphViewHelper.this.bind(data);
                         showingSimpleDialog = false;
@@ -141,19 +141,6 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
             }
         });
         bottomSheetDialog.show();
-    }
-
-    private int findSelection(String[] values, String selection) {
-        int searchIndex = -1;
-
-        int count = 0;
-        for (String value : values) {
-            if (value.equals(selection)) {
-                return searchIndex = count;
-            }
-            count++;
-        }
-        return searchIndex;
     }
 
     public int selection() {

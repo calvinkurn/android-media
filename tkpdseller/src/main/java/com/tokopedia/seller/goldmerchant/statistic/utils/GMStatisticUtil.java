@@ -110,4 +110,17 @@ public final class GMStatisticUtil {
         }
         return result;
     }
+
+    public static int findSelection(String[] values, String selection) {
+        int searchIndex = -1;
+
+        int count = 0;
+        for (String value : values) {
+            if (value.equals(selection)) {
+                return searchIndex = count;
+            }
+            count++;
+        }
+        return searchIndex;
+    }
 }

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 
 import java.util.Date;
 

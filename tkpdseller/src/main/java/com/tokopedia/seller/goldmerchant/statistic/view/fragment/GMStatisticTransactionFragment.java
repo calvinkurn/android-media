@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
@@ -33,6 +32,10 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +51,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDaggerFragment {
+public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -59,6 +62,9 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
     @Inject
     SessionHandler sessionHandler;
+
+    @Inject
+    DashboardTopadsInteractor dashboardTopadsInteractor;
 
     private View rootView;
 
@@ -71,6 +77,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
 
     private GMDateRangeDateViewModel gmDateRangeDateViewModel;
     private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
+    private DataDeposit data;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -86,7 +93,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     }
 
     private void initVar() {
-        monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        monthNamesAbrev = getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
         gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
         gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());
@@ -114,10 +121,21 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     }
 
     @Override
+    protected void loadData() {
+
+    }
+
+    @Override
+    protected Intent getDatePickerIntent() {
+        return null;
+    }
+
+    @Override
     protected void initInjector() {
+        super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .datePickerComponent(datePickerComponent)
                 .build().inject(this);
     }
 
@@ -179,6 +197,46 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
                         processUnfinishedTransaction(getTransactionGraph);
                     }
                 });
+    }
+
+    protected void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("shop_id", sessionHandler.getShopID());
+        dashboardTopadsInteractor.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
+            @Override
+            public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {
+                DataDeposit data = dataDepositDataResponse.getData();
+                if (data.isAdUsage()) {
+                    if (isNoAdsData(gmTopAdsAmountViewModel)) {
+                        // TODO paling kanan
+                        Log.d(TAG, "TopAdsAmount Empty state paling kanan");
+                    } else {
+                        gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
+                    }
+                } else {
+                    if (gmTopAdsAmountViewModel.amount == 0) {
+                        // TODO paling kiri
+                        Log.d(TAG, "TopAdsAmount Empty state paling kiri");
+                    } else {
+                        // TODO tengah
+                        Log.d(TAG, "TopAdsAmount Empty state tengah");
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
+    }
+
+    private boolean isNoAdsData(GMGraphViewModel data) {
+        boolean isAllZero = true;
+        for (int i = 0; i < data.values.size(); i++) {
+            isAllZero = isAllZero && data.values.get(i) == 0;
+        }
+        return isAllZero;
     }
 
     private void processUnfinishedTransaction(GetTransactionGraph getTransactionGraph) {
@@ -310,6 +368,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     }
 
     protected void processTopAdsAmount(GetTransactionGraph getTransactionGraph, List<Integer> dateGraph) {
+
         GMGraphViewModel gmTopAdsAmountViewModel
                 = new GMGraphViewModel();
         gmTopAdsAmountViewModel.dates = dateGraph;
@@ -318,7 +377,6 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
         gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
 
         gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
-
         long previousAmount = getTransactionGraph.getpCpcProduct() + getTransactionGraph.getpCpcShop();
         try {
             gmTopAdsAmountViewModel.percentage = gmTopAdsAmountViewModel.amount - previousAmount / gmTopAdsAmountViewModel.amount;
@@ -327,9 +385,7 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
             gmTopAdsAmountViewModel.percentage = -GMStatConstant.NoDataAvailable * 100;
         }
 
-        gmTopAdsAmountViewHelper.bind(
-                gmTopAdsAmountViewModel
-        );
+        fetchTopAdsDeposit(gmTopAdsAmountViewModel);
     }
 
     private List<Integer> joinAdsGraph(List<Integer> adsPGraph, List<Integer> adsSGraph) {

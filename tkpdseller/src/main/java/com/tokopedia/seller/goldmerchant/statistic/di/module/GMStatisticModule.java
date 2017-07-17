@@ -1,5 +1,8 @@
 package com.tokopedia.seller.goldmerchant.statistic.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
@@ -9,6 +12,8 @@ import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,5 +47,10 @@ public class GMStatisticModule {
         return new GMStatisticTransactionTablePresenterImpl(gmStatGetTransactionTableUseCase);
     }
 
+    @GMStatisticScope
+    @Provides
+    DashboardTopadsInteractor provideDashboardTopadsInteractor(@ApplicationContext Context context) {
+        return new DashboardTopadsInteractorImpl(context);
+    }
 
 }

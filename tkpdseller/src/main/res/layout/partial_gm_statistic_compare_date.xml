@@ -20,6 +20,11 @@
             app:spinner_decimal_hint="@string/product_label_time_process"
             app:spinner_decimal_spinner_width="100dp"
             app:spinner_decimal_values="@array/product_pre_order_values" />
+
+        <com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:date_period_title="@string/gm_statistic_compare_date" />
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 
 import java.util.Date;
 
@@ -9,5 +11,5 @@ import java.util.Date;
  */
 
 public abstract class GMStatisticTransactionTablePresenter extends BaseDaggerPresenter<GMStatisticTransactionTableView> {
-    public abstract void loadData(Date startDate, Date endDate);
+    public abstract void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy);
 }

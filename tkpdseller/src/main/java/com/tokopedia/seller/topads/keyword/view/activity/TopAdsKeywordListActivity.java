@@ -19,7 +19,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
@@ -32,7 +32,6 @@ import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
