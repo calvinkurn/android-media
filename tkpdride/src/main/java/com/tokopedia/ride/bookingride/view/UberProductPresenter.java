@@ -114,7 +114,9 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     } else if (e instanceof SocketTimeoutException) {
                         message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                     } else if (e instanceof UnProcessableHttpException) {
-                        message = ((UnProcessableHttpException) e).getMessage();
+                        message = TextUtils.isEmpty(e.getMessage()) ?
+                                getView().getActivity().getResources().getString(R.string.error_internet_not_connected) :
+                                e.getMessage();
                     } else {
                         message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
                     }
@@ -226,6 +228,10 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                                 } else if (e instanceof SocketTimeoutException) {
                                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                } else if (e instanceof UnProcessableHttpException) {
+                                    message = TextUtils.isEmpty(e.getMessage()) ?
+                                            getView().getActivity().getResources().getString(R.string.error_internet_not_connected) :
+                                            e.getMessage();
                                 } else {
                                     message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
                                 }
