@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
@@ -52,7 +51,7 @@ import rx.schedulers.Schedulers;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDaggerFragment {
+public class GMStatisticTransactionFragment extends BaseDatePickerFragment {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -122,10 +121,21 @@ public class GMStatisticTransactionFragment extends BaseDaggerFragment {
     }
 
     @Override
+    protected void loadData() {
+
+    }
+
+    @Override
+    protected Intent getDatePickerIntent() {
+        return null;
+    }
+
+    @Override
     protected void initInjector() {
+        super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .datePickerComponent(datePickerComponent)
                 .build().inject(this);
     }
 
