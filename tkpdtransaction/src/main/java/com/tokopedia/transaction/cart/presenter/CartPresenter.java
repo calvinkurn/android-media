@@ -739,7 +739,7 @@ public class CartPresenter implements ICartPresenter {
                     String.valueOf(data.getLpAmount()));
         else view.renderInvisibleLoyaltyBalance();
         view.renderTotalPaymentWithoutLoyalty(data.getGrandTotalWithoutLPIDR());
-        view.renderCartListData(data.getTokenKero(), data.getCartItemList());
+        view.renderCartListData(data.getTokenKero(), data.getUt(), data.getCartItemList());
         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
         view.setCheckoutCartToken(data.getToken());
         if ((data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0"))) {
@@ -760,8 +760,8 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCartRates(String token, final List<CartItem> cartItemList) {
-        cartDataInteractor.calculateKeroRates(token, cartItemList, keroRatesListener());
+    public void processCartRates(String token, String ut, final List<CartItem> cartItemList) {
+        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener());
     }
 
     private ICartDataInteractor.KeroRatesListener keroRatesListener() {

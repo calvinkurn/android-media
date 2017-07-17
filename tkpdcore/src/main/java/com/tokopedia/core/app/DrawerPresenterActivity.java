@@ -35,7 +35,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     private static final String TAG = DrawerPresenterActivity.class.getSimpleName();
     private static final int MAX_NOTIF = 999;
-    
+
     protected T presenter;
     private Boolean isLogin;
     protected DrawerHelper drawerHelper;
@@ -228,15 +228,22 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         } else {
             MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
         }
+
+        setDataDrawer();
+
+    }
+
+    private void setDataDrawer() {
         drawerHelper.getAdapter().getData().clear();
         drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
         drawerHelper.setExpand();
-
     }
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
+        setDataDrawer();
     }
+
 
     @Override
     public void onGetTokoCash(DrawerTokoCash tokoCash) {
