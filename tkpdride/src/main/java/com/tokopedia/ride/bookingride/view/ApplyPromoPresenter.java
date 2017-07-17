@@ -59,9 +59,8 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 } else if (e instanceof SocketTimeoutException) {
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                } else {
-                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 }
+
                 getView().onFailedApplyPromo(message);
             }
 

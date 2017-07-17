@@ -307,7 +307,7 @@ public class MainApplication extends TkpdMultiDexApplication {
             watchDog.setANRListener(new ANRWatchDog.ANRListener() {
                 @Override
                 public void onAppNotResponding(ANRError error) {
-                    Crashlytics.logException(error);
+                    //Crashlytics.logException(error);
                 }
             });
             watchDog.start();
