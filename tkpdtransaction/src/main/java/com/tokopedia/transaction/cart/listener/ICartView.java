@@ -36,7 +36,7 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleLoyaltyBalance();
 
-    void renderCartListData(String token, List<CartItem> cartList);
+    void renderCartListData(String token, String ut, List<CartItem> cartList);
 
     void renderCheckoutCartDepositAmount(String depositAmount);
 
@@ -101,7 +101,6 @@ public interface ICartView extends IBaseView {
     void trackingCartCancelEvent();
 
     LocalCacheHandler getLocalCacheHandlerNotificationData();
-
 
     void setCartSubTotal(CartCourierPrices cartCourierPrices);
 
