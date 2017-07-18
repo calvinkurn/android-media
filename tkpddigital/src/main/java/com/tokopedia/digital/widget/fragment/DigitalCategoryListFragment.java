@@ -18,10 +18,6 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -35,6 +31,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
 import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
@@ -59,7 +58,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalCategoryListPresenter>
         implements IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener, TokoCashUpdateListener {
+        RefreshHandler.OnRefreshHandlerListener, TokoCashReceivedListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
@@ -73,7 +72,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private RecyclerView.LayoutManager gridLayoutManager;
     private RecyclerView.LayoutManager linearLayoutManager;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
-    private DrawerTokoCash tokoCashData;
+    private TokoCashData tokoCashData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -146,7 +145,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
         getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
-                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
+                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH_DIGITAL
         ));
     }
 
@@ -308,8 +307,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
         if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getLink() != 1) {
-            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData
-                    .getDrawerTokoCashAction());
+            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
             String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
                     getActivity());
             if (getActivity() != null) {
@@ -362,7 +360,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
+    public void onReceivedTokoCashData(TokoCashData tokoCashData) {
         this.tokoCashData = tokoCashData;
     }
 
@@ -371,9 +369,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     }
 
-    private String getTokoCashActionRedirectUrl(DrawerTokoCashAction drawerTokoCashAction) {
-        if (drawerTokoCashAction == null) return "";
-        else return drawerTokoCashAction.getRedirectUrl();
+    private String getTokoCashActionRedirectUrl(TokoCashData tokoCashData) {
+        if (tokoCashData.getAction() == null) return "";
+        else return tokoCashData.getAction().getRedirectUrl();
     }
 
     private void renderErrorStateData(String message) {

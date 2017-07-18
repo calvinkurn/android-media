@@ -324,6 +324,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void clearActiveRequestId() {
+        RideConfiguration rideConfiguration = new RideConfiguration(getApplicationContext());
+        rideConfiguration.clearActiveRequestId();
+    }
+
+    @Override
     public void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle) {
         Intent intent = CompleteTripActivity.getCallingIntent(this, requestId, driverAndVehicle);
         startActivity(intent);

@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.widget.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
@@ -48,8 +49,8 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     }
 
     @Override
-    public void getTokoCashData(Subscriber<TopCashItem> subscriber) {
-        Observable<TopCashItem> observable = Observable
+    public void getTokoCashData(Subscriber<TokoCashData> subscriber) {
+        Observable<TokoCashData> observable = Observable
                 .concat(getObservableFetchCacheTokoCashData(),
                         getObservableFetchNetworkTokoCashData())
                 .first(isTokoCashDataAvailable());
@@ -60,49 +61,50 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     }
 
     @NonNull
-    private Observable<TopCashItem> getObservableFetchCacheTokoCashData() {
+    private Observable<TokoCashData> getObservableFetchCacheTokoCashData() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, TopCashItem>() {
+                .map(new Func1<Boolean, TokoCashData>() {
                     @Override
-                    public TopCashItem call(Boolean aBoolean) {
+                    public TokoCashData call(Boolean aBoolean) {
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
                         return CacheUtil.convertStringToModel(cacheManager
                                         .getValueString(TkpdCache.Key.KEY_TOKOCASH_DATA),
-                                new TypeToken<TopCashItem>() {
+                                new TypeToken<TokoCashData>() {
                                 }.getType());
                     }
-                }).onErrorReturn(new Func1<Throwable, TopCashItem>() {
+                }).onErrorReturn(new Func1<Throwable, TokoCashData>() {
                     @Override
-                    public TopCashItem call(Throwable throwable) {
+                    public TokoCashData call(Throwable throwable) {
                         return null;
                     }
                 });
     }
 
     @NonNull
-    private Observable<TopCashItem> getObservableFetchNetworkTokoCashData() {
+    private Observable<TokoCashData> getObservableFetchNetworkTokoCashData() {
         return tokoCashService.getApi()
                 .getTokoCash()
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<TopCashItem>, Observable<TopCashItem>>() {
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TokoCashData>>() {
                     @Override
-                    public Observable<TopCashItem> call(Response<TopCashItem> topCashItemResponse) {
-                        return Observable.just(topCashItemResponse.body());
+                    public Observable<TokoCashData> call(Response<TkpdResponse> topCashItemResponse) {
+                        return Observable
+                                .just(topCashItemResponse.body().convertDataObj(TokoCashData.class));
                     }
                 });
     }
 
     @NonNull
-    private Func1<TopCashItem, Boolean> isTokoCashDataAvailable() {
-        return new Func1<TopCashItem, Boolean>() {
+    private Func1<TokoCashData, Boolean> isTokoCashDataAvailable() {
+        return new Func1<TokoCashData, Boolean>() {
             @Override
-            public Boolean call(TopCashItem topCashItem) {
-                return topCashItem != null && topCashItem.getData() != null;
+            public Boolean call(TokoCashData tokoCashData) {
+                return tokoCashData != null;
             }
         };
     }

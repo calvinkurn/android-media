@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.adapter.viewmodel;
+package com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
  * @author by errysuprayogi on 3/30/17.
  */
 
-public class ShopListViewModel implements Item<AdsTypeFactory> {
+public class ShopGridViewModel implements Item<AdsTypeFactory> {
 
     Data data;
 
