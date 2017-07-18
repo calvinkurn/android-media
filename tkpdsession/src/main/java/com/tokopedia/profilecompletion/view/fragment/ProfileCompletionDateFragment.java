@@ -1,5 +1,8 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -12,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.util.Events;
 import com.tokopedia.profilecompletion.view.util.Properties;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
@@ -86,6 +90,13 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         progress = this.view.getView().findViewById(R.id.progress);
         proceed.setEnabled(false);
         this.view.canProceed(false);
+
+        Drawable drawable = MethodChecker.getDrawable(getActivity(), R.drawable.chevron_thin_down);
+        drawable.setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_hint), PorterDuff.Mode.SRC_IN);
+        double size = drawable.getIntrinsicWidth()*0.2;
+        drawable.setBounds(0, 0, (int)(size), (int)(size));
+
+        month.setCompoundDrawables(null, null, drawable, null);
     }
 
     protected void setViewListener() {

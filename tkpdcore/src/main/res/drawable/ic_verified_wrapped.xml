@@ -1,9 +1,5 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
-        android:drawable="@drawable/ic_verified"
-        android:width="12dp"
-        android:height="12dp"
-        />
-
-</layer-list >
+<?xml version="1.0" encoding="utf-8"?>
+<bitmap
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:scaleType="fitXY"
+    android:src="@drawable/ic_verified"/>

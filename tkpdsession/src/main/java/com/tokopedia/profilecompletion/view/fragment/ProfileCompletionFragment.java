@@ -99,17 +99,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(MethodChecker.getColor(getActivity(), R.color.black_70));
-        SpannableStringBuilder title = new SpannableStringBuilder("Lewati");
-        title.setSpan(colorSpan, 0, title.length(), 0);
-        menu.add(Menu.NONE, R.id.action_skip, 0, title);
+        menu.add(Menu.NONE, R.id.action_skip, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_skip); // OR THIS
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menuItem.setIcon(getDraw());
-
-        menuItem.setTitle(title);
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -126,7 +119,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             skipView(findChildTag());
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

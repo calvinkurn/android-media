@@ -52,7 +52,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         private final TextView percentText;
         private final TextView completeProfile;
-        private final TextView verifiedIcon;
+        private final TextView verifiedText;
+        private final View verifiedIcon;
         private final View layoutProgress;
 
         @BindView(R2.id.user_avatar)
@@ -109,7 +110,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             percentText = (TextView) itemView.findViewById(R.id.percent_text);
             completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
             layoutProgress = itemView.findViewById(R.id.layout_progress);
-            verifiedIcon = (TextView) itemView.findViewById(R.id.verified);
+            verifiedText = (TextView) itemView.findViewById(R.id.verified);
+            verifiedIcon = itemView.findViewById(R.id.verified_icon);
 
         }
     }
@@ -171,6 +173,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.percentText.setVisibility(View.GONE);
         holder.layoutProgress.setVisibility(View.GONE);
         holder.verifiedIcon.setVisibility(View.GONE);
+        holder.verifiedText.setVisibility(View.GONE);
     }
 
     protected void bindDrawerHeader(ViewHolder holder) {
@@ -187,12 +190,12 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
         if(data.getProfileCompletion() == 100) {
             holder.layoutProgress.setVisibility(View.GONE);
-            Drawable drawable = MethodChecker.getDrawable(context, R.drawable.ic_verified_wrapped);
-            holder.verifiedIcon.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
             holder.verifiedIcon.setVisibility(View.VISIBLE);
+            holder.verifiedText.setVisibility(View.VISIBLE);
         }else {
             holder.layoutProgress.setVisibility(View.VISIBLE);
             holder.verifiedIcon.setVisibility(View.GONE);
+            holder.verifiedText.setVisibility(View.GONE);
         }
 
         setDeposit(holder);
