@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.ReactNativeActivity;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.RechargeEditText;
@@ -62,6 +63,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.react.ReactConst;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -616,13 +618,15 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(getContext())) {
+                /*if (SessionHandler.isV4Login(getContext())) {
                     UnifyTracking.eventViewAllOSLogin();
                 } else {
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);*/
+                getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
+                        ReactConst.Screen.OFFICIAL_STORE));
             }
         };
     }
