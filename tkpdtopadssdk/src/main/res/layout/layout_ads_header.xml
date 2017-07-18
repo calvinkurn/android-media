@@ -17,7 +17,7 @@
         android:text="@string/title_promote"
         android:layout_weight="1"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/abc_text_size_small_material" />
+        android:textSize="@dimen/text_size_small" />
 
     <ImageView
         android:id="@id/info_topads"

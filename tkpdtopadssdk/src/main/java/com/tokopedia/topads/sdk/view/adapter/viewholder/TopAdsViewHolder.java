@@ -24,8 +24,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
 
 import java.util.List;
@@ -68,7 +67,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         recyclerView.setAdapter(adapter);
     }
 
-
     @Override
     public void bind(TopAdsViewModel element) {
         List<Item> list = element.getList();
@@ -85,9 +83,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
             Log.d(TAG, "Adapter Position " + getAdapterPosition());
-            if(clickListener != null){
+            if (clickListener != null) {
                 clickListener.onInfoClicked();
-            }else {
+            } else {
                 TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(context);
                 infoBottomSheet.show();
             }

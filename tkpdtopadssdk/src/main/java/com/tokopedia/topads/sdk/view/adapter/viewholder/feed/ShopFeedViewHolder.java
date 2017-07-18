@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -152,7 +152,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         String text;
         if (isFavorite) {
             favBtn.setSelected(true);
-            text = context.getString(R.string.favorited);
+            text = context.getString(R.string.favorit);
             favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
             favTxt.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
