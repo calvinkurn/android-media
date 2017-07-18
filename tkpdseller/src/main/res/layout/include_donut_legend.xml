@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
     <include
         android:id="@+id/onhold_count_unfinished_transaction"
         layout="@layout/widget_unfinished_transaction"
@@ -15,9 +16,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/line_separator_medium"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/margin_small"/>
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/line_separator_medium" />
 
     <include
         android:id="@+id/res_center_count_unfinished_transaction"
@@ -28,10 +29,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_horizontal"
-        android:textStyle="italic"
+        android:text="@string/data_not_followed_the_date_range"
         android:textColor="@color/grey_400"
         android:textSize="@dimen/fontvvs"
-        android:layout_marginTop="@dimen/margin_small"
-        android:text="@string/data_not_followed_the_date_range"/>
+        android:textStyle="italic" />
 </merge>

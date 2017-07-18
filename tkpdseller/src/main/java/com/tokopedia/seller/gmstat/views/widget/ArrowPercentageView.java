@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
@@ -75,7 +74,7 @@ public class ArrowPercentageView extends FrameLayout {
         if (percentageUtil != null) {
             percentageUtil.calculatePercentage(mPercentage, ivArrowIcon, tvPercentage);
         } else {
-            if (mPercentage==GMStatConstant.NoDataAvailable * 100){
+            if (mPercentage == GMStatConstant.NoDataAvailable * 100) {
                 ivArrowIcon.setVisibility(View.GONE);
                 tvPercentage.setText(null);
             } else if (mPercentage < 0) {
@@ -88,7 +87,7 @@ public class ArrowPercentageView extends FrameLayout {
                 ivArrowIcon.setImageResource(stagnantDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
             }
-            if (mPercentage!=GMStatConstant.NoDataAvailable * 100) {
+            if (mPercentage != GMStatConstant.NoDataAvailable * 100) {
                 tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
                         KMNumbers.formatString(mPercentage).replace("-", "")));
             }

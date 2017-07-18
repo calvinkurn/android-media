@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,7 +23,6 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
-import com.tokopedia.seller.lib.widget.GMDateRangeView;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;

@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/gmstat_padding_item_left_right"
     android:paddingLeft="@dimen/gmstat_padding_item_left_right"
     android:paddingRight="@dimen/gmstat_padding_item_left_right"
-    android:paddingTop="8dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingTop="8dp">
 
     <com.tokopedia.seller.gmstat.library.LoaderView
         android:layout_width="100dp"
         android:layout_height="10dp"
-        android:layout_marginBottom="2dp"/>
+        android:layout_marginBottom="2dp" />
+
     <com.tokopedia.seller.gmstat.library.LoaderView
         android:layout_width="150dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="4dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
         <com.tokopedia.seller.gmstat.library.LoaderView
             android:layout_width="20dp"
             android:layout_height="10dp" />
+
         <com.tokopedia.seller.gmstat.library.LoaderView
             android:layout_width="80dp"
             android:layout_height="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginStart="10dp" />
     </LinearLayout>
 
     <com.tokopedia.seller.gmstat.library.LoaderView

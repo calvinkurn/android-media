@@ -35,7 +35,7 @@
             android:name=".topads.dashboard.view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".topads.dashboard.view.activity.TopAdsProductAdListActivity"
             android:label="@string/top_ads_title_product"
@@ -263,7 +263,7 @@
             android:name=".opportunity.activity.OpportunityFilterActivity"
             android:label="@string/title_filter_but"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".opportunity.activity.OpportunityDetailActivity"
@@ -323,8 +323,12 @@
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionActivity"
             android:exported="true"
-            android:label="@string/gold_merchant_transaction_label"
-            android:theme="@style/BasicThemeActionBar" />
+            android:label="@string/gold_merchant_transaction_label" />
+
+        <activity
+            android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity"
+            android:exported="true"
+            android:label="@string/list_sold_product_text" />
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
@@ -342,9 +346,10 @@
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
 
-        <activity android:name=".shopsettings.ManageShopActivity"
+        <activity
+            android:name=".shopsettings.ManageShopActivity"
             android:label="@string/title_activity_manage_shop"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.payment.PaymentEditor"
             android:label="@string/title_activity_payment_editor"

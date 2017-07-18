@@ -128,7 +128,8 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
         TextView tvSubtitle;
         TextView tvAction;
         View button;
-        public EmptyViewHolder(View itemView){
+
+        public EmptyViewHolder(View itemView) {
             ivIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvSubtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
@@ -141,6 +142,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
                 }
             });
         }
+
         public abstract void bind(@Nullable GMGraphViewModel data);
     }
 

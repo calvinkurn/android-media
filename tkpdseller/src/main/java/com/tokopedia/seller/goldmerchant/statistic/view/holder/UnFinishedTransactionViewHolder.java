@@ -43,7 +43,7 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
         onHoldCountHelper = new WidgetUnfinishedTransHelper((RelativeLayout) itemView.findViewById(R.id.onhold_count_unfinished_transaction));
 
         //hide the green dot image
-        RelativeLayout onHoldAmountUnfinishedTransView= (RelativeLayout) itemView.findViewById(R.id.onhold_amount_unfinished_transaction);
+        RelativeLayout onHoldAmountUnfinishedTransView = (RelativeLayout) itemView.findViewById(R.id.onhold_amount_unfinished_transaction);
         onHoldAmountUnfinishedTransView.findViewById(R.id.unfinished_transaction_description_image).setVisibility(View.INVISIBLE);
         onHoldAmountHelper = new WidgetUnfinishedTransHelper(onHoldAmountUnfinishedTransView);
 
