@@ -4,12 +4,17 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
+import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
@@ -34,9 +39,10 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    GMStatRepository provideGMStatRepository(
-            GMStatDataSource gmStatDataSource) {
-        return new GMStatRepositoryImpl(gmStatDataSource);
+    GMStatRepository provideGMStatRepository(GMStatDataSource gmStatDataSource,
+                                             GMTransactionStatDomainMapper gmTransactionStatDomainMapper,
+                                             GMTransactionTableMapper gmTransactionTableMapper) {
+        return new GMStatRepositoryImpl(gmTransactionStatDomainMapper, gmStatDataSource, gmTransactionTableMapper);
     }
 
     @GMStatisticScope
@@ -51,6 +57,15 @@ public class GMStatisticModule {
     @Provides
     DashboardTopadsInteractor provideDashboardTopadsInteractor(@ApplicationContext Context context) {
         return new DashboardTopadsInteractorImpl(context);
+    }
+
+    @GMStatisticScope
+    @Provides
+    GMStatisticTransactionPresenter provideGmStatisticTransactionPresenter(
+            GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
+            DashboardTopadsInteractor dashboardTopadsInteractor
+    ) {
+        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, dashboardTopadsInteractor);
     }
 
 }
