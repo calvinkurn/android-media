@@ -346,8 +346,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
         if (receipt.getPendingPayment() != null &&
                 receipt.getPendingPayment().getPendingAmount() != null &&
-                receipt.getPendingPayment().getPendingAmount().length() > 0 &&
-                Integer.parseInt(receipt.getPendingPayment().getPendingAmount()) > 0) {
+                receipt.getPendingPayment().getPendingAmount().length() > 0) {
             passData = new DigitalCheckoutPassData();
             passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
             passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
