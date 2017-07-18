@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -103,4 +102,5 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
                     }
                 }).buildChart(gmStatisticTopAdsGraph);
     }
+
 }
