@@ -1,14 +1,14 @@
-package com.tokopedia.topads.sdk.view.adapter.viewmodel;
+package com.tokopedia.topads.sdk.view.adapter.viewmodel.feed;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 
 /**
- * @author by errysuprayogi on 3/27/17.
+ * Created by errysuprayogi on 3/27/17.
  */
 
-public class ProductListViewModel implements Item<AdsTypeFactory> {
+public class ProductFeedViewModel implements Item<AdsTypeFactory> {
 
     private Data data;
 

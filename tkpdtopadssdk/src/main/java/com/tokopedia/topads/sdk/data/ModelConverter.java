@@ -3,12 +3,12 @@ package com.tokopedia.topads.sdk.data;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 
 import java.util.List;
 
@@ -69,7 +69,8 @@ public class ModelConverter {
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel)
                         visitable).getData()));
-            } else if(displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel) {
+            } else if(displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel
+                    || displayMode == DisplayMode.FEED_EMPTY && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
                         visitable).getData()));
             }
