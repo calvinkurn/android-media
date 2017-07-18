@@ -433,9 +433,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (dep != null) {
             departmentId = dep.getDepartmentId() + "";
         }
+
+        String headerTitle = linkSegment.get(linkSegment.size() - 1);
         IntermediaryActivity.moveTo(
                 context,
-                departmentId
+                departmentId,
+                headerTitle
         );
         context.finish();
     }
