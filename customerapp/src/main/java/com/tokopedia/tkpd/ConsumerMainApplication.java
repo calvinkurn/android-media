@@ -1,24 +1,33 @@
 package com.tokopedia.tkpd;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends ConsumerRouterApplication {
+public class ConsumerMainApplication extends ConsumerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction{
 
     @Override
     public void onCreate() {
@@ -30,6 +39,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         generateConsumerAppBaseUrl();
         initializeDatabase();
         super.onCreate();
+
+        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
@@ -67,4 +78,30 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
                 .build());
     }
 
+    @Override
+    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+
+        if(!TextUtils.isEmpty(extras.getString("gcm_webUrl"))){
+            Uri uri = Uri.parse(extras.getString("gcm_webUrl"));
+
+            if(uri.getScheme().equals("http")||uri.getScheme().equals("https"))
+            {
+                Intent intent = new Intent(this, DeepLinkActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(deepLinkUri.toString()));
+                startActivity(intent);
+
+            }else if(uri.getScheme().equals("tokopedia")){
+                Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(deepLinkUri.toString()));
+                startActivity(intent);
+
+            }else{
+                CommonUtils.dumper("FCM entered no one");
+            }
+        }
+
+        return true;
+    }
 }
