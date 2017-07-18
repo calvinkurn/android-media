@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 /**
@@ -9,4 +10,12 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 
 public interface GMStatisticTransactionView extends CustomerView {
     void revealData(GMTransactionGraphMergeModel mergeModel);
+
+    void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel);
+
+    void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel);
+
+    void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel);
+
+    void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel);
 }

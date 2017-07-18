@@ -1,8 +1,15 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
+
+import java.util.HashMap;
 
 import rx.Subscriber;
 
@@ -14,11 +21,16 @@ import rx.Subscriber;
 public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionPresenter {
     private GMStatGetTransactionGraphUseCase useCase;
     private DashboardTopadsInteractor topadsUseCase;
+    private SessionHandler sessionHandler;
 
-    public GMStatisticTransactionPresenterImpl(GMStatGetTransactionGraphUseCase useCase, DashboardTopadsInteractor topadsUseCase) {
+    public GMStatisticTransactionPresenterImpl(
+            GMStatGetTransactionGraphUseCase useCase,
+            DashboardTopadsInteractor topadsUseCase,
+            SessionHandler sessionHandler) {
         super();
         this.useCase = useCase;
         this.topadsUseCase = topadsUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -36,6 +48,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
+                fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
                 revealData(mergeModel);
             }
         });
@@ -55,8 +68,9 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
             }
 
             @Override
-            public void onNext(GMTransactionGraphMergeModel gmTransactionGraphViewModel) {
-                revealData(gmTransactionGraphViewModel);
+            public void onNext(GMTransactionGraphMergeModel mergeModel) {
+                fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
+                revealData(mergeModel);
             }
         });
     }
@@ -65,5 +79,44 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
         if (isViewAttached()) {
             getView().revealData(mergeModel);
         }
+    }
+
+    private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("shop_id", sessionHandler.getShopID());
+        topadsUseCase.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
+            @Override
+            public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {
+                if (isViewAttached()) {
+                    DataDeposit data = dataDepositDataResponse.getData();
+                    if (data.isAdUsage()) {
+                        if (isNoAdsData(gmTopAdsAmountViewModel)) {
+                            getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
+                        } else {
+                            getView().bindTopAds(gmTopAdsAmountViewModel);
+                        }
+                    } else {
+                        if (gmTopAdsAmountViewModel.amount == 0) {
+                            getView().bindNoTopAdsCredit(gmTopAdsAmountViewModel);
+                        } else {
+                            getView().bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
+    }
+
+    private boolean isNoAdsData(GMGraphViewModel data) {
+        boolean isAllZero = true;
+        for (int i = 0; i < data.values.size(); i++) {
+            isAllZero = isAllZero && data.values.get(i) == 0;
+        }
+        return isAllZero;
     }
 }

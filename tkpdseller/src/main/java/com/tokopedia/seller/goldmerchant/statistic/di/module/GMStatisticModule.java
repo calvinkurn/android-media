@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
@@ -63,9 +64,10 @@ public class GMStatisticModule {
     @Provides
     GMStatisticTransactionPresenter provideGmStatisticTransactionPresenter(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
-            DashboardTopadsInteractor dashboardTopadsInteractor
+            DashboardTopadsInteractor dashboardTopadsInteractor,
+            SessionHandler sessionHandler
     ) {
-        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, dashboardTopadsInteractor);
+        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, dashboardTopadsInteractor, sessionHandler);
     }
 
 }

@@ -25,11 +25,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTra
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
-import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.ListenerInteractor;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -124,43 +120,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
                 .build().inject(this);
     }
 
-    protected void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
-        HashMap<String, String> param = new HashMap<>();
-        param.put("shop_id", sessionHandler.getShopID());
-        dashboardTopadsInteractor.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
-            @Override
-            public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {
-                DataDeposit data = dataDepositDataResponse.getData();
-                if (data.isAdUsage()) {
-                    if (isNoAdsData(gmTopAdsAmountViewModel)) {
-                        gmTopAdsAmountViewHelper.bindNoData(gmTopAdsAmountViewModel);
-                    } else {
-                        gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
-                    }
-                } else {
-                    if (gmTopAdsAmountViewModel.amount == 0) {
-                        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
-                    } else {
-                        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-        });
-    }
-
-    private boolean isNoAdsData(GMGraphViewModel data) {
-        boolean isAllZero = true;
-        for (int i = 0; i < data.values.size(); i++) {
-            isAllZero = isAllZero && data.values.get(i) == 0;
-        }
-        return isAllZero;
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -175,7 +134,26 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
         gmTransactionGraphViewHelper.bind(mergeModel.gmTransactionGraphViewModel);
-        fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
         unFinishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
+    }
+
+    @Override
+    public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHelper.bindNoData(gmTopAdsAmountViewModel);
+    }
+
+    @Override
+    public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
+    }
+
+    @Override
+    public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
+    }
+
+    @Override
+    public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
     }
 }
