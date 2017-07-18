@@ -8,6 +8,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
+import com.tokopedia.core.shopinfo.facades.authservices.ShopWebService;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
@@ -36,7 +37,8 @@ public class GetShopProductRetrofit {
         void onFailure(int connectionTypeError, String message);
     }
 
-    private ShopService shopService;
+//    private ShopService shopService;
+    private ShopWebService shopService;
     private Context context;
     private String shopId;
     private String shopDomain;
@@ -44,12 +46,18 @@ public class GetShopProductRetrofit {
     private OnGetShopProductListener onGetShopProductListener;
 
     private Subscription onGetShopProductSubs;
+    private static final String ACE_SHOP_URL = "https://ace.tokopedia.com/v1/web-service/shop/";
+    private static final String TOME_SHOP_URL = "https://tome.tokopedia.com/v1/web-service/shop/";
 
-    public GetShopProductRetrofit(Context context, String shopId, String shopDomain) {
+    public GetShopProductRetrofit(Context context, String shopId, String shopDomain, boolean useAce) {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        shopService = new ShopService();
+        if(useAce) {
+            shopService = new ShopWebService(ACE_SHOP_URL);
+        } else {
+            shopService = new ShopWebService(TOME_SHOP_URL);
+        }
     }
 
     public void setOnGetShopProductListener(OnGetShopProductListener listener) {
@@ -84,8 +92,12 @@ public class GetShopProductRetrofit {
                 if (tkpdResponseResponse.isSuccessful()) {
                     TkpdResponse response = tkpdResponseResponse.body();
                     if (!response.isError()) {
-                        ProductModel productModel = new Gson().fromJson(response.getStringData(), ProductModel.class);
-                        onGetShopProductListener.onSuccess(productModel);
+                        try {
+                            ProductModel productModel = new Gson().fromJson(response.getStringData(), ProductModel.class);
+                            onGetShopProductListener.onSuccess(productModel);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     } else {
                         if (response.getErrorMessages() != null && response.getErrorMessages().size() > 0) {
                             onGetShopProductListener.onFailure(WS_TYPE_ERROR, response.getErrorMessages().toString().replace("[", "").replace("]", ""));

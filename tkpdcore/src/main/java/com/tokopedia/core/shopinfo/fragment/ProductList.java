@@ -75,13 +75,14 @@ public class ProductList extends V2BaseFragment {
     private GetShopProductRetrofit facadeShopProd;
     private GetShopProductCampaignRetrofit facadeShopProdCampaign;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
+    public static final String EXTRA_USE_ACE = "EXTRA_USE_ACE";
     private boolean isConnectionErrorShow = false;
     private ProductListCallback callback;
 
-    public static ProductList newInstance() {
+    public static ProductList newInstance(int useAce) {
 
         Bundle args = new Bundle();
-
+        args.putInt(EXTRA_USE_ACE, useAce);
         ProductList fragment = new ProductList();
         fragment.setArguments(args);
         return fragment;
@@ -137,7 +138,7 @@ public class ProductList extends V2BaseFragment {
         }
         super.onStop();
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -212,6 +213,7 @@ public class ProductList extends V2BaseFragment {
 
     /**
      * We need to implement this to support backward compatibility
+     *
      * @param activity
      */
     @Override
@@ -227,7 +229,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void attachListener(Context context) {
-        if(context instanceof ProductListCallback) {
+        if (context instanceof ProductListCallback) {
             this.callback = (ProductListCallback) context;
         } else {
             throw new RuntimeException("Please implement ProductListCallback in the Activity");
@@ -468,7 +470,8 @@ public class ProductList extends V2BaseFragment {
     private void initFacade() {
         facadeShopInfo = new GetShopInfoRetrofit(getActivity(), shopId, shopDomain);
         facadeShopInfo.setOnGetShopEtalase(onGetEtalaseListener());
-        facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain);
+        boolean useAce = (getArguments().getInt(EXTRA_USE_ACE) == 1);
+        facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain, useAce);
         facadeShopProd.setOnGetShopProductListener(onGetShopProductListener());
         facadeShopProdCampaign = new GetShopProductCampaignRetrofit(getActivity());
         facadeShopProdCampaign.setProductsCampaignListener(onGetProductCampaign());
@@ -478,7 +481,7 @@ public class ProductList extends V2BaseFragment {
         return new GetShopProductRetrofit.OnGetShopProductListener() {
             @Override
             public void onSuccess(ProductModel model) {
-                if(callback.isOfficialStore() && !model.list.isEmpty()) {
+                if (callback.isOfficialStore() && !model.list.isEmpty()) {
                     getProductCampaign(model);
                 } else {
                     renderProductList(model);
@@ -553,9 +556,9 @@ public class ProductList extends V2BaseFragment {
                 int index = -1;
                 if (getArguments().getString(ETALASE_ID_BUNDLE) != null) {
                     index = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
-                } else if(getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
-                    for(int i = 0; i < etalaseNameList.size(); i++) {
-                        if(etalaseNameList.get(i).equalsIgnoreCase(
+                } else if (getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
+                    for (int i = 0; i < etalaseNameList.size(); i++) {
+                        if (etalaseNameList.get(i).equalsIgnoreCase(
                                 removeDash(getActivity().getIntent().getExtras().getString(ETALASE_NAME))
                         )) {
                             index = i;
@@ -637,7 +640,7 @@ public class ProductList extends V2BaseFragment {
         else
             productShopParam.setPage(-1);
 
-        if(productShopParam.getPage() == 2
+        if (productShopParam.getPage() == 2
                 && productShopParam.getEtalaseId().equalsIgnoreCase("etalase")) {
             saveToCache(model);
         }
@@ -679,7 +682,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     public void refreshProductListFromOffStore() {
-        if(productModel != null && productModel.list != null) {
+        if (productModel != null && productModel.list != null) {
             productModel.list.clear();
             GetShopProductParam newProductParam = new GetShopProductParam();
             if (etalaseNameList.size() > 1) {
@@ -700,7 +703,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     public void refreshProductList(GetShopProductParam getShopProductParam) {
-        if(adapter != null) {
+        if (adapter != null) {
             int etalaseIndex = etalaseIdList.indexOf(getShopProductParam.getEtalaseId());
             if (etalaseIndex != -1) {
                 adapter.setSelectedEtalasePos(etalaseIndex);
@@ -744,6 +747,7 @@ public class ProductList extends V2BaseFragment {
 
     public interface ProductListCallback {
         void onProductListCompleted();
+
         boolean isOfficialStore();
     }
 }
