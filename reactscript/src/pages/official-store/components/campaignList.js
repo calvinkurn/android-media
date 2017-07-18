@@ -1,220 +1,243 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Text,
   View,
-  ListView,
   StyleSheet,
+  FlatList,
   Image,
   Linking,
-  TouchableWithoutFeedback,
-} from 'react-native'
-// import Icon from 'react-native-vector-icons/EvilIcons';
-import WishListButton from '../common/Wishlist/WishlistButton'
+  TouchableWithoutFeedback
+} from 'react-native';
+import WishListButton from '../common/Wishlist/WishlistButton';
 
-const CampaignList = ({ campaigns, onCampaignPress }) => {
-  const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-  const campaignsData = ds.cloneWithRows(campaigns)
-
+const CampaignList = ({ campaigns }) => {
   return (
     <View style={styles.container}>
-      <ListView
-        enableEmptySections={true}
-        dataSource={campaignsData}
-        renderRow={renderCampaign}>
-      </ListView>
+      <FlatList
+        data={campaigns}
+        keyExtractor={item => item.banner_id}
+        renderItem={this.renderCampaign}
+      />
     </View>
-  )
-}
+  );
+};
 
-const renderCampaign = (c) => {
-  const products = c.Products || []
-  const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-  const productGrid = []
-  let isDiscount = false
+this.renderCampaign = (c) => {
+  const {
+    productCell,
+    productImageWrapper,
+    productImage,
+    productName,
+    productGridNormalPrice,
+    productGridNormalPriceText,
+    priceWrapper,
+    price,
+    productGridCampaignRate,
+    productGridCampaignRateText,
+    badgeImageContainer,
+    badgeImage,
+    productBadgeWrapper,
+    productLabel,
+    labelText,
+    productCashback,
+    cashbackText,
+    shopSection,
+    shopImageWrapper,
+    shopImage,
+    shopNameWrapper,
+    titleText,
+    viewAll,
+    viewAllText
+   } = styles;
+
+  const item = c.item;
+  const products = c.item.Products || [];
+  const productGrid = [];
+
+
   if (products.length > 0) {
     for (let i = 0; i < products.length; i += 2) {
-      const productRow = []
+      const productRow = [];
       for (let j = i; j < i + 2; j += 1) {
+        const dataProducts = products[j].data;
         if (!products[j]) {
-          break
-        }
-
-        if (products[j].data.discount_percentage) {
-          isDiscount = true
+          break;
         }
 
         productRow.push(
-          <View style={styles.productCell} key={products[j].data.id}>
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(products[j].data.url)}>
+          <View style={productCell} key={dataProducts.id}>
+            <TouchableWithoutFeedback onPress={() => Linking.openURL(dataProducts.url)}>
               <View>
-                <View style={styles.productImageWrapper}>
-                  <Image source={{ uri: products[j].data.image_url }} style={styles.productImage} />
+                <View style={productImageWrapper}>
+                  <Image source={{ uri: dataProducts.image_url }} style={productImage} />
                 </View>
-                <Text style={styles.productName} ellipsizeMode='tail'
-                  numberOfLines={2}>{products[j].data.name}</Text>
+                <Text
+                  style={productName}
+                  ellipsizeMode='tail'
+                  numberOfLines={2}>{dataProducts.name}</Text>
               </View>
             </TouchableWithoutFeedback>
-            <View style={styles.productGridPrice}>
-              <View style={styles.productGridNormalPrice}>
-                {
-                  products[j].data.discount_percentage && (
-                    <View>
-                      <Text style={styles.productGridNormalPriceText}>{products[j].data.original_price}</Text>
-                    </View>
-                  )
-                }
-              </View>
+            <View style={productGridNormalPrice}>
+              {
+                dataProducts.discount_percentage && (
+                  <View style={{ height: 3 }}>
+                    <Text style={productGridNormalPriceText}>{dataProducts.original_price}</Text>
+                  </View>
+                )
+              }
             </View>
-            <View style={styles.priceWrapper}>
-              <Text style={styles.price}>{products[j].data.price}</Text>
-               {
-                products[j].data.discount_percentage && (<View style={styles.productGridCampaignRate}>
-                  <Text style={styles.productGridCampaignRateText}>{`${products[j].data.discount_percentage}% OFF`}</Text>
+            <View style={priceWrapper}>
+              <Text style={price}>{dataProducts.price}</Text>
+              { dataProducts.discount_percentage && (
+                <View style={productGridCampaignRate}>
+                  <Text style={productGridCampaignRateText}>{`${dataProducts.discount_percentage}% OFF`}</Text>
                 </View>)
               }
-               {
-                products[j].data.badges.map((b, i) => b.title === 'Free Return' ? (
-                  <View key={i} style={styles.badgeImageContainer}>
-                    <Image source={{ uri: b.image_url }} style={styles.badgeImage} />
-                  </View>
-                ) : null)
-              }  
+              { dataProducts.badges.map(b => (b.title === 'Free Return' ? (
+                <View key={dataProducts.id} style={badgeImageContainer}>
+                  <Image source={{ uri: b.image_url }} style={badgeImage} />
+                </View>) : null))
+              }
             </View>
-            <View style={styles.productBadgeWrapper}>
+            <View style={productBadgeWrapper}>
               {
-                products[j].data.labels.map((l, index) => {
-                  let labelTitle = l.title
+                dataProducts.labels.map((l) => {
+                  let labelTitle = l.title;
+                  // console.log(l);
                   if (l.title.indexOf('Cashback') > -1) {
-                    labelTitle = 'Cashback'
+                    labelTitle = 'Cashback';
                   }
-                  const key = `${products[j].id}-${labelTitle}`
                   switch (labelTitle) {
                     case 'PO':
                     case 'Grosir':
                       return (
-                        <View style={styles.productLabel} key={index}>
-                          <Text style={styles.labelText}>{l.title}</Text>
-                        </View>)
+                        <View style={productLabel} key={dataProducts.id}>
+                          <Text style={labelText}>{l.title}</Text>
+                        </View>);
                     case 'Cashback':
                       return (
-                        <View style={styles.productCashback} key={index}>
-                          <Text style={styles.cashbackText}>{l.title}</Text>
+                        <View style={productCashback} key={dataProducts.id}>
+                          <Text style={cashbackText}>{l.title}</Text>
                         </View>
-                      )
+                      );
                     default:
-                      return null
+                      return null;
                   }
                 })
               }
             </View>
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(products[j].data.shop.url)}>
-              <View style={styles.shopSection}>
-                <View style={styles.shopImageWrapper}>
-                  <Image source={{ uri: products[j].brand_logo }} style={styles.shopImage} />
+            <TouchableWithoutFeedback onPress={() => Linking.openURL(dataProducts.shop.url)}>
+              <View style={shopSection}>
+                <View style={shopImageWrapper}>
+                  <Image source={{ uri: products[j].brand_logo }} style={shopImage} />
                 </View>
-                <View style={styles.shopNameWrapper}>
-                  <Text style={{ lineHeight: 15 }} ellipsizeMode='tail'
-                    numberOfLines={1}>{products[j].data.shop.name}</Text>
+                <View style={shopNameWrapper}>
+                  <Text
+                    style={{ lineHeight: 15 }}
+                    ellipsizeMode='tail'
+                    numberOfLines={1}>{dataProducts.shop.name}</Text>
                 </View>
               </View>
             </TouchableWithoutFeedback>
             <WishListButton
-              isWishlist={products[j].data.is_wishlist || false}
-              productId={products[j].data.id} />
+              isWishlist={dataProducts.is_wishlist || false}
+              productId={dataProducts.id} />
           </View>
-        )
+        );
       }
       productGrid.push(
         <View style={styles.productRow} key={i}>
           {productRow}
         </View>
-      )
+      );
     }
   }
   return (
     <View style={{ marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#e0e0e0' }}>
       {
-        c.html_id === 6 ? null : <Text style={styles.titleText}>{c.title}</Text>
+        c.html_id === 6 ? null : <Text style={titleText}>{item.title}</Text>
       }
       {
         c.html_id === 6 ? (
-          <TouchableWithoutFeedback onPress={() => Linking.openURL(c.redirect_url)}>
-            <Image source={{ uri: c.image_url }} style={{ height: 110 }} />
+          <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_desktop)}>
+            <Image source={{ uri: item.image_url }} style={{ height: 110 }} />
           </TouchableWithoutFeedback>
         ) :
           (
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(c.redirect_url_mobile)}>
-              <Image source={{ uri: c.mobile_url }} style={{ height: 110 }} />
+            <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_mobile)}>
+              <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
             </TouchableWithoutFeedback>
           )
       }
       {productGrid}
       {
-        c.html_id === 6 ? null : (<View style={styles.viewAll}>
-          <Text style={styles.viewAllText} onPress={() => Linking.openURL(c.redirect_url_mobile)}>Lihat Semua > </Text>
-          {/* <Icon name='chevron-right' size={30} /> */}
+        c.html_id === 6 ? null : (<View style={viewAll}>
+          <Text
+            style={viewAllText}
+            onPress={() => Linking.openURL(item.redirect_url_mobile)}>Lihat Semua &gt;
+          </Text>
         </View>)
       }
     </View >
-  )
-}
+  );
+};
 
-const _onClick = () => {
+this.onClick = () => {
 
-}
+};
 
 CampaignList.propTypes = {
-  campaigns: PropTypes.array
-}
+  campaigns: PropTypes.arrayOf(PropTypes.object).isRequired
+};
 
 const styles = StyleSheet.create({
   container: {
   },
   titleText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     margin: 10
   },
   productRow: {
     flex: 1,
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#e0e0e0'
   },
   productCell: {
     flex: 1 / 2,
     borderRightWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#e0e0e0'
   },
   priceWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 34,
+    height: 34
   },
   price: {
     color: '#ff5722',
     fontSize: 13,
     fontWeight: '600',
     lineHeight: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   productName: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: '600',
     color: 'rgba(0,0,0,.7)',
     height: 33.8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   productImageWrapper: {
     borderBottomWidth: 1,
     borderColor: 'rgba(255,255,255,0)',
-    padding: 10,
+    padding: 10
   },
   productImage: {
     height: 185,
-    borderRadius: 3,
+    borderRadius: 3
   },
   productBadgeWrapper: {
     height: 27,
@@ -222,44 +245,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   productCashback: {
     borderRadius: 3,
     marginRight: 3,
     padding: 3,
-    backgroundColor: '#42b549',
+    backgroundColor: '#42b549'
   },
   cashbackText: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: 10
   },
   shopSection: {
     flex: 1,
     flexDirection: 'row',
     padding: 10,
-    // borderStyle: 'dashed',
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   shopImage: {
     width: 28,
-    height: 28,
+    height: 28
   },
   shopImageWrapper: {
     width: 30,
     height: 30,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#e0e0e0'
   },
   shopNameWrapper: {
     flex: 3 / 4,
     marginTop: 7,
     marginLeft: 10,
     marginBottom: 5,
-    marginRight: 0,
+    marginRight: 0
   },
   viewAll: {
     paddingVertical: 15,
@@ -268,34 +290,33 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
   viewAllText: {
     color: '#42b549',
-    fontSize: 13,
+    fontSize: 13
   },
   productLabel: {
     padding: 3,
     borderColor: '#e0e0e0',
     borderWidth: 1,
     marginRight: 3,
-    padding: 3,
     backgroundColor: '#fff',
-    borderRadius: 3,
+    borderRadius: 3
   },
   labelText: {
-    fontSize: 10,
+    fontSize: 10
   },
   productGridPrice: {
-    height: 34,
+    height: 34
   },
   productGridNormalPrice: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   productGridNormalPriceText: {
     fontSize: 10,
     fontWeight: '600',
-    textDecorationLine: 'line-through',
+    textDecorationLine: 'line-through'
   },
   badgeImageContainer: {
     paddingHorizontal: 10,
@@ -303,19 +324,19 @@ const styles = StyleSheet.create({
   },
   badgeImage: {
     height: 16,
-    width: 16,
+    width: 16
   },
   productGridCampaignRate: {
     backgroundColor: '#ff5722',
     padding: 3,
     borderRadius: 3,
-    marginLeft: 5,
+    marginLeft: 5
   },
   productGridCampaignRateText: {
     color: '#fff',
     fontSize: 11,
-    textAlign: 'center',
+    textAlign: 'center'
   }
 });
 
-export default CampaignList
+export default CampaignList;
