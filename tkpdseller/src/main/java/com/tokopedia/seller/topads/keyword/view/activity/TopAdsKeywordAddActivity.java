@@ -130,4 +130,9 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
             super.onBackPressed();
         }
     }
+
+    @Override
+    public AppComponent getComponent() {
+        return getComponent();
+    }
 }

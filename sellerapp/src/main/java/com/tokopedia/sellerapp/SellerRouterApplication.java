@@ -11,10 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -25,6 +28,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
@@ -32,14 +38,13 @@ import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -47,8 +52,30 @@ import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 
 public class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter {
+
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
+
+    private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
+    private GoldMerchantComponent goldMerchantComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+    }
+
+    private void initializeDagger() {
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
+                .goldMerchantModule(new GoldMerchantModule());
+    }
+
+    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule){
+        if (goldMerchantComponent == null) {
+            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
+        }
+        return goldMerchantComponent;
+    }
 
     @Override
     public void startInstopedActivity(Context context) {

@@ -4,11 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.seller.base.di.component.DaggerDatePickerComponent;
-import com.tokopedia.seller.base.di.component.DatePickerComponent;
-import com.tokopedia.seller.base.di.module.DatePickerModule;
 import com.tokopedia.seller.base.view.constant.ConstantView;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
@@ -36,22 +32,10 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     protected String startDate;
     protected String endDate;
     protected DatePickerViewModel datePickerViewModel;
-    protected DatePickerComponent datePickerComponent;
 
     protected abstract void loadData();
 
     protected abstract Intent getDatePickerIntent();
-
-    @Override
-    protected void initInjector() {
-        datePickerComponent = DaggerDatePickerComponent
-                .builder()
-                .datePickerModule(new DatePickerModule())
-                .appComponent(getComponent(AppComponent.class))
-                .build();
-
-        datePickerComponent.inject(this);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.base.di.module;
+package com.tokopedia.seller.goldmerchant.common.di.module;
 
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.seller.base.data.repository.DatePickerRepositoryImpl;
 import com.tokopedia.seller.base.data.source.DatePickerDataSource;
-import com.tokopedia.seller.base.di.scope.DatePickerScope;
+import com.tokopedia.seller.goldmerchant.common.di.scope.GoldMerchantScope;
 import com.tokopedia.seller.base.domain.DatePickerRepository;
 import com.tokopedia.seller.base.domain.interactor.ClearDatePickerUseCase;
 import com.tokopedia.seller.base.domain.interactor.FetchDatePickerUseCase;
@@ -17,11 +17,11 @@ import dagger.Provides;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@DatePickerScope
+@GoldMerchantScope
 @Module
-public class DatePickerModule {
+public class GoldMerchantModule {
 
-    @DatePickerScope
+    @GoldMerchantScope
     @Provides
     DatePickerPresenter provideDatePickerPresenter(FetchDatePickerUseCase fetchDatePickerUseCase,
                                                    SaveDatePickerUseCase saveDatePickerUseCase,
@@ -29,13 +29,13 @@ public class DatePickerModule {
         return new DatePickerPresenterImpl(fetchDatePickerUseCase, saveDatePickerUseCase, clearDatePickerUseCase);
     }
 
-    @DatePickerScope
+    @GoldMerchantScope
     @Provides
     DatePickerRepository provideDatePickerRepository(DatePickerDataSource datePickerDataSource) {
         return new DatePickerRepositoryImpl(datePickerDataSource);
     }
 
-    @DatePickerScope
+    @GoldMerchantScope
     @Provides
     GlobalCacheManager provideGlobalCacheManager(){
         return new GlobalCacheManager();
