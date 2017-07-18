@@ -1,11 +1,9 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain.mapper;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
@@ -33,31 +31,19 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
 
     private static final String TAG = "GMTransactionStatDomain";
 
-    private String[] monthNamesAbrev;
     private Context context;
 
     @Inject
     public GMTransactionStatDomainMapper(@ApplicationContext Context context) {
         this.context = context;
-        monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
-    @Nullable
-    protected GMDateRangeDateViewModel getGmDateRangeDateViewModel(List<Integer> dateGraph) {
-        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
-                monthNamesAbrev,
-                0);
-        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
-                monthNamesAbrev,
-                dateGraph.size() - 1);
-        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
-            return null;
+    protected GMDateRangeDateViewModel getGmDateRangeDateViewModel2(List<Integer> dateGraph) {
+        GMDateRangeDateViewModel gmDateRangeDateViewModel =
+                new GMDateRangeDateViewModel();
+        gmDateRangeDateViewModel.setStartDate(GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0)));
+        gmDateRangeDateViewModel.setEndDate(GoldMerchantDateUtils.getDateWithYear(dateGraph.get(dateGraph.size() - 1)));
 
-        // create object for range date.
-        GMDateRangeDateViewModel gmDateRangeDateViewModel
-                = new GMDateRangeDateViewModel();
-        gmDateRangeDateViewModel.setStartDate(startDateString);
-        gmDateRangeDateViewModel.setEndDate(endDateString);
         return gmDateRangeDateViewModel;
     }
 
@@ -66,14 +52,11 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         // get range from network
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
 
-        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel(dateGraph);
-        if (gmDateRangeDateViewModel == null)
-            return null;
+        GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel2(dateGraph);
+        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel2(getTransactionGraph.getPDateGraph());
 
-        gmDateRangeDateViewModel.dumpStartDateLong();
-        gmDateRangeDateViewModel.dumpEndDateLong();
-
-        GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel(getTransactionGraph.getPDateGraph());
+        GoldMerchantDateUtils.dumpDate(gmDateRangeDateViewModel.getStartDate(), true);
+        GoldMerchantDateUtils.dumpDate(previousGmDateRangeDateViewModel.getStartDate(), true);
 
         GMTransactionGraphViewModel gmTransactionGraphViewModel
                 = new GMTransactionGraphViewModel();

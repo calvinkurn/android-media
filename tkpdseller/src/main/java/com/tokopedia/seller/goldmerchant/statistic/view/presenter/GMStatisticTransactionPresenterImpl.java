@@ -62,8 +62,8 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     public void startTransactionProductList() {
         if (isViewAttached()) {
             getView().startTransactionProductList(
-                    gmDateRangeDateViewModel.getStartDate().getModel1(),
-                    gmDateRangeDateViewModel.getEndDate().getModel1()
+                    gmDateRangeDateViewModel.getStartDate(),
+                    gmDateRangeDateViewModel.getEndDate()
             );
         }
     }
