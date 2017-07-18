@@ -7,9 +7,10 @@ import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsIn
 import rx.Subscriber;
 
 /**
- * Created by normansyahputa on 7/18/17.
+ * @author normansyahputa on 7/18/17.
+ *
+ *
  */
-
 public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionPresenter {
     private GMStatGetTransactionGraphUseCase useCase;
     private DashboardTopadsInteractor topadsUseCase;
@@ -22,7 +23,22 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
     @Override
     public void loadDataWithoutDate() {
+        useCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(-1, -1), new Subscriber<GMTransactionGraphMergeModel>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GMTransactionGraphMergeModel mergeModel) {
+                revealData(mergeModel);
+            }
+        });
     }
 
     @Override
