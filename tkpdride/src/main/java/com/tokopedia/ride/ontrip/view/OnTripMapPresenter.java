@@ -34,7 +34,7 @@ import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;

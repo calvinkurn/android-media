@@ -6,7 +6,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -54,6 +53,10 @@ public interface UberProductContract {
         void openInterruptConfirmationWebView(String tosUrl);
 
         void showErrorTosConfirmation(String tosUrl);
+
+        void showErrorTosConfirmationDialog(String message, String url, String code, String value);
+
+        void openInterruptConfirmationDialog(String url, String code, String value);
     }
 
     interface Presenter extends CustomerPresenter<View> {

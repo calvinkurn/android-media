@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
@@ -209,10 +209,24 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
                             String message = e.getMessage();
                             if (e instanceof InterruptConfirmationHttpException) {
-                                getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+
                                 if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                                    getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                                     getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                                } else if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                                    getView().showErrorTosConfirmationDialog(
+                                            e.getMessage(),
+                                            ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                            ((InterruptConfirmationHttpException) e).getType(),
+                                            ((InterruptConfirmationHttpException) e).getId()
+                                    );
+                                    getView().openInterruptConfirmationDialog(
+                                            ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                            ((InterruptConfirmationHttpException) e).getType(),
+                                            ((InterruptConfirmationHttpException) e).getId()
+                                    );
                                 } else {
+                                    getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                                     getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                                 }
                             } else {

@@ -5,7 +5,7 @@ import android.content.Intent;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

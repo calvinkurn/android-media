@@ -1,8 +1,10 @@
-package com.tokopedia.core.network.exception.model;
+package com.tokopedia.core.network.exception;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.tokopedia.core.network.exception.model.InterruptConfirmationExceptionEntity;
+import com.tokopedia.core.network.exception.model.InterruptEntity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 
 import org.json.JSONException;
@@ -15,11 +17,14 @@ import java.io.IOException;
  */
 
 public class InterruptConfirmationHttpException extends IOException {
-    private String tosUrl;
-    private String message;
-    private String type;
+    private InterruptEntity entity;
 
-    public static String TOS_CONFIRMATION_INTERRUPT = "tos_accept_confirmation";
+    public static final String TOS_TOKOPEDIA_INTERRUPT = "tos_tokopedia";
+    public static final String TOS_CONFIRMATION_INTERRUPT = "tos_accept_confirmation";
+    public static final String SURGE_CONFIRMATION_INTERRUPT = "surge_confirmation";
+    public static final String WALLET_ACTIVATION_INTERRUPT = "wallet_activation";
+    public static final String WALLET_TOPUP_INTERRUPT = "wallet_topup";
+    public static final String GENERAL_INTERRUPT = "interrupt";
 
     public InterruptConfirmationHttpException() {
         super("Request data is invalid, please check message");
@@ -31,6 +36,7 @@ public class InterruptConfirmationHttpException extends IOException {
 
     public InterruptConfirmationHttpException(String errorMessage) {
         super(errorMessage);
+        this.entity = new InterruptEntity();
         String newResponseString = null;
         JSONObject jsonObject;
         try {
@@ -46,27 +52,30 @@ public class InterruptConfirmationHttpException extends IOException {
         try {
             InterruptConfirmationExceptionEntity entity = gson.fromJson(newResponseString, InterruptConfirmationExceptionEntity.class);
             if (entity.getCode() != null && entity.getCode().length() > 0) {
-                message = entity.getMessage();
-                setType(entity.getCode());
+
+                this.entity.setMessage(entity.getMessage());
+                this.entity.setCode(entity.getCode());
 
                 switch (entity.getCode()) {
-                    case "tos_accept_confirmation":
-                        tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
+                    case TOS_TOKOPEDIA_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getTosTokopediaConfirmationExceptionEntity().getHref());
                         break;
-                    case "surge_confirmation":
-                        tosUrl = entity.getMeta().getSurgeConfirmationEntity().getHref();
+                    case TOS_CONFIRMATION_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getTosAcceptConfirmationEntity().getHref());
                         break;
-                    case "wallet_activation":
-                        tosUrl = entity.getMeta().getWalletActivationEntity().getHref();
+                    case SURGE_CONFIRMATION_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getSurgeConfirmationEntity().getHref());
                         break;
-                    case "wallet_topup":
-                        tosUrl = entity.getMeta().getWalletTopupEntity().getHref();
+                    case WALLET_ACTIVATION_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getWalletActivationEntity().getHref());
                         break;
-                    case "interrupt":
-                        tosUrl = entity.getMeta().getInterruptEntity().getHref();
+                    case WALLET_TOPUP_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getWalletTopupEntity().getHref());
+                        break;
+                    case GENERAL_INTERRUPT:
+                        this.entity.setHref(entity.getMeta().getInterruptEntity().getHref());
                         break;
                 }
-
             } else {
                 throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
@@ -78,27 +87,19 @@ public class InterruptConfirmationHttpException extends IOException {
     }
 
     public String getTosUrl() {
-        return tosUrl;
-    }
-
-    public void setTosUrl(String tosUrl) {
-        this.tosUrl = tosUrl;
+        return entity.getHref();
     }
 
     @Override
     public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+        return entity.getMessage();
     }
 
     public String getType() {
-        return type;
+        return entity.getCode();
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getId() {
+        return entity.getId();
     }
 }

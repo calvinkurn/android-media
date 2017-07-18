@@ -37,6 +37,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
+import com.tokopedia.ride.ontrip.view.fragment.InterruptDialogFragment;
 
 import java.util.Date;
 import java.util.List;
@@ -55,6 +56,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
+    private static final int REQUEST_CODE_TOKOPEDIA_INTERRUPT_DIALOG = 1006;
 
     @BindView(R2.id.ride_product_list)
     RecyclerView mRideProductsRecyclerView;
@@ -392,6 +394,37 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     }
 
     @Override
+    public void showErrorTosConfirmationDialog(String message, final String url, final String code, final String value) {
+        hideProgress();
+        mErrorView.setVisibility(View.VISIBLE);
+        mErrorLayout.setVisibility(View.VISIBLE);
+        mErrorDescriptionTextView.setText(message);
+        mRetryButtonTextView.setText(R.string.uber_product_confirm_btn_text);
+        mRetryButtonTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openInterruptConfirmationDialog(url, code, value);
+            }
+        });
+    }
+
+    @Override
+    public void openInterruptConfirmationDialog(String url, String code, String value) {
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptDialogFragment.newInstance(code, value, url);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
+            isOpenInterruptWebviewDialog = true;
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -402,6 +435,20 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                     showProgress();
                     String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
                     String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
+                    if (key != null && key.length() > 0) {
+                        mPresenter.actionGetRideProducts(id, key, source, destination);
+                    } else {
+                        mPresenter.actionGetRideProducts(source, destination);
+                    }
+                }
+                break;
+            case REQUEST_CODE_TOKOPEDIA_INTERRUPT_DIALOG:
+                isOpenInterruptWebviewDialog = false;
+                if (resultCode == Activity.RESULT_OK) {
+                    hideErrorMessageLayout();
+                    showProgress();
+                    String id = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
+                    String key = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
                     if (key != null && key.length() > 0) {
                         mPresenter.actionGetRideProducts(id, key, source, destination);
                     } else {
