@@ -19,6 +19,8 @@ import java.util.Locale;
  */
 
 public class RideProductViewModelMapper {
+    private static final int DEFAULT_TIME_ESTIMATE = 15;
+
     public RideProductViewModelMapper() {
     }
 
@@ -142,7 +144,7 @@ public class RideProductViewModelMapper {
             if (product.getTimesEstimate() != null) {
                 rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
             } else {
-                rideProductViewModel.setTimeEstimate(900 / 60 + " min");
+                rideProductViewModel.setTimeEstimate(DEFAULT_TIME_ESTIMATE + " min");
             }
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));

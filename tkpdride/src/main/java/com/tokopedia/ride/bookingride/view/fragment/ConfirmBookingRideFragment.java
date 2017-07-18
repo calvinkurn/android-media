@@ -53,6 +53,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
     private static final int REQUEST_CODE_REMOVE_PROMO = 1014;
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1015;
+    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
 
     public static String EXTRA_CONFIRM_BOOKING_DATA = "EXTRA_CONFIRM_BOOKING_DATA";
     public static String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
@@ -508,14 +509,14 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void openInterruptConfirmationWebView(String tosUrl) {
         if (!isOpenInterruptWebviewDialog) {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {
                 fragmentTransaction.remove(previousDialog);
             }
             fragmentTransaction.addToBackStack(null);
             DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-            dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
             isOpenInterruptWebviewDialog = true;
         }
     }
