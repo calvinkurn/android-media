@@ -6,8 +6,11 @@ import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
+import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import javax.inject.Inject;
 
@@ -20,20 +23,26 @@ import rx.Observable;
 public class GMStatRepositoryImpl implements GMStatRepository {
 
     private GMStatDataSource gmStatDataSource;
+    private GMTransactionStatDomainMapper gmTransactionStatDomainMapper;
+    private GMTransactionTableMapper gmTransactionTableMapper;
 
     @Inject
-    public GMStatRepositoryImpl(GMStatDataSource gmStatDataSource) {
+    public GMStatRepositoryImpl(GMTransactionStatDomainMapper gmTransactionStatDomainMapper,
+                                GMStatDataSource gmStatDataSource,
+                                GMTransactionTableMapper gmTransactionTableMapper) {
         this.gmStatDataSource = gmStatDataSource;
+        this.gmTransactionStatDomainMapper = gmTransactionStatDomainMapper;
+        this.gmTransactionTableMapper = gmTransactionTableMapper;
     }
 
     @Override
-    public Observable<GetTransactionGraph> getTransactionGraph(long startDate, long endDate) {
-        return gmStatDataSource.getTransactionGraph(startDate, endDate);
+    public Observable<GMTransactionGraphMergeModel> getTransactionGraph(long startDate, long endDate) {
+        return gmStatDataSource.getTransactionGraph(startDate, endDate).map(gmTransactionStatDomainMapper);
     }
 
     @Override
-    public Observable<GetTransactionTable> getTransactionTable(long startDate, long endDate) {
-        return gmStatDataSource.getTransactionTable(startDate, endDate);
+    public Observable<GetTransactionTableModel> getTransactionTable(long startDate, long endDate) {
+        return gmStatDataSource.getTransactionTable(startDate, endDate).map(gmTransactionTableMapper);
     }
 
     @Override

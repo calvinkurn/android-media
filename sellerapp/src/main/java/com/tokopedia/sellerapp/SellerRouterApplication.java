@@ -13,11 +13,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
-import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -42,6 +40,7 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -70,7 +69,7 @@ public class SellerRouterApplication extends MainApplication
                 .goldMerchantModule(new GoldMerchantModule());
     }
 
-    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule){
+    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
         if (goldMerchantComponent == null) {
             goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
         }

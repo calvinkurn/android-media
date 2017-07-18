@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_title_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
     android:divider="@drawable/line_separator_medium"
-    android:id="@+id/vg_title_card_view"
     android:orientation="vertical"
     android:showDividers="middle">
 
     <FrameLayout
+        android:id="@+id/vg_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/vg_title"
         android:background="?attr/selectableItemBackground">
+
         <TextView
             android:id="@+id/tv_title"
             style="@style/TextView.Subheading.Bold"

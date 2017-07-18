@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 

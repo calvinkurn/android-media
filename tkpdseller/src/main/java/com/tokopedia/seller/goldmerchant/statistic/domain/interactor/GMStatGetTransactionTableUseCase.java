@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class GMStatGetTransactionTableUseCase extends CompositeUseCase<GetTransactionTable> {
+public class GMStatGetTransactionTableUseCase extends CompositeUseCase<GetTransactionTableModel> {
     public static final String START_DATE = "sdt";
     public static final String END_DATE = "edt";
 
@@ -39,7 +39,7 @@ public class GMStatGetTransactionTableUseCase extends CompositeUseCase<GetTransa
     }
 
     @Override
-    public Observable<GetTransactionTable> createObservable(RequestParams requestParams) {
+    public Observable<GetTransactionTableModel> createObservable(RequestParams requestParams) {
         final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
         final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
         return gmStatRepository.getTransactionTable(startDate, endDate);

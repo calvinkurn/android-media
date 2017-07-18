@@ -6,18 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 
 /**
  * Created by hendry on 7/10/2017.
@@ -135,6 +131,16 @@ public class TitleCardView extends CardView {
         }
     }
 
+    public void setLoadingViewRes(int loadingViewRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, mFrameLayout, false);
+        ;
+        setLoadingView(emptyView);
+    }
+
+    public View getLoadingView() {
+        return loadingView;
+    }
+
     public void setLoadingView(View loadingView) {
         if (this.loadingView!= null) {
             mFrameLayout.removeView(this.loadingView);
@@ -144,13 +150,14 @@ public class TitleCardView extends CardView {
         addView(loadingView);
     }
 
-    public void setLoadingViewRes(int loadingViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, mFrameLayout, false);;
-        setLoadingView(emptyView);
+    public void setEmptyViewRes(int emptyViewRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, mFrameLayout, false);
+        ;
+        setEmptyView(emptyView);
     }
 
-    public View getLoadingView() {
-        return loadingView;
+    public View getEmptyView() {
+        return emptyView;
     }
 
     public void setEmptyView(View emptyView) {
@@ -160,15 +167,6 @@ public class TitleCardView extends CardView {
         this.emptyView = emptyView;
         emptyView.setVisibility(View.GONE);
         addView(emptyView);
-    }
-
-    public void setEmptyViewRes(int emptyViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, mFrameLayout, false);;
-        setEmptyView(emptyView);
-    }
-
-    public View getEmptyView() {
-        return emptyView;
     }
 
     public void setLoadingState (boolean isLoading){

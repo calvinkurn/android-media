@@ -87,9 +87,14 @@ public class GMStatCloud {
         Map<String, String> param = new HashMap<>();
         if (startDate > 0) {
             param.put(S_DATE, getFormattedDate(startDate));
+        } else {
+            param.remove(S_DATE);
         }
+
         if (endDate > 0) {
             param.put(E_DATE, getFormattedDate(endDate));
+        } else {
+            param.remove(E_DATE);
         }
         return param;
     }

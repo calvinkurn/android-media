@@ -5,8 +5,9 @@ import android.util.Log;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.Cell;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
 
     public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
         RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(startDate.getTime(), endDate.getTime());
-        gmStatGetTransactionTableUseCase.execute(requestParam, new Subscriber<GetTransactionTable>() {
+        gmStatGetTransactionTableUseCase.execute(requestParam, new Subscriber<GetTransactionTableModel>() {
             @Override
             public void onCompleted() {
 
@@ -41,14 +42,14 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
             }
 
             @Override
-            public void onNext(GetTransactionTable getTransactionTable) {
+            public void onNext(GetTransactionTableModel getTransactionTable) {
                 Log.d(TAG, getTransactionTable.toString());
                 revealData(getTransactionTable);
             }
         });
     }
 
-    protected void revealData(GetTransactionTable getTransactionTable) {
+    protected void revealData(GetTransactionTableModel getTransactionTable) {
         if (isViewAttached()) {
             getView().onSearchLoaded(
                     convertToViewModel(getTransactionTable.getCells()),
@@ -57,10 +58,10 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
         }
     }
 
-    private List<GMStatisticTransactionTableModel> convertToViewModel(List<GetTransactionTable.Cell> datas) {
+    private List<GMStatisticTransactionTableModel> convertToViewModel(List<Cell> datas) {
         List<GMStatisticTransactionTableModel> gmStatisticTransactionTableModels =
                 new ArrayList<>();
-        for (GetTransactionTable.Cell data : datas) {
+        for (Cell data : datas) {
             GMStatisticTransactionTableModel gmStatisticTransactionTableModel
                     = new GMStatisticTransactionTableModel();
             gmStatisticTransactionTableModel.rightText = Integer.toString(data.getDeliveredAmt());
