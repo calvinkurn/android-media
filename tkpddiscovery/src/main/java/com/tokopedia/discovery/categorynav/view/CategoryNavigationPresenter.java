@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.discovery.categorynav.domain.interactor.GetCategoryChildrenUseCase;
 import com.tokopedia.discovery.categorynav.domain.interactor.GetCategoryParentUseCase;
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 
@@ -58,7 +59,7 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
 
     }
 
-    private class CategoryChildrenSubscriber extends DefaultSubscriber<List<ChildCategory>> {
+    private class CategoryChildrenSubscriber extends DefaultSubscriber<List<Category>> {
         @Override
         public void onCompleted() {
             getView().hideLoading();
@@ -71,8 +72,8 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
         }
 
         @Override
-        public void onNext(List<ChildCategory> children) {
-            //getView().renderRootCategory(children);
+        public void onNext(List<Category> children) {
+            getView().renderCategoryChildren(children);
             getView().hideLoading();
         }
 

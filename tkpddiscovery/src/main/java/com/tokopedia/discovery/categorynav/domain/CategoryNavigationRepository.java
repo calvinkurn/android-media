@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categorynav.domain;
 
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 
@@ -15,5 +16,5 @@ public interface CategoryNavigationRepository {
 
     Observable<CategoryNavDomainModel> getCategoryNavigationRoot(String categoryId);
 
-    Observable<List<ChildCategory>> getCategoryChildren(String categoryId);
+    Observable<List<Category>> getCategoryChildren(String categoryId);
 }

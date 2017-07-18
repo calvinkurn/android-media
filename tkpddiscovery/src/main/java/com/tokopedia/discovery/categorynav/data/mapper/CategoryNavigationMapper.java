@@ -34,14 +34,16 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                 categoryModel.setHasChild(category.getHasChild());
                 categoryModel.setIconImageUrl(category.getIconImageUrl());
                 if (category.getChild()!=null && category.getChild().size()>0) {
-                    List<ChildCategory> childCategories = new ArrayList<>();
+                    List<com.tokopedia.discovery.categorynav.domain.model.Category> children = new ArrayList<>();
                     for (Child child: category.getChild()) {
-                        ChildCategory childCategory = new ChildCategory();
+                        com.tokopedia.discovery.categorynav.domain.model.Category childCategory =
+                                new com.tokopedia.discovery.categorynav.domain.model.Category();
                         childCategory.setId(child.getId());
                         childCategory.setName(child.getName());
                         childCategory.setHasChild(child.getHasChild());
-                        childCategories.add(childCategory);
+                        children.add(childCategory);
                     }
+                    categoryModel.setChildren(children);
                 }
                 categoryList.add(categoryModel);
             }

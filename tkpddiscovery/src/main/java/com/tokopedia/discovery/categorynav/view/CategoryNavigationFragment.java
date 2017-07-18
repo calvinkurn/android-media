@@ -106,21 +106,24 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             categoryChildAdapter = new CategoryChildAdapter(this);
             categoryChildRecyclerView.setAdapter(categoryChildAdapter);
             Category parentCategory = categoryNavDomainModel.getCategoryIndexById(departmentId);
-            if (parentCategory!=null) {
-                categoryChildAdapter.setNewDataList(parentCategory.getChildren());
+            if (parentCategory!=null && parentCategory.getChildren().size()>0) {
+                categoryChildAdapter.clear();
+                categoryChildAdapter.addAll(parentCategory.getChildren());
+                categoryParentAdapter.notifyDataSetChanged();
             }
         }
     }
 
     @Override
-    public void renderCategoryChildren(List<ChildCategory> children) {
+    public void renderCategoryChildren(List<Category> children) {
         for (Category category: categoryNavDomainModel.getCategories()) {
             if (category.getId() == departmentId) {
                 category.setChildren(children);
                 break;
             }
         }
-        categoryChildAdapter.setNewDataList(children);
+        categoryChildAdapter.clear();
+        categoryChildAdapter.addAll(children);
         categoryParentAdapter.notifyDataSetChanged();
     }
 
@@ -143,7 +146,9 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         for (Category category: categoryNavDomainModel.getCategories()) {
             if (category.getId() == departmentId) {
                 if (category.getChildren()!=null && category.getChildren().size()>0) {
-                    renderCategoryChildren(category.getChildren());
+                    categoryChildAdapter.clear();
+                    categoryChildAdapter.addAll(category.getChildren());
+                    categoryParentAdapter.notifyDataSetChanged();
                 } else {
                     presenter.getChildren(departmentId);
                 }

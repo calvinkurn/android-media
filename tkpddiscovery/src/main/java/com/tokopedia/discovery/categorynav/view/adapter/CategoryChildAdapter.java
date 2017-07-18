@@ -23,19 +23,11 @@ import java.util.List;
 
 public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
-    private List<com.tokopedia.discovery.categorynav.domain.model.ChildCategory> categories;
     private CategoryParentAdapter.OnItemClickListener clickListener;
     private int activePosition = 0;
 
     public CategoryChildAdapter(CategoryParentAdapter.OnItemClickListener itemListener) {
         clickListener = itemListener;
-        categories = new ArrayList<>();
-    }
-
-    public void setNewDataList(List<com.tokopedia.discovery.categorynav.domain.model.ChildCategory> dataList) {
-        categories.clear();
-        categories = dataList;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -49,18 +41,11 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         activePosition = position;
+        Category category = (Category) getItemAt(position);
         CategoryChildAdapter.ItemRowHolder itemRowHolder = (CategoryChildAdapter.ItemRowHolder) holder;
-        itemRowHolder.bindData(position);
+        itemRowHolder.bindData(category);
     }
 
-
-    @Override
-    public int getItemCount() {
-        if (categories != null)
-            return categories.size();
-        else
-            return 0;
-    }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         LinearLayout categoryContainer;
@@ -72,14 +57,8 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
             this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_child_container);
         }
 
-        public void bindData(int position) {
-            com.tokopedia.discovery.categorynav.domain.model.ChildCategory category = categories.get(position);
+        public void bindData(Category category) {
             this.categoryName.setText(category.getName());
-            if (position == activePosition) {
-                this.categoryContainer.setSelected(true);
-            } else {
-                this.categoryContainer.setSelected(false);
-            }
         }
 
     }

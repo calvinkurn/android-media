@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categorynav.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 
@@ -23,7 +24,7 @@ public interface CategoryNavigationContract {
 
         void renderRootCategory(CategoryNavDomainModel categoryNavDomainModel);
 
-        void renderCategoryChildren(List<ChildCategory> children);
+        void renderCategoryChildren(List<Category> children);
 
     }
 

@@ -1,26 +1,42 @@
 package com.tokopedia.discovery.categorynav.domain.model;
 
 
+import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by alifa on 7/6/17.
  */
 
-public class Category {
+public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
 
-    private List<ChildCategory> children = null;
+    private List<Category> children = new ArrayList<>();
     private String id;
     private String name;
     private String iconImageUrl;
     private Boolean hasChild;
 
-    public List<ChildCategory> getChildren() {
+
+    @Override
+    public List<? extends MultiLevelExpIndListAdapter.ExpIndData> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ChildCategory> children) {
-        this.children = children;
+    @Override
+    public boolean isGroup() {
+        return false;
+    }
+
+    @Override
+    public void setIsGroup(boolean value) {
+
+    }
+
+    @Override
+    public void setGroupSize(int groupSize) {
+
     }
 
     public String getId() {
@@ -53,5 +69,9 @@ public class Category {
 
     public void setHasChild(Boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
     }
 }

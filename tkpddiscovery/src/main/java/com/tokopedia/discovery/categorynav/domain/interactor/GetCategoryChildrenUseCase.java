@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.discovery.categorynav.domain.CategoryNavigationRepository;
+import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import rx.Observable;
  * @author by alifa on 7/17/17.
  */
 
-public class GetCategoryChildrenUseCase extends UseCase<List<ChildCategory>> {
+public class GetCategoryChildrenUseCase extends UseCase<List<Category>> {
 
     private final CategoryNavigationRepository repository;
     private String categoryId = "";
@@ -36,7 +37,7 @@ public class GetCategoryChildrenUseCase extends UseCase<List<ChildCategory>> {
     }
 
     @Override
-    public Observable<List<ChildCategory>> createObservable(RequestParams requestParams) {
+    public Observable<List<Category>> createObservable(RequestParams requestParams) {
         return repository.getCategoryChildren(categoryId);
     }
 }
