@@ -5,6 +5,8 @@ import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
@@ -38,26 +40,24 @@ public class GetShopProductRetrofit {
     }
 
     //    private ShopService shopService;
-    private ShopWebService shopService;
+    private ShopService shopService;
+    private TomeService tomeService;
     private Context context;
     private String shopId;
     private String shopDomain;
+    private boolean useAce;
 
     private OnGetShopProductListener onGetShopProductListener;
 
     private Subscription onGetShopProductSubs;
-    private static final String ACE_SHOP_URL = "https://ace.tokopedia.com/v1/web-service/shop/";
-    private static final String TOME_SHOP_URL = "https://tome.tokopedia.com/v1/web-service/shop/";
 
     public GetShopProductRetrofit(Context context, String shopId, String shopDomain, boolean useAce) {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        if (useAce) {
-            shopService = new ShopWebService(ACE_SHOP_URL);
-        } else {
-            shopService = new ShopWebService(TOME_SHOP_URL);
-        }
+        this.useAce = useAce;
+        shopService = new ShopService(TkpdBaseURL.ACE_DOMAIN);
+        tomeService = new TomeService();
     }
 
     public void setOnGetShopProductListener(OnGetShopProductListener listener) {
@@ -65,8 +65,13 @@ public class GetShopProductRetrofit {
     }
 
     public void getShopProduct(GetShopProductParam param) {
-        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+        if (useAce) {
+            Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+        } else {
+            Observable<Response<TkpdResponse>> observable = tomeService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+        }
     }
 
     public void unsubscribeGetShopProduct() {
