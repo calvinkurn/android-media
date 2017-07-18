@@ -144,6 +144,9 @@ public class CategoryProductStyle2View extends
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
+            cbInstantCheckout.setChecked(
+                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+            );
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);

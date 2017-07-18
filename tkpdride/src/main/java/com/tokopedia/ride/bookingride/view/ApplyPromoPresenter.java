@@ -58,12 +58,13 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 } else if (e instanceof SocketTimeoutException) {
-                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                 } else if (e instanceof UnProcessableHttpException) {
                     message = ((UnProcessableHttpException) e).getMessage();
                 } else {
                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 }
+
                 getView().onFailedApplyPromo(message);
             }
 

@@ -215,11 +215,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         if (scroogeWebView.isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
-            if (scroogeWebView.canGoBack()) {
-                scroogeWebView.goBack();
-            } else {
-                callbackPaymentCanceled();
-            }
+            callbackPaymentCanceled();
         }
     }
 

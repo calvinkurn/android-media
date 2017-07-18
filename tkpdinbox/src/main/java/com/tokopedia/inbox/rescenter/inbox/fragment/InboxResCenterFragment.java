@@ -115,7 +115,7 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
         if (isVisibleToUser && snackbarRetry != null) {
             snackbarRetry.resumeRetrySnackbar();
         } else {
-            if (!isVisibleToUser && snackbarRetry != null)  snackbarRetry.pauseRetrySnackbar();
+            if (!isVisibleToUser && snackbarRetry != null) snackbarRetry.pauseRetrySnackbar();
         }
         super.setUserVisibleHint(isVisibleToUser);
         if (getView() != null && isVisibleToUser) {
@@ -349,7 +349,11 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
 
     @Override
     public void setFilterAble(boolean isFilterAble) {
-        fab.setEnabled(isFilterAble);
+        if (isFilterAble)
+            fab.show();
+        else
+            fab.hide();
+
         fab.setClickable(isFilterAble);
         /**
          * if you need filter to be hidden
@@ -357,13 +361,13 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
          * then
          * uncomment lines of code below
          *
-        if (isFilterAble) {
-            fab.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
-        } else {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-            int marginBottomFAB = layoutParams.bottomMargin;
-            fab.animate().translationY(fab.getHeight() + marginBottomFAB).setInterpolator(new LinearInterpolator()).start();
-        }
+         if (isFilterAble) {
+         fab.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
+         } else {
+         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+         int marginBottomFAB = layoutParams.bottomMargin;
+         fab.animate().translationY(fab.getHeight() + marginBottomFAB).setInterpolator(new LinearInterpolator()).start();
+         }
          */
     }
 
