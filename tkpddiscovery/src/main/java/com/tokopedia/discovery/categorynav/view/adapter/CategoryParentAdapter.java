@@ -24,10 +24,11 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
 
     private List<com.tokopedia.discovery.categorynav.domain.model.Category> categories;
     private OnItemClickListener clickListener;
-    private int activePosition = 0;
+    private String activeId;
 
-    public CategoryParentAdapter(OnItemClickListener itemListener) {
+    public CategoryParentAdapter(OnItemClickListener itemListener, String activeId) {
         clickListener = itemListener;
+        this.activeId = activeId;
         categories = new ArrayList<>();
     }
 
@@ -45,7 +46,6 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        activePosition = position;
         ItemRowHolder itemRowHolder = (ItemRowHolder) holder;
         itemRowHolder.bindData(position);
 
@@ -57,6 +57,14 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
             return categories.size();
         else
             return 0;
+    }
+
+    public String getActiveId() {
+        return activeId;
+    }
+
+    public void setActiveId(String activeId) {
+        this.activeId = activeId;
     }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
@@ -75,7 +83,7 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
             Category category = categories.get(position);
             this.categoryName.setText(category.getName());
             ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
-            if (position == activePosition) {
+            if (category.getId().equals(activeId)) {
                 this.categoryContainer.setSelected(true);
             } else {
                 this.categoryContainer.setSelected(false);

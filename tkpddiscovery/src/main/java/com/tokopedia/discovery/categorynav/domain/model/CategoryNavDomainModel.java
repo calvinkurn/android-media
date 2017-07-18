@@ -17,4 +17,11 @@ public class CategoryNavDomainModel {
     public void setCategories(ArrayList<Category> categories) {
         this.categories = categories;
     }
+
+    public Category getCategoryIndexById (String departmentId) {
+        for (Category category: categories) {
+            if (category.getId().equals(departmentId)) return category;
+        }
+        return null;
+     }
 }

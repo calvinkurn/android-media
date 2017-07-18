@@ -11,11 +11,12 @@
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 
-    <View
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/category_child_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_toLeftOf="@id/category_root_recyclerview"
-        android:background="@color/white"/>
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
 
 </LinearLayout>

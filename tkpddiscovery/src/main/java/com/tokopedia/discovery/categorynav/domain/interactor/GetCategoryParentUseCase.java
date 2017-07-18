@@ -16,14 +16,14 @@ import rx.Observable;
  * @author by alifa on 7/7/17.
  */
 
-public class GetNavigationCategoryRootUseCase extends UseCase<CategoryNavDomainModel> {
+public class GetCategoryParentUseCase extends UseCase<CategoryNavDomainModel> {
 
     private final CategoryNavigationRepository repository;
     private String categoryId = "";
 
-    public GetNavigationCategoryRootUseCase(ThreadExecutor threadExecutor,
-                                          PostExecutionThread postExecutionThread,
-                                            CategoryNavigationRepository repository) {
+    public GetCategoryParentUseCase(ThreadExecutor threadExecutor,
+                                    PostExecutionThread postExecutionThread,
+                                    CategoryNavigationRepository repository) {
         super(threadExecutor, postExecutionThread);
         this.repository = repository;
     }

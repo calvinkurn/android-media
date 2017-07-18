@@ -3,6 +3,9 @@ package com.tokopedia.discovery.categorynav.data.repository;
 import com.tokopedia.discovery.categorynav.data.source.CategoryNavigationDataSource;
 import com.tokopedia.discovery.categorynav.domain.CategoryNavigationRepository;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
+import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -21,5 +24,10 @@ public class CategoryNavigationRepositoryImpl implements CategoryNavigationRepos
     @Override
     public Observable<CategoryNavDomainModel> getCategoryNavigationRoot(String categoryId) {
         return categoryNavigationDataSource.getRootCategory(categoryId);
+    }
+
+    @Override
+    public Observable<List<ChildCategory>> getCategoryChildren(String categoryId) {
+        return categoryNavigationDataSource.getCategoryChildren(categoryId);
     }
 }

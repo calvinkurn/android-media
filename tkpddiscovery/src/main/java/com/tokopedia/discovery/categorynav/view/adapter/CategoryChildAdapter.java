@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
 
@@ -20,9 +21,9 @@ import java.util.List;
  * @author by alifa on 7/10/17.
  */
 
-public class CategoryChildAdapter  extends RecyclerView.Adapter<CategoryChildAdapter.ItemRowHolder> {
+public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
-    private List<Category> categories;
+    private List<com.tokopedia.discovery.categorynav.domain.model.ChildCategory> categories;
     private CategoryParentAdapter.OnItemClickListener clickListener;
     private int activePosition = 0;
 
@@ -31,8 +32,10 @@ public class CategoryChildAdapter  extends RecyclerView.Adapter<CategoryChildAda
         categories = new ArrayList<>();
     }
 
-    public void setDataList(List<com.tokopedia.discovery.categorynav.domain.model.Category> dataList) {
+    public void setNewDataList(List<com.tokopedia.discovery.categorynav.domain.model.ChildCategory> dataList) {
+        categories.clear();
         categories = dataList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -44,12 +47,12 @@ public class CategoryChildAdapter  extends RecyclerView.Adapter<CategoryChildAda
     }
 
     @Override
-    public void onBindViewHolder(final CategoryChildAdapter.ItemRowHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         activePosition = position;
         CategoryChildAdapter.ItemRowHolder itemRowHolder = (CategoryChildAdapter.ItemRowHolder) holder;
         itemRowHolder.bindData(position);
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -61,25 +64,22 @@ public class CategoryChildAdapter  extends RecyclerView.Adapter<CategoryChildAda
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         LinearLayout categoryContainer;
-        ImageView categoryIcon;
         TextView categoryName;
 
         ItemRowHolder(View view) {
             super(view);
-//            this.categoryIcon = (ImageView) view.findViewById(R.id.category_parent_icon);
-//            this.categoryName = (TextView) view.findViewById(R.id.category_parent_text);
-//            this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_parent_container);
+            this.categoryName = (TextView) view.findViewById(R.id.category_child_text);
+            this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_child_container);
         }
 
         public void bindData(int position) {
-//            Category category = categories.get(position);
-//            this.categoryName.setText(category.getName());
-//            ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
-//            if (position == activePosition) {
-//                this.categoryContainer.setSelected(true);
-//            } else {
-//                this.categoryContainer.setSelected(false);
-//            }
+            com.tokopedia.discovery.categorynav.domain.model.ChildCategory category = categories.get(position);
+            this.categoryName.setText(category.getName());
+            if (position == activePosition) {
+                this.categoryContainer.setSelected(true);
+            } else {
+                this.categoryContainer.setSelected(false);
+            }
         }
 
     }
