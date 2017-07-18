@@ -42,9 +42,10 @@ public class ModelConverter {
         return viewModel;
     }
 
-    public static ShopFeedViewModel convertToShopFeedViewModel(Data data) {
+    public static ShopFeedViewModel convertToShopFeedViewModel(Data data, DisplayMode displayMode) {
         ShopFeedViewModel viewModel = new ShopFeedViewModel();
         viewModel.setData(data);
+        viewModel.setDisplayMode(displayMode);
         return viewModel;
     }
 
@@ -72,7 +73,7 @@ public class ModelConverter {
             } else if(displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel
                     || displayMode == DisplayMode.FEED_EMPTY && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
-                        visitable).getData()));
+                        visitable).getData(), displayMode));
             }
         }
     }
