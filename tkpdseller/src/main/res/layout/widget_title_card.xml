@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/vg_title"
         android:background="?attr/selectableItemBackground">
-        <com.tokopedia.seller.gmstat.library.LoaderTextView
+        <TextView
             android:id="@+id/tv_title"
             style="@style/TextView.Subheading.Bold"
             android:layout_width="match_parent"

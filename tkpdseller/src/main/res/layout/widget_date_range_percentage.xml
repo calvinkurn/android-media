@@ -11,14 +11,15 @@
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
         android:src="@drawable/circle_green" />
 
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <TextView
         android:id="@+id/date_range_percentage_dot_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
+        android:minWidth="100dp"
         tools:text="26 Jul 2016 - 25 Des 2016" />
 </LinearLayout>

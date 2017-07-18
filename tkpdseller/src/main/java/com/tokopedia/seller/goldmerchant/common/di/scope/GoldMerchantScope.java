@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.di.scope;
+package com.tokopedia.seller.goldmerchant.common.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,5 +10,5 @@ import javax.inject.Scope;
  */
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface DatePickerScope {
+public @interface GoldMerchantScope {
 }

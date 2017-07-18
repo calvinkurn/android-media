@@ -37,7 +37,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDatePickerFragment implements GMStatisticTransactionView {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -117,10 +117,10 @@ public class GMStatisticTransactionFragment extends BaseDatePickerFragment imple
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .datePickerComponent(datePickerComponent)
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
     }
 
@@ -133,18 +133,15 @@ public class GMStatisticTransactionFragment extends BaseDatePickerFragment imple
                 DataDeposit data = dataDepositDataResponse.getData();
                 if (data.isAdUsage()) {
                     if (isNoAdsData(gmTopAdsAmountViewModel)) {
-                        // TODO paling kanan
-                        Log.d(TAG, "TopAdsAmount Empty state paling kanan");
+                        gmTopAdsAmountViewHelper.bindNoData(gmTopAdsAmountViewModel);
                     } else {
                         gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
                     }
                 } else {
                     if (gmTopAdsAmountViewModel.amount == 0) {
-                        // TODO paling kiri
-                        Log.d(TAG, "TopAdsAmount Empty state paling kiri");
+                        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
                     } else {
-                        // TODO tengah
-                        Log.d(TAG, "TopAdsAmount Empty state tengah");
+                        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
                     }
                 }
             }

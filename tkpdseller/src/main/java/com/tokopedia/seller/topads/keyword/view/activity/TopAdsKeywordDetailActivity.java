@@ -99,6 +99,10 @@ public class TopAdsKeywordDetailActivity extends BaseSimpleActivity
                     }
             ));
         }
+    }
 
+    @Override
+    public AppComponent getComponent() {
+        return getComponent();
     }
 }

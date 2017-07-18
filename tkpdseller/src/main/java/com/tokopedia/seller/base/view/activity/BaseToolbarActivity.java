@@ -17,7 +17,7 @@ import com.tokopedia.seller.R;
  * Created by nathan on 7/11/17.
  */
 
-abstract class BaseToolbarActivity extends BaseActivity implements HasComponent<AppComponent> {
+abstract class BaseToolbarActivity<T> extends BaseActivity {
 
     protected Toolbar toolbar;
 
@@ -46,11 +46,6 @@ abstract class BaseToolbarActivity extends BaseActivity implements HasComponent<
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
         }
-    }
-
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
     }
 
     @Override

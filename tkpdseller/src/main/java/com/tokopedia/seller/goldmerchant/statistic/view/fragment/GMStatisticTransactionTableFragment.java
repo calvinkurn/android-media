@@ -16,9 +16,11 @@ import android.widget.LinearLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment2;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
@@ -57,6 +59,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     private boolean[] sortBySelections;
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
+    private GoldMerchantComponent goldMerchantComponent;
 
     public static Fragment createInstance(long startDate, long endDate) {
         Bundle bundle = new Bundle();
@@ -86,10 +89,10 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         DaggerGMTransactionComponent
                 .builder()
-                .datePickerComponent(datePickerComponent)
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
     }
 

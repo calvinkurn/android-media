@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
@@ -24,7 +25,7 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT
 public class ArrowPercentageView extends FrameLayout {
     private double mPercentage = GMStatConstant.NoDataAvailable * 100;
     private ImageView ivArrowIcon;
-    private LoaderTextView tvPercentage;
+    private TextView tvPercentage;
     private View view;
     private int downDrawableSrc = R.drawable.ic_rectangle_down;
     private int upDrawableSrc = R.drawable.ic_rectangle_up;
@@ -55,7 +56,9 @@ public class ArrowPercentageView extends FrameLayout {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ArrowPercentageView);
-        mPercentage = a.getFloat(R.styleable.ArrowPercentageView_percentage, -101);
+        if (a.hasValue(R.styleable.ArrowPercentageView_percentage)) {
+            mPercentage = a.getFloat(R.styleable.ArrowPercentageView_percentage, 0);
+        }
         a.recycle();
     }
 
@@ -63,27 +66,33 @@ public class ArrowPercentageView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_gm_percentage, this);
         this.view = view;
         ivArrowIcon = (ImageView) view.findViewById(R.id.iv_arrow_icon);
-        tvPercentage = (LoaderTextView) view.findViewById(R.id.tv_percentage);
+        tvPercentage = (TextView) view.findViewById(R.id.tv_percentage);
         setUIPercentage();
         setAddStatesFromChildren(true);
     }
 
     private void setUIPercentage(){
-        if (mPercentage < 0) {
-            ivArrowIcon.setImageResource(downDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
-        } else if (mPercentage > 0) {
-            ivArrowIcon.setImageResource(upDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
-        } else if (mPercentage == 0) { // percentage is 0
-            ivArrowIcon.setImageResource(stagnantDrawableSrc);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+        if (percentageUtil != null) {
+            percentageUtil.calculatePercentage(mPercentage, ivArrowIcon, tvPercentage);
         } else {
-            ivArrowIcon.setVisibility(View.GONE);
+            if (mPercentage==GMStatConstant.NoDataAvailable * 100){
+                ivArrowIcon.setVisibility(View.GONE);
+                tvPercentage.setText(null);
+            } else if (mPercentage < 0) {
+                ivArrowIcon.setImageResource(downDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
+            } else if (mPercentage > 0) {
+                ivArrowIcon.setImageResource(upDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
+            } else if (mPercentage == 0) { // percentage is 0
+                ivArrowIcon.setImageResource(stagnantDrawableSrc);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+            }
+            if (mPercentage!=GMStatConstant.NoDataAvailable * 100) {
+                tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
+                        KMNumbers.formatString(mPercentage).replace("-", "")));
+            }
         }
-        tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
-                KMNumbers.formatString(mPercentage).replace("-", "")));
-        this.view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,11 +103,7 @@ public class ArrowPercentageView extends FrameLayout {
 
     public void setPercentage(double percentage){
         mPercentage = percentage;
-        if (percentageUtil != null) {
-            percentageUtil.calculatePercentage(percentage, ivArrowIcon, tvPercentage);
-        } else {
-            setUIPercentage();
-        }
+        setUIPercentage();
 
     }
 
