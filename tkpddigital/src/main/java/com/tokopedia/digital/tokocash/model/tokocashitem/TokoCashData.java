@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TopCashItem implements Parcelable{
+public class TokoCashData implements Parcelable{
 
     @SerializedName("action")
     private Action mAction;
@@ -70,7 +70,7 @@ public class TopCashItem implements Parcelable{
         this.link = link;
     }
 
-    protected TopCashItem(Parcel in) {
+    protected TokoCashData(Parcel in) {
         mAction = (Action) in.readValue(Action.class.getClassLoader());
         mBalance = in.readString();
         mRedirectUrl = in.readString();
@@ -105,15 +105,15 @@ public class TopCashItem implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<TopCashItem> CREATOR = new Parcelable.Creator<TopCashItem>() {
+    public static final Parcelable.Creator<TokoCashData> CREATOR = new Parcelable.Creator<TokoCashData>() {
         @Override
-        public TopCashItem createFromParcel(Parcel in) {
-            return new TopCashItem(in);
+        public TokoCashData createFromParcel(Parcel in) {
+            return new TokoCashData(in);
         }
 
         @Override
-        public TopCashItem[] newArray(int size) {
-            return new TopCashItem[size];
+        public TokoCashData[] newArray(int size) {
+            return new TokoCashData[size];
         }
     };
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 /**
  * Created by kris on 7/17/17. Tokopedia
@@ -26,7 +26,7 @@ public class TokoCashBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getExtras().containsKey(EXTRA_RESULT_TOKOCASH_DATA_DIGITAL)) {
-            listener.onReceivedTokoCashData((TopCashItem) intent
+            listener.onReceivedTokoCashData((TokoCashData) intent
                     .getParcelableExtra(EXTRA_RESULT_TOKOCASH_DATA_DIGITAL));
         } else {
             listener.onTokoCashDataError(intent.getExtras()

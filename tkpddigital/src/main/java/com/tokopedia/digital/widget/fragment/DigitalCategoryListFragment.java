@@ -32,7 +32,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
@@ -72,7 +72,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private RecyclerView.LayoutManager gridLayoutManager;
     private RecyclerView.LayoutManager linearLayoutManager;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
-    private TopCashItem tokoCashData;
+    private TokoCashData tokoCashData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -360,7 +360,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void onReceivedTokoCashData(TopCashItem tokoCashData) {
+    public void onReceivedTokoCashData(TokoCashData tokoCashData) {
         this.tokoCashData = tokoCashData;
     }
 
@@ -369,7 +369,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     }
 
-    private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
+    private String getTokoCashActionRedirectUrl(TokoCashData tokoCashData) {
         if (tokoCashData.getAction() == null) return "";
         else return tokoCashData.getAction().getRedirectUrl();
     }

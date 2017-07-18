@@ -3,7 +3,7 @@ package com.tokopedia.digital.widget.presenter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -89,8 +89,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     }
 
     @NonNull
-    private Subscriber<TopCashItem> getSubscriberFetchTokoCashData() {
-        return new Subscriber<TopCashItem>() {
+    private Subscriber<TokoCashData> getSubscriberFetchTokoCashData() {
+        return new Subscriber<TokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -105,10 +105,10 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             }
 
             @Override
-            public void onNext(TopCashItem topCashItemResponse) {
+            public void onNext(TokoCashData tokoCashDataResponse) {
                 Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH_DIGITAL);
                 intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA_DIGITAL,
-                        topCashItemResponse);
+                        tokoCashDataResponse);
                 digitalCategoryListView.sendBroadcastReceiver(intent);
             }
         };

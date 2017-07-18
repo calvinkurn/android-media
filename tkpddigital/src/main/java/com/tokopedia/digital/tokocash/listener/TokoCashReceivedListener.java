@@ -1,6 +1,6 @@
 package com.tokopedia.digital.tokocash.listener;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 /**
  * Created by kris on 7/17/17. Tokopedia
@@ -8,7 +8,7 @@ import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
 
 public interface TokoCashReceivedListener {
 
-    void onReceivedTokoCashData(TopCashItem tokoCashData);
+    void onReceivedTokoCashData(TokoCashData tokoCashData);
 
     void onTokoCashDataError(String errorMessage);
 }
