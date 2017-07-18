@@ -100,8 +100,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }else{
                 CommonUtils.dumper("FCM entered no one");
             }
+
+            return true;
+        }else{
+            return false;
         }
 
-        return true;
     }
 }
