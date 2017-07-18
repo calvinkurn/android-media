@@ -314,12 +314,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     public List<PriceEstimate> call(List<PriceEntity> priceEntities) {
                         return priceEstimateEntityMapper.transform(priceEntities);
                     }
-                })
-                .onErrorReturn(new Func1<Throwable, List<PriceEstimate>>() {
-                    @Override
-                    public List<PriceEstimate> call(Throwable throwable) {
-                        return new ArrayList<>();
-                    }
                 });
     }
 }
