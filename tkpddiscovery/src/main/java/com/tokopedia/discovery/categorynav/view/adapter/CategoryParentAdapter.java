@@ -45,9 +45,15 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     }
 
     @Override
-    public void onBindViewHolder(final ItemRowHolder holder, int position) {
+    public void onBindViewHolder(final ItemRowHolder holder, final int position) {
         ItemRowHolder itemRowHolder = (ItemRowHolder) holder;
         itemRowHolder.bindData(position);
+        itemRowHolder.categoryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               clickListener.onItemClicked(categories.get(position));
+            }
+        });
 
     }
 
