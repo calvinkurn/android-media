@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -149,6 +150,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case PROCESS_ORDER:
+                    sendBroadcastToAppWidget();
                     shouldRefreshList = true;
                     break;
             }
@@ -166,6 +168,12 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
 
         initView();
         return view;
+    }
+
+    private void sendBroadcastToAppWidget() {
+        Intent i = new Intent();
+        i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        getActivity().sendBroadcast(i);
     }
 
     public void initView() {

@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/new_order_widget"
     android:initialLayout="@layout/new_order_widget"
     android:minHeight="180dp"
-    android:minWidth="180dp"
+    android:minWidth="120dp"
     android:previewImage="@drawable/order_widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"

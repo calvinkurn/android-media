@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm.notification.dedicated;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,5 +32,12 @@ public class NewOrderNotification extends BaseNotification {
         );
         mNotificationPass.ticker = mContext.getString(R.string.msg_new_order);
         mNotificationPass.description = mContext.getString(R.string.msg_new_order);
+        sendBroadcastToAppWidget();
+    }
+
+    private void sendBroadcastToAppWidget() {
+        Intent i = new Intent();
+        i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        mContext.sendBroadcast(i);
     }
 }

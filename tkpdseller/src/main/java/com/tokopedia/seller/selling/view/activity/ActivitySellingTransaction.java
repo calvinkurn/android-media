@@ -111,6 +111,11 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
+    public static Intent createIntent(Context context, int tab){
+        return new Intent(context, ActivitySellingTransaction.class)
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, tab);
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
@@ -219,7 +224,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
+            hideTickerOpportunity(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
@@ -284,8 +289,8 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void openTab() {
         try {
-            mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
-            setDrawerPosition(getIntent().getExtras().getInt("tab"));
+            mViewPager.setCurrentItem(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
+            setDrawerPosition(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
         }
