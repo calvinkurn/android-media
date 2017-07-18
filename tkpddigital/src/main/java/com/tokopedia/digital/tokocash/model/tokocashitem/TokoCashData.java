@@ -42,8 +42,8 @@ public class TokoCashData implements Parcelable{
         return mRedirectUrl;
     }
 
-    public void setRedirectUrl(String redirect_url) {
-        mRedirectUrl = redirect_url;
+    public void setRedirectUrl(String redirectUrl) {
+        mRedirectUrl = redirectUrl;
     }
 
     public String getText() {
