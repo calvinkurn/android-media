@@ -37,7 +37,7 @@ public class GetShopProductRetrofit {
         void onFailure(int connectionTypeError, String message);
     }
 
-//    private ShopService shopService;
+    //    private ShopService shopService;
     private ShopWebService shopService;
     private Context context;
     private String shopId;
@@ -53,7 +53,7 @@ public class GetShopProductRetrofit {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        if(useAce) {
+        if (useAce) {
             shopService = new ShopWebService(ACE_SHOP_URL);
         } else {
             shopService = new ShopWebService(TOME_SHOP_URL);
@@ -92,12 +92,8 @@ public class GetShopProductRetrofit {
                 if (tkpdResponseResponse.isSuccessful()) {
                     TkpdResponse response = tkpdResponseResponse.body();
                     if (!response.isError()) {
-                        try {
-                            ProductModel productModel = new Gson().fromJson(response.getStringData(), ProductModel.class);
-                            onGetShopProductListener.onSuccess(productModel);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+                        ProductModel productModel = new Gson().fromJson(response.getStringData(), ProductModel.class);
+                        onGetShopProductListener.onSuccess(productModel);
                     } else {
                         if (response.getErrorMessages() != null && response.getErrorMessages().size() > 0) {
                             onGetShopProductListener.onFailure(WS_TYPE_ERROR, response.getErrorMessages().toString().replace("[", "").replace("]", ""));
