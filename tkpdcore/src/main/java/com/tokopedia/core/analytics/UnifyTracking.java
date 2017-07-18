@@ -1710,21 +1710,11 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventSwitchRpToDollarAddProduct(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_ADD_PRODUCT,
-                AppEventTracking.Category.ADD_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY
-        ).getEvent());
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
     }
 
     public static void eventClickVideoAddProduct(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_ADD_PRODUCT,
-                AppEventTracking.Category.ADD_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO
-        ).getEvent());
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
     }
 
     public static void eventClickYesGoldMerchantAddProduct(){
