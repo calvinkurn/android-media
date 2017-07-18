@@ -25,6 +25,7 @@ public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> 
 
 
     private static final int MAX_TOPADS = 3;
+    private static final int MARGIN_15DP_PIXEL = 40;
     TopAdsView topAdsView;
 
     @LayoutRes
@@ -37,7 +38,7 @@ public class EmptyTopAdsViewHolder extends AbstractViewHolder<EmptyTopAdsModel> 
         topAdsView.setAdsItemClickListener(viewListener);
         TopAdsView.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 40, 0, 0);
+        lp.setMargins(0, MARGIN_15DP_PIXEL, 0, 0);
         topAdsView.findViewById(R.id.root).setLayoutParams(lp);
     }
 

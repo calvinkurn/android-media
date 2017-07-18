@@ -41,6 +41,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
+    private static final int MARGIN_15DP_PIXEL = 40;
+    private static final int PADDING_12DP_PIXEL = 30;
 
 
     private LocalAdsClickListener itemClickListener;
@@ -124,9 +126,9 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         if (element.getDisplayMode() == DisplayMode.FEED_EMPTY) {
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(0, 0, 0, 40);
+            lp.setMargins(0, 0, 0, MARGIN_15DP_PIXEL);
             shopCard.setLayoutParams(lp);
-            header.setPadding(0, 30, 0, 0);
+            header.setPadding(0, PADDING_12DP_PIXEL, 0, 0);
         }
 
         if (shop != null) {
