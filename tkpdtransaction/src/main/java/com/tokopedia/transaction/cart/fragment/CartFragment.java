@@ -178,11 +178,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
-    private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
+
     private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
@@ -356,11 +356,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCartListData(String keroToken, final List<CartItem> cartList) {
+    public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
-        presenter.processCartRates(keroToken, cartList);
+        presenter.processCartRates(keroToken, ut, cartList);
         rvCart.setAdapter(cartItemAdapter);
         btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
@@ -943,7 +943,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 if (isChecked) {
                     holderUseVoucher.setVisibility(View.VISIBLE);
                     btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
-                    tvTotalPayment.setText(totalPaymentWithoutLoyaltyIdr);
                     renderInvisibleLoyaltyBalance();
                 } else {
                     holderUseVoucher.setVisibility(View.GONE);
@@ -951,7 +950,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     etVoucherCode.setText("");
                     tvVoucherDesc.setText("");
                     tilEtVoucherCode.setErrorEnabled(false);
-                    tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
                 }
@@ -1090,7 +1088,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         Glide.with(getActivity())
                 .load(donation.getDonationPopupImg())
                 .into(imgDonation);
-        title.setText(donation.getDonationNoteTitle());
+        title.setText(donation.getDonationPopupTitle());
         content.setText(donation.getDonationPopupInfo());
         closeDialog.setOnClickListener(new View.OnClickListener() {
             @Override

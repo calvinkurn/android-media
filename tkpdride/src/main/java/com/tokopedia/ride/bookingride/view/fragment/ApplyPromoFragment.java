@@ -356,4 +356,10 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
             submitPromoTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
         }
     }
+
+    @Override
+    public void hideErrorPromoMessage() {
+        descriptionTextView.setVisibility(View.GONE);
+        descriptionTextView.setText("");
+    }
 }

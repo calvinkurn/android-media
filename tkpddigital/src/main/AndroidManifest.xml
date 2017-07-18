@@ -28,6 +28,10 @@
         <activity
             android:name=".product.activity.DigitalWebActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".widget.activity.DigitalCategoryListActivity"
+            android:label="@string/title_activity_category_list_digital_module"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

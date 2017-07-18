@@ -27,6 +27,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -57,8 +58,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  */
 
 public class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter, OtpRouter,
-        IPaymentModuleRouter {
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
+        OtpRouter, IPaymentModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -144,6 +145,15 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public String getBaseUrlDomainPayment() {
         return ConsumerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
     }
@@ -201,7 +211,9 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletActivity.EXTRA_URL, url);
         Intent intent = new Intent(context, WalletActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
@@ -245,6 +257,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
         return DigitalProductActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return DigitalCategoryListActivity.newInstance(this);
     }
 
     @Override

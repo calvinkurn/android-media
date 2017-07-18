@@ -95,9 +95,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     @Override
     public void loadTopAds() {
         Log.d(TAG, "Load TopAds");
-        if(adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
-            adsParams.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
-        }
+        replaceSourceParams();
         if(config.getEndpoint()!=null) {
             setEndpoinParam(config.getEndpoint().getDescription());
         }
@@ -107,6 +105,15 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             adsParams.getParam().put(TopAdsParams.KEY_USER_ID, config.getUserId());
             adsUseCase.setConfig(config);
             adsUseCase.execute(adsParams, adsView);
+        }
+    }
+
+    private void replaceSourceParams() {
+        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
+            adsParams.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
+        }
+        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains("hot_product")) {
+            adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
         }
     }
 

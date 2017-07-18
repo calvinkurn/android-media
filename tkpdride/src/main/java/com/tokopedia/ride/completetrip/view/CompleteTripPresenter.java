@@ -59,8 +59,6 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().renderReceipt(receipt);
                     if (getView().isCameFromPushNotif()) {
                         actionCheckIfAlreadySendRating();
-                    } else if (receipt != null && receipt.getPendingPayment() != null) {
-                        getView().hideRatingLayout();
                     } else {
                         getView().showRatingLayout();
                     }

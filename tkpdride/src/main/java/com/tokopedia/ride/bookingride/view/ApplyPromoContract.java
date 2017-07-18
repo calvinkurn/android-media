@@ -51,6 +51,8 @@ public interface ApplyPromoContract {
         void disableApplyButton();
 
         Context getActivity();
+
+        void hideErrorPromoMessage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

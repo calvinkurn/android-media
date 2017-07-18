@@ -5,9 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
@@ -42,6 +48,29 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         passData.setIdemPotencyKey(bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY));
         return new Intent(context, CartDigitalActivity.class)
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
+    }
+
+    @DeepLink({Constants.Applinks.DIGITAL_CART})
+    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        Intent homeIntent;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+
+        Intent destination = CartDigitalActivity.newInstance(context, extras)
+                .setData(uri.build())
+                .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.tokopedia.ride.bookingride.view;
 import android.content.Context;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -48,22 +47,13 @@ public interface UberProductContract {
 
         Context getActivity();
 
-        RequestParams getPromoParams();
-
-        void openInterruptConfirmationWebView(String tosUrl);
-
-        void showErrorTosConfirmation(String tosUrl);
-
-        void showErrorTosConfirmationDialog(String message, String url, String code, String value);
-
-        void openInterruptConfirmationDialog(String url, String code, String value);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
-        void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
+        void actionGetRideProducts(PlacePassViewModel source);
 
-        void actionGetRideProducts(String value, String key, PlacePassViewModel source, PlacePassViewModel destination);
+        void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
     }
 }

@@ -7,8 +7,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -70,7 +68,6 @@ public final class TooLargeTool {
                     entry.getKey(), KB(entry.getValue())
             );
         }
-        if (totalBundleSize >= 500.0) Crashlytics.logException(new Throwable(result));
         return result;
     }
 
@@ -163,5 +160,9 @@ public final class TooLargeTool {
      */
     public static void startLogging(Application application, int priority, @NonNull String tag) {
         application.registerActivityLifecycleCallbacks(new ActivitySavedStateLogger(priority, tag, true));
+    }
+
+    public static Boolean isPotentialCrash(Bundle bundle) {
+        return KB(sizeAsParcel(bundle)) > 500.0;
     }
 }

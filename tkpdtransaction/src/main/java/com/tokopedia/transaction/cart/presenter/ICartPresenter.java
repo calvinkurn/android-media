@@ -37,6 +37,8 @@ public interface ICartPresenter {
 
     void unSubscribeObservable();
 
+    void processCartRates(String token, String ut, List<CartItem> cartItemList);
+
     void processValidationPayment(String paymentId);
 
     void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway);
@@ -44,5 +46,4 @@ public interface ICartPresenter {
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 
     void clearNotificationCart();
-    void processCartRates(String token, List<CartItem> cartItemList);
 }

@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +63,10 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
     public void onActivityStopped(Activity activity) {
         Bundle savedState = savedStates.remove(activity);
         if (savedState != null) {
-            log(activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState));
+            String message = activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState);
+            log(message);
+            if (TooLargeTool.isPotentialCrash(savedState))
+                Crashlytics.logException(new Throwable(message));
         }
     }
 }

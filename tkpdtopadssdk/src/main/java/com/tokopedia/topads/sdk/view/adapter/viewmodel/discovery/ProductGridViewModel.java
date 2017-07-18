@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.adapter.viewmodel;
+package com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
