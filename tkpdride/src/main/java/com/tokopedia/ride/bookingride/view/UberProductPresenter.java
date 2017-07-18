@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
@@ -244,27 +243,18 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                     getView().hideProductList();
 
                                     String message = e.getMessage();
-                                    if (e instanceof InterruptConfirmationHttpException) {
-                                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
-                                        if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
-                                            getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
-                                        } else {
-                                            getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
-                                        }
+                                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                    } else if (e instanceof SocketTimeoutException) {
+                                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                                    } else if (e instanceof UnProcessableHttpException) {
+                                        message = TextUtils.isEmpty(e.getMessage()) ?
+                                                getView().getActivity().getResources().getString(R.string.error_internet_not_connected) :
+                                                e.getMessage();
                                     } else {
-                                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                                            message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
-                                        } else if (e instanceof SocketTimeoutException) {
-                                            message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
-                                        } else if (e instanceof UnProcessableHttpException) {
-                                            message = TextUtils.isEmpty(e.getMessage()) ?
-                                                    getView().getActivity().getResources().getString(R.string.error_internet_not_connected) :
-                                                    e.getMessage();
-                                        } else {
-                                            message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
-                                        }
-                                        getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
+                                        message = getView().getActivity().getResources().getString(R.string.error_please_try_again_later);
                                     }
+                                    getView().showErrorMessage(message, getView().getActivity().getString(R.string.btn_text_retry));
                                 }
                             }
 

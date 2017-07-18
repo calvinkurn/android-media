@@ -43,11 +43,19 @@ public interface ConfirmBookingContract {
         void setViewListener();
 
         void renderInitialView();
+
+        void openInterruptConfirmationWebView(String tosUrl);
+
+        void showErrorTosConfirmation(String tosUrl);
+
+        void disableConfirmBtn();
+
+        void enableConfirmButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void actionGetFareAndEstimate(boolean showProgress);
+        void actionGetFareAndEstimate(RequestParams showProgress);
 
         void initialize();
     }

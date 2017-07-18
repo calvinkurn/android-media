@@ -7,12 +7,14 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -22,6 +24,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -34,11 +38,11 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -47,57 +51,34 @@ import butterknife.OnClick;
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
     private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
-    private static final int REQUEST_CODE_REMOVE_PROMO = 104;
+    private static final int REQUEST_CODE_REMOVE_PROMO = 1014;
+    private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1015;
 
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     public static String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
-    @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
-    @BindView(R2.id.topHeaderConfirmBooking)
     TextView headerTextView;
-    @BindView(R2.id.tv_pool_price)
     TextView priceTextView;
-    @BindView(R2.id.tv_seats)
     TextView seatsTextView;
-    @BindView(R2.id.tv_seats_needed)
     TextView seatsLabelTextView;
-    @BindView(R2.id.tvSurgeRate)
     TextView surgeRateTextView;
-    @BindView(R2.id.cab_confirmation)
-    TextView bookingConfirmationTextView;
-    @BindView(R2.id.cab_select_seat)
+    Button bookingConfirmationButton;
     LinearLayout selectSeatContainer;
-    @BindView(R2.id.toko_cash_topup_layout)
-    LinearLayout tokoCashTopupLayout;
-    @BindView(R2.id.tv_tokocash_label)
-    TextView tokoCashLabelTextView;
-    @BindView(R2.id.iv_seat_arrow_down)
     ImageView seatArrowDownImageView;
-    @BindView(R2.id.toko_cash_activation_layout)
-    LinearLayout tokoCashActivationLayout;
-    @BindView(R2.id.tv_activation_label)
-    TextView tokoCashActivationLabelTextView;
-    @BindView(R2.id.tv_activation_button)
-    TextView tokoCashActivationButton;
-    @BindView(R2.id.tv_error)
     TextView errortextView;
-    @BindView(R2.id.promo_result_layout)
     LinearLayout mPromoResultLayout;
-    @BindView(R2.id.tv_promo_desc)
     TextView mPromoResultTextView;
-    @BindView(R2.id.promo_info_layout)
     LinearLayout mApplyPromoLayout;
-    @BindView(R2.id.layout_promo)
     LinearLayout promoLayout;
-    @BindView(R2.id.indeterminate_progress_bar)
     ProgressBar progressLayout;
-    @BindView(R2.id.confirm_page_container)
     LinearLayout confirmPageContainer;
+    private SnackbarRetry snackbarRetry;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
     ConfirmBookingViewModel confirmBookingViewModel;
     ConfirmBookingPassData confirmBookingPassData;
+    private boolean isOpenInterruptWebviewDialog;
 
     public interface OnFragmentInteractionListener {
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
@@ -137,6 +118,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         confirmBookingPassData = getArguments().getParcelable(EXTRA_PASS_DATA);
+        initView(view);
+
         presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.initialize();
@@ -150,6 +133,25 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         }, 100);
     }
 
+    private void initView(View view) {
+        productIconImageView = (ImageView) view.findViewById(R.id.cabAppIcon);
+        headerTextView = (TextView) view.findViewById(R.id.topHeaderConfirmBooking);
+        priceTextView = (TextView) view.findViewById(R.id.tv_pool_price);
+        seatsTextView = (TextView) view.findViewById(R.id.tv_seats);
+        seatsLabelTextView = (TextView) view.findViewById(R.id.tv_seats_needed);
+        surgeRateTextView = (TextView) view.findViewById(R.id.tvSurgeRate);
+        bookingConfirmationButton = (Button) view.findViewById(R.id.cab_confirmation);
+        selectSeatContainer = (LinearLayout) view.findViewById(R.id.cab_select_seat);
+        seatArrowDownImageView = (ImageView) view.findViewById(R.id.iv_seat_arrow_down);
+        errortextView = (TextView) view.findViewById(R.id.tv_error);
+        mPromoResultLayout = (LinearLayout) view.findViewById(R.id.promo_result_layout);
+        mPromoResultTextView = (TextView) view.findViewById(R.id.tv_promo_desc);
+        mApplyPromoLayout = (LinearLayout) view.findViewById(R.id.promo_info_layout);
+        promoLayout = (LinearLayout) view.findViewById(R.id.layout_promo);
+        progressLayout = (ProgressBar) view.findViewById(R.id.indeterminate_progress_bar);
+        confirmPageContainer = (LinearLayout) view.findViewById(R.id.confirm_page_container);
+    }
+
     @Override
     public void setViewListener() {
         Glide.with(getActivity()).load(confirmBookingViewModel.getProductImage())
@@ -161,7 +163,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
         headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
         priceTextView.setText(confirmBookingViewModel.getPriceFmt());
-        bookingConfirmationTextView.setText(getString(R.string.btn_request) + " " + confirmBookingViewModel.getProductDisplayName());
 
         if (confirmBookingViewModel.getSurgeMultiplier() > 0) {
             surgeRateTextView.setText(confirmBookingViewModel.getSurgeMultiplier() + "x");
@@ -177,7 +178,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
         }
 
-//        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
+        seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
     }
 
     @Override
@@ -191,14 +192,15 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
         headerTextView.setText(confirmBookingPassData.getHeaderTitle());
         priceTextView.setText(confirmBookingPassData.getPriceFmt());
-        bookingConfirmationTextView.setText(getString(R.string.btn_request) + " " + confirmBookingPassData.getProductDisplayName());
+        bookingConfirmationButton.setText(getString(R.string.btn_request) + " " + confirmBookingPassData.getProductDisplayName());
         surgeRateTextView.setVisibility(View.GONE);
-
-        //show promo message if promo code is auto applied
-        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoDescription())) {
-            mPromoResultLayout.setVisibility(View.VISIBLE);
-            mApplyPromoLayout.setVisibility(View.GONE);
-            mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+        mPromoResultLayout.setVisibility(View.GONE);
+        mApplyPromoLayout.setVisibility(View.GONE);
+        bookingConfirmationButton.setEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bookingConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        } else {
+            bookingConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
         }
     }
 
@@ -247,7 +249,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public void updateSeatCount(int seat) {
         confirmBookingViewModel.setSeatCount(seat);
-        presenter.actionGetFareAndEstimate(true);
+        presenter.actionGetFareAndEstimate(getParam());
     }
 
     @Override
@@ -428,25 +430,40 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == WALLET_WEB_VIEW_REQUEST_CODE) {
-            //presenter.clearTokoCashCache();
-            //presenter.actionCheckBalance();
-        } else if (requestCode == APPLY_PROMO_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
-                if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
-                    mPromoResultLayout.setVisibility(View.VISIBLE);
-                    mApplyPromoLayout.setVisibility(View.GONE);
-                    mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+        switch (requestCode) {
+            case REQUEST_CODE_INTERRUPT_DIALOG:
+                isOpenInterruptWebviewDialog = false;
+                if (resultCode == Activity.RESULT_OK) {
+                    snackbarRetry.hideRetrySnackbar();
+                    showProgress();
+                    String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
+                    String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
+                    RequestParams requestParams = getParam();
+                    if (key != null && key.length() > 0) {
+                        requestParams.putString(key, id);
+                    }
+                    presenter.actionGetFareAndEstimate(requestParams);
                 }
-            }
-        } else if (requestCode == REQUEST_CODE_REMOVE_PROMO) {
-            if (resultCode == Activity.RESULT_OK) {
-                confirmBookingViewModel.setPromoCode("");
-                confirmBookingViewModel.setPromoDescription("");
-                mPromoResultLayout.setVisibility(View.GONE);
-                mApplyPromoLayout.setVisibility(View.VISIBLE);
-            }
+                break;
+            case APPLY_PROMO_ACTIVITY_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
+                    if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
+                        mPromoResultLayout.setVisibility(View.VISIBLE);
+                        mApplyPromoLayout.setVisibility(View.GONE);
+                        mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+                    }
+                }
+                break;
+            case REQUEST_CODE_REMOVE_PROMO:
+                if (resultCode == Activity.RESULT_OK) {
+                    confirmBookingViewModel.setPromoCode("");
+                    confirmBookingViewModel.setPromoDescription("");
+                    mPromoResultLayout.setVisibility(View.GONE);
+                    mApplyPromoLayout.setVisibility(View.VISIBLE);
+                }
+                break;
+            default:
         }
     }
 
@@ -465,11 +482,58 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
         confirmBookingViewModel.setSource(source);
         confirmBookingViewModel.setDestination(destination);
-        presenter.actionGetFareAndEstimate(true);
+        presenter.actionGetFareAndEstimate(getParam());
     }
 
     @OnClick(R2.id.confirm_booking_header)
     public void actionBookingHeaderClicked() {
         mListener.expandSlidingPanel();
+    }
+
+    @Override
+    public void openInterruptConfirmationWebView(String tosUrl) {
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
+            isOpenInterruptWebviewDialog = true;
+        }
+    }
+
+    @Override
+    public void showErrorTosConfirmation(final String tosUrl) {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.uber_product_confirm_tos), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                openInterruptConfirmationWebView(tosUrl);
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void disableConfirmBtn() {
+        bookingConfirmationButton.setEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bookingConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        } else {
+            bookingConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        }
+    }
+
+    @Override
+    public void enableConfirmButton() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bookingConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn_orange));
+        } else {
+            bookingConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn_orange));
+        }
+        bookingConfirmationButton.setEnabled(true);
     }
 }

@@ -168,7 +168,7 @@
             android:textColor="@color/red_600"
             android:visibility="gone" />
 
-        <TextView
+        <Button
             android:id="@+id/cab_confirmation"
             android:layout_width="match_parent"
             android:layout_height="42dp"

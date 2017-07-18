@@ -2,8 +2,6 @@ package com.tokopedia.ride.bookingride.view.fragment;
 
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,14 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
-import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
@@ -35,15 +29,11 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewMode
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
-import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
 
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -340,52 +330,5 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @OnClick(R2.id.layout_cab_booking_header)
     public void actionProductListHeaderClicked() {
         mInteractionListener.actionProductListHeaderClick();
-    }
-
-    @Override
-    public RequestParams getPromoParams() {
-        String deviceId = GCMHandler.getRegistrationId(getActivity());
-        String userId = SessionHandler.getLoginID(getActivity());
-        String hash = md5(userId + "~" + deviceId);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetPromoUseCase.PARAM_USER_ID, userId);
-
-        requestParams.putString(GetPromoUseCase.PARAM_DEVICE_ID, deviceId);
-        requestParams.putString(GetPromoUseCase.PARAM_HASH, hash);
-        requestParams.putString(GetPromoUseCase.PARAM_OS_TYPE, "1");
-        requestParams.putString(GetPromoUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        return requestParams;
-    }
-
-    @Override
-    public void openInterruptConfirmationWebView(String tosUrl) {
-        if (!isOpenInterruptWebviewDialog) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
-            if (previousDialog != null) {
-                fragmentTransaction.remove(previousDialog);
-            }
-            fragmentTransaction.addToBackStack(null);
-            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
-            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-            dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
-            isOpenInterruptWebviewDialog = true;
-        }
-
-    }
-
-    @Override
-    public void showErrorTosConfirmation(final String tosUrl) {
-        hideProgress();
-        mErrorView.setVisibility(View.VISIBLE);
-        mErrorLayout.setVisibility(View.VISIBLE);
-        mErrorDescriptionTextView.setText(R.string.uber_product_confirm_tos);
-        mRetryButtonTextView.setText(R.string.uber_product_confirm_btn_text);
-        mRetryButtonTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openInterruptConfirmationWebView(tosUrl);
-            }
-        });
     }
 }
