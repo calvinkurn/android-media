@@ -63,10 +63,10 @@ public class GMStatCloud {
         if (sortBy > -1) {
             param.put(SORT_BY, String.valueOf(sortBy));
         }
-        if (sortType > -1) {
+        if (page > -1) {
             param.put(PAGE, String.valueOf(page));
         }
-        if (sortBy > -1) {
+        if (pageSize > -1) {
             param.put(PAGE_SIZE, String.valueOf(pageSize));
         }
         return gmStatApi.getTransactionTable(shopId, param);
