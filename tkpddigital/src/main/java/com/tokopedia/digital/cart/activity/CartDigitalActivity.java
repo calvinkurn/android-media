@@ -16,7 +16,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
 
 /**
  * @author anggaprasetiyo on 2/21/17.

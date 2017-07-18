@@ -25,7 +25,7 @@ public class TokoCashBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getExtras().containsKey(EXTRA_RESULT_TOKOCASH_DATA_DIGITAL)) {
+        if (intent.getExtras().containsKey(EXTRA_RESULT_TOKOCASH_DATA_DIGITAL)) {
             listener.onReceivedTokoCashData((TokoCashData) intent
                     .getParcelableExtra(EXTRA_RESULT_TOKOCASH_DATA_DIGITAL));
         } else {

@@ -336,9 +336,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //animate marker to lift up
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        markerTimeLayout.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
-        markerTimeImageView.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
-        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setEstimateTime(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setEstimateTime(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setEstimateTime(300);
         */
         //animate toolbar and source destination layout
         if (interactionListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -362,9 +362,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        markerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        markerTimeImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setEstimateTime(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(0).setEstimateTime(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setEstimateTime(300);
         */
 
         //animate toolbar and source destination layout

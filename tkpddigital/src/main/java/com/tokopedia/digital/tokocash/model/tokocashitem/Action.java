@@ -19,7 +19,7 @@ public class Action implements Parcelable {
     private String mType;
 
     public String getRedirectUrl() {
-        if(mRedirectUrl == null) return "";
+        if (mRedirectUrl == null) return "";
         else return mRedirectUrl;
     }
 
