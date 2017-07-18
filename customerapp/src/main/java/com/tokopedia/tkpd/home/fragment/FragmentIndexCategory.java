@@ -570,6 +570,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 onGimmicClicked(itemModel);
             }
         }
+
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(itemModel.getName());
     }
 
     private void openActivationTokoCashWebView(String seamlessUrl) {

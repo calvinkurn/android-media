@@ -501,6 +501,7 @@ public interface AppEventTracking {
         String SUBCATEGORY = "subcategory_name";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
+        String CATEGORY_ID = "category_id";
         String PRODUCT_ID = "product_id";
         String PRODUCT_NAME = "product_name";
         String PRODUCT_URL = "product_url";
@@ -510,6 +511,9 @@ public interface AppEventTracking {
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
         String DIGITAL_CAT_ID = "digital_category_id";
+        String HOTLIST_NAME = "hotlist_name";
+        String PRODUCT_IMAGE_URL = "product_image_url";
+        String IS_OFFICIAL_STORE = "is_official_store";
 
         String EVENT_LOGIN = "Login";
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
@@ -521,7 +525,11 @@ public interface AppEventTracking {
         String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
         String EVENT_DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
-
+        String EVENT_PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
+        String EVENT_PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
+        String EVENT_PRODUCT_REMOVED_FROM_WIHSLIST = "Product_Removed_From_Wishlist_Marketplace";
+        String EVENT_CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
+        String EVENT_CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
