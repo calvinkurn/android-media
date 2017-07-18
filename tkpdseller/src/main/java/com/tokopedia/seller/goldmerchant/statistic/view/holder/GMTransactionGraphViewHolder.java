@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,9 +21,11 @@ import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphTy
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
-import com.tokopedia.seller.lib.widget.GMDateRangeView;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -43,9 +44,10 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransactionGraphViewModel> {
+public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransactionGraphViewModel> {
 
     private final String[] gmStatTransactionEntries;
+    private final boolean[] selections;
     private int gmStatGraphSelection;
 
     private LineChartView gmStatisticIncomeGraph;
@@ -59,11 +61,13 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
     private boolean showingSimpleDialog;
     private GMTransactionGraphViewModel data;
 
-    public GMTransactionGraphViewHelper(@Nullable Context context) {
+    public GMTransactionGraphViewHolder(@Nullable Context context) {
         super(context);
 
         gmStatGraphSelection = 0;
         gmStatTransactionEntries = context.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
+        selections = new boolean[gmStatTransactionEntries.length];
+        selections[gmStatGraphSelection] = true;
 
         monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
@@ -117,13 +121,16 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
 
     private void showGraphSelectionDialog() {
         showingSimpleDialog = true;
-        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(context)
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(context)
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .setItemLayout(R.layout.bottomsheetbuilder_list_adapter_without_padding)
                 .addTitleItem(context.getString(R.string.gold_merchant_transaction_summary_text));
 
         for (int i = 0; i < gmStatTransactionEntries.length; i++) {
-            bottomSheetBuilder.addItem(i, gmStatTransactionEntries[i], null);
+            if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(i, gmStatTransactionEntries[i], null, selections[i]);
+            } else {
+                bottomSheetBuilder.addItem(i, gmStatTransactionEntries[i], null);
+            }
         }
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
@@ -132,7 +139,8 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
                     public void onBottomSheetItemClick(MenuItem item) {
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
                         Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
-                        GMTransactionGraphViewHelper.this.bind(data);
+                        resetSelection(gmStatGraphSelection);
+                        GMTransactionGraphViewHolder.this.bind(data);
                         showingSimpleDialog = false;
                     }
                 })
@@ -144,6 +152,12 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
             }
         });
         bottomSheetDialog.show();
+    }
+
+    private void resetSelection(int newSelection) {
+        for (int i = 0; i < selections.length; i++) {
+            selections[i] = i == newSelection;
+        }
     }
 
     public int selection() {
@@ -189,8 +203,8 @@ public class GMTransactionGraphViewHelper extends BaseGMViewHelper<GMTransaction
 
     protected void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
         // resize linechart according to data
-//        if (context != null && context instanceof Activity)
-//            GMStatisticUtil.resizeChart(baseWilliamChartModels.get(0).size(), gmStatisticIncomeGraph, (Activity) context);
+        if (context != null && context instanceof Activity)
+            GMStatisticUtil.resizeChart(baseWilliamChartModels.get(0).size(), gmStatisticIncomeGraph, (Activity) context);
 
         // get index to display
         final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModels.get(0).getValues());
