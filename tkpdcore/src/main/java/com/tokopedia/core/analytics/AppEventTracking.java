@@ -121,6 +121,8 @@ public interface AppEventTracking {
         String CLICK_OTP = "clickOtp";
         String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
         String R3 = "r3";
+        String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
+        String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     }
 
     interface Category {
@@ -417,6 +419,11 @@ public interface AppEventTracking {
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
         String OPPORTUNIT_LIST = "Peluang";
+
+        String GOLD_MERCHANT_CURRENCY = "Gold Merchant - Currency";
+        String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
+        String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
+        String BUY_GM = "Buy GM";
     }
 
     interface SOCIAL_MEDIA {
