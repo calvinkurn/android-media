@@ -18,6 +18,7 @@ const CampaignList = ({ campaigns }) => {
         data={campaigns}
         keyExtractor={item => item.banner_id}
         renderItem={this.renderCampaign}
+        initialNumToRender={1}
       />
     </View>
   );
