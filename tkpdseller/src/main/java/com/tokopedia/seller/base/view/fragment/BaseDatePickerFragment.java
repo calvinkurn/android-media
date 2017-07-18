@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.base.view.constant.ConstantView;
+import com.tokopedia.seller.base.view.listener.DatePicker;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
@@ -23,7 +24,7 @@ import javax.inject.Inject;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePickerView {
+public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePicker, DatePickerView {
 
     public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
     @Inject
@@ -32,10 +33,6 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     protected String startDate;
     protected String endDate;
     protected DatePickerViewModel datePickerViewModel;
-
-    protected abstract void loadData();
-
-    protected abstract Intent getDatePickerIntent();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +112,8 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
         loadData();
     }
 
-    protected void openDatePicker() {
+    @Override
+    public void openDatePicker() {
         startActivityForResult(getDatePickerIntent(), ConstantView.REQUEST_CODE_DATE);
     }
 }
