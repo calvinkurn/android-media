@@ -2,7 +2,6 @@ package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 
 /**
