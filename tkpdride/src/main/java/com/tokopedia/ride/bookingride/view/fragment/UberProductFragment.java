@@ -121,6 +121,20 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_SOURCE, source);
+        outState.putParcelable(EXTRA_DESTINATION, destination);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        source = savedInstanceState.getParcelable(EXTRA_SOURCE);
+        destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
+    }
+
     private void setViewListener() {
         RideProductTypeFactory placeAutoCompleteTypeFactory = new RideProductAdapterTypeFactory(this);
         mAdapter = new RideProductAdapter(placeAutoCompleteTypeFactory);

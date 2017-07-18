@@ -54,7 +54,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     private static final int REQUEST_CODE_REMOVE_PROMO = 1014;
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1015;
 
-    public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
+    public static String EXTRA_CONFIRM_BOOKING_DATA = "EXTRA_CONFIRM_BOOKING_DATA";
     public static String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     ImageView productIconImageView;
     TextView headerTextView;
@@ -95,7 +95,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public static ConfirmBookingRideFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_PRODUCT, confirmBookingViewModel);
+        bundle.putParcelable(EXTRA_CONFIRM_BOOKING_DATA, confirmBookingViewModel);
         ConfirmBookingRideFragment fragment = new ConfirmBookingRideFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -134,6 +134,20 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         }, 100);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_PASS_DATA, confirmBookingPassData);
+        outState.putParcelable(EXTRA_CONFIRM_BOOKING_DATA, confirmBookingViewModel);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        confirmBookingPassData = savedInstanceState.getParcelable(EXTRA_PASS_DATA);
+        confirmBookingViewModel = savedInstanceState.getParcelable(EXTRA_CONFIRM_BOOKING_DATA);
+    }
+
     private void initView(View view) {
         productIconImageView = (ImageView) view.findViewById(R.id.cabAppIcon);
         headerTextView = (TextView) view.findViewById(R.id.topHeaderConfirmBooking);
@@ -166,7 +180,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         priceTextView.setText(confirmBookingViewModel.getPriceFmt());
 
         if (confirmBookingViewModel.getSurgeMultiplier() > 0) {
-            surgeRateTextView.setText(confirmBookingViewModel.getSurgeMultiplier() + "x");
+            surgeRateTextView.setText(String.format("%sx", confirmBookingViewModel.getSurgeMultiplier()));
             surgeRateTextView.setVisibility(View.VISIBLE);
         } else {
             surgeRateTextView.setVisibility(View.GONE);
