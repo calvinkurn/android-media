@@ -1,14 +1,12 @@
 
-package com.tokopedia.core.drawer.model.topcastItem;
-
+package com.tokopedia.digital.tokocash.model.tokocashitem;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 
-public class Data implements Parcelable{
+public class TopCashItem implements Parcelable{
 
     @SerializedName("action")
     private Action mAction;
@@ -72,7 +70,7 @@ public class Data implements Parcelable{
         this.link = link;
     }
 
-    protected Data(Parcel in) {
+    protected TopCashItem(Parcel in) {
         mAction = (Action) in.readValue(Action.class.getClassLoader());
         mBalance = in.readString();
         mRedirectUrl = in.readString();
@@ -107,15 +105,15 @@ public class Data implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+    public static final Parcelable.Creator<TopCashItem> CREATOR = new Parcelable.Creator<TopCashItem>() {
         @Override
-        public Data createFromParcel(Parcel in) {
-            return new Data(in);
+        public TopCashItem createFromParcel(Parcel in) {
+            return new TopCashItem(in);
         }
 
         @Override
-        public Data[] newArray(int size) {
-            return new Data[size];
+        public TopCashItem[] newArray(int size) {
+            return new TopCashItem[size];
         }
     };
 }

@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
 import com.tokopedia.digital.widget.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
@@ -89,10 +90,11 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<TopCashItem>, Observable<TopCashItem>>() {
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TopCashItem>>() {
                     @Override
-                    public Observable<TopCashItem> call(Response<TopCashItem> topCashItemResponse) {
-                        return Observable.just(topCashItemResponse.body());
+                    public Observable<TopCashItem> call(Response<TkpdResponse> topCashItemResponse) {
+                        return Observable
+                                .just(topCashItemResponse.body().convertDataObj(TopCashItem.class));
                     }
                 });
     }
@@ -102,7 +104,7 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
         return new Func1<TopCashItem, Boolean>() {
             @Override
             public Boolean call(TopCashItem topCashItem) {
-                return topCashItem != null && topCashItem.getData() != null;
+                return topCashItem != null;
             }
         };
     }

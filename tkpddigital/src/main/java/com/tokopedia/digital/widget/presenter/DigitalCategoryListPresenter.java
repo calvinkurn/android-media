@@ -3,12 +3,12 @@ package com.tokopedia.digital.widget.presenter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TopCashItem;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.widget.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
@@ -106,8 +106,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
             @Override
             public void onNext(TopCashItem topCashItemResponse) {
-                Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
-                intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
+                Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH_DIGITAL);
+                intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA_DIGITAL,
                         topCashItemResponse);
                 digitalCategoryListView.sendBroadcastReceiver(intent);
             }
