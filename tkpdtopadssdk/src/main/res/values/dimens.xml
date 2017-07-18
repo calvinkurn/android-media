@@ -20,6 +20,7 @@
     <dimen name="feed_ava">40dp</dimen>
 
     <dimen name="font_large">18sp</dimen>
+    <dimen name="font_normal">14sp</dimen>
     <dimen name="font_small">12sp</dimen>
     <dimen name="abc_text_size_small_material">14sp</dimen>
     <dimen name="product_grid_padding">10dp</dimen>
@@ -33,5 +34,6 @@
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_s_medium">13sp</dimen>
     <dimen name="padding_info">16dp</dimen>
+    <dimen name="line_spacing_normal">4sp</dimen>
 
 </resources>
