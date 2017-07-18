@@ -63,12 +63,12 @@
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         app:donut_circle_starting_degree="90"
-                        app:donut_finished_color="#00FF00"
+                        app:donut_finished_color="@color/tkpd_main_green"
                         app:donut_finished_stroke_width="8dp"
                         app:donut_max="100"
-                        app:donut_progress="85"
+                        app:donut_progress="0"
                         app:donut_show_text="false"
-                        app:donut_unfinished_color="#FF0000"
+                        app:donut_unfinished_color="@color/tkpd_dark_red"
                         app:donut_unfinished_stroke_width="8dp" />
                 </com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout>
 

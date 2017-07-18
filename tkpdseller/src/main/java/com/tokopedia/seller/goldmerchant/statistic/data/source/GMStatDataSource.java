@@ -7,6 +7,7 @@ import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.mapper.SimpleDataResponseMapper;
@@ -15,6 +16,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatC
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -186,12 +188,36 @@ public class GMStatDataSource {
         return new Action1<T>() {
             @Override
             public void call(T getObject) {
+                long startDateResponse = -1;
+                long endDateResponse = -1;
+                // TODO hendry only getTransaction Graph or also the other?
+                if (getObject instanceof GetTransactionGraph){
+                    List<Integer> dateGraph = ((GetTransactionGraph) getObject).getDateGraph();
+                    GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel2(dateGraph);
+                    startDateResponse = gmDateRangeDateViewModel.getStartDate();
+                    endDateResponse = gmDateRangeDateViewModel.getEndDate();
+                }
+
                 String jsonString = CacheUtil.convertModelToString(getObject, type);
                 if (jsonString == null){
                     return;
                 }
-                gmStatCache.saveGMStat(action, startDate, endDate, jsonString);
+                if (startDateResponse > 0){
+                    gmStatCache.saveGMStat(action, startDateResponse, endDateResponse, jsonString);
+                } else {
+                    gmStatCache.saveGMStat(action, startDate, endDate, jsonString);
+                }
             }
         };
     }
+
+    protected GMDateRangeDateViewModel getGmDateRangeDateViewModel2(List<Integer> dateGraph) {
+        GMDateRangeDateViewModel gmDateRangeDateViewModel =
+                new GMDateRangeDateViewModel();
+        gmDateRangeDateViewModel.setStartDate(GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0)));
+        gmDateRangeDateViewModel.setEndDate(GoldMerchantDateUtils.getDateWithYear(dateGraph.get(dateGraph.size() - 1)));
+
+        return gmDateRangeDateViewModel;
+    }
+
 }

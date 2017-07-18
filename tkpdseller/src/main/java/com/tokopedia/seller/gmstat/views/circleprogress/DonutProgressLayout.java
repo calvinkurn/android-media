@@ -70,10 +70,10 @@ public class DonutProgressLayout extends FrameLayout {
     public void addView(View child, int index, final ViewGroup.LayoutParams params) {
         if (child instanceof DonutProgress) {
             FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(params);
-            flp.gravity = Gravity.CENTER_VERTICAL | (flp.gravity & ~Gravity.VERTICAL_GRAVITY_MASK);
+            flp.gravity = Gravity.CENTER_HORIZONTAL | (flp.gravity & ~Gravity.HORIZONTAL_GRAVITY_MASK);
             contentView.addView(child, flp);
 
-            contentView.setLayoutParams(params);
+            contentView.setLayoutParams(flp);
             setUI();
         } else {
             // Carry on adding the View...

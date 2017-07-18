@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.utils;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -93,6 +94,18 @@ public final class KMNumbers {
         float truncated = number / (divideBy / 10);
         double v = truncated / 10d;
         return formatString(v) + suffix;
+    }
+
+    public static String formatDecimalString (long numberToFormat){
+        return formatDecimalString(numberToFormat, false);
+    }
+
+    public static String formatDecimalString (long numberToFormat, boolean useCommaAsThousand){
+        if (useCommaAsThousand) {
+            return NumberFormat.getNumberInstance(Locale.US).format(numberToFormat);
+        } else {
+            return NumberFormat.getNumberInstance(locale).format(numberToFormat);
+        }
     }
 
     public static String formatString(Double number) {
