@@ -39,12 +39,6 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        updateDrawerData();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }

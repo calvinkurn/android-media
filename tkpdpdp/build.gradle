@@ -29,7 +29,7 @@ publishing {
             groupId 'com.tokopedia.tkpdpdp'
             artifactId 'tkpdpdp'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpddiscovery-release.aar")
+            artifact("$buildDir/outputs/aar/tkpdpdp-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 

@@ -17,7 +17,7 @@ import rx.Subscriber;
 
 public interface HomeMenuInteractor {
 
-    void fetchHomeCategoryMenuFromNetwork(Subscriber<Response<String>> networksubscriber);
+    void fetchHomeCategoryMenuFromNetwork(String userId, Subscriber<Response<String>> networksubscriber);
 
     void fetchHomeCategoryMenuFromDb(OnFetchHomeCategoryMenuFromDbListener listener);
 

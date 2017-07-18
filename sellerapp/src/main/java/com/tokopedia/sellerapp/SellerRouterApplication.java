@@ -40,6 +40,7 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -122,7 +123,7 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
         //no route to wallet on seller, go to default
         goToDefaultRoute(context);
     }
@@ -137,6 +138,11 @@ public class SellerRouterApplication extends MainApplication
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
+    }
+
+    @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
+
     }
 
     @Override
@@ -172,7 +178,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToRegister(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
+        Intent intent = Login.getSellerRegisterIntent(context);
         context.startActivity(intent);
     }
 
@@ -229,6 +235,14 @@ public class SellerRouterApplication extends MainApplication
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private void goToDefaultRoute(Context context) {

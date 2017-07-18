@@ -15,7 +15,8 @@ public class TkpdBaseInterceptor implements Interceptor {
     private static final String TAG = TkpdBaseInterceptor.class.getSimpleName();
     protected int maxRetryAttempt = 3;
 
-    public TkpdBaseInterceptor() {}
+    public TkpdBaseInterceptor() {
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {

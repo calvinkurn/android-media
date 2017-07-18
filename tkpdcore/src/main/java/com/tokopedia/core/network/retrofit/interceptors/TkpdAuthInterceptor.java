@@ -77,11 +77,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
 
-    private boolean isTimezoneNotAutomatic() {
+    protected boolean isTimezoneNotAutomatic() {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(String bodyResponse, int code) {
+    protected boolean isForbiddenRequest(String bodyResponse, int code) {
 
         JSONObject json;
         try {
@@ -163,7 +163,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return query != null ? query : "";
     }
 
-    private boolean isMaintenance(String response) {
+    protected boolean isMaintenance(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -175,7 +175,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private boolean isHasErrorMessage(String response) {
+    protected boolean isHasErrorMessage(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -187,7 +187,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private boolean isRequestDenied(String response) {
+    protected boolean isRequestDenied(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -214,11 +214,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return false;
     }
 
-    private boolean isServerError(int code) {
+    protected boolean isServerError(int code) {
         return code >= 500;
     }
 
-    private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
+    protected Response createNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
         Response.Builder builder = new Response.Builder();
@@ -241,7 +241,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
      */
     @Deprecated
-    private void showTimezoneErrorSnackbar() {
+    protected void showTimezoneErrorSnackbar() {
         ServerErrorHandler.showTimezoneErrorSnackbar();
     }
 
@@ -249,7 +249,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
      */
     @Deprecated
-    private void showMaintenancePage() {
+    protected void showMaintenancePage() {
         ServerErrorHandler.showMaintenancePage();
     }
 
@@ -257,7 +257,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
      */
     @Deprecated
-    private void showForceLogoutDialog() {
+    protected void showForceLogoutDialog() {
         ServerErrorHandler.showForceLogoutDialog();
     }
 
@@ -265,7 +265,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
      */
     @Deprecated
-    private void sendForceLogoutAnalytics(Response response) {
+    protected void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
@@ -273,7 +273,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
      */
     @Deprecated
-    private void showServerErrorSnackbar() {
+    protected void showServerErrorSnackbar() {
         ServerErrorHandler.showServerErrorSnackbar();
     }
 
@@ -281,13 +281,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
      * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
      */
     @Deprecated
-    private void sendErrorNetworkAnalytics(Response response) {
+    protected void sendErrorNetworkAnalytics(Response response) {
         ServerErrorHandler.sendErrorNetworkAnalytics(
                 response.request().url().toString(), response.code()
         );
     }
 
-    private Boolean isNeedRelogin(Response response) {
+    protected Boolean isNeedRelogin(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
@@ -299,7 +299,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private void doRelogin() {
+    protected void doRelogin() {
         SessionRefresh sessionRefresh = new SessionRefresh();
         try {
             sessionRefresh.refreshLogin();

@@ -41,8 +41,6 @@ import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.util.MethodChecker;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class ProductList extends V2BaseFragment {
     private GetShopProductRetrofit facadeShopProd;
     private GetShopProductCampaignRetrofit facadeShopProdCampaign;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
-
+    private boolean isConnectionErrorShow = false;
     private ProductListCallback callback;
 
     public static ProductList newInstance() {
@@ -384,7 +382,7 @@ public class ProductList extends V2BaseFragment {
         holder.list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (isAtBottom() && canLoadItem()) {
+                if (isAtBottom() && canLoadItem() && !isConnectionErrorShow) {
                     setLoading();
                     getProductNextPage();
                 }
@@ -493,21 +491,24 @@ public class ProductList extends V2BaseFragment {
                 switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
                         if (productShopParam.getPage() == 1 && productModel.list.size() == 0) {
-
+                            isConnectionErrorShow = true;
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
                                     adapter.removeEmptyState();
+                                    isConnectionErrorShow = false;
                                     refreshProductList();
                                 }
                             });
                         } else {
-                            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    refreshProductList();
-                                }
-                            }).showRetrySnackbar();
+                            if (getActivity() != null && isAdded()) {
+                                NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        refreshProductList();
+                                    }
+                                }).showRetrySnackbar();
+                            }
                         }
                         break;
                     case GetShopProductRetrofit.WS_TYPE_ERROR:

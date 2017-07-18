@@ -85,6 +85,16 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         return intent;
     }
 
+    public static Intent createInstance(Context context, String productId,
+                                        int adapterPosition) {
+        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+        bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     /**
      * Author : Sebast
      * Adding this for uploading product from product share activity
@@ -268,4 +278,5 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
+
 }
