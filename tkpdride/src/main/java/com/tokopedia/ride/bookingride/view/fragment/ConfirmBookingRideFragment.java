@@ -144,8 +144,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        confirmBookingPassData = savedInstanceState.getParcelable(EXTRA_PASS_DATA);
-        confirmBookingViewModel = savedInstanceState.getParcelable(EXTRA_CONFIRM_BOOKING_DATA);
+        if (savedInstanceState != null) {
+            confirmBookingPassData = savedInstanceState.getParcelable(EXTRA_PASS_DATA);
+            confirmBookingViewModel = savedInstanceState.getParcelable(EXTRA_CONFIRM_BOOKING_DATA);
+        }
     }
 
     private void initView(View view) {

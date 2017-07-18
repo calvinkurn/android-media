@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -46,14 +45,14 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     @BindView(R2.id.progress_bar_time)
     ProgressBar timeProgress;
 
-    private RideProductItemClickListener mItemClickListener;
+    private RideProductItemClickListener itemClickListener;
     private RideProductViewModel rideProductViewModel;
-    private Context mContext;
+    private Context context;
 
     public RideProductViewHolder(View parent, RideProductItemClickListener itemClickListener) {
         super(parent);
-        mContext = parent.getContext();
-        mItemClickListener = itemClickListener;
+        context = parent.getContext();
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -81,7 +80,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
             priceProgress.setVisibility(View.GONE);
         }
 
-        Glide.with(mContext).load(element.getProductImage())
+        Glide.with(context).load(element.getProductImage())
                 .asBitmap()
                 .fitCenter()
                 .dontAnimate()
@@ -91,10 +90,6 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
 
     @OnClick(R2.id.row_cab_list)
     public void actionOnProductClicked() {
-        if (rideProductViewModel.isEnabled()) {
-            mItemClickListener.onProductSelected(rideProductViewModel);
-        } else {
-            Toast.makeText(mContext, "Product Not Available", Toast.LENGTH_SHORT).show();
-        }
+        itemClickListener.onProductSelected(rideProductViewModel);
     }
 }

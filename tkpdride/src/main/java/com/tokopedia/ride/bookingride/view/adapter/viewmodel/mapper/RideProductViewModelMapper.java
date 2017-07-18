@@ -155,7 +155,10 @@ public class RideProductViewModelMapper {
     private RideProductViewModel transformWithPriceEstimate(RideProductViewModel product, PriceEstimate priceEstimate) {
         if (product != null && priceEstimate != null) {
             product.setEnabled(true);
-            product.setProductPriceFmt(getStringIdrFormat(priceEstimate.getLowEstimate()) + " - " + getStringIdrFormat(priceEstimate.getHighEstimate()));
+            if (priceEstimate.getCurrencyCode().equalsIgnoreCase("IDR"))
+                product.setProductPriceFmt(getStringIdrFormat(priceEstimate.getLowEstimate()) + " - " + getStringIdrFormat(priceEstimate.getHighEstimate()));
+            else
+                product.setProductPriceFmt(priceEstimate.getEstimate());
         }
         return product;
     }

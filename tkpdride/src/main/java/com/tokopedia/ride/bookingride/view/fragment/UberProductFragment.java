@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -39,40 +39,39 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class UberProductFragment extends BaseFragment implements UberProductContract.View, RideProductItemClickListener {
-    OnFragmentInteractionListener mInteractionListener;
+    OnFragmentInteractionListener interactionListener;
     UberProductContract.Presenter presenter;
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
 
     @BindView(R2.id.ride_product_list)
-    RecyclerView mRideProductsRecyclerView;
+    RecyclerView rideProductsRecyclerView;
     @BindView(R2.id.crux_cabs_home_ad)
-    LinearLayout mAdsContainerLinearLayout;
+    LinearLayout adsContainerLinearLayout;
     @BindView(R2.id.crux_cabs_ad_title)
-    TextView mAdsTitleTextView;
+    TextView adsTitleTextView;
     @BindView(R2.id.crux_cabs_ad_cross)
     ImageView mAdsCrossImageView;
     @BindView(R2.id.empty_product_list)
-    View mErrorLayout;
+    View errorLayout;
     @BindView(R2.id.tv_error_desc)
-    TextView mErrorDescriptionTextView;
+    TextView errorDescriptionTextView;
     @BindView(R2.id.empty_list_retry)
-    TextView mRetryButtonTextView;
+    TextView retryButtonTextView;
     @BindView(R2.id.product_list_progress)
     ProgressBar mProgressBar;
     @BindView(R2.id.layout_error_view)
-    View mErrorView;
+    View errorView;
     @BindView(R2.id.layout_progress_view)
-    View mProgressView;
+    View progressView;
 
     boolean isCompleteLocations;
-    boolean isOpenInterruptWebviewDialog;
 
     List<RideProductViewModel> rideProductViewModels;
     private PlacePassViewModel source, destination;
 
-    RideProductAdapter mAdapter;
+    RideProductAdapter adapter;
 
     public interface OnFragmentInteractionListener {
         void onProductClicked(ConfirmBookingPassData confirmBookingPassData);
@@ -131,18 +130,20 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        source = savedInstanceState.getParcelable(EXTRA_SOURCE);
-        destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
+            destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
+        }
     }
 
     private void setViewListener() {
         RideProductTypeFactory placeAutoCompleteTypeFactory = new RideProductAdapterTypeFactory(this);
-        mAdapter = new RideProductAdapter(placeAutoCompleteTypeFactory);
+        adapter = new RideProductAdapter(placeAutoCompleteTypeFactory);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mRideProductsRecyclerView.setLayoutManager(layoutManager);
-        mRideProductsRecyclerView.setHasFixedSize(true);
-        mRideProductsRecyclerView.setAdapter(mAdapter);
+        rideProductsRecyclerView.setLayoutManager(layoutManager);
+        rideProductsRecyclerView.setHasFixedSize(true);
+        rideProductsRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -152,14 +153,14 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mInteractionListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException("Activity must implemented OnFragmentInteractionListener");
         }
@@ -169,7 +170,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mInteractionListener = (OnFragmentInteractionListener) context;
+            interactionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException("Activity must implemented OnFragmentInteractionListener");
         }
@@ -201,10 +202,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             );
             confirmBookingPassData.setMaxCapacity(rideProductViewModel.getCapacity());
             confirmBookingPassData.setCancellationFee(rideProductViewModel.getCancellationFee());
-            mInteractionListener.onProductClicked(confirmBookingPassData);
+            interactionListener.onProductClicked(confirmBookingPassData);
         } else {
             //show message to enter destianation
-            mInteractionListener.showEnterDestError();
+            interactionListener.showEnterDestError();
+            NetworkErrorHelper.showSnackbar(getActivity(), "Please enter destination");
         }
     }
 
@@ -221,17 +223,17 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void renderProductList(List<Visitable> datas) {
-        mAdapter.clearData();
-        mAdapter.setElement(datas);
+        adapter.clearData();
+        adapter.setElement(datas);
     }
 
     @Override
     public List<Visitable> getProductList() {
-        if (mAdapter == null) {
+        if (adapter == null) {
             return null;
         }
 
-        return mAdapter.getElements();
+        return adapter.getElements();
     }
 
     @OnClick(R2.id.crux_cabs_ad_cross)
@@ -246,61 +248,61 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             presenter.actionGetRideProducts(source, destination);
         } else {
             //open a dialog to enter source location
-            mInteractionListener.showEnterSourceLocationActiity();
+            interactionListener.showEnterSourceLocationActiity();
         }
     }
 
     @Override
     public void showAdsBadges(String message) {
-        mInteractionListener.actionAdsShowed();
-        mAdsContainerLinearLayout.setVisibility(View.VISIBLE);
-        mAdsTitleTextView.setText(String.valueOf(message));
+        interactionListener.actionAdsShowed();
+        adsContainerLinearLayout.setVisibility(View.VISIBLE);
+        adsTitleTextView.setText(String.valueOf(message));
     }
 
     @Override
     public void hideAdsBadges() {
-        mInteractionListener.actionAdsHidden();
-        mAdsContainerLinearLayout.setVisibility(View.INVISIBLE);
+        interactionListener.actionAdsHidden();
+        adsContainerLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showProgress() {
-        mProgressView.setVisibility(View.VISIBLE);
+        progressView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mProgressView.setVisibility(View.GONE);
+        progressView.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProductList() {
-        if (mRideProductsRecyclerView != null) {
-            mRideProductsRecyclerView.setVisibility(View.GONE);
+        if (rideProductsRecyclerView != null) {
+            rideProductsRecyclerView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void showProductList() {
-        if (mRideProductsRecyclerView != null) {
-            mRideProductsRecyclerView.setVisibility(View.VISIBLE);
+        if (rideProductsRecyclerView != null) {
+            rideProductsRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void showErrorMessage(String message, String btnText) {
         hideProgress();
-        mErrorView.setVisibility(View.VISIBLE);
-        mErrorLayout.setVisibility(View.VISIBLE);
-        mErrorDescriptionTextView.setText(message);
+        errorView.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.VISIBLE);
+        errorDescriptionTextView.setText(message);
         if (btnText != null && !btnText.isEmpty()) {
-            mRetryButtonTextView.setVisibility(View.VISIBLE);
-            mRetryButtonTextView.setText(btnText);
+            retryButtonTextView.setVisibility(View.VISIBLE);
+            retryButtonTextView.setText(btnText);
         } else {
-            mRetryButtonTextView.setVisibility(View.INVISIBLE);
+            retryButtonTextView.setVisibility(View.INVISIBLE);
         }
 
-        mRetryButtonTextView.setOnClickListener(new View.OnClickListener() {
+        retryButtonTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 actionRetry();
@@ -310,15 +312,15 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void hideErrorMessage() {
-        if (mErrorView != null) {
-            mErrorView.setVisibility(View.GONE);
+        if (errorView != null) {
+            errorView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void hideErrorMessageLayout() {
-        if (mErrorLayout != null) {
-            mErrorLayout.setVisibility(View.GONE);
+        if (errorLayout != null) {
+            errorLayout.setVisibility(View.GONE);
         }
     }
 
@@ -327,12 +329,12 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                                   String productId,
                                   int position,
                                   FareEstimate fareEstimate) {
-        mAdapter.setChangedItem(position, productEstimate);
+        adapter.setChangedItem(position, productEstimate);
     }
 
     @Override
     public void actionMinimumTimeEstResult(String timeEst) {
-        mInteractionListener.onMinimumTimeEstCalculated(timeEst);
+        interactionListener.onMinimumTimeEstCalculated(timeEst);
     }
 
     @Override
@@ -343,6 +345,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @OnClick(R2.id.layout_cab_booking_header)
     public void actionProductListHeaderClicked() {
-        mInteractionListener.actionProductListHeaderClick();
+        interactionListener.actionProductListHeaderClick();
     }
 }
