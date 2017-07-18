@@ -76,8 +76,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
 

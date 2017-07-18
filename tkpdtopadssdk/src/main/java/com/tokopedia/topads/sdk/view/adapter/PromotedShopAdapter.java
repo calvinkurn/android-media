@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.view.SquareImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 
 import java.util.ArrayList;
