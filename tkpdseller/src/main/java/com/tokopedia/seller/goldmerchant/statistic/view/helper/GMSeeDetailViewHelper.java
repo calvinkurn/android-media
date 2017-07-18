@@ -15,9 +15,7 @@ import com.tokopedia.seller.R;
  */
 
 public class GMSeeDetailViewHelper extends BaseGMViewHelper {
-    private TextView seeDetailText;
-    private ImageView seeDetailImage;
-    private RelativeLayout seeDetailContainer;
+    private View seeDetailContainer;
 
     public GMSeeDetailViewHelper(Context context) {
         super(context);
@@ -26,9 +24,7 @@ public class GMSeeDetailViewHelper extends BaseGMViewHelper {
 
     @Override
     public void initView(View itemView) {
-        seeDetailContainer = (RelativeLayout) itemView.findViewById(R.id.see_detail_container);
-        seeDetailText = (TextView) itemView.findViewById(R.id.see_detail_text);
-        seeDetailImage = (ImageView) itemView.findViewById(R.id.see_detail_image);
+        seeDetailContainer = itemView.findViewById(R.id.see_detail_container);
     }
 
     @Override
@@ -37,14 +33,12 @@ public class GMSeeDetailViewHelper extends BaseGMViewHelper {
         if (data != null && data instanceof View.OnClickListener) {
             seeDetailContainer.setOnClickListener((View.OnClickListener) data);
         }
-
-        seeDetailText.setText(R.string.see_detail_gm_description);
-        setImageIcon();
+//        setImageIcon();
     }
 
-    protected void setImageIcon() {
-        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(context
-                , R.drawable.ic_set_date_next);
-        seeDetailImage.setImageDrawable(setDateNext);
-    }
+//    protected void setImageIcon() {
+//        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(context
+//                , R.drawable.ic_set_date_next);
+//        seeDetailImage.setImageDrawable(setDateNext);
+//    }
 }
