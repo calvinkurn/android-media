@@ -73,9 +73,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             checkCanLoadNext(feedResult, listFeedView);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            viewListener.onShowEmptyWithRecentView(listFeedView);
+            viewListener.onShowEmptyWithRecentView(listFeedView,
+                    checkCanShowTopads(feedResult.getDataSource()));
         } else
-            viewListener.onShowEmpty();
+            viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
 
 
         if (hasFeed(feedDomain))

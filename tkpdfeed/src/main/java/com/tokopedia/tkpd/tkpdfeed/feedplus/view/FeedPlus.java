@@ -90,9 +90,9 @@ public interface FeedPlus{
 
         void onSeeAllRecentView();
 
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads);
 
-        void onShowEmpty();
+        void onShowEmpty(boolean canShowTopads);
 
         void clearData();
 
