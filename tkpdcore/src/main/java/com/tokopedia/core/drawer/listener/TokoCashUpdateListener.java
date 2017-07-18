@@ -1,6 +1,5 @@
 package com.tokopedia.core.drawer.listener;
 
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 
 /**

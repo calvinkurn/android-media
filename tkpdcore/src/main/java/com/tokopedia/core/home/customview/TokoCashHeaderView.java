@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
