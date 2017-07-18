@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,8 @@ import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
@@ -30,7 +32,7 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel> {
+public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel> {
     private LineChartView gmStatisticTopAdsGraph;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMPercentageViewHelper gmPercentageViewHelper2;
@@ -40,7 +42,7 @@ public class GMTopAdsAmountViewHelper extends BaseGMViewHelper<GMGraphViewModel>
     private TitleCardView gmStatisticTopAdsCardView;
     private LineChartContainerWidget gmTopAdsLineChartWidget;
 
-    public GMTopAdsAmountViewHelper(@Nullable Context context) {
+    public GMTopAdsAmountViewHolder(@Nullable Context context) {
         super(context);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
         gmPercentageViewHelper2 = new GMPercentageViewHelper(context);

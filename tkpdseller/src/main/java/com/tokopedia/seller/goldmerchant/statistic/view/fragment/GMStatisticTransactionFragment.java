@@ -14,17 +14,15 @@ import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantCompone
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
 import com.tokopedia.seller.lib.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 
 import javax.inject.Inject;
@@ -47,16 +45,10 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     private View rootView;
 
-    private String[] monthNamesAbrev;
-
-    private GMTopAdsAmountViewHelper gmTopAdsAmountViewHelper;
+    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
-    private GMTransactionGraphViewHelper gmTransactionGraphViewHelper;
+    private GMTransactionGraphViewHolder gmTransactionGraphViewHelper;
     private UnFinishedTransactionViewHolder unFinishedTransactionViewHolder;
-
-    private GMDateRangeDateViewModel gmDateRangeDateViewModel;
-    private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
-    private DataDeposit data;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -73,10 +65,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     private void initVar() {
-        monthNamesAbrev = getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
-        gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
-        gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());
+        gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHolder(getActivity());
+        gmTransactionGraphViewHelper = new GMTransactionGraphViewHolder(getActivity());
         unFinishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
     }
 
@@ -93,12 +84,19 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
-                intent.putExtra(GMStatisticTransactionTableView.START_DATE, gmDateRangeDateViewModel.getStartDate().getModel1());
-                intent.putExtra(GMStatisticTransactionTableView.END_DATE, gmDateRangeDateViewModel.getEndDate().getModel1());
-                startActivity(intent);
+                if (presenter != null) {
+                    presenter.startTransactionProductList();
+                }
             }
         });
+    }
+
+    @Override
+    public void startTransactionProductList(long startDate, long endDate) {
+        Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
+        intent.putExtra(GMStatisticTransactionTableView.START_DATE, startDate);
+        intent.putExtra(GMStatisticTransactionTableView.END_DATE, endDate);
+        startActivity(intent);
     }
 
     @Override

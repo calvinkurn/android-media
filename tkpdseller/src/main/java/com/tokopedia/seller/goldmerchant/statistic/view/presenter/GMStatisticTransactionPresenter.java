@@ -10,4 +10,6 @@ public abstract class GMStatisticTransactionPresenter extends BaseDaggerPresente
     public abstract void loadDataWithDate(long startDate, long endDate);
 
     public abstract void loadDataWithoutDate();
+
+    public abstract void startTransactionProductList();
 }

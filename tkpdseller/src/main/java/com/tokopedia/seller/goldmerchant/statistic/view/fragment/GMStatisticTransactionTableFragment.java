@@ -57,8 +57,10 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     private boolean showingSimpleDialog;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
+    private int sortByIndexSelection;
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
+    private int sortTypeIndexSelection;
     private GoldMerchantComponent goldMerchantComponent;
 
     public static Fragment createInstance(long startDate, long endDate) {
@@ -127,11 +129,11 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
 
         gmStatSortBy = getResources().getStringArray(R.array.gm_stat_sort_by);
         sortBySelections = new boolean[gmStatSortBy.length];
-        sortBySelections[0] = true;
+        sortBySelections[sortByIndexSelection] = true;
 
         gmStatSortType = getResources().getStringArray(R.array.gm_stat_sort_type);
         sortTypeSelections = new boolean[gmStatSortBy.length];
-        sortTypeSelections[0] = true;
+        sortTypeSelections[sortTypeIndexSelection] = true;
     }
 
     @Override
@@ -173,7 +175,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         showBottomSheetDialog(gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
-                switch (GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
+                switch (sortByIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
                     case 0:
                         sortBy = GMTransactionTableSortBy.ORDER_SUM;
                         break;
@@ -197,7 +199,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
-                switch (GMStatisticUtil.findSelection(gmStatSortBy, menuItem.getTitle().toString())) {
+                switch (sortTypeIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, menuItem.getTitle().toString())) {
                     case 0:
                         sortType = GMTransactionTableSortType.ASCENDING;
                         break;

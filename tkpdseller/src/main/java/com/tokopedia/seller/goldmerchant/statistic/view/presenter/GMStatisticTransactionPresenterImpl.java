@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
@@ -22,6 +23,9 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     private GMStatGetTransactionGraphUseCase useCase;
     private DashboardTopadsInteractor topadsUseCase;
     private SessionHandler sessionHandler;
+
+    private GMDateRangeDateViewModel gmDateRangeDateViewModel;
+    private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
 
     public GMStatisticTransactionPresenterImpl(
             GMStatGetTransactionGraphUseCase useCase,
@@ -55,6 +59,16 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     }
 
     @Override
+    public void startTransactionProductList() {
+        if (isViewAttached()) {
+            getView().startTransactionProductList(
+                    gmDateRangeDateViewModel.getStartDate().getModel1(),
+                    gmDateRangeDateViewModel.getEndDate().getModel1()
+            );
+        }
+    }
+
+    @Override
     public void loadDataWithDate(long startDate, long endDate) {
         useCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
@@ -77,6 +91,11 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
     protected void revealData(GMTransactionGraphMergeModel mergeModel) {
         if (isViewAttached()) {
+            // get necessary object, just take from transaction graph view
+            gmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.dateRangeModel;
+            previousGmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.pDateRangeModel;
+
+
             getView().revealData(mergeModel);
         }
     }

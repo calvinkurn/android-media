@@ -18,4 +18,6 @@ public interface GMStatisticTransactionView extends CustomerView {
     void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel);
 
     void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel);
+
+    void startTransactionProductList(long startDate, long endDate);
 }
