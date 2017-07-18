@@ -103,7 +103,7 @@ public class LineChartContainerWidget extends LinearLayout {
         if (data == null) {
             gmStatisticTransactionRangeCompare.setVisibility(View.GONE);
         } else {
-            gmStatisticTransactionRangeCompare.bind(data.dateRangeModel);
+            gmStatisticTransactionRangeCompare.bind(data.pDateRangeModel);
             gmStatisticTransactionRangeCompare.setVisibility(View.VISIBLE);
         }
     }

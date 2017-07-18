@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
 
 /**
@@ -24,6 +25,8 @@ public class GMDateRangeView extends RelativeLayout {
     private int circleGreen = R.drawable.circle_green;
     @DrawableRes
     private int circleGrey = R.drawable.circle_grey;
+
+    private String[] monthNamesAbrev;
 
     public GMDateRangeView(Context context) {
         super(context);
@@ -45,18 +48,22 @@ public class GMDateRangeView extends RelativeLayout {
         dateRangePercentageDotImage = (ImageView) view.findViewById(R.id.date_range_percentage_dot_image);
         dateRangePercentageDotText = (TextView) view.findViewById(R.id.date_range_percentage_dot_text);
         dateRangePercentageDotImage.setVisibility(View.GONE);
+
+        monthNamesAbrev = getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
     public void bind(@Nullable GMDateRangeDateViewModel data) {
-        // currently not used
         if (data == null) {
             dateRangePercentageDotText.setVisibility(View.GONE);
             dateRangePercentageDotImage.setVisibility(View.GONE);
         } else {
+            String startDate = GoldMerchantDateUtils.getDateWithoutYear(GoldMerchantDateUtils.getDateFormatForInput(data.getStartDate()), monthNamesAbrev);
+            String endDate = GoldMerchantDateUtils.getDateWithYear(GoldMerchantDateUtils.getDateFormatForInput(data.getEndDate()), monthNamesAbrev);
+
             String dateRangeFormatString = getContext().getString(
                     R.string.gold_merchant_date_range_format_text,
-                    data.getStartDate().getModel2(),
-                    data.getEndDate().getModel2());
+                    startDate,
+                    endDate);
 
             dateRangePercentageDotText.setText(dateRangeFormatString);
             dateRangePercentageDotText.setVisibility(View.VISIBLE);
