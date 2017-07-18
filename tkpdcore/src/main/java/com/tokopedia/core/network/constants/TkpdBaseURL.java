@@ -42,6 +42,7 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
@@ -567,7 +568,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
-        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1/display/shops";
+        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
     }
 
     public static class Mojito {
@@ -747,10 +748,16 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
     }
 
+    public static class DigitalWebsite {
+        public static final String PATH_TRANSACTION_LIST = "order-list/";
+        public static final String PATH_PRODUCT_LIST = "products/";
+        public static final String PATH_SUBSCRIPTIONS = "subscribe/";
+    }
+
     public static class HadesCategory {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
-        public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+        public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
         public static final String FETCH_CATEGORIES = "/v1/categories?filter=type==tree";
     }
 

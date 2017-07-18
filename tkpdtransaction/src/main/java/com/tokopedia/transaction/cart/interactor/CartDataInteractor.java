@@ -370,12 +370,13 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void calculateKeroRates(String token,
+                                   String ut,
                                    final List<CartItem> cartItemList,
                                    KeroRatesListener listener) {
         List<Observable<CartRatesData>> cartItemObservableList = new ArrayList<>();
         for (int i = 0; i < cartItemList.size(); i++) {
-            if (cartItemList.get(i).getCartTotalError() < 1) {
-                cartItemObservableList.add(cartItemObservable(token, cartItemList.get(i))
+            if (isValidated(cartItemList, i)) {
+                cartItemObservableList.add(cartItemObservable(token, ut, cartItemList.get(i))
                         .flatMap(engineeredResposne(i, cartItemList)
                         ));
             }
@@ -386,6 +387,14 @@ public class CartDataInteractor implements ICartDataInteractor {
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(responseList(listener)));
         } else listener.onRatesFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
+    }
+
+    private boolean isValidated(List<CartItem> cartItemList, int i) {
+        return cartItemList.get(i).getCartTotalError() < 1
+                && (cartItemList.get(i).getCartErrorMessage1().isEmpty()
+                || cartItemList.get(i).getCartErrorMessage1().equals("0"))
+                && (cartItemList.get(i).getCartErrorMessage2().isEmpty()
+                || cartItemList.get(i).getCartErrorMessage2().equals("0"));
     }
 
     private Func1<Response<String>, Observable<CartRatesData>> engineeredResposne(
@@ -434,12 +443,12 @@ public class CartDataInteractor implements ICartDataInteractor {
         };
     }
 
-    private Observable<Response<String>> cartItemObservable(String token, CartItem cartItem) {
-        return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, cartItem));
+    private Observable<Response<String>> cartItemObservable(String token, String ut, CartItem cartItem) {
+        return keroAuthService.getApi().calculateShippingRate(keroRatesCartParam(token, ut, cartItem));
     }
 
-    private TKPDMapParam<String, String> keroRatesCartParam(String token, CartItem cartItem) {
-        return KeroppiParam.paramsKeroCart(token, cartItem);
+    private TKPDMapParam<String, String> keroRatesCartParam(String token, String ut, CartItem cartItem) {
+        return KeroppiParam.paramsKeroCart(token, ut, cartItem);
     }
 
     private boolean isInsuranced(CartItem cartItem) {

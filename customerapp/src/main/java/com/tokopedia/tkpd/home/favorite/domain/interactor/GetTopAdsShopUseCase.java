@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
@@ -21,6 +22,8 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
     static final String KEY_ITEM = "item";
     static final String KEY_SRC = "src";
     static final String KEY_PAGE = "page";
+    static final String KEY_USER_ID = "user_id";
+    static final String KEY_DEP_ID = "dep_id";
 
     static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
     static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
@@ -60,7 +63,6 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
         params.putString(GetTopAdsShopUseCase.KEY_ITEM,
                 GetTopAdsShopUseCase.TOPADS_ITEM_DEFAULT_VALUE);
         params.putString(KEY_SRC,SRC_FAV_SHOP_VALUE);
-
         return params;
     }
 }

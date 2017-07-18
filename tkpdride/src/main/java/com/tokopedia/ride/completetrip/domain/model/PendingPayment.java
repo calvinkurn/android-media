@@ -3,6 +3,11 @@ package com.tokopedia.ride.completetrip.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by alvarisi on 7/10/17.
  */
@@ -13,7 +18,7 @@ public class PendingPayment implements Parcelable {
     private String pendingAmount;
     private String balance;
     private String currencyCode;
-    private String topUpOptions;
+    private List<TokoCashProduct> topUpOptions;
     private String topupUrl;
 
     public PendingPayment() {
@@ -25,7 +30,12 @@ public class PendingPayment implements Parcelable {
         pendingAmount = in.readString();
         balance = in.readString();
         currencyCode = in.readString();
-        topUpOptions = in.readString();
+        if (in.readByte() == 0x01) {
+            topUpOptions = new ArrayList<>();
+            in.readList(topUpOptions, TokoCashProduct.class.getClassLoader());
+        } else {
+            topUpOptions = null;
+        }
         topupUrl = in.readString();
     }
 
@@ -65,11 +75,11 @@ public class PendingPayment implements Parcelable {
         this.currencyCode = currencyCode;
     }
 
-    public String getTopUpOptions() {
+    public List<TokoCashProduct> getTopUpOptions() {
         return topUpOptions;
     }
 
-    public void setTopUpOptions(String topUpOptions) {
+    public void setTopUpOptions(List<TokoCashProduct> topUpOptions) {
         this.topUpOptions = topUpOptions;
     }
 
@@ -109,7 +119,12 @@ public class PendingPayment implements Parcelable {
         parcel.writeString(pendingAmount);
         parcel.writeString(balance);
         parcel.writeString(currencyCode);
-        parcel.writeString(topUpOptions);
+        if (topUpOptions == null) {
+            parcel.writeByte((byte) (0x00));
+        } else {
+            parcel.writeByte((byte) (0x01));
+            parcel.writeList(topUpOptions);
+        }
         parcel.writeString(topupUrl);
     }
 }
