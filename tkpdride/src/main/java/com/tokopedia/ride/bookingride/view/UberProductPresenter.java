@@ -181,8 +181,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 if (visitable instanceof RideProductViewModel) {
                     RideProductViewModel rideProductViewModel = RideProductViewModel.copy((RideProductViewModel) visitable);
                     rideProductViewModel.setTimeEstimate(null);
+                    rideProductViewModel.setProductPriceFmt(null);
                     if (destination != null) {
-                        rideProductViewModel.setProductPriceFmt(null);
                         rideProductViewModel.setBaseFare("");
                         rideProductViewModel.setSurgePrice(false);
                     }
