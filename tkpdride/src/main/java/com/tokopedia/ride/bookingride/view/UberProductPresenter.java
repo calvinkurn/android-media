@@ -57,6 +57,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void actionGetRideProducts(PlacePassViewModel source) {
+        actionSetProductListWhenItsAvailable(null);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
         requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
@@ -113,6 +114,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void actionGetRideProducts(final PlacePassViewModel source, final PlacePassViewModel destination) {
+        actionSetProductListWhenItsAvailable(destination);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
         requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));

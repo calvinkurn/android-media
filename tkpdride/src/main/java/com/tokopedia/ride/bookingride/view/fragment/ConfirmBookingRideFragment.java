@@ -118,6 +118,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         confirmBookingPassData = getArguments().getParcelable(EXTRA_PASS_DATA);
+        confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
         initView(view);
 
         presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
@@ -177,7 +178,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             mApplyPromoLayout.setVisibility(View.GONE);
             mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
         }
-
         seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
     }
 
@@ -288,8 +288,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         if (isRemoving()) {
             return;
         }
-
-        confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
         confirmBookingViewModel.setFareId(fareId);
         confirmBookingViewModel.setPriceFmt(display);
         confirmBookingViewModel.setPrice(price);
