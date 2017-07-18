@@ -66,6 +66,7 @@ import java.util.Map;
  * Created by hangnadi on 8/19/15.
  */
 public class ReputationProductFragment extends BasePresenterFragment<ReputationProductViewFragmentPresenter> implements ReputationProductFragmentView {
+
     public static final int SMILEY_BAD = -1;
     public static final int SMILEY_DEFAULT = 0;
     public static final int SMILEY_NETRAL = 1;

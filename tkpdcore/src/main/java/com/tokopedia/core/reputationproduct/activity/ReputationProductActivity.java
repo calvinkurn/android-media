@@ -1,22 +1,41 @@
 package com.tokopedia.core.reputationproduct.activity;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.PersistableBundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.reputationproduct.fragment.ReputationProductFragment;
-import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewPresenter;
-import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewPresenterImpl;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 /**
  * Created by hangnadi on 7/7/15.
  */
-public class ReputationProductActivity extends BasePresenterActivity<ReputationProductViewPresenter> {
+public class ReputationProductActivity extends BasePresenterActivity {
+
+    public static final String EXTRA_PRODUCT_ID = "product_id";
+    public static final String EXTRA_SHOP_ID = "shop_id";
+    public static final String EXTRA_DATA_MODEL = "data_model";
+
+
+    private String productId;
+    private String shopId;
+    private ReviewProductModel dataModel;
+
+
+    public static Intent getCallingIntent(Context context, String productId, String shopId, ReviewProductModel dataModel) {
+        Intent callingIntent = new Intent(context, ReputationProductActivity.class);
+        callingIntent.putExtra(EXTRA_PRODUCT_ID, productId);
+        callingIntent.putExtra(EXTRA_SHOP_ID, shopId);
+        callingIntent.putExtra(EXTRA_DATA_MODEL, (Parcelable) dataModel);
+        return callingIntent;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -35,7 +54,6 @@ public class ReputationProductActivity extends BasePresenterActivity<ReputationP
 
     @Override
     protected void initialPresenter() {
-        presenter = new ReputationProductViewPresenterImpl();
     }
 
     @Override
@@ -45,9 +63,15 @@ public class ReputationProductActivity extends BasePresenterActivity<ReputationP
 
     @Override
     protected void initView() {
+        Fragment fragment;
+        if (getFragmentManager().findFragmentByTag(ReputationProductFragment.class.getSimpleName()) == null) {
+            fragment = getFragment();
+        } else {
+            fragment = getFragmentManager().findFragmentByTag(ReputationProductFragment.class.getSimpleName());
+        }
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment, getFragment())
+                .replace(R.id.fragment, fragment, ReputationProductFragment.class.getSimpleName())
                 .commit();
     }
 
@@ -76,15 +100,15 @@ public class ReputationProductActivity extends BasePresenterActivity<ReputationP
     }
 
     private String getIntentProductID() {
-        return getIntent().getStringExtra("product_id");
+        return getIntent().getStringExtra(EXTRA_PRODUCT_ID);
     }
 
     private String getIntentShopID() {
-        return getIntent().getStringExtra("shop_id");
+        return getIntent().getStringExtra(EXTRA_SHOP_ID);
     }
 
     private ReviewProductModel getIntentModelData() {
-        return (ReviewProductModel) getIntent().getParcelableExtra("data_model");
+        return (ReviewProductModel) getIntent().getParcelableExtra(EXTRA_DATA_MODEL);
     }
 
 }
