@@ -27,9 +27,8 @@ public class GMStatClearCacheUseCase extends CompositeUseCase<Boolean> {
         this.gmStatRepository = gmStatRepository;
     }
 
-    public static RequestParams createRequestParam(long startDate, long endDate) {
-        RequestParams params = RequestParams.create();
-        return params;
+    public static RequestParams createRequestParam() {
+        return RequestParams.create();
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cache.GMStatCache;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatCloud;
@@ -15,11 +17,17 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * @author normansyahputa on 5/18/17.
@@ -49,15 +57,57 @@ public class GMStatDataSource {
         }
     }
 
-    public Observable<GetTransactionTable> getTransactionTable(long startDate, long endDate) {
+    public Observable<GetTransactionTable> getTransactionTable(long startDate, long endDate,
+                                                               int page, int pageSize,
+                                                               @GMTransactionTableSortType final int sortType,
+                                                               @GMTransactionTableSortBy final int sortBy) {
+        // only cache this if it load all data.
         Observable<GetTransactionTable> getTransactionTableObservable = gmStatCache.getTransactionTable(startDate, endDate);
         if (getTransactionTableObservable == null) {
-            return gmStatCloud.getTransactionTable(startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetTransactionTable>())
-                    .doOnNext(getSaveAction(new TypeToken<GetTransactionTable>() {}.getType(),
-                            GMStatActionType.TRANS_TABLE, startDate, endDate));
-        } else {
+            getTransactionTableObservable = gmStatCloud.getTransactionTable(startDate, endDate,page, pageSize, sortType, sortBy)
+                    .map(new SimpleDataResponseMapper<GetTransactionTable>());
+            // if it load all data, save to cache, else, just remove the cache
+            // never save cache when it load per page only.
+            if (page == -1 && pageSize == -1) {
+                getTransactionTableObservable.doOnNext(getSaveAction(new TypeToken<GetTransactionTable>() {
+                        }.getType(),
+                        GMStatActionType.TRANS_TABLE, startDate, endDate));
+            } else {
+                clearTransactionTableCache();
+            }
             return getTransactionTableObservable;
+        } else {
+            // this cache is for performance, so we don't need to retrieve the data from server again. just sort in local.
+            // If there is cache for the transaction table data, sort the observable based on the type and sortby
+            if (sortType < 0){ // we have no sortType (asc, desc)
+                return getTransactionTableObservable;
+            }
+            final int ascendingSign = (sortType == GMTransactionTableSortType.ASCENDING)? 1 : -1;
+            return getTransactionTableObservable.map(new Func1<GetTransactionTable, GetTransactionTable>() {
+                @Override
+                public GetTransactionTable call(GetTransactionTable getTransactionTable) {
+                    List<GetTransactionTable.Cell> sortedList = new ArrayList<>();
+                    Collections.copy(sortedList, getTransactionTable.getCells());
+                    Collections.sort(sortedList, new Comparator<GetTransactionTable.Cell>() {
+                        @Override
+                        public int compare(GetTransactionTable.Cell o1, GetTransactionTable.Cell o2) {
+                            switch (sortBy) {
+                                case GMTransactionTableSortBy.DELIVERED_AMT:
+                                    return ascendingSign * (o1.getDeliveredAmt() - o2.getDeliveredAmt());
+                                case GMTransactionTableSortBy.ORDER_SUM:
+                                    return ascendingSign * (o1.getOrderSum() - o2.getOrderSum());
+                                case GMTransactionTableSortBy.TRANS_SUM:
+                                    return ascendingSign * (o1.getTransSum() - o2.getTransSum());
+                                default:
+                                    return 0;
+
+                            }
+                        }
+                    });
+                    getTransactionTable.setCells(sortedList);
+                    return getTransactionTable;
+                }
+            });
         }
     }
 
@@ -123,6 +173,10 @@ public class GMStatDataSource {
 
     public Observable<Boolean> clearAllCache(){
         return gmStatCache.clearAllCache();
+    }
+
+    public Observable<Boolean> clearTransactionTableCache(){
+        return gmStatCache.clearTransactionTableCache();
     }
 
     public <T> Action1<T> getSaveAction(final Type type,

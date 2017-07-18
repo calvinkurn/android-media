@@ -40,8 +40,8 @@ public class GMStatGetShopCategoryUseCase extends CompositeUseCase<GetShopCatego
 
     @Override
     public Observable<GetShopCategory> createObservable(RequestParams requestParams) {
-        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
-        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
+        final long startDate = requestParams.getLong(START_DATE, -1);
+        final long endDate = requestParams.getLong(END_DATE, -1);
         return gmStatRepository.getShopCategory(startDate, endDate);
     }
 }

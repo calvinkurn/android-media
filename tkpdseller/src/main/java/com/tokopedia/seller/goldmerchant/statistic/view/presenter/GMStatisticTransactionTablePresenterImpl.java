@@ -21,7 +21,7 @@ import rx.Subscriber;
  */
 public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransactionTablePresenter {
     private static final String TAG = "GMStatisticTransactionT";
-    GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
+    private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
 
 
     public GMStatisticTransactionTablePresenterImpl(GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase) {
@@ -29,7 +29,13 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
     }
 
     public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
-        RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(startDate.getTime(), endDate.getTime());
+        RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(
+                startDate.getTime(),
+                endDate.getTime(),
+                -1, // TODO page
+                -1, // TODO pagesize, leave to -1 if we want to load all data
+                sortType,
+                sortBy);
         gmStatGetTransactionTableUseCase.execute(requestParam, new Subscriber<GetTransactionTableModel>() {
             @Override
             public void onCompleted() {
@@ -71,5 +77,11 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
         return gmStatisticTransactionTableModels;
 
 
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        gmStatGetTransactionTableUseCase.unsubscribe();
     }
 }

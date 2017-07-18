@@ -6,6 +6,8 @@ import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 
@@ -30,6 +32,11 @@ public class GMStatCloud {
     public static final String SHOP_ID = "shop_id";
     public static final String S_DATE = "sDate";
     public static final String E_DATE = "eDate";
+    public static final String SORT_TYP = "sort_type";
+    public static final String SORT_BY = "sort_by";
+    public static final String PAGE = "page";
+    public static final String PAGE_SIZE = "page_size";
+
     private GMStatApi gmStatApi;
     private SessionHandler sessionHandler;
 
@@ -45,9 +52,23 @@ public class GMStatCloud {
         return gmStatApi.getTransactionGraph(shopId, param);
     }
 
-    public Observable<Response<GetTransactionTable>> getTransactionTable(long startDate, long endDate) {
+    public Observable<Response<GetTransactionTable>> getTransactionTable(long startDate, long endDate,
+                                                                         int page, int pageSize,
+                                                                         @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
         String shopId = sessionHandler.getShopID();
         Map<String, String> param = generateStartEndDateMap(startDate, endDate);
+        if (sortType > -1) {
+            param.put(SORT_TYP, String.valueOf(sortType));
+        }
+        if (sortBy > -1) {
+            param.put(SORT_BY, String.valueOf(sortBy));
+        }
+        if (sortType > -1) {
+            param.put(PAGE, String.valueOf(page));
+        }
+        if (sortBy > -1) {
+            param.put(PAGE_SIZE, String.valueOf(pageSize));
+        }
         return gmStatApi.getTransactionTable(shopId, param);
     }
 
