@@ -1,7 +1,13 @@
 package com.tokopedia.core.analytics.fingerprint;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -13,8 +19,12 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Herdi_WORK on 21.06.17.
@@ -106,5 +116,36 @@ public class Utilities {
         int height = metrics.heightPixels;
 
         return width + "," + height;
+    }
+
+    public static String getSSID(Context context) {
+        String ssid = null;
+        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        if (networkInfo != null) {
+            if (networkInfo.isConnected()) {
+                if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                    final WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
+                        ssid = connectionInfo.getSSID();
+                    }
+                }
+            }
+        }
+        return ssid;
+    }
+
+    public static String getCarrierName(Context context){
+        TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        String carrierName = manager.getNetworkOperatorName();
+        return carrierName;
+    }
+
+    public static String getTimeZoneOffset(){
+        Calendar mCalendar = new GregorianCalendar();
+        TimeZone mTimeZone = mCalendar.getTimeZone();
+        int mGMTOffset = mTimeZone.getRawOffset();
+        return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
     }
 }
