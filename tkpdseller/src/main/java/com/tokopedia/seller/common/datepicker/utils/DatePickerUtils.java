@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Nathaniel on 2/3/2017.
@@ -67,10 +68,17 @@ public class DatePickerUtils {
         if (startDate == null || endDate == null) {
             return "";
         }
+        return getRangeDateFormatted(context, startDate.getTime(), endDate.getTime());
+    }
+
+    public static String getRangeDateFormatted(Context context, long startDate, long endDate) {
+        if (startDate <= 0 || endDate <= 0) {
+            return "";
+        }
         Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(startDate);
+        startCalendar.setTimeInMillis(startDate);
         Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endDate);
+        endCalendar.setTimeInMillis(endDate);
         String startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
         String endDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
         if (startDateFormatted.equalsIgnoreCase(endDateFormatted)) {
@@ -116,5 +124,14 @@ public class DatePickerUtils {
 
     public static boolean isDateEqual(String dateFormat, long startDate, long endDate, long comparedStartDate, long comparedEndDate) {
         return isDateEqual(dateFormat, startDate, comparedStartDate) && isDateEqual(dateFormat, endDate, comparedEndDate);
+    }
+
+    public static long getDateDiff(long date1, long date2, TimeUnit timeUnit) {
+        return getDateDiff(new Date(date1), new Date(date2), timeUnit);
+    }
+
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillis = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillis, TimeUnit.MILLISECONDS);
     }
 }

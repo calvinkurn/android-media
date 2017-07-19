@@ -8,10 +8,9 @@ public class DatePickerDomainModel {
 
     private long startDate;
     private long endDate;
-    private long comparedStartDate;
-    private long comparedEndDate;
     private int datePickerType;
     private int datePickerSelection;
+    private boolean compareDate;
 
     public long getStartDate() {
         return startDate;
@@ -27,22 +26,6 @@ public class DatePickerDomainModel {
 
     public void setEndDate(long endDate) {
         this.endDate = endDate;
-    }
-
-    public long getComparedStartDate() {
-        return comparedStartDate;
-    }
-
-    public void setComparedStartDate(long comparedStartDate) {
-        this.comparedStartDate = comparedStartDate;
-    }
-
-    public long getComparedEndDate() {
-        return comparedEndDate;
-    }
-
-    public void setComparedEndDate(long comparedEndDate) {
-        this.comparedEndDate = comparedEndDate;
     }
 
     public int getDatePickerType() {
@@ -61,16 +44,23 @@ public class DatePickerDomainModel {
         this.datePickerSelection = datePickerSelection;
     }
 
+    public boolean isCompareDate() {
+        return compareDate;
+    }
+
+    public void setCompareDate(boolean compareDate) {
+        this.compareDate = compareDate;
+    }
+
     public DatePickerDomainModel() {
 
     }
 
     public DatePickerDomainModel(DatePickerDomainModel datePickerDomainModel) {
-        this.startDate = datePickerDomainModel.startDate;
-        this.endDate = datePickerDomainModel.endDate;
-        this.comparedStartDate = datePickerDomainModel.comparedStartDate;
-        this.comparedEndDate = datePickerDomainModel.comparedEndDate;
-        this.datePickerType = datePickerDomainModel.datePickerType;
-        this.datePickerSelection = datePickerDomainModel.datePickerSelection;
+        this.startDate = datePickerDomainModel.getStartDate();
+        this.endDate = datePickerDomainModel.getEndDate();
+        this.compareDate = datePickerDomainModel.isCompareDate();
+        this.datePickerType = datePickerDomainModel.getDatePickerType();
+        this.datePickerSelection = datePickerDomainModel.getDatePickerSelection();
     }
 }

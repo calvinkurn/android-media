@@ -44,6 +44,12 @@ public class PeriodRangeModel implements Parcelable {
 
     }
 
+    public PeriodRangeModel(long startDate, long endDate) {
+        this();
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public PeriodRangeModel(long startDate, long endDate, String label) {
         this();
         this.startDate = startDate;
@@ -68,9 +74,9 @@ public class PeriodRangeModel implements Parcelable {
 
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
-        dest.writeLong(this.startDate);
-        dest.writeLong(this.endDate);
-        dest.writeString(this.label);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(label);
     }
 
     protected PeriodRangeModel(android.os.Parcel in) {

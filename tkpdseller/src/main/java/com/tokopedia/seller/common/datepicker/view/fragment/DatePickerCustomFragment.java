@@ -1,5 +1,6 @@
 package com.tokopedia.seller.common.datepicker.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -22,21 +23,14 @@ import java.util.Calendar;
 
 public class DatePickerCustomFragment extends TkpdFragment {
 
-    public interface Callback {
-
-        void onDateSubmitted(long startDate, long endDate);
-
-    }
-
     private DatePickerLabelView startDatePickerLabelView;
     private DatePickerLabelView endDatePickerLabelView;
     private Button submitButton;
-    private long startDate;
-    private long endDate;
+    protected long startDate;
+    protected long endDate;
     private long minStartDate;
     private long maxEndDate;
     private int maxDateRange;
-    private Callback callback;
 
     public static DatePickerCustomFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         DatePickerCustomFragment fragment = new DatePickerCustomFragment();
@@ -48,10 +42,6 @@ public class DatePickerCustomFragment extends TkpdFragment {
         bundle.putInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, maxDateRange);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
     }
 
     @Nullable
@@ -90,7 +80,7 @@ public class DatePickerCustomFragment extends TkpdFragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveDate();
+                submitDate();
             }
         });
         updateDateView();
@@ -170,17 +160,18 @@ public class DatePickerCustomFragment extends TkpdFragment {
         });
     }
 
-    private void updateDateView() {
+    protected void updateDateView() {
         startDatePickerLabelView.setContent(DatePickerUtils.getReadableDate(getActivity(), startDate));
         endDatePickerLabelView.setContent(DatePickerUtils.getReadableDate(getActivity(), endDate));
     }
 
-    public void saveDate() {
-        if (callback != null) {
-            callback.onDateSubmitted(startDate, endDate);
-        } else {
-            getActivity().finish();
-        }
+    public void submitDate() {
+        Intent intent = new Intent();
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate);
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
+        getActivity().setResult(DatePickerConstant.RESULT_CODE, intent);
+        getActivity().finish();
     }
 
     @Override

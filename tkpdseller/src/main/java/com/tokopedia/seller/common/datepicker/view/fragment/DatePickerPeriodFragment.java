@@ -1,5 +1,6 @@
 package com.tokopedia.seller.common.datepicker.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,20 +22,9 @@ import java.util.ArrayList;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerPeriodFragment extends TkpdFragment {
-
-    public interface Callback {
-
-        void onDateSubmitted(int selectionPeriod, long startDate, long endDate);
-
-    }
+public class DatePickerPeriodFragment extends TkpdFragment implements DatePickerPeriodAdapter.Callback {
 
     private DatePickerPeriodAdapter adapter;
-    private Callback callback;
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
 
     public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();
@@ -63,6 +53,7 @@ public class DatePickerPeriodFragment extends TkpdFragment {
             }
         });
         adapter = new DatePickerPeriodAdapter();
+        adapter.setCallback(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -79,17 +70,24 @@ public class DatePickerPeriodFragment extends TkpdFragment {
         adapter.setData(periodRangeModelList);
     }
 
-    private void submitDate() {
-        if (callback != null) {
-            PeriodRangeModel selectedDate = adapter.getSelectedDate();
-            callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
-        } else {
-            getActivity().finish();
-        }
+    public void submitDate() {
+        Intent intent = new Intent();
+        PeriodRangeModel selectedDate = adapter.getSelectedDate();
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, selectedDate.getStartDate());
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, selectedDate.getEndDate());
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, adapter.getSelectedPosition());
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
+        getActivity().setResult(DatePickerConstant.RESULT_CODE, intent);
+        getActivity().finish();
     }
 
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onItemClicked(PeriodRangeModel periodRangeModel) {
+
     }
 }

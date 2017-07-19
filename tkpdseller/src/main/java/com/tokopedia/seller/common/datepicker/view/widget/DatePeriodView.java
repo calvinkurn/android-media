@@ -27,8 +27,8 @@ public class DatePeriodView extends BaseCustomView {
     private String title;
     private String content;
     private boolean selected;
-    private Date startDate;
-    private Date endDate;
+    private long startDate;
+    private long endDate;
 
     public DatePeriodView(Context context) {
         super(context);
@@ -80,7 +80,7 @@ public class DatePeriodView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setContent(Date startDate, Date endDate) {
+    public void setDate(long startDate, long endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
         contentTextView.setText(DatePickerUtils.getRangeDateFormatted(contentTextView.getContext(), startDate, endDate));

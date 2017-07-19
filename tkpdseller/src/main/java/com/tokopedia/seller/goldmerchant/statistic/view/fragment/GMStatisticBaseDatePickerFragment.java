@@ -3,6 +3,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 import android.content.Intent;
 
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
 
 /**
@@ -10,6 +11,12 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
  */
 
 public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFragment {
+
+    @Override
+    protected void onDateSelected(Intent intent) {
+        super.onDateSelected(intent);
+        datePickerViewModel.setCompareDate(intent.getBooleanExtra(DatePickerConstant.EXTRA_COMPARE_DATE, false));
+    }
 
     @Override
     public Intent getDatePickerIntent() {
