@@ -280,7 +280,6 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d(TAG, "URL redirect " + url);
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 callbackPaymentSucceed();
@@ -411,11 +410,9 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
             return true;
         }
     }
