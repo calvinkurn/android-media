@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -274,11 +275,13 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (BuildConfig.DEBUG) Log.d(TAG, "redirect url = " + url);
-            if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
+            if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
+                    url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 callbackPaymentSucceed();
                 return true;
-            } else if (url.contains(paymentPassData.getCallbackFailedUrl())) {
+            } else if (!TextUtils.isEmpty(paymentPassData.getCallbackFailedUrl()) &&
+                    url.contains(paymentPassData.getCallbackFailedUrl())) {
                 view.stopLoading();
                 callbackPaymentFailed();
                 return true;
