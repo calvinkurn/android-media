@@ -87,7 +87,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        // inflate the layout using the cloned inflater, not default inflater
         View parentView = inflater.inflate(R.layout.fragment_profile_completion, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         setHasOptionsMenu(true);
@@ -109,7 +108,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private Drawable getDraw(){
         TextDrawable drawable = new TextDrawable(getActivity());
         drawable.setText(getResources().getString(R.string.skip_form));
-        drawable.setTextColor(R.color.black_70);
+        drawable.setTextColor(R.color.black_70b);
         return drawable;
     }
 
@@ -144,13 +143,11 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        presenter.onSaveDataBeforeRotate(outState);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-//        presenter.onViewStateRestored(savedInstanceState);
     }
 
     protected void initialVar() {
@@ -244,10 +241,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private void setViewEnabled() {
         progress.setVisibility(View.GONE);
         proceed.setVisibility(View.VISIBLE);
-        proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
-        proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        canProceed(true);
         proceed.setText(getString(R.string.continue_form));
-        proceed.setEnabled(true);
         skip.setEnabled(true);
     }
 

@@ -92,8 +92,8 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         this.view.canProceed(false);
 
         Drawable drawable = MethodChecker.getDrawable(getActivity(), R.drawable.chevron_thin_down);
-        drawable.setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_hint), PorterDuff.Mode.SRC_IN);
-        double size = drawable.getIntrinsicWidth()*0.2;
+        drawable.setColorFilter(MethodChecker.getColor(getActivity(), R.color.warm_grey), PorterDuff.Mode.SRC_IN);
+        double size = drawable.getIntrinsicWidth()*0.3;
         drawable.setBounds(0, 0, (int)(size), (int)(size));
 
         month.setCompoundDrawables(null, null, drawable, null);

@@ -1,30 +1,16 @@
 package com.tokopedia.profilecompletion.view.presenter;
 
-import android.os.Bundle;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.RequestOtpModel;
-import com.tokopedia.otp.data.factory.OtpSourceFactory;
-import com.tokopedia.otp.data.repository.OtpRepositoryImpl;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
-import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
-import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.data.repository.MsisdnRepositoryImpl;
 import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
-import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
-import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
-import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.R;
 
 import java.net.UnknownHostException;
@@ -42,7 +28,6 @@ public class ProfileCompletionPhoneVerificationPresenter
         implements ProfileCompletionPhoneVerificationContract.Presenter {
 
     private static final String OTP_TYPE_PHONE_NUMBER_VERIFICATION = "11";
-    private static final String TOKEN_BEARER = "Bearer ";
 
     private RequestOtpUseCase requestOtpUseCase;
     private ValidateOtpUseCase validateOtpUseCase;
