@@ -191,8 +191,8 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotToProductDetail(Context context) {
-        Intent intent = ProductInfoActivity.createInstance(context);
-        context.startActivity(intent);
+//        Intent intent = ProductInfoActivity.createInstance(context);
+//        context.startActivity(intent);
     }
 
     @Override
@@ -202,26 +202,26 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToProductDetail(Context context, ProductPass productPass) {
-        Intent intent = ProductInfoActivity.createInstance(context, productPass);
-        context.startActivity(intent);
+//        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+//        context.startActivity(intent);
     }
 
     @Override
     public void goToProductDetail(Context context, ShareData shareData) {
-        Intent intent = ProductInfoActivity.createInstance(context, shareData);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+//        Intent intent = ProductInfoActivity.createInstance(context, shareData);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
+//        intent.putExtras(bundle);
+//        context.startActivity(intent);
     }
 
     @Override
     public void goToAddProductDetail(Context context) {
-        Intent intent = ProductInfoActivity.createInstance(context);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+//        Intent intent = ProductInfoActivity.createInstance(context);
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
+//        intent.putExtras(bundle);
+//        context.startActivity(intent);
     }
 
     @Override

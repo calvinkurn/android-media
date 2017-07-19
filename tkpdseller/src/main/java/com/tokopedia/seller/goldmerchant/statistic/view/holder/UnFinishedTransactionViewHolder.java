@@ -2,10 +2,12 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
@@ -85,12 +87,19 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
         setUnfinishedTransCardView();
         processView(data);
 
-        double diffHoldCount = Math.floor((data.getOnHoldCount() / data.getTotalTransactionCount() * 100) + 0.5);
+        if (data == null || data.getTotalTransactionCount() == 0) {
+            gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.black_12));
+            gmStatisticTransDonutProgress.setProgress(0);
+            gmStatisticTransDonutProgressLayout.setAmount(context.getString(R.string.rupiah_format_text, String.valueOf(0)));
+        } else {
+            long totalTransactionCount = data.getTotalTransactionCount();
+            gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.tkpd_dark_red));
+            double diffHoldCount = Math.floor((data.getOnHoldCount() / totalTransactionCount * 100) + 0.5);
 
-        gmStatisticTransDonutProgress.setProgress((float) diffHoldCount);
-
-        gmStatisticTransDonutProgressLayout.setTitle(context.getString(R.string.total_trans_text));
-        gmStatisticTransDonutProgressLayout.setAmount(Long.toString(data.getTotalTransactionCount()));
+            gmStatisticTransDonutProgress.setProgress((float) diffHoldCount);
+            gmStatisticTransDonutProgressLayout.setAmount(context.getString(R.string.rupiah_format_text,
+                    KMNumbers.formatDecimalString(totalTransactionCount)));
+        }
 
     }
 }

@@ -138,4 +138,11 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
         }
         return isAllZero;
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        useCase.unsubscribe();
+        topadsUseCase.unSubscribe();
+    }
 }

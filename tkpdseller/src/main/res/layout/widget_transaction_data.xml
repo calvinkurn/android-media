@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/transaction_data_container_upper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/white"
     android:paddingTop="@dimen/gmstat_padding_item_top_transaction">
 
@@ -172,7 +173,6 @@
         android:id="@+id/separator_2_transaction_data"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmstat_padding_item_left_right"
-        android:layout_below="@id/rl_transaction_data"
         android:orientation="vertical" />
 
 
@@ -180,14 +180,10 @@
         android:id="@+id/separator_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/separator_2_transaction_data"
         android:layout_marginTop="6dp"
         android:background="#1E000000" />
 
     <include
-        layout="@layout/widget_gm_see_detail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/separator_2" />
+        layout="@layout/widget_gm_see_detail" />
 
-</RelativeLayout>
+</LinearLayout>
