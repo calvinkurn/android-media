@@ -13,7 +13,7 @@ import rx.Subscriber;
 
 public class GetNewOrderPresenterImpl extends GetNewOrderPresenter {
     public static final String PAGE = "1";
-    public static final String PER_PAGE = "3";
+    public static final String PER_PAGE = "10";
     private final GetNewOrderWidgetUseCase getNewOrderUseCase;
 
     public GetNewOrderPresenterImpl(GetNewOrderWidgetUseCase getNewOrderUseCase) {

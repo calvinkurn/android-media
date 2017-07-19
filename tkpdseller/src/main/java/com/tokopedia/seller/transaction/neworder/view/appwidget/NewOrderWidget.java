@@ -36,7 +36,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                 bundle.putParcelableArrayList(ListOrderViewServiceWidget.DATA_LIST_ORDER, new ArrayList<>(dataOrderViewWidget.getDataOrderDetailViews()));
                 intent.putExtra(ListOrderViewServiceWidget.BUNDLE_ORDER, bundle);
                 views.setRemoteAdapter(R.id.list_order, intent);
-//            views.setEmptyView(R.id.list_order, R.id.container);
+                views.setEmptyView(R.id.list_order, R.id.image_no_result);
                 views.setTextViewText(R.id.count_order, String.valueOf(dataOrderViewWidget.getDataOrderCount()));
                 Intent intentOrder = ActivitySellingTransaction.createIntent(context, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOrder, 0);
