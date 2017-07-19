@@ -189,6 +189,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
 
                 }
                 Log.d("Item click", item.getTitle() + " findSelection : " + sortBy);
+                resetSelectionSortBy(sortByIndexSelection);
                 searchData();
                 showingSimpleDialog = false;
             }
@@ -209,6 +210,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
                         break;
                 }
                 Log.d("Item click", menuItem.getTitle() + " findSelection : " + sortType);
+                resetSelectionSortType(sortTypeIndexSelection);
                 searchData();
                 showingSimpleDialog = false;
             }
@@ -219,7 +221,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         showingSimpleDialog = true;
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.gold_merchant_transaction_summary_text));
+                .addTitleItem(getString(R.string.filter));
 
         for (int i = 0; i < text.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
@@ -239,6 +241,18 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
             }
         });
         bottomSheetDialog.show();
+    }
+
+    private void resetSelectionSortType(int newSelection) {
+        for (int i = 0; i < sortTypeSelections.length; i++) {
+            sortTypeSelections[i] = i == newSelection;
+        }
+    }
+
+    private void resetSelectionSortBy(int newSelection) {
+        for (int i = 0; i < sortBySelections.length; i++) {
+            sortBySelections[i] = i == newSelection;
+        }
     }
 
     @Override

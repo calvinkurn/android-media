@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottomsheet_list_item_height"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:gravity="center_vertical"
@@ -28,7 +30,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/colorSheetText"
+            android:textColor="@color/black_70"
             android:textSize="@dimen/bottomsheet_item_textsize"
             tools:text="Test 1 2 3" />
     </LinearLayout>
@@ -38,5 +40,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
-        tools:src="@drawable/ic_group_magnifier" />
+        android:src="@drawable/ic_check" />
 </FrameLayout>

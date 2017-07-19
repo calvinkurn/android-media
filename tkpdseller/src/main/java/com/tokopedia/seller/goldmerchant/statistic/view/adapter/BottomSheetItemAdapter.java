@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.adapter;
 
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,9 @@ public class BottomSheetItemAdapter extends com.tokopedia.tkpdlib.bottomsheetbui
     @Override
     public int getItemViewType(int position) {
         BottomSheetItem item = mItems.get(position);
-
         if (item instanceof CheckedBottomSheetMenuItem) {
             return TYPE_CHECKED_ITEM;
         }
-
         return super.getItemViewType(position);
     }
 
@@ -59,19 +58,19 @@ public class BottomSheetItemAdapter extends com.tokopedia.tkpdlib.bottomsheetbui
         }
     }
 
-    public class CheckedItemViewHolder extends ItemViewHolder implements View.OnClickListener {
+    public class CheckedItemViewHolder extends ItemViewHolder {
 
         private final AppCompatImageView checkedImage;
 
         public CheckedItemViewHolder(View itemView) {
             super(itemView);
-
             checkedImage = (AppCompatImageView) itemView.findViewById(R.id.checked_image);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            super.onClick(v);
         }
 
         public void setData(CheckedBottomSheetMenuItem item) {
@@ -79,7 +78,6 @@ public class BottomSheetItemAdapter extends com.tokopedia.tkpdlib.bottomsheetbui
 
             if (item.isChecked()) {
                 checkedImage.setVisibility(View.VISIBLE);
-                checkedImage.setImageResource(R.drawable.ic_delete_keyword);
             } else {
                 checkedImage.setVisibility(View.GONE);
             }

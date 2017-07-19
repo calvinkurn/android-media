@@ -11,5 +11,5 @@
     android:paddingLeft="@dimen/bottomsheet_horizontal_margin"
     android:paddingRight="@dimen/bottomsheet_horizontal_margin"
     android:paddingStart="@dimen/bottomsheet_horizontal_margin"
-    android:textColor="@color/colorSheetTitle"
+    android:textColor="@color/colorSheetText"
     android:textSize="@dimen/bottomsheet_title_size" />

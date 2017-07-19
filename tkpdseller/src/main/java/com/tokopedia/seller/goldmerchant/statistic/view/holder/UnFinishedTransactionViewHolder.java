@@ -73,7 +73,7 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
         onHoldAmountHelper.bind(unFinishedTransViewHelperModel);
 
         unFinishedTransViewHelperModel = new UnFinishedTransViewHelperModel();
-        unFinishedTransViewHelperModel.drawableRes = R.drawable.circle_grey;
+        unFinishedTransViewHelperModel.drawableRes = R.drawable.circle_red;
         unFinishedTransViewHelperModel.rightText = Long.toString(data.getResoCount());
         unFinishedTransViewHelperModel.leftText = context.getString(R.string.trans_in_res_center_text);
 
@@ -90,15 +90,14 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
         if (data == null || data.getTotalTransactionCount() == 0) {
             gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.black_12));
             gmStatisticTransDonutProgress.setProgress(0);
-            gmStatisticTransDonutProgressLayout.setAmount(context.getString(R.string.rupiah_format_text, String.valueOf(0)));
+            gmStatisticTransDonutProgressLayout.setAmount(String.valueOf(0));
         } else {
-            long totalTransactionCount = data.getTotalTransactionCount();
             gmStatisticTransDonutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(context, R.color.tkpd_dark_red));
-            double diffHoldCount = Math.floor((data.getOnHoldCount() / totalTransactionCount * 100) + 0.5);
+            double diffHoldCount = Math.floor((data.getOnHoldCount() / data.getTotalTransactionCount() * 100) + 0.5);
 
             gmStatisticTransDonutProgress.setProgress((float) diffHoldCount);
-            gmStatisticTransDonutProgressLayout.setAmount(context.getString(R.string.rupiah_format_text,
-                    KMNumbers.formatDecimalString(totalTransactionCount)));
+            gmStatisticTransDonutProgressLayout.setAmount(
+                    KMNumbers.formatDecimalString(data.getTotalTransactionCount()));
         }
 
     }
