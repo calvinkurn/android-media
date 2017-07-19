@@ -8,38 +8,65 @@ public class FingerPrint {
 
     private String deviceID;
     private String deviceName;
-    private String deviceManufacturer;
-    private String currentOS;
-    private boolean isJailBreak;
+    private String device_manufacturer;
+    private String device_system;
+    private String current_os;
+    private boolean is_jailbroken_rooted;
     private String timezone;
-    private String userAgent;
-    private boolean isEmulator;
-    private boolean istablet;
-    private double lat;
-    private double lng;
+    private String user_agent;
+    private boolean is_emulator;
+    private boolean is_tablet;
+    private double location_latitude;
+    private double location_longitude;
     private String buildNumber;
     private String ipAddress;
-    private String screenResolution;
-    private String installedKeyboard;
+    private String screen_resolution;
     private String language;
+    private String ssid;
+    private String carrier;
 
-    private FingerPrint(FingerPrintBuilder fingerPrintBuilder){
+    private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         deviceID = fingerPrintBuilder.deviceID;
         deviceName = fingerPrintBuilder.deviceName;
-        deviceManufacturer = fingerPrintBuilder.deviceManufacturer;
-        currentOS = fingerPrintBuilder.currentOS;
-        isJailBreak = fingerPrintBuilder.isJailBreak;
+        device_manufacturer = fingerPrintBuilder.deviceManufacturer;
+        current_os = fingerPrintBuilder.currentOS;
+        is_jailbroken_rooted = fingerPrintBuilder.isJailBreak;
         timezone = fingerPrintBuilder.timezone;
-        userAgent = fingerPrintBuilder.userAgent;
-        isEmulator = fingerPrintBuilder.isEmulator;
-        istablet = fingerPrintBuilder.istablet;
-        lat = fingerPrintBuilder.lat;
-        lng = fingerPrintBuilder.lng;
+        user_agent = fingerPrintBuilder.userAgent;
+        is_emulator = fingerPrintBuilder.isEmulator;
+        is_tablet = fingerPrintBuilder.istablet;
+        location_latitude = fingerPrintBuilder.lat;
+        location_longitude = fingerPrintBuilder.lng;
         buildNumber = fingerPrintBuilder.buildNumber;
         ipAddress = fingerPrintBuilder.ipAddress;
-        screenResolution = fingerPrintBuilder.screenResolution;
-        installedKeyboard = fingerPrintBuilder.installedKeyboard;
+        screen_resolution = fingerPrintBuilder.screenResolution;
         language = fingerPrintBuilder.language;
+        ssid = fingerPrintBuilder.ssid;
+        carrier = fingerPrintBuilder.carrier;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public String getCarrier() {
+        return carrier;
+    }
+
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
+    }
+
+    public String getDevice_system() {
+        return device_system;
+    }
+
+    public void setDevice_system(String device_system) {
+        this.device_system = device_system;
     }
 
     public String getLanguage() {
@@ -50,20 +77,12 @@ public class FingerPrint {
         this.language = language;
     }
 
-    public String getInstalledKeyboard() {
-        return installedKeyboard;
+    public String getScreen_resolution() {
+        return screen_resolution;
     }
 
-    public void setInstalledKeyboard(String installedKeyboard) {
-        this.installedKeyboard = installedKeyboard;
-    }
-
-    public String getScreenResolution() {
-        return screenResolution;
-    }
-
-    public void setScreenResolution(String screenResolution) {
-        this.screenResolution = screenResolution;
+    public void setScreen_resolution(String screen_resolution) {
+        this.screen_resolution = screen_resolution;
     }
 
     public String getIpAddress() {
@@ -83,35 +102,35 @@ public class FingerPrint {
     }
 
     public boolean istablet() {
-        return istablet;
+        return is_tablet;
     }
 
-    public void setIstablet(boolean istablet) {
-        this.istablet = istablet;
+    public void setIs_tablet(boolean is_tablet) {
+        this.is_tablet = is_tablet;
     }
 
-    public double getLat() {
-        return lat;
+    public double getLocation_latitude() {
+        return location_latitude;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setLocation_latitude(double location_latitude) {
+        this.location_latitude = location_latitude;
     }
 
-    public void setLng(double lng) {
-        this.lng = lng;
+    public void setLocation_longitude(double location_longitude) {
+        this.location_longitude = location_longitude;
     }
 
-    public double getLng() {
-        return lng;
+    public double getLocation_longitude() {
+        return location_longitude;
     }
 
-    public boolean isEmulator() {
-        return isEmulator;
+    public boolean isIs_emulator() {
+        return is_emulator;
     }
 
-    public void setEmulator(boolean emulator) {
-        isEmulator = emulator;
+    public void setIs_emulator(boolean is_emulator) {
+        this.is_emulator = is_emulator;
     }
 
     public String getDeviceID() {
@@ -130,28 +149,28 @@ public class FingerPrint {
         this.deviceName = deviceName;
     }
 
-    public String getDeviceManufacturer() {
-        return deviceManufacturer;
+    public String getDevice_manufacturer() {
+        return device_manufacturer;
     }
 
-    public void setDeviceManufacturer(String deviceManufacturer) {
-        this.deviceManufacturer = deviceManufacturer;
+    public void setDevice_manufacturer(String device_manufacturer) {
+        this.device_manufacturer = device_manufacturer;
     }
 
-    public String getCurrentOS() {
-        return currentOS;
+    public String getCurrent_os() {
+        return current_os;
     }
 
-    public void setCurrentOS(String currentOS) {
-        this.currentOS = currentOS;
+    public void setCurrent_os(String current_os) {
+        this.current_os = current_os;
     }
 
-    public boolean isJailBreak() {
-        return isJailBreak;
+    public boolean isIs_jailbroken_rooted() {
+        return is_jailbroken_rooted;
     }
 
-    public void setJailBreak(boolean jailBreak) {
-        isJailBreak = jailBreak;
+    public void setIs_jailbroken_rooted(boolean is_jailbroken_rooted) {
+        this.is_jailbroken_rooted = is_jailbroken_rooted;
     }
 
     public String getTimezone() {
@@ -162,12 +181,12 @@ public class FingerPrint {
         this.timezone = timezone;
     }
 
-    public String getUserAgent() {
-        return userAgent;
+    public String getUser_agent() {
+        return user_agent;
     }
 
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
+    public void setUser_agent(String user_agent) {
+        this.user_agent = user_agent;
     }
 
     public static class FingerPrintBuilder {
@@ -185,20 +204,32 @@ public class FingerPrint {
         private String buildNumber;
         private String ipAddress;
         private String screenResolution;
-        private String installedKeyboard;
         private String language;
+        private String deviceSystem;
+        private String ssid;
+        private String carrier;
 
         public FingerPrintBuilder() {
 
         }
 
-        public FingerPrintBuilder language(String language) {
-            this.language = language;
+        public FingerPrintBuilder carrier(String carrier) {
+            this.carrier = carrier;
             return this;
         }
 
-        public FingerPrintBuilder installedKeyboard(String installedKeyboard) {
-            this.installedKeyboard = installedKeyboard;
+        public FingerPrintBuilder deviceSystem(String deviceSystem) {
+            this.deviceSystem = deviceSystem;
+            return this;
+        }
+
+        public FingerPrintBuilder ssid(String ssid) {
+            this.ssid = ssid;
+            return this;
+        }
+
+        public FingerPrintBuilder language(String language) {
+            this.language = language;
             return this;
         }
 
