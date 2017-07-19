@@ -541,6 +541,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventFeedView(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label
+        ).getEvent());
+    }
+
     public static void eventFeedViewAll(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
@@ -1670,6 +1679,33 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.SWITCHER,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.DOWNLOAD_APP
+        ).getEvent());
+    }
+
+    public static void eventFeedClick(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventR3(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventFeedClick(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label
         ).getEvent());
     }
 }

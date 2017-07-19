@@ -2,8 +2,6 @@ package com.tokopedia.transaction.cart.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
@@ -12,7 +10,6 @@ import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
 import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
@@ -377,13 +374,13 @@ public class CartDataInteractor implements ICartDataInteractor {
                                    KeroRatesListener listener) {
         List<Observable<CartRatesData>> cartItemObservableList = new ArrayList<>();
         for (int i = 0; i < cartItemList.size(); i++) {
-            if(cartItemList.get(i).getCartTotalError() < 1) {
+            if (cartItemList.get(i).getCartTotalError() < 1) {
                 cartItemObservableList.add(cartItemObservable(token, cartItemList.get(i))
                         .flatMap(engineeredResposne(i, cartItemList)
-                ));
+                        ));
             }
         }
-        if(cartItemObservableList.size() > 0) {
+        if (cartItemObservableList.size() > 0) {
             Observable<CartRatesData> multipleRequest = Observable.merge(cartItemObservableList);
             compositeSubscription.add(multipleRequest.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
@@ -446,7 +443,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     private boolean isInsuranced(CartItem cartItem) {
-        return  (cartItem.getCartForceInsurance() == 1
+        return (cartItem.getCartForceInsurance() == 1
                 || cartItem.getCartInsuranceProd() == 1
                 || isProductUseInsurance(cartItem.getCartProducts()));
     }

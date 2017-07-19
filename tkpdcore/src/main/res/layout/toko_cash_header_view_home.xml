@@ -126,6 +126,6 @@
         android:text="@string/toko_cash_activation"
         android:textColor="@color/white"
         android:layout_gravity="end|center_vertical"
-        android:layout_weight="0.1"/>
+        android:layout_weight="0.1" />
 
 </LinearLayout>

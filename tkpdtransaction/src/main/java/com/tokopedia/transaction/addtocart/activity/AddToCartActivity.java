@@ -156,6 +156,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     View decreaseButton;
     @BindView(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
+    @BindView(R2.id.layout_shipment_hour_atc)
+    LinearLayout shipmentHourAtcLayout;
+    @BindView(R2.id.arrow_max_hour)
+    TextView arrowMaxHour;
+    @BindView(R2.id.desc_max_hour)
+    TextView descMaxHour;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -584,7 +590,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tvShippingPrice.setText(MessageFormat.format("{0}", ((Product)
                     parent.getAdapter().getItem(position)).getFormattedPrice()));
             tvErrorShipping.setVisibility(View.GONE);
-            if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
+            Product product = (Product) parent.getAdapter().getItem(position);
+            if (product.getIsShowMap() == 1) {
                 viewFieldLocation.setVisibility(View.VISIBLE);
                 if (!(etValueLocation.getText().length() > 0)) {
                     Snackbar.make(
@@ -597,6 +604,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
+            }
+            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+                arrowMaxHour.setText(product.getMaxHoursId());
+                descMaxHour.setText(product.getDescHoursId());
+                shipmentHourAtcLayout.setVisibility(View.VISIBLE);
+            } else {
+                shipmentHourAtcLayout.setVisibility(View.GONE);
             }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
@@ -655,7 +669,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
             }
-        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION){
+        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
             renderFormAddress(
                     Destination.convertFromBundle(
                             data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
@@ -958,7 +972,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void clearRetryInstantCourierSnackbar() {
-        if(snackbarRetry != null && snackbarRetry.isShown()) {
+        if (snackbarRetry != null && snackbarRetry.isShown()) {
             snackbarRetry.hideRetrySnackbar();
             btnBuy.setEnabled(true);
         }

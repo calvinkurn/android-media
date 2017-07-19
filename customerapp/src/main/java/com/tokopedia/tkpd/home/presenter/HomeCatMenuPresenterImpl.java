@@ -5,6 +5,7 @@ import android.util.Log;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
@@ -44,7 +45,7 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
     public void fetchHomeCategoryMenu(boolean isFromRetry) {
         Subscriber<Response<String>> subscriber = getSubcribption();
         if (dbManager.isExpired(System.currentTimeMillis())) {
-            homeMenuInteractor.fetchHomeCategoryMenuFromNetwork(subscriber);
+            homeMenuInteractor.fetchHomeCategoryMenuFromNetwork(view.getUserId(), subscriber);
         } else {
             homeMenuInteractor.fetchHomeCategoryMenuFromDb(this);
         }

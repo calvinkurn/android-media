@@ -123,10 +123,6 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         register.setText(spannable, TextView.BufferType.SPANNABLE);
         register.setMovementMethod(LinkMovementMethod.getInstance());
 
-
-        if(new SessionHandler(context).isV4Login()){
-            getActivity().finish();
-        }
     }
 
     @Override
