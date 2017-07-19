@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="@dimen/gmstat_padding_item_left_right"
     android:paddingLeft="@dimen/gmstat_padding_item_left_right"
@@ -11,12 +12,14 @@
     <com.tokopedia.seller.gmstat.library.LoaderView
         android:layout_width="100dp"
         android:layout_height="10dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        app:use_gradient="true"/>
 
     <com.tokopedia.seller.gmstat.library.LoaderView
         android:layout_width="150dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        app:use_gradient="true"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,16 +29,19 @@
 
         <com.tokopedia.seller.gmstat.library.LoaderView
             android:layout_width="20dp"
-            android:layout_height="10dp" />
+            android:layout_height="10dp"
+            app:use_gradient="true"/>
 
         <com.tokopedia.seller.gmstat.library.LoaderView
             android:layout_width="80dp"
             android:layout_height="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            app:use_gradient="true"/>
     </LinearLayout>
 
     <com.tokopedia.seller.gmstat.library.LoaderView
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        app:use_gradient="true"/>
 </LinearLayout>

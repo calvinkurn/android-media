@@ -1,5 +1,10 @@
 <resources>
     <declare-styleable name="TitleCardView">
         <attr name="title" format="string" />
+        <attr name="title_size" format="dimension" />
+        <attr name="icon" format="reference" />
+        <attr name="loading_layout" format="reference" />
+        <attr name="empty_layout" format="reference" />
+        <attr name="use_gradient_title_loading" format="boolean" />
     </declare-styleable>
 </resources>

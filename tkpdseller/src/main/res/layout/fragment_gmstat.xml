@@ -155,6 +155,19 @@
                 />
         </android.support.v7.widget.CardView>
 
-
+        <com.tokopedia.seller.gmstat.views.widget.TitleCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/gmstat_margin_bottom"
+            android:layout_marginLeft="@dimen/gmstat_margin_bottom"
+            android:layout_marginRight="@dimen/gmstat_margin_bottom"
+            app:title_size="@dimen/font_body1"
+            app:title="@string/market_insight"
+            app:icon="@drawable/ic_wawasan_pasar_icon">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="aaaa"/>
+        </com.tokopedia.seller.gmstat.views.widget.TitleCardView>
     </LinearLayout>
 </ScrollView>

@@ -97,7 +97,6 @@ public class ArrowPercentageView extends FrameLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        //TODO hendry setenabled
     }
 
     public void setPercentage(double percentage){

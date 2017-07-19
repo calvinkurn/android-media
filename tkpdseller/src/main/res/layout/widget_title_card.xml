@@ -14,26 +14,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
-
-        <TextView
-            android:id="@+id/tv_title"
-            style="@style/TextView.Subheading.Bold"
+        <LinearLayout
+            android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/margin_small"
-            tools:text="Title"/>
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/iv_arrow_down"
-            android:layout_width="15dp"
-            android:layout_height="8dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_arrow_down" />
+            android:layout_marginTop="@dimen/margin_small">
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:src="@mipmap/ic_launcher"
+                android:layout_marginRight="8dp"/>
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/TextView.Subheading"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                tools:text="Title"/>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_arrow_down"
+                android:layout_width="15dp"
+                android:layout_height="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_arrow_down" />
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
