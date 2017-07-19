@@ -4,21 +4,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Space;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -39,6 +33,10 @@ public class LoginTextView extends LinearLayout {
     boolean imageEnabled;
     GradientDrawable shape;
     private Drawable drawable;
+    int backgroundColor;
+    private float myDefaultPadding;
+    private int padding;
+    private int height;
 
 
     public LoginTextView(Context context) {
@@ -84,6 +82,9 @@ public class LoginTextView extends LinearLayout {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LoginTextView, 0, 0);
         try {
+
+            padding = (int) (a.getDimension(R.styleable.LoginTextView_btn_padding, myDefaultPadding));
+            height = (int) a.getDimension(R.styleable.LoginTextView_btn_height, getResources().getDimension(R.dimen.btn_height));
             customText = a.getString(R.styleable.LoginTextView_customText);
             textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);

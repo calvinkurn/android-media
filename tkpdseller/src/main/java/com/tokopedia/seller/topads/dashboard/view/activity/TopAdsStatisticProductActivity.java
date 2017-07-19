@@ -39,9 +39,9 @@ public class TopAdsStatisticProductActivity extends TopAdsStatisticActivity {
 
     public void startShowCase() {
         final String showCaseTag = TopAdsStatisticProductActivity.class.getName();
-//        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-//            return;
-//        }
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
+            return;
+        }
         if (showCaseDialog!= null) {
             return;
         }

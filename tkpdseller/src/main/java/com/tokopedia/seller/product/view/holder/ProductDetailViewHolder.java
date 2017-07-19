@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
@@ -166,8 +167,9 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 if (!goldMerchant && priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
                     priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
                     if(GlobalConfig.isSellerApp()) {
+                        UnifyTracking.eventSwitchRpToDollarAddProduct();
                         listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_dollar);
-                    }else {
+                    } else {
                         Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
                                 .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
                                 .show();

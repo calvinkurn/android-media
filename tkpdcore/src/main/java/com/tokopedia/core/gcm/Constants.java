@@ -21,6 +21,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
+    String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
@@ -33,6 +34,7 @@ public interface Constants {
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
+    String EXTRA_APPLINK_FROM_INTERNAL = "EXTRA_APPLINK_FROM_INTERNAL";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
@@ -46,6 +48,8 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+        String RIDE = "tokopedia://ride/uber";
+        String RIDE_DETAIL = "tokopedia://ride/uber/{request_id}";
         String SHOP = "tokopedia://shop/{shop_id}";
         String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
         String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
@@ -68,6 +72,10 @@ public interface Constants {
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
+        String DIGITAL_CART = "tokopedia://digital/cart";
+        String DIGITAL_CATEGORY = "tokopedia://digital/category";
+        String PROMO = "tokopedia://promo/{promo_id}";
+        String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
     }
 
     interface Settings {
@@ -81,6 +89,5 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
-
     }
 }

@@ -101,14 +101,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="@dimen/fontvvvs"
+        android:textSize="@dimen/fontvvs"
         android:layout_toEndOf="@id/price"
         android:layout_toRightOf="@id/price"
         android:layout_below="@id/text_original_price"
         android:layout_alignBottom="@id/price"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:background="@drawable/bg_rounded_corners_red"
-        android:padding="@dimen/margin_vvvs"
+        android:paddingTop="@dimen/margin_vvvs"
+        android:paddingBottom="@dimen/margin_vvvs"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingRight="@dimen/padding_vvs"
+        tools:text="10%OFF"
         android:visibility="gone"/>
 
     <LinearLayout

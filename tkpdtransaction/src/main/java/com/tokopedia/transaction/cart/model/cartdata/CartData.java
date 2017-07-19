@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transaction.utils.ValueConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,12 @@ public class CartData implements Parcelable {
     @SerializedName("token")
     @Expose
     private String token;
+    @SerializedName("token_kero")
+    @Expose
+    private String tokenKero;
+    @SerializedName("ut")
+    @Expose
+    private String ut;
     @SerializedName("credit_card")
     @Expose
     private CreditCard creditCard;
@@ -199,7 +206,7 @@ public class CartData implements Parcelable {
     }
 
     public String getGrandTotalIdr() {
-        return grandTotalIdr;
+        return ValueConverter.getStringIdrFormat(grandTotal);
     }
 
     public void setGrandTotalIdr(String grandTotalIdr) {
@@ -246,6 +253,22 @@ public class CartData implements Parcelable {
         this.cartShippingRate = cartShippingRate;
     }
 
+    public String getTokenKero() {
+        return tokenKero;
+    }
+
+    public void setTokenKero(String tokenKero) {
+        this.tokenKero = tokenKero;
+    }
+
+    public String getUt() {
+        return ut;
+    }
+
+    public void setUt(String ut) {
+        this.ut = ut;
+    }
+
     public CartDonation getDonation() {
         return donation;
     }
@@ -278,6 +301,8 @@ public class CartData implements Parcelable {
         dest.writeValue(this.notEmpty);
         dest.writeString(this.voucherCode);
         dest.writeString(this.token);
+        dest.writeString(this.tokenKero);
+        dest.writeString(this.ut);
         dest.writeParcelable(this.creditCard, flags);
         dest.writeString(this.grandTotalIdr);
         dest.writeInt(this.cashback);
@@ -303,6 +328,8 @@ public class CartData implements Parcelable {
         this.notEmpty = (Integer) in.readValue(Integer.class.getClassLoader());
         this.voucherCode = in.readString();
         this.token = in.readString();
+        this.tokenKero = in.readString();
+        this.ut= in.readString();
         this.creditCard = in.readParcelable(CreditCard.class.getClassLoader());
         this.grandTotalIdr = in.readString();
         this.cashback = in.readInt();

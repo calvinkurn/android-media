@@ -131,22 +131,22 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_wishlist,
                 TkpdState.DrawerPosition.WISHLIST,
                 true));
-        if (!sessionHandler.getShopID(context).equals("0")
-                && !sessionHandler.getShopID(context).equals("")) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                    R.drawable.ic_top_ads,
-                    TkpdState.DrawerPosition.SELLER_TOP_ADS,
-                    true));
-        }
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
-        if (!sessionHandler.getShopID(context).equals("0")
-                && !sessionHandler.getShopID(context).equals("")) {
+        if (!SessionHandler.getShopID(context).equals("0")
+                && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     false));
+        }
+        if (!SessionHandler.getShopID(context).equals("0")
+                && !SessionHandler.getShopID(context).equals("")) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                    R.drawable.ic_top_ads,
+                    TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                    true));
         }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
@@ -531,11 +531,9 @@ public class DrawerBuyerHelper extends DrawerHelper
         if (topCashUrl != null && !topCashUrl.equals("")) {
             String seamlessURL;
             seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-            Bundle bundle = new Bundle();
-            bundle.putString("url", seamlessURL);
             if (context.getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) context.getApplication())
-                        .goToWallet(context, bundle);
+                        .goToWallet(context, seamlessURL);
             }
         }
 
@@ -543,11 +541,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCashWithOtp(String topCashUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", topCashUrl);
         if (context.getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, bundle);
+                    .goToWallet(context, topCashUrl);
         }
     }
 
