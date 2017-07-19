@@ -23,7 +23,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.RecyclerViewItem;
 
 import org.json.JSONArray;
 
@@ -152,14 +151,14 @@ public class TrackingUtils extends TrackingConfig {
     public static void sendMoEngageOpenFeedEvent(int feedSize){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCTS_NUMBER, feedSize);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, feedSize == 0);
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FEED);
     }
 
-    public static void sendMoEngageOpenFavoriteEvent(int feedSize){
+    public static void sendMoEngageOpenFavoriteEvent(int favoriteSize){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCTS_NUMBER, feedSize);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FAVORITE_EMPTY, favoriteSize == 0);
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FAVORITE);
     }
 
@@ -285,7 +284,7 @@ public class TrackingUtils extends TrackingConfig {
 
             getMoEngine().sendEvent(
                     builder.build(),
-                    AppEventTracking.MOENGAGE.EVENT_PRODUCT_REMOVED_FROM_WIHSLIST
+                    AppEventTracking.MOENGAGE.EVENT_PRODUCT_REMOVED_FROM_WISHLIST
             );
         }
     }
