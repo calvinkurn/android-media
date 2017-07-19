@@ -117,6 +117,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
     compile rootProject.ext.playServicesDependencies.auth
+    compile rootProject.ext.playServicesDependencies.places
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore

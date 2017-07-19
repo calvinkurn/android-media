@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:opacity="opaque"
-    >
-
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/colorPrimary" />
     <item>
-
-        <shape android:shape="rectangle">
-            <solid android:color="@color/green_600"/>
-        </shape>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/logo_tkpd_white" />
     </item>
-
-    <item  android:top="25dp">
-
-
-        <shape android:shape="rectangle">
-            <solid android:color="@color/tkpd_main_green"/>
-        </shape>
-    </item>
-
-
-    <item
-        android:top="120dp">
-        <shape>
-            <solid android:color="@color/tkpd_bg_color_grery"/>
-        </shape>
-    </item>
-
 </layer-list>

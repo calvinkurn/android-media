@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +89,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         hideLoading();
-        displayView();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         fetchCategory(model.getProductDepartmentId());
@@ -130,23 +130,38 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
+    public boolean hasDataAdded() {
+        // this is to enable always save to draft
+        return true;
+    }
+
+    protected void saveDefaultModel(){
+        // in draft and edit mode, no need to save default model.
+        // no op;
+    }
+
+    @Override
+    public long getProductDraftId() {
+        if (TextUtils.isEmpty(draftId)) {
+            return 0;
+        }
+        try {
+            return Long.valueOf(draftId);
+        }
+        catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    @Override
     public void onErrorLoadProduct(Throwable throwable) {
         hideLoading();
-        hideView();
         NetworkErrorHelper.showEmptyState(getActivity(), coordinatorLayout, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 fetchInputData();
             }
         });
-    }
-
-    protected void hideView(){
-        coordinatorLayout.setVisibility(View.GONE);
-    }
-
-    protected void displayView(){
-        coordinatorLayout.setVisibility(View.VISIBLE);
     }
 
 }

@@ -157,7 +157,6 @@ public class NoReviewDataBinder extends DataBinder<NoReviewDataBinder.ViewHolder
     private void showPopup(final View v, final int position, int menuID) {
 
         PopupMenu popup = new PopupMenu(context, v);
-        System.out.println("pos clicked: " + position);
         MenuInflater inflater = popup.getMenuInflater();
         if (menuID != 0)
             inflater.inflate(menuID, popup.getMenu());

@@ -25,5 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_information" />
+        android:src="@drawable/icon_info"
+        android:layout_marginRight="@dimen/label_padding_left_right"
+        android:tint="@color/tkpd_dark_gray" />
 </LinearLayout>

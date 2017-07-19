@@ -101,11 +101,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     @Override
     public void onGoogleApiConnected(Bundle bundle) {
         Log.d(TAG, "onGoogleApiConnected");
-        if (locationPass == null) {
-            getNewLocation();
-        } else {
-            getExistingLocation();
-        }
     }
 
     private void getNewLocation() {
@@ -296,8 +291,8 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private void saveLatLng(LatLng target) {
         LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
         cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
-                cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
-                cache.applyEditor();
+        cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
+        cache.applyEditor();
     }
 
     @Override
@@ -317,6 +312,15 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             }
         } else {
             view.hideDetailDestination();
+        }
+    }
+
+    @Override
+    public void onMapReady() {
+        if (locationPass == null) {
+            getNewLocation();
+        } else {
+            getExistingLocation();
         }
     }
 

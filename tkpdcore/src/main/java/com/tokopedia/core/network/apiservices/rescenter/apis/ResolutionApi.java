@@ -4,8 +4,14 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.util.ArrayList;
+
 import retrofit2.Response;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -34,18 +40,29 @@ public interface ResolutionApi {
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_HISTORY_ADDRESS)
     Observable<Response<TkpdResponse>> getHistoryAddress(@Path("resolution_id") String resolutionID,
-                                                     @QueryMap TKPDMapParam<String, Object> params);
+                                                         @QueryMap TKPDMapParam<String, Object> params);
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_HISTORY_ACTION)
     Observable<Response<TkpdResponse>> getHistoryAction(@Path("resolution_id") String resolutionID,
-                                                     @QueryMap TKPDMapParam<String, Object> params);
+                                                        @QueryMap TKPDMapParam<String, Object> params);
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_LIST_PRODUCT)
     Observable<Response<TkpdResponse>> getListProduct(@Path("resolution_id") String resolutionID,
-                                                     @QueryMap TKPDMapParam<String, Object> params);
+                                                      @QueryMap TKPDMapParam<String, Object> params);
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_PRODUCT_DETAIL)
     Observable<Response<TkpdResponse>> getProductDetail(@Path("resolution_id") String resolutionID,
-                                                     @Path("trouble_id") String troubleID,
-                                                     @QueryMap TKPDMapParam<String, Object> params);
+                                                        @Path("trouble_id") String troubleID,
+                                                        @QueryMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
+    Observable<Response<TkpdResponse>> replyResolution(@Path("resolution_id") String resolutionID,
+                                                       @FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
+    Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
+                                                             @FieldMap TKPDMapParam<String, Object> params);
+
 }

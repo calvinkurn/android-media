@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsAdapterTypeFactory;
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,12 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Item> list;
     private AdsAdapterTypeFactory typeFactory;
+    private int clickPosition;
+    private int adapterPosition;
 
     public AdsItemAdapter(Context context) {
         this.list = new ArrayList<>();
-        this.typeFactory = new AdsAdapterTypeFactory(context);
+        this.typeFactory = new AdsAdapterTypeFactory(context, clickPosition);
     }
 
     public void setList(List<Item> list) {
@@ -60,6 +63,9 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
+        if (holder instanceof ShopFeedViewHolder) {
+            ((ShopFeedViewHolder) holder).setAdapterPosition(adapterPosition);
+        }
     }
 
     @Override
@@ -73,5 +79,13 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void clearData() {
         list.clear();
+    }
+
+    public void setPosition(int adapterPosition) {
+        typeFactory.setClickPosition(adapterPosition);
+    }
+
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
     }
 }

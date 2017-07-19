@@ -43,6 +43,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
     private boolean isFeed = false;
+    private boolean mNeedsPlacement;
     private boolean shouldLoadAds = true; //default load ads
 
     public TopAdsPlacer(
@@ -85,6 +86,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
+        if (mNeedsPlacement)
+            return;
+        mNeedsPlacement = true;
         observerType = ObserverType.CHANGE;
         if (hasHeader)
             headerPlaced = false;
@@ -196,11 +200,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = getItemCount();
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
+        mNeedsPlacement = false;
     }
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
-        Log.d(TAG, "start " + positionStart + " item count " + itemCount);
+        Log.d(TAG, "renderItemsWithAds start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
             ClientViewModel model = new ClientViewModel();
             model.setPosition(i);
@@ -220,6 +225,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
         headerPlaced = true;
+        mNeedsPlacement = false;
     }
 
     @Override
@@ -257,7 +263,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         presenter.setConfig(config);
     }
 
-    public Config getConfig(){
+    public Config getConfig() {
         return presenter.getConfig();
     }
 
@@ -281,9 +287,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(dataShop);
+            adsItemClickListener.onAddFavorite(position, dataShop);
         }
     }
+
 
     public interface DataObserver {
         void onStreamLoaded(int type);

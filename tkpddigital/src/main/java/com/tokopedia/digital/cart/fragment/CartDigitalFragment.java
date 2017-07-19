@@ -51,6 +51,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -268,6 +269,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams) {
         return AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
+        return DeviceUtil.getDigitalIdentifierParam(getActivity());
     }
 
     @Override
@@ -669,6 +675,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
+                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                     closeView();
                     break;
                 case TopPayActivity.PAYMENT_FAILED:

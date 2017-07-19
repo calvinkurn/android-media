@@ -13,8 +13,8 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
@@ -165,7 +165,7 @@ public class TrackingUtils extends TrackingConfig {
         PayloadBuilder builder = new PayloadBuilder();
         if(productData.getBreadcrumb().size()>1)
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-        else
+        else if(productData.getBreadcrumb().size() != 0)
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_PRODUCTPAGE);
     }
@@ -199,7 +199,9 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
         }
 
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+        if (productData.getBreadcrumb().size() != 0) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+        }
 
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_ADD_WISHLIST);
     }

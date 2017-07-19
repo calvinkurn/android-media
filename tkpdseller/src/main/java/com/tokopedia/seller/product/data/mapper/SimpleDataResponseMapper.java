@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.data.mapper;
 
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -10,6 +12,10 @@ import rx.functions.Func1;
  */
 
 public class SimpleDataResponseMapper<T> implements Func1<Response<DataResponse<T>>, T> {
+    @Inject
+    public SimpleDataResponseMapper() {
+    }
+
     @Override
     public T call(Response<DataResponse<T>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);

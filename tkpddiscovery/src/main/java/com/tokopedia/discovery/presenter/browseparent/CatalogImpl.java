@@ -112,7 +112,6 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
         view.ariseRetry(type, ((ErrorContainer) data.getModel2()).body().getMessage());
-
     }
 
     private Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> parseBrowseCategoryModel(BrowseCatalogModel browseCatalogModel) {
@@ -140,7 +139,6 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
                 Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
                 view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
-                view.setLoading(false);
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:

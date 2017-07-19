@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -80,6 +81,16 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createInstance(Context context, String productId,
+                                        int adapterPosition) {
+        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+        bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         intent.putExtras(bundle);
         return intent;
     }
@@ -252,6 +263,14 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle stateBundle) {
+        int osVersion = android.os.Build.VERSION.SDK_INT;
+        if ( osVersion < Build.VERSION_CODES.N) {
+            super.onSaveInstanceState(stateBundle);
+        }
+    }
+
     private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onErrorAction(resultData, resultCode);
     }
@@ -259,4 +278,5 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
+
 }
