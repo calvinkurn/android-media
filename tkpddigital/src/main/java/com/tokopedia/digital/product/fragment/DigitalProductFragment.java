@@ -275,6 +275,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
+        for (BannerData bannerData:bannerDataList) {
+            if (TextUtils.isEmpty(bannerData.getTitle()) && TextUtils.isEmpty(bannerData.getSubtitle())) {
+                bannerDataList.remove(bannerData);
+            }
+        }
         this.bannerDataListState = bannerDataList;
         bannerAdapter.addBannerDataListAndTitle(bannerDataList, title);
     }
