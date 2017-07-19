@@ -23,17 +23,19 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
     private static final String TAG = "GMStatisticTransactionT";
     private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
 
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     public GMStatisticTransactionTablePresenterImpl(GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase) {
         this.gmStatGetTransactionTableUseCase = gmStatGetTransactionTableUseCase;
     }
 
-    public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
+    public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy,
+                         int page) {
         RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(
                 startDate.getTime(),
                 endDate.getTime(),
-                -1, // TODO page
-                -1, // TODO pagesize, leave to -1 if we want to load all data
+                page,
+                DEFAULT_PAGE_SIZE,
                 sortType,
                 sortBy);
         gmStatGetTransactionTableUseCase.execute(requestParam, new Subscriber<GetTransactionTableModel>() {

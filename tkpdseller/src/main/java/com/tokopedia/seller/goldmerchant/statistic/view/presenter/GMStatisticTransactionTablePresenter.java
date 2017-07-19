@@ -11,5 +11,7 @@ import java.util.Date;
  */
 
 public abstract class GMStatisticTransactionTablePresenter extends BaseDaggerPresenter<GMStatisticTransactionTableView> {
-    public abstract void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy);
+    public abstract void loadData(Date startDate, Date endDate,
+                                  @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy,
+                                  int page);
 }
