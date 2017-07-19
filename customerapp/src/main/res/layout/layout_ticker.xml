@@ -9,34 +9,18 @@
     android:layout_marginLeft="@dimen/margin_vs"
     android:layout_marginRight="@dimen/margin_vs">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/ticker_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:lines="3"
+        android:maxLength="105"
         android:layout_marginLeft="3dp"
         android:padding="5dp"
-        android:orientation="vertical"
         android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/ticker_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:text=""
-            android:textStyle="bold"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/ticker_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:lines="3"
-            android:maxLength="105"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="" />
-
-    </LinearLayout>
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:text="" />
 
     <ImageView
         android:id="@+id/btn_close"
