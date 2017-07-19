@@ -275,8 +275,8 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public String getSchemeAppLinkCartPayment() {
-        return Constants.Applinks.CART;
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
     }
 
 

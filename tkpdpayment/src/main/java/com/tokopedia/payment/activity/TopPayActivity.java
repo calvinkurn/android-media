@@ -31,30 +31,30 @@ import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.ErrorNetMessage;
-import com.tokopedia.payment.webview.ScroogeWebView;
 
 import java.net.URLDecoder;
 
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by kris on 3/9/17. Tokopedia
  */
 
 public class TopPayActivity extends Activity implements ITopPayView {
+    private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
     public static final String KEY_QUERY_PAYMENT_ID = "id";
     public static final String KEY_QUERY_LD = "ld";
     public static final String CHARSET_UTF_8 = "UTF-8";
     private static final String LOGIN_URL = "login.pl";
+    private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
+
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final long FORCE_TIMEOUT = 90000L;
-
-    private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
     private TopPayPresenter presenter;
     private WebView scroogeWebView;
@@ -101,14 +101,14 @@ public class TopPayActivity extends Activity implements ITopPayView {
         if (getIntent().getData() != null) {
             setupURIPass(getIntent().getData());
         }
+        if (getApplication() instanceof IPaymentModuleRouter) {
+            paymentModuleRouter = (IPaymentModuleRouter) getApplication();
+        }
         initialPresenter();
         initView();
         initVar();
         setViewListener();
         setActionVar();
-        if (getApplication() instanceof IPaymentModuleRouter) {
-            paymentModuleRouter = (IPaymentModuleRouter) getApplication();
-        }
     }
 
     private void setActionVar() {
@@ -152,7 +152,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         tvTitle = (TextView) findViewById(R.id.tv_title);
         btnBack = findViewById(R.id.btn_back);
         btnClose = findViewById(R.id.btn_close);
-        scroogeWebView = (ScroogeWebView) findViewById(R.id.scrooge_webview);
+        scroogeWebView = (WebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }
 
@@ -194,16 +194,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     @Override
-    public IPaymentModuleRouter getPaymentModuleRouter() {
-        if (getApplication() instanceof IPaymentModuleRouter) {
-            return (IPaymentModuleRouter) getApplication();
-        } else
-            return null;
-    }
-
-    @Override
-    public void navigateToCart(Intent intentCart) {
-        startActivity(intentCart);
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
         finish();
     }
 
@@ -298,20 +290,17 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                IPaymentModuleRouter paymentModuleRouter = getPaymentModuleRouter();
-                if (paymentModuleRouter == null) {
-                    return super.shouldOverrideUrlLoading(view, url);
-                } else if (paymentModuleRouter.isSupportedDelegateDeepLink(url)) {
-                    String appLinkScheme = paymentModuleRouter.getSchemeAppLinkCartPayment();
-                    Intent intentCart = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
-                    if (appLinkScheme != null && appLinkScheme.equalsIgnoreCase(url)
-                            && intentCart != null) {
-                        intentCart.setData(Uri.parse(url));
-                        navigateToCart(intentCart);
-                        return true;
-                    } else {
-                        return super.shouldOverrideUrlLoading(view, url);
-                    }
+                if (paymentModuleRouter != null && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
+                        && paymentModuleRouter.getSchemeAppLinkCancelPayment().equalsIgnoreCase(url)) {
+                    if (isEndThanksPage()) callbackPaymentSucceed();
+                    else callbackPaymentCanceled();
+                    return true;
+                } else if (paymentModuleRouter != null && paymentModuleRouter.isSupportedDelegateDeepLink(url)
+                        && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
+                    Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
+                    intent.setData(Uri.parse(url));
+                    navigateToActivity(intent);
+                    return true;
                 } else {
                     return super.shouldOverrideUrlLoading(view, url);
                 }
