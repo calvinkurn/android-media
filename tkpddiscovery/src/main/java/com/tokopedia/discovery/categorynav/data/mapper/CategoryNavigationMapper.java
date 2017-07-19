@@ -33,6 +33,7 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                 categoryModel.setName(category.getName());
                 categoryModel.setHasChild(category.getHasChild());
                 categoryModel.setIconImageUrl(category.getIconImageUrl());
+                categoryModel.setIndentation(1);
                 if (category.getChild()!=null && category.getChild().size()>0) {
                     List<com.tokopedia.discovery.categorynav.domain.model.Category> children = new ArrayList<>();
                     for (Child child: category.getChild()) {
@@ -43,7 +44,7 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                         childCategory.setHasChild(child.getHasChild());
                         children.add(childCategory);
                     }
-                    categoryModel.setChildren(children);
+                    categoryModel.addChildren(children,categoryModel.getIndentation());
                 }
                 categoryList.add(categoryModel);
             }

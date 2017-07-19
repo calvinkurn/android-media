@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,6 +31,9 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     private TextView topBarTitle;
 
     ProgressBar progressBar;
+
+    @BindView(R2.id.container)
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +115,10 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     public ProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    public FrameLayout getFrameLayout() {
+        return frameLayout;
     }
 
 

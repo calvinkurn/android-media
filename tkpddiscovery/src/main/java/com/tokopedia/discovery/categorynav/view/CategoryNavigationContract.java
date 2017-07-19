@@ -24,7 +24,9 @@ public interface CategoryNavigationContract {
 
         void renderRootCategory(CategoryNavDomainModel categoryNavDomainModel);
 
-        void renderCategoryChildren(List<Category> children);
+        void renderCategoryLevel2(String categoryId, List<Category> children);
+
+        void renderCategoryLevel3(String categoryId, List<Category> children);
 
     }
 
@@ -32,7 +34,7 @@ public interface CategoryNavigationContract {
 
         void getRootCategory(String departementId);
 
-        void getChildren(String departementId);
+        void getChildren(int level, String departementId);
 
     }
 

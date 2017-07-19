@@ -23,10 +23,11 @@ import java.util.List;
 
 public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
-    private CategoryParentAdapter.OnItemClickListener clickListener;
-    private int activePosition = 0;
+    private CategoryChildAdapter.OnItemClickListener clickListener;
+    private int activePosition=0;
 
-    public CategoryChildAdapter(CategoryParentAdapter.OnItemClickListener itemListener) {
+    public CategoryChildAdapter(CategoryChildAdapter.OnItemClickListener itemListener) {
+        super();
         clickListener = itemListener;
     }
 
@@ -39,32 +40,56 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        activePosition = position;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Category category = (Category) getItemAt(position);
         CategoryChildAdapter.ItemRowHolder itemRowHolder = (CategoryChildAdapter.ItemRowHolder) holder;
         itemRowHolder.bindData(category);
+        itemRowHolder.categoryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activePosition = position;
+                clickListener.onChildClicked((com.tokopedia.discovery.categorynav.domain.model.Category) getItemAt(position));
+            }
+        });
     }
 
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         LinearLayout categoryContainer;
         TextView categoryName;
+        ImageView dropdown;
 
         ItemRowHolder(View view) {
             super(view);
             this.categoryName = (TextView) view.findViewById(R.id.category_child_text);
             this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_child_container);
+            this.dropdown = (ImageView) view.findViewById(R.id.category_child_dropdown);
         }
 
         public void bindData(Category category) {
             this.categoryName.setText(category.getName());
+            if (!category.getHasChild()) dropdown.setVisibility(View.GONE);
+            int pad = getPaddingPixels(10);
+            if (category.getIndentation()>2) {
+                categoryContainer.setPadding(getPaddingPixels(25), pad, pad, pad);
+            } else {
+                categoryContainer.setPadding(pad, pad, pad, pad);
+            }
+        }
+
+        public int getPaddingPixels(int dpValue) {
+            final float scale = categoryContainer.getContext().getResources().getDisplayMetrics().density;
+            return (int) (dpValue * scale + 0.5f);
         }
 
     }
 
+    public void toggleSelectedChild() {
+        toggleGroup(activePosition);
+    }
+
     public interface OnItemClickListener {
-        void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
+        void onChildClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categorynav.domain.model;
 
 
 import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
+import com.tokopedia.core.discovery.model.DynamicObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
     private String name;
     private String iconImageUrl;
     private Boolean hasChild;
+    private int indentation;
 
 
     @Override
@@ -26,12 +28,12 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
 
     @Override
     public boolean isGroup() {
-        return false;
+        return hasChild;
     }
 
     @Override
     public void setIsGroup(boolean value) {
-
+        hasChild = value;
     }
 
     @Override
@@ -71,7 +73,18 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
         this.hasChild = hasChild;
     }
 
-    public void setChildren(List<Category> children) {
-        this.children = children;
+    public int getIndentation() {
+        return indentation;
+    }
+
+    public void setIndentation(int indentation) {
+        this.indentation = indentation;
+    }
+
+    public void addChildren(List<Category> children, int increment) {
+        this.children.addAll(children);
+        for (Category category : children) {
+            category.setIndentation(getIndentation() + increment);
+        }
     }
 }

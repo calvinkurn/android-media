@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.di.CategoryNavigationInjector;
@@ -28,10 +29,10 @@ import java.util.List;
  */
 
 public class CategoryNavigationFragment extends BaseDaggerFragment implements CategoryNavigationContract.View,
-        CategoryParentAdapter.OnItemClickListener{
+        CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener{
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
-    private String departmentId = "";
+    private String rootCategoryId = "";
     private CategoryNavDomainModel categoryNavDomainModel;
     private CategoryNavigationContract.Presenter presenter;
 
@@ -53,7 +54,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static CategoryNavigationFragment createInstance(String departmentId) {
         CategoryNavigationFragment categoryNavigationFragment = new CategoryNavigationFragment();
-        categoryNavigationFragment.departmentId = departmentId;
+        categoryNavigationFragment.rootCategoryId = departmentId;
         return categoryNavigationFragment;
     }
 
@@ -66,7 +67,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         categoryChildRecyclerView = (RecyclerView) parentView.findViewById(R.id.category_child_recyclerview);
 
         presenter.attachView(this);
-        presenter.getRootCategory(departmentId);
+        presenter.getRootCategory(rootCategoryId);
 
         return parentView;
     }
@@ -93,19 +94,19 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     @Override
     public void renderRootCategory(CategoryNavDomainModel domainModel) {
         categoryNavDomainModel = domainModel;
-        categoryParentAdapter = new CategoryParentAdapter(this,departmentId);
+        categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
         categoryRootRecyclerView.setAdapter(categoryParentAdapter);
         categoryParentAdapter.setDataList(categoryNavDomainModel.getCategories());
         categoryParentAdapter.notifyDataSetChanged();
 
-        if (!TextUtils.isEmpty(departmentId)) {
+        if (!TextUtils.isEmpty(rootCategoryId)) {
             LinearLayoutManager linearLayoutManagerChild = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             categoryChildRecyclerView.setLayoutManager(linearLayoutManagerChild);
             categoryChildAdapter = new CategoryChildAdapter(this);
             categoryChildRecyclerView.setAdapter(categoryChildAdapter);
-            Category parentCategory = categoryNavDomainModel.getCategoryIndexById(departmentId);
+            Category parentCategory = categoryNavDomainModel.getCategoryIndexById(rootCategoryId);
             if (parentCategory!=null && parentCategory.getChildren().size()>0) {
                 categoryChildAdapter.clear();
                 categoryChildAdapter.addAll(parentCategory.getChildren());
@@ -115,25 +116,41 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     }
 
     @Override
-    public void renderCategoryChildren(List<Category> children) {
+    public void renderCategoryLevel2(String parentCategoryId, List<Category> children) {
+        Category parentCategory = categoryNavDomainModel.getCategoryIndexById(parentCategoryId);
+
+        parentCategory.addChildren(children,1);
+        categoryChildAdapter.clear();
+        categoryChildAdapter.addAll(parentCategory.getChildren());
+        categoryParentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderCategoryLevel3(String categoryId, List<Category> children) {
         for (Category category: categoryNavDomainModel.getCategories()) {
-            if (category.getId() == departmentId) {
-                category.setChildren(children);
+            if (category.getId().equals(rootCategoryId)) {
+                for (Category categoryLevel2: (List<Category>) category.getChildren()) {
+                    if (categoryLevel2.getId().equals(categoryId)) {
+                        categoryLevel2.addChildren(children,categoryLevel2.getIndentation()+1);
+                        categoryChildAdapter.clear();
+                        categoryChildAdapter.addAll(category.getChildren());
+                        categoryChildAdapter.toggleSelectedChild();
+                        break;
+                    }
+                }
                 break;
             }
         }
-        categoryChildAdapter.clear();
-        categoryChildAdapter.addAll(children);
         categoryParentAdapter.notifyDataSetChanged();
     }
 
     private void showErrorEmptyState() {
-        NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
+        NetworkErrorHelper.showEmptyState(getActivity(),  ((CategoryNavigationActivity) getActivity())
                         .getFrameLayout(),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.getRootCategory(departmentId);
+                        presenter.getRootCategory(rootCategoryId);
                     }
                 });
     }
@@ -141,18 +158,29 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent) {
-        departmentId = parent.getId();
+        rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
         for (Category category: categoryNavDomainModel.getCategories()) {
-            if (category.getId() == departmentId) {
+            if (category.getId() == rootCategoryId) {
                 if (category.getChildren()!=null && category.getChildren().size()>0) {
                     categoryChildAdapter.clear();
                     categoryChildAdapter.addAll(category.getChildren());
                     categoryParentAdapter.notifyDataSetChanged();
                 } else {
-                    presenter.getChildren(departmentId);
+                    presenter.getChildren(2,rootCategoryId);
                 }
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void onChildClicked(Category category) {
+        if (category.getHasChild()) {
+            if (category.getChildren()!=null && category.getChildren().size()>0) {
+               renderCategoryLevel3(category.getId(),(List<Category>)category.getChildren());
+            } else {
+                presenter.getChildren(3,category.getId());
             }
         }
     }

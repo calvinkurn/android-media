@@ -7,7 +7,6 @@ import com.tokopedia.discovery.categorynav.domain.interactor.GetCategoryChildren
 import com.tokopedia.discovery.categorynav.domain.interactor.GetCategoryParentUseCase;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
-import com.tokopedia.discovery.categorynav.domain.model.ChildCategory;
 
 import java.util.List;
 
@@ -34,9 +33,9 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
     }
 
     @Override
-    public void getChildren(String departementId) {
+    public void getChildren(int level, String departementId) {
         getCategoryChildrenUseCase.setCategoryId(departementId);
-        getCategoryChildrenUseCase.execute(RequestParams.EMPTY, new CategoryChildrenSubscriber());
+        getCategoryChildrenUseCase.execute(RequestParams.EMPTY, new CategoryChildrenSubscriber(level));
     }
 
     private class CategoryRootNavigationSubscriber extends DefaultSubscriber<CategoryNavDomainModel> {
@@ -60,6 +59,13 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
     }
 
     private class CategoryChildrenSubscriber extends DefaultSubscriber<List<Category>> {
+
+        private final int level;
+
+        private CategoryChildrenSubscriber(int level) {
+            this.level = level;
+        }
+
         @Override
         public void onCompleted() {
             getView().hideLoading();
@@ -73,7 +79,11 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
 
         @Override
         public void onNext(List<Category> children) {
-            getView().renderCategoryChildren(children);
+            if (level==2) {
+                getView().renderCategoryLevel2(getCategoryChildrenUseCase.getCategoryId(), children);
+            } else if (level==3) {
+                getView().renderCategoryLevel3(getCategoryChildrenUseCase.getCategoryId(), children);
+            }
             getView().hideLoading();
         }
 
