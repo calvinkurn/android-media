@@ -35,7 +35,6 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     private NotificationUseCase notificationUseCase;
     private LocalCacheHandler cacheHandler;
 
-
     public TxSummaryPresenterImpl(TxSummaryViewListener viewListener) {
         this.viewListener = viewListener;
 
