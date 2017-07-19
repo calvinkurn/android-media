@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -272,6 +273,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "redirect url = " + url);
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 callbackPaymentSucceed();
@@ -334,6 +336,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "start url = " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -399,9 +402,13 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
             return true;
         }
     }
