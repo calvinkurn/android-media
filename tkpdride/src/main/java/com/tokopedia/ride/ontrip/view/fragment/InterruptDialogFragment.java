@@ -128,7 +128,7 @@ public class InterruptDialogFragment extends DialogFragment {
         });
 
         String full = "By clicking Booking Ride,\n I agree with terms and conditions.";
-        String keyword = "Saya setuju dengan ";
+        String keyword = "terms and conditions";
         int startIndex = indexOfSearchQuery(keyword, full);
         if (startIndex == -1) {
             labelDescriptionTextView.setText(full);

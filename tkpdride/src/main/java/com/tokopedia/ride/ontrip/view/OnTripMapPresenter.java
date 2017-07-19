@@ -245,7 +245,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
                         getView().openInterruptConfirmationDialog(
                                 ((InterruptConfirmationHttpException) e).getTosUrl(),
-                                ((InterruptConfirmationHttpException) e).getType(),
+                                ((InterruptConfirmationHttpException) e).getKey(),
                                 ((InterruptConfirmationHttpException) e).getId()
                         );
                     } else if (!(e.getCause() instanceof JsonSyntaxException)) {

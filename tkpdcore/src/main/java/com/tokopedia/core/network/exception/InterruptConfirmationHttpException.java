@@ -55,25 +55,35 @@ public class InterruptConfirmationHttpException extends IOException {
 
                 this.entity.setMessage(entity.getMessage());
                 this.entity.setCode(entity.getCode());
+                this.entity.setKey("");
 
                 switch (entity.getCode()) {
                     case TOS_TOKOPEDIA_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getTosTokopediaConfirmationExceptionEntity().getHref());
+                        this.entity.setId(entity.getMeta().getTosTokopediaConfirmationExceptionEntity().getTosId());
+                        this.entity.setKey("tos_tokopedia_id");
                         break;
                     case TOS_CONFIRMATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getTosAcceptConfirmationEntity().getHref());
+                        this.entity.setId(entity.getMeta().getTosAcceptConfirmationEntity().getTosId());
+                        this.entity.setKey("tos_confirmation_id");
                         break;
                     case SURGE_CONFIRMATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getSurgeConfirmationEntity().getHref());
+                        this.entity.setId(entity.getMeta().getSurgeConfirmationEntity().getSurgeConfirmationId());
+                        this.entity.setKey("surge_confirmation_id");
                         break;
                     case WALLET_ACTIVATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getWalletActivationEntity().getHref());
+                        this.entity.setId("");
                         break;
                     case WALLET_TOPUP_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getWalletTopupEntity().getHref());
+                        this.entity.setId("");
                         break;
                     case GENERAL_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getInterruptEntity().getHref());
+                        this.entity.setId("");
                         break;
                 }
             } else {
@@ -101,5 +111,9 @@ public class InterruptConfirmationHttpException extends IOException {
 
     public String getId() {
         return entity.getId();
+    }
+
+    public String getKey() {
+        return entity.getKey();
     }
 }

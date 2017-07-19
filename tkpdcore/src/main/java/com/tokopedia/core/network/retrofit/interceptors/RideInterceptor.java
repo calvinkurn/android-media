@@ -44,6 +44,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
 
     public RideInterceptor(String authorizationString, String userId) {
         this.authorizationString = authorizationString;
+        this.maxRetryAttempt = 0;
     }
 
     @Override

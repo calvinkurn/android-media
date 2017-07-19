@@ -9,6 +9,7 @@ public class InterruptEntity {
     private String id;
     private String href;
     private String message;
+    private String key;
 
     public InterruptEntity() {
     }
@@ -43,5 +44,13 @@ public class InterruptEntity {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

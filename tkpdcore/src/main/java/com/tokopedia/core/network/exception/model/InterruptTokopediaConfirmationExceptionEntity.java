@@ -11,7 +11,7 @@ public class InterruptTokopediaConfirmationExceptionEntity {
     @SerializedName("href")
     @Expose
     String href;
-    @SerializedName("tos_tokopedia")
+    @SerializedName("tos_tokopedia_id")
     @Expose
     String tosId;
 

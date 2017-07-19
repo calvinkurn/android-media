@@ -340,8 +340,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @OnClick(R2.id.layout_cab_booking_header)

@@ -71,12 +71,12 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                             getView().showErrorTosConfirmationDialog(
                                     e.getMessage(),
                                     ((InterruptConfirmationHttpException) e).getTosUrl(),
-                                    ((InterruptConfirmationHttpException) e).getType(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
                                     ((InterruptConfirmationHttpException) e).getId()
                             );
                             getView().openInterruptConfirmationDialog(
                                     ((InterruptConfirmationHttpException) e).getTosUrl(),
-                                    ((InterruptConfirmationHttpException) e).getType(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
                                     ((InterruptConfirmationHttpException) e).getId()
                             );
                         } else {
