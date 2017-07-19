@@ -13,4 +13,6 @@ public interface DatePicker {
     void loadData();
 
     void openDatePicker();
+
+    void setDefaultDateViewModel();
 }

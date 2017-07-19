@@ -22,6 +22,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 
@@ -43,7 +44,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Inject
     DashboardTopadsInteractor dashboardTopadsInteractor;
 
-    private View rootView;
+    private DateLabelView dateLabelView;
 
     private GMTopAdsAmountViewHolder gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
@@ -54,33 +55,33 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         return new GMStatisticTransactionFragment();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
-        initVar();
-        initView();
-        loadData();
-        return rootView;
+    protected void initInjector() {
+        DaggerGMTransactionComponent
+                .builder()
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
+                .build().inject(this);
     }
 
-    private void initVar() {
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHolder(getActivity());
         gmTransactionGraphViewHelper = new GMTransactionGraphViewHolder(getActivity());
         unFinishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
     }
 
-    private void initView() {
-        if (rootView == null)
-            return;
-
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
         presenter.attachView(this);
-        gmTopAdsAmountViewHelper.initView(rootView);
-        gmTransactionGraphViewHelper.initView(rootView);
-        unFinishedTransactionViewHolder.initView(rootView);
+        gmTopAdsAmountViewHelper.initView(view);
+        gmTransactionGraphViewHelper.initView(view);
+        unFinishedTransactionViewHolder.initView(view);
 
-        gmStatisticProductListText = (LabelView) rootView.findViewById(R.id.gm_statistic_label_sold_product_list_view);
+        gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +90,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
                 }
             }
         });
+        return view;
     }
 
     @Override
@@ -100,22 +102,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    protected void loadData() {
+    public void loadData() {
+        super.loadData();
         presenter.loadDataWithoutDate();
-    }
-
-    @Override
-    protected Intent getDatePickerIntent() {
-        return null;
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerGMTransactionComponent
-                .builder()
-                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
-                .gMStatisticModule(new GMStatisticModule())
-                .build().inject(this);
     }
 
     @Override

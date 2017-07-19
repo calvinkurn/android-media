@@ -85,8 +85,13 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     }
 
     @Override
-    protected Intent getDatePickerIntent() {
+    public Intent getDatePickerIntent() {
         return null;
+    }
+
+    @Override
+    public void setDefaultDateViewModel() {
+
     }
 
     @Override
