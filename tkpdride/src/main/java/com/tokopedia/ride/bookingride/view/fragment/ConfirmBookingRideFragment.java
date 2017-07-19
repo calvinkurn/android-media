@@ -39,6 +39,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
+import com.tokopedia.ride.ontrip.view.fragment.InterruptDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
     private static final int REQUEST_CODE_REMOVE_PROMO = 1014;
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1015;
+    private static final int REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG = 1016;
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
 
     public static String EXTRA_CONFIRM_BOOKING_DATA = "EXTRA_CONFIRM_BOOKING_DATA";
     public static String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
@@ -460,6 +463,20 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                     presenter.actionGetFareAndEstimate(requestParams);
                 }
                 break;
+            case REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG:
+                isOpenInterruptWebviewDialog = false;
+                if (resultCode == Activity.RESULT_OK) {
+                    snackbarRetry.hideRetrySnackbar();
+                    showProgress();
+                    String id = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
+                    String key = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
+                    RequestParams requestParams = getParam();
+                    if (key != null && key.length() > 0) {
+                        requestParams.putString(key, id);
+                    }
+                    presenter.actionGetFareAndEstimate(requestParams);
+                }
+                break;
             case APPLY_PROMO_ACTIVITY_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
@@ -550,5 +567,32 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             bookingConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn_orange));
         }
         bookingConfirmationButton.setEnabled(true);
+    }
+
+    @Override
+    public void showErrorTosConfirmationDialog(String message, final String tosUrl, final String key, final String value) {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                openInterruptConfirmationDialog(tosUrl, key, value);
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void openInterruptConfirmationDialog(String tosUrl, String key, String value) {
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
+        }
     }
 }
