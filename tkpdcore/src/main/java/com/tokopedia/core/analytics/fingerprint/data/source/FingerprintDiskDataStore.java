@@ -34,7 +34,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String deviceFabrik = Build.MANUFACTURER;
                         String deviceOS = Build.VERSION.RELEASE;
                         boolean isRooted = Utilities.isDeviceRooted();
-                        String timezone = TimeZone.getDefault().getDisplayName();
+                        String timezone = Utilities.getTimeZoneOffset();
                         String userAgent = System.getProperty("http.agent");
                         boolean isEmulator = Utilities.isDeviceEmulated();
                         boolean isTablet = Utilities.isDeviceTablet(MainApplication.getAppContext());
@@ -42,6 +42,8 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String ipAddress = Utilities.getIPAddress(true);
                         String screenReso = Utilities.getScreenResolution(MainApplication.getAppContext());
                         String deviceLanguage = Locale.getDefault().toString();
+                        String ssid = Utilities.getSSID(MainApplication.getAppContext());
+                        String carrier = Utilities.getCarrierName(MainApplication.getAppContext());
 
                         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                                 .deviceID(deviceID)
@@ -57,6 +59,9 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .ipAddres(ipAddress)
                                 .screenReso(screenReso)
                                 .language(deviceLanguage)
+                                .ssid(ssid)
+                                .carrier(carrier)
+                                .deviceSystem("android")
                                 .deviceLat(LocationCache.getLocation().getLatitude())
                                 .deviceLng(LocationCache.getLocation().getLongitude())
                                 .build();
