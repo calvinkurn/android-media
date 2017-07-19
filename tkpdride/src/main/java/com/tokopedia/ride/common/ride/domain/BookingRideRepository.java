@@ -6,6 +6,7 @@ import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
+import com.tokopedia.ride.common.ride.domain.model.RideHistoryWrapper;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
@@ -22,7 +23,7 @@ import rx.Observable;
 
 public interface BookingRideRepository {
     Observable<Product> getProduct(TKPDMapParam<String, Object> params);
-    
+
     Observable<List<Product>> getProducts(TKPDMapParam<String, Object> params);
 
     Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> params);
@@ -42,6 +43,8 @@ public interface BookingRideRepository {
     Observable<String> getRideMap(TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters);
+
+    Observable<RideHistoryWrapper> getHistoriesWithPagination(TKPDMapParam<String, Object> parameters);
 
     Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters);
 
