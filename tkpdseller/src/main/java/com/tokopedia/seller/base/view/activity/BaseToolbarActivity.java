@@ -15,7 +15,7 @@ import com.tokopedia.seller.R;
  * Created by nathan on 7/11/17.
  */
 
-abstract class BaseToolbarActivity<T> extends BaseActivity {
+abstract class BaseToolbarActivity extends BaseActivity {
 
     protected Toolbar toolbar;
 

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
@@ -112,6 +114,7 @@ public class ManageProductSeller extends ManageProduct implements
             tvDraftProductInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UnifyTracking.eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     startActivity(new Intent(ManageProductSeller.this, ProductDraftListActivity.class));
                 }
             });

@@ -2,19 +2,20 @@ package com.tokopedia.seller.base.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.seller.base.view.constant.ConstantView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.DatePicker;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -23,24 +24,31 @@ import javax.inject.Inject;
  *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePickerView {
+public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePicker, DatePickerView {
 
-    public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
+    private DateLabelView dateLabelView;
+
     @Inject
     public DatePickerPresenter datePickerPresenter;
-    protected DateLabelView dateLabelView;
-    protected String startDate;
-    protected String endDate;
     protected DatePickerViewModel datePickerViewModel;
-
-    protected abstract void loadData();
-
-    protected abstract Intent getDatePickerIntent();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
+        datePickerPresenter.attachView(this);
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -51,21 +59,29 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        if (TextUtils.isEmpty(datePickerViewModel.getStartDate()) ||
-                TextUtils.isEmpty(datePickerViewModel.getEndDate()) ||
-                TextUtils.isEmpty(startDate) ||
-                TextUtils.isEmpty(endDate) ||
-                !startDate.equalsIgnoreCase(datePickerViewModel.getStartDate()) ||
-                !endDate.equalsIgnoreCase(datePickerViewModel.getEndDate())) {
-            startDate = datePickerViewModel.getStartDate();
-            endDate = datePickerViewModel.getEndDate();
+        if (datePickerViewModel == null) {
             this.datePickerViewModel = datePickerViewModel;
-            loadData();
+        } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
+                this.datePickerViewModel.getStartDate(), this.datePickerViewModel.getEndDate(),
+                datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate())) {
+            datePickerPresenter.saveDateSetting(this.datePickerViewModel);
         }
+        loadData();
+
+    }
+
+    @Override
+    public void loadData() {
+        dateLabelView.setDate(new Date(datePickerViewModel.getStartDate()), new Date(datePickerViewModel.getEndDate()));
     }
 
     @Override
     public void onErrorLoadDatePicker(Throwable throwable) {
+        if (datePickerViewModel == null) {
+            setDefaultDateViewModel();
+        } else {
+            datePickerPresenter.saveDateSetting(datePickerViewModel);
+        }
         loadData();
     }
 
@@ -92,30 +108,28 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == ConstantView.REQUEST_CODE_DATE && intent != null) {
+        if (requestCode == DatePickerConstant.REQUEST_CODE_DATE && intent != null) {
             long sDate = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
             long eDate = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
-            int lastSelection = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
-            int selectionType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
             if (sDate > 0 && eDate > 0) {
-                onDateSelected(sDate, eDate, lastSelection, selectionType);
+                onDateSelected(intent);
             }
         }
     }
 
-    public void onDateSelected(long sDate, long eDate, int lastSelection, int selectionType) {
-        datePickerViewModel.setStartDate(new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(new Date(sDate)));
-        datePickerViewModel.setEndDate(new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(new Date(eDate)));
+    protected void onDateSelected(Intent intent) {
+        long sDate = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
+        long eDate = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
+        int lastSelection = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
+        int selectionType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        datePickerViewModel.setStartDate(sDate);
+        datePickerViewModel.setEndDate(eDate);
         datePickerViewModel.setDatePickerSelection(lastSelection);
         datePickerViewModel.setDatePickerType(selectionType);
-        datePickerPresenter.saveDateSetting(datePickerViewModel);
-        if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)) {
-            return;
-        }
-        loadData();
     }
 
-    protected void openDatePicker() {
-        startActivityForResult(getDatePickerIntent(), ConstantView.REQUEST_CODE_DATE);
+    @Override
+    public void openDatePicker() {
+        startActivityForResult(getDatePickerIntent(), DatePickerConstant.REQUEST_CODE_DATE);
     }
 }

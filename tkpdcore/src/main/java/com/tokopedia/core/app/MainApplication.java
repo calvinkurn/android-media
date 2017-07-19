@@ -31,6 +31,7 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
 import java.util.List;
 
@@ -98,6 +99,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
+        TooLargeTool.startLogging(this);
     }
 
 
@@ -306,7 +308,7 @@ public class MainApplication extends TkpdMultiDexApplication {
             watchDog.setANRListener(new ANRWatchDog.ANRListener() {
                 @Override
                 public void onAppNotResponding(ANRError error) {
-                    Crashlytics.logException(error);
+                    //Crashlytics.logException(error);
                 }
             });
             watchDog.start();

@@ -2,6 +2,7 @@ package com.tokopedia.core.shopinfo.facades.authservices;
 
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -36,4 +37,9 @@ public interface ActionApi {
     @FormUrlEncoded
     @POST("talk/report_product_talk.pl")
     Observable<Response<TkpdResponse>> actionReportTalk(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("favorite-shop/fav_shop.pl")
+    Observable<Response<TkpdResponse>> actionFavoriteShop(@FieldMap TKPDMapParam<String, Object> params);
+
 }

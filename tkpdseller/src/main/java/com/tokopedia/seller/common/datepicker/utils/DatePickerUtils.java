@@ -1,11 +1,14 @@
 package com.tokopedia.seller.common.datepicker.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 
 import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,5 +80,41 @@ public class DatePickerUtils {
             startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT_WITHOUT_YEAR, Locale.ENGLISH).format(startDate);
         }
         return context.getString(R.string.top_ads_range_date_text, startDateFormatted, endDateFormatted);
+    }
+
+    public static long convertStringToTimestamp(String dateFormat, String dateString) {
+        try {
+            return convertStringToDate(dateFormat, dateString).getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static Date convertStringToDate(String dateFormat, String dateString) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+        try {
+            Date date = simpleDateFormat.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String convertTimestampToString(long timestamp, String dateFormat) {
+        Date date = new Date(timestamp);
+        Format format = new SimpleDateFormat(dateFormat, Locale.US);
+        return format.format(date);
+    }
+
+    public static boolean isDateEqual(String dateFormat, long date, long comparedDate) {
+        String dateString = convertTimestampToString(date, dateFormat);
+        String comparedDateString = convertTimestampToString(comparedDate, dateFormat);
+        return dateString.equalsIgnoreCase(comparedDateString);
+    }
+
+    public static boolean isDateEqual(String dateFormat, long startDate, long endDate, long comparedStartDate, long comparedEndDate) {
+        return isDateEqual(dateFormat, startDate, comparedStartDate) && isDateEqual(dateFormat, endDate, comparedEndDate);
     }
 }

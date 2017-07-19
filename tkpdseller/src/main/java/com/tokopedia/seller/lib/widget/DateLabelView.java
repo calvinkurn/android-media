@@ -18,10 +18,9 @@ import java.util.Date;
 
 public class DateLabelView extends BaseCustomView {
 
-    private TextView contentTextView;
+    private TextView dateTextView;
+    private TextView comparedDateTextView;
     private String content;
-    private Date startDate;
-    private Date endDate;
 
     public DateLabelView(Context context) {
         super(context);
@@ -50,26 +49,32 @@ public class DateLabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_date_label_view, this);
-        contentTextView = (TextView) view.findViewById(R.id.text_view_content);
+        dateTextView = (TextView) view.findViewById(R.id.text_view_date);
+        comparedDateTextView = (TextView) view.findViewById(R.id.text_view_compared_date);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        contentTextView.setText(content);
+        dateTextView.setText(content);
         invalidate();
         requestLayout();
     }
 
-    public void setContent(Date startDate, Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        updateDateView();
-    }
-
-    private void updateDateView() {
-        contentTextView.setText(DatePickerUtils.getRangeDateFormatted(contentTextView.getContext(), startDate, endDate));
+    public void setDate(Date startDate, Date endDate) {
+        dateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
+    }
+
+    public void setComparedDate(Date startDate, Date endDate) {
+        comparedDateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
+        setComparedDateVisibility(View.VISIBLE);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setComparedDateVisibility(int visibility) {
+        comparedDateTextView.setVisibility(visibility);
     }
 }

@@ -8,9 +8,22 @@ import android.os.Parcelable;
  */
 
 public class DigitalCheckoutPassData implements Parcelable {
+    public static final String PARAM_ACTION = "action";
+    public static final String PARAM_CATEGORY_ID = "category_id";
+    public static final String PARAM_CLIENT_NUMBER = "client_number";
+    public static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_OPERATOR_ID = "operator_id";
+    public static final String PARAM_IS_PROMO = "is_promo";
+    public static final String PARAM_INSTANT_CHECKOUT = "instant_checkout";
+    public static final String PARAM_UTM_SOURCE = "utm_source";
+    public static final String PARAM_UTM_MEDIUM = "utm_medium";
+    public static final String PARAM_UTM_CAMPAIGN = "utm_campaign";
+    public static final String PARAM_UTM_CONTENT = "utm_content";
+    public static final String PARAM_IDEM_POTENCY_KEY = "idem_potency_key";
     public static final String DEFAULT_ACTION = "init_data";
     public static final String UTM_SOURCE_ANDROID = "android";
     public static final String UTM_MEDIUM_WIDGET = "widget";
+
 
     private String action;
     private String categoryId;

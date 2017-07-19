@@ -7,4 +7,12 @@ import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
  */
 
 public class DatePickerViewModel extends DatePickerDomainModel {
+
+    public DatePickerViewModel() {
+        super();
+    }
+
+    public DatePickerViewModel(DatePickerDomainModel datePickerDomainModel) {
+        super(datePickerDomainModel);
+    }
 }

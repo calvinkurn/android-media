@@ -64,11 +64,6 @@
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.tokopedia.session.register.view.activity.RegisterInitialActivity"
-            android:label=""
-            android:screenOrientation="portrait" />
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />

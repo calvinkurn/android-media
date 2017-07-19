@@ -292,6 +292,11 @@
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
+-keep class com.tokopedia.ride.common.animator.RouteMapAnimator
+-keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
+   public <methods>;
+   public <fields>;
+}
 
 # Parceler configuration
 -keep interface org.parceler.Parcel
@@ -311,6 +316,10 @@
  -keep enum com.beloo.widget.**
 -dontwarn com.beloo.widget.**
 
+
+# -- Feeds --
+-keep class com.tkpdfeed.feeds.** { *; }
+# -- End of Feeds --
 
 
 

@@ -30,6 +30,7 @@ import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,9 +183,9 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDashboardActivity.class.getName();
-//        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-//            return;
-//        }
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
+            return;
+        }
         if (showCaseDialog!= null) {
             return;
         }

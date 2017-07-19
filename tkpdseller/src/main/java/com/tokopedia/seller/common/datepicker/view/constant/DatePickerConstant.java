@@ -25,4 +25,5 @@ public class DatePickerConstant {
 
     public static final int SELECTION_TYPE_PERIOD_DATE = 0;
     public static final int SELECTION_TYPE_CUSTOM_DATE = 1;
+    public static final int REQUEST_CODE_DATE = 50;
 }

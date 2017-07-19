@@ -65,7 +65,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/title_remark"
+            android:text="@string/title_catatan_penjual"
             android:textSize="@dimen/fonts"/>
 
         <TextView

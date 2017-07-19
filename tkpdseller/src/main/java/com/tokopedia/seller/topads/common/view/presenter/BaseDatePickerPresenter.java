@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * Created by Nisie on 5/9/16.
  */
+@Deprecated
 public interface BaseDatePickerPresenter {
 
     void resetDate();

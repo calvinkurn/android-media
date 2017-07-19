@@ -36,7 +36,7 @@ public class SaveDatePickerUseCase extends CompositeUseCase<Boolean> {
 
     public static RequestParams createRequestParams(DatePickerViewModel datePickerViewModel){
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(DATE_PICKER_MODEL, datePickerViewModel);
+        requestParams.putObject(DATE_PICKER_MODEL, new DatePickerDomainModel(datePickerViewModel));
         return requestParams;
     }
 

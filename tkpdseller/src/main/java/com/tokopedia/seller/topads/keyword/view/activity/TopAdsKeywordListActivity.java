@@ -32,6 +32,7 @@ import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
@@ -223,9 +224,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void startShowCase() {
-//        if (ShowCasePreference.hasShown(this, TAG)) {
-//            return;
-//        }
+        if (ShowCasePreference.hasShown(this, TAG)) {
+            return;
+        }
         if (showCaseDialog != null || isShowingShowCase) {
             return;
         }

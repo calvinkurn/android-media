@@ -2,6 +2,7 @@ package com.tokopedia.payment.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -18,6 +19,7 @@ import android.webkit.WebViewClient;
 
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import java.net.URLDecoder;
@@ -32,9 +34,9 @@ public class ScroogeWebView extends WebView {
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final long FORCE_TIMEOUT = 90000L;
 
+    private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
+
     private ITopPayView topPayView;
-    private String paymentId;
-    private boolean isEndThanksPage;
 
     public ScroogeWebView(Context context) {
         super(context);
@@ -65,12 +67,14 @@ public class ScroogeWebView extends WebView {
         setOnKeyListener(getWebViewOnKeyListener());
     }
 
-    public String getPaymentId() {
-        return paymentId;
-    }
-
     public boolean isEndThanksPage() {
-        return isEndThanksPage;
+        if (getUrl() == null || getUrl().isEmpty()) return false;
+        for (String thanksUrl : THANK_PAGE_URL_LIST) {
+            if (getUrl().contains(thanksUrl)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class TopPayWebViewClient extends WebViewClient {
@@ -84,11 +88,7 @@ public class ScroogeWebView extends WebView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.invalidate();
-            Log.d(TAG, "URL payment " + url);
-            Uri uri = Uri.parse(url);
-            paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
-            isEndThanksPage = url.contains("thanks") || url.contains("thank");
+            Log.d(TAG, "URL redirect " + url);
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 processRedirectUrlContainsSuccessCallbackUrl(url);
@@ -106,7 +106,23 @@ public class ScroogeWebView extends WebView {
                 topPayView.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                return super.shouldOverrideUrlLoading(view, url);
+                IPaymentModuleRouter paymentModuleRouter = topPayView.getPaymentModuleRouter();
+                if (paymentModuleRouter == null) {
+                    return super.shouldOverrideUrlLoading(view, url);
+                } else if (paymentModuleRouter.isSupportedDelegateDeepLink(url)) {
+                    String appLinkScheme = paymentModuleRouter.getSchemeAppLinkCartPayment();
+                    Intent intentCart = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
+                    if (appLinkScheme != null && appLinkScheme.equalsIgnoreCase(url)
+                            && intentCart != null) {
+                        intentCart.setData(Uri.parse(url));
+                        topPayView.navigateToCart(intentCart);
+                        return true;
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, url);
+                    }
+                } else {
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
             }
         }
 
@@ -141,6 +157,7 @@ public class ScroogeWebView extends WebView {
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+            Log.d(TAG, "URL initial " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -184,7 +201,7 @@ public class ScroogeWebView extends WebView {
             urlThanks = "";
         }
         Uri uri = Uri.parse(urlThanks);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         if (paymentId != null)
             topPayView.callbackPaymentSucceed();
         else
@@ -192,14 +209,10 @@ public class ScroogeWebView extends WebView {
     }
 
     private void processRedirectUrlContainsSuccessCallbackUrl(String url) {
-        Uri uri = Uri.parse(url);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         topPayView.callbackPaymentSucceed();
     }
 
     private void processRedirectUrlContainsFailedCallbackUrl(String url) {
-        Uri uri = Uri.parse(url);
-        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         topPayView.callbackPaymentFailed();
     }
 

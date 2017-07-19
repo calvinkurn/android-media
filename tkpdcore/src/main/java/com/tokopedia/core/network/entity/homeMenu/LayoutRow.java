@@ -24,7 +24,6 @@ public class LayoutRow {
     @SerializedName("applinks")
     private String appLinks;
 
-
     public String getAdditionalInfo() {
         return mAdditionalInfo;
     }

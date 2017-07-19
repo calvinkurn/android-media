@@ -89,7 +89,7 @@ public interface WishListView {
 
     void displayLoading(boolean isShow);
 
-    void displayDeleteWishlistDialog(String productId);
+    void displayDeleteWishlistDialog(String productId, int position);
 
     void displayAddToCart(String productId);
 
@@ -97,7 +97,7 @@ public interface WishListView {
 
     void dismissProgressDialog();
 
-    void onSuccessDeleteWishlist(String searchTerm);
+    void onSuccessDeleteWishlist(String searchTerm, int position);
 
     void displayErrorNetwork(Boolean isAction);
 

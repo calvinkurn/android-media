@@ -27,7 +27,7 @@ public class DatePickerDataSource {
     }
 
     public Observable<Boolean> saveData(DatePickerDomainModel datePickerDomainModel) {
-        return datePickerCache.storeDatePickerSetting((DatePickerCacheModel) datePickerDomainModel);
+        return datePickerCache.storeDatePickerSetting(new DatePickerCacheModel(datePickerDomainModel));
     }
 
     public Observable<Boolean> clearData() {
