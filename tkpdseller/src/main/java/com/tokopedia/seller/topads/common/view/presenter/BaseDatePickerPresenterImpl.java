@@ -21,6 +21,7 @@ import java.util.Locale;
 /**
  * Created by Nisie on 5/9/16.
  */
+@Deprecated
 public class BaseDatePickerPresenterImpl implements BaseDatePickerPresenter {
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";

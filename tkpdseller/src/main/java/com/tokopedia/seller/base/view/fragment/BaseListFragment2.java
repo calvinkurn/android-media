@@ -147,7 +147,7 @@ public abstract class BaseListFragment2<T extends ItemType> extends BaseDatePick
         loadData();
     }
 
-    protected void loadData() {
+    public void loadData() {
         page = START_PAGE;
         adapter.clearData();
         adapter.showRetryFull(false);

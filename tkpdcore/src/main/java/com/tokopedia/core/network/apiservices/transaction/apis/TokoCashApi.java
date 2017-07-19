@@ -1,7 +1,8 @@
 package com.tokopedia.core.network.apiservices.transaction.apis;
 
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
@@ -17,5 +18,8 @@ import rx.Observable;
 public interface TokoCashApi {
 
     @GET(TkpdBaseURL.TopCash.PATH_WALLET)
-    Observable<Response<TopCashItem>> getTokoCash();
+    Observable<Response<TkpdResponse>> getTokoCash();
+
+    @GET(TkpdBaseURL.TopCash.PATH_CASH_BACK_DOMAIN)
+    Observable<Response<TkpdDigitalResponse>> getTokoCashPending(@QueryMap Map<String, String> params);
 }

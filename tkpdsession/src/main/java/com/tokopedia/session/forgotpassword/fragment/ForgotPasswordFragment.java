@@ -219,6 +219,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
     private void goToRegister() {
         ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(context);
+        getActivity().finish();
     }
 
     @Override

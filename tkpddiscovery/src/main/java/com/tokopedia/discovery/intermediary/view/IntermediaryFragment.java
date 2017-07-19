@@ -447,7 +447,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void backToTop() {
-        nestedScrollView.smoothScrollTo(0, 0);
+        nestedScrollView.fullScroll(View.FOCUS_UP);
     }
 
     @Override
@@ -542,7 +542,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onAddFavorite(Data shopData) {
+    public void onAddFavorite(int position, Data shopData) {
         //TODO: this listener not used in this sprint
     }
 

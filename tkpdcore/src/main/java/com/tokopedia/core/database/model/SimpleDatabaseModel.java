@@ -23,4 +23,42 @@ public class SimpleDatabaseModel extends BaseModel {
 
     @Column
     public long expiredTime = 0;
+
+    public SimpleDatabaseModel() {
+    }
+
+    private SimpleDatabaseModel(Builder builder) {
+        key = builder.key;
+        value = builder.value;
+        expiredTime = builder.expiredTime;
+    }
+
+
+    public static final class Builder {
+        private String key;
+        private String value;
+        private long expiredTime;
+
+        public Builder() {
+        }
+
+        public Builder key(String val) {
+            key = val;
+            return this;
+        }
+
+        public Builder value(String val) {
+            value = val;
+            return this;
+        }
+
+        public Builder expiredTime(long val) {
+            expiredTime = val;
+            return this;
+        }
+
+        public SimpleDatabaseModel build() {
+            return new SimpleDatabaseModel(this);
+        }
+    }
 }

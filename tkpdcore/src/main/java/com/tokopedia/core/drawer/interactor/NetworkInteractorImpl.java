@@ -10,6 +10,11 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
+
+import org.json.JSONException;
 
 import java.util.HashMap;
 
@@ -26,7 +31,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class NetworkInteractorImpl implements NetworkInteractor {
     private static final String TAG = NetworkInteractorImpl.class.getSimpleName();
-    private static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
+    private static final String KEY_TOKOCASH_DATA = TkpdCache.Key.KEY_TOKOCASH_DATA;
 
     private final PeopleService peopleService;
     private final CloverService cloverService;

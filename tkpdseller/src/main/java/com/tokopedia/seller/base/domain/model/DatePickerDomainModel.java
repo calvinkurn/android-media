@@ -6,42 +6,42 @@ package com.tokopedia.seller.base.domain.model;
 
 public class DatePickerDomainModel {
 
-    private String startDate;
-    private String endDate;
-    private String comparedStartDate;
-    private String comparedEndDate;
+    private long startDate;
+    private long endDate;
+    private long comparedStartDate;
+    private long comparedEndDate;
     private int datePickerType;
     private int datePickerSelection;
 
-    public String getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 
-    public String getComparedStartDate() {
+    public long getComparedStartDate() {
         return comparedStartDate;
     }
 
-    public void setComparedStartDate(String comparedStartDate) {
+    public void setComparedStartDate(long comparedStartDate) {
         this.comparedStartDate = comparedStartDate;
     }
 
-    public String getComparedEndDate() {
+    public long getComparedEndDate() {
         return comparedEndDate;
     }
 
-    public void setComparedEndDate(String comparedEndDate) {
+    public void setComparedEndDate(long comparedEndDate) {
         this.comparedEndDate = comparedEndDate;
     }
 
@@ -59,5 +59,18 @@ public class DatePickerDomainModel {
 
     public void setDatePickerSelection(int datePickerSelection) {
         this.datePickerSelection = datePickerSelection;
+    }
+
+    public DatePickerDomainModel() {
+
+    }
+
+    public DatePickerDomainModel(DatePickerDomainModel datePickerDomainModel) {
+        this.startDate = datePickerDomainModel.startDate;
+        this.endDate = datePickerDomainModel.endDate;
+        this.comparedStartDate = datePickerDomainModel.comparedStartDate;
+        this.comparedEndDate = datePickerDomainModel.comparedEndDate;
+        this.datePickerType = datePickerDomainModel.datePickerType;
+        this.datePickerSelection = datePickerDomainModel.datePickerSelection;
     }
 }
