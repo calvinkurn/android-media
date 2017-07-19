@@ -611,7 +611,7 @@ public class CartPresenter implements ICartPresenter {
             if (data.isPartialDeliver()) {
                 partialDeliverStringList.add(data.getCartStringForDeliverOption());
             }
-            if (data.getCartCourierPrices() != null) {
+            if (data.getCartCourierPrices() != null && !hasError(data.getCartItem())) {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             } else {
@@ -838,5 +838,12 @@ public class CartPresenter implements ICartPresenter {
             }
         }
 
+    }
+
+    private boolean hasError(CartItem cartItem) {
+        return (cartItem.getCartErrorMessage2() != null
+                && !cartItem.getCartErrorMessage2().equals("0"))
+                || (cartItem.getCartErrorMessage1() != null
+                && !cartItem.getCartErrorMessage1().equals("0"));
     }
 }
