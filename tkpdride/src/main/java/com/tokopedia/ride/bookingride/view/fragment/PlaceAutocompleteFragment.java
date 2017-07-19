@@ -31,7 +31,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.PlaceAutoCompleteDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
+import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
@@ -58,7 +58,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
-    private PeopleAddressPaging peopleAddressPaging;
+    private Paging paging;
     private boolean isMarketPlaceSource;
 
     @BindView(R2.id.cabs_autocomplete_edit_text)
@@ -107,8 +107,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        peopleAddressPaging = new PeopleAddressPaging();
-        peopleAddressPaging.setPage(1);
+        paging = new Paging();
+        paging.setPage(1);
 
         showAutodetectLocation = getArguments().getBoolean(SHOW_AUTO_DETECT_LOCATION, true);
         showSelectLocationOnMap = getArguments().getBoolean(SHOW_SELECT_LOCATION_ON_MAP, false);
@@ -326,7 +326,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         String userId = SessionHandler.getLoginID(getActivity());
         String hash = md5(userId + "~" + deviceId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putInt(GetPeopleAddressesUseCase.PARAM_PAGE, peopleAddressPaging.getPage());
+        requestParams.putInt(GetPeopleAddressesUseCase.PARAM_PAGE, paging.getPage());
         requestParams.putString(GetPeopleAddressesUseCase.PARAM_QUERY, "");
         requestParams.putString(GetPeopleAddressesUseCase.PARAM_ORDER_BY, String.valueOf(1));
         requestParams.putString(GetPeopleAddressesUseCase.PARAM_USER_ID, userId);
@@ -338,9 +338,9 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @Override
-    public void setPagingConfiguration(PeopleAddressPaging paging) {
+    public void setPagingConfiguration(Paging paging) {
         if (paging != null) {
-            peopleAddressPaging.setNextUrl(paging.getNextUrl());
+            this.paging.setNextUrl(paging.getNextUrl());
         }
     }
 
@@ -362,9 +362,9 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void resetMarketplacePaging() {
-        if (peopleAddressPaging == null) peopleAddressPaging = new PeopleAddressPaging();
-        peopleAddressPaging.setPage(1);
-        peopleAddressPaging.setNextUrl(String.valueOf(0));
+        if (paging == null) paging = new Paging();
+        paging.setPage(1);
+        paging.setNextUrl(String.valueOf(0));
     }
 
     @Override

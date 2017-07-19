@@ -23,6 +23,7 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.ride.history.domain.GetHistoriesWithPaginationUseCase;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.view.RideHistoryContract;
 import com.tokopedia.ride.history.view.RideHistoryPresenter;
@@ -72,11 +73,35 @@ public class RideHistoryDependencyInjection {
         String userId = sessionHandler.getLoginID();
         RideHistoryDependencyInjection injection = new RideHistoryDependencyInjection();
         GetRideHistoriesUseCase getRideHistoriesUseCase = injection.provideGetRideHistoriesUseCase(token, userId);
-        return new RideHistoryPresenter(getRideHistoriesUseCase);
+        GetHistoriesWithPaginationUseCase getHistoriesWithPaginationUseCase = injection.provideGetHistoriesWithPaginationUseCase(token, userId);
+        return new RideHistoryPresenter(getRideHistoriesUseCase, getHistoriesWithPaginationUseCase);
     }
 
     private GetRideHistoriesUseCase provideGetRideHistoriesUseCase(String token, String userId) {
         return new GetRideHistoriesUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GetHistoriesWithPaginationUseCase provideGetHistoriesWithPaginationUseCase(String token, String userId) {
+        return new GetHistoriesWithPaginationUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(
