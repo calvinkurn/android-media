@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 /**
@@ -14,7 +15,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisti
 public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHolder {
     private final TextView itemTransactionTableLeft;
     private final TextView itemTransactionTableRight;
-    private GMStatisticTransactionTableModel gmStatisticTransactionTableModel;
 
     public GMStatisticTransactionTableViewHolder(View itemView) {
         super(itemView);
@@ -24,9 +24,8 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
     }
 
     public void bindData(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
-        this.gmStatisticTransactionTableModel = gmStatisticTransactionTableModel;
-
         itemTransactionTableLeft.setText(gmStatisticTransactionTableModel.leftText);
-        itemTransactionTableRight.setText(gmStatisticTransactionTableModel.rightText);
+        itemTransactionTableRight.setText(itemTransactionTableRight.getContext().getString(R.string.rupiah_format_text,
+                KMNumbers.formatDecimalString(Long.parseLong(gmStatisticTransactionTableModel.rightText))));
     }
 }

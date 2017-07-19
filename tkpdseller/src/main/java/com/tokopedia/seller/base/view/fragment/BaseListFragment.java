@@ -102,7 +102,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         recyclerView.setAdapter(adapter);
         RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
         if (itemDecoration!= null) {
-            recyclerView.addItemDecoration(getItemDecoration());
+            recyclerView.addItemDecoration(itemDecoration);
         }
         recyclerView.addOnScrollListener(onScrollListener);
         if (swipeToRefresh!= null) {

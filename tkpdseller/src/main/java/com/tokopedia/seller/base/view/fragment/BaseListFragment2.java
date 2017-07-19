@@ -106,7 +106,7 @@ public abstract class BaseListFragment2<T extends ItemType> extends BaseDatePick
         recyclerView.setAdapter(adapter);
         RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
         if (itemDecoration != null) {
-            recyclerView.addItemDecoration(getItemDecoration());
+            recyclerView.addItemDecoration(itemDecoration);
         }
         recyclerView.addOnScrollListener(onScrollListener);
         if (swipeToRefresh != null) {

@@ -11,6 +11,8 @@ import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
@@ -80,9 +82,9 @@ public class GMStatCache {
     }
 
     private <T> Observable<T> getObservable (@GMStatActionType int action,
-                                                       long startDate,
-                                                       long endDate,
-                                                       @NonNull Class<T> responseObjectErrorClass ){
+                                             long startDate,
+                                             long endDate,
+                                             @NonNull Class<T> responseObjectErrorClass ){
         GMStatDataBase gmStatDataBase = retrieveGMStatDatabase(action, startDate, endDate);
         if (gmStatDataBase == null){
             return null;
@@ -101,11 +103,11 @@ public class GMStatCache {
 
     private GMStatDataBase retrieveGMStatDatabase (@GMStatActionType int action, long startDate, long endDate){
         return new Select()
-                    .from(GMStatDataBase.class)
-                    .where(GMStatDataBase_Table.action.is(action))
-                    .and(GMStatDataBase_Table.startDate.is(startDate))
-                    .and(GMStatDataBase_Table.endDate.is(endDate))
-                    .querySingle();
+                .from(GMStatDataBase.class)
+                .where(GMStatDataBase_Table.action.is(action))
+                .and(GMStatDataBase_Table.startDate.is(startDate))
+                .and(GMStatDataBase_Table.endDate.is(endDate))
+                .querySingle();
     }
 
     public <T> T getObjectParse(String jsonString, @NonNull Class<T> responseObjectErrorClass){
@@ -127,6 +129,13 @@ public class GMStatCache {
 
     public Observable<Boolean> clearAllCache(){
         new Delete().from(GMStatDataBase.class).execute();
+        return Observable.just(true);
+    }
+
+    public Observable<Boolean> clearTransactionTableCache(){
+        new Delete().from(GMStatDataBase.class)
+                .where(GMStatDataBase_Table.action.is(GMStatActionType.TRANS_TABLE))
+                .execute();
         return Observable.just(true);
     }
 

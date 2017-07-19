@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,49 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:elevation="0dp">
+        app:elevation="2dp"
+        app:layout_scrollFlags="scroll|snap|enterAlways">
 
         <com.tokopedia.seller.lib.widget.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom"
-            android:visibility="gone"
-            app:layout_scrollFlags="scroll|snap|enterAlways" />
+            android:visibility="gone" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|snap|enterAlways">
-
-            <TextView
-                android:id="@+id/product_name_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nama Produk" />
-
-            <LinearLayout
-                android:id="@+id/sort_type_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/sort_type_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Test 2" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/sort_type_image"
-                    android:layout_width="15dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_arrow_down" />
-            </LinearLayout>
-        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -61,12 +27,63 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/activity_vertical_margin" />
+            android:orientation="vertical">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/padding_ms">
+
+                <TextView
+                    android:id="@+id/product_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_name" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="1dp"/>
+
+                <LinearLayout
+                    android:id="@+id/sort_type_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/sort_type_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/tkpd_main_green"
+                        android:text="Total Transaksi" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="10dp"
+                        android:layout_height="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_arrow_down" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:background="@color/white"/>
+        </LinearLayout>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </android.support.design.widget.CoordinatorLayout>

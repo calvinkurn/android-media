@@ -40,8 +40,8 @@ public class GMStatGetPopularProductUseCase extends CompositeUseCase<GetPopularP
 
     @Override
     public Observable<GetPopularProduct> createObservable(RequestParams requestParams) {
-        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
-        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
+        final long startDate = requestParams.getLong(START_DATE, -1);
+        final long endDate = requestParams.getLong(END_DATE, -1);
         return gmStatRepository.getPopularProduct(startDate, endDate);
     }
 }
