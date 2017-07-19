@@ -156,6 +156,18 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getLoginIntent(Context context) {
+        Intent intent = Login.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getRegisterIntent(Context context) {
+        Intent intent = Login.getSellerRegisterIntent(context);
+        return intent;
+    }
+
+    @Override
     public void goToHome(Context context) {
         Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
