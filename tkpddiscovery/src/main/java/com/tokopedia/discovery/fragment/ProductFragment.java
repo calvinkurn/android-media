@@ -339,6 +339,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
         productAdapter.setTopAdsListener(this);
+        productAdapter.setIsLoading(false);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -422,7 +423,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 } else {
-                    productAdapter.setIsLoading(false);
                     topAdsRecyclerAdapter.hideLoading();
                     topAdsRecyclerAdapter.unsetEndlessScrollListener();
                     if (getActivity() instanceof  BrowseProductActivity) {
@@ -689,7 +689,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void displayEmptyResult() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         productAdapter.setSearchNotFound();
-        productAdapter.setIsLoading(false);
+        productAdapter.notifyItemInserted(1);
+        setLoading(false);
+        ((BrowseProductActivity) getActivity()).showLoading(false);
     }
 
     @Override

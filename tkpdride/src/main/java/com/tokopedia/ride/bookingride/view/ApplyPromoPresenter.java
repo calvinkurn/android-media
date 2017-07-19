@@ -3,6 +3,7 @@ package com.tokopedia.ride.bookingride.view;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
@@ -34,7 +35,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     @Override
     public void actionApplyPromo() {
         getView().disableApplyButton();
-
+        getView().hideErrorPromoMessage();
         if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
             return;
         } else {
@@ -59,6 +60,10 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                     message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 } else if (e instanceof SocketTimeoutException) {
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                } else if (e instanceof UnProcessableHttpException) {
+                    message = ((UnProcessableHttpException) e).getMessage();
+                } else {
+                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 }
 
                 getView().onFailedApplyPromo(message);

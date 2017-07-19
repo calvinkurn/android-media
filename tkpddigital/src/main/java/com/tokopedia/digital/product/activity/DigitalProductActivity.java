@@ -13,12 +13,10 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.fragment.DigitalProductFragment;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 
 /**
  * @author anggaprasetiyo on 4/25/17.

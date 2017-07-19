@@ -1,13 +1,11 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,16 +162,16 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         setEndlessScrollListener();
     }
 
-    public void setEndlessScrollListenerVisibleThreshold(int threshold){
+    public void setEndlessScrollListenerVisibleThreshold(int threshold) {
         this.endlessScrollListener.setVisibleThreshold(threshold);
     }
 
-    public void unsetEndlessScrollListener(){
+    public void unsetEndlessScrollListener() {
         unsetListener = true;
         recyclerView.removeOnScrollListener(endlessScrollListener);
     }
 
-    public void setEndlessScrollListener(){
+    public void setEndlessScrollListener() {
         unsetListener = false;
         recyclerView.addOnScrollListener(endlessScrollListener);
     }
@@ -227,7 +225,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             TopAdsViewModel adsViewModel = (TopAdsViewModel) placer.getItem(position);
             topAdsViewHolder.setDisplayMode(placer.getDisplayMode());
             topAdsViewHolder.bind(adsViewModel);
-            if (adsInfoClickListener != null){
+            if (adsInfoClickListener != null) {
                 topAdsViewHolder.setClickListener(adsInfoClickListener);
             }
         } else if (originalPos == LoadingViewModel.LOADING_POSITION_TYPE) {
@@ -248,7 +246,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (viewType == TopAdsAdapterTypeFactory.CLIENT_ADAPTER_VIEW_TYPE) {
                 viewType = mOriginalAdapter.getItemViewType(getOriginalPosition(position));
             }
-        }catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             return viewType;
@@ -262,7 +260,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager instanceof GridLayoutManager) {
-            if(getConfig().getDisplayMode() == DisplayMode.FEED){
+            if (getConfig().getDisplayMode() == DisplayMode.FEED) {
                 placer.setDisplayMode(getConfig().getDisplayMode());
             } else {
                 placer.setDisplayMode(DisplayMode.GRID);
@@ -298,16 +296,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void showLoading() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (!placer.getItems().contains(loadingViewModel)) {
-                    placer.getItems().add(loadingViewModel);
-                    notifyItemInserted(placer.getItemCount() + 1);
-                }
-                loadMore = true;
-            }
-        });
+        if (!placer.getItems().contains(loadingViewModel)) {
+            placer.getItems().add(loadingViewModel);
+            notifyItemInserted(placer.getItemCount() + 1);
+        }
+        loadMore = true;
     }
 
     public void hideLoading() {

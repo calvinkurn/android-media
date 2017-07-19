@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 
 /**

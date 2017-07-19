@@ -6,6 +6,7 @@ import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
@@ -16,18 +17,22 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by alvarisi on 3/14/17.
@@ -43,7 +48,8 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PromoEntityMapper promoEntityMapper;
     private final RideHistoryEntityMapper rideHistoryEntityMapper;
     private final RideAddressEntityMapper rideAddressEntityMapper;
-
+    private final TimePriceEstimateEntityMapper timePriceEstimateEntityMapper;
+    private final PriceEstimateEntityMapper priceEstimateEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -57,6 +63,8 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         promoEntityMapper = new PromoEntityMapper();
         rideHistoryEntityMapper = new RideHistoryEntityMapper();
         rideAddressEntityMapper = new RideAddressEntityMapper();
+        timePriceEstimateEntityMapper = new TimePriceEstimateEntityMapper();
+        priceEstimateEntityMapper = new PriceEstimateEntityMapper();
     }
 
     @Override
@@ -268,6 +276,43 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public List<String> call(CancelReasonsResponseEntity cancelReasonsResponseEntity) {
                         return cancelReasonsResponseEntity.getReasons();
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<TimePriceEstimate>> getTimePriceEstimate(TKPDMapParam<String, Object> parameters) {
+        return Observable.zip(
+                mBookingRideDataStoreFactory.createCloudDataStore()
+                        .getEstimatedTimes(parameters),
+                mBookingRideDataStoreFactory.createCloudDataStore()
+                        .getPrices(parameters),
+                new Func2<List<TimesEstimateEntity>, List<PriceEntity>, List<TimePriceEstimate>>() {
+                    @Override
+                    public List<TimePriceEstimate> call(List<TimesEstimateEntity> timesEstimateEntities, List<PriceEntity> priceEntities) {
+                        List<TimePriceEstimate> timePriceEstimates = new ArrayList<>();
+                        timePriceEstimates = timePriceEstimateEntityMapper.transform(timesEstimateEntities, priceEntities);/*
+                        for (TimesEstimateEntity estimateEntity : timesEstimateEntities){
+                            for (PriceEntity priceEntity : priceEntities){
+                                if (estimateEntity.getProductId().equalsIgnoreCase(priceEntity.getProductId())){
+                                    timePriceEstimates.add(timePriceEstimateEntityMapper.transform(priceEntity, estimateEntity));
+                                }
+                            }
+                        }*/
+                        return timePriceEstimates;
+                    }
+                }
+        );
+    }
+
+    @Override
+    public Observable<List<PriceEstimate>> getPriceEstimate(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getPrices(parameters)
+                .map(new Func1<List<PriceEntity>, List<PriceEstimate>>() {
+                    @Override
+                    public List<PriceEstimate> call(List<PriceEntity> priceEntities) {
+                        return priceEstimateEntityMapper.transform(priceEntities);
                     }
                 });
     }
