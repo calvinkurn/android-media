@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
@@ -14,7 +15,7 @@ import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -103,6 +104,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         this.gmFragmentView = gmFragmentView;
         this.gmStat = gmStat;
         this.shopId = shopId;
+        gmStat.joinRepository();
     }
 
     public void setFirstTime(boolean firstTime) {
@@ -129,12 +131,19 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
     @Override
     public void fetchData() {
+        GMStatNetworkController gmStatNetworkController = gmStat.getGmStatNetworkController();
         if (isFirstTime && isFetchData) {
             gmFragmentView.resetToLoading();
-            gmStat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
+            if (gmStatNetworkController instanceof GMStatNetworkController2) {
+                ((GMStatNetworkController2) gmStatNetworkController).testApi(shopId, compositeSubscription);
+            }
+            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         } else if (!isFirstTime) {
+            if (gmStatNetworkController instanceof GMStatNetworkController2) {
+                ((GMStatNetworkController2) gmStatNetworkController).testApi(shopId, compositeSubscription);
+            }
             //[START] real network
-            gmStat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
+            gmStatNetworkController.fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network
         }
 

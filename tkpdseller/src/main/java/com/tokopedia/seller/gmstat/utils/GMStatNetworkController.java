@@ -98,12 +98,14 @@ public class GMStatNetworkController extends BaseNetworkController {
         return getProductGraph(shopId, DEFAULT_SDATE, DEFAULT_EDATE);
     }
 
+
     public Observable<Response<GetProductGraph>> getProductGraph(
             long shopId, long sDate, long eDate
     ) {
         return gmstatApi.getProductGraph(
                 getGMStatParam(shopId, sDate, eDate));
     }
+
 
     public Observable<Response<GetTransactionGraph>> getTransactionGraph(
             long shopId, long sDate, long eDate
@@ -251,7 +253,6 @@ public class GMStatNetworkController extends BaseNetworkController {
                             KeywordModel keywordModel =
                                     new KeywordModel();
                             keywordModel.getShopCategory = response.body();
-                            keywordModel.getShopCategoryResponse = response;
 
                             if (keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
                                     || keywordModel.getShopCategory.getShopCategory().isEmpty()) {
@@ -326,7 +327,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                 }
                             });
                         } else {
-                            throw new RuntimeException("fai    led");
+                            throw new RuntimeException("failed");
                         }
                     }
                 });
@@ -538,6 +539,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                         )
         );
     }
+
 
     @SuppressWarnings("unchecked")
     public void fetchData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
@@ -763,8 +765,6 @@ public class GMStatNetworkController extends BaseNetworkController {
     public static class KeywordModel {
         public List<GetKeyword> getKeywords;
         public GetShopCategory getShopCategory;
-
-        public Response<GetShopCategory> getShopCategoryResponse;
         public List<Response<GetKeyword>> getResponseList;
         public List<HadesV1Model> hadesv1Models;
     }
