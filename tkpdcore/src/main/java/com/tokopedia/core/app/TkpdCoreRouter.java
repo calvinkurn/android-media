@@ -55,4 +55,8 @@ public interface TkpdCoreRouter {
     void goToCreateMerchantRedirect(Context context);
 
     void goToRegister(Context context);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getRegisterIntent(Context context);
 }
