@@ -242,14 +242,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (!isViewAttached()) return;
                 getView().hideRequestLoadingLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
-                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+                    if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                        getView().openInterruptConfirmationDialog(
+                                ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                ((InterruptConfirmationHttpException) e).getType(),
+                                ((InterruptConfirmationHttpException) e).getId()
+                        );
+                    } else if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide(e.getMessage());
                     }
-                    ///getView().hideLoadingWaitingResponse();
-                    //getView().hideRideRequestStatus();
+
                 } else if (e instanceof UnprocessableEntityHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));

@@ -63,11 +63,22 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                 if (isViewAttached()) {
                     getView().hideProgress();
 
-
                     if (e instanceof InterruptConfirmationHttpException) {
-                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                         if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                            getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                             getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                        } else if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                            getView().showErrorTosConfirmationDialog(
+                                    e.getMessage(),
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getType(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
+                            getView().openInterruptConfirmationDialog(
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getType(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
                         } else {
                             String message = e.getMessage();
                             getView().showToastMessage(message);

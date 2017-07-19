@@ -51,6 +51,10 @@ public interface ConfirmBookingContract {
         void disableConfirmBtn();
 
         void enableConfirmButton();
+
+        void showErrorTosConfirmationDialog(String message, String tosUrl, String key, String value);
+
+        void openInterruptConfirmationDialog(String tosUrl, String type, String id);
     }
 
     interface Presenter extends CustomerPresenter<View> {
