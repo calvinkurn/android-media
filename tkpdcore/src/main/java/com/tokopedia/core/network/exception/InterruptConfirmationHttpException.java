@@ -26,6 +26,12 @@ public class InterruptConfirmationHttpException extends IOException {
     public static final String WALLET_TOPUP_INTERRUPT = "wallet_topup";
     public static final String GENERAL_INTERRUPT = "interrupt";
 
+    private static final String TOS_TOKOPEDIA_KEY = "tos_tokopedia_id";
+    private static final String TOS_CONFIRMATION_KEY = "tos_confirmation_id";
+    private static final String SURGE_KEY = "surge_confirmation_id";
+
+    private static final String DATA_RESPONSE = "data";
+
     public InterruptConfirmationHttpException() {
         super("Request data is invalid, please check message");
     }
@@ -41,8 +47,8 @@ public class InterruptConfirmationHttpException extends IOException {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(errorMessage);
-            if (jsonObject.has("data")) {
-                newResponseString = jsonObject.getString("data");
+            if (jsonObject.has(DATA_RESPONSE)) {
+                newResponseString = jsonObject.getString(DATA_RESPONSE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -61,17 +67,17 @@ public class InterruptConfirmationHttpException extends IOException {
                     case TOS_TOKOPEDIA_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getTosTokopediaConfirmationExceptionEntity().getHref());
                         this.entity.setId(entity.getMeta().getTosTokopediaConfirmationExceptionEntity().getTosId());
-                        this.entity.setKey("tos_tokopedia_id");
+                        this.entity.setKey(TOS_TOKOPEDIA_KEY);
                         break;
                     case TOS_CONFIRMATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getTosAcceptConfirmationEntity().getHref());
                         this.entity.setId(entity.getMeta().getTosAcceptConfirmationEntity().getTosId());
-                        this.entity.setKey("tos_confirmation_id");
+                        this.entity.setKey(TOS_CONFIRMATION_KEY);
                         break;
                     case SURGE_CONFIRMATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getSurgeConfirmationEntity().getHref());
                         this.entity.setId(entity.getMeta().getSurgeConfirmationEntity().getSurgeConfirmationId());
-                        this.entity.setKey("surge_confirmation_id");
+                        this.entity.setKey(SURGE_KEY);
                         break;
                     case WALLET_ACTIVATION_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getWalletActivationEntity().getHref());
