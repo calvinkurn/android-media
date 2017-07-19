@@ -29,6 +29,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -38,7 +42,14 @@ import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.reputationproduct.data.factory.ReputationProductDataFactory;
+import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
+import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepository;
+import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepositoryImpl;
+import com.tokopedia.core.reputationproduct.domain.usecase.GetLikeDislikeUseCase;
 import com.tokopedia.core.reputationproduct.model.LikeDislike;
 import com.tokopedia.core.reputationproduct.model.ViewHolderComment;
 import com.tokopedia.core.reputationproduct.model.ViewHolderMain;
@@ -62,6 +73,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Scheduler;
+
 /**
  * Created by hangnadi on 8/19/15.
  */
@@ -81,8 +94,14 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     private LabelUtils labelHeader;
     private LabelUtils labelResponder;
     private ImageUploadAdapter imageUploadAdapter;
-    private ActReputationRetrofitInteractor actNetworkInteractor;
+//    private ActReputationRetrofitInteractor actNetworkInteractor;
     private InboxReputationRetrofitInteractor networkInteractor;
+
+    private LikeDislikeRepository likeDislikeRepository;
+    private ReputationProductDataFactory reputationProductDataFactory;
+    private ShopApi shopApi;
+    private LikeDislikeDomainMapper likeDislikeDomainMapper;
+    private GetLikeDislikeUseCase getLikeDislikeUseCase;
 
     public static ReputationProductFragment createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
         ReputationProductFragment fragment = new ReputationProductFragment();
@@ -96,9 +115,13 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     @Override
     protected void initialPresenter() {
-        actNetworkInteractor = new ActReputationRetrofitInteractorImpl();
-        networkInteractor = new InboxReputationRetrofitInteractorImpl();
-        presenter = new ReputationProductViewFragmentPresenterImpl(this, actNetworkInteractor, networkInteractor);
+//        actNetworkInteractor = new ActReputationRetrofitInteractorImpl();
+//        networkInteractor = new InboxReputationRetrofitInteractorImpl();
+        likeDislikeDomainMapper = new LikeDislikeDomainMapper();
+        reputationProductDataFactory = new ReputationProductDataFactory(getActivity(),new ShopService(),likeDislikeDomainMapper);
+        likeDislikeRepository = new LikeDislikeRepositoryImpl(reputationProductDataFactory);
+        getLikeDislikeUseCase = new GetLikeDislikeUseCase(new JobExecutor(),new UIThread(), likeDislikeRepository);
+        presenter = new ReputationProductViewFragmentPresenterImpl(this, getLikeDislikeUseCase);
     }
 
     @Override
@@ -761,7 +784,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        actNetworkInteractor.unSubscribeObservable();
+//        actNetworkInteractor.unSubscribeObservable();
     }
 
     @Override
