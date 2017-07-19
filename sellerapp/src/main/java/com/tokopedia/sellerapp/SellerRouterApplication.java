@@ -14,6 +14,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
@@ -23,6 +24,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -46,7 +48,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
+        IPaymentModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -232,4 +235,25 @@ public class SellerRouterApplication extends MainApplication
                 SellerReputationFragment.TAG,
                 SellerReputationFragment.createInstance());
     }
+
+    @Override
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
+    }
+
+    @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        return false;
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return null;
+    }
+
+    @Override
+    public String getBaseUrlDomainPayment() {
+        return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
 }
