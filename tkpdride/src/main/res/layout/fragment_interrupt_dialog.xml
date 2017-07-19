@@ -10,6 +10,7 @@
         android:id="@+id/tv_label_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="@color/tkpd_dark_green"
         android:text="By clicking Booking Ride,\n I agree with terms and conditions."
         android:textAlignment="center" />
 

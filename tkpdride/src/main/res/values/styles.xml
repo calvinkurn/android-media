@@ -32,6 +32,6 @@
 
 
     <style name="searchTextPrimaryHiglight">
-        <item name="android:textColor">@color/tkpd_dark_green</item>
+        <item name="android:textColor">@color/label_text_color</item>
     </style>
 </resources>
