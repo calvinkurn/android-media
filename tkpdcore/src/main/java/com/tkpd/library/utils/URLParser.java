@@ -81,6 +81,11 @@ public class URLParser {
 		return Path.get(1);
 	}
 
+	public String getDeepestCategoryName() {
+		List<String> Path = uri.getPathSegments();
+		return Path.get(Path.size() - 1);
+	}
+
 	public static String getPathSegment(int i, String url) {
 		List<String> path = Uri.parse(url).getPathSegments();
 		if (path.size()>i)
