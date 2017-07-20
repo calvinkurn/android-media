@@ -41,6 +41,12 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
  *         modified Alvarisi
@@ -78,9 +84,32 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDeepLink();
+        Observable.just(true).subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map(new Func1<Boolean, Void>() {
+                @Override
+                public Void call(Boolean aBoolean) {
+                    TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+                    return null;
+                }
+            })
+            .subscribe(new Observer<Void>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNext(Void aVoid) {
+                    initDeepLink();
+                }
+            });
         isAllowFetchDepartmentView = true;
-        TrackingUtils.sendAppsFlyerDeeplink(this);
     }
 
     @Override
