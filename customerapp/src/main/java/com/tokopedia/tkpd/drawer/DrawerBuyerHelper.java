@@ -166,11 +166,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
-                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
-                    true));
-        }
     }
 
     private DrawerGroup getSellerMenu() {
