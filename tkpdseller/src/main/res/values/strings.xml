@@ -96,5 +96,7 @@
     <string name="product_draft_save_as_draft">Simpan Draft</string>
     <string name="no_market_insight_in_this_period">Tidak ada data wawasan pasar pada periode ini</string>
     <string name="plus_add_product">+ Tambah Produk</string>
-    <string name="market_insight">Wawasan Pasar</string>
+    <string name="get_access_to_see_gm_stat">Dapatkan akses untuk melihat\ndata lengkap statistik produk</string>
+    <string name="upgrade_to_gold_merchant">Upgrade ke Gold Merchant</string>
+
 </resources>

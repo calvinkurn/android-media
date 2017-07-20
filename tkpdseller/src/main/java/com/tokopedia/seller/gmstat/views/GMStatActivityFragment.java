@@ -52,6 +52,7 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
@@ -338,6 +339,12 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                              Bundle savedInstanceState) {
         gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
+
+        // TODO hendry test
+        TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
+        marketInsightCardView.setEmptyState(true);
+        marketInsightCardView.getContentView().setVisibility(View.VISIBLE);
+
         initViews(rootView);
         initNumberFormatter();
         initEmptyAdapter();
