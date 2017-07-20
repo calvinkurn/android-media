@@ -1,12 +1,14 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain;
 
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
@@ -27,11 +29,15 @@ public interface GMStatRepository {
 
     Observable<GetPopularProduct> getPopularProduct(long startDate, long endDate);
 
-    Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate);
+    Observable<GetBuyerGraph> getBuyerGraph(long startDate, long endDate);
 
     Observable<GetKeyword> getKeywordModel(String categoryId);
 
     Observable<GetShopCategory> getShopCategory(long startDate, long endDate);
 
     Observable<Boolean> clearCache();
+
+    Observable<GetProductTable> getProductTable(long startDate, long endDate);
+
+    Observable<GetBuyerTable> getBuyerTable(long startDate, long endDate);
 }

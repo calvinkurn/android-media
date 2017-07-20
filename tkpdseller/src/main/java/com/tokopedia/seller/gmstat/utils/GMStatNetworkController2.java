@@ -7,11 +7,11 @@ import com.google.gson.Gson;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.gmstat.apis.GMStatApi;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
@@ -77,11 +77,11 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
         return repository.getPopularProduct(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
     }
 
-    public Observable<GetBuyerData> getBuyerData2(long shopId, long sDate, long eDate) {
+    public Observable<GetBuyerGraph> getBuyerData2(long shopId, long sDate, long eDate) {
         return repository.getBuyerGraph(sDate, eDate);
     }
 
-    public Observable<GetBuyerData> getBuyerData2(long shopId) {
+    public Observable<GetBuyerGraph> getBuyerData2(long shopId) {
         return getBuyerData2(shopId, -1, -1);
     }
 
@@ -99,7 +99,7 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                     @Override
                     public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
                         KeywordModel keywordModel =
-                                new KeywordModel();
+                                new KeywordModel2();
                         keywordModel.getShopCategory = getShopCategory;
 
                         if (keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
@@ -121,20 +121,20 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                                 }
                         ).toList();
 
-                        Observable<List<Response<GetKeyword>>> getKeywords
+                        Observable<List<GetKeyword>> getKeywords
                                 = Observable.from(shopCategory)
-                                .flatMap(new Func1<Integer, Observable<Response<GetKeyword>>>() {
+                                .flatMap(new Func1<Integer, Observable<GetKeyword>>() {
                                     @Override
-                                    public Observable<Response<GetKeyword>> call(Integer catId) {
-                                        return getKeyword(shopId, catId);
+                                    public Observable<GetKeyword> call(Integer catId) {
+                                        return getKeyword2(shopId, catId);
                                     }
                                 })
                                 .toList();
 
 
-                        return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<Response<GetKeyword>>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
+                        return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<GetKeyword>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
                             @Override
-                            public KeywordModel call(List<Response<GetKeyword>> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
+                            public KeywordModel call(List<GetKeyword> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
                                 keywordModel.getKeywords = new ArrayList<>();
                                 keywordModel.hadesv1Models = new ArrayList<>();
                                 List<Integer> indexToRemoved = new ArrayList<>();
@@ -143,24 +143,24 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                                         && responses.size() == responses2.size()) {
                                     int size = responses.size();
                                     for (int i = 0; i < size; i++) {
-                                        Response<GetKeyword> h1 = responses.get(i);
+                                        GetKeyword h1 = responses.get(i);
                                         Response<HadesV1Model> h2 = responses2.get(i);
                                         if (h2.isSuccessful() && h2.errorBody() == null) {
-                                            keywordModel.getKeywords.add(h1.body());
-                                            keywordModel.hadesv1Models.add(h2.body());
-                                            hadesV1Models.add(h2.body());
-                                            indexToRemoved.add(i);
+                                            if (keywordModel instanceof KeywordModel2) {
+                                                ((KeywordModel2) keywordModel).getKeywords2.add(h1);
+                                                keywordModel.hadesv1Models.add(h2.body());
+                                                hadesV1Models.add(h2.body());
+                                                indexToRemoved.add(i);
+                                            }
                                         }
                                     }
                                 } else {
-                                    keywordModel.getKeywords = new ArrayList<>();
-                                    for (Response<GetKeyword> response : responses) {
-                                        if (response.isSuccessful()) {
-                                            keywordModel.getKeywords.add(response.body());
+                                    if (keywordModel instanceof KeywordModel2) {
+                                        ((KeywordModel2) keywordModel).getKeywords2 = new ArrayList<>();
+                                        for (GetKeyword response : responses) {
+                                            ((KeywordModel2) keywordModel).getKeywords2.add(response);
                                         }
                                     }
-
-                                    keywordModel.getResponseList = responses;
 
                                     hadesV1Models = new ArrayList<>();
                                     for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
@@ -185,7 +185,9 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                         getTransactionGraph2(shopId),
                         getPopularProduct2(shopId),
                         getBuyerData2(shopId),
-                        getKeywordModelObservable(shopId)
+                        getKeywordModelObservable(shopId),
+                        repository.getBuyerTable(-1, -1),
+                        repository.getProductTable(-1, -1)
                 ).toList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -209,5 +211,9 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                                 }
                         )
         );
+    }
+
+    public static class KeywordModel2 extends KeywordModel {
+        public List<GetKeyword> getKeywords2;
     }
 }

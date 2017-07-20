@@ -1,14 +1,16 @@
 package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 
 import java.text.DateFormat;
@@ -84,7 +86,7 @@ public class GMStatCloud {
         return gmStatApi.getPopularProduct(shopId, param);
     }
 
-    public Observable<Response<GetBuyerData>> getBuyerGraph(long startDate, long endDate) {
+    public Observable<Response<GetBuyerGraph>> getBuyerGraph(long startDate, long endDate) {
         String shopId = sessionHandler.getShopID();
         Map<String, String> param = generateStartEndDateMap(startDate, endDate);
         ;
@@ -92,16 +94,25 @@ public class GMStatCloud {
     }
 
     public Observable<Response<GetKeyword>> getKeywordModel(String categoryId) {
-        String shopId = sessionHandler.getShopID();
-        Map<String, String> param = new HashMap<>();
-        param.put(SHOP_ID, shopId);
-        return gmStatApi.getKeyword(categoryId, param);
+        return gmStatApi.getKeyword(categoryId, new HashMap<String, String>());
     }
 
     public Observable<Response<GetShopCategory>> getShopCategory(long startDate, long endDate) {
         String shopId = sessionHandler.getShopID();
         Map<String, String> param = generateStartEndDateMap(startDate, endDate);
         return gmStatApi.getShopCategory(shopId, param).take(1);
+    }
+
+    public Observable<Response<GetProductTable>> getProductTable(long startDate, long endDate) {
+        String shopId = sessionHandler.getShopID();
+        Map<String, String> param = generateStartEndDateMap(startDate, endDate);
+        return gmStatApi.getProductTable(shopId, param);
+    }
+
+    public Observable<Response<GetBuyerTable>> getBuyerTable(long startDate, long endDate) {
+        String shopId = sessionHandler.getShopID();
+        Map<String, String> param = generateStartEndDateMap(startDate, endDate);
+        return gmStatApi.getBuyerTable(shopId, param);
     }
 
     private Map<String, String> generateStartEndDateMap(long startDate, long endDate) {
