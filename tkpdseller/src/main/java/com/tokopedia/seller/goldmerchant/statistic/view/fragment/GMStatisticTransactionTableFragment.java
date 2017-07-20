@@ -8,10 +8,13 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -60,8 +63,9 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     private int sortByIndexSelection;
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
-    private int sortTypeIndexSelection;
+    private int sortTypeIndexSelection = -1;
     private GoldMerchantComponent goldMerchantComponent;
+    private TextView tvSortBy;
 
     public static Fragment createInstance(long startDate, long endDate) {
         Bundle bundle = new Bundle();
@@ -73,6 +77,12 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
@@ -81,7 +91,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     @Override
     protected void searchData() {
         super.searchData();
-        presenter.loadData(startDate, endDate, sortBy, sortType);
+        presenter.loadData(startDate, endDate, sortBy, sortType, page);
     }
 
     @Override
@@ -120,17 +130,33 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_sort) {
+            showSortType();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setVisibility(View.VISIBLE);
-        sortTypeContainer = (LinearLayout) view.findViewById(R.id.sort_type_container);
+        sortTypeContainer = (LinearLayout) view.findViewById(R.id.sort_by_container);
         sortTypeContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSortBy();
             }
         });
+        tvSortBy = (TextView) sortTypeContainer.findViewById(R.id.sort_by_text);
 
         gmStatSortBy = getResources().getStringArray(R.array.gm_stat_sort_by);
         sortBySelections = new boolean[gmStatSortBy.length];
@@ -138,7 +164,9 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
 
         gmStatSortType = getResources().getStringArray(R.array.gm_stat_sort_type);
         sortTypeSelections = new boolean[gmStatSortBy.length];
-        sortTypeSelections[sortTypeIndexSelection] = true;
+        if (sortTypeIndexSelection > -1) {
+            sortTypeSelections[sortTypeIndexSelection] = true;
+        }
     }
 
     @Override
@@ -193,7 +221,8 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
                         break;
 
                 }
-                Log.d("Item click", item.getTitle() + " findSelection : " + sortBy);
+                resetSelectionSortBy(sortByIndexSelection);
+                tvSortBy.setText(item.getTitle());
                 searchData();
                 showingSimpleDialog = false;
             }
@@ -204,16 +233,19 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
-                switch (sortTypeIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, menuItem.getTitle().toString())) {
+                switch (sortTypeIndexSelection = GMStatisticUtil.findSelection(gmStatSortType, menuItem.getTitle().toString())) {
                     case 0:
                         sortType = GMTransactionTableSortType.ASCENDING;
                         break;
-                    default:
                     case 1:
                         sortType = GMTransactionTableSortType.DESCENDING;
                         break;
+                    default:
+                        sortType = -1;
+                        break;
                 }
                 Log.d("Item click", menuItem.getTitle() + " findSelection : " + sortType);
+                resetSelectionSortType(sortTypeIndexSelection);
                 searchData();
                 showingSimpleDialog = false;
             }
@@ -224,7 +256,7 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
         showingSimpleDialog = true;
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.gold_merchant_transaction_summary_text));
+                .addTitleItem(getString(R.string.filter));
 
         for (int i = 0; i < text.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
@@ -244,6 +276,18 @@ public class GMStatisticTransactionTableFragment extends BaseListFragment2<GMSta
             }
         });
         bottomSheetDialog.show();
+    }
+
+    private void resetSelectionSortType(int newSelection) {
+        for (int i = 0; i < sortTypeSelections.length; i++) {
+            sortTypeSelections[i] = i == newSelection;
+        }
+    }
+
+    private void resetSelectionSortBy(int newSelection) {
+        for (int i = 0; i < sortBySelections.length; i++) {
+            sortBySelections[i] = i == newSelection;
+        }
     }
 
     @Override

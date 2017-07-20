@@ -142,8 +142,7 @@
             android:orientation="vertical"
             android:background="#f9f9f9"
             android:gravity="center"
-            android:visibility="gone"
-            >
+            android:visibility="gone" >
 
             <ImageView
                 android:layout_width="113dp"
@@ -155,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:textSize="16sp"
-                android:text="Tidak ada data wawasan pasar pada periode ini "
+                android:text="@string/no_market_insight_in_this_period"
                 android:textColor="#61000000"
                 android:gravity="center"
                 />
@@ -166,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#42b549"
                 android:layout_marginTop="28dp"
-                android:text="+ Tambah Produk"
+                android:text="@string/plus_add_product"
                 android:textSize="14sp"/>
 
         </LinearLayout>

@@ -41,7 +41,9 @@
             android:id="@+id/not_done_trans_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            app:title="@string/unfinished_transaction_text"
+            app:loading_layout="@layout/item_loading_gmstat_pie_chart">
 
             <LinearLayout
                 android:layout_width="match_parent"

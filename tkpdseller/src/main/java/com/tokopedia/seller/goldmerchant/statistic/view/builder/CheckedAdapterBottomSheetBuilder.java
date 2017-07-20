@@ -45,6 +45,8 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
     @NonNull
     @Override
     protected BottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
-        return new com.tokopedia.seller.goldmerchant.statistic.view.adapter.BottomSheetItemAdapter(mItems, mMode, itemClickListener);
+        return new com.tokopedia.seller.goldmerchant.statistic.view.adapter.BottomSheetItemAdapter(
+                mItems,
+                mMode, itemClickListener );
     }
 }

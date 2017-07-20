@@ -52,7 +52,7 @@
                     android:layout_height="1dp"/>
 
                 <LinearLayout
-                    android:id="@+id/sort_type_container"
+                    android:id="@+id/sort_by_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
@@ -61,7 +61,7 @@
                     android:background="?attr/selectableItemBackground">
 
                     <TextView
-                        android:id="@+id/sort_type_text"
+                        android:id="@+id/sort_by_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/tkpd_main_green"

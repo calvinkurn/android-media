@@ -148,6 +148,5 @@ public class LineChartContainerWidget extends LinearLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        //TODO hendry setenabled
     }
 }
