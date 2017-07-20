@@ -8,7 +8,7 @@ import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSo
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cache.GMStatCache;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatCloud;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.GMStatCloud;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;

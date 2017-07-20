@@ -1,42 +1,38 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.MARKET_INSIGHT_FOOTER_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.NUMBER_TIMES_FORMAT;
-import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 
 /**
  * Created by normansyahputa on 11/23/16.
  */
 
 public class MarketInsightViewHelper2 {
+
+    public static final String DEFAULT_CATEGORY = "kaos";
+    public static final int MAX_KEYWORD_SHOWN = 3;
 
     private RecyclerView marketInsightRecyclerView;
     private TextView tvMarketInsightFooter;
@@ -48,14 +44,6 @@ public class MarketInsightViewHelper2 {
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
         initView(view);
-
-//        view.findViewById(R.id.move_to_gmsubscribe_market_insight).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                moveToGMSubscribe();
-//            }
-//        });
-
     }
 
     public void addProductMarketInsight() {
@@ -67,8 +55,9 @@ public class MarketInsightViewHelper2 {
     }
 
     public void moveToGMSubscribe() {
-        if (!isGoldMerchant)
+        if (!isGoldMerchant) {
             Router.goToGMSubscribe(view.getContext());
+        }
     }
 
     private void initView(final View view) {
@@ -76,173 +65,136 @@ public class MarketInsightViewHelper2 {
         marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview2);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer2);
 
-//        view.findViewById(R.id.market_insight_empty_state)
-//                .setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        addProductMarketInsight();
-//                    }
-//                });
-//
-//        view.findViewById(R.id.move_to_gmsubscribe_market_insight).setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        moveToGMSubscribe();
-//                    }
-//                }
-//        );
-//
-//        view.findViewById(R.id.market_insight_container_top).setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        moveToGMSubscribe();
-//                    }
-//                }
-//        );
-//
-//        view.findViewById(R.id.market_insight_non_gold_merchant).setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        moveToGMSubscribe();
-//                    }
-//                }
-//        );
-//
-//        view.findViewById(R.id.market_insight_gmsubscribe_text).setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        moveToGMSubscribe();
-//                    }
-//                }
-//        );
+        marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
+                this.view.getContext(), LinearLayoutManager.VERTICAL, false));
+        marketInsightAdapter = new MarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
+        marketInsightRecyclerView.setAdapter(marketInsightAdapter);
     }
 
     /**
      * set category for footer
-     *
-     * @param hadesV1Models non null and non empty dataset
      */
-    public void bindDataCategory(List<HadesV1Model> hadesV1Models) {
-//        if (hadesV1Models == null || hadesV1Models.size() <= 0)
-//            return;
-//
-//        HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
-//
-//        String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, category.getName());
-//        marketInsightFooter.setText(MethodChecker.fromHtml(prefixFooterMarketInsight + categoryBold + " "));
+    public void bindCategory(String categoryName) {
+        if (TextUtils.isEmpty(categoryName)) {
+            tvMarketInsightFooter.setVisibility(View.INVISIBLE);
+        } else {
+            tvMarketInsightFooter.setText(MethodChecker.fromHtml(
+                    tvMarketInsightFooter.getContext().getString(
+                            R.string.these_keywords_are_based_on_category_x, categoryName)));
+            tvMarketInsightFooter.setVisibility(View.VISIBLE);
+        }
     }
 
     public void bindData(List<GetKeyword> getKeywords) {
-//        if (isGoldMerchant) {
-//            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
-//            marketInsightNonGoldMerchant.setVisibility(View.GONE);
-//            marketInsightEmptyState.setVisibility(View.GONE);
-//        } else {
-//            displayNonGoldMerchant();
-//            return;
-//        }
-//
-//        if (getKeywords == null || getKeywords.size() <= 0) {
-//            displayEmptyState();
-//            return;
-//        }
-//
-//        //[START] check whether all is empty
-//        int isNotEmpty = 0;
-//        for (GetKeyword getKeyword : getKeywords) {
-//            if (getKeyword.getSearchKeyword() == null || getKeyword.getSearchKeyword().isEmpty())
-//                isNotEmpty++;
-//        }
-//
-//        // if all keyword empty
-//        if (isNotEmpty == getKeywords.size()) {
-//            displayEmptyState();
-//            return;
-//        }
-//
-//        // remove null or empty
-//        for (int i = 0; i < getKeywords.size(); i++) {
-//            if (getKeywords.get(i) == null
-//                    || getKeywords.get(i).getSearchKeyword() == null
-//                    || getKeywords.get(i).getSearchKeyword().isEmpty())
-//                getKeywords.remove(i);
-//        }
-//
-//
-//        GetKeyword getKeyword = getKeywords.get(0);
-//
-//        List<GetKeyword.SearchKeyword> searchKeyword = getKeyword.getSearchKeyword();
-//
-//        marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
-//                view.getContext(), LinearLayoutManager.VERTICAL, false));
-//        marketInsightAdapter = new MarketInsightAdapter(searchKeyword);
-//        marketInsightRecyclerView.setAdapter(marketInsightAdapter);
-//        marketInsightContainerTop.setBackgroundColor(transparantColor);
+        view.setLoadingState(false);
+        if (!isGoldMerchant) {
+            displayNonGoldMerchant();
+            return;
+        }
+
+        if (getKeywords == null || getKeywords.size() <= 0) {
+            displayEmptyState();
+            return;
+        }
+
+        //[START] check whether all is empty
+        int isNotEmpty = 0;
+        for (GetKeyword getKeyword : getKeywords) {
+            if (getKeyword.getSearchKeyword() == null || getKeyword.getSearchKeyword().isEmpty())
+                isNotEmpty++;
+        }
+
+        // if all keyword empty
+        if (isNotEmpty == getKeywords.size()) {
+            displayEmptyState();
+            return;
+        }
+
+        // remove null or empty
+        for (int i = 0; i < getKeywords.size(); i++) {
+            if (getKeywords.get(i) == null
+                    || getKeywords.get(i).getSearchKeyword() == null
+                    || getKeywords.get(i).getSearchKeyword().isEmpty())
+                getKeywords.remove(i);
+        }
+
+        GetKeyword getKeyword = getKeywords.get(0);
+
+        List<GetKeyword.SearchKeyword> searchKeyword = getKeyword.getSearchKeyword();
+        marketInsightAdapter.setSearchKeywords(searchKeyword);
+        marketInsightAdapter.notifyDataSetChanged();
     }
 
     public void displayNonGoldMerchant() {
-//        marketInsightGoldMerchant.setVisibility(View.VISIBLE);
-//        marketInsightNonGoldMerchant.setVisibility(View.VISIBLE);
-//        marketInsightEmptyState.setVisibility(View.GONE);
-//
-//
-//        // create dummy data as replacement for non gold merchant user.
-//        List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
-//        for (int i = 1; i <= 3; i++) {
-//            GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
-//            searchKeyword1.setFrequency(1000);
-//            searchKeyword1.setKeyword(
-//                    String.format(
-//                            resourceManager.getString(R.string.market_insight_item_non_gm_text),
-//                            Integer.toString(i)
-//                    )
-//            );
-//            searchKeyword.add(searchKeyword1);
-//        }
-//
-//        String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, "kaos");
-//        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight + categoryBold + " "));
-//
-//        marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
-//                view.getContext(), LinearLayoutManager.VERTICAL, false));
-//        marketInsightAdapter = new MarketInsightAdapter(searchKeyword);
-//        marketInsightRecyclerView.setAdapter(marketInsightAdapter);
+        view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_gm);
+        View emptyView = view.getEmptyView();
+        emptyView.findViewById(R.id.market_insight_non_gold_merchant).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                }
+        );
+        view.setEmptyState(true);
+        // content will be overlayed behind the empty state
+        view.getContentView().setVisibility(View.VISIBLE);
+
+        displayDummyContentKeyword();
+    }
+
+    private void displayDummyContentKeyword(){
+        // create dummy data as replacement for non gold merchant user.
+        List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
+            searchKeyword1.setFrequency(1000);
+            searchKeyword1.setKeyword(
+                    String.format(
+                            view.getContext().getString(R.string.market_insight_item_non_gm_text),
+                            Integer.toString(i)
+                    )
+            );
+            searchKeyword.add(searchKeyword1);
+        }
+
+        bindCategory(DEFAULT_CATEGORY);
+
+        marketInsightAdapter.setSearchKeywords(searchKeyword);
+        marketInsightAdapter.notifyDataSetChanged();
     }
 
     public void displayEmptyState() {
-//        marketInsightContainerTop.setBackgroundColor(emptyColorBackground);
-//        marketInsightGoldMerchant.setVisibility(View.GONE);
-//        marketInsightNonGoldMerchant.setVisibility(View.GONE);
-//        marketInsightEmptyState.setVisibility(View.VISIBLE);
+        view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_data);
+        view.getEmptyView().findViewById(R.id.market_insight_empty_state)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addProductMarketInsight();
+                    }
+                });
+        view.setEmptyState(true);
     }
 
-    public void bindData(GetShopCategory getShopCategory) {
-        if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty()) {
-            if (isGoldMerchant)
-                displayEmptyState();
-            else {
-                displayNonGoldMerchant();
-            }
+    public void bindNoShopCategory() {
+        if (isGoldMerchant)
+            displayEmptyState();
+        else {
+            displayNonGoldMerchant();
         }
     }
 
     public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketInsightViewHolder> {
 
         List<GetKeyword.SearchKeyword> searchKeywords;
-        private double total;
 
         public MarketInsightAdapter(List<GetKeyword.SearchKeyword> searchKeywords) {
+            setSearchKeywords(searchKeywords);
+
+        }
+
+        public void setSearchKeywords(List<GetKeyword.SearchKeyword> searchKeywords) {
             this.searchKeywords = searchKeywords;
-
-            total = 0;
-            for (GetKeyword.SearchKeyword searchKeyword : searchKeywords) {
-                total += searchKeyword.getFrequency();
-            }
-
         }
 
         @Override
@@ -259,7 +211,7 @@ public class MarketInsightViewHelper2 {
 
         @Override
         public int getItemCount() {
-            return searchKeywords.size() >= 3 ? 3 : searchKeywords.size();
+            return searchKeywords.size() >= MAX_KEYWORD_SHOWN ? MAX_KEYWORD_SHOWN : searchKeywords.size();
         }
     }
 

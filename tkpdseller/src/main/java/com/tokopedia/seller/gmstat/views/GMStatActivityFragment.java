@@ -112,6 +112,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private Drawable oval2Copy6;
     private GridLayoutManager gridLayoutManager;
     private MarketInsightViewHelper marketInsightViewHelper;
+    private MarketInsightViewHelper2 marketInsightViewHelper2;
     private PopularProductLoading popularProductLoading;
     private TransactionDataLoading transactionDataLoading;
     private BuyerDataLoading buyerDataLoading;
@@ -348,11 +349,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
 
-        // TODO hendry test
-        TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
-        marketInsightCardView.setEmptyState(true);
-        marketInsightCardView.getContentView().setVisibility(View.VISIBLE);
-
         initViews(rootView);
         initNumberFormatter();
         initEmptyAdapter();
@@ -362,6 +358,10 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         buyerDataViewHelper = new BuyerDataViewHelper(rootView);
         gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
         marketInsightViewHelper = new MarketInsightViewHelper(rootView, gmstat.isGoldMerchant());
+
+        TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
+        marketInsightViewHelper2 = new MarketInsightViewHelper2(marketInsightCardView, gmstat.isGoldMerchant());
+
         popularProductLoading = new PopularProductLoading(rootView);
         transactionDataLoading = new TransactionDataLoading(rootView);
         buyerDataLoading = new BuyerDataLoading(rootView);
@@ -468,10 +468,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     @Override
-    public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-        marketInsightReal.setVisibility(View.VISIBLE);
-        marketInsightLoading.hideLoading();
-        marketInsightViewHelper.bindData(getShopCategory);
+    public void onGetShopCategoryEmpty() {
+        marketInsightViewHelper2.bindNoShopCategory();
     }
 
     @Override
@@ -630,14 +628,12 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        marketInsightViewHelper.bindData(getKeywords);
-        marketInsightReal.setVisibility(View.VISIBLE);
-        marketInsightLoading.hideLoading();
+        marketInsightViewHelper2.bindData(getKeywords);
     }
 
     @Override
-    public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
-        marketInsightViewHelper.bindDataCategory(hadesV1Models);
+    public void onSuccessGetCategory(String categoryName) {
+        marketInsightViewHelper2.bindCategory(categoryName);
     }
 
     @Override
