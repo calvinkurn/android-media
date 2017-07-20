@@ -42,6 +42,27 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
         super(context, gson, gmStatApi);
     }
 
+    private static com.tokopedia.seller.gmstat.models.GetKeyword from(GetKeyword getKeyword) {
+        com.tokopedia.seller.gmstat.models.GetKeyword res =
+                new com.tokopedia.seller.gmstat.models.GetKeyword();
+        List<com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword> datas =
+                new ArrayList<>();
+        for (GetKeyword.SearchKeyword searchKeyword : getKeyword.getSearchKeyword()) {
+            com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword searchKeyword1
+                    = new com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword();
+            searchKeyword1.setFrequency(searchKeyword.getFrequency());
+            searchKeyword1.setKeyword(searchKeyword.getKeyword());
+
+            datas.add(searchKeyword1);
+        }
+
+        res.setSearchKeyword(datas);
+
+        return res;
+
+
+    }
+
     public void setRepository(GMStatRepository repository) {
         this.repository = repository;
     }
@@ -99,7 +120,7 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                     @Override
                     public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
                         KeywordModel keywordModel =
-                                new KeywordModel2();
+                                new KeywordModel();
                         keywordModel.getShopCategory = getShopCategory;
 
                         if (keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
@@ -146,20 +167,16 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                                         GetKeyword h1 = responses.get(i);
                                         Response<HadesV1Model> h2 = responses2.get(i);
                                         if (h2.isSuccessful() && h2.errorBody() == null) {
-                                            if (keywordModel instanceof KeywordModel2) {
-                                                ((KeywordModel2) keywordModel).getKeywords2.add(h1);
-                                                keywordModel.hadesv1Models.add(h2.body());
-                                                hadesV1Models.add(h2.body());
-                                                indexToRemoved.add(i);
-                                            }
+                                            keywordModel.getKeywords.add(from(h1));
+                                            keywordModel.hadesv1Models.add(h2.body());
+                                            hadesV1Models.add(h2.body());
+                                            indexToRemoved.add(i);
                                         }
                                     }
                                 } else {
-                                    if (keywordModel instanceof KeywordModel2) {
-                                        ((KeywordModel2) keywordModel).getKeywords2 = new ArrayList<>();
-                                        for (GetKeyword response : responses) {
-                                            ((KeywordModel2) keywordModel).getKeywords2.add(response);
-                                        }
+                                    keywordModel.getKeywords = new ArrayList<>();
+                                    for (GetKeyword response : responses) {
+                                        keywordModel.getKeywords.add(from(response));
                                     }
 
                                     hadesV1Models = new ArrayList<>();
@@ -171,6 +188,7 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                                     return keywordModel;
                                 }
 
+
                                 return keywordModel;
                             }
                         });
@@ -178,7 +196,7 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
                 });
     }
 
-    public void testApi(long shopId, CompositeSubscription compositeSubscription) {
+    public void fetchData2(long id, long sDate, long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 Observable.concat(
                         getProductGraph2(shopId),
@@ -201,19 +219,35 @@ public class GMStatNetworkController2 extends GMStatNetworkController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        Log.e(TAG, "testApi : " + e.getMessage());
+                                        Log.e(TAG, "fetchData2 : " + e.getMessage());
                                     }
 
                                     @Override
-                                    public void onNext(List<Object> objects) {
-                                        Log.d(TAG, "testApi : " + objects.size());
+                                    public void onNext(List<Object> responses) {
+                                        Log.d(TAG, "fetchData2 : " + responses.size());
+
+
+                                        GetBuyerGraph getBuyerGraph = (GetBuyerGraph) responses.get(3);
+                                        getGMStat.onSuccessBuyerGraph(getBuyerGraph);
+
+                                        KeywordModel keywordModel = (KeywordModel) responses.get(4);
+                                        processKeywordModel(keywordModel, getGMStat);
                                     }
                                 }
                         )
         );
     }
 
-    public static class KeywordModel2 extends KeywordModel {
-        public List<GetKeyword> getKeywords2;
+    private void processKeywordModel(KeywordModel keywordModel, GetGMStat getGMStat) {
+        GetShopCategory getShopCategory = keywordModel.getShopCategory;
+        getGMStat.onSuccessGetShopCategory(getShopCategory);
+
+        if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
+            return;
+
+        List<com.tokopedia.seller.gmstat.models.GetKeyword> getKeywords = keywordModel.getKeywords;
+        getGMStat.onSuccessGetKeyword(getKeywords);
+
+        getGMStat.onSuccessGetCategory(keywordModel.hadesv1Models);
     }
 }

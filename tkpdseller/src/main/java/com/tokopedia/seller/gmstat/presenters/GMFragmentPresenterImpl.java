@@ -16,6 +16,7 @@ import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -71,6 +72,11 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         @Override
         public void onSuccessBuyerData(GetBuyerData getBuyerData) {
             gmFragmentView.onSuccessBuyerData(getBuyerData);
+        }
+
+        @Override
+        public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
+            gmFragmentView.onSuccessBuyerGraph(getBuyerGraph);
         }
 
         @Override
@@ -135,12 +141,12 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         if (isFirstTime && isFetchData) {
             gmFragmentView.resetToLoading();
             if (gmStatNetworkController instanceof GMStatNetworkController2) {
-                ((GMStatNetworkController2) gmStatNetworkController).testApi(shopId, compositeSubscription);
+                ((GMStatNetworkController2) gmStatNetworkController).fetchData2(shopId, sDate, eDate, compositeSubscription, gmStatListener);
             }
             gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         } else if (!isFirstTime) {
             if (gmStatNetworkController instanceof GMStatNetworkController2) {
-                ((GMStatNetworkController2) gmStatNetworkController).testApi(shopId, compositeSubscription);
+                ((GMStatNetworkController2) gmStatNetworkController).fetchData2(shopId, sDate, shopId, compositeSubscription, gmStatListener);
             }
             //[START] real network
             gmStatNetworkController.fetchData(shopId, compositeSubscription, gmStatListener);

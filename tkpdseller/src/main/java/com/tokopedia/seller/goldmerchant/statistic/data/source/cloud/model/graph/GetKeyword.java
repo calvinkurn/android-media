@@ -13,19 +13,19 @@ import java.util.List;
 public class GetKeyword {
     @SerializedName("search_keyword")
     @Expose
-    private List<com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
+    private List<SearchKeyword> searchKeyword = new ArrayList<>();
 
     /**
      * @return The searchKeyword
      */
-    public List<com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword> getSearchKeyword() {
+    public List<SearchKeyword> getSearchKeyword() {
         return searchKeyword;
     }
 
     /**
      * @param searchKeyword The SearchKeyword
      */
-    public void setSearchKeyword(List<com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword> searchKeyword) {
+    public void setSearchKeyword(List<SearchKeyword> searchKeyword) {
         this.searchKeyword = searchKeyword;
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 
 import java.util.Locale;
 
@@ -77,7 +78,7 @@ public class BuyerDataViewHelper {
 
     }
 
-    public void bindData(GetBuyerData getBuyerData) {
+    public void bindData(GetBuyerGraph getBuyerData) {
 
         /* this is empty state */
         if (getBuyerData.getTotalBuyer() == 0 &&
@@ -121,6 +122,90 @@ public class BuyerDataViewHelper {
                 if(malePercent <= 0){
                     malePie.setVisibility(View.GONE);
                 }else
+                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
+                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) femalePercent));
+                buyerDataPieChart.setProgress((float) femalePercent);
+            }
+        }
+
+        buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+
+        double percentage = getBuyerData.getDiffTotal() * 100D;
+        boolean isDefault;
+        if (percentage == 0) {
+            buyerCountIcon.setVisibility(View.GONE);
+            percentageBuyer.setTextColor(arrowUp);
+            isDefault = true;
+        } else if (percentage < 0) {// down here
+            if (percentage == GMStatConstant.NoDataAvailable * 100) {
+                buyerCountIcon.setVisibility(View.GONE);
+                percentageBuyer.setTextColor(gredyColor);
+                isDefault = false;
+            } else {
+                buyerCountIcon.setVisibility(View.VISIBLE);
+                buyerCountIcon.setImageDrawable(icRectagleDown);
+                percentageBuyer.setTextColor(arrowDown);
+                isDefault = true;
+            }
+        } else {// up here
+            buyerCountIcon.setVisibility(View.VISIBLE);
+            buyerCountIcon.setImageDrawable(icRectagleUp);
+            percentageBuyer.setTextColor(arrowUp);
+            isDefault = true;
+        }
+
+        if (isDefault) {
+            double d = percentage;
+            percentageBuyer.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
+        } else {
+            percentageBuyer.setText(R.string.no_data);
+        }
+    }
+
+    public void bindData(GetBuyerData getBuyerData) {
+
+        /* this is empty state */
+        if (getBuyerData.getTotalBuyer() == 0 &&
+                (getBuyerData.getMaleBuyer() == 0 || getBuyerData.getFemaleBuyer() == 0)) {
+            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+            buyerDataPieChart.setProgress(0f);
+            femalePie.setTextColor(gredyColor);
+            femalePie.setText("0 %");
+            malePie.setVisibility(View.GONE);
+            percentageBuyer.setText(R.string.no_data);
+            percentageBuyer.setTextColor(gredyColor);
+            buyerCountIcon.setVisibility(View.GONE);
+            headerPieBuyerData.setVisibility(View.GONE);
+            return;
+        } else {
+            femalePie.setTextColor(arrowDown);
+
+            headerPieBuyerData.setVisibility(View.VISIBLE);
+            malePie.setVisibility(View.VISIBLE);
+            femalePie.setVisibility(View.VISIBLE);
+
+            double malePercentage = (double) getBuyerData.getMaleBuyer() / (double) getBuyerData.getTotalBuyer();
+            double malePercent = Math.floor((malePercentage * 100) + 0.5);
+
+            double femalePercentage = (double) getBuyerData.getFemaleBuyer() / (double) getBuyerData.getTotalBuyer();
+            double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
+
+            String biggerGender = "";
+            if (malePercent >= femalePercent) {
+                biggerGender += gender[0];
+                headerPieBuyerData.setText(biggerGender);
+                if (femalePercent <= 0) {
+                    malePie.setVisibility(View.GONE);
+                } else
+                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) femalePercent, gender[1]));
+                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) malePercent));
+                buyerDataPieChart.setProgress((float) malePercent);
+            } else {
+                biggerGender += gender[1];
+                headerPieBuyerData.setText(biggerGender);
+                if (malePercent <= 0) {
+                    malePie.setVisibility(View.GONE);
+                } else
                     malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
                 femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
