@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -48,9 +49,15 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_MEDIUM));
         passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
         passData.setUtmContent(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
-        passData.setIdemPotencyKey(bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY,
-                generateATokenRechargeCheckout())
-        );
+        if (!TextUtils.isEmpty(bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY, ""))) {
+            passData.setIdemPotencyKey(
+                    bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY)
+            );
+        } else {
+            passData.setIdemPotencyKey(
+                    generateATokenRechargeCheckout()
+            );
+        }
         return new Intent(context, CartDigitalActivity.class)
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
