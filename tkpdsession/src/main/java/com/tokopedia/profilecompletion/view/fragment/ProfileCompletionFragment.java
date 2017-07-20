@@ -198,15 +198,20 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             transaction = getChildFragmentManager().beginTransaction();
         }
         transaction.setCustomAnimations(pair.first, pair.second);
-        if (!getUserInfoDomainData.isPhoneVerified()) {
-            ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
-            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG).commit();
+        chooseFragment(getUserInfoDomainData);
+    }
+
+    private void chooseFragment(GetUserInfoDomainData getUserInfoDomainData) {
+
+        if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
+            ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
+            transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG).commit();
         } else if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
             ProfileCompletionDateFragment dateFragment = ProfileCompletionDateFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG).commit();
-        } else if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
-            ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
-            transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG).commit();
+        } else if (!getUserInfoDomainData.isPhoneVerified()) {
+            ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
+            transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG).commit();
         } else if (getUserInfoDomainData.getCompletion() == 100) {
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
         } else {
