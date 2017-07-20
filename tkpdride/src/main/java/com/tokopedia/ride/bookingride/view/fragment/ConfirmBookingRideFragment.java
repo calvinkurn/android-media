@@ -361,8 +361,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         }
     }
 
-    public ConfirmBookingViewModel getActiveConfirmBooking() {
-        return confirmBookingViewModel;
+    public ConfirmBookingPassData getActiveConfirmBooking() {
+        return confirmBookingPassData;
     }
 
     @Override
