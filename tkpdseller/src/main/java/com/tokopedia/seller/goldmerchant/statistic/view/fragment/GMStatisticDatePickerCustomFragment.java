@@ -46,13 +46,13 @@ public class GMStatisticDatePickerCustomFragment extends DatePickerCustomFragmen
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         expandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_compare_date);
         datePeriodView = (DatePeriodView) view.findViewById(R.id.date_period_view_compared);
         if (savedInstanceState != null) {
             compareDate = savedInstanceState.getBoolean(DatePickerConstant.EXTRA_COMPARE_DATE);
         }
         expandableOptionSwitch.setExpand(compareDate);
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
