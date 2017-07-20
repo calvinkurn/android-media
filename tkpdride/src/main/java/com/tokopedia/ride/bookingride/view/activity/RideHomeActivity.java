@@ -826,7 +826,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             getFragmentManager().popBackStack();
             onBottomContainerChangeToProductListScreen();
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-            ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
+            ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
