@@ -103,10 +103,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     private static final int REQUEST_CODE_CANCEL_REASON = 1007;
+    private static final int REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG = 1008;
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
+    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final float DEFAUL_MAP_ZOOM = 14;
@@ -388,6 +391,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
 
             if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString(GetOverviewPolylineUseCase.PARAM_WAYPOINTS, String.format("%s,%s",
@@ -416,6 +420,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
 
         return requestParams;
     }
@@ -456,14 +461,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
         if (previousDialog != null) {
             fragmentTransaction.remove(previousDialog);
         }
         fragmentTransaction.addToBackStack(null);
         DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
+        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
     }
 
     @Override
@@ -483,6 +488,20 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
                     String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
+                    RequestParams requestParams = getParam();
+                    if (key != null && key.length() > 0) {
+                        requestParams.putString(key, id);
+                    }
+                    presenter.actionRideRequest(requestParams);
+                } else {
+                    //TODO: we may need to update the fare status again
+                    getActivity().finish();
+                }
+                break;
+            case REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    String id = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
+                    String key = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
                     RequestParams requestParams = getParam();
                     if (key != null && key.length() > 0) {
                         requestParams.putString(key, id);
@@ -1348,5 +1367,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void openInterruptConfirmationDialog(String tosUrl, String key, String value) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
     }
 }

@@ -250,6 +250,18 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getLoginIntent(Context context) {
+        Intent intent = Login.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getRegisterIntent(Context context) {
+        Intent intent = Login.getRegisterIntent(context);
+        return intent;
+    }
+
+    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }

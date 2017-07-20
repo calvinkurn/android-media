@@ -320,15 +320,17 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     @Override
     public void getOverviewPolyline(double sourceLat, double sourceLng, double destinationLat, double destinationLng) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("origin", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                 sourceLat,
                 sourceLng
         ));
-        requestParams.putString("destination", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destinationLat,
                 destinationLng
         ));
-        requestParams.putString("sensor", "false");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_SENSOR, "false");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getView().getActivity().getString(R.string.google_api_key));
+
         getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<OverviewPolyline>>() {
             @Override
             public void onCompleted() {

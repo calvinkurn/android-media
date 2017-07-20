@@ -44,6 +44,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
+    private static final int REQUEST_CODE_TOKOPEDIA_INTERRUPT_DIALOG = 1006;
 
     @BindView(R2.id.ride_product_list)
     RecyclerView rideProductsRecyclerView;
@@ -339,8 +340,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @OnClick(R2.id.layout_cab_booking_header)

@@ -12,6 +12,7 @@ import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
@@ -20,6 +21,7 @@ import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
+import com.tokopedia.ride.common.ride.domain.model.RideHistoryWrapper;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
@@ -50,6 +52,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final RideAddressEntityMapper rideAddressEntityMapper;
     private final TimePriceEstimateEntityMapper timePriceEstimateEntityMapper;
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
+    private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -65,6 +68,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         rideAddressEntityMapper = new RideAddressEntityMapper();
         timePriceEstimateEntityMapper = new TimePriceEstimateEntityMapper();
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
+        rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
     }
 
     @Override
@@ -212,6 +216,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public List<RideHistory> call(List<RideHistoryEntity> rideTransactionEntities) {
                         return rideHistoryEntityMapper.transform(rideTransactionEntities);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<RideHistoryWrapper> getHistoriesWithPagination(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getHistoriesWithPagination(parameters)
+                .map(new Func1<RideHistoryResponse, RideHistoryWrapper>() {
+                    @Override
+                    public RideHistoryWrapper call(RideHistoryResponse rideHistoryResponse) {
+                        return rideHistoryWrapperMapper.transform(rideHistoryResponse);
                     }
                 });
     }
