@@ -1,13 +1,12 @@
 package com.tokopedia.seller.gmstat.presenters;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.util.List;
 
@@ -18,13 +17,11 @@ import java.util.List;
 public interface GMFragmentView {
     void onGetShopCategoryEmpty();
 
-    void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
+    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
 
     void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime);
 
     void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
-
-    void onSuccessBuyerData(GetBuyerData getBuyerData);
 
     void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 

@@ -8,6 +8,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
@@ -43,6 +44,11 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     @Override
     public Observable<GMTransactionGraphMergeModel> getTransactionGraph(long startDate, long endDate) {
         return gmStatDataSource.getTransactionGraph(startDate, endDate).map(gmTransactionStatDomainMapper);
+    }
+
+    public GMTransactionGraphMergeModel getTransactionGraph(GetTransactionGraph getTransactionGraph) {
+        return Observable.just(getTransactionGraph)
+                .map(gmTransactionStatDomainMapper).toBlocking().first();
     }
 
     @Override
