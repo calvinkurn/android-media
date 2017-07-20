@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
@@ -18,8 +19,11 @@ import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 
@@ -36,6 +40,10 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
     GMStatNetworkController gmStatNetworkController;
     @Inject
     ImageHandler imageHandler;
+
+    @Inject
+    GMStatClearCacheUseCase gmStatClearCacheUseCase;
+
     private boolean isGoldMerchant;
     private String shopId;
     private GMStatComponent gmstatComponent;
@@ -50,6 +58,22 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
         super.setupVar();
         fetchIntent(getIntent().getExtras());
         inject();
+        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.i("GMStat", "Failed clear GM cache");
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                Log.i("GMStat", "Success clear GM cache");
+            }
+        });
     }
 
     @Override
