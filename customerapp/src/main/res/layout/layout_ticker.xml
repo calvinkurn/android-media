@@ -18,10 +18,12 @@
         android:singleLine="false"
         android:maxLines="3"
         android:maxLength="105"
-        android:layout_marginLeft="3dp"
+        android:layout_marginLeft="@dimen/margin_vs"
         android:padding="5dp"
         android:background="@color/white"
+        android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginRight="36dp"
         android:text="" />
 
     <ImageView
