@@ -7,6 +7,7 @@ import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 
 import java.util.List;
 
@@ -46,4 +47,6 @@ public interface GMFragmentView {
     void onLoadGMStatTracking();
 
     void onScrollGMStatTracking();
+
+    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
 }

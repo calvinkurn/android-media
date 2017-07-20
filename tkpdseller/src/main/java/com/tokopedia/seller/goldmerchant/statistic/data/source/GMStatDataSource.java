@@ -2,10 +2,6 @@ package com.tokopedia.seller.goldmerchant.statistic.data.source;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
@@ -13,7 +9,13 @@ import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSo
 import com.tokopedia.seller.goldmerchant.statistic.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cache.GMStatCache;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatCloud;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
@@ -29,7 +31,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * @author normansyahputa on 5/18/17.
@@ -137,12 +138,13 @@ public class GMStatDataSource {
         }
     }
 
-    public Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate) {
-        Observable<GetBuyerData> getBuyerDataObservable = gmStatCache.getBuyerGraph(startDate, endDate);
+    public Observable<GetBuyerGraph> getBuyerGraph(long startDate, long endDate) {
+        Observable<GetBuyerGraph> getBuyerDataObservable = gmStatCache.getBuyerGraph(startDate, endDate);
         if (getBuyerDataObservable == null) {
             return gmStatCloud.getBuyerGraph(startDate, endDate)
-                    .map(new SimpleDataResponseMapper<GetBuyerData>())
-                    .doOnNext(getSaveAction(new TypeToken<GetBuyerData>() {}.getType(),
+                    .map(new SimpleDataResponseMapper<GetBuyerGraph>())
+                    .doOnNext(getSaveAction(new TypeToken<GetBuyerGraph>() {
+                            }.getType(),
                             GMStatActionType.BUYER, 0,0));
         } else {
             return getBuyerDataObservable;
@@ -218,6 +220,17 @@ public class GMStatDataSource {
         gmDateRangeDateViewModel.setEndDate(GoldMerchantDateUtils.getDateWithYear(dateGraph.get(dateGraph.size() - 1)));
 
         return gmDateRangeDateViewModel;
+    }
+
+
+    public Observable<GetProductTable> getProductTable(long startDate, long endDate) {
+        return gmStatCloud.getProductTable(startDate, endDate)
+                .map(new SimpleDataResponseMapper<GetProductTable>());
+    }
+
+    public Observable<GetBuyerTable> getBuyerTable(long startDate, long endDate) {
+        return gmStatCloud.getBuyerTable(startDate, endDate)
+                .map(new SimpleDataResponseMapper<GetBuyerTable>());
     }
 
 }

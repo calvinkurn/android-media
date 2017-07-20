@@ -61,7 +61,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
         if (isViewAttached()) {
             getView().onSearchLoaded(
                     convertToViewModel(getTransactionTable.getCells()),
-                    getTransactionTable.getTotalCellCount()
+                    (int) getTransactionTable.getTotalCellCount()
             );
         }
     }

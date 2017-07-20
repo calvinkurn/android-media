@@ -1,12 +1,14 @@
 package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api;
 
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.constant.StatisticConstant;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 
 import java.util.Map;
@@ -39,9 +41,8 @@ public interface GMStatApi {
                                                               @QueryMap Map<String, String> params);
 
     @GET(StatisticConstant.GET_BUYER_GRAPH)
-    Observable<Response<GetBuyerData>> getBuyerGraph(@Path("id") String shopId,
-                                                     @QueryMap Map<String, String> params);
-
+    Observable<Response<GetBuyerGraph>> getBuyerGraph(@Path("id") String shopId,
+                                                      @QueryMap Map<String, String> params);
 
     @GET(StatisticConstant.GET_KEYWORD)
     Observable<Response<GetKeyword>> getKeyword(@Path("id") String categoryId,
@@ -51,5 +52,12 @@ public interface GMStatApi {
     Observable<Response<GetShopCategory>> getShopCategory(@Path("id") String shopId,
                                                           @QueryMap Map<String, String> params);
 
+    @GET(StatisticConstant.GET_PRODUCT_TABLE)
+    Observable<Response<GetProductTable>> getProductTable(@Path("id") String shopId,
+                                                          @QueryMap Map<String, String> params);
+
+    @GET(StatisticConstant.GET_BUYER_TABLE)
+    Observable<Response<GetBuyerTable>> getBuyerTable(@Path("id") String shopId,
+                                                      @QueryMap Map<String, String> params);
 
 }

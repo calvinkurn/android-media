@@ -39,7 +39,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 

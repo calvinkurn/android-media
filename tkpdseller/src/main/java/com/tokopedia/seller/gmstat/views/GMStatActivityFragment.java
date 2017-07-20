@@ -52,6 +52,7 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
@@ -270,6 +271,13 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onScrollGMStatTracking() {
         UnifyTracking.eventScrollGMStat();
+    }
+
+    @Override
+    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
+        buyerDataViewHelper.bindData(getBuyerGraph);
+        marketInsight.setVisibility(View.VISIBLE);
+        buyerDataLoading.hideLoading();
     }
 
     /**

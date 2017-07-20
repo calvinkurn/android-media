@@ -1,13 +1,15 @@
 package com.tokopedia.seller.goldmerchant.statistic.data.repository;
 
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
@@ -61,7 +63,7 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     }
 
     @Override
-    public Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate) {
+    public Observable<GetBuyerGraph> getBuyerGraph(long startDate, long endDate) {
         return gmStatDataSource.getBuyerGraph(startDate, endDate);
     }
 
@@ -78,6 +80,16 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     @Override
     public Observable<Boolean> clearCache() {
         return gmStatDataSource.clearAllCache();
+    }
+
+    @Override
+    public Observable<GetProductTable> getProductTable(long startDate, long endDate) {
+        return gmStatDataSource.getProductTable(startDate, endDate);
+    }
+
+    @Override
+    public Observable<GetBuyerTable> getBuyerTable(long startDate, long endDate) {
+        return gmStatDataSource.getBuyerTable(startDate, endDate);
     }
 
 

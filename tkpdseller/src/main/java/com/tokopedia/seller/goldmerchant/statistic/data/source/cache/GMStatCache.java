@@ -6,13 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
@@ -51,8 +49,8 @@ public class GMStatCache {
         return getObservable(GMStatActionType.POPULAR_PRODUCT, startDate, endDate, GetPopularProduct.class);
     }
 
-    public Observable<GetBuyerData> getBuyerGraph(long startDate, long endDate) {
-        return getObservable(GMStatActionType.BUYER, startDate, endDate, GetBuyerData.class);
+    public Observable<GetBuyerGraph> getBuyerGraph(long startDate, long endDate) {
+        return getObservable(GMStatActionType.BUYER, startDate, endDate, GetBuyerGraph.class);
     }
 
     public Observable<GetKeyword> getKeywordModel() {
