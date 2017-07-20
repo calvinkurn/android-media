@@ -75,8 +75,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
@@ -133,7 +133,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, this);
         adapter = new FeedPlusAdapter(typeFactory);
 
         Config config = new Config.Builder()
@@ -444,6 +444,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.showLoading();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
@@ -464,24 +465,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
         adapter.addList(listFeed);
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onShowEmpty() {
+    public void onShowEmpty(boolean canShowTopads) {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -699,11 +702,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private boolean hasFeed() {
+    @Override
+    public boolean hasFeed() {
         return adapter.getlist() != null
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
+    }
+
+    @Override
+    public void updateFavoriteFromEmpty() {
+        onRefresh();
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
+
+    }
+
+    @Override
+    public void showTopAds(boolean isTopAdsShown) {
+        topAdsRecyclerAdapter.shouldLoadAds(isTopAdsShown);
     }
 
 

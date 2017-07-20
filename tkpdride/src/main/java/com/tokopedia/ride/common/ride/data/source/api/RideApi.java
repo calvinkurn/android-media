@@ -10,6 +10,7 @@ import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
@@ -65,6 +66,9 @@ public interface RideApi {
 
     @GET(RideUrl.TRANSACTIONS_ALL)
     Observable<List<RideHistoryEntity>> getHistories(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @GET(RideUrl.TRANSACTIONS_ALL_V2)
+    Observable<RideHistoryResponse> getHistoriesWithPagination(@QueryMap TKPDMapParam<String, Object> parameters);
 
     @GET(RideUrl.TRANSACTION)
     Observable<List<RideHistoryEntity>> getHistory(@QueryMap TKPDMapParam<String, Object> parameters);
