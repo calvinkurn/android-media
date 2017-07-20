@@ -614,9 +614,6 @@ public class CartPresenter implements ICartPresenter {
             if (data.getCartCourierPrices() != null && !hasError(data.getCartItem())) {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
-            } else {
-                rateKeyList.add("");
-                rateDataList.add("");
             }
         }
 
@@ -667,7 +664,7 @@ public class CartPresenter implements ICartPresenter {
             return;
         }
 
-        if (checkoutData.getKeroValueParams().size() < 1) {
+        if (checkoutData.getKeroKeyParams().size() < 1) {
             view.showToastMessage(view.getStringFromResource(
                     R.string.label_message_error_cannot_checkout));
         } else {
