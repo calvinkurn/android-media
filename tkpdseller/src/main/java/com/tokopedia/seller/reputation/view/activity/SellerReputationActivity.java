@@ -12,7 +12,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.reputation.view.listener.SellerReputationInterface;
-import com.tokopedia.seller.topads.utils.ViewUtils;
+import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 
 /**
  * @author normansyahputa on 3/30/16.

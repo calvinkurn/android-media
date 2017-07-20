@@ -116,8 +116,6 @@ public class ShopInfoActivity extends BaseActivity
         View message;
         View setting;
         View progressBar;
-        View retryButton;
-        View retryMessage;
         View progressView;
         View more;
         View shareBut;
@@ -311,6 +309,15 @@ public class ShopInfoActivity extends BaseActivity
         unregisterReceiver(loginReceiver);
     }
 
+    @Override
+    public boolean isOfficialStore() {
+        if(shopModel != null && shopModel.info != null) {
+            return shopModel.info.shopIsOfficial == 1;
+        }
+
+        return false;
+    }
+
     private void clearVariable() {
         shopModel = null;
     }
@@ -384,7 +391,6 @@ public class ShopInfoActivity extends BaseActivity
             public void onFailure() {
                 if (!checkIsShowingInitialData()) {
                     showRetry();
-                    holder.retryButton.setOnClickListener(onRetryClick());
                 } else
                     SnackbarManager
                             .make(
@@ -417,14 +423,18 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void showRetry() {
-        holder.retryButton.setVisibility(View.VISIBLE);
-        holder.retryMessage.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(this, holder.progressView, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showProgress();
+                facadeGetRetrofit.getShopInfo();
+            }
+        });
         holder.progressBar.setVisibility(View.GONE);
     }
 
     private void showProgress() {
-        holder.retryButton.setVisibility(View.GONE);
-        holder.retryMessage.setVisibility(View.GONE);
+        NetworkErrorHelper.removeEmptyState(holder.progressView);
         holder.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -483,8 +493,6 @@ public class ShopInfoActivity extends BaseActivity
         holder.appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         holder.progressBar = findViewById(R.id.progress_bar);
         holder.progressView = findViewById(R.id.progress_view);
-        holder.retryButton = findViewById(R.id.retry_button);
-        holder.retryMessage = findViewById(R.id.retry_message);
         holder.infoShop = findViewById(R.id.info_shop);
         holder.more = findViewById(R.id.more);
         holder.shareBut = findViewById(R.id.share_but);
@@ -588,6 +596,10 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent = getIntent();
         if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
             actionFirstLaunched(intent.getExtras());
+        }
+
+        if(shopModel.info.shopIsOfficial==1){
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
         // switch to product tab if ETALASE_NAME not empty

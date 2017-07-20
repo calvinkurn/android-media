@@ -13,10 +13,9 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
-import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
-import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.Pair;
@@ -277,7 +276,10 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setCurrentTabs(0);
                         }
-                        getOfficialStoreBanner(p.q);
+
+                        if(isSearchResultNotEmpty()) {
+                            getOfficialStoreBanner(p.q);
+                        }
                     }
                     if (view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
@@ -285,14 +287,19 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                     if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
                         view.showTabLayout();
                     }
-                    view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+                view.setLoadingProgress(false);
                 break;
             case DiscoveryListener.OS_BANNER:
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
+    }
+
+    private boolean isSearchResultNotEmpty() {
+        return browseProductModel.result.products != null
+                && browseProductModel.result.products.length != 0;
     }
 }

@@ -85,7 +85,7 @@ public class GMStatHeaderViewHelper {
     }
 
     private void initView(View itemView) {
-        monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
+        monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
         calendarRange = (LoaderTextView) itemView.findViewById(R.id.calendar_range);
 

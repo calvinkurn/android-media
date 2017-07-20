@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class CartShipments implements Parcelable {
 
+    @SerializedName("shipment_code")
+    @Expose
+    private String shipmentCode;
     @SerializedName("shipment_image")
     @Expose
     private String shipmentImage;
@@ -32,6 +35,14 @@ public class CartShipments implements Parcelable {
     @SerializedName("shipment_pickup")
     @Expose
     private int shipmentPickUp;
+
+    public String getShipmentCode() {
+        return shipmentCode;
+    }
+
+    public void setShipmentCode(String shipmentCode) {
+        this.shipmentCode = shipmentCode;
+    }
 
     public String getShipmentImage() {
         return shipmentImage;
@@ -103,6 +114,7 @@ public class CartShipments implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.shipmentCode);
         dest.writeString(this.shipmentImage);
         dest.writeString(this.shipmentNotes);
         dest.writeString(this.shipmentId);
@@ -114,6 +126,7 @@ public class CartShipments implements Parcelable {
     }
 
     protected CartShipments(Parcel in) {
+        this.shipmentCode = in.readString();
         this.shipmentImage = in.readString();
         this.shipmentNotes = in.readString();
         this.shipmentId = in.readString();

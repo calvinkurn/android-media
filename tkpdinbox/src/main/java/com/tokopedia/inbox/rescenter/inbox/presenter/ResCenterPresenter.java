@@ -25,6 +25,6 @@ public interface ResCenterPresenter {
 
     void onActionVar(Context context);
 
-    void initView();
+    void initView(Context context);
 
 }

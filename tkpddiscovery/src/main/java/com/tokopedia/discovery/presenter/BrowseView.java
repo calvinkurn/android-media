@@ -67,4 +67,6 @@ public interface BrowseView {
     String getSource();
 
     void setDefaultGridTypeFromNetwork(Integer viewType);
+
+    void launchOfficialStorePage();
 }

@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 
 /**
@@ -20,4 +21,6 @@ public interface AdapterTypeFactory {
     int type(ErrorNetworkModel errorNetworkModel);
 
     AbstractViewHolder createViewHolder(View parent, int type);
+
+    int type(RetryModel retryModel);
 }

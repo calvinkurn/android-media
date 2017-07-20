@@ -39,12 +39,14 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    list.get(getAdapterPosition()).setSelected(
-                            checkImage.getVisibility() == View.VISIBLE);
-                    notifyDataSetChanged();
-                    listener.onItemSelected(getAdapterPosition(),
-                            list.get(getAdapterPosition()).getValue(),
-                            list.get(getAdapterPosition()).getKey());
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        list.get(getAdapterPosition()).setSelected(
+                                checkImage.getVisibility() == View.VISIBLE);
+                        notifyItemChanged(getAdapterPosition());
+                        listener.onItemSelected(getAdapterPosition(),
+                                list.get(getAdapterPosition()).getValue(),
+                                list.get(getAdapterPosition()).getKey());
+                    }
                 }
             });
         }

@@ -15,7 +15,7 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/banner_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="@dimen/item_banner_category" />
 
         <RelativeLayout
             android:id="@id/header_container"
@@ -212,12 +212,12 @@
         </android.support.v7.widget.CardView>
 
         <com.tokopedia.topads.sdk.view.TopAdsView
-            android:id="@+id/top_ads_view"
+            android:id="@id/top_ads_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             card_view:display_type="grid"
-            card_view:ep="shop"
+            card_view:ep="product"
             card_view:items="2" />
 
         <android.support.v7.widget.RecyclerView

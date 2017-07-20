@@ -18,11 +18,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.core.home.BannerWebView;
 
 import java.util.ArrayList;
 

@@ -12,6 +12,7 @@ import com.tokopedia.seller.database.TkpdSellerDatabase;
  */
 @Table(database = TkpdSellerDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class ProductDraftDataBase extends BaseModel{
+    public static final String COLUMN_IS_UPLOADING = "is_uploading";
 
     @PrimaryKey(autoincrement = true)
     @Column
@@ -19,6 +20,9 @@ public class ProductDraftDataBase extends BaseModel{
 
     @Column
     String data;
+
+    @Column (name = COLUMN_IS_UPLOADING)
+    boolean isUploading;
 
     public long getId() {
         return id;
@@ -34,5 +38,13 @@ public class ProductDraftDataBase extends BaseModel{
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public boolean isUploading() {
+        return isUploading;
+    }
+
+    public void setUploading(boolean uploading) {
+        isUploading = uploading;
     }
 }
