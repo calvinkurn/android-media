@@ -6,8 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFragment;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by nathan on 7/12/17.
@@ -15,16 +22,41 @@ import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFrag
 
 public class GMStatisticDatePickerPeriodFragment extends DatePickerPeriodFragment {
 
-    public interface Callback {
-
-        void onDateSubmitted(int selectionPeriod, long startDate, long endDate,
-                             long compareStartDate, long compareEndDate);
-
+    public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList, boolean comparedDate) {
+        DatePickerPeriodFragment fragment = new GMStatisticDatePickerPeriodFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, periodRangeModelList);
+        bundle.putBoolean(DatePickerConstant.EXTRA_COMPARE_DATE, comparedDate);
+        fragment.setArguments(bundle);
+        return fragment;
     }
+
+    private boolean comparedDate;
+    private ExpandableOptionSwitch expandableOptionSwitch;
+    private DatePeriodView datePeriodView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_date_picker_period, container, false);
+        return inflater.inflate(R.layout.fragment_gm_statistic_date_picker_period, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        expandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_compare_date);
+        datePeriodView = (DatePeriodView) view.findViewById(R.id.date_period_view_compared);
+        if (savedInstanceState != null) {
+            comparedDate = savedInstanceState.getBoolean(DatePickerConstant.EXTRA_COMPARE_DATE);
+        }
+        expandableOptionSwitch.setExpand(comparedDate);
+    }
+
+    @Override
+    public void onItemClicked(PeriodRangeModel periodRangeModel) {
+        super.onItemClicked(periodRangeModel);
+        PeriodRangeModel comparedPeriodRangeModel = GMStatatisticDateUtils.getComparedDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
+        datePeriodView.setDate(comparedPeriodRangeModel.getStartDate(), comparedPeriodRangeModel.getEndDate());
     }
 }

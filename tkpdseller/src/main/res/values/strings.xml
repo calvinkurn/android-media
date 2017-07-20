@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="title_date_setting">Atur Tanggal</string>
+
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>
     <string name="label_date_period">Periode</string>

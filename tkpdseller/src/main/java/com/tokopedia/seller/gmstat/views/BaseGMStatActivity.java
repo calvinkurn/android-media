@@ -12,12 +12,14 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.gmstat.di.component.DaggerGMStatComponent;
 import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 
@@ -31,6 +33,9 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
+
+    @Inject
+    GMStatRepository gmStatRepository;
     @Inject
     GMStatNetworkController gmStatNetworkController;
     @Inject
@@ -38,8 +43,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     private boolean isGoldMerchant;
     private String shopId;
     private GMStatComponent gmstatComponent;
-
-//    private boolean isAfterRotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +79,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         shopId = savedInstanceState.getString(SHOP_ID);
     }
 
-    /**
-     * @return true if first time, false if already in foreground.
-     */
-//    @Override
-//    protected boolean isAfterRotate(Bundle savedInstanceState) {
-//        isAfterRotate = super.isAfterRotate(savedInstanceState);
-//        return !isAfterRotate;
-//    }
-
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
             isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
@@ -117,6 +111,11 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     }
 
     @Override
+    public GMStatRepository gmStatRepository() {
+        return gmStatRepository;
+    }
+
+    @Override
     public GMStatNetworkController getGmStatNetworkController() {
         return gmStatNetworkController;
     }
@@ -134,6 +133,13 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     @Override
     public String getShopId() {
         return shopId;
+    }
+
+    @Override
+    public void joinRepository() {
+        if (gmStatNetworkController instanceof GMStatNetworkController2) {
+            ((GMStatNetworkController2) gmStatNetworkController).setRepository(gmStatRepository);
+        }
     }
 
     @Override
@@ -173,6 +179,10 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         outState.putString(SHOP_ID, shopId);
+    }
+
+    public GMStatRepository getGmStatRepository() {
+        return gmStatRepository;
     }
 
     //[START] unused methods

@@ -324,12 +324,14 @@
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionActivity"
             android:exported="true"
             android:label="@string/gold_merchant_transaction_label" />
-
         <activity
             android:name=".goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity"
             android:exported="true"
             android:label="@string/list_sold_product_text" />
-
+        <activity
+            android:name=".goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity"
+            android:exported="true"
+            android:label="@string/title_date_setting" />
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"

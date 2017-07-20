@@ -12,4 +12,6 @@ public interface StatisticConstant {
     String GET_BUYER_GRAPH = "/v2/shop_stats/get_buyer_graph/{id}";
     String GET_KEYWORD = "/v2/shop_stats/get_keyword/{id}";
     String GET_SHOP_CATEGORY = "/v2/shop_stats/get_shop_category/{id}";
+    String GET_PRODUCT_TABLE = "/v2/shop_stats/get_product_table/{id}";
+    String GET_BUYER_TABLE = "/v2/shop_stats/get_buyer_table/{id}";
 }

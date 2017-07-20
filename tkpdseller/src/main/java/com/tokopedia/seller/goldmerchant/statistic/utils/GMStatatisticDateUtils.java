@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by nathan on 7/19/17.
@@ -28,7 +31,7 @@ public class GMStatatisticDateUtils {
     private static final String MIN_DATE = "25 07 2015";
 
     public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel) {
-        Intent intent = new Intent(activity, DatePickerActivity.class);
+        Intent intent = new Intent(activity, GMStatisticDatePickerActivity.class);
         Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, Locale.ENGLISH);
@@ -57,6 +60,7 @@ public class GMStatatisticDateUtils {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerViewModel.getDatePickerType());
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(R.string.set_date));
+        intent.putExtra(DatePickerConstant.EXTRA_COMPARE_DATE, datePickerViewModel.isCompareDate());
         return intent;
     }
 
@@ -96,5 +100,19 @@ public class GMStatatisticDateUtils {
         datePickerViewModel.setDatePickerType(DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
         datePickerViewModel.setDatePickerSelection(1);
         return datePickerViewModel;
+    }
+
+    public static PeriodRangeModel getComparedDate(long startdate, long endDate) {
+        int diffDate = (int) DatePickerUtils.getDateDiff(startdate, endDate, TimeUnit.DAYS);
+        long comparedStartDate = 0;
+        long comparedEndDate = 0;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startdate);
+        calendar.add(Calendar.DATE, -1);
+        comparedEndDate = calendar.getTimeInMillis();
+        calendar.add(Calendar.DATE, -diffDate);
+        comparedStartDate = calendar.getTimeInMillis();
+        PeriodRangeModel periodRangeModel = new PeriodRangeModel(comparedStartDate, comparedEndDate);
+        return periodRangeModel;
     }
 }

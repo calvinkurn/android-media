@@ -23,7 +23,8 @@
     <string name="last_thirty_days_ago">Data dalam 30 hari terakhir</string>
     <string name="see_detail_gm_description">Lihat Detail</string>
 
-    <string name="gm_statistic_compare_date">Bandingkan</string>
+    <string name="gm_statistic_compare_date_section">Bandingkan</string>
+    <string name="gm_statistic_compare_date_title">Periode Sebelumnya</string>
 
     <string name="see_detail">Lihat Detail</string>
     <string name="product_name">Nama Produk</string>

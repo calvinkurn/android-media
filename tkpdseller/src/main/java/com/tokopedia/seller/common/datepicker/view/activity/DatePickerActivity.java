@@ -22,11 +22,9 @@ import java.util.List;
  * Created by normansyahputa on 12/7/16.
  */
 
-public class DatePickerActivity extends BaseTabActivity implements DatePickerPeriodFragment.Callback, DatePickerCustomFragment.Callback {
+public class DatePickerActivity extends BaseTabActivity {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
-
-    public static final int RESULT_CODE = 1;
 
     protected int selectionPeriod;
     protected int selectionType;
@@ -73,13 +71,11 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
 
     protected DatePickerPeriodFragment getDatePickerPeriodFragment() {
         DatePickerPeriodFragment datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
-        datePickerPeriodFragment.setCallback(this);
         return datePickerPeriodFragment;
     }
 
     protected DatePickerCustomFragment getDatePickerCustomFragment() {
         DatePickerCustomFragment datePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-        datePickerCustomFragment.setCallback(this);
         return datePickerCustomFragment;
     }
 
@@ -88,22 +84,7 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
         return OFFSCREEN_PAGE_LIMIT;
     }
 
-    @Override
-    public void onDateSubmitted(long startDate, long endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        setResult();
-    }
-
-    @Override
-    public void onDateSubmitted(int selectionPeriod, long startDate, long endDate) {
-        this.selectionPeriod = selectionPeriod;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        setResult();
-    }
-
-    private void fetchIntent(Bundle extras) {
+    protected void fetchIntent(Bundle extras) {
         if (extras != null) {
             startDate = extras.getLong(DatePickerConstant.EXTRA_START_DATE, -1);
             endDate = extras.getLong(DatePickerConstant.EXTRA_END_DATE, -1);
@@ -114,16 +95,6 @@ public class DatePickerActivity extends BaseTabActivity implements DatePickerPer
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
         }
-    }
-
-    public void setResult() {
-        Intent intent = new Intent();
-        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate);
-        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate);
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, selectionPeriod);
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, viewPager.getCurrentItem());
-        setResult(RESULT_CODE, intent);
-        finish();
     }
 
     @Override

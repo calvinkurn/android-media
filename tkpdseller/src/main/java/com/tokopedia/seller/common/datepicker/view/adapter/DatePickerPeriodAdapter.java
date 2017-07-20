@@ -20,10 +20,20 @@ import java.util.List;
 
 public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
 
+    public interface Callback {
+
+        void onItemClicked(PeriodRangeModel periodRangeModel);
+    }
+
     private static final int VIEW_DATA = 100;
 
     private List<PeriodRangeModel> data;
     private int selectedPosition;
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     public void setData(List<PeriodRangeModel> data) {
         this.data = data;
@@ -83,8 +93,7 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
         PeriodRangeModel periodRangeModel = data.get(position);
         holder.datePeriodView.setChecked(position == selectedPosition);
         holder.datePeriodView.setTitle(periodRangeModel.getLabel());
-        holder.datePeriodView.setContent(
-                new Date(periodRangeModel.getStartDate()), new Date(periodRangeModel.getEndDate()));
+        holder.datePeriodView.setDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +111,9 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
     private void onSelectItem(int position) {
         selectedPosition = position;
         notifyDataSetChanged();
+        if (callback != null) {
+            callback.onItemClicked(getSelectedDate());
+        }
     }
 
     public PeriodRangeModel getSelectedDate() {

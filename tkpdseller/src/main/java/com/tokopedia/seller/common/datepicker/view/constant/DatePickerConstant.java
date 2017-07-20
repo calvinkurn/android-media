@@ -8,6 +8,8 @@ import java.util.Locale;
 
 public class DatePickerConstant {
 
+    public static final int RESULT_CODE = 1;
+
     public static final String DATE_FORMAT = "dd MM yyyy";
     public static final Locale LOCALE = new Locale("in", "ID");
     public static final int DIFF_ONE_WEEK = 6;
@@ -22,6 +24,8 @@ public class DatePickerConstant {
     public static final String EXTRA_MAX_DATE_RANGE = "EXTRA_MAX_DATE_RANGE";
     public static final String EXTRA_DATE_PERIOD_LIST = "EXTRA_DATE_PERIOD_LIST";
     public static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
+
+    public static final String EXTRA_COMPARE_DATE = "EXTRA_COMPARE_DATE";
 
     public static final int SELECTION_TYPE_PERIOD_DATE = 0;
     public static final int SELECTION_TYPE_CUSTOM_DATE = 1;
