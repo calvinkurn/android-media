@@ -1,5 +1,6 @@
-package com.tokopedia.seller.gmstat.presenters;
+package com.tokopedia.seller.goldmerchant.statistic.domain;
 
+import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
@@ -11,39 +12,23 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 import java.util.List;
 
 /**
- * Created by normansyahputa on 1/2/17.
+ * Created by normansyahputa on 7/20/17.
  */
 
-public interface GMFragmentView {
+public interface OldGMStatRepository extends CommonListener {
     void onSuccessGetShopCategory(GetShopCategory getShopCategory);
 
-    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
+    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
 
-    void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime);
+    void onSuccessProductnGraph(GetProductGraph getTransactionGraph);
 
     void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
+
+    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
 
     void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
     void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
 
     void onComplete();
-
-    void onError(Throwable e);
-
-    void onFailure();
-
-    void fetchData();
-
-    void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
-
-    void resetToLoading();
-
-    void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
-
-    void onLoadGMStatTracking();
-
-    void onScrollGMStatTracking();
-
-    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
 }

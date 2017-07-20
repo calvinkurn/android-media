@@ -30,12 +30,12 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.gmstat.views.BaseGMStatActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.util.ArrayList;
@@ -355,9 +355,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
-                    intent = new Intent(context, GMStatActivity.class);
-                    intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
-                    intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                    intent = new Intent(context, BaseGMStatActivity.class);
+                    intent.putExtra(BaseGMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                    intent.putExtra(BaseGMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                     context.startActivity(intent);
                     UnifyTracking.eventClickGMStat();
                     break;

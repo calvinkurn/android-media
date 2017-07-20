@@ -1,1 +1,85 @@
-{"TotalBuyer":0,"MaleBuyer":0,"FemaleBuyer":0,"SuccessTrans":0,"ProductSold":0,"Age1":0,"Age2":0,"Age3":0,"Age4":0,"Age5":0,"DiffTotal":1,"DateGraph":[20161221,20161222,20161223,20161224,20161225,20161226,20161227],"MaleGraph":[0,0,0,0,0,0,0],"FemaleGraph":[0,0,0,0,0,0,0],"TotalGraph":[0,0,0,0,0,0,0],"PDateGraph":[20161214,20161215,20161216,20161217,20161218,20161219,20161220],"PMaleGraph":[0,0,0,0,0,0,0],"PFemaleGraph":[0,0,0,0,0,0,0],"PTotalGraph":[0,0,0,0,0,0,0]}
+{
+  "total_buyer": 0,
+  "male_buyer": 0,
+  "female_buyer": 0,
+  "success_trans": 0,
+  "product_sold": 0,
+  "age1": 0,
+  "age2": 0,
+  "age3": 0,
+  "age4": 0,
+  "age5": 0,
+  "diff_total": 1,
+  "date_graph": [
+    20161221,
+    20161222,
+    20161223,
+    20161224,
+    20161225,
+    20161226,
+    20161227
+  ],
+  "male_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "female_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "total_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "p_date_graph": [
+    20161214,
+    20161215,
+    20161216,
+    20161217,
+    20161218,
+    20161219,
+    20161220
+  ],
+  "p_male_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "p_female_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "p_total_graph": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

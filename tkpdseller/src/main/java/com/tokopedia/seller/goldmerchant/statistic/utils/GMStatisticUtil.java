@@ -20,6 +20,17 @@ import java.util.List;
 public final class GMStatisticUtil {
     private static final String TAG = "GMStatisticUtil";
 
+    public static List<Integer> subList(List<Integer> datas, int size) {
+        if (datas != null && !datas.isEmpty()) {
+            if (datas.size() <= size) {
+                return datas;
+            } else {
+                return datas.subList(0, 3);
+            }
+        }
+        return null;
+    }
+
     public static List<Integer> indexToDisplay(float[] values) {
         final List<Integer> indexToDisplay = new ArrayList<>();
         int divide = values.length / 10;

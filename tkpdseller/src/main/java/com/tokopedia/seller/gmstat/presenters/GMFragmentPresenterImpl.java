@@ -8,15 +8,14 @@ import android.util.Log;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,14 +47,14 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
     private String[] mLabels = new String[10];
     private int selectionType;
     private GMFragmentView gmFragmentView;
-    private GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
+    private OldGMStatRepository gmStatListener = new OldGMStatRepository() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
             gmFragmentView.onSuccessGetShopCategory(getShopCategory);
         }
 
         @Override
-        public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph) {
+        public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
             gmFragmentView.onSuccessTransactionGraph(getTransactionGraph, sDate, eDate, lastSelectionPeriod, selectionType);
         }
 
@@ -67,11 +66,6 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         @Override
         public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
             gmFragmentView.onSuccessPopularProduct(getPopularProduct);
-        }
-
-        @Override
-        public void onSuccessBuyerData(GetBuyerData getBuyerData) {
-            gmFragmentView.onSuccessBuyerData(getBuyerData);
         }
 
         @Override
@@ -110,7 +104,6 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         this.gmFragmentView = gmFragmentView;
         this.gmStat = gmStat;
         this.shopId = shopId;
-        gmStat.joinRepository();
     }
 
     public void setFirstTime(boolean firstTime) {
@@ -140,17 +133,13 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         GMStatNetworkController gmStatNetworkController = gmStat.getGmStatNetworkController();
         if (isFirstTime && isFetchData) {
             gmFragmentView.resetToLoading();
-            if (gmStatNetworkController instanceof GMStatNetworkController2) {
-                ((GMStatNetworkController2) gmStatNetworkController).fetchData2(shopId, sDate, eDate, compositeSubscription, gmStatListener);
+            if (gmStatNetworkController instanceof GMStatNetworkController) {
+                ((GMStatNetworkController) gmStatNetworkController).fetchData(shopId, -1, -1, compositeSubscription, gmStatListener);
             }
-            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         } else if (!isFirstTime) {
-            if (gmStatNetworkController instanceof GMStatNetworkController2) {
-                ((GMStatNetworkController2) gmStatNetworkController).fetchData2(shopId, sDate, shopId, compositeSubscription, gmStatListener);
+            if (gmStatNetworkController instanceof GMStatNetworkController) {
+                ((GMStatNetworkController) gmStatNetworkController).fetchData(shopId, sDate, shopId, compositeSubscription, gmStatListener);
             }
-            //[START] real network
-            gmStatNetworkController.fetchData(shopId, compositeSubscription, gmStatListener);
-            //[END] real network
         }
 
         if (isFetchData) {

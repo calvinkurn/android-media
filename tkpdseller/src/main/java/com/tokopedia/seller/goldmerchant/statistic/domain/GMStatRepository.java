@@ -7,6 +7,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetBuyerTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
@@ -20,6 +21,8 @@ import rx.Observable;
 
 public interface GMStatRepository {
     Observable<GMTransactionGraphMergeModel> getTransactionGraph(long startDate, long endDate);
+
+    GMTransactionGraphMergeModel getTransactionGraph(GetTransactionGraph getTransactionGraph);
 
     Observable<GetTransactionTableModel> getTransactionTable(long startDate, long endDate,
                                                              int page, int pageSize,

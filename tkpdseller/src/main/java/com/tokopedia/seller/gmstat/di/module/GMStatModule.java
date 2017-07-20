@@ -1,14 +1,10 @@
 package com.tokopedia.seller.gmstat.di.module;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.seller.gmstat.apis.GMStatApi;
 import com.tokopedia.seller.gmstat.di.scope.GMStatScope;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
@@ -31,11 +27,10 @@ public class GMStatModule {
         return retrofit.create(GMStatApi.class);
     }
 
-
-    @GMStatScope
     @Provides
-    public GMStatNetworkController provideGmStatNetworkController(@ApplicationContext Context context, Gson gson, GMStatApi gmStatApi) {
-        return new GMStatNetworkController2(context, gson, gmStatApi);
+    @GMStatScope
+    public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository) {
+        return new GMStatNetworkController(gson, gmStatRepository);
     }
 
     @GMStatScope

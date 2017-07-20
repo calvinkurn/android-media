@@ -8,10 +8,10 @@ public class GetPopularProduct {
     @SerializedName("product_id")
     @Expose
     private int productId;
-    @SerializedName("Sold")
+    @SerializedName("sold")
     @Expose
     private long sold;
-    @SerializedName("View")
+    @SerializedName("view")
     @Expose
     private int view;
     @SerializedName("success_trans")
