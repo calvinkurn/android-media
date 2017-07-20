@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 7/20/17.
  */
-public class GetBuyerGraph {
+public class GetBuyerGraph implements GetDateGraph{
 
     @SerializedName("total_buyer")
     @Expose

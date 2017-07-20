@@ -17,6 +17,11 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionTy
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase_Table;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -53,22 +58,21 @@ public class GMStatCache {
         return getObservable(GMStatActionType.BUYER, startDate, endDate, GetBuyerGraph.class);
     }
 
-    public Observable<GetKeyword> getKeywordModel() {
-        return getObservable(GMStatActionType.KEYWORD, 0, 0, GetKeyword.class);
+    public Observable<GetKeyword> getKeywordModel(long categoryId) {
+        return getObservable(GMStatActionType.KEYWORD, categoryId, -1, GetKeyword.class);
     }
 
     public Observable<GetShopCategory> getShopCategory(long startDate, long endDate) {
         return getObservable(GMStatActionType.SHOP_CAT, startDate, endDate, GetShopCategory.class);
     }
 
-
     public Observable<Boolean> saveGMStat(@GMStatActionType int action,
                                           long startDate, long endDate, String jsonData){
         try {
             GMStatDataBase gmStatDataBase = new GMStatDataBase();
             gmStatDataBase.setAction(action);
-            gmStatDataBase.setStartDate(startDate);
-            gmStatDataBase.setEndDate(endDate);
+            gmStatDataBase.setStartDate(getNormalizedDate(startDate));
+            gmStatDataBase.setEndDate(getNormalizedDate(endDate));
             gmStatDataBase.setData(jsonData);
             gmStatDataBase.setTimeStamp(System.currentTimeMillis() / 1000L);
             gmStatDataBase.save();
@@ -103,9 +107,16 @@ public class GMStatCache {
         return new Select()
                 .from(GMStatDataBase.class)
                 .where(GMStatDataBase_Table.action.is(action))
-                .and(GMStatDataBase_Table.startDate.is(startDate))
-                .and(GMStatDataBase_Table.endDate.is(endDate))
+                .and(GMStatDataBase_Table.startDate.is(getNormalizedDate(startDate)))
+                .and(GMStatDataBase_Table.endDate.is(getNormalizedDate(endDate)))
                 .querySingle();
+    }
+
+    public long getNormalizedDate(long dateLong) {
+        if (dateLong > 0) {
+            return dateLong / 86400000L;
+        }
+        return dateLong;
     }
 
     public <T> T getObjectParse(String jsonString, @NonNull Class<T> responseObjectErrorClass){

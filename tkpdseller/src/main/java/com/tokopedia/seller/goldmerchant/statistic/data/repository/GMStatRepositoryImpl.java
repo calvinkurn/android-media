@@ -16,6 +16,7 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionSt
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.model.transaction.table.GetTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.product.data.source.cache.ShopInfoCache;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 
 import javax.inject.Inject;
@@ -31,19 +32,23 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     private GMStatDataSource gmStatDataSource;
     private GMTransactionStatDomainMapper gmTransactionStatDomainMapper;
     private GMTransactionTableMapper gmTransactionTableMapper;
+    private ShopInfoRepository shopInfoRepository;
 
     @Inject
     public GMStatRepositoryImpl(GMTransactionStatDomainMapper gmTransactionStatDomainMapper,
                                 GMStatDataSource gmStatDataSource,
-                                GMTransactionTableMapper gmTransactionTableMapper) {
+                                GMTransactionTableMapper gmTransactionTableMapper,
+                                ShopInfoRepository shopInfoRepository) {
         this.gmStatDataSource = gmStatDataSource;
         this.gmTransactionStatDomainMapper = gmTransactionStatDomainMapper;
         this.gmTransactionTableMapper = gmTransactionTableMapper;
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
     public Observable<GMTransactionGraphMergeModel> getTransactionGraph(long startDate, long endDate) {
-        return gmStatDataSource.getTransactionGraph(startDate, endDate).map(gmTransactionStatDomainMapper);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getTransactionGraph(shopId, startDate, endDate).map(gmTransactionStatDomainMapper);
     }
 
     public GMTransactionGraphMergeModel getTransactionGraph(GetTransactionGraph getTransactionGraph) {
@@ -55,23 +60,27 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     public Observable<GetTransactionTableModel> getTransactionTable(long startDate, long endDate,
                                                                     int page, int pageSize,
                                                                     @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy) {
-        return gmStatDataSource.getTransactionTable(startDate, endDate, page, pageSize,
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getTransactionTable(shopId, startDate, endDate, page, pageSize,
                 sortType, sortBy).map(gmTransactionTableMapper);
     }
 
     @Override
     public Observable<GetProductGraph> getProductGraph(long startDate, long endDate) {
-        return gmStatDataSource.getProductGraph(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getProductGraph(shopId, startDate, endDate);
     }
 
     @Override
     public Observable<GetPopularProduct> getPopularProduct(long startDate, long endDate) {
-        return gmStatDataSource.getPopularProduct(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getPopularProduct(shopId, startDate, endDate);
     }
 
     @Override
     public Observable<GetBuyerGraph> getBuyerGraph(long startDate, long endDate) {
-        return gmStatDataSource.getBuyerGraph(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getBuyerGraph(shopId, startDate, endDate);
     }
 
     @Override
@@ -81,7 +90,8 @@ public class GMStatRepositoryImpl implements GMStatRepository {
 
     @Override
     public Observable<GetShopCategory> getShopCategory(long startDate, long endDate) {
-        return gmStatDataSource.getShopCategory(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getShopCategory(shopId, startDate, endDate);
     }
 
     @Override
@@ -91,12 +101,14 @@ public class GMStatRepositoryImpl implements GMStatRepository {
 
     @Override
     public Observable<GetProductTable> getProductTable(long startDate, long endDate) {
-        return gmStatDataSource.getProductTable(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getProductTable(shopId, startDate, endDate);
     }
 
     @Override
     public Observable<GetBuyerTable> getBuyerTable(long startDate, long endDate) {
-        return gmStatDataSource.getBuyerTable(startDate, endDate);
+        String shopId = shopInfoRepository.getShopId();
+        return gmStatDataSource.getBuyerTable(shopId, startDate, endDate);
     }
 
 
