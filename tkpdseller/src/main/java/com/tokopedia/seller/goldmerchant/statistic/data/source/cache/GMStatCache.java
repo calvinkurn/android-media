@@ -113,8 +113,9 @@ public class GMStatCache {
     }
 
     public long getNormalizedDate(long dateLong) {
-        if (dateLong > 0) {
-            return dateLong / 86400000L;
+        if (dateLong > 86400000000L) { // we just want to normalize long if it is date
+            long dateLongSecond = dateLong / 1000L;
+            return dateLongSecond - (dateLongSecond % 86000);
         }
         return dateLong;
     }
