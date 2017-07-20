@@ -20,7 +20,6 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
@@ -54,9 +53,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -219,7 +216,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             topAdsRecyclerAdapter.setHasHeader(false);
         }
         adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-        topAdsRecyclerAdapter.shouldLoadAds(dataFeedList.size() > 1);
+        topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.setData(dataFeedList);
     }
 
@@ -435,7 +432,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     @Override
-    public void onAddFavorite(Data dataShop) {
+    public void onAddFavorite(int position, Data dataShop) {
         Shop shop = dataShop.getShop();
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(

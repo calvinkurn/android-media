@@ -1,48 +1,114 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.model;
 
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+
+import java.util.List;
+
 /**
  * Created by nisie on 3/30/17.
  */
 
 public class ActionDiscussionModel {
 
+    private String cacheKey;
+    private String token;
+    private DiscussionItemViewModel replyDiscussionData;
+    private String message;
+    private String resolutionId;
+    private int flagReceived;
+    private List<AttachmentViewModel> attachment;
+    private boolean hasAttachment;
+    private String serverId;
+    private String uploadHost;
+    private List<UploadImageModel> uploadedFile;
 
-    private boolean success;
-    private String messageError;
-    private ActionDiscussionData listDiscussionData;
-    private int responseCode;
-
-    public boolean isSuccess() {
-        return success;
+    public void setCacheKey(String cacheKey) {
+        this.cacheKey = cacheKey;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public String getCacheKey() {
+        return cacheKey;
     }
 
-    public String getMessageError() {
-        return messageError;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public void setMessageError(String messageError) {
-        this.messageError = messageError;
+    public String getToken() {
+        return token;
     }
 
-    public ActionDiscussionData getListDiscussionData() {
-        return listDiscussionData;
+    public void setReplyDiscussionData(DiscussionItemViewModel replyDiscussionData) {
+        this.replyDiscussionData = replyDiscussionData;
     }
 
-    public void setListDiscussionData(ActionDiscussionData listDiscussionData) {
-        this.listDiscussionData = listDiscussionData;
+    public DiscussionItemViewModel getReplyDiscussionData() {
+        return replyDiscussionData;
     }
 
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
+    public String getMessage() {
+        return message;
     }
 
-    public int getResponseCode() {
-        return responseCode;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
+    public String getResolutionId() {
+        return resolutionId;
+    }
 
+    public void setResolutionId(String resolutionId) {
+        this.resolutionId = resolutionId;
+    }
+
+    public int getFlagReceived() {
+        return flagReceived;
+    }
+
+    public void setFlagReceived(int flagReceived) {
+        this.flagReceived = flagReceived;
+    }
+
+    public void setAttachment(List<AttachmentViewModel> attachment) {
+        this.attachment = attachment;
+    }
+
+    public List<AttachmentViewModel> getAttachment() {
+        return attachment;
+    }
+
+    public void setHasAttachment(boolean hasAttachment) {
+        this.hasAttachment = hasAttachment;
+    }
+
+    public boolean isHasAttachment() {
+        return hasAttachment;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setUploadHost(String uploadHost) {
+        this.uploadHost = uploadHost;
+    }
+
+    public String getUploadHost() {
+        return uploadHost;
+    }
+
+    public void setUploadedFile(List<UploadImageModel> uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }
+
+    public List<UploadImageModel> getUploadedFile() {
+        return uploadedFile;
+    }
 }

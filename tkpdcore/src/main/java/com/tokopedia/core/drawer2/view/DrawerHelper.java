@@ -15,6 +15,7 @@ import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
@@ -22,8 +23,6 @@ import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -34,7 +33,6 @@ import java.util.ArrayList;
  */
 
 public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemListener {
-
     public static final String DRAWER_CACHE = "DRAWER_CACHE";
     protected LocalCacheHandler drawerCache;
 
@@ -73,11 +71,28 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
+                intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
+                Intent intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
+                        (context);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
+                context.finish();
+                break;
             case TkpdState.DrawerPosition.REGISTER:
-                intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getId());
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                context.startActivity(intent);
+                intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
+                intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
+                        (context);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
+                context.finish();
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 intent = InboxRouter.getInboxMessageActivityIntent(context);

@@ -17,7 +17,7 @@ import java.util.List;
 public class DatePickerUtils {
 
     public static String getReadableDate(Context context, long date) {
-        String[] monthNamesAbrev = context.getResources().getStringArray(R.array.month_names_abrev);
+        String[] monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
         String[] split = dateFormat.format(date).split(" ");
         return getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev);

@@ -28,7 +28,6 @@ import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
@@ -255,7 +254,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         HotListBannerModel hotListBannerModel = browseProductModel.hotListBannerModel;
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
-                            view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            if (browseProductModel.result.products.length == 0) {
+                                view.displayEmptyResult();
+                            } else {
+                                view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            }
                         } else if (browseProductModel != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
@@ -335,7 +338,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }
 
                     @Override
@@ -374,7 +377,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
                     }
 
                     @Override

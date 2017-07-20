@@ -12,6 +12,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -33,13 +34,14 @@ import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.logout.TkpdSellerLogout;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -71,7 +73,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProduct.class);
+        Intent intent = new Intent(context, ManageProductSeller.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -100,7 +102,7 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
         //no route to wallet on seller, go to default
         goToDefaultRoute(context);
     }
@@ -119,6 +121,11 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+
+    }
+
+    @Override
+    public void actionAppLink(Activity activity, String linkUrl) {
 
     }
 
@@ -157,6 +164,24 @@ public class SellerRouterApplication extends MainApplication
     public void goToProfileCompletion(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToRegister(Context context) {
+        Intent intent = Login.getSellerRegisterIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public Intent getLoginIntent(Context context) {
+        Intent intent = Login.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getRegisterIntent(Context context) {
+        Intent intent = Login.getSellerRegisterIntent(context);
+        return intent;
     }
 
     @Override
@@ -215,15 +240,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(url);
-        paymentPassData.setQueryString(parameter);
-        paymentPassData.setCallbackSuccessUrl(callbackUrl);
-        paymentPassData.setPaymentId(String.valueOf(paymentId));
-        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
-        context.startActivity(intent);
-
+    public void goToProductDetailForResult(Fragment fragment, String productId,
+                                           int adapterPosition, int requestCode) {
+        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
+                adapterPosition);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private void goToDefaultRoute(Context context) {

@@ -32,127 +32,122 @@
             android:name=".instoped.InstopedActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDashboardActivity"
-            android:label="@string/title_top_ads_dashboard"
+            android:name=".topads.dashboard.view.activity.TopAdsDashboardActivity"
+            android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"/>
         <activity
-            android:name=".topads.view.activity.TopAdsProductAdListActivity"
-            android:label="@string/title_top_ads_product"
+            android:name=".topads.dashboard.view.activity.TopAdsProductAdListActivity"
+            android:label="@string/top_ads_title_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsGroupAdListActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsGroupAdListActivity"
             android:label="@string/title_top_ads_promo_group"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsFilterGroupActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsFilterGroupActivity"
             android:label="@string/title_top_ads_filter"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsFilterProductActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsFilterProductActivity"
             android:label="@string/title_top_ads_filter"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsFilterProductPromoActivity"
             android:label="@string/title_top_ads_filter"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsAddCreditActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".topads.view.activity.TopAdsPaymentCreditActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsGroupNewPromoActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsGroupNewPromoActivity"
             android:label="@string/title_top_ads_new_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsGroupEditPromoActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsGroupEditPromoActivity"
             android:label="@string/title_top_ads_edit_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsGroupManagePromoActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsGroupManagePromoActivity"
             android:label="@string/title_top_ads_manage_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsAddProductActivity"
-            android:label="@string/title_top_ads_product"
-            android:theme="@style/Theme.Tokopedia3"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".topads.view.activity.TopAdsDetailShopActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailShopActivity"
             android:label="@string/title_shop_ad_detail"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailProductActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailProductActivity"
             android:label="@string/title_product_ad_detail"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailGroupActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailGroupActivity"
             android:label="@string/title_group_ad_detail"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailNewShopActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailNewShopActivity"
             android:label="@string/title_top_ads_new_promo_shop"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailNewProductActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailNewProductActivity"
             android:label="@string/title_top_ads_add_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailNewGroupActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailNewGroupActivity"
             android:label="@string/title_top_ads_add_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailEditShopActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailEditShopActivity"
             android:label="@string/title_edit_shop_ad"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailEditProductActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailEditProductActivity"
             android:label="@string/title_top_ads_edit_promo_product"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsDetailEditGroupActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsDetailEditGroupActivity"
             android:label="@string/title_group_ad_edit"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsStatisticProductActivity"
             android:label="@string/title_activity_statistic"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsStatisticShopActivity"
             android:label="@string/title_activity_statistic"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:name=".topads.dashboard.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"
-            android:label="@string/title_top_ads_dashboard"
+            android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
@@ -211,6 +206,13 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".myproduct.ManageProductSeller"
+            android:label="@string/title_activity_manage_product"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
             android:name=".product.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
@@ -245,6 +247,12 @@
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
+
+        <activity
+            android:name=".product.draft.view.activity.ProductDraftListActivity"
+            android:label="@string/title_activity_draft_product"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
 
         <activity
             android:name=".opportunity.activity.OpportunitySortActivity"

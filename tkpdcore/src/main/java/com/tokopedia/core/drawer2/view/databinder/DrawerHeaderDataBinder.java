@@ -74,9 +74,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.cover_img)
         ImageView coverImg;
 
-        @BindView(R2.id.gradient_black)
-        RelativeLayout gradientBlack;
-
         @BindView(R2.id.drawer_points_layout)
         LinearLayout drawerPointsLayout;
 
@@ -103,6 +100,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         @BindView(R2.id.toko_cash_activation_button)
         TextView tokoCashActivationButton;
+
+
+        @BindView(R2.id.drawer_header)
+        View drawerHeader;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -164,24 +166,25 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     protected void bindDrawerHeaderGuest(ViewHolder holder) {
-        holder.name.setVisibility(View.GONE);
-        holder.avatar.setVisibility(View.GONE);
         holder.coverImg.setVisibility(View.VISIBLE);
-        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
-        holder.gradientBlack.setBackgroundResource(0);
         holder.drawerPointsLayout.setVisibility(View.GONE);
         holder.percentText.setVisibility(View.GONE);
         holder.layoutProgress.setVisibility(View.GONE);
         holder.verifiedIcon.setVisibility(View.GONE);
         holder.verifiedText.setVisibility(View.GONE);
+        holder.drawerHeader.setVisibility(View.GONE);
+        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
     }
 
     protected void bindDrawerHeader(ViewHolder holder) {
+        holder.drawerHeader.setVisibility(View.VISIBLE);
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
+        holder.coverImg.setVisibility(View.GONE);
+
         holder.name.setVisibility(View.VISIBLE);
         holder.avatar.setVisibility(View.VISIBLE);
         holder.percentText.setVisibility(View.VISIBLE);
-        holder.coverImg.setVisibility(View.INVISIBLE);
+
 
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
@@ -318,19 +321,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.loadingSaldo.setVisibility(View.GONE);
             holder.deposit.setText(data.getDrawerDeposit().getDeposit());
             holder.deposit.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void setCover(ViewHolder holder) {
-        if (data.getDrawerProfile().getShopCover() != null && !data.getDrawerProfile().getShopCover().equals("")) {
-            holder.gradientBlack.setBackgroundResource(R.drawable.gradient_black);
-            holder.coverImg.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(holder.coverImg, data.getDrawerProfile().getShopCover());
-            holder.name.setShadowLayer(1.5f, 2, 2, R.color.trans_black_40);
-        } else {
-            holder.gradientBlack.setBackgroundResource(0);
-            holder.coverImg.setVisibility(View.INVISIBLE);
-            holder.name.setShadowLayer(0, 0, 0, 0);
         }
     }
 

@@ -19,6 +19,7 @@
 
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
+    <string name="ride_phone_verification_header">Anda harus Verifikasi nomor ponsel untuk melanjutkan.</string>
     <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
@@ -79,4 +80,5 @@
     <string name="profile_completion_year">Tahun</string>
 
 
+    <string name="register_now">Daftar Sekarang di Tokopedia</string>
 </resources>

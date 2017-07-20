@@ -26,6 +26,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -122,10 +123,6 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         register.setText(spannable, TextView.BufferType.SPANNABLE);
         register.setMovementMethod(LinkMovementMethod.getInstance());
 
-
-        if(new SessionHandler(context).isV4Login()){
-            getActivity().finish();
-        }
     }
 
     @Override
@@ -190,10 +187,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-                startActivity(intent);
+                ((TkpdCoreRouter)getActivity().getApplication()).goToRegister(getActivity());
             }
 
             @Override

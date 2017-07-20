@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
-import android.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -19,22 +17,18 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Herdi_WORK on 10.05.17.
