@@ -1,11 +1,20 @@
 package com.tokopedia.tkpdpdp.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 
@@ -34,11 +43,48 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-        ImageView imageView = new ImageView(context);
-        String urlImage = productImages.get(position).getImageSrc();
-        if (urlImage != null && !urlImage.isEmpty())
-            ImageHandler.loadImageFit2(context, imageView, urlImage);
+    public Object instantiateItem(final ViewGroup container, final int position) {
+        final ImageView imageView = new ImageView(context);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        String urlImageTemp = productImages.get(position).getImageSrc300();
+        final String urlImage = productImages.get(position).getImageSrc();
+
+        if (urlImageTemp != null && !urlImageTemp.isEmpty()) {
+            Glide.with(context).load(urlImageTemp)
+                .dontAnimate()
+                .centerCrop()
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model,
+                                                   Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        Glide.with(context)
+                                .load(urlImage)
+                                .dontAnimate()
+                                .centerCrop()
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model,
+                                                               Target<GlideDrawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                                                   boolean isFromMemoryCache, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(imageView);
+                        return false;
+                    }
+                })
+                .into(imageView);
+        }
+
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
         return imageView;
