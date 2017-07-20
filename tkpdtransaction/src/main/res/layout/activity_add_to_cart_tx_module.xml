@@ -263,7 +263,7 @@
                             android:layout_marginEnd="@dimen/margin_vs"
                             android:layout_marginRight="@dimen/margin_vs"
                             android:layout_weight=".50"
-                            android:background="@drawable/btn_shop"
+                            android:background="@drawable/btn_selector_addtocart_address"
                             android:gravity="center"
                             android:padding="@dimen/padding_small"
                             android:text="@string/title_choose_address"
