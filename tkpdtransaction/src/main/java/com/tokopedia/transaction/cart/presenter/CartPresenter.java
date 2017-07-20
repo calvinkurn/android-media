@@ -231,6 +231,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+//
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -240,15 +241,15 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull CartItem cartData,
-                                         @NonNull CartProduct cartProductData) {
+    public void processCancelCartProduct(@NonNull final CartItem canceledCartData,
+                                         @NonNull final CartProduct cartProductData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("product_cart_id", cartProductData.getProductCartId());
-        maps.put("address_id", cartData.getCartDestination().getAddressId());
-        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", cartData.getCartShop().getShopId());
+        maps.put("address_id", canceledCartData.getCartDestination().getAddressId());
+        maps.put("shipment_id", canceledCartData.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", canceledCartData.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", canceledCartData.getCartShop().getShopId());
         cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -275,6 +276,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            sendCanceledCartTracker(canceledCartData, cartProductData);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -471,6 +473,20 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void unSubscribeObservable() {
         cartDataInteractor.unSubscribeObservable();
+    }
+
+    private void sendCanceledCartTracker(CartItem cartData, CartProduct cartProduct) {
+        if(cartData != null && cartProduct != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setName(cartProduct.getProductName());
+            product.setId(cartProduct.getProductId());
+            product.setUrl(cartProduct.getProductUrl());
+            product.setImageUrl(cartProduct.getProductPic());
+            product.setPrice(cartProduct.getProductPrice());
+            product.setShopId(cartData.getCartShop().getShopId());
+
+            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
+        }
     }
 
     @NonNull

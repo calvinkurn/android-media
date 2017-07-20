@@ -517,6 +517,13 @@ public interface AppEventTracking {
         String IS_FEED_EMPTY = "is_feed_empty";
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
 
+        String REG_START = "Registration_Start";
+        String REG_COMPL = "Registration_Completed";
+        String ADDR_ADD = "Address_Added";
+
+    }
+
+    interface EventMoEngage {
         String EVENT_LOGIN = "Login";
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
@@ -534,15 +541,10 @@ public interface AppEventTracking {
         String EVENT_CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
         String EVENT_SEARCH_ATTEMPT = "Search_Attempt";
 
-        String REG_START = "Registration_Start";
-        String REG_COMPL = "Registration_Completed";
-        String ADDR_ADD = "Address_Added";
-
         String EVENT_REG_START = "Registration_Start";
         String EVENT_REG_COMPL = "Registration_Completed";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
-
     }
 
 

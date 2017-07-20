@@ -719,7 +719,20 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
 
-            if(mProductDetail != null) TrackingUtils.sendMoEngageProductAddedToCart(mProductDetail.getProductCatName());
+            processCartAnalytics(mProductDetail);
+        }
+    }
+
+    private void processCartAnalytics(ProductDetail productDetail) {
+        if(productDetail != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setCategoryName(productDetail.getProductCatName());
+            product.setCategoryId(productDetail.getProductCatId());
+            product.setName(productDetail.getProductName());
+            product.setId(productDetail.getProductId());
+            product.setPrice(productDetail.getProductPrice());
+
+            TrackingUtils.sendMoEngageAddToCart(product);
         }
     }
 

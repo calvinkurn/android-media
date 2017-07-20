@@ -126,19 +126,18 @@ public class MoEngageContainer implements IMoengageContainer {
                 new PayloadBuilder()
                     .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
                     .build()
-                , AppEventTracking.MOENGAGE.EVENT_REG_START
+                , AppEventTracking.EventMoEngage.EVENT_REG_START
         );
     }
 
     @Override
-    public void sendRegisterEvent(String fullName, String mobileNo, String dateOfBirth) {
+    public void sendRegisterEvent(String fullName, String mobileNo) {
         sendEvent(
                 new PayloadBuilder()
                     .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
                     .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
-                    .putAttrDate(AppEventTracking.MOENGAGE.DATE_OF_BIRTH, dateOfBirth, DATE_FORMAT_1)
                     .build()
-                , AppEventTracking.MOENGAGE.EVENT_REG_COMPL
+                , AppEventTracking.EventMoEngage.EVENT_REG_COMPL
         );
     }
 
