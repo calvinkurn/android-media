@@ -24,6 +24,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
@@ -148,6 +151,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                 break;
             case LIST:
             case FEED:
+            case FEED_EMPTY:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;
@@ -206,4 +210,17 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         }
     }
 
+    public void setFavoritedShop(int position, boolean b) {
+        Item item = adapter.getItem(position);
+        if(item instanceof ShopFeedViewModel){
+            ((ShopFeedViewModel) item).getData().setFavorit(b);
+        }
+        if(item instanceof ShopGridViewModel){
+            ((ShopGridViewModel) item).getData().setFavorit(b);
+        }
+        if(item instanceof ShopListViewModel){
+            ((ShopListViewModel) item).getData().setFavorit(b);
+        }
+        adapter.notifyItemChanged(position);
+    }
 }
