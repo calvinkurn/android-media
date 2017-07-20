@@ -84,31 +84,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Observable.just(true).subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map(new Func1<Boolean, Void>() {
-                @Override
-                public Void call(Boolean aBoolean) {
-                    TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
-                    return null;
-                }
-            })
-            .subscribe(new Observer<Void>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onNext(Void aVoid) {
-                    initDeepLink();
-                }
-            });
+        startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
     }
 
@@ -350,5 +326,36 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
+    }
+
+    private Observable<Void> startAnalytics() {
+        return Observable.just(true).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, Void>() {
+                    @Override
+                    public Void call(Boolean aBoolean) {
+                        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+                        return null;
+                    }
+                });
+    }
+
+    private Observer<Void> getObserver() {
+        return new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                initDeepLink();
+            }
+        };
     }
 }
