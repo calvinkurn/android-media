@@ -64,13 +64,6 @@ public class DatePickerUtils {
         return reverse;
     }
 
-    public static String getRangeDateFormatted(Context context, Date startDate, Date endDate) {
-        if (startDate == null || endDate == null) {
-            return "";
-        }
-        return getRangeDateFormatted(context, startDate.getTime(), endDate.getTime());
-    }
-
     public static String getRangeDateFormatted(Context context, long startDate, long endDate) {
         if (startDate <= 0 || endDate <= 0) {
             return "";

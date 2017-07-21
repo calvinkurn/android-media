@@ -62,14 +62,17 @@ public class DateLabelView extends BaseCustomView {
     }
 
     public void setDate(Date startDate, Date endDate) {
+        setDate(startDate.getTime(), endDate.getTime());
+    }
+
+    public void setDate(long startDate, long endDate) {
         dateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
     }
 
-    public void setComparedDate(Date startDate, Date endDate) {
+    public void setComparedDate(long startDate, long endDate) {
         comparedDateTextView.setText(DatePickerUtils.getRangeDateFormatted(dateTextView.getContext(), startDate, endDate));
-        setComparedDateVisibility(View.VISIBLE);
         invalidate();
         requestLayout();
     }

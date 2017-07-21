@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePicker, DatePickerView {
 
-    private DateLabelView dateLabelView;
+    protected DateLabelView dateLabelView;
 
     @Inject
     public DatePickerPresenter datePickerPresenter;

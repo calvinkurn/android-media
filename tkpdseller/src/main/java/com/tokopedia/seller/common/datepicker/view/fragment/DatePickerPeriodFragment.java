@@ -71,14 +71,18 @@ public class DatePickerPeriodFragment extends TkpdFragment implements DatePicker
     }
 
     public void submitDate() {
+        getActivity().setResult(DatePickerConstant.RESULT_CODE, getSubmittedIntent());
+        getActivity().finish();
+    }
+
+    protected Intent getSubmittedIntent() {
         Intent intent = new Intent();
         PeriodRangeModel selectedDate = adapter.getSelectedDate();
         intent.putExtra(DatePickerConstant.EXTRA_START_DATE, selectedDate.getStartDate());
         intent.putExtra(DatePickerConstant.EXTRA_END_DATE, selectedDate.getEndDate());
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, adapter.getSelectedPosition());
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
-        getActivity().setResult(DatePickerConstant.RESULT_CODE, intent);
-        getActivity().finish();
+        return intent;
     }
 
     @Override

@@ -30,8 +30,13 @@ public class GMStatatisticDateUtils {
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25 07 2015";
 
-    public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel) {
-        Intent intent = new Intent(activity, GMStatisticDatePickerActivity.class);
+    public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel, boolean compared) {
+        Intent intent;
+        if (compared) {
+            intent = new Intent(activity, GMStatisticDatePickerActivity.class);
+        } else {
+            intent = new Intent(activity, DatePickerActivity.class);
+        }
         Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, Locale.ENGLISH);
@@ -60,7 +65,9 @@ public class GMStatatisticDateUtils {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerViewModel.getDatePickerType());
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(R.string.set_date));
-        intent.putExtra(DatePickerConstant.EXTRA_COMPARE_DATE, datePickerViewModel.isCompareDate());
+        if (compared) {
+            intent.putExtra(DatePickerConstant.EXTRA_COMPARE_DATE, datePickerViewModel.isCompareDate());
+        }
         return intent;
     }
 
