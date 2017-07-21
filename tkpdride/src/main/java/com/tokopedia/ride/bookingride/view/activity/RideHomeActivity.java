@@ -376,7 +376,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     void showDeniedForLocation() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
         initFragment();
     }
