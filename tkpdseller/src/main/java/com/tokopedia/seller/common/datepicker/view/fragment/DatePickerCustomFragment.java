@@ -165,13 +165,17 @@ public class DatePickerCustomFragment extends TkpdFragment {
         endDatePickerLabelView.setContent(DatePickerUtils.getReadableDate(getActivity(), endDate));
     }
 
-    public void submitDate() {
+    private void submitDate() {
+        getActivity().setResult(DatePickerConstant.RESULT_CODE, getSubmittedIntent());
+        getActivity().finish();
+    }
+
+    protected Intent getSubmittedIntent() {
         Intent intent = new Intent();
         intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate);
         intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate);
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-        getActivity().setResult(DatePickerConstant.RESULT_CODE, intent);
-        getActivity().finish();
+        return intent;
     }
 
     @Override

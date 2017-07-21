@@ -143,4 +143,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
         gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
     }
+
+    @Override
+    public boolean isComparedDate() {
+        return true;
+    }
 }

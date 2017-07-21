@@ -1,5 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -47,8 +48,9 @@ public class GMStatisticDatePickerPeriodFragment extends DatePickerPeriodFragmen
         super.onViewCreated(view, savedInstanceState);
         expandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_compare_date);
         datePeriodView = (DatePeriodView) view.findViewById(R.id.date_period_view_compared);
-        if (savedInstanceState != null) {
-            comparedDate = savedInstanceState.getBoolean(DatePickerConstant.EXTRA_COMPARE_DATE);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            comparedDate = bundle.getBoolean(DatePickerConstant.EXTRA_COMPARE_DATE);
         }
         expandableOptionSwitch.setExpand(comparedDate);
         updateComparedDateView(adapter.getSelectedDate());
@@ -63,5 +65,12 @@ public class GMStatisticDatePickerPeriodFragment extends DatePickerPeriodFragmen
     private void updateComparedDateView(PeriodRangeModel periodRangeModel) {
         PeriodRangeModel comparedPeriodRangeModel = GMStatatisticDateUtils.getComparedDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
         datePeriodView.setDate(comparedPeriodRangeModel.getStartDate(), comparedPeriodRangeModel.getEndDate());
+    }
+
+    @Override
+    protected Intent getSubmittedIntent() {
+        Intent intent = super.getSubmittedIntent();
+        intent.putExtra(DatePickerConstant.EXTRA_COMPARE_DATE, expandableOptionSwitch.isExpanded());
+        return intent;
     }
 }
