@@ -3,7 +3,9 @@ package com.tokopedia.core.reputationproduct.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
+import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.core.network.apiservices.shop.apis.ReputationActApi;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.data.source.CloudActResultDataSource;
@@ -19,16 +21,19 @@ public class ReputationProductDataFactory {
     private Context context;
     private ShopService shopService;
     private ReviewActService reviewActService;
+    private ReputationActService reputationActService;
     private LikeDislikeDomainMapper likeDislikeDomainMapper;
     private ActResultMapper actResultMapper;
 
     public ReputationProductDataFactory(Context context,
                                         ShopService shopService,
                                         ReviewActService reviewActService,
+                                        ReputationActService reputationActService,
                                         LikeDislikeDomainMapper likeDislikeDomainMapper,
                                         ActResultMapper actResultMapper) {
         this.context = context;
         this.reviewActService = reviewActService;
+        this.reputationActService = reputationActService;
         this.shopService = shopService;
         this.likeDislikeDomainMapper = likeDislikeDomainMapper;
         this.actResultMapper = actResultMapper;
@@ -47,14 +52,14 @@ public class ReputationProductDataFactory {
 
     public CloudPostReportDataSource getPostReportDataSource() {
         return new CloudPostReportDataSource(context,
-                reviewActService,
+                reputationActService,
                 actResultMapper);
 
     }
 
     public CloudDeleteCommentDataSource getDeleteCommentDataSource() {
         return new CloudDeleteCommentDataSource(context,
-                reviewActService,
+                reputationActService,
                 actResultMapper);
 
     }

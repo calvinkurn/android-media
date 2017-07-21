@@ -37,6 +37,7 @@ import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
+import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -135,6 +136,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         reputationProductDataFactory = new ReputationProductDataFactory(getActivity(),
                 new ShopService(),
                 new ReviewActService(),
+                new ReputationActService(),
                 likeDislikeDomainMapper,
                 actResultMapper);
 
