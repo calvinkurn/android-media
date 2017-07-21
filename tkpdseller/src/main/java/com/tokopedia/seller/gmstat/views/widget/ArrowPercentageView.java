@@ -22,7 +22,8 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT
  */
 
 public class ArrowPercentageView extends FrameLayout {
-    private double mPercentage = GMStatConstant.NoDataAvailable * 100;
+    private static final double NO_DATA_VALUE = GMStatConstant.NoDataAvailable * 100;
+    private double mPercentage = NO_DATA_VALUE;
     private ImageView ivArrowIcon;
     private TextView tvPercentage;
     private View view;
@@ -33,6 +34,7 @@ public class ArrowPercentageView extends FrameLayout {
     private int greenColor = R.color.arrow_up;
     private int greyColor = R.color.grey_400;
     private PercentageUtil percentageUtil;
+    private int noDataRes = R.string.no_data;
 
     public ArrowPercentageView(Context context) {
         super(context);
@@ -74,9 +76,10 @@ public class ArrowPercentageView extends FrameLayout {
         if (percentageUtil != null) {
             percentageUtil.calculatePercentage(mPercentage, ivArrowIcon, tvPercentage);
         } else {
-            if (mPercentage == GMStatConstant.NoDataAvailable * 100) {
+            if (mPercentage == NO_DATA_VALUE) {
                 ivArrowIcon.setVisibility(View.GONE);
-                tvPercentage.setText(null);
+                tvPercentage.setText(noDataRes);
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
             } else if (mPercentage < 0) {
                 ivArrowIcon.setImageResource(downDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
@@ -87,7 +90,7 @@ public class ArrowPercentageView extends FrameLayout {
                 ivArrowIcon.setImageResource(stagnantDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
             }
-            if (mPercentage != GMStatConstant.NoDataAvailable * 100) {
+            if (mPercentage != NO_DATA_VALUE) {
                 tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
                         KMNumbers.formatString(mPercentage).replace("-", "")));
             }
@@ -102,7 +105,10 @@ public class ArrowPercentageView extends FrameLayout {
     public void setPercentage(double percentage){
         mPercentage = percentage;
         setUIPercentage();
+    }
 
+    public void setNoDataPercentage(){
+        setPercentage(NO_DATA_VALUE);
     }
 
     public void setPercentageUtil(PercentageUtil percentageUtil) {

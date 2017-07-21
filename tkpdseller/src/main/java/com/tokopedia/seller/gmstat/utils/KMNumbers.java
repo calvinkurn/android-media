@@ -28,6 +28,16 @@ public final class KMNumbers {
         suffixes.put(digit, suffix);
     }
 
+    public static String getFormattedString(long value) {
+        String text = "";
+        if (value < 1_000_000) {
+            text = KMNumbers.formatDecimalString(value);
+        } else if (value >= 1_000_000) {
+            text = KMNumbers.formatNumbers(value);
+        }
+        return text;
+    }
+
     public static String formatNumbers(Long number) {
         if (number >= 100000 || number < 0) {
             return formatNumbersBiggerThanHundredThousand(number);

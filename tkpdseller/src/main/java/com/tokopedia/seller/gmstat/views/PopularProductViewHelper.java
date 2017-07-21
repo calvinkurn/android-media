@@ -47,17 +47,6 @@ public class PopularProductViewHelper {
         footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 
-    public static String getFormattedString(long value) {
-        String text = "";
-        if (value < 1_000_000) {
-            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
-            text = currencyFormatter.format(value);
-        } else if (value >= 1_000_000) {
-            text = KMNumbers.formatNumbers(value);
-        }
-        return text;
-    }
-
     public void moveToAddProduct() {
         Intent intent = new Intent(itemView.getContext(), ProductAddActivity.class);
         itemView.getContext().startActivity(intent);
@@ -169,7 +158,7 @@ public class PopularProductViewHelper {
         imageHandler.loadImage(imagePopularProduct, getPopularProduct.getImageLink());
         popularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
-        String text = getFormattedString(sold);
+        String text = KMNumbers.getFormattedString(sold);
         numberOfSelling.setText(text);
         xSold.setText(R.string.number_of_selled);
     }

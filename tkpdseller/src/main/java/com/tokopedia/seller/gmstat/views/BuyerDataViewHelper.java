@@ -18,7 +18,6 @@ import java.util.Locale;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LOWER_BUYER_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMAT;
-import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
  * Created by normansyahputa on 11/11/16.
@@ -82,7 +81,7 @@ public class BuyerDataViewHelper {
         /* this is empty state */
         if (getBuyerData.getTotalBuyer() == 0 &&
                 (getBuyerData.getMaleBuyer() == 0 || getBuyerData.getFemaleBuyer() == 0)) {
-            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+            buyerCount.setText(KMNumbers.getFormattedString(getBuyerData.getTotalBuyer()));
             buyerDataPieChart.setProgress(0f);
             femalePie.setTextColor(gredyColor);
             femalePie.setText("0 %");
@@ -127,7 +126,7 @@ public class BuyerDataViewHelper {
             }
         }
 
-        buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+        buyerCount.setText(KMNumbers.getFormattedString(getBuyerData.getTotalBuyer()));
 
         double percentage = getBuyerData.getDiffTotal() * 100D;
         boolean isDefault;

@@ -32,8 +32,6 @@ import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
-
 /**
  * Created on 11/10/16.
  * @author normansyahputa
@@ -217,7 +215,7 @@ public class DataTransactionViewHelper {
 
         /* non empty state */
         transactionCountIcon.setVisibility(View.VISIBLE);
-        transactionCount.setText(getFormattedString(totalTransactionModel.amount));
+        transactionCount.setText(KMNumbers.getFormattedString(totalTransactionModel.amount));
 
         Double diffSuccessTrans = totalTransactionModel.percentage * 100;
         boolean isDefault;
