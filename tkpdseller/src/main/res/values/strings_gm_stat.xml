@@ -6,9 +6,6 @@
     <string name="set_date">Atur Tanggal</string>
     <string name="title_transaction_success">Transaksi Berhasil</string>
     <string name="no_data">Tidak ada data</string>
-    <string name="data_product_title">Data Produk</string>
-    <string name="popular_product_title">Produk terlaris</string>
-    <string name="number_of_selled">x Terjual</string>
     <string name="yesterday">Kemarin</string>
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
@@ -32,4 +29,15 @@
     <string name="market_insight">Wawasan Pasar</string>
     <string name="most_popular_keyword">Kata kunci pencarian terpopuler</string>
     <string name="these_keywords_are_based_on_category_x">Kata kunci ini berdasarkan kategori dari \"<![CDATA[<b><i>%1$s</i></b>]]>\"</string>
+
+    <string name="no_market_insight_in_this_period">Tidak ada data wawasan pasar pada periode ini</string>
+    <string name="plus_add_product">+ Tambah Produk</string>
+    <string name="get_access_to_see_gm_stat">Dapatkan akses untuk melihat\ndata lengkap statistik produk</string>
+    <string name="upgrade_to_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="buyer_data">Data Pembeli</string>
+    <string name="buyer_count">Jumlah Pembeli</string>
+    <string name="product_data">Data Produk</string>
+    <string name="no_product_data_in_this_period">Tidak ada data produk pada periode ini</string>
+    <string name="x_sold">x Terjual</string>
+    <string name="most_popular_product">Produk terlaris</string>
 </resources>

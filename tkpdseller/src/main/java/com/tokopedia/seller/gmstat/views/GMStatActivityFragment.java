@@ -30,7 +30,6 @@ import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
-import com.tokopedia.seller.gmstat.views.helper.PopularProductLoading;
 import com.tokopedia.seller.gmstat.views.helper.TransactionDataLoading;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
@@ -93,14 +92,12 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private RecyclerView gmStatRecyclerView;
     private GMStatWidgetAdapter gmStatWidgetAdapter;
     private LoaderImageView grossIncomeGraph2Loading;
-    private View popularProduct;
     private View transactionData;
     private HorizontalScrollView grossIncomeGraphContainer;
     private Drawable oval2Copy6;
     private GridLayoutManager gridLayoutManager;
 
     private MarketInsightViewHelper marketInsightViewHelper;
-    private PopularProductLoading popularProductLoading;
     private TransactionDataLoading transactionDataLoading;
     private PopularProductViewHelper popularProductViewHelper;
     private View rootView;
@@ -134,7 +131,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
-        popularProduct = rootView.findViewById(R.id.popular_product);
         transactionData = rootView.findViewById(R.id.transaction_data);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
@@ -317,7 +313,9 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         initNumberFormatter();
         initEmptyAdapter();
         initChartLoading();
-        popularProductViewHelper = new PopularProductViewHelper(rootView);
+        TitleCardView popularProductCardView = (TitleCardView) rootView.findViewById(R.id.popular_product_card_view);
+        popularProductViewHelper = new PopularProductViewHelper(popularProductCardView);
+
         dataTransactionViewHelper = new DataTransactionViewHelper(rootView, gmstat.isGoldMerchant());
         gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
 
@@ -327,7 +325,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
         buyerDataViewHelper = new BuyerDataViewHelper(buyerDataCardView);
 
-        popularProductLoading = new PopularProductLoading(rootView);
         transactionDataLoading = new TransactionDataLoading(rootView);
         initPopularLoading();
         initTransactionDataLoading();
@@ -358,8 +355,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     private void initPopularLoading() {
-        popularProductLoading.displayLoading();
-        popularProduct.setVisibility(View.GONE);
+        popularProductViewHelper.showLoading();
     }
 
     private void initChartLoading() {
@@ -534,9 +530,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-        popularProductViewHelper.bindData(getPopularProduct, gmstat.getImageHandler());
-        popularProductLoading.hideLoading();
-        popularProduct.setVisibility(View.VISIBLE);
+        popularProductViewHelper.bindData(getPopularProduct);
     }
 
     @Override

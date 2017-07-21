@@ -3,7 +3,6 @@ package com.tokopedia.seller.gmstat.views;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
@@ -12,124 +11,39 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LAST_THIRTY_DAYS_AGO_FORMAT;
 
 /**
  * Created by normansyahputa on 11/9/16.
  */
 
 public class PopularProductViewHelper {
-    private static final Locale locale = new Locale("in", "ID");
-    private final View itemView;
-    private TextView dataProductTitle;
-    private ImageView imagePopularProduct;
-    private TextView textPopularProduct;
-    private TextView popularProductDescription;
-    private TextView numberOfSelling;
-    private TextView xSold;
+    private final TitleCardView popularProductCardView;
+    private ImageView ivPopularProduct;
+    private TextView tvPopularProductDescription;
+    private TextView tvNoOfSelling;
     private GetPopularProduct getPopularProduct;
-    private TextView footerPopularProduct;
-    private LinearLayout popularProductEmptyState;
-    private View separator2;
-    private String lastThirtyDaysAgo;
 
-    public PopularProductViewHelper(View itemView) {
-        initView(itemView);
-        this.itemView = itemView;
-
-        String categoryBold = String.format(LAST_THIRTY_DAYS_AGO_FORMAT, lastThirtyDaysAgo);
-        footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
+    public PopularProductViewHelper(TitleCardView popularProductCardView) {
+        initView(popularProductCardView);
+        this.popularProductCardView = popularProductCardView;
     }
 
-    public void moveToAddProduct() {
-        Intent intent = new Intent(itemView.getContext(), ProductAddActivity.class);
-        itemView.getContext().startActivity(intent);
-    }
+    private void initView(TitleCardView titleCardView) {
+        ivPopularProduct = (ImageView) titleCardView.findViewById(R.id.image_popular_product);
+        tvPopularProductDescription = (TextView) titleCardView.findViewById(R.id.tv_popular_product);
+        tvNoOfSelling = (TextView) titleCardView.findViewById(R.id.tv_no_of_selling);
 
-    public void gotoProductDetail() {
-        if (getPopularProduct == null)
-            return;
-
-        itemView.getContext().startActivity(ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(
-                        itemView.getContext(),
-                        getPopularProduct.getProductId() + ""));
-
-        // analytic below : https://phab.tokopedia.com/T18496
-        clickGMStat();
-    }
-
-    private void initView(View itemView) {
-
-        dataProductTitle = (TextView) itemView.findViewById(R.id.data_product_title);
-
-        imagePopularProduct = (ImageView) itemView.findViewById(R.id.image_popular_product);
-
-        textPopularProduct = (TextView) itemView.findViewById(R.id.text_popular_product);
-
-        popularProductDescription = (TextView) itemView.findViewById(R.id.popular_product_description);
-
-        numberOfSelling = (TextView) itemView.findViewById(R.id.number_of_selling);
-
-        xSold = (TextView) itemView.findViewById(R.id.x_sold);
-
-        footerPopularProduct = (TextView) itemView.findViewById(R.id.footer_popular_product);
-
-        popularProductEmptyState = (LinearLayout) itemView.findViewById(R.id.popular_product_empty_state);
-
-        separator2 = itemView.findViewById(R.id.separator_2);
-
-        itemView.findViewById(R.id.popular_product_empty_state)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        moveToAddProduct();
-
-                        // analytic below : https://phab.tokopedia.com/T18496
-                        clickAddProductTracking();
-                    }
-                });
-
-        itemView.findViewById(R.id.image_popular_product).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gotoProductDetail();
-                    }
-                }
-        );
-        itemView.findViewById(R.id.text_popular_product).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gotoProductDetail();
-                    }
-                }
-        );
-        itemView.findViewById(R.id.data_product_title).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gotoProductDetail();
-                    }
-                }
-        );
-        itemView.findViewById(R.id.popular_product_description).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gotoProductDetail();
-                    }
-                }
-        );
-
-        lastThirtyDaysAgo = itemView.getContext().getString(R.string.last_thirty_days_ago);
+        View.OnClickListener goToProductDetailClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoProductDetail();
+            }
+        };
+        ivPopularProduct.setOnClickListener( goToProductDetailClickListener);
+        tvPopularProductDescription.setOnClickListener( goToProductDetailClickListener);
     }
 
     private void clickAddProductTracking(){
@@ -142,24 +56,62 @@ public class PopularProductViewHelper {
         }
     }
 
-    public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler) {
-        this.getPopularProduct = getPopularProduct;
+    public void bindData(GetPopularProduct getPopularProduct) {
+        popularProductCardView.setLoadingState(false);
+
         if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
-            popularProductEmptyState.setVisibility(View.VISIBLE);
-            separator2.setVisibility(View.GONE);
+            setEmptyState();
             return;
         } else {
-            popularProductEmptyState.setVisibility(View.GONE);
-            separator2.setVisibility(View.VISIBLE);
+            popularProductCardView.setEmptyState(false);
         }
+        this.getPopularProduct = getPopularProduct;
 
-        dataProductTitle.setText(R.string.data_product_title);
-        textPopularProduct.setText(R.string.popular_product_title);
-        imageHandler.loadImage(imagePopularProduct, getPopularProduct.getImageLink());
-        popularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
+        new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
+        tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = KMNumbers.getFormattedString(sold);
-        numberOfSelling.setText(text);
-        xSold.setText(R.string.number_of_selled);
+        tvNoOfSelling.setText(text);
+    }
+
+    private void setEmptyState(){
+        popularProductCardView.setEmptyViewRes(R.layout.widget_popular_product_empty);
+        popularProductCardView.getEmptyView().findViewById(R.id.add_product_popular_product)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToAddProduct();
+
+                        // analytic below : https://phab.tokopedia.com/T18496
+                        clickAddProductTracking();
+                    }
+                });
+        popularProductCardView.setEmptyState(true);
+    }
+
+    public void gotoProductDetail() {
+        if (getPopularProduct == null)
+            return;
+
+        popularProductCardView.getContext().startActivity(ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(
+                        popularProductCardView.getContext(),
+                        getPopularProduct.getProductId() + ""));
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        clickGMStat();
+    }
+
+    public void moveToAddProduct() {
+        Intent intent = new Intent(popularProductCardView.getContext(), ProductAddActivity.class);
+        popularProductCardView.getContext().startActivity(intent);
+    }
+
+    public void showLoading(){
+        popularProductCardView.setLoadingState(true);
+    }
+
+    public void hideLoading(){
+        popularProductCardView.setLoadingState(false);
     }
 }

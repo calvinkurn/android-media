@@ -12,8 +12,6 @@ public final class GMStatConstant {
     public static final String LOWER_BUYER_FORMAT = "%3d%%";
     public static final String PERCENTAGE_FORMAT = "%s%%";
     public static final String NUMBER_TIMES_FORMAT = "%sx";
-    public static final String MARKET_INSIGHT_FOOTER_FORMAT = "\"<i><b>%s</b></i>\"";
-    public static final String LAST_THIRTY_DAYS_AGO_FORMAT = "<i>%s</i>";
     public static final String RANGE_DATE_FORMAT = "%s - %s";
     public static final String SINGLE_DATE_FORMAT = "%s";
     public static final double NoDataAvailable = -2147483600;
