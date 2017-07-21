@@ -127,6 +127,7 @@ ext {
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
             smoothAppBarLayout    : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller            : "true.caller.sdk:truecaller:0.5",
+            bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
