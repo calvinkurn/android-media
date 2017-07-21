@@ -30,6 +30,10 @@ public class GMStatatisticDateUtils {
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25 07 2015";
 
+    public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel) {
+        return getDatePickerIntent(activity, datePickerViewModel, false);
+    }
+
     public static Intent getDatePickerIntent(Activity activity, DatePickerViewModel datePickerViewModel, boolean compared) {
         Intent intent;
         if (compared) {

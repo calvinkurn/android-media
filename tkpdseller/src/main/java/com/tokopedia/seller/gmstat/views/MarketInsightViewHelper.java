@@ -79,7 +79,7 @@ public class MarketInsightViewHelper {
         } else {
             tvMarketInsightFooter.setText(MethodChecker.fromHtml(
                     tvMarketInsightFooter.getContext().getString(
-                            R.string.these_keywords_are_based_on_category_x, categoryName)));
+                            R.string.gm_statistic_these_keywords_are_based_on_category_x, categoryName)));
             tvMarketInsightFooter.setVisibility(View.VISIBLE);
         }
     }

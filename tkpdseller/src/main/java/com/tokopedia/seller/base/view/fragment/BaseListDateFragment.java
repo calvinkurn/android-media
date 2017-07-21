@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.DatePicker;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
+import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
@@ -20,11 +21,10 @@ import java.util.Date;
 import javax.inject.Inject;
 
 /**
- * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
+ * Created by nathan on 7/21/17.
  */
 
-public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePicker, DatePickerView {
+public abstract class BaseListDateFragment<T extends ItemType> extends BaseListFragment<BlankPresenter, T> implements DatePicker, DatePickerView {
 
     protected DateLabelView dateLabelView;
 
@@ -40,6 +40,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +73,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void loadData() {
+        super.loadData();
         dateLabelView.setDate(new Date(datePickerViewModel.getStartDate()), new Date(datePickerViewModel.getEndDate()));
     }
 
@@ -83,6 +85,11 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
         loadData();
+    }
+
+    @Override
+    protected void setActionVar() {
+        // Do nothing
     }
 
     @Override

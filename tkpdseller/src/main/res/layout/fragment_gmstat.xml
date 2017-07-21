@@ -118,7 +118,7 @@
             android:layout_marginLeft="@dimen/gmstat_margin_bottom"
             android:layout_marginRight="@dimen/gmstat_margin_bottom"
             app:title_size="@dimen/font_body1"
-            app:title="@string/market_insight"
+            app:title="@string/gm_statistic_market_insight"
             app:icon="@drawable/ic_wawasan_pasar_icon"
             app:loading_layout="@layout/widget_market_insight_loading">
 
