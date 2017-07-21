@@ -46,7 +46,7 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history_need_help);
         unbinder = ButterKnife.bind(this);
-        rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
+        rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         setupToolbar();
 
         init();
@@ -131,5 +131,10 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
             finish();
         }
         return false;
+    }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
     }
 }
