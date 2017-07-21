@@ -61,7 +61,6 @@ public class MarketInsightViewHelper {
     }
 
     private void initView(final View view) {
-
         marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
 
@@ -183,6 +182,7 @@ public class MarketInsightViewHelper {
     }
 
     public void bindNoShopCategory() {
+        view.setLoadingState(false);
         if (isGoldMerchant)
             displayEmptyState();
         else {
