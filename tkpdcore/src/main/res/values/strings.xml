@@ -2008,4 +2008,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_loading">Loading..</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="webview_home_navigation_text">Beranda</string>
+    <string name="webview_help_menu_text">Bantuan</string>
+    <string name="webview_toolbar_menu_text">Toolbar Menu</string>
 </resources>
