@@ -418,7 +418,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
-        if (adapter.getList().get(position) instanceof FeedDetailViewModel) {
+        if (adapter.getList().get(position) instanceof FeedDetailViewModel
+                && !adapter.getList().isEmpty()
+                && position < adapter.getList().size()
+                && adapter.getList().get(position) != null) {
             ((FeedDetailViewModel) adapter.getList().get(position)).setWishlist(isWishlist);
             adapter.notifyItemChanged(position);
         }
