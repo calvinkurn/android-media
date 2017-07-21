@@ -446,6 +446,14 @@ public class ActReviewPass implements Parcelable{
         return requestParams;
     }
 
+    public RequestParams getDeleteCommentParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_REPUTATION_ID, getReputationId());
+        requestParams.putString(PARAM_REVIEW_ID, getReviewId());
+        requestParams.putString(PARAM_SHOP_ID, getShopId());
+        return requestParams;
+    }
+
     @Override
     public int describeContents() {
         return 0;

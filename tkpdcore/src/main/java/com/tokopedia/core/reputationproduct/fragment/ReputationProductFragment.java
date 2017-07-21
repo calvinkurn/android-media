@@ -43,16 +43,22 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.data.factory.ReputationProductDataFactory;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
+import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepository;
+import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepositoryImpl;
 import com.tokopedia.core.reputationproduct.data.repository.GetLikeDislikeRepository;
 import com.tokopedia.core.reputationproduct.data.repository.GetLikeDislikeRepositoryImpl;
 import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepository;
 import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepositoryImpl;
+import com.tokopedia.core.reputationproduct.data.repository.PostReportRepository;
+import com.tokopedia.core.reputationproduct.data.repository.PostReportRepositoryImpl;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
+import com.tokopedia.core.reputationproduct.domain.usecase.DeleteCommentUseCase;
 import com.tokopedia.core.reputationproduct.domain.usecase.GetLikeDislikeUseCase;
 import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderComment;
 import com.tokopedia.core.reputationproduct.data.pojo.ViewHolderMain;
 import com.tokopedia.core.reputationproduct.domain.usecase.LikeDislikeUseCase;
+import com.tokopedia.core.reputationproduct.domain.usecase.PostReportUseCase;
 import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewFragmentPresenter;
 import com.tokopedia.core.reputationproduct.presenter.ReputationProductViewFragmentPresenterImpl;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
@@ -96,12 +102,18 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private GetLikeDislikeRepository getLikeDislikeRepository;
     private LikeDislikeRepository likeDislikeRepository;
+    private PostReportRepository postReportRepository;
+    private DeleteCommentRepository deleteCommentRepository;
+
     private ReputationProductDataFactory reputationProductDataFactory;
-    private ShopApi shopApi;
+
     private LikeDislikeDomainMapper likeDislikeDomainMapper;
     private ActResultMapper actResultMapper;
+
     private GetLikeDislikeUseCase getLikeDislikeUseCase;
     private LikeDislikeUseCase likeDislikeUseCase;
+    private PostReportUseCase postReportUseCase;
+    private DeleteCommentUseCase deleteCommentUseCase;
 
     public static ReputationProductFragment createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
         ReputationProductFragment fragment = new ReputationProductFragment();
@@ -119,12 +131,36 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 //        networkInteractor = new InboxReputationRetrofitInteractorImpl();
         likeDislikeDomainMapper = new LikeDislikeDomainMapper();
         actResultMapper = new ActResultMapper();
-        reputationProductDataFactory = new ReputationProductDataFactory(getActivity(),new ShopService(), new ReviewActService(),likeDislikeDomainMapper, actResultMapper);
+
+        reputationProductDataFactory = new ReputationProductDataFactory(getActivity(),
+                new ShopService(),
+                new ReviewActService(),
+                likeDislikeDomainMapper,
+                actResultMapper);
+
         getLikeDislikeRepository = new GetLikeDislikeRepositoryImpl(reputationProductDataFactory);
         likeDislikeRepository = new LikeDislikeRepositoryImpl(reputationProductDataFactory);
-        getLikeDislikeUseCase = new GetLikeDislikeUseCase(new JobExecutor(),new UIThread(), getLikeDislikeRepository);
-        likeDislikeUseCase = new LikeDislikeUseCase(new JobExecutor(), new UIThread(), likeDislikeRepository);
-        presenter = new ReputationProductViewFragmentPresenterImpl(this, getLikeDislikeUseCase, likeDislikeUseCase);
+        postReportRepository = new PostReportRepositoryImpl(reputationProductDataFactory);
+        deleteCommentRepository = new DeleteCommentRepositoryImpl(reputationProductDataFactory);
+
+        getLikeDislikeUseCase = new GetLikeDislikeUseCase(new JobExecutor(),
+                new UIThread(),
+                getLikeDislikeRepository);
+        likeDislikeUseCase = new LikeDislikeUseCase(new JobExecutor(),
+                new UIThread(),
+                likeDislikeRepository);
+        postReportUseCase = new PostReportUseCase(new JobExecutor(),
+                new UIThread(),
+                postReportRepository);
+        deleteCommentUseCase = new DeleteCommentUseCase(new JobExecutor(),
+                new UIThread(),
+                deleteCommentRepository);
+
+        presenter = new ReputationProductViewFragmentPresenterImpl(this,
+                getLikeDislikeUseCase,
+                likeDislikeUseCase,
+                postReportUseCase,
+                deleteCommentUseCase);
     }
 
     @Override
@@ -798,7 +834,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
 
     @Override
-    public void onSuccessDeleteComment(ActResult result) {
+    public void onSuccessDeleteComment(ActResultDomain result) {
         progressDialog.dismiss();
         CommonUtils.UniversalToast(getActivity(), getString(R.string.msg_delete_comment));
         Intent intent = new Intent();

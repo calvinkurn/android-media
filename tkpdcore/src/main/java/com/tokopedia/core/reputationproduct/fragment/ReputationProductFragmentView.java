@@ -13,7 +13,7 @@ public interface ReputationProductFragmentView {
 
     void setResultToModel(LikeDislikeDomain resultToModel);
 
-    void onSuccessDeleteComment(ActResult result);
+    void onSuccessDeleteComment(ActResultDomain result);
 
     void onSuccessLikeDislikeReview(ActResultDomain result);
 

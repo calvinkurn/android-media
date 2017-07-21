@@ -7,7 +7,9 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.data.source.CloudActResultDataSource;
+import com.tokopedia.core.reputationproduct.data.source.CloudDeleteCommentDataSource;
 import com.tokopedia.core.reputationproduct.data.source.CloudLikeDislikeDataSource;
+import com.tokopedia.core.reputationproduct.data.source.CloudPostReportDataSource;
 
 /**
  * Created by yoasfs on 18/07/17.
@@ -32,10 +34,28 @@ public class ReputationProductDataFactory {
         this.actResultMapper = actResultMapper;
     }
     public CloudLikeDislikeDataSource getCloudReputationProductDataSource() {
-        return new CloudLikeDislikeDataSource(context, shopService, likeDislikeDomainMapper);
+        return new CloudLikeDislikeDataSource(context,
+                shopService,
+                likeDislikeDomainMapper);
     }
 
     public CloudActResultDataSource getLikeDislikeReviewDataSource() {
-        return new CloudActResultDataSource(context, reviewActService, actResultMapper);
+        return new CloudActResultDataSource(context,
+                reviewActService,
+                actResultMapper);
+    }
+
+    public CloudPostReportDataSource getPostReportDataSource() {
+        return new CloudPostReportDataSource(context,
+                reviewActService,
+                actResultMapper);
+
+    }
+
+    public CloudDeleteCommentDataSource getDeleteCommentDataSource() {
+        return new CloudDeleteCommentDataSource(context,
+                reviewActService,
+                actResultMapper);
+
     }
 }
