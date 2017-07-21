@@ -22,6 +22,7 @@ public class RideProductViewModelMapper {
     private static final int DEFAULT_TIME_ESTIMATE = 15;
     private static final String IND_CURRENCY = "IDR";
     private static final String IND_LOCAL_CURRENCY = "Rp";
+    private static final String DEFAULT_DOUBLE_DASH = "--";
 
     public RideProductViewModelMapper() {
     }
@@ -62,7 +63,7 @@ public class RideProductViewModelMapper {
      */
     private String getBaseFare(PriceDetail priceDetail) {
         //set base fare
-        String baseFare = "--";
+        String baseFare = DEFAULT_DOUBLE_DASH;
         if (priceDetail != null) {
             if (isIndonesiaCurrency(priceDetail)) {
                 baseFare = "Base Fare: " + getStringIdrFormat(Integer.parseInt(priceDetail.getBase()));
@@ -86,7 +87,7 @@ public class RideProductViewModelMapper {
      */
     private String getCancellationCharges(PriceDetail priceDetail) {
         //set base fare
-        String baseFare = "--";
+        String baseFare = DEFAULT_DOUBLE_DASH;
         if (priceDetail != null) {
             if (isIndonesiaCurrency(priceDetail)) {
                 baseFare = getStringIdrFormat(Integer.parseInt(priceDetail.getCancellationFee()));
@@ -167,7 +168,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(false);
-            rideProductViewModel.setProductPriceFmt("--");
+            rideProductViewModel.setProductPriceFmt(DEFAULT_DOUBLE_DASH);
         }
         return rideProductViewModel;
     }

@@ -10,8 +10,6 @@ import java.util.Locale;
  */
 
 public class RideUtils {
-    private static final String DATE_SERVER_FORMAT = "yyyy-MM-dd";
-    private static final String DATE_VIEW_FORMAT = "dd MMM yyyy";
     private static final String TIME_SERVER_FORMAT = "dd MMM, yyyy HH:mm";
     private static final String TIME_VIEW_FORMAT = "dd MMM yyyy HH:mm";
     // 17 Jul, 2017 00:29 -> 07 Jul 2017 14:55
