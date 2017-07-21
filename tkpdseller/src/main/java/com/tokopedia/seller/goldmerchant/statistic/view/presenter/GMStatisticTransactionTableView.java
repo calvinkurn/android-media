@@ -12,8 +12,5 @@ import java.util.List;
 
 public interface GMStatisticTransactionTableView extends CustomerView {
 
-    String START_DATE = "START_DATE";
-    String END_DATE = "END_DATE";
-
     void onSearchLoaded(@NonNull List list, int totalItem);
 }

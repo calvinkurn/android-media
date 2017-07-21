@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/tkpd_main_green"
-        android:text="@string/see_detail" />
+        android:text="@string/gm_statistic_see_detail" />
 
     <ImageView
         android:id="@+id/see_detail_image"

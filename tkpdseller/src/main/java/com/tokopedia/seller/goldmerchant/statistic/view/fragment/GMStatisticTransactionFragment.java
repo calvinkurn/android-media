@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
@@ -20,11 +19,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGrap
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
-import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelView;
-import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 
 import javax.inject.Inject;
 
@@ -37,14 +33,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Inject
     GMStatisticTransactionPresenter presenter;
-
-    @Inject
-    SessionHandler sessionHandler;
-
-    @Inject
-    DashboardTopadsInteractor dashboardTopadsInteractor;
-
-    private DateLabelView dateLabelView;
 
     private GMTopAdsAmountViewHolder gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
@@ -95,9 +83,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void startTransactionProductList(long startDate, long endDate) {
-        Intent intent = new Intent(GMStatisticTransactionFragment.this.getActivity(), GMStatisticTransactionTableActivity.class);
-        intent.putExtra(GMStatisticTransactionTableView.START_DATE, startDate);
-        intent.putExtra(GMStatisticTransactionTableView.END_DATE, endDate);
+        Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
         startActivity(intent);
     }
 

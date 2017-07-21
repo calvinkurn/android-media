@@ -26,10 +26,11 @@
     <string name="gm_statistic_compare_date_section">Bandingkan</string>
     <string name="gm_statistic_compare_date_title">Periode Sebelumnya</string>
 
-    <string name="see_detail">Lihat Detail</string>
-    <string name="product_name">Nama Produk</string>
+    <string name="gm_statistic_see_detail">Lihat Detail</string>
+    <string name="gm_statistic_product_name">Nama Produk</string>
 
-    <string name="market_insight">Wawasan Pasar</string>
-    <string name="most_popular_keyword">Kata kunci pencarian terpopuler</string>
-    <string name="these_keywords_are_based_on_category_x">Kata kunci ini berdasarkan kategori dari \"<![CDATA[<b><i>%1$s</i></b>]]>\"</string>
+    <string name="gm_statistic_market_insight">Wawasan Pasar</string>
+    <string name="gm_statistic_most_popular_keyword">Kata kunci pencarian terpopuler</string>
+    <string name="gm_statistic_these_keywords_are_based_on_category_x">Kata kunci ini berdasarkan kategori dari \"<![CDATA[<b><i>%1$s</i></b>]]>\"</string>
+    <string name="gm_statistic_total_transaction">Total Transaksi</string>
 </resources>

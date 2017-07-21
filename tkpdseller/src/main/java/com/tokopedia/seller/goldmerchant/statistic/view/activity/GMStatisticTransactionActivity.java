@@ -20,11 +20,6 @@ public class GMStatisticTransactionActivity extends BaseSimpleActivity implement
     }
 
     @Override
-    protected String getTagFragment() {
-        return GMStatisticTransactionFragment.TAG;
-    }
-
-    @Override
     public GoldMerchantComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent(getActivityModule());
     }

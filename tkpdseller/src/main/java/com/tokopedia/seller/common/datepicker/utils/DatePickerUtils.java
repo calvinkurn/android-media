@@ -1,10 +1,12 @@
 package com.tokopedia.seller.common.datepicker.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -103,28 +105,37 @@ public class DatePickerUtils {
         return null;
     }
 
-    public static String convertTimestampToString(long timestamp, String dateFormat) {
-        Date date = new Date(timestamp);
-        Format format = new SimpleDateFormat(dateFormat, Locale.US);
-        return format.format(date);
+    public static boolean isDateEqual(String dateFormat, long startDate, long endDate, long comparedStartDate, long comparedEndDate) {
+        return isDateEqual(dateFormat, startDate, comparedStartDate) && isDateEqual(dateFormat, endDate, comparedEndDate);
     }
 
-    public static boolean isDateEqual(String dateFormat, long date, long comparedDate) {
+    private static boolean isDateEqual(String dateFormat, long date, long comparedDate) {
         String dateString = convertTimestampToString(date, dateFormat);
         String comparedDateString = convertTimestampToString(comparedDate, dateFormat);
         return dateString.equalsIgnoreCase(comparedDateString);
     }
 
-    public static boolean isDateEqual(String dateFormat, long startDate, long endDate, long comparedStartDate, long comparedEndDate) {
-        return isDateEqual(dateFormat, startDate, comparedStartDate) && isDateEqual(dateFormat, endDate, comparedEndDate);
+    private static String convertTimestampToString(long timestamp, String dateFormat) {
+        Date date = new Date(timestamp);
+        Format format = new SimpleDateFormat(dateFormat, Locale.US);
+        return format.format(date);
     }
 
     public static long getDateDiff(long date1, long date2, TimeUnit timeUnit) {
-        return getDateDiff(new Date(date1), new Date(date2), timeUnit);
+        long diffInMillis = date2 - date1;
+        return timeUnit.convert(diffInMillis, TimeUnit.MILLISECONDS);
     }
 
-    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillis = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillis, TimeUnit.MILLISECONDS);
+    public static DatePickerViewModel convertDatePickerFromIntent(Intent intent) {
+        long starDate = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
+        long endDate = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
+        int lastSelection = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
+        int selectionType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        DatePickerViewModel datePickerViewModel = new DatePickerViewModel();
+        datePickerViewModel.setStartDate(starDate);
+        datePickerViewModel.setEndDate(endDate);
+        datePickerViewModel.setDatePickerSelection(lastSelection);
+        datePickerViewModel.setDatePickerType(selectionType);
+        return datePickerViewModel;
     }
 }
