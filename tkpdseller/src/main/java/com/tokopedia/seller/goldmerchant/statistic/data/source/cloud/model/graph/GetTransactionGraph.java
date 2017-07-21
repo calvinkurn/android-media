@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 7/6/17.
  */
-public class GetTransactionGraph {
+public class GetTransactionGraph implements GetDateGraph{
     @SerializedName("p_cpc_product")
     @Expose
     private long pCpcProduct;

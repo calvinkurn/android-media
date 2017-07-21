@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 public interface GMFragmentView {
-    void onSuccessGetShopCategory(GetShopCategory getShopCategory);
+    void onGetShopCategoryEmpty();
 
     void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
 
@@ -25,7 +25,7 @@ public interface GMFragmentView {
 
     void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
-    void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
+    void onSuccessGetCategory(String categoryName);
 
     void onComplete();
 

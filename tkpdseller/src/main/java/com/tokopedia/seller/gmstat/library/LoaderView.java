@@ -49,6 +49,7 @@ public class LoaderView extends View implements ILoaderView {
                         R.styleable.loader_view_use_gradient,
                         LoaderConstant.USE_GRADIENT_DEFAULT));
         typedArray.recycle();
+
     }
 
     public void resetLoader() {

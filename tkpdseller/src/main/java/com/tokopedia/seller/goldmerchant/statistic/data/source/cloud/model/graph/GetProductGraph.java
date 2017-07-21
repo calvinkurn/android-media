@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetProductGraph {
+public class GetProductGraph implements GetDateGraph{
 
     @SerializedName("success_trans")
     @Expose

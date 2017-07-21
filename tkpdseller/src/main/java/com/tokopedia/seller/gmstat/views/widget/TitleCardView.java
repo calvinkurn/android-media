@@ -170,6 +170,10 @@ public class TitleCardView extends CardView {
         return loadingView;
     }
 
+    public View getContentView() {
+        return contentView;
+    }
+
     public void setLoadingView(View loadingView) {
         if (this.loadingView!= null) {
             mFrameLayout.removeView(this.loadingView);

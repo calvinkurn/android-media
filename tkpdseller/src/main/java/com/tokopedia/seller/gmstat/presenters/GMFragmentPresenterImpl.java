@@ -50,7 +50,11 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
     private OldGMStatRepository gmStatListener = new OldGMStatRepository() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-            gmFragmentView.onSuccessGetShopCategory(getShopCategory);
+            if (getShopCategory == null
+                    || getShopCategory.getShopCategory() == null
+                    || getShopCategory.getShopCategory().isEmpty()) {
+                gmFragmentView.onGetShopCategoryEmpty();
+            }
         }
 
         @Override
@@ -80,7 +84,12 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         @Override
         public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
-            gmFragmentView.onSuccessGetCategory(hadesV1Models);
+            if (hadesV1Models == null || hadesV1Models.size() <= 0)
+                return;
+
+            HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
+
+            gmFragmentView.onSuccessGetCategory(category.getName());
         }
 
         @Override
