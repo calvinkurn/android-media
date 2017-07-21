@@ -5,6 +5,7 @@ package com.tokopedia.core.network.constants;
  */
 public class TkpdBaseURL {
 
+    public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
@@ -46,7 +47,6 @@ public class TkpdBaseURL {
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
-
     public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/?flag_app=1";
