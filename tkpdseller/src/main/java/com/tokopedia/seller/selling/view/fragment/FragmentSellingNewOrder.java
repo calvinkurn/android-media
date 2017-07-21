@@ -21,6 +21,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
@@ -150,7 +151,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case PROCESS_ORDER:
-                    sendBroadcastToAppWidget();
+                    AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
                     shouldRefreshList = true;
                     break;
             }
@@ -168,12 +169,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
 
         initView();
         return view;
-    }
-
-    private void sendBroadcastToAppWidget() {
-        Intent i = new Intent();
-        i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        getActivity().sendBroadcast(i);
     }
 
     public void initView() {

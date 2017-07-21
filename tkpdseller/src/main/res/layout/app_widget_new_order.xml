@@ -6,29 +6,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tkpd_main_green"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_order_widget" />
-
-        <TextView
-            style="@style/TextView.Body2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Order"
-            android:textColor="@color/white"
-            tools:text="Order" />
-
-    </LinearLayout>
+    <include layout="@layout/include_app_widget_header_new_order" />
 
     <LinearLayout
         android:id="@+id/container_order_count"
@@ -36,7 +14,7 @@
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="@dimen/padding_ms">
 
         <TextView
             android:id="@+id/count_order"

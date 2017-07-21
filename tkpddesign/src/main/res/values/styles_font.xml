@@ -58,6 +58,10 @@
         <item name="android:textSize">@dimen/font_body2</item>
     </style>
 
+    <style name="TextView.Body2.WhitePrimary">
+        <item name="android:textColor">@color/font_white_primary_70</item>
+    </style>
+
     <style name="TextView.Body1">
         <item name="android:textSize">@dimen/font_body1</item>
     </style>

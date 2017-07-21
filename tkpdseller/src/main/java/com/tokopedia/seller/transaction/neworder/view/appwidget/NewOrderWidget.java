@@ -27,7 +27,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                                        int[] appWidgetIds, DataOrderViewWidget dataOrderViewWidget) {
         if (dataOrderViewWidget != null) {
             for (int appWidgetId : appWidgetIds) {
-                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_order_widget);
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order);
 
                 Intent intent = new Intent(context, ListOrderViewServiceWidget.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -85,6 +85,19 @@ public class NewOrderWidget extends AppWidgetProvider {
             }
         } else {
             super.onReceive(context, intent);
+        }
+    }
+
+    public static void updateAppWidgetNoLogin(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order_setup_page);
+
+            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(context);
+            PendingIntent pendingIntentSplashScreen = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.button_sign_in, pendingIntentSplashScreen);
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 }

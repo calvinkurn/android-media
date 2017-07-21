@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.BaseService;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.di.DaggerNewOrderWidgetComponent;
 import com.tokopedia.seller.transaction.neworder.di.NewOrderWidgetModule;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
@@ -55,7 +56,14 @@ public class GetOrderService extends BaseService implements GetNewOrderView {
 
 
     public void getNewOrder() {
-        presenter.getNewOrderAndCount();
+        if(SessionHandler.isV4Login(this) && SessionHandler.isUserSeller(this)) {
+            presenter.getNewOrderAndCount();
+        }else{
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            int[] appWidgetIds =  appWidgetManager.getAppWidgetIds(new ComponentName(this, NewOrderWidget.class));
+
+            NewOrderWidget.updateAppWidgetNoLogin(this, appWidgetManager, appWidgetIds);
+        }
     }
 
     @Override

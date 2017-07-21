@@ -9,7 +9,6 @@ import android.widget.RemoteViewsService;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.transaction.neworder.common.UtilsWidget;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderDetailView;
-import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,7 @@ public class ListOrderViewServiceWidget extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int i) {
             DataOrderDetailView dataOrder = dataOrders.get(i);
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.new_order_detail_list_widget);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order_detail_list);
             remoteViews.setTextViewText(R.id.new_order_remaining_days, UtilsWidget.getDaysLeftDeadlineOrder(dataOrder.getPaymentProcessDayLeft()));
             remoteViews.setInt(R.id.new_order_remaining_days, "setBackgroundResource", UtilsWidget.getColorLeftDeadLineOrder(dataOrder.getPaymentProcessDayLeft()));
             remoteViews.setTextViewText(R.id.new_order_date, dataOrder.getDetailOrderDate());
