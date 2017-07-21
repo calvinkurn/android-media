@@ -104,7 +104,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Location currentLocation;
     private CompositeSubscription subscription;
     private boolean isZoomFitByDriverAndCustomer;
-    private MapConfiguration mapConfiguration;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
