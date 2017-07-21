@@ -81,6 +81,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
 
+        CommonUtils.dumper("FCM clicked in app messaging zzzsss "+extras);
+
         if(!TextUtils.isEmpty(extras.getString("gcm_webUrl"))){
             Uri uri = Uri.parse(extras.getString("gcm_webUrl"));
 
