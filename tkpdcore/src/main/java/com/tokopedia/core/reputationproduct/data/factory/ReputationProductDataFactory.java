@@ -2,9 +2,12 @@ package com.tokopedia.core.reputationproduct.data.factory;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
+import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
+import com.tokopedia.core.reputationproduct.data.source.CloudActResultDataSource;
+import com.tokopedia.core.reputationproduct.data.source.CloudLikeDislikeDataSource;
 
 /**
  * Created by yoasfs on 18/07/17.
@@ -13,16 +16,26 @@ import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 public class ReputationProductDataFactory {
     private Context context;
     private ShopService shopService;
+    private ReviewActService reviewActService;
     private LikeDislikeDomainMapper likeDislikeDomainMapper;
+    private ActResultMapper actResultMapper;
 
     public ReputationProductDataFactory(Context context,
                                         ShopService shopService,
-                                        LikeDislikeDomainMapper likeDislikeDomainMapper) {
+                                        ReviewActService reviewActService,
+                                        LikeDislikeDomainMapper likeDislikeDomainMapper,
+                                        ActResultMapper actResultMapper) {
         this.context = context;
+        this.reviewActService = reviewActService;
         this.shopService = shopService;
         this.likeDislikeDomainMapper = likeDislikeDomainMapper;
+        this.actResultMapper = actResultMapper;
     }
-    public CloudReputationProductDataSource getCloudReputationProductDataSource() {
-        return new CloudReputationProductDataSource(context, shopService, likeDislikeDomainMapper);
+    public CloudLikeDislikeDataSource getCloudReputationProductDataSource() {
+        return new CloudLikeDislikeDataSource(context, shopService, likeDislikeDomainMapper);
+    }
+
+    public CloudActResultDataSource getLikeDislikeReviewDataSource() {
+        return new CloudActResultDataSource(context, reviewActService, actResultMapper);
     }
 }

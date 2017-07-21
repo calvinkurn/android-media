@@ -1,6 +1,7 @@
 package com.tokopedia.core.reputationproduct.data.repository;
 
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
+import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
+
 
 import java.util.Map;
 
@@ -11,5 +12,5 @@ import rx.Observable;
  */
 
 public interface LikeDislikeRepository {
-    Observable<LikeDislikeDomain> getLikeDislikeRepository(Map<String, String> requestParams);
+    Observable<ActResultDomain> getLikeDislikeRepository(Map<String, String> requestParams);
 }

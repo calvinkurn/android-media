@@ -1,4 +1,4 @@
-package com.tokopedia.core.reputationproduct.model;
+package com.tokopedia.core.reputationproduct.data.pojo;
 
 import android.view.View;
 import android.widget.ImageView;

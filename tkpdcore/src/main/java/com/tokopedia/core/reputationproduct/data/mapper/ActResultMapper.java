@@ -1,0 +1,79 @@
+package com.tokopedia.core.reputationproduct.data.mapper;
+
+import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
+import com.tokopedia.core.inboxreputation.model.actresult.ProductOwner;
+import com.tokopedia.core.inboxreputation.model.actresult.ReviewResponse;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.core.reputationproduct.domain.model.ProductOwnerDomain;
+import com.tokopedia.core.reputationproduct.domain.model.ReviewResponseDomain;
+
+import retrofit2.Response;
+import rx.functions.Func1;
+
+/**
+ * Created by yoasfs on 20/07/17.
+ */
+
+public class ActResultMapper implements Func1<Response<TkpdResponse>, ActResultDomain> {
+    @Override
+    public ActResultDomain call(Response<TkpdResponse> response) {
+        ActResultDomain actResultDomain = new ActResultDomain();
+        if (response.isSuccessful()) {
+            ActResult actResult = response.body().convertDataObj(ActResult.class);
+            if (!response.body().isError()) {
+                actResultDomain = mappingActResultDomain(actResult);
+                actResultDomain.setSuccess(true);
+            } else {
+                actResultDomain.setSuccess(false);
+                actResultDomain.setErrMessage(generateMessageError(response));
+            }
+        } else {
+            actResultDomain.setSuccess(false);
+            actResultDomain.setErrCode(response.code());
+        }
+        return actResultDomain;
+    }
+    private String generateMessageError(retrofit2.Response<TkpdResponse> response) {
+        return response.body().getErrorMessageJoined();
+    }
+
+
+    private ActResultDomain mappingActResultDomain(ActResult actResult) {
+        ActResultDomain actResultDomain = new ActResultDomain();
+        actResultDomain.setAttachmentId(actResult.getAttachmentId());
+        actResultDomain.setFeedbackId(actResult.getFeedbackId());
+        actResultDomain.setIsOwner(actResult.getIsOwner());
+        actResultDomain.setPostKey(actResult.getPostKey());
+        actResultDomain.setProductOwner(mappingProductOwnerDomain(actResult.getProductOwner()));
+        actResultDomain.setReputationReviewCounter(actResult.getReputationReviewCounter());
+        actResultDomain.setReviewResponse(mappingReviewResponseDomain(actResult.getReviewResponse()));
+        actResultDomain.setShowBookmark(actResult.getShowBookmark());
+        return actResultDomain;
+    }
+
+    private ProductOwnerDomain mappingProductOwnerDomain(ProductOwner productOwner) {
+        ProductOwnerDomain productOwnerDomain = new ProductOwnerDomain();
+        productOwnerDomain.setFullName(productOwner.getFullName());
+        productOwnerDomain.setShopId(productOwner.getShopId());
+        productOwnerDomain.setShopImg(productOwner.getShopImg());
+        productOwnerDomain.setShopName(productOwner.getShopName());
+        productOwnerDomain.setShopReputationBadge(productOwner.getShopReputationBadge());
+        productOwnerDomain.setShopReputationScore(productOwner.getShopReputationScore());
+        productOwnerDomain.setShopUrl(productOwner.getShopUrl());
+        productOwnerDomain.setUserId(productOwner.getUserId());
+        productOwnerDomain.setUserImg(productOwner.getUserImg());
+        productOwnerDomain.setUserLabel(productOwner.getUserLabel());
+        productOwnerDomain.setUserLabelId(productOwner.getUserLabelId());
+        productOwnerDomain.setUserUrl(productOwner.getUserUrl());
+        return productOwnerDomain;
+    }
+
+    private ReviewResponseDomain mappingReviewResponseDomain(ReviewResponse reviewResponse) {
+        ReviewResponseDomain reviewResponseDomain = new ReviewResponseDomain();
+        reviewResponseDomain.setResponseMsg(reviewResponse.getResponseMsg());
+        reviewResponseDomain.setResponseTimeAgo(reviewResponse.getResponseTimeAgo());
+        reviewResponseDomain.setResponseTimeFmt(reviewResponse.getResponseTimeFmt());
+        return reviewResponseDomain;
+    }
+}

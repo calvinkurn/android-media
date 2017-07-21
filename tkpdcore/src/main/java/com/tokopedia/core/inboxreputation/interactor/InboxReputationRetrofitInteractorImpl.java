@@ -13,8 +13,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.reputationproduct.model.LikeDislike;
-import com.tokopedia.core.review.model.product_review.ReviewProductModel;
+import com.tokopedia.core.reputationproduct.data.pojo.LikeDislike;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

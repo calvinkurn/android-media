@@ -4,9 +4,9 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeReviewDomain;
 import com.tokopedia.core.reputationproduct.domain.model.TotalLikeDislikeDomain;
-import com.tokopedia.core.reputationproduct.model.LikeDislike;
-import com.tokopedia.core.reputationproduct.model.LikeDislikeReview;
-import com.tokopedia.core.reputationproduct.model.TotalLikeDislike;
+import com.tokopedia.core.reputationproduct.data.pojo.LikeDislike;
+import com.tokopedia.core.reputationproduct.data.pojo.LikeDislikeReview;
+import com.tokopedia.core.reputationproduct.data.pojo.TotalLikeDislike;
 
 import java.util.ArrayList;
 import java.util.List;

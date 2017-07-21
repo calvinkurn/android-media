@@ -4,10 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepository;
+import com.tokopedia.core.reputationproduct.data.repository.GetLikeDislikeRepository;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,18 +19,18 @@ import rx.Observable;
 public class GetLikeDislikeUseCase extends UseCase<LikeDislikeDomain> {
     public static final String PARAM_REVIEW_ID = "review_ids";
     public static final String PARAM_SHOP_ID = "shop_id";
-    protected LikeDislikeRepository likeDislikeRepository;
+    protected GetLikeDislikeRepository getLikeDislikeRepository;
 
     public GetLikeDislikeUseCase(ThreadExecutor threadExecutor,
                            PostExecutionThread postExecutionThread,
-                           LikeDislikeRepository likeDislikeRepository) {
+                           GetLikeDislikeRepository getLikeDislikeRepository) {
         super(threadExecutor, postExecutionThread);
-        this.likeDislikeRepository = likeDislikeRepository;
+        this.getLikeDislikeRepository = getLikeDislikeRepository;
     }
 
     @Override
     public Observable<LikeDislikeDomain> createObservable(RequestParams requestParams) {
-        return likeDislikeRepository.getLikeDislikeRepository(requestParams.getParamsAllValueInString());
+        return getLikeDislikeRepository.getGetLikeDislikeRepository(requestParams.getParamsAllValueInString());
     }
 
     public Map<String, String> getLikeDislikeParam(String shopId, String reviewId) {

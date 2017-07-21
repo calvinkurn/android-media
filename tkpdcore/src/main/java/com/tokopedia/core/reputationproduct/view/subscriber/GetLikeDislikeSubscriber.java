@@ -1,9 +1,7 @@
 package com.tokopedia.core.reputationproduct.view.subscriber;
 
-import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.core.reputationproduct.fragment.ReputationProductFragmentView;
-import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 import rx.Subscriber;
 
@@ -30,6 +28,6 @@ public class GetLikeDislikeSubscriber extends Subscriber<LikeDislikeDomain> {
 
     @Override
     public void onNext(LikeDislikeDomain likeDislikeDomain) {
-        LikeDislikeDomainMapper likeDislikeDomainMapper = new LikeDislikeDomainMapper();
+        reputationProductFragmentView.setResultToModel(likeDislikeDomain);
     }
 }

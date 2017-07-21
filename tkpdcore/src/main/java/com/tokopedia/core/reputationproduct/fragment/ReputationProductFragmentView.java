@@ -1,7 +1,8 @@
 package com.tokopedia.core.reputationproduct.fragment;
 
 import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
-import com.tokopedia.core.reputationproduct.model.LikeDislike;
+import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 /**
@@ -10,11 +11,11 @@ import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
 public interface ReputationProductFragmentView {
 
-    void setResultToModel(LikeDislike resultToModel);
+    void setResultToModel(LikeDislikeDomain resultToModel);
 
     void onSuccessDeleteComment(ActResult result);
 
-    void onSuccessLikeDislikeReview(ActResult result);
+    void onSuccessLikeDislikeReview(ActResultDomain result);
 
     void onSuccessGetLikeDislikeReview();
 
