@@ -47,7 +47,7 @@ public interface FeedPlusDetail {
 
         void onBackPressed();
 
-        void onGoToBuyProduct(String productId, String price);
+        void onGoToBuyProduct(String productId, String price, String imageSource);
 
         void onSuccessGetSingleFeedDetail(FeedDetailHeaderViewModel headerViewModel,
                                           SingleFeedDetailViewModel feedDetailViewModel);
