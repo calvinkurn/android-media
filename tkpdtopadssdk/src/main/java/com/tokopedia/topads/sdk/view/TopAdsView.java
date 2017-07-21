@@ -95,7 +95,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         }
     }
 
-    public void setConfig(Config config){
+    public void setConfig(Config config) {
         presenter.setConfig(config);
     }
 
@@ -148,8 +148,13 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                 itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
+                recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case LIST:
+                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+                break;
             case FEED:
             case FEED_EMPTY:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
@@ -212,13 +217,13 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     public void setFavoritedShop(int position, boolean b) {
         Item item = adapter.getItem(position);
-        if(item instanceof ShopFeedViewModel){
+        if (item instanceof ShopFeedViewModel) {
             ((ShopFeedViewModel) item).getData().setFavorit(b);
         }
-        if(item instanceof ShopGridViewModel){
+        if (item instanceof ShopGridViewModel) {
             ((ShopGridViewModel) item).getData().setFavorit(b);
         }
-        if(item instanceof ShopListViewModel){
+        if (item instanceof ShopListViewModel) {
             ((ShopListViewModel) item).getData().setFavorit(b);
         }
         adapter.notifyItemChanged(position);
