@@ -27,7 +27,8 @@ import rx.Observable;
  */
 
 public class GMStatCache {
-    private static final long EXPIRED_TIME = 3600; // 1 HOUR
+    //TODO preserve cache, change to 3600
+    private static final long EXPIRED_TIME = 360000; // 1 HOUR
 
     @Inject
     public GMStatCache() {

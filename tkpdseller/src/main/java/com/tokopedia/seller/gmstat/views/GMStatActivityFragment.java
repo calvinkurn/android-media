@@ -30,7 +30,6 @@ import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
-import com.tokopedia.seller.gmstat.views.helper.TransactionDataLoading;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
@@ -92,13 +91,11 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private RecyclerView gmStatRecyclerView;
     private GMStatWidgetAdapter gmStatWidgetAdapter;
     private LoaderImageView grossIncomeGraph2Loading;
-    private View transactionData;
     private HorizontalScrollView grossIncomeGraphContainer;
     private Drawable oval2Copy6;
     private GridLayoutManager gridLayoutManager;
 
     private MarketInsightViewHelper marketInsightViewHelper;
-    private TransactionDataLoading transactionDataLoading;
     private PopularProductViewHelper popularProductViewHelper;
     private View rootView;
     private GMFragmentPresenterImpl gmFragmentPresenter;
@@ -131,7 +128,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
-        transactionData = rootView.findViewById(R.id.transaction_data);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
 
@@ -316,7 +312,9 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         TitleCardView popularProductCardView = (TitleCardView) rootView.findViewById(R.id.popular_product_card_view);
         popularProductViewHelper = new PopularProductViewHelper(popularProductCardView);
 
-        dataTransactionViewHelper = new DataTransactionViewHelper(rootView, gmstat.isGoldMerchant());
+        TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
+        dataTransactionViewHelper = new DataTransactionViewHelper(transactionDataCardView, gmstat.isGoldMerchant());
+
         gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
 
         TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
@@ -325,7 +323,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
         buyerDataViewHelper = new BuyerDataViewHelper(buyerDataCardView);
 
-        transactionDataLoading = new TransactionDataLoading(rootView);
         initPopularLoading();
         initTransactionDataLoading();
         initBuyerDataLoading();
@@ -350,8 +347,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     private void initTransactionDataLoading() {
-        transactionDataLoading.displayLoading();
-        transactionData.setVisibility(View.GONE);
+        dataTransactionViewHelper.showLoading();
     }
 
     private void initPopularLoading() {
@@ -486,8 +482,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmStatWidgetAdapter.notifyDataSetChanged();
 
         dataTransactionViewHelper.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
-        transactionDataLoading.hideLoading();
-        transactionData.setVisibility(View.VISIBLE);
 
         if (sDate == -1 && eDate == -1) {
             gmstatHeaderViewHelper.bindData(dateGraph, lastSelectionPeriod);
