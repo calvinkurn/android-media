@@ -83,6 +83,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.talkview.intentservice.TalkDetailIntentService.POSITION;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -107,6 +109,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
+    private static final String POSITION = "position";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
 
     @Override
@@ -130,6 +133,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVar();
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(POSITION, TAG);
     }
 
     private void initVar() {
@@ -194,6 +204,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setRetainInstance(false);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
