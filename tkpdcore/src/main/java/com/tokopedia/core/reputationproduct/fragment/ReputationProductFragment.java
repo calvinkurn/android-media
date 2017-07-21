@@ -860,6 +860,12 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     }
 
     @Override
+    public void onSuccessReportReview(ActResultDomain resultDomain) {
+        progressDialog.dismiss();
+        showSnackbar(getResources().getString(R.string.toast_success_report));
+    }
+
+    @Override
     public void onErrorGetLikeDislikeReview(ReviewProductModel model, String err) {
         progressDialog.dismiss();
         revertBack(model);

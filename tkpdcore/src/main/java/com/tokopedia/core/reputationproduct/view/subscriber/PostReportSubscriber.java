@@ -29,6 +29,6 @@ public class PostReportSubscriber extends Subscriber<ActResultDomain> {
 
     @Override
     public void onNext(ActResultDomain actResultDomain) {
-        reputationProductFragmentView.onSuccessLikeDislikeReview(actResultDomain);
+        reputationProductFragmentView.onSuccessReportReview(actResultDomain);
     }
 }

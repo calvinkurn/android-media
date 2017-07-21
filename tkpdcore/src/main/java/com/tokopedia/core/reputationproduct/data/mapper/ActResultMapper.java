@@ -33,6 +33,7 @@ public class ActResultMapper implements Func1<Response<TkpdResponse>, ActResultD
             } else {
                 actResultDomain.setSuccess(false);
                 actResultDomain.setErrMessage(generateMessageError(response));
+                throw new ErrorMessageException(actResultDomain.getErrMessage());
             }
         } else {
             actResultDomain.setSuccess(false);

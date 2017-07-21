@@ -16,6 +16,8 @@ public interface ReputationProductFragmentView {
 
     void onSuccessLikeDislikeReview(ActResultDomain result);
 
+    void onSuccessReportReview(ActResultDomain resultDomain);
+
     void onSuccessGetLikeDislikeReview();
 
     void onErrorGetLikeDislikeReview(ReviewProductModel model, String err);
