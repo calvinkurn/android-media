@@ -19,19 +19,19 @@ import rx.Observable;
 public class CloudPostReportDataSource {
 
     private Context context;
-    private ReputationActService reputationActService;
+    private ReviewActService reviewActService;
     private ActResultMapper actResultMapper;
 
     public CloudPostReportDataSource(Context context,
-                                     ReputationActService reputationActService,
+                                     ReviewActService reviewActService,
                                      ActResultMapper actResultMapper) {
         this.context = context;
-        this.reputationActService = reputationActService;
+        this.reviewActService = reviewActService;
         this.actResultMapper = actResultMapper;
     }
 
     public Observable<ActResultDomain> getPostReportDataSource(Map<String, String> parameters) {
-        return reputationActService.getApi().deleteRepReviewResponse(AuthUtil.generateParams(context,parameters))
+        return reviewActService.getApi().reportReview(AuthUtil.generateParams(context,parameters))
                 .map(actResultMapper);
     }
 }

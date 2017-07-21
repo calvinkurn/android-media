@@ -52,7 +52,7 @@ public class ReputationProductDataFactory {
 
     public CloudPostReportDataSource getPostReportDataSource() {
         return new CloudPostReportDataSource(context,
-                reputationActService,
+                reviewActService,
                 actResultMapper);
 
     }
