@@ -62,10 +62,18 @@ public class RideProductViewModelMapper {
         //set base fare
         String baseFare = "--";
         if (priceDetail != null) {
-            baseFare = "Base Fare: " + " " + formatNumber(priceDetail.getBase(), priceDetail.getCurrencyCode());
+            if (isIndonesiaCurrency(priceDetail)) {
+                baseFare = "Base Fare: " + getStringIdrFormat(Integer.parseInt(priceDetail.getBase()));
+            } else {
+                baseFare = formatNumber(priceDetail.getBase(), priceDetail.getCurrencyCode());
+            }
         }
 
         return baseFare;
+    }
+
+    private boolean isIndonesiaCurrency(PriceDetail priceDetail) {
+        return priceDetail.getCurrencyCode().equalsIgnoreCase("IDR") || priceDetail.getCurrencyCode().equalsIgnoreCase("Rp");
     }
 
     /**
@@ -78,7 +86,11 @@ public class RideProductViewModelMapper {
         //set base fare
         String baseFare = "--";
         if (priceDetail != null) {
-            baseFare = priceDetail.getCurrencyCode() + " " + priceDetail.getCancellationFee();
+            if (isIndonesiaCurrency(priceDetail)) {
+                baseFare = getStringIdrFormat(Integer.parseInt(priceDetail.getCancellationFee()));
+            } else {
+                baseFare = formatNumber(priceDetail.getCancellationFee(), priceDetail.getCurrencyCode());
+            }
         }
 
         return baseFare;
@@ -89,7 +101,11 @@ public class RideProductViewModelMapper {
         //set base fare
         String productPrice = "--";
         if (priceDetail != null) {
-            productPrice = formatNumber(priceDetail.getCostPerDistance(), priceDetail.getCurrencyCode()) + "/" + priceDetail.getDistanceUnit();
+            if (isIndonesiaCurrency(priceDetail)) {
+                productPrice = getStringIdrFormat(Integer.parseInt(priceDetail.getCostPerDistance())) + "/" + priceDetail.getDistanceUnit();
+            } else {
+                productPrice = formatNumber(priceDetail.getCostPerDistance(), priceDetail.getCurrencyCode()) + "/" + priceDetail.getDistanceUnit();
+            }
         }
 
         return productPrice;
@@ -106,7 +122,7 @@ public class RideProductViewModelMapper {
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(Float.parseFloat(number)).replace(",", ".").replace("IDR", "Rp");
+                result = format.format(Float.parseFloat(number)).replace(",", ".").replace("IDR", "Rp ");
             } else {
                 result = format.format(number);
             }
@@ -157,7 +173,7 @@ public class RideProductViewModelMapper {
     private RideProductViewModel transformWithPriceEstimate(RideProductViewModel product, PriceEstimate priceEstimate) {
         if (product != null && priceEstimate != null) {
             product.setEnabled(true);
-            if (priceEstimate.getCurrencyCode().equalsIgnoreCase("IDR"))
+            if (priceEstimate.getCurrencyCode().equalsIgnoreCase("IDR") || priceEstimate.getCurrencyCode().equalsIgnoreCase("Rp"))
                 product.setProductPriceFmt(getStringIdrFormat(priceEstimate.getLowEstimate()) + " - " + getStringIdrFormat(priceEstimate.getHighEstimate()));
             else
                 product.setProductPriceFmt(priceEstimate.getEstimate());

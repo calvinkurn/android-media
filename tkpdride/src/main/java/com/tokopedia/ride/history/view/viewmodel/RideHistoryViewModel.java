@@ -8,6 +8,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.List;
@@ -351,10 +353,28 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public static String formatStringToPriceString(String numberString, String currency) {
         try {
-            return formaNumberToPriceString(Float.parseFloat(numberString), currency);
+            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("Rp")) {
+                return getStringIdrFormat(Integer.parseInt(numberString));
+            } else {
+                return formaNumberToPriceString(Float.parseFloat(numberString), currency);
+            }
         } catch (Exception ex) {
             return currency + " " + numberString;
         }
+    }
+
+    private static String getStringIdrFormat(int value) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+
+        return kursIndonesia.format(value);
     }
 
     public static String formaNumberToPriceString(float number, String currency) {
@@ -368,7 +388,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
             String result = "";
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(number).replace(",", ".").replace("IDR", "Rp");
+                result = format.format(number).replace(",", ".").replace("IDR", "Rp ");
             } else {
                 result = format.format(number);
             }

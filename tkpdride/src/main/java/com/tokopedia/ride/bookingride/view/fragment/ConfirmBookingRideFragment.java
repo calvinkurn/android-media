@@ -123,6 +123,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         super.onViewCreated(view, savedInstanceState);
         confirmBookingPassData = getArguments().getParcelable(EXTRA_PASS_DATA);
         confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
+        confirmBookingViewModel.setSeatCount(confirmBookingPassData.getSeatCount());
         initView(view);
 
         presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
@@ -174,34 +175,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void setViewListener() {
-        Glide.with(getActivity()).load(confirmBookingViewModel.getProductImage())
-                .asBitmap()
-                .fitCenter()
-                .dontAnimate()
-                .error(R.mipmap.ic_launcher)
-                .into(productIconImageView);
-
-        headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
-        priceTextView.setText(confirmBookingViewModel.getPriceFmt());
-
-        if (confirmBookingViewModel.getSurgeMultiplier() > 0) {
-            surgeRateTextView.setText(String.format("%sx", confirmBookingViewModel.getSurgeMultiplier()));
-            surgeRateTextView.setVisibility(View.VISIBLE);
-        } else {
-            surgeRateTextView.setVisibility(View.GONE);
-        }
-
-        //show promo message if promo code is auto applied
-        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoDescription())) {
-            mPromoResultLayout.setVisibility(View.VISIBLE);
-            mApplyPromoLayout.setVisibility(View.GONE);
-            mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
-        }
-        seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
-    }
-
-    @Override
     public void renderInitialView() {
         Glide.with(getActivity()).load(confirmBookingPassData.getProductImage())
                 .asBitmap()
@@ -212,6 +185,19 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
         headerTextView.setText(confirmBookingPassData.getHeaderTitle());
         priceTextView.setText(confirmBookingPassData.getPriceFmt());
+
+        if (confirmBookingPassData.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            seatsTextView.setText(String.valueOf(confirmBookingPassData.getSeatCount()));
+            seatsLabelTextView.setText(getString(R.string.confirm_booking_seats_needed));
+            seatArrowDownImageView.setVisibility(View.VISIBLE);
+            selectSeatContainer.setEnabled(true);
+        } else {
+            seatsTextView.setText(String.valueOf(confirmBookingPassData.getMaxCapacity()));
+            seatsLabelTextView.setText(R.string.confirm_booking_capacity);
+            seatArrowDownImageView.setVisibility(View.GONE);
+            selectSeatContainer.setEnabled(false);
+        }
+
         bookingConfirmationButton.setText(getString(R.string.btn_request) + " " + confirmBookingPassData.getProductDisplayName());
         surgeRateTextView.setVisibility(View.GONE);
         mPromoResultLayout.setVisibility(View.GONE);
@@ -284,7 +270,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
         //add seat count for Uber Pool only
         if (confirmBookingPassData.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
-            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingPassData.getSeatCount()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
         }
         return requestParams;
     }
@@ -334,7 +320,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         } else {
             surgeRateTextView.setVisibility(View.GONE);
         }
-
         //show promo message if promo code is auto applied
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoDescription())) {
             mPromoResultLayout.setVisibility(View.VISIBLE);
