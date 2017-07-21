@@ -51,11 +51,9 @@
         </LinearLayout>
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/frame_content"
+    <com.tokopedia.seller.gmstat.views.widget.LoadingStateView
+        android:id="@+id/loading_state_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!-- will be inflated programmatically -->
-    </FrameLayout>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
