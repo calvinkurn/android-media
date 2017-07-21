@@ -537,9 +537,4 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
     }
-
-    @Override
-    public void saveLocation(Location location) {
-
-    }
 }

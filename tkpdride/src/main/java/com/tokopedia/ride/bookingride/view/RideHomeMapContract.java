@@ -2,7 +2,6 @@ package com.tokopedia.ride.bookingride.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Location;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -79,7 +78,5 @@ public interface RideHomeMapContract {
         void appResumedFromBackground();
 
         void setSourceSelectedFromAddress();
-
-        void saveLocation(Location location);
     }
 }
