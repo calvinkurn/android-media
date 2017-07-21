@@ -18,8 +18,6 @@ import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController2;
-import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 
@@ -29,13 +27,11 @@ import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_S
  * Created by normansyahputa on 1/18/17.
  */
 
-public abstract class BaseGMStatActivity extends DrawerPresenterActivity
+public class BaseGMStatActivity extends DrawerPresenterActivity
         implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
 
-    @Inject
-    GMStatRepository gmStatRepository;
     @Inject
     GMStatNetworkController gmStatNetworkController;
     @Inject
@@ -111,11 +107,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public GMStatRepository gmStatRepository() {
-        return gmStatRepository;
-    }
-
-    @Override
     public GMStatNetworkController getGmStatNetworkController() {
         return gmStatNetworkController;
     }
@@ -133,13 +124,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     @Override
     public String getShopId() {
         return shopId;
-    }
-
-    @Override
-    public void joinRepository() {
-        if (gmStatNetworkController instanceof GMStatNetworkController2) {
-            ((GMStatNetworkController2) gmStatNetworkController).setRepository(gmStatRepository);
-        }
     }
 
     @Override
@@ -179,10 +163,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         outState.putString(SHOP_ID, shopId);
-    }
-
-    public GMStatRepository getGmStatRepository() {
-        return gmStatRepository;
     }
 
     //[START] unused methods

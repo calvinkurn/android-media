@@ -16,13 +16,14 @@ import android.widget.TextView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
-import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMSeeDetailViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
@@ -51,13 +52,12 @@ public class DataTransactionViewHelper {
     private Drawable icRectagleUp;
     private View itemView;
     private boolean isGoldMerchant;
-    private float[] mValues = new float[10];
-    private String[] mLabels = new String[10];
     private LinearLayout separator2;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private DataTransactionChartConfig dataTransactionChartConfig;
     private GMSeeDetailViewHelper gmSeeDetailViewHelper;
     private int greyColor;
+    private String[] monthNamesAbrev;
 
     public DataTransactionViewHelper(View itemView, boolean isGoldMerchant) {
         baseWilliamChartConfig = new BaseWilliamChartConfig();
@@ -68,15 +68,14 @@ public class DataTransactionViewHelper {
         gmSeeDetailViewHelper = new GMSeeDetailViewHelper(itemView.getContext());
         gmSeeDetailViewHelper.initView(itemView);
 
+        monthNamesAbrev = itemView.getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
+
         initView(itemView);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_down);
         icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_up);
-        for (int i = 0; i < mLabels.length; i++) {
-            mLabels[i] = "";
-        }
 
         if (isGoldMerchant) {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
@@ -140,113 +139,16 @@ public class DataTransactionViewHelper {
         });
     }
 
-    public void bindData(GetTransactionGraph getTransactionGraph) {
-
-        if (dataTransactionChartConfig == null)
-            throw new RuntimeException("please pass configuration for graphic !!");
-
-        if (isGoldMerchant) {
-            separator2.removeAllViews();
-        } else {
-            View view = new View(itemView.getContext());
-            view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    (int) dpToPx(itemView.getContext(), 16)));
-            view.setBackgroundResource(R.color.breakline_background);
-            separator2.addView(view);
-        }
-
-        /* non gold merchant */
-        if (!isGoldMerchant) {
-            transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
-            transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
-            setEmptyStatePercentage();
-
-            return;
-        }
-
-        /* empty state */
-        if (getTransactionGraph == null || getTransactionGraph.getFinishedTrans() == 0) {
-
-            setEmptyStatePercentage();
-
-            displayGraphic(getTransactionGraph, true);
-            return;
-        }
-
-        /* non empty state */
-        transactionCountIcon.setVisibility(View.VISIBLE);
-        transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
-
-        Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans() * 100;
-        boolean isDefault;
-        if (diffSuccessTrans == 0) {
-            transactionCountIcon.setVisibility(View.GONE);
-            percentage.setTextColor(arrowUp);
-            isDefault = true;
-        } else if (diffSuccessTrans < 0) {// down here
-            if (diffSuccessTrans == GMStatConstant.NoDataAvailable * 100) {
-                transactionCountIcon.setVisibility(View.GONE);
-                percentage.setTextColor(greyColor);
-                isDefault = false;
-            } else {
-                transactionCountIcon.setImageDrawable(icRectagleDown);
-                percentage.setTextColor(arrowDown);
-                isDefault = true;
-            }
-        } else {// up here
-            transactionCountIcon.setImageDrawable(icRectagleUp);
-            percentage.setTextColor(arrowUp);
-            isDefault = true;
-        }
-
-        if (isDefault) {
-            double d = diffSuccessTrans;
-            percentage.setText(String.format(GMStatConstant.PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
-        } else {
-            percentage.setText(R.string.no_data);
-        }
-
-        displayGraphic(getTransactionGraph, false);
-    }
-
     protected void setEmptyStatePercentage() {
         transactionCountIcon.setVisibility(View.GONE);
         percentage.setTextColor(greyColor);
         percentage.setText(R.string.no_data);
     }
 
-    public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {
-        List<Integer> successTransGraph = getTransactionGraph.getSuccessTransGraph();
-        List<Integer> rejectedTransGraph = getTransactionGraph.getRejectedTransGraph();
-
-        if (successTransGraph == null || rejectedTransGraph == null)
-            return;
-
-        int size = (successTransGraph.size() >= rejectedTransGraph.size())
-                ? rejectedTransGraph.size() : successTransGraph.size();
-        List<Integer> merge = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            merge.add(successTransGraph.get(i) + rejectedTransGraph.get(i));
-        }
-
-        List<NExcel> nExcels = joinDateAndGrossGraph(
-                getTransactionGraph.getDateGraph(),
-                merge);
-        if (nExcels == null)
-            return;
-
-
-        int i = 0;
-        mLabels = new String[nExcels.size()];
-        mValues = new float[nExcels.size()];
-        for (NExcel nExcel : nExcels) {
-            mLabels[i] = nExcel.getXmsg(); //getDateRaw(nExcel.getXmsg(), monthNamesAbrev);
-            mValues[i] = nExcel.getUpper();
-            i++;
-        }
+    public void displayGraphic(List<Integer> data, List<Integer> dateGraph, boolean emptyState) {
 
         BaseWilliamChartModel baseWilliamChartModel
-                = new BaseWilliamChartModel(mLabels, mValues);
+                = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
         baseWilliamChartConfig.reset();
         baseWilliamChartConfig.setBasicGraphConfiguration(dataTransactionChartConfig);
 
@@ -279,5 +181,73 @@ public class DataTransactionViewHelper {
         }
 
         return nExcels;
+    }
+
+    public void bindData(GMGraphViewWithPreviousModel totalTransactionModel) {
+        if (dataTransactionChartConfig == null)
+            throw new RuntimeException("please pass configuration for graphic !!");
+
+        if (isGoldMerchant) {
+            separator2.removeAllViews();
+        } else {
+            View view = new View(itemView.getContext());
+            view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) dpToPx(itemView.getContext(), 16)));
+            view.setBackgroundResource(R.color.breakline_background);
+            separator2.addView(view);
+        }
+
+        /* non gold merchant */
+        if (!isGoldMerchant) {
+            transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
+            transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
+            setEmptyStatePercentage();
+
+            return;
+        }
+
+        /* empty state */
+        if (totalTransactionModel.values == null || totalTransactionModel.amount == 0) {
+
+            setEmptyStatePercentage();
+
+            displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
+            return;
+        }
+
+        /* non empty state */
+        transactionCountIcon.setVisibility(View.VISIBLE);
+        transactionCount.setText(getFormattedString(totalTransactionModel.amount));
+
+        Double diffSuccessTrans = totalTransactionModel.percentage * 100;
+        boolean isDefault;
+        if (diffSuccessTrans == 0) {
+            transactionCountIcon.setVisibility(View.GONE);
+            percentage.setTextColor(arrowUp);
+            isDefault = true;
+        } else if (diffSuccessTrans < 0) {// down here
+            if (diffSuccessTrans == GMStatConstant.NoDataAvailable * 100) {
+                transactionCountIcon.setVisibility(View.GONE);
+                percentage.setTextColor(greyColor);
+                isDefault = false;
+            } else {
+                transactionCountIcon.setImageDrawable(icRectagleDown);
+                percentage.setTextColor(arrowDown);
+                isDefault = true;
+            }
+        } else {// up here
+            transactionCountIcon.setImageDrawable(icRectagleUp);
+            percentage.setTextColor(arrowUp);
+            isDefault = true;
+        }
+
+        if (isDefault) {
+            double d = diffSuccessTrans;
+            percentage.setText(String.format(GMStatConstant.PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
+        } else {
+            percentage.setText(R.string.no_data);
+        }
+
+        displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, false);
     }
 }
