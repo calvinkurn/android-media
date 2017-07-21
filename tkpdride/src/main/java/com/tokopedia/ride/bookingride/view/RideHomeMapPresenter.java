@@ -35,6 +35,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
@@ -64,6 +65,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
     private boolean mSourceIsCurrentLocation;
+    private MapConfiguration mapConfiguration;
 
     public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
@@ -71,12 +73,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void initialize() {
+        mapConfiguration = new MapConfiguration(getView().getActivityContext());
+
         if (getView().isUserLoggedIn()) {
             if (checkPlayServices()) {
                 createLocationRequest();
                 initializeLocationService();
             } else {
-                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                getView().moveMapToLocation(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude());
                 getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
 
@@ -171,6 +175,10 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         startLocationUpdates();
                         if (!getView().isLaunchedWithLocation()) {
                             setSourceAsCurrentLocation();
+                        }
+
+                        if (mapConfiguration != null) {
+                            mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                         }
 
                         break;
@@ -289,6 +297,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     mRenderProductListBasedOnLocationUpdates = false;
                     setSourceAsCurrentLocation();
                 }
+
+                if (mapConfiguration != null) {
+                    mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                }
+
             }
         });
     }
@@ -525,4 +538,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         return Observable.create(new PendingResultObservable<>(result));
     }
 
+    @Override
+    public void saveLocation(Location location) {
+
+    }
 }

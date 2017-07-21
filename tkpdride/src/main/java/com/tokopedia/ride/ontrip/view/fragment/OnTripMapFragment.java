@@ -65,6 +65,7 @@ import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Location;
@@ -168,6 +169,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private boolean isRouteAlreadyDrawed;
     private int markerId;
     private ProgressDialog mProgressDialog;
+    private MapConfiguration mapConfiguration;
 
     public static OnTripMapFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
         Bundle bundle = new Bundle();
@@ -207,6 +209,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mapConfiguration = new MapConfiguration(getActivity());
+
         if (getArguments() != null) {
             confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
             rideRequest = getArguments().getParcelable(EXTRA_RIDE_REQUEST);
@@ -370,7 +374,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude()), DEFAUL_MAP_ZOOM));
     }
 
     @Override
@@ -1380,5 +1384,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+    }
+
+    @Override
+    public void saveDefaultLocation(double latitude, double longitude) {
+        if (mapConfiguration != null) {
+            mapConfiguration.setDefaultLocation(latitude, longitude);
+        }
     }
 }

@@ -41,6 +41,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
@@ -103,6 +104,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Location currentLocation;
     private CompositeSubscription subscription;
     private boolean isZoomFitByDriverAndCustomer;
+    private MapConfiguration mapConfiguration;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -994,6 +996,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = location;
+
+                if (getView() != null) {
+                    getView().saveDefaultLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                }
             }
         });
     }
