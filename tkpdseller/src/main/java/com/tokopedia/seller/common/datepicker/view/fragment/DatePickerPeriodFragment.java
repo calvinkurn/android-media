@@ -24,8 +24,6 @@ import java.util.ArrayList;
 
 public class DatePickerPeriodFragment extends TkpdFragment implements DatePickerPeriodAdapter.Callback {
 
-    private DatePickerPeriodAdapter adapter;
-
     public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();
         Bundle bundle = new Bundle();
@@ -34,6 +32,8 @@ public class DatePickerPeriodFragment extends TkpdFragment implements DatePicker
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    protected DatePickerPeriodAdapter adapter;
 
     @Nullable
     @Override
@@ -76,7 +76,7 @@ public class DatePickerPeriodFragment extends TkpdFragment implements DatePicker
         intent.putExtra(DatePickerConstant.EXTRA_START_DATE, selectedDate.getStartDate());
         intent.putExtra(DatePickerConstant.EXTRA_END_DATE, selectedDate.getEndDate());
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, adapter.getSelectedPosition());
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
         getActivity().setResult(DatePickerConstant.RESULT_CODE, intent);
         getActivity().finish();
     }
