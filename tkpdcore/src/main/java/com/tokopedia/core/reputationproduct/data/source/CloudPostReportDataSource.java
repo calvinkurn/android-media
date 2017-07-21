@@ -3,6 +3,7 @@ package com.tokopedia.core.reputationproduct.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 
@@ -29,7 +30,7 @@ public class CloudPostReportDataSource {
     }
 
     public Observable<ActResultDomain> getPostReportDataSource(Map<String, String> parameters) {
-        return reviewActService.getApi().reportReview(parameters)
+        return reviewActService.getApi().reportReview(AuthUtil.generateParams(context,parameters))
                 .map(actResultMapper);
     }
 }
