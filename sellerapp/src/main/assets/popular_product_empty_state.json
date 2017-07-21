@@ -1,1 +1,11 @@
-{"ProductId":0,"Sold":0,"View":0,"SuccessTrans":0,"WishlistCount":0,"ConversionRate":0,"ProductName":"","ProductLink":"","ImageLink":""}
+{
+  "product_id": 0,
+  "sold": 0,
+  "view": 0,
+  "success_trans": 0,
+  "wishlist_count": 0,
+  "conversion_rate": 0,
+  "product_name": "",
+  "product_link": "",
+  "image_link": ""
+}
