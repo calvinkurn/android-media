@@ -6,7 +6,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.reputationproduct.data.repository.DeleteCommentRepository;
-import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepository;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 
 import rx.Observable;

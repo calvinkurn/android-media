@@ -3,6 +3,7 @@ package com.tokopedia.core.reputationproduct.data.mapper;
 import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
 import com.tokopedia.core.inboxreputation.model.actresult.ProductOwner;
 import com.tokopedia.core.inboxreputation.model.actresult.ReviewResponse;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 import com.tokopedia.core.reputationproduct.domain.model.ProductOwnerDomain;
@@ -16,14 +17,19 @@ import rx.functions.Func1;
  */
 
 public class ActResultMapper implements Func1<Response<TkpdResponse>, ActResultDomain> {
+    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
     @Override
     public ActResultDomain call(Response<TkpdResponse> response) {
         ActResultDomain actResultDomain = new ActResultDomain();
         if (response.isSuccessful()) {
             ActResult actResult = response.body().convertDataObj(ActResult.class);
             if (!response.body().isError()) {
-                actResultDomain = mappingActResultDomain(actResult);
-                actResultDomain.setSuccess(true);
+                if (actResult.getIsSuccess() == 0) {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
+                } else {
+                    actResultDomain = mappingActResultDomain(actResult);
+                    actResultDomain.setSuccess(true);
+                }
             } else {
                 actResultDomain.setSuccess(false);
                 actResultDomain.setErrMessage(generateMessageError(response));
@@ -45,9 +51,13 @@ public class ActResultMapper implements Func1<Response<TkpdResponse>, ActResultD
         actResultDomain.setFeedbackId(actResult.getFeedbackId());
         actResultDomain.setIsOwner(actResult.getIsOwner());
         actResultDomain.setPostKey(actResult.getPostKey());
-        actResultDomain.setProductOwner(mappingProductOwnerDomain(actResult.getProductOwner()));
+        if (actResult.getProductOwner() != null) {
+            actResultDomain.setProductOwner(mappingProductOwnerDomain(actResult.getProductOwner()));
+        }
         actResultDomain.setReputationReviewCounter(actResult.getReputationReviewCounter());
-        actResultDomain.setReviewResponse(mappingReviewResponseDomain(actResult.getReviewResponse()));
+        if (actResult.getReviewResponse() != null) {
+            actResultDomain.setReviewResponse(mappingReviewResponseDomain(actResult.getReviewResponse()));
+        }
         actResultDomain.setShowBookmark(actResult.getShowBookmark());
         return actResultDomain;
     }

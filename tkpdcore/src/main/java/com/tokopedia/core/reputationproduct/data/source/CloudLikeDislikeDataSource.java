@@ -3,10 +3,6 @@ package com.tokopedia.core.reputationproduct.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 

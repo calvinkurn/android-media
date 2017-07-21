@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
-import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 
 import java.util.Map;
 

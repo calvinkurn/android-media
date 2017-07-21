@@ -4,8 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
-import com.tokopedia.core.reputationproduct.data.repository.LikeDislikeRepository;
 import com.tokopedia.core.reputationproduct.data.repository.PostReportRepository;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
 
@@ -16,7 +14,7 @@ import rx.Observable;
  */
 
 public class PostReportUseCase extends UseCase<ActResultDomain> {
-    public static final String PARAM_REVIEW_ID = "review_ids";
+    public static final String PARAM_REVIEW_ID = "review_id";
     public static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_REPORT_MESSAGE = "text_message";
     protected PostReportRepository postReportRepository;

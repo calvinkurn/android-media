@@ -2,7 +2,6 @@ package com.tokopedia.core.reputationproduct.data.repository;
 
 import com.tokopedia.core.reputationproduct.data.factory.ReputationProductDataFactory;
 import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
 
 import java.util.Map;
 

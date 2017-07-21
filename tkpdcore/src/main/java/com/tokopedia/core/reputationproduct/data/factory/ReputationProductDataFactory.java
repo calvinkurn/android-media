@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.network.apiservices.shop.apis.ReputationActApi;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.core.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.core.reputationproduct.data.source.CloudActResultDataSource;

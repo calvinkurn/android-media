@@ -2,7 +2,6 @@ package com.tokopedia.core.reputationproduct.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.reputationproduct.data.mapper.ActResultMapper;

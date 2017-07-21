@@ -4,10 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 
-import java.util.Map;
-
 import android.support.annotation.NonNull;
-
 
 
 /**
@@ -24,7 +21,7 @@ public interface ReputationProductViewFragmentPresenter {
                       int reviewId,
                       @NonNull String productId,
                       @NonNull String shopId,
-                       int statusLikeDislike,
+                      int statusLikeDislike,
                       @NonNull final ReviewProductModel model);
 
     void postReport(@NonNull Context context,
