@@ -362,4 +362,10 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         descriptionTextView.setVisibility(View.GONE);
         descriptionTextView.setText("");
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
+    }
 }

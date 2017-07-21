@@ -17,11 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -156,5 +158,13 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
         return headerMap;
+    }
+
+    protected Response getResponse(Chain chain, Request request) throws IOException {
+        try {
+            return chain.proceed(request);
+        } catch (Error e) {
+            throw new UnknownHostException("tidak ada koneksi internet");
+        }
     }
 }

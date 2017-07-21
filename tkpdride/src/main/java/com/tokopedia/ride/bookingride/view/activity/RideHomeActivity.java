@@ -368,8 +368,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
         mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
@@ -423,7 +423,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
+        if (!isFinishing() && !fragment.isAdded()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
             fragmentTransaction.replace(containerViewId, fragment);
             fragmentTransaction.commit();
@@ -560,7 +560,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setMarkerText(timeEst);
         } else {
             fragment = RideHomeMapFragment.newInstance();
-            addFragment(R.id.top_container, fragment);
+            replaceFragment(R.id.top_container, fragment);
             fragment.setMarkerText(timeEst);
         }
     }

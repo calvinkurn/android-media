@@ -249,11 +249,12 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @OnClick(R2.id.cab_select_seat)
     public void actionSelectSeatButtonClicked() {
         hideErrorMessage();
-
-        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
-            if (confirmBookingViewModel.getMaxCapacity() > 1) {
+        if (confirmBookingViewModel != null &&
+                confirmBookingViewModel.getProductDisplayName() != null &&
+                confirmBookingPassData.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            if (confirmBookingPassData.getMaxCapacity() > 1) {
                 List<SeatViewModel> seatViewModels = new ArrayList<>();
-                for (int i = 1; i <= confirmBookingViewModel.getMaxCapacity(); i++) {
+                for (int i = 1; i <= confirmBookingPassData.getMaxCapacity(); i++) {
                     String seatTitle = null;
                     if (i == 1) {
                         seatTitle = String.format(getString(R.string.confirm_booking_seat_format), i);
