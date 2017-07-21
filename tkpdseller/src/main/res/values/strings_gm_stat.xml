@@ -40,4 +40,9 @@
     <string name="no_product_data_in_this_period">Tidak ada data produk pada periode ini</string>
     <string name="x_sold">x Terjual</string>
     <string name="most_popular_product">Produk terlaris</string>
+
+    <string name="transaction_data">Data Transaksi</string>
+    <string name="transaction_count">Jumlah Transaksi</string>
+    <string name="transaction_data_no_gm_text">Dapatkan akses untuk melihat\\ndata lengkap statistik Penjualan</string>
+    <string name="sales_data">Data Penjualan</string>
 </resources>
