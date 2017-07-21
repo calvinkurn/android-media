@@ -41,7 +41,6 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
-import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
