@@ -3,7 +3,7 @@ package com.tokopedia.seller.gmstat.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GetPopularProduct {
+public class GetPopularProductOld {
 
     @SerializedName("ProductId")
     @Expose

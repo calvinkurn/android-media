@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class GetTransactionGraph {
+public class GetTransactionGraphOld {
 
     @SerializedName("FinishedTrans")
     @Expose
@@ -439,7 +439,7 @@ public class GetTransactionGraph {
 
     @Override
     public String toString() {
-        return "GetTransactionGraph{" +
+        return "GetTransactionGraphOld{" +
                 "successTrans=" + successTrans +
                 ", newOrder=" + newOrder +
                 ", deliveredProduct=" + deliveredProduct +
