@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,7 +23,10 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT
  */
 
 public class ArrowPercentageView extends FrameLayout {
-    private double mPercentage = GMStatConstant.NoDataAvailable * 100;
+    private static final double NO_DATA_VALUE = GMStatConstant.NoDataAvailable * 100;
+    private double mPercentage = NO_DATA_VALUE;
+    private float textSize;
+
     private ImageView ivArrowIcon;
     private TextView tvPercentage;
     private View view;
@@ -33,6 +37,7 @@ public class ArrowPercentageView extends FrameLayout {
     private int greenColor = R.color.arrow_up;
     private int greyColor = R.color.grey_400;
     private PercentageUtil percentageUtil;
+    private int noDataRes = R.string.no_data;
 
     public ArrowPercentageView(Context context) {
         super(context);
@@ -58,6 +63,7 @@ public class ArrowPercentageView extends FrameLayout {
         if (a.hasValue(R.styleable.ArrowPercentageView_percentage)) {
             mPercentage = a.getFloat(R.styleable.ArrowPercentageView_percentage, 0);
         }
+        textSize = a.getDimension(R.styleable.ArrowPercentageView_percentage_text_size, 0);
         a.recycle();
     }
 
@@ -66,6 +72,9 @@ public class ArrowPercentageView extends FrameLayout {
         this.view = view;
         ivArrowIcon = (ImageView) view.findViewById(R.id.iv_arrow_icon);
         tvPercentage = (TextView) view.findViewById(R.id.tv_percentage);
+        if (textSize > 0) {
+            tvPercentage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        }
         setUIPercentage();
         setAddStatesFromChildren(true);
     }
@@ -74,20 +83,22 @@ public class ArrowPercentageView extends FrameLayout {
         if (percentageUtil != null) {
             percentageUtil.calculatePercentage(mPercentage, ivArrowIcon, tvPercentage);
         } else {
-            if (mPercentage == GMStatConstant.NoDataAvailable * 100) {
+            if (mPercentage == NO_DATA_VALUE) {
                 ivArrowIcon.setVisibility(View.GONE);
-                tvPercentage.setText(null);
-            } else if (mPercentage < 0) {
-                ivArrowIcon.setImageResource(downDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
-            } else if (mPercentage > 0) {
-                ivArrowIcon.setImageResource(upDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
-            } else if (mPercentage == 0) { // percentage is 0
-                ivArrowIcon.setImageResource(stagnantDrawableSrc);
+                tvPercentage.setText(noDataRes);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
-            }
-            if (mPercentage != GMStatConstant.NoDataAvailable * 100) {
+            } else {
+                ivArrowIcon.setVisibility(View.VISIBLE);
+                if (mPercentage < 0) {
+                    ivArrowIcon.setImageResource(downDrawableSrc);
+                    tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
+                } else if (mPercentage > 0) {
+                    ivArrowIcon.setImageResource(upDrawableSrc);
+                    tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
+                } else if (mPercentage == 0) { // percentage is 0
+                    ivArrowIcon.setImageResource(stagnantDrawableSrc);
+                    tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+                }
                 tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
                         KMNumbers.formatString(mPercentage).replace("-", "")));
             }
@@ -102,7 +113,10 @@ public class ArrowPercentageView extends FrameLayout {
     public void setPercentage(double percentage){
         mPercentage = percentage;
         setUIPercentage();
+    }
 
+    public void setNoDataPercentage(){
+        setPercentage(NO_DATA_VALUE);
     }
 
     public void setPercentageUtil(PercentageUtil percentageUtil) {

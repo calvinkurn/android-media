@@ -6,21 +6,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.gmstat.models.GetShopCategoryOld;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatDataBase_Table;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -31,7 +27,8 @@ import rx.Observable;
  */
 
 public class GMStatCache {
-    private static final long EXPIRED_TIME = 3600; // 1 HOUR
+    //TODO preserve cache, change to 3600
+    private static final long EXPIRED_TIME = 360000; // 1 HOUR
 
     @Inject
     public GMStatCache() {
@@ -86,7 +83,7 @@ public class GMStatCache {
     private <T> Observable<T> getObservable (@GMStatActionType int action,
                                              long startDate,
                                              long endDate,
-                                             @NonNull Class<T> responseObjectErrorClass ){
+                                             @NonNull Class<T> responseObjectClass ){
         GMStatDataBase gmStatDataBase = retrieveGMStatDatabase(action, startDate, endDate);
         if (gmStatDataBase == null){
             return null;
@@ -96,7 +93,7 @@ public class GMStatCache {
             deleteGMStatRow(gmStatDataBase);
             return null;
         }
-        T response = getObjectParse(gmStatDataBase.getData(), responseObjectErrorClass);
+        T response = getObjectParse(gmStatDataBase.getData(), responseObjectClass);
         if (response == null) {
             return null;
         }
@@ -120,10 +117,10 @@ public class GMStatCache {
         return dateLong;
     }
 
-    public <T> T getObjectParse(String jsonString, @NonNull Class<T> responseObjectErrorClass){
+    public <T> T getObjectParse(String jsonString, @NonNull Class<T> responseObjectClass){
         Gson gson = new Gson();
         try {
-            return gson.fromJson(jsonString, responseObjectErrorClass);
+            return gson.fromJson(jsonString, responseObjectClass);
         } catch (JsonSyntaxException e) { // the json might not be the instance, so just return it
             return null;
         }

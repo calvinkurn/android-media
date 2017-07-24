@@ -5,9 +5,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -51,7 +51,6 @@ public final class GMStatisticUtil {
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) DataTransactionViewHelper.dpToPx(activity, 360); //displaymetrics.widthPixels;
         /*
             set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
             is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
@@ -59,7 +58,7 @@ public final class GMStatisticUtil {
         */
         double newSizeRatio = ((double) numChart) / 7;
         if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams ((int) DataTransactionViewHelper.dpToPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+            chartView.setLayoutParams(new LinearLayout.LayoutParams ((int) CommonUtils.DptoPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         }
     }
 

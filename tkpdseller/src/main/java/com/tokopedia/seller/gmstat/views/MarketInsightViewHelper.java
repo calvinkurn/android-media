@@ -16,8 +16,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
@@ -61,7 +61,6 @@ public class MarketInsightViewHelper {
     }
 
     private void initView(final View view) {
-
         marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
 
@@ -183,6 +182,7 @@ public class MarketInsightViewHelper {
     }
 
     public void bindNoShopCategory() {
+        view.setLoadingState(false);
         if (isGoldMerchant)
             displayEmptyState();
         else {

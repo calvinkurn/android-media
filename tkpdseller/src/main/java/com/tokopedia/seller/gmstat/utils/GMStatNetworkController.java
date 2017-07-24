@@ -6,11 +6,11 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
@@ -51,14 +51,14 @@ public class GMStatNetworkController {
         this.repository = repository;
     }
 
-    private static com.tokopedia.seller.gmstat.models.GetKeyword from(GetKeyword getKeyword) {
-        com.tokopedia.seller.gmstat.models.GetKeyword res =
-                new com.tokopedia.seller.gmstat.models.GetKeyword();
-        List<com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword> datas =
+    private static GetKeyword from(GetKeyword getKeyword) {
+        GetKeyword res =
+                new GetKeyword();
+        List<GetKeyword.SearchKeyword> datas =
                 new ArrayList<>();
         for (GetKeyword.SearchKeyword searchKeyword : getKeyword.getSearchKeyword()) {
-            com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword searchKeyword1
-                    = new com.tokopedia.seller.gmstat.models.GetKeyword.SearchKeyword();
+            GetKeyword.SearchKeyword searchKeyword1
+                    = new GetKeyword.SearchKeyword();
             searchKeyword1.setFrequency(searchKeyword.getFrequency());
             searchKeyword1.setKeyword(searchKeyword.getKeyword());
 
@@ -139,7 +139,7 @@ public class GMStatNetworkController {
 
                         if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null
                                 || keywordModel.getShopCategory().getShopCategory().isEmpty()) {
-                            keywordModel.setResponseList(new ArrayList<Response<com.tokopedia.seller.gmstat.models.GetKeyword>>());
+                            keywordModel.setResponseList(new ArrayList<Response<GetKeyword>>());
                             keywordModel.setHadesv1Models(new ArrayList<HadesV1Model>());
                             return Observable.just(keywordModel);
                         }
@@ -170,7 +170,7 @@ public class GMStatNetworkController {
                         return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<GetKeyword>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
                             @Override
                             public KeywordModel call(List<GetKeyword> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
-                                keywordModel.setKeywords(new ArrayList<com.tokopedia.seller.gmstat.models.GetKeyword>());
+                                keywordModel.setKeywords(new ArrayList<GetKeyword>());
                                 keywordModel.setHadesv1Models(new ArrayList<HadesV1Model>());
                                 List<Integer> indexToRemoved = new ArrayList<>();
                                 List<HadesV1Model> hadesV1Models = new ArrayList<>();
@@ -188,7 +188,7 @@ public class GMStatNetworkController {
                                         }
                                     }
                                 } else {
-                                    keywordModel.setKeywords(new ArrayList<com.tokopedia.seller.gmstat.models.GetKeyword>());
+                                    keywordModel.setKeywords(new ArrayList<GetKeyword>());
                                     for (GetKeyword response : responses) {
                                         keywordModel.getKeywords().add(from(response));
                                     }
@@ -274,7 +274,7 @@ public class GMStatNetworkController {
         if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
             return;
 
-        List<com.tokopedia.seller.gmstat.models.GetKeyword> getKeywords = keywordModel.getKeywords();
+        List<GetKeyword> getKeywords = keywordModel.getKeywords();
         oldGMStatRepository.onSuccessGetKeyword(getKeywords);
 
         oldGMStatRepository.onSuccessGetCategory(keywordModel.getHadesv1Models());
@@ -301,8 +301,8 @@ public class GMStatNetworkController {
         }
 
 
-        List<com.tokopedia.seller.gmstat.models.GetKeyword> getKeywords = new ArrayList<>();
-        getKeywords.add(gson.fromJson(readJson("search_keyword.json", assetManager), com.tokopedia.seller.gmstat.models.GetKeyword.class));
+        List<GetKeyword> getKeywords = new ArrayList<>();
+        getKeywords.add(gson.fromJson(readJson("search_keyword.json", assetManager), GetKeyword.class));
         keywordModel.setKeywords(getKeywords);
         oldGMStatRepository.onSuccessGetKeyword(getKeywords);
     }

@@ -1,11 +1,11 @@
 package com.tokopedia.seller.gmstat.apis;
 
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
+import com.tokopedia.seller.gmstat.models.GetBuyerDataOld;
+import com.tokopedia.seller.gmstat.models.GetKeywordOld;
+import com.tokopedia.seller.gmstat.models.GetPopularProductOld;
+import com.tokopedia.seller.gmstat.models.GetProductGraphOld;
+import com.tokopedia.seller.gmstat.models.GetShopCategoryOld;
+import com.tokopedia.seller.gmstat.models.GetTransactionGraphOld;
 
 import java.util.Map;
 
@@ -21,20 +21,20 @@ import rx.Observable;
 public interface GMStatApi {
 
     @GET("/v1/shop_stats?action=get_product_graph")
-    Observable<Response<GetProductGraph>> getProductGraph(@QueryMap Map<String, String> params);
+    Observable<Response<GetProductGraphOld>> getProductGraph(@QueryMap Map<String, String> params);
 
     @GET("/v1/shop_stats?action=get_transaction_graph")
-    Observable<Response<GetTransactionGraph>> getTransactionGraph(@QueryMap Map<String, String> params);
+    Observable<Response<GetTransactionGraphOld>> getTransactionGraph(@QueryMap Map<String, String> params);
 
     @GET("/v1/shop_stats?action=get_popular_product")
-    Observable<Response<GetPopularProduct>> getPopulatProduct(@QueryMap Map<String, String> params);
+    Observable<Response<GetPopularProductOld>> getPopulatProduct(@QueryMap Map<String, String> params);
 
     @GET("/v1/shop_stats?action=get_buyer_graph")
-    Observable<Response<GetBuyerData>> getBuyerData(@QueryMap Map<String, String> params);
+    Observable<Response<GetBuyerDataOld>> getBuyerData(@QueryMap Map<String, String> params);
 
     @GET("/v1/shop_stats?action=get_shop_category")
-    Observable<Response<GetShopCategory>> getShopCategory(@QueryMap Map<String, String> params);
+    Observable<Response<GetShopCategoryOld>> getShopCategory(@QueryMap Map<String, String> params);
 
     @GET("/v1/shop_stats?action=get_keyword")
-    Observable<Response<GetKeyword>> getKeyword(@QueryMap Map<String, String> params);
+    Observable<Response<GetKeywordOld>> getKeyword(@QueryMap Map<String, String> params);
 }

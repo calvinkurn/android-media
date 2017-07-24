@@ -1,24 +1,20 @@
 package com.tokopedia.seller.gmstat.views;
 
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
+import com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 
 import java.util.Locale;
 
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LOWER_BUYER_FORMAT;
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMAT;
-import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
  * Created by normansyahputa on 11/11/16.
@@ -26,138 +22,99 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
 
 public class BuyerDataViewHelper {
 
-    private static final Locale locale = new Locale("in", "ID");
+    public static final String DEFAULT_PERCENT_PIE = "0%";
     private DonutProgress buyerDataPieChart;
-    private TextView buyerCount;
-    private ImageView buyerCountIcon;
-    private TextView percentageBuyer;
-    private TextView femalePie;
-    private TextView malePie;
-    private int arrowDown;
-    private int arrowUp;
-    private int gredyColor;
-    private Drawable icRectagleDown;
-    private Drawable icRectagleUp;
-    private String[] gender;
-    private TextView headerPieBuyerData;
+    private TextView tvBuyerAmount;
+    private TextView tvMainLegendPie;
+    private TextView tvSecondLegendPie;
 
-    public BuyerDataViewHelper(View itemView) {
-        initView(itemView);
+    private String[] genderArray;
+    private TextView tvMainLegendPieDesc;
 
-        icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
-                R.drawable.ic_rectangle_down);
-        icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
-                R.drawable.ic_rectangle_up);
+    private TitleCardView buyerDataCardView;
+    private ArrowPercentageView arrowPercentageView;
+    private int redColor;
+    private int greyColor;
+
+    public BuyerDataViewHelper(TitleCardView buyerDataCardView) {
+        this.buyerDataCardView = buyerDataCardView;
+        buyerDataPieChart = (DonutProgress) buyerDataCardView.findViewById(R.id.buyer_data_pie_chart);
+        tvBuyerAmount = (TextView) buyerDataCardView.findViewById(R.id.tv_buyer_amount);
+
+        arrowPercentageView = (ArrowPercentageView) buyerDataCardView.findViewById(R.id.arrow_buyer_data_percentage);
+
+        tvMainLegendPie = (TextView) buyerDataCardView.findViewById(R.id.tv_main_legend_pie);
+        tvSecondLegendPie = (TextView) buyerDataCardView.findViewById(R.id.tv_second_legend_pie);
+        tvMainLegendPieDesc = (TextView) buyerDataCardView.findViewById(R.id.tv_main_legend_pie_desc);
+
+        genderArray = buyerDataCardView.getResources().getStringArray(R.array.gm_stat_gender);
+        redColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.arrow_down, null);
+        greyColor = ResourcesCompat.getColor(buyerDataCardView.getResources(), R.color.grey_400, null);
     }
 
-    private void initView(View itemView) {
+    public void bindData(GetBuyerGraph getBuyerGraph) {
+        buyerDataCardView.setLoadingState(false);
 
-        buyerDataPieChart = (DonutProgress) itemView.findViewById(R.id.buyer_data_pie_chart);
-
-        buyerCount = (TextView) itemView.findViewById(R.id.buyer_count);
-
-        buyerCountIcon = (ImageView) itemView.findViewById(R.id.buyer_count_icon);
-
-        percentageBuyer = (TextView) itemView.findViewById(R.id.percentage_buyer);
-
-        femalePie = (TextView) itemView.findViewById(R.id.female_pie);
-
-        malePie = (TextView) itemView.findViewById(R.id.male_pie);
-
-        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
-
-        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
-
-        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
-
-        gender = itemView.getResources().getStringArray(R.array.gm_stat_gender);
-
-        headerPieBuyerData = (TextView) itemView.findViewById(R.id.header_pie_buyer_data);
-
-
-    }
-
-    public void bindData(GetBuyerGraph getBuyerData) {
+        long totalBuyer = getBuyerGraph.getTotalBuyer();
+        long maleBuyerCount = getBuyerGraph.getMaleBuyer();
+        long femaleBuyerCount = getBuyerGraph.getFemaleBuyer();
+        double diffTotalPercent = getBuyerGraph.getDiffTotal();
 
         /* this is empty state */
-        if (getBuyerData.getTotalBuyer() == 0 &&
-                (getBuyerData.getMaleBuyer() == 0 || getBuyerData.getFemaleBuyer() == 0)) {
-            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+        if (totalBuyer == 0 &&
+                (maleBuyerCount == 0 || femaleBuyerCount == 0)) {
+            tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
             buyerDataPieChart.setProgress(0f);
-            femalePie.setTextColor(gredyColor);
-            femalePie.setText("0 %");
-            malePie.setVisibility(View.GONE);
-            percentageBuyer.setText(R.string.no_data);
-            percentageBuyer.setTextColor(gredyColor);
-            buyerCountIcon.setVisibility(View.GONE);
-            headerPieBuyerData.setVisibility(View.GONE);
+            arrowPercentageView.setNoDataPercentage();
+            tvMainLegendPie.setTextColor(greyColor);
+            tvMainLegendPie.setText(DEFAULT_PERCENT_PIE);
+            tvMainLegendPieDesc.setVisibility(View.GONE);
+            tvSecondLegendPie.setVisibility(View.GONE);
             return;
         } else {
-            femalePie.setTextColor(arrowDown);
+            tvMainLegendPie.setTextColor(redColor);
 
-            headerPieBuyerData.setVisibility(View.VISIBLE);
-            malePie.setVisibility(View.VISIBLE);
-            femalePie.setVisibility(View.VISIBLE);
+            tvMainLegendPieDesc.setVisibility(View.VISIBLE);
+            tvSecondLegendPie.setVisibility(View.VISIBLE);
+            tvMainLegendPie.setVisibility(View.VISIBLE);
 
-            double malePercentage = (double) getBuyerData.getMaleBuyer() / (double) getBuyerData.getTotalBuyer();
+            double malePercentage = (double) maleBuyerCount / (double) totalBuyer;
             double malePercent = Math.floor((malePercentage * 100) + 0.5);
 
-            double femalePercentage = (double) getBuyerData.getFemaleBuyer() / (double) getBuyerData.getTotalBuyer();
+            double femalePercentage = (double) femaleBuyerCount / (double) totalBuyer;
             double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
 
-            String biggerGender = "";
-            if (malePercent >= femalePercent) {
-                biggerGender += gender[0];
-                headerPieBuyerData.setText(biggerGender);
+            if (malePercent >= femalePercent) { // the male will be bigger
+                tvMainLegendPieDesc.setText( genderArray[0]);
                 if(femalePercent <= 0){
-                    malePie.setVisibility(View.GONE);
+                    tvSecondLegendPie.setVisibility(View.GONE);
                 }else
-                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) femalePercent, gender[1]));
-                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) malePercent));
+                    tvSecondLegendPie.setText(String.format(Locale.US, UPPER_BUYER_FORMAT, (int) femalePercent, genderArray[1]));
+                tvMainLegendPie.setText(String.format(Locale.US,LOWER_BUYER_FORMAT, (int) malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
-            } else {
-                biggerGender += gender[1];
-                headerPieBuyerData.setText(biggerGender);
+            } else { // the female will be bigger
+                tvMainLegendPieDesc.setText(genderArray[1]);
                 if(malePercent <= 0){
-                    malePie.setVisibility(View.GONE);
+                    tvSecondLegendPie.setVisibility(View.GONE);
                 }else
-                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
-                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) femalePercent));
+                    tvSecondLegendPie.setText(String.format(Locale.US,UPPER_BUYER_FORMAT, (int) malePercent, genderArray[0]));
+                tvMainLegendPie.setText(String.format(Locale.US,LOWER_BUYER_FORMAT, (int) femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
 
-        buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+        tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
 
-        double percentage = getBuyerData.getDiffTotal() * 100D;
-        boolean isDefault;
-        if (percentage == 0) {
-            buyerCountIcon.setVisibility(View.GONE);
-            percentageBuyer.setTextColor(arrowUp);
-            isDefault = true;
-        } else if (percentage < 0) {// down here
-            if (percentage == GMStatConstant.NoDataAvailable * 100) {
-                buyerCountIcon.setVisibility(View.GONE);
-                percentageBuyer.setTextColor(gredyColor);
-                isDefault = false;
-            } else {
-                buyerCountIcon.setVisibility(View.VISIBLE);
-                buyerCountIcon.setImageDrawable(icRectagleDown);
-                percentageBuyer.setTextColor(arrowDown);
-                isDefault = true;
-            }
-        } else {// up here
-            buyerCountIcon.setVisibility(View.VISIBLE);
-            buyerCountIcon.setImageDrawable(icRectagleUp);
-            percentageBuyer.setTextColor(arrowUp);
-            isDefault = true;
-        }
-
-        if (isDefault) {
-            double d = percentage;
-            percentageBuyer.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
-        } else {
-            percentageBuyer.setText(R.string.no_data);
-        }
+        double percentage = diffTotalPercent * 100D;
+        arrowPercentageView.setPercentage(percentage);
     }
+
+    public void showLoading(){
+        buyerDataCardView.setLoadingState(true);
+    }
+
+    public void hideLoading(){
+        buyerDataCardView.setLoadingState(false);
+    }
+
 }

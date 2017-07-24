@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by normansyahputa on 11/14/16.
  */
-public class GetShopCategory {
+public class GetShopCategoryOld {
 
     @SerializedName("ShopCategory")
     @Expose

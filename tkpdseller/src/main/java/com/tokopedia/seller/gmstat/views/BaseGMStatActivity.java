@@ -58,22 +58,23 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
         super.setupVar();
         fetchIntent(getIntent().getExtras());
         inject();
-        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.i("GMStat", "Failed clear GM cache");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                Log.i("GMStat", "Success clear GM cache");
-            }
-        });
+        //TODO preserve cache, uncomment below
+//        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Log.i("GMStat", "Failed clear GM cache");
+//            }
+//
+//            @Override
+//            public void onNext(Boolean aBoolean) {
+//                Log.i("GMStat", "Success clear GM cache");
+//            }
+//        });
     }
 
     @Override

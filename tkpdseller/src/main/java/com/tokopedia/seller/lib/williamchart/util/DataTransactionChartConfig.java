@@ -2,7 +2,7 @@ package com.tokopedia.seller.lib.williamchart.util;
 
 import android.content.Context;
 
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.lib.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 
@@ -60,6 +60,6 @@ public class DataTransactionChartConfig extends GrossGraphChartConfig {
     @Override
     public int bottomMargin() {
         int bottomMargin = 5;
-        return (int) DataTransactionViewHelper.dpToPx(context, bottomMargin);
+        return (int) CommonUtils.DptoPx(context, bottomMargin);
     }
 }
