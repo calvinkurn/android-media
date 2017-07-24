@@ -1,10 +1,12 @@
 package com.tokopedia.core.app;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.router.InboxRouter;
 
 /**
  * Created by henrypriyono on 7/21/17.
@@ -32,6 +34,9 @@ public class TkpdCoreWebViewActivity extends TActivity {
         if (item.getItemId() == R.id.menu_home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.menu_help) {
+            Intent intent = InboxRouter.getContactUsActivityIntent(this);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
