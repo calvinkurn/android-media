@@ -29,8 +29,10 @@ public class NewOrderWidget extends AppWidgetProvider {
             for (int appWidgetId : appWidgetIds) {
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order);
 
+                int randomNumber=(int)(Math.random()*1000);
+
                 Intent intent = new Intent(context, ListOrderViewServiceWidget.class);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId + randomNumber);
                 intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(ListOrderViewServiceWidget.DATA_LIST_ORDER, new ArrayList<>(dataOrderViewWidget.getDataOrderDetailViews()));
