@@ -121,7 +121,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     }
 
                     getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
-                    getView().setViewListener();
                 }
 
             }
