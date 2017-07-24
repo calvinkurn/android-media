@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.widget.FrameLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
@@ -32,12 +33,13 @@ public class ReputationProduct extends TActivity {
 
     private String[] CONTENT;
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
+//    SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private ViewPager mViewPager;
-    private TabLayout indicator;
+//    private ViewPager mViewPager;
+//    private TabLayout indicator;
+    private FrameLayout container;
 
-    private List<ProductReviewFragment> fragmentList;
+//    private List<ProductReviewFragment> fragmentList;
 
     @DeepLink(Constants.Applinks.PRODUCT_REPUTATION)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -53,7 +55,7 @@ public class ReputationProduct extends TActivity {
         inflateView(R.layout.activity_reputation_product);
         initView();
         initVariable();
-        setAdapter();
+//        setAdapter();
     }
 
     @Override
@@ -64,47 +66,51 @@ public class ReputationProduct extends TActivity {
     private void initVariable() {
         String productId = getIntent().getExtras().getString("product_id");
         String shopId = getIntent().getExtras().getString("shop_id");
-        fragmentList = new ArrayList<>();
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-        fragmentList.add(ProductReviewFragment.createInstance(SIX_MONTH_REPUTATION, productId, shopId));
-        fragmentList.add(ProductReviewFragment.createInstance(ALL_TIME_REPUTATION, productId, shopId));
-        CONTENT = new String[]{
-                getString(R.string.title_6_month),
-                getString(R.string.all_time)
-        };
-        for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
+//        fragmentList = new ArrayList<>();
+//        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+//        fragmentList.add(ProductReviewFragment.createInstance(SIX_MONTH_REPUTATION, productId, shopId));
+//        fragmentList.add(ProductReviewFragment.createInstance(ALL_TIME_REPUTATION, productId, shopId));
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, ProductReviewFragment.createInstance(ALL_TIME_REPUTATION, productId, shopId))
+                .commitAllowingStateLoss();
+//        CONTENT = new String[]{
+//                getString(R.string.title_6_month),
+//                getString(R.string.all_time)
+//        };
+//        for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
     }
 
     private void initView() {
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+//        mViewPager = (ViewPager) findViewById(R.id.pager);
+        container = (FrameLayout) findViewById(R.id.container);
+//        indicator = (TabLayout) findViewById(R.id.indicator);
     }
 
-    private void setAdapter() {
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
-    }
+//    private void setAdapter() {
+//        mViewPager.setAdapter(mSectionsPagerAdapter);
+//        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
+//        indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-    }
+//    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+//
+//        public SectionsPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            return fragmentList.get(position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return fragmentList.size();
+//        }
+//    }
 }
