@@ -27,8 +27,8 @@ import rx.Observable;
  */
 
 public class GMStatCache {
-    //TODO preserve cache, change to 3600
-    private static final long EXPIRED_TIME = 360000; // 1 HOUR
+    private static final long EXPIRED_TIME = 3600; // 1 HOUR
+    public static final long DATE_MIN_THRES = 86400000000L;
 
     @Inject
     public GMStatCache() {
@@ -95,6 +95,7 @@ public class GMStatCache {
         }
         T response = getObjectParse(gmStatDataBase.getData(), responseObjectClass);
         if (response == null) {
+            deleteGMStatRow(gmStatDataBase);
             return null;
         }
         return Observable.just(response);
@@ -110,7 +111,7 @@ public class GMStatCache {
     }
 
     public long getNormalizedDate(long dateLong) {
-        if (dateLong > 86400000000L) { // we just want to normalize long if it is date
+        if (dateLong > DATE_MIN_THRES) { // we just want to normalize long if it is date
             long dateLongSecond = dateLong / 1000L;
             return dateLongSecond - (dateLongSecond % 86000);
         }

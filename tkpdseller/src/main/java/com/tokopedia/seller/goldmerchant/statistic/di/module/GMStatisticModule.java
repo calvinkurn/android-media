@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.gmstat.presenters.GMDashboardPresenter;
@@ -24,10 +25,17 @@ import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTra
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
+import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.data.source.CategoryDataSource;
+import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
+import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 
@@ -101,13 +109,26 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository) {
-        return new GMStatNetworkController(gson, gmStatRepository);
+    public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository,
+                                                                   GetProductCategoryNameUseCase getProductCategoryNameUseCase) {
+        return new GMStatNetworkController(gson, gmStatRepository, getProductCategoryNameUseCase);
     }
 
     @GMStatisticScope
     @Provides
     public GMDashboardPresenter provideGmFragmentPresenter(GMStatNetworkController gmStatNetworkController) {
         return new GMDashboardPresenterImpl(gmStatNetworkController);
+    }
+
+    @GMStatisticScope
+    @Provides
+    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource, CategoryDataSource categoryDataSource, FetchCategoryDataSource fetchCategoryDataSource){
+        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
+    }
+
+    @GMStatisticScope
+    @Provides
+    HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
+        return retrofit.create(HadesCategoryApi.class);
     }
 }

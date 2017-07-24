@@ -126,7 +126,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
             @Override
             public void onError(Throwable throwable) {
-
+                getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
             }
         });
     }

@@ -49,7 +49,6 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
             }
         });
         datePickerPresenter.attachView(this);
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -60,15 +59,15 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
 
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        if (datePickerViewModel == null) {
+        if (this.datePickerViewModel == null) {
             this.datePickerViewModel = datePickerViewModel;
-        } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
+        }
+        if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
                 this.datePickerViewModel.getStartDate(), this.datePickerViewModel.getEndDate(),
                 datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate())) {
             datePickerPresenter.saveDateSetting(this.datePickerViewModel);
         }
         loadData();
-
     }
 
     @Override
