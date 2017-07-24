@@ -65,7 +65,7 @@
             android:id="@+id/arrow_buyer_data_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:percentage_text_size="12sp"/>
+            app:arrow_percentage_text_size="12sp"/>
 
     </LinearLayout>
 

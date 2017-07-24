@@ -42,6 +42,7 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
+import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
@@ -55,6 +56,7 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
@@ -122,8 +124,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
 
+    @Inject
+    GMStatNetworkController gmStatNetworkController;
+
     private BuyerDataViewHelper buyerDataViewHelper;
 
+    private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     public GMStatisticDashboardFragment() {
     }
 
@@ -155,6 +161,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     void initViews(View rootView) {
+
+        gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(rootView);
+
         tryAgainText = getString(R.string.try_again);
         unknownExceptionDescription = getString(R.string.unknown_exception_description);
         messageExceptionDescription = getString(R.string.message_exception_description);
@@ -172,9 +181,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         contentGMStat.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                View view = contentGMStat.getChildAt(contentGMStat.getChildCount()-1);
-                int diff = (view.getBottom()+contentGMStat.getPaddingBottom()
-                        -(contentGMStat.getHeight()+contentGMStat.getScrollY()));
+                View view = contentGMStat.getChildAt(contentGMStat.getChildCount() - 1);
+                int diff = (view.getBottom() + contentGMStat.getPaddingBottom()
+                        - (contentGMStat.getHeight() + contentGMStat.getScrollY()));
 
                 // if diff is zero, then the bottom has been reached
                 if (diff == 0) {
@@ -354,10 +363,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         grossIncomeGraph2Loading.setVisibility(View.GONE);
     }
 
-
     @Override
-    public void onResume() {
-        super.onResume();
+    public void loadData() {
+        super.loadData();
         gmNetworkErrorHelper = new GMNetworkErrorHelper(null, rootView);
     }
 
@@ -412,14 +420,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         }
         //[END] use date from network
         //[START] override sDate and eDate with local selection.
-        if(sDate != -1 || eDate != -1) {
+        if (sDate != -1 || eDate != -1) {
             String sDateWithYear = GoldMerchantDateUtils.getDateWithYear(
                     GoldMerchantDateUtils.getDateFormatForInput(sDate), monthNamesAbrev);
             String eDateWithYear = GoldMerchantDateUtils.getDateWithYear(
                     GoldMerchantDateUtils.getDateFormatForInput(eDate), monthNamesAbrev);
             grossIncome.textDescription = sDateWithYear + " - " + eDateWithYear;
 
-            dateGraph = GoldMerchantDateUtils.generateDateRanges(sDate,eDate);
+            dateGraph = GoldMerchantDateUtils.generateDateRanges(sDate, eDate);
         }
         //[END] override sDate and eDate with local selection.
         final BaseWilliamChartModel baseWilliamChartModel =
@@ -500,7 +508,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         baseGMModels.add(convRate);
         gmStatWidgetAdapter.clear();
         gmStatWidgetAdapter.addAll(baseGMModels);
-
+        gmStatisticSummaryViewHolder.setData(getProductGraph);
+        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         if (!isFirstTime) {
             initAdapter(gmStatWidgetAdapter);
             gmDashboardPresenter.setFirstTime(true);

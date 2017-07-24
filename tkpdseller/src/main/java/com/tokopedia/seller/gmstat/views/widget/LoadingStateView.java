@@ -18,6 +18,10 @@ import com.tokopedia.seller.R;
 
 public class LoadingStateView extends FrameLayout {
 
+    public static final int VIEW_LOADING = 0;
+    public static final int VIEW_EMPTY = 1;
+    public static final int VIEW_CONTENT = 2;
+
     @LayoutRes
     public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
 
@@ -76,13 +80,13 @@ public class LoadingStateView extends FrameLayout {
             super.addView(child, index, params);
         } else {
             // remove the link between child and previous parent before add (if any)
-            if (child.getParent()!= null) {
+            if (child.getParent() != null) {
                 ViewGroup viewParent = (ViewGroup) child.getParent();
                 viewParent.removeView(child);
             }
 
             // check if it is content, add to the first index, so loading and empty will be on front of content view
-            if (contentView == null && child!= loadingView && child!= emptyView) {
+            if (contentView == null && child != loadingView && child != emptyView) {
                 contentView = child;
                 mFrameLayout.addView(child, 0, params);
             } else {
@@ -105,7 +109,7 @@ public class LoadingStateView extends FrameLayout {
     }
 
     public void setLoadingView(View loadingView) {
-        if (this.loadingView!= null) {
+        if (this.loadingView != null) {
             mFrameLayout.removeView(this.loadingView);
         }
         this.loadingView = loadingView;
@@ -123,7 +127,7 @@ public class LoadingStateView extends FrameLayout {
     }
 
     public void setEmptyView(View emptyView) {
-        if (this.emptyView!= null) {
+        if (this.emptyView != null) {
             mFrameLayout.removeView(this.emptyView);
         }
         this.emptyView = emptyView;
@@ -132,15 +136,15 @@ public class LoadingStateView extends FrameLayout {
     }
 
     // showing that the content to loading state
-    public void setLoadingState (boolean isLoading){
+    public void setLoadingState(boolean isLoading) {
         if (loadingView == null) {
             setDefaultLoadingView();
         }
         if (isLoading && this.loadingView != null) {
-            if (contentView!= null) {
+            if (contentView != null) {
                 contentView.setVisibility(View.GONE);
             }
-            if (emptyView!= null) {
+            if (emptyView != null) {
                 emptyView.setVisibility(View.GONE);
             }
             loadingView.setVisibility(View.VISIBLE);
@@ -149,12 +153,12 @@ public class LoadingStateView extends FrameLayout {
         }
     }
 
-    public void setEmptyState (boolean isEmpty){
+    public void setEmptyState(boolean isEmpty) {
         if (emptyView == null) {
             setDefaultEmptyView();
         }
-        if (isEmpty && emptyView!= null) {
-            if (contentView!= null){
+        if (isEmpty && emptyView != null) {
+            if (contentView != null) {
                 contentView.setVisibility(View.GONE);
             }
             if (this.loadingView != null) {
@@ -167,26 +171,40 @@ public class LoadingStateView extends FrameLayout {
     }
 
     public void setContentVisible() {
-        if (this.loadingView!= null) {
+        if (this.loadingView != null) {
             loadingView.setVisibility(View.GONE);
         }
-        if (emptyView!=null) {
+        if (emptyView != null) {
             emptyView.setVisibility(View.GONE);
         }
         contentView.setVisibility(View.VISIBLE);
     }
 
-    public void setDefaultLoadingView(){
-        if (mLoadingLayoutRes == 0) return;
+    public void setDefaultLoadingView() {
+        if (mLoadingLayoutRes == 0) {
+            return;
+        }
         this.loadingView = LayoutInflater.from(getContext()).inflate(mLoadingLayoutRes, mFrameLayout, false);
         loadingView.setVisibility(View.GONE);
         addView(loadingView);
     }
 
-    public void setDefaultEmptyView(){
-        if (mEmptyLayoutRes == 0) return;
+    public void setDefaultEmptyView() {
+        if (mEmptyLayoutRes == 0) {
+            return;
+        }
         this.emptyView = LayoutInflater.from(getContext()).inflate(mEmptyLayoutRes, mFrameLayout, false);
         emptyView.setVisibility(View.GONE);
         addView(emptyView);
+    }
+
+    public void setViewState(int state) {
+        if (state == VIEW_LOADING) {
+            setLoadingState(true);
+        } else if (state == VIEW_EMPTY) {
+            setEmptyState(true);
+        } else {
+            setContentVisible();
+        }
     }
 }

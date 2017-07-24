@@ -16,10 +16,8 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
-import com.tokopedia.seller.gmstat.views.viewholder.CommonGMVH;
 import com.tokopedia.seller.gmstat.views.viewholder.EmptyVH;
 import com.tokopedia.seller.gmstat.views.viewholder.GrossEarnVH;
-import com.tokopedia.seller.gmstat.views.viewholder.LoadingGM;
 import com.tokopedia.seller.gmstat.views.viewholder.LoadingGMGrossIncome;
 
 import java.util.ArrayList;
@@ -54,18 +52,9 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case SuccessfulTransaction.TYPE:
-            case ProdSeen.TYPE:
-            case ProdSold.TYPE:
-            case ConvRate.TYPE:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gmstat, parent, false);
-                return new CommonGMVH(view);
             case GrossIncome.TYPE:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gross_earn, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gross_earn, parent, false);
                 return new GrossEarnVH(view);
-            case LoadingGMModel.TYPE:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gmstat_loading, parent, false);
-                return new LoadingGM(view);
             case LoadingGMTwoModel.TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gross_earn_loading, parent, false);
                 return new LoadingGMGrossIncome(view);
