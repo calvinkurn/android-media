@@ -27,7 +27,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTrans
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTableView;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 

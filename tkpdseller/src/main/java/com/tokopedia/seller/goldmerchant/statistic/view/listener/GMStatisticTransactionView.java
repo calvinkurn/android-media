@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;

@@ -20,7 +20,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransac
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.seller.lib.widget.LabelView;
 
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.presenters;
+package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by normansyahputa on 1/2/17.
  */
 
-public interface GMFragmentView extends CustomerView {
+public interface GMStatisticDashboardView extends CustomerView {
     void onGetShopCategoryEmpty();
 
     void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);

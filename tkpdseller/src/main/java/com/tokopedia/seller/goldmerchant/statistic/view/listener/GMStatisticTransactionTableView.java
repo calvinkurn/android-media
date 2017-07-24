@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
+package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import android.support.annotation.NonNull;
 

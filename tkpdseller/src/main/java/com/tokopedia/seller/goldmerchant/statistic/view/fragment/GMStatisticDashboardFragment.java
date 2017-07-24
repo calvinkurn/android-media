@@ -23,8 +23,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.presenters.GMDashboardPresenter;
-import com.tokopedia.seller.gmstat.presenters.GMFragmentView;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
@@ -77,7 +77,7 @@ import rx.Subscriber;
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMFragmentView {
+public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
     public static final String TAG = "GMStatisticDashboardFragment";
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
 

@@ -1,11 +1,10 @@
-package com.tokopedia.seller.gmstat.presenters;
+package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.util.Log;
 
-import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
@@ -16,6 +15,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

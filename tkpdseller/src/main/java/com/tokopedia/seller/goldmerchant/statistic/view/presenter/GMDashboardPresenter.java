@@ -1,17 +1,16 @@
-package com.tokopedia.seller.gmstat.presenters;
+package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 
 /**
  * Created by normansyahputa on 1/2/17.
  */
 
-public abstract class GMDashboardPresenter extends BaseDaggerPresenter<GMFragmentView> {
-    private boolean fetchData;
-    private boolean firstTime;
+public abstract class GMDashboardPresenter extends BaseDaggerPresenter<GMStatisticDashboardView> {
 
     public abstract void fetchData();
 
