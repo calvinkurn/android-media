@@ -1,10 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain.mapper;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
@@ -31,11 +28,8 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
 
     private static final String TAG = "GMTransactionStatDomain";
 
-    private Context context;
-
     @Inject
-    public GMTransactionStatDomainMapper(@ApplicationContext Context context) {
-        this.context = context;
+    public GMTransactionStatDomainMapper() {
     }
 
     protected GMDateRangeDateViewModel getGmDateRangeDateViewModel2(List<Integer> dateGraph) {
@@ -64,7 +58,6 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         for (@GMTransactionGraphType int i = 0; i < 7; i++) {
             GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel
                     = new GMGraphViewWithPreviousModel();
-            gmGraphViewWithPreviousModel.isCompare = true;
             gmGraphViewWithPreviousModel.dates = dateGraph;
             gmGraphViewWithPreviousModel.pDates = getTransactionGraph.getPDateGraph();
             gmGraphViewWithPreviousModel.dateRangeModel = gmDateRangeDateViewModel;
@@ -190,8 +183,6 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
                 = new GMGraphViewModel();
         gmTopAdsAmountViewModel.dates = dateGraph;
         gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
-        gmTopAdsAmountViewModel.title = context.getString(R.string.gold_merchant_top_ads_amount_title_text);
-        gmTopAdsAmountViewModel.subtitle = context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
 
         gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
         long previousAmount = getTransactionGraph.getpCpcProduct() + getTransactionGraph.getpCpcShop();
@@ -210,12 +201,10 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
     }
 
     private UnFinishedTransactionViewModel processUnfinishedTransaction(GetTransactionGraph getTransactionGraph) {
-        UnFinishedTransactionViewModel unFinishedTransactionViewModel = new UnFinishedTransactionViewModel(
+        return new UnFinishedTransactionViewModel(
                 getTransactionGraph.getOnholdCount(),
                 getTransactionGraph.getResoCount(),
-                getTransactionGraph.getOnholdAmt(),
-                context.getString(R.string.rupiah_format_text)
+                getTransactionGraph.getOnholdAmt()
         );
-        return unFinishedTransactionViewModel;
     }
 }

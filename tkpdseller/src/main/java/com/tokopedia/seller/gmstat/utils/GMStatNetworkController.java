@@ -44,6 +44,7 @@ import rx.subscriptions.CompositeSubscription;
 public class GMStatNetworkController {
 
     public static final int MAXIMUM_CATEGORY = 1;
+    public static final int INVALID_PARAM = -1;
     private static final String TAG = "GMStatNetworkController";
     private Gson gson;
     private GMStatRepository repository;
@@ -78,27 +79,17 @@ public class GMStatNetworkController {
         this.repository = repository;
     }
 
-    public Observable<GetProductGraph> getProductGraph2(long shopId, long sDate, long eDate) {
+    public Observable<GetProductGraph> getProductGraph(long sDate, long eDate) {
         return repository.getProductGraph(sDate, eDate);
     }
 
-    public Observable<GetProductGraph> getProductGraph2(long shopId) {
-        return getProductGraph2(shopId, -1, -1);
-    }
-
-    public Observable<GMTransactionGraphMergeModel> getTransactionGraph2(
-            long shopId, long sDate, long eDate
+    public Observable<GMTransactionGraphMergeModel> getTransactionGraph(
+            long sDate, long eDate
     ) {
         return repository.getTransactionGraph(sDate, eDate);
     }
 
-    public Observable<GMTransactionGraphMergeModel> getTransactionGraph2(
-            long shopId
-    ) {
-        return getTransactionGraph2(shopId, -1, -1);
-    }
-
-    public Observable<GetPopularProduct> getPopularProduct2(long shopId) {
+    public Observable<GetPopularProduct> getPopularProduct(long shopId) {
 
         Calendar dayOne = Calendar.getInstance();
         dayOne.add(Calendar.DATE, -30);
@@ -109,19 +100,15 @@ public class GMStatNetworkController {
         return repository.getPopularProduct(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
     }
 
-    public Observable<GetBuyerGraph> getBuyerData2(long shopId, long sDate, long eDate) {
+    public Observable<GetBuyerGraph> getBuyerData(long sDate, long eDate) {
         return repository.getBuyerGraph(sDate, eDate);
     }
 
-    public Observable<GetBuyerGraph> getBuyerData2(long shopId) {
-        return getBuyerData2(shopId, -1, -1);
+    public Observable<GetShopCategory> getShopCategory() {
+        return repository.getShopCategory(INVALID_PARAM, INVALID_PARAM);
     }
 
-    public Observable<GetShopCategory> getShopCategory2(long shopId) {
-        return repository.getShopCategory(-1, -1);
-    }
-
-    public Observable<GetKeyword> getKeyword2(long shopId, long catId) {
+    public Observable<GetKeyword> getKeyword(long catId) {
         return repository.getKeywordModel(Long.toString(catId));
     }
 
@@ -130,13 +117,8 @@ public class GMStatNetworkController {
         oldGMStatRepository.onSuccessTransactionGraph(repository.getTransactionGraph(body2));
     }
 
-    private void hadesReal() {
-        // get shop category ambil yang pertama
-        // ambil 1 api (hades), 1 api (keyword)
-    }
-
-    public Observable<KeywordModel> getKeywordModelObservable(final long shopId) {
-        return getShopCategory2(shopId)
+    public Observable<KeywordModel> getMarketInsight() {
+        return getShopCategory()
                 .flatMap(new Func1<GetShopCategory, Observable<KeywordModel>>() {
                     @Override
                     public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
@@ -161,7 +143,7 @@ public class GMStatNetworkController {
                                             return Observable.just(from(kategoriByDepId));
                                         } else {
                                             Observable<Response<HadesV1Model>> hades
-                                                    = HadesNetwork.fetchDepartment(integer, -1, HadesNetwork.TREE);
+                                                    = HadesNetwork.fetchDepartment(integer, INVALID_PARAM, HadesNetwork.TREE);
                                             return Observable.just(hades.toBlocking().first());
                                         }
                                     }
@@ -173,7 +155,7 @@ public class GMStatNetworkController {
                                 .flatMap(new Func1<Integer, Observable<GetKeyword>>() {
                                     @Override
                                     public Observable<GetKeyword> call(Integer catId) {
-                                        return getKeyword2(shopId, catId);
+                                        return getKeyword(catId);
                                     }
                                 })
                                 .toList();
@@ -222,16 +204,14 @@ public class GMStatNetworkController {
                 });
     }
 
-    public void fetchData(long id, long sDate, long shopId, CompositeSubscription compositeSubscription, final OldGMStatRepository oldGMStatRepository) {
+    public void fetchData(long shopId, long startDate, long endDate, CompositeSubscription compositeSubscription, final OldGMStatRepository oldGMStatRepository) {
         compositeSubscription.add(
                 Observable.concat(
-                        getProductGraph2(shopId),
-                        getTransactionGraph2(shopId),
-                        getPopularProduct2(shopId),
-                        getBuyerData2(shopId),
-                        getKeywordModelObservable(shopId),
-                        repository.getBuyerTable(-1, -1),
-                        repository.getProductTable(-1, -1)
+                        getProductGraph(startDate, endDate),
+                        getTransactionGraph(startDate, endDate),
+                        getPopularProduct(shopId),
+                        getBuyerData(startDate, endDate),
+                        getMarketInsight()
                 ).toList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -246,7 +226,6 @@ public class GMStatNetworkController {
                                     @Override
                                     public void onError(Throwable e) {
                                         Log.e(TAG, "fetchData : " + e.getMessage());
-
                                         oldGMStatRepository.onError(e);
                                     }
 
