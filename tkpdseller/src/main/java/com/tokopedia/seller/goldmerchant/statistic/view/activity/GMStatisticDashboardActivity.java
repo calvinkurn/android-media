@@ -1,11 +1,10 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
@@ -19,11 +18,10 @@ import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.gmstat.views.GMStatActivityFragment;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 
@@ -31,7 +29,7 @@ import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_S
  * Created by normansyahputa on 1/18/17.
  */
 
-public class BaseGMStatActivity extends DrawerPresenterActivity
+public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";

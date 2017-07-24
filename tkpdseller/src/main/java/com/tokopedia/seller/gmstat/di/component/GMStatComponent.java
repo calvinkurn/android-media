@@ -3,7 +3,7 @@ package com.tokopedia.seller.gmstat.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.gmstat.di.module.GMStatModule;
 import com.tokopedia.seller.gmstat.di.scope.GMStatScope;
-import com.tokopedia.seller.gmstat.views.BaseGMStatActivity;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @GMStatScope
 @Component(modules = GMStatModule.class, dependencies = AppComponent.class)
 public interface GMStatComponent {
-    void inject(BaseGMStatActivity baseGMStatActivity);
+    void inject(GMStatisticDashboardActivity GMStatisticDashboardActivity);
 }

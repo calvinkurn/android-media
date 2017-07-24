@@ -321,7 +321,7 @@
             android:theme="@style/BasicThemeActionBar" />
 
         <activity
-            android:name="com.tokopedia.seller.gmstat.views.BaseGMStatActivity"
+            android:name="com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity"
             android:label="@string/title_activity_gmstat"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />

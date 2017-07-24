@@ -62,8 +62,8 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
-import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.SHOP_ID;
+import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity.IS_GOLD_MERCHANT;
+import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity.SHOP_ID;
 
 /**
  * A placeholder fragment containing a simple view.
