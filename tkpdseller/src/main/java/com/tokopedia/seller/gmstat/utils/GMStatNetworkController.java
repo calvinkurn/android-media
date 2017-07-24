@@ -4,6 +4,8 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.database.manager.DbManagerImpl;
+import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
@@ -41,7 +43,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class GMStatNetworkController {
 
-    public static final int MAXIMUM_CATEGORY = 3;
+    public static final int MAXIMUM_CATEGORY = 1;
     private static final String TAG = "GMStatNetworkController";
     private Gson gson;
     private GMStatRepository repository;
@@ -128,13 +130,17 @@ public class GMStatNetworkController {
         oldGMStatRepository.onSuccessTransactionGraph(repository.getTransactionGraph(body2));
     }
 
+    private void hadesReal() {
+        // get shop category ambil yang pertama
+        // ambil 1 api (hades), 1 api (keyword)
+    }
+
     public Observable<KeywordModel> getKeywordModelObservable(final long shopId) {
         return getShopCategory2(shopId)
                 .flatMap(new Func1<GetShopCategory, Observable<KeywordModel>>() {
                     @Override
                     public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
-                        KeywordModel keywordModel =
-                                new KeywordModel();
+                        KeywordModel keywordModel = new KeywordModel();
                         keywordModel.setShopCategory(getShopCategory);
 
                         if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null
@@ -149,9 +155,15 @@ public class GMStatNetworkController {
                                 new Func1<Integer, Observable<Response<HadesV1Model>>>() {
                                     @Override
                                     public Observable<Response<HadesV1Model>> call(Integer integer) {
-                                        Observable<Response<HadesV1Model>> hades
-                                                = HadesNetwork.fetchDepartment(integer, -1, HadesNetwork.TREE);
-                                        return Observable.just(hades.toBlocking().first());
+                                        CategoryDB kategoriByDepId = DbManagerImpl.getInstance().getKategoriByDepId(integer);
+                                        if (kategoriByDepId != null) {
+                                            Log.d(TAG, "get from local db : " + integer);
+                                            return Observable.just(from(kategoriByDepId));
+                                        } else {
+                                            Observable<Response<HadesV1Model>> hades
+                                                    = HadesNetwork.fetchDepartment(integer, -1, HadesNetwork.TREE);
+                                            return Observable.just(hades.toBlocking().first());
+                                        }
                                     }
                                 }
                         ).toList();
@@ -305,6 +317,27 @@ public class GMStatNetworkController {
         getKeywords.add(gson.fromJson(readJson("search_keyword.json", assetManager), GetKeyword.class));
         keywordModel.setKeywords(getKeywords);
         oldGMStatRepository.onSuccessGetKeyword(getKeywords);
+    }
+
+    private Response<HadesV1Model> from(CategoryDB categoryDB) {
+        HadesV1Model hadesV1Model = new HadesV1Model();
+        HadesV1Model.Data data = new HadesV1Model.Data();
+        List<HadesV1Model.Category> categories = new ArrayList<>();
+        categories.add(fromItem(categoryDB));
+        data.setCategories(categories);
+        hadesV1Model.setData(data);
+        return from(hadesV1Model);
+    }
+
+    private HadesV1Model.Category fromItem(CategoryDB categoryDB) {
+        HadesV1Model.Category category = new HadesV1Model.Category();
+        category.setId(Long.toString(categoryDB.getId()));
+        category.setName(categoryDB.getNameCategory());
+        return category;
+    }
+
+    private Response<HadesV1Model> from(HadesV1Model hadesV1Model) {
+        return Response.success(hadesV1Model);
     }
 
     protected String readJson(String fileName, AssetManager assetManager) {

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.models.CommonGMModel;
@@ -21,8 +20,6 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT
  */
 
 public class CommonGMVH extends RecyclerView.ViewHolder {
-
-    public GMStat gmStat;
     private TextView text;
 
     private TextView textDescription;

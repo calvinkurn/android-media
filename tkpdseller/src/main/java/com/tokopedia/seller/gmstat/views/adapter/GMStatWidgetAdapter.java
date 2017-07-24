@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.views.models.CommonGMModel;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
@@ -33,15 +32,13 @@ import java.util.List;
 public class GMStatWidgetAdapter extends RecyclerView.Adapter {
 
     private List<ItemType> baseGMModels;
-    private GMStat gmStat;
 
     public GMStatWidgetAdapter() {
         baseGMModels = new ArrayList<>();
     }
 
-    public GMStatWidgetAdapter(List<ItemType> baseGMModels, GMStat gmStat) {
+    public GMStatWidgetAdapter(List<ItemType> baseGMModels) {
         this.baseGMModels = baseGMModels;
-        this.gmStat = gmStat;
     }
 
     public void clear() {
@@ -84,7 +81,6 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
             case ProdSold.TYPE:
             case ConvRate.TYPE:
                 CommonGMVH commonGMVH = ((CommonGMVH) holder);
-                commonGMVH.gmStat = gmStat;
                 commonGMVH.bind((CommonGMModel) baseGMModels.get(position));
                 break;
             case GrossIncome.TYPE:

@@ -12,31 +12,20 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
-
-import javax.inject.Inject;
 
 /**
  * Created by normansyahputa on 1/18/17.
  */
 
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
-        implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener, HasComponent<GoldMerchantComponent> {
+        implements SessionHandler.onLogoutListener, DaggerInjectorListener, HasComponent<GoldMerchantComponent> {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
-
-    @Inject
-    GMStatNetworkController gmStatNetworkController;
-
-    @Inject
-    GMStatClearCacheUseCase gmStatClearCacheUseCase;
 
     private boolean isGoldMerchant;
     private String shopId;
@@ -123,21 +112,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         if (!isAfterRotate) {
             inflateNewFragment(new GMStatisticDashboardFragment());
         }
-    }
-
-    @Override
-    public GMStatNetworkController getGmStatNetworkController() {
-        return gmStatNetworkController;
-    }
-
-    @Override
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
-
-    @Override
-    public String getShopId() {
-        return shopId;
     }
 
     private void inflateNewFragment(Fragment fragment) {

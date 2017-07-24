@@ -1,6 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +18,14 @@ import android.widget.ScrollView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenterImpl;
+import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenter;
 import com.tokopedia.seller.gmstat.presenters.GMFragmentView;
-import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
+import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
@@ -49,6 +50,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
@@ -69,8 +71,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity.IS_GOLD_MERCHANT;
-import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity.SHOP_ID;
+import javax.inject.Inject;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -89,6 +90,18 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         suffixes.put(1_000_000_000_000_000_000L, "E");
     }
 
+    @Inject
+    GMStatNetworkController gmStatNetworkController;
+
+    @Inject
+    GMStatClearCacheUseCase gmStatClearCacheUseCase;
+
+    @Inject
+    GMFragmentPresenter gmFragmentPresenter;
+
+    @Inject
+    SessionHandler sessionHandler;
+
     private String tryAgainText;
     private String unknownExceptionDescription;
     private String messageExceptionDescription;
@@ -100,18 +113,15 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private LoaderImageView grossIncomeGraph2Loading;
     private HorizontalScrollView grossIncomeGraphContainer;
     private Drawable oval2Copy6;
-    private GridLayoutManager gridLayoutManager;
 
+    private GridLayoutManager gridLayoutManager;
     private MarketInsightViewHelper marketInsightViewHelper;
     private PopularProductViewHelper popularProductViewHelper;
+
     private View rootView;
-    private GMFragmentPresenterImpl gmFragmentPresenter;
-    private GMStat gmstat;
     private DataTransactionViewHelper dataTransactionViewHelper;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
-    private long shopId;
-    private boolean isGoldMerchant;
 
     private BuyerDataViewHelper buyerDataViewHelper;
 
@@ -125,6 +135,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
+
+        gmFragmentPresenter.attachView(this);
     }
 
     void initViews(View rootView) {
@@ -254,43 +266,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
         loadingBases.add(new LoadingGMTwoModel());
 
-        gmStatWidgetAdapter = new GMStatWidgetAdapter(loadingBases, gmstat);
+        gmStatWidgetAdapter = new GMStatWidgetAdapter(loadingBases);
         initAdapter();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity != null && activity instanceof GMStat) {
-            this.gmstat = (GMStat) activity;
-
-            // get shop id from activity.
-            try {
-                if(gmstat.getShopId() != null)
-                    shopId = Long.parseLong(gmstat.getShopId());
-            } catch (NumberFormatException nfe) {
-                throw new RuntimeException(nfe.getMessage() + "\n [need valid shop id]");
-            }
-
-            isGoldMerchant = gmstat.isGoldMerchant();
-
-            gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fetchSaveInstanceSate(savedInstanceState);
-    }
-
-    private void fetchSaveInstanceSate(Bundle savedInstanceState) {
-        if(savedInstanceState != null){
-            shopId= savedInstanceState.getLong(SHOP_ID);
-            isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT);
-            gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
-            gmFragmentPresenter.restoreState(savedInstanceState);
-        }
     }
 
     @Override
@@ -307,10 +284,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         popularProductViewHelper = new PopularProductViewHelper(popularProductCardView);
 
         TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
-        dataTransactionViewHelper = new DataTransactionViewHelper(transactionDataCardView, gmstat.isGoldMerchant());
+        dataTransactionViewHelper = new DataTransactionViewHelper(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
 
         TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
-        marketInsightViewHelper = new MarketInsightViewHelper(marketInsightCardView, gmstat.isGoldMerchant());
+        marketInsightViewHelper = new MarketInsightViewHelper(marketInsightCardView, sessionHandler.isGoldMerchant(getActivity()));
 
         TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
         buyerDataViewHelper = new BuyerDataViewHelper(buyerDataCardView);
@@ -559,9 +536,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(SHOP_ID, shopId);
-        outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         gmFragmentPresenter.saveState(outState);
+    }
+
+    @Override
+    protected void onDateSelected(Intent intent) {
+        super.onDateSelected(intent);
+        fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(), datePickerViewModel.getDatePickerType(), datePickerViewModel.getDatePickerSelection());
     }
 
     @Override
@@ -576,4 +557,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     //[END] unused methods
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        gmFragmentPresenter.detachView();
+    }
 }
