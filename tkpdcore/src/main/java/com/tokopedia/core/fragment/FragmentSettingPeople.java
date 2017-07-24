@@ -17,7 +17,7 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.bank.activity.ListBankTypeActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
@@ -82,7 +82,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                        intent = new Intent(getActivity(), ListBankTypeActivity.class);
                         startActivity(intent);
                         break;
                     case 3:

@@ -783,4 +783,9 @@ public class TkpdBaseURL {
         public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
         public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
     }
+
+    public static class Payment {
+        public static final String URL_BCA_ONE_CLICK = "https://devapi.klikbca.com/";
+        public static final String PATH_POST_ONE_CLICK = "api/oauth/token";
+    }
 }

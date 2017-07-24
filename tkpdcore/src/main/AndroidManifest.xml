@@ -343,7 +343,7 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.tokopedia.core.manage.people.bank.activity.ListPaymentTypeActivity"
+        <activity android:name="com.tokopedia.core.manage.people.bank.activity.ListBankTypeActivity"
             android:screenOrientation="portrait">
         </activity>
 
