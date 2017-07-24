@@ -52,6 +52,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         String bodyResponse = response.body().string();
         int code = response.code();
         switch (code) {
+            case 404:
             case 422:
             case 500:
                 response.body().close();
