@@ -7,8 +7,6 @@ import android.os.Handler;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +18,16 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.BuyerDataViewHelper;
 import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
 import com.tokopedia.seller.gmstat.views.MarketInsightViewHelper;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
 import com.tokopedia.seller.gmstat.views.PopularProductViewHelper;
-import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
-import com.tokopedia.seller.gmstat.views.models.GrossIncome;
-import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
-import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -53,8 +42,11 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -65,7 +57,6 @@ import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -106,13 +97,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private String defaultExceptionDescription;
     private String[] monthNamesAbrev;
     private LineChartView grossIncomeGraph2;
-    private RecyclerView gmStatRecyclerView;
-    private GMStatWidgetAdapter gmStatWidgetAdapter;
     private LoaderImageView grossIncomeGraph2Loading;
     private HorizontalScrollView grossIncomeGraphContainer;
     private Drawable oval2Copy6;
 
-    private GridLayoutManager gridLayoutManager;
     private MarketInsightViewHelper marketInsightViewHelper;
     private PopularProductViewHelper popularProductViewHelper;
 
@@ -168,7 +156,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
-        gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
@@ -194,47 +181,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         return GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
     }
 
-    protected void initAdapter() {
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        gmStatRecyclerView.setLayoutManager(gridLayoutManager);
-        GridDividerItemDecoration gridDividerItemDecoration = new GridDividerItemDecoration(getActivity());
-        gmStatRecyclerView.addItemDecoration(gridDividerItemDecoration);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch (gmStatWidgetAdapter.getItemViewType(position)) {
-                    case LoadingGMModel.TYPE:
-                        return 1;
-                    case LoadingGMTwoModel.TYPE:
-                    default:
-                        return 2;
-                }
-            }
-        });
-        gmStatRecyclerView.setAdapter(gmStatWidgetAdapter);
-    }
-
-    protected void initAdapter(final GMStatWidgetAdapter gmStatWidgetAdapter) {
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        gmStatRecyclerView.setLayoutManager(gridLayoutManager);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch (gmStatWidgetAdapter.getItemViewType(position)) {
-                    case LoadingGMModel.TYPE:
-                        return 1;
-                    case LoadingGMTwoModel.TYPE:
-                    default:
-                        return 2;
-                }
-            }
-        });
-        gmStatRecyclerView.setAdapter(gmStatWidgetAdapter);
-    }
-
     @Override
     public void resetToLoading() {
-        resetEmptyAdapter();
         initChartLoading();
         initPopularLoading();
         initTransactionDataLoading();
@@ -262,32 +210,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         return datePickerViewModel;
     }
 
-    /**
-     * reset 4 box to loading state
-     */
-    private void resetEmptyAdapter() {
-        gmStatWidgetAdapter.clear();
-
-        List<ItemType> loadingBases = new ArrayList<>();
-        for (int i = 0; i < 4; i++)
-            loadingBases.add(new LoadingGMModel());
-
-        loadingBases.add(new LoadingGMTwoModel());
-        gmStatWidgetAdapter.addAll(loadingBases);
-        gmStatWidgetAdapter.notifyDataSetChanged();
-    }
-
-    protected void initEmptyAdapter() {
-        List<ItemType> loadingBases = new ArrayList<>();
-        for (int i = 0; i < 4; i++)
-            loadingBases.add(new LoadingGMModel());
-
-        loadingBases.add(new LoadingGMTwoModel());
-
-        gmStatWidgetAdapter = new GMStatWidgetAdapter(loadingBases);
-        initAdapter();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -296,7 +218,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
         initViews(rootView);
         initNumberFormatter();
-        initEmptyAdapter();
         initChartLoading();
         TitleCardView popularProductCardView = (TitleCardView) rootView.findViewById(R.id.popular_product_card_view);
         popularProductViewHelper = new PopularProductViewHelper(popularProductCardView);
@@ -390,32 +311,16 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         GMGraphViewWithPreviousModel grossRevenueModel = getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel;
-        GrossIncome grossIncome = new GrossIncome(grossRevenueModel.amount);
-        List<ItemType> baseGMModels = new ArrayList<>();
-        baseGMModels.add(grossIncome);
-
-        String startDate = GoldMerchantDateUtils.getDateWithoutYear(GoldMerchantDateUtils.getDateFormatForInput(grossRevenueModel.dateRangeModel.getStartDate()), monthNamesAbrev);
-        String endDate = GoldMerchantDateUtils.getDateWithYear(GoldMerchantDateUtils.getDateFormatForInput(grossRevenueModel.dateRangeModel.getEndDate()), monthNamesAbrev);
 
         List<Integer> dateGraph = grossRevenueModel.dates;
-        //[START] use date from network
-        if (startDate != null || endDate != null) {
-            grossIncome.textDescription = getString(R.string.gold_merchant_date_range_format_text, startDate, endDate);
-        }
-        //[END] use date from network
+
         //[START] override sDate and eDate with local selection.
         if (sDate != -1 || eDate != -1) {
-            String sDateWithYear = GoldMerchantDateUtils.getDateWithYear(
-                    GoldMerchantDateUtils.getDateFormatForInput(sDate), monthNamesAbrev);
-            String eDateWithYear = GoldMerchantDateUtils.getDateWithYear(
-                    GoldMerchantDateUtils.getDateFormatForInput(eDate), monthNamesAbrev);
-            grossIncome.textDescription = sDateWithYear + " - " + eDateWithYear;
 
             dateGraph = GoldMerchantDateUtils.generateDateRanges(sDate, eDate);
         }
         //[END] override sDate and eDate with local selection.
-        final BaseWilliamChartModel baseWilliamChartModel =
-                joinDateAndGrossGraph(grossRevenueModel.values, dateGraph);
+        final BaseWilliamChartModel baseWilliamChartModel = joinDateAndGrossGraph(grossRevenueModel.values, dateGraph);
 
         if (baseWilliamChartModel != null) {
             //[]START] try used willam chart
@@ -466,21 +371,15 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
 
-        gmStatWidgetAdapter.addAll(baseGMModels);
-        gmStatWidgetAdapter.notifyDataSetChanged();
 
         dataTransactionViewHelper.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
     }
 
     @Override
     public void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime) {
-        List<ItemType> baseGMModels = new ArrayList<>();
-        gmStatWidgetAdapter.clear();
-        gmStatWidgetAdapter.addAll(baseGMModels);
         gmStatisticSummaryViewHolder.setData(getProductGraph);
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         if (!isFirstTime) {
-            initAdapter(gmStatWidgetAdapter);
             gmDashboardPresenter.setFirstTime(true);
         }
     }
@@ -555,15 +454,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
-    }
-    //[END] unused methods
-
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         gmDashboardPresenter.detachView();
+    }
+
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
