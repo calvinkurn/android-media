@@ -18,7 +18,7 @@ import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.gmstat.views.GMStatActivityFragment;
+import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 
 import javax.inject.Inject;
@@ -125,7 +125,7 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         super.initViews();
 
         if (!isAfterRotate) {
-            inflateNewFragment(new GMStatActivityFragment());
+            inflateNewFragment(new GMStatisticDashboardFragment());
         }
     }
 
@@ -161,8 +161,8 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
                 int selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
                 if (sDate != -1 && eDate != -1) {
                     Fragment fragment = getFragmentManager().findFragmentById(R.id.content_gmstat_fragment_container);
-                    if (fragment != null && fragment instanceof GMStatActivityFragment) {
-                        ((GMStatActivityFragment) fragment).fetchData(sDate, eDate, lastSelection, selectionType);
+                    if (fragment != null && fragment instanceof GMStatisticDashboardFragment) {
+                        ((GMStatisticDashboardFragment) fragment).fetchData(sDate, eDate, lastSelection, selectionType);
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
 
     private void inflateNewFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, GMStatActivityFragment.TAG);
+        fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, GMStatisticDashboardFragment.TAG);
         fragmentTransaction.commit();
     }
 

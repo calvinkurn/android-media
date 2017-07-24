@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -29,6 +29,12 @@ import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.gmstat.views.BuyerDataViewHelper;
+import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
+import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
+import com.tokopedia.seller.gmstat.views.MarketInsightViewHelper;
+import com.tokopedia.seller.gmstat.views.OnActionClickListener;
+import com.tokopedia.seller.gmstat.views.PopularProductViewHelper;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
@@ -69,8 +75,8 @@ import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatis
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatActivityFragment extends BasePresenterFragment implements GMFragmentView {
-    public static final String TAG = "GMStatActivityFragment";
+public class GMStatisticDashboardFragment extends BasePresenterFragment implements GMFragmentView {
+    public static final String TAG = "GMStatisticDashboardFragment";
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
 
     static {
@@ -109,7 +115,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     private BuyerDataViewHelper buyerDataViewHelper;
 
-    public GMStatActivityFragment() {
+    public GMStatisticDashboardFragment() {
     }
 
     public void onClickHeaderGMStat() {
