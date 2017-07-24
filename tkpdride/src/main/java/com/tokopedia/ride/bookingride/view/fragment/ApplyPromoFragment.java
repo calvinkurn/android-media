@@ -271,7 +271,9 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void hidePromoLoading() {
-        mPromoListProgressBar.setVisibility(View.GONE);
+        if (mPromoListProgressBar != null) {
+            mPromoListProgressBar.setVisibility(View.GONE);
+        }
     }
 
     public ApplyPromoActivity.BackButtonListener getBackButtonListener() {
