@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -562,6 +563,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         outState.putLong(SHOP_ID, shopId);
         outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         gmFragmentPresenter.saveState(outState);
+    }
+
+    @Override
+    protected void onDateSelected(Intent intent) {
+        super.onDateSelected(intent);
+        fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(), datePickerViewModel.getDatePickerType(), datePickerViewModel.getDatePickerSelection());
     }
 
     @Override

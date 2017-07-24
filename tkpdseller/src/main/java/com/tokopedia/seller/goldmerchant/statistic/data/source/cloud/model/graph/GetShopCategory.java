@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class GetShopCategory {
 
-    @SerializedName("ShopCategory")
+    @SerializedName("shop_category")
     @Expose
     private List<Integer> shopCategory = new ArrayList<>();
 

@@ -43,7 +43,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class GMStatNetworkController {
 
-    public static final int MAXIMUM_CATEGORY = 3;
+    public static final int MAXIMUM_CATEGORY = 1;
     private static final String TAG = "GMStatNetworkController";
     private Gson gson;
     private GMStatRepository repository;
@@ -130,13 +130,17 @@ public class GMStatNetworkController {
         oldGMStatRepository.onSuccessTransactionGraph(repository.getTransactionGraph(body2));
     }
 
+    private void hadesReal() {
+        // get shop category ambil yang pertama
+        // ambil 1 api (hades), 1 api (keyword)
+    }
+
     public Observable<KeywordModel> getKeywordModelObservable(final long shopId) {
         return getShopCategory2(shopId)
                 .flatMap(new Func1<GetShopCategory, Observable<KeywordModel>>() {
                     @Override
                     public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
-                        KeywordModel keywordModel =
-                                new KeywordModel();
+                        KeywordModel keywordModel = new KeywordModel();
                         keywordModel.setShopCategory(getShopCategory);
 
                         if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null
