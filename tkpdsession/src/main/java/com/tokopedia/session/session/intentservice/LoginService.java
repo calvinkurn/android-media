@@ -327,8 +327,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getErrorModel() == null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType()
+                                    tokenModel.getTokenType(),
+                                    tokenModel.getRefreshToken()
                             );
+
                         }
                         return Observable.just(accountsParameter);
                     }

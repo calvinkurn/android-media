@@ -575,11 +575,12 @@ public class SessionHandler {
         editor.apply();
     }
 
-    public void setToken(String accessToken, String tokenType) {
+    public void setToken(String accessToken, String tokenType, String refreshToken) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
         saveToSharedPref(editor, TOKEN_TYPE, tokenType);
+        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
