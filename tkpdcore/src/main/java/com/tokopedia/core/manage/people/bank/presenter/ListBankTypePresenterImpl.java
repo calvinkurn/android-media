@@ -36,4 +36,9 @@ public class ListBankTypePresenterImpl implements ListBankTypePresenter {
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
     }
+
+    @Override
+    public void onDestroyed() {
+        compositeSubscription.unsubscribe();
+    }
 }

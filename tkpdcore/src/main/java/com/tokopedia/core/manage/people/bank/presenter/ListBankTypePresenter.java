@@ -11,4 +11,6 @@ import rx.Subscriber;
 public interface ListBankTypePresenter {
 
     void onOneClickBcaChosen(Subscriber<BcaOneClickData> subscriber);
+
+    void onDestroyed();
 }

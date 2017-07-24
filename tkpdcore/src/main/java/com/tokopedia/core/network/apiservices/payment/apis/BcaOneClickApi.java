@@ -17,7 +17,6 @@ import rx.Observable;
 
 public interface BcaOneClickApi {
 
-    @FormUrlEncoded
     @POST(TkpdBaseURL.Payment.PATH_POST_ONE_CLICK)
     Observable<Response<String>>
     getBcaOneClickAccessToken();

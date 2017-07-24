@@ -159,4 +159,9 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
             titleText = (TextView) itemView.findViewById(R.id.plain_adapter_text_view);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroyed();
+    }
 }
