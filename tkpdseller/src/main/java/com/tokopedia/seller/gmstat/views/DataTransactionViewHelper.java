@@ -14,6 +14,7 @@ import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
@@ -75,8 +76,8 @@ public class DataTransactionViewHelper {
                 Context context = transactionDataCardView.getContext();
                 // force to move to new statistic
                 Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
-                intent.putExtra(BaseGMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
-                intent.putExtra(BaseGMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                intent.putExtra(GMStatisticDashboardActivity.SHOP_ID, SessionHandler.getShopID(context));
+                intent.putExtra(GMStatisticDashboardActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                 context.startActivity(intent);
                 // force to move to new statistic
             }

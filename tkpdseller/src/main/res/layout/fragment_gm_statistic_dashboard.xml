@@ -5,7 +5,6 @@
     android:id="@+id/content_gmstat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".gmstat.views.GMStatActivityFragment"
     tools:showIn="@layout/activity_gmstat">
 
     <LinearLayout
@@ -14,14 +13,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/header_gmstat"
-            layout="@layout/widget_header_gmstat"/>
+        <com.tokopedia.seller.lib.widget.DateLabelView
+            android:id="@+id/date_label_view"
+            style="@style/LabelLayout.BorderBottom" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gmstat_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
             android:background="@android:color/white">
 
         </android.support.v7.widget.RecyclerView>
@@ -41,16 +41,17 @@
                 android:id="@+id/gross_income_graph_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <LinearLayout
                     android:id="@+id/gross_income_graph_container2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <com.tokopedia.seller.lib.williamchart.view.LineChartView
                         android:id="@+id/gross_income_graph2"
                         android:layout_width="match_parent"
-                        android:layout_height="240dp"
-                        />
+                        android:layout_height="240dp" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -60,8 +61,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                app:use_gradient="true"
-                />
+                app:use_gradient="true" />
         </LinearLayout>
 
         <com.tokopedia.seller.gmstat.views.widget.TitleCardView
@@ -69,10 +69,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gmstat_margin_bottom"
-            app:title_size="@dimen/font_body1"
-            app:title="@string/product_data"
             app:icon="@drawable/icon_produk"
-            app:loading_layout="@layout/widget_popular_product_loading">
+            app:loading_layout="@layout/widget_popular_product_loading"
+            app:title="@string/product_data"
+            app:title_size="@dimen/font_body1">
 
             <include layout="@layout/widget_popular_product_content" />
 
@@ -85,10 +85,10 @@
             android:layout_marginBottom="@dimen/gmstat_margin_bottom"
             android:layout_marginLeft="@dimen/gmstat_margin_bottom"
             android:layout_marginRight="@dimen/gmstat_margin_bottom"
-            app:title_size="@dimen/font_body1"
-            app:title="@string/sales_data"
             app:icon="@drawable/ic_icon_transaksi"
-            app:loading_layout="@layout/widget_transaction_data_loading">
+            app:loading_layout="@layout/widget_transaction_data_loading"
+            app:title="@string/sales_data"
+            app:title_size="@dimen/font_body1">
 
             <include layout="@layout/widget_transaction_data_content" />
 
@@ -101,10 +101,10 @@
             android:layout_marginBottom="@dimen/gmstat_margin_bottom"
             android:layout_marginLeft="@dimen/gmstat_margin_bottom"
             android:layout_marginRight="@dimen/gmstat_margin_bottom"
-            app:title_size="@dimen/font_body1"
-            app:title="@string/buyer_data"
             app:icon="@drawable/ic_icon_pembeli"
-            app:loading_layout="@layout/widget_buyer_data_loading">
+            app:loading_layout="@layout/widget_buyer_data_loading"
+            app:title="@string/buyer_data"
+            app:title_size="@dimen/font_body1">
 
             <include layout="@layout/widget_buyer_data_content" />
 
@@ -117,10 +117,10 @@
             android:layout_marginBottom="@dimen/gmstat_margin_bottom"
             android:layout_marginLeft="@dimen/gmstat_margin_bottom"
             android:layout_marginRight="@dimen/gmstat_margin_bottom"
-            app:title_size="@dimen/font_body1"
-            app:title="@string/gm_statistic_market_insight"
             app:icon="@drawable/ic_wawasan_pasar_icon"
-            app:loading_layout="@layout/widget_market_insight_loading">
+            app:loading_layout="@layout/widget_market_insight_loading"
+            app:title="@string/gm_statistic_market_insight"
+            app:title_size="@dimen/font_body1">
 
             <include layout="@layout/widget_market_insight_content" />
 

@@ -1,52 +1,45 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.gmstat.di.component.DaggerGMStatComponent;
-import com.tokopedia.seller.gmstat.di.component.GMStatComponent;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
-
-import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 
 /**
  * Created by normansyahputa on 1/18/17.
  */
 
-public class BaseGMStatActivity extends DrawerPresenterActivity
-        implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
+public class GMStatisticDashboardActivity extends DrawerPresenterActivity
+        implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener, HasComponent<GoldMerchantComponent> {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
 
     @Inject
     GMStatNetworkController gmStatNetworkController;
-    @Inject
-    ImageHandler imageHandler;
 
     @Inject
     GMStatClearCacheUseCase gmStatClearCacheUseCase;
 
     private boolean isGoldMerchant;
     private String shopId;
-    private GMStatComponent gmstatComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +79,15 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
 
     @Override
     public void inject() {
-        gmstatComponent = DaggerGMStatComponent.builder()
-                .appComponent(getApplicationComponent())
-                .build();
-        gmstatComponent.inject(this);
+        DaggerGMStatisticDashboardComponent
+                .builder()
+                .goldMerchantComponent(getComponent())
+                .gMStatisticModule(new GMStatisticModule())
+                .build().inject(this);
     }
 
     private void fetchSaveInstance(Bundle savedInstanceState) {
-        if(savedInstanceState == null)
+        if (savedInstanceState == null)
             return;
 
         isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT, false);
@@ -127,18 +121,13 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
         super.initViews();
 
         if (!isAfterRotate) {
-            inflateNewFragment(new GMStatActivityFragment());
+            inflateNewFragment(new GMStatisticDashboardFragment());
         }
     }
 
     @Override
     public GMStatNetworkController getGmStatNetworkController() {
         return gmStatNetworkController;
-    }
-
-    @Override
-    public ImageHandler getImageHandler() {
-        return imageHandler;
     }
 
     @Override
@@ -151,29 +140,9 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
         return shopId;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is the same
-        if (requestCode == MOVE_TO_SET_DATE) {
-            if (data != null) {
-                long sDate = data.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
-                long eDate = data.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
-                int lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
-                int selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
-                if (sDate != -1 && eDate != -1) {
-                    Fragment fragment = getFragmentManager().findFragmentById(R.id.content_gmstat_fragment_container);
-                    if (fragment != null && fragment instanceof GMStatActivityFragment) {
-                        ((GMStatActivityFragment) fragment).fetchData(sDate, eDate, lastSelection, selectionType);
-                    }
-                }
-            }
-        }
-    }
-
     private void inflateNewFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, GMStatActivityFragment.TAG);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, GMStatisticDashboardFragment.TAG);
         fragmentTransaction.commit();
     }
 
@@ -219,5 +188,9 @@ public class BaseGMStatActivity extends DrawerPresenterActivity
     public String getScreenName() {
         return AppScreen.STATISTIC_PAGE;
     }
-    //[END] unused methods
+
+    @Override
+    public GoldMerchantComponent getComponent() {
+        return ((SellerModuleRouter) getApplication()).getGoldMerchantComponent(getActivityModule());
+    }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.gmstat.presenters;
 
-import com.tokopedia.seller.gmstat.models.GetKeywordOld;
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by normansyahputa on 1/2/17.
  */
 
-public interface GMFragmentView {
+public interface GMFragmentView extends CustomerView {
     void onGetShopCategoryEmpty();
 
     void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
@@ -37,8 +37,6 @@ public interface GMFragmentView {
     void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
 
     void resetToLoading();
-
-    void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
 
     void onLoadGMStatTracking();
 
