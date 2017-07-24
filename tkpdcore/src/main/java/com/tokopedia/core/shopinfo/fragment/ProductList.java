@@ -32,11 +32,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.adapter.EtalaseAdapter;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductCampaignRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.util.MethodChecker;
@@ -64,10 +66,12 @@ public class ProductList extends V2BaseFragment {
     private ViewHolder holder;
     private EtalaseModel etalaseModel;
     private ProductModel productModel;
-    private List<String> etalaseNameList = new ArrayList<>();
-    private List<String> etalaseIdList = new ArrayList<>();
+    //    private List<String> etalaseNameList = new ArrayList<>();
+//    private List<String> etalaseIdList = new ArrayList<>();
+    private List<EtalaseAdapterModel> etalaseList = new ArrayList<>();
     private ShopProductListAdapter adapter;
-    private SimpleSpinnerAdapter etalaseAdapter;
+    //    private SimpleSpinnerAdapter etalaseAdapter;
+    private EtalaseAdapter etalaseAdapter;
     private GetShopProductParam productShopParam;
     private String shopId;
     private String shopDomain;
@@ -99,7 +103,7 @@ public class ProductList extends V2BaseFragment {
 
     public void setSelectedEtalase(String etalaseId) {
         if (adapter != null) {
-            int etalaseIndex = etalaseIdList.indexOf(etalaseId);
+            int etalaseIndex = indexOfEtalase(etalaseId);
             adapter.setSelectedEtalasePos(etalaseIndex);
         }
     }
@@ -146,12 +150,12 @@ public class ProductList extends V2BaseFragment {
 
     private void loadModelsFromBundle(Bundle savedInstanceState) {
         productShopParam = savedInstanceState.getParcelable("shop_param");
-//        etalaseList = savedInstanceState.getParcelableArrayList("etalase"); TODO ganti orientasi
-//        prodList = savedInstanceState.getParcelableArrayList("product_list");
     }
 
     private void initModels() {
         productShopParam = new GetShopProductParam();
+        boolean useAce = (getArguments().getInt(EXTRA_USE_ACE) == 1);
+        productShopParam.setUseAce(useAce);
         productShopParam.setEtalaseId(
                 getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase")
         );
@@ -164,8 +168,6 @@ public class ProductList extends V2BaseFragment {
 
         super.onSaveInstanceState(outState);
         outState.putParcelable("shop_param", productShopParam);
-//        outState.putParcelableArrayList("etalase", etalaseList); TODO save orientasi
-//        outState.putParcelableArrayList("product_list", prodList);
     }
 
     @Override
@@ -349,7 +351,7 @@ public class ProductList extends V2BaseFragment {
 
     private void initEtalaseAdapter() {
         initEtalaseList();
-        etalaseAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), etalaseNameList);
+        etalaseAdapter = new EtalaseAdapter(getActivity(), etalaseList);
     }
 
     private void initEtalaseList() {
@@ -357,25 +359,36 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void updateEtalaseNameList() {
-        etalaseNameList.clear();
-        etalaseIdList.clear();
+        etalaseList.clear();
         if (etalaseModel != null) {
             int totalEtalase = etalaseModel.list.size();
             int totalOtherEtalase = etalaseModel.listOther.size();
             for (int i = 0; i < totalOtherEtalase; i++) {
-                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
-                etalaseIdList.add(etalaseModel.listOther.get(i).etalaseId);
+                EtalaseAdapterModel etalaseAdapterModel = new EtalaseAdapterModel();
+                etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
+                etalaseAdapterModel.setEtalaseId(etalaseModel.listOther.get(i).etalaseId);
+                etalaseAdapterModel.setUseAce(etalaseModel.listOther.get(i).useAce);
+                etalaseList.add(etalaseAdapterModel);
             }
             for (int i = 0; i < totalEtalase; i++) {
-                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
-                etalaseIdList.add(etalaseModel.list.get(i).etalaseId);
+                EtalaseAdapterModel etalaseAdapterModel = new EtalaseAdapterModel();
+                etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
+                etalaseAdapterModel.setEtalaseId(etalaseModel.list.get(i).etalaseId);
+                etalaseAdapterModel.setUseAce(etalaseModel.list.get(i).useAce);
+                etalaseList.add(etalaseAdapterModel);
             }
         } else {
-            etalaseNameList.add(removeDash(
+            EtalaseAdapterModel etalaseAdapterModel = new EtalaseAdapterModel();
+            etalaseAdapterModel.setEtalaseName(removeDash(
                     getActivity().getIntent().getExtras().getString(
-                            ETALASE_NAME, getString(R.string.title_all_etalase))
-            ));
-            etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
+                            ETALASE_NAME, getString(R.string.title_all_etalase))));
+            etalaseList.add(etalaseAdapterModel);
+            etalaseAdapterModel.setEtalaseId(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
+            etalaseAdapterModel.setUseAce(1);
+            etalaseList.add(etalaseAdapterModel);
+        }
+        if (etalaseAdapter != null) {
+            etalaseAdapter.setList(etalaseList);
         }
     }
 
@@ -425,8 +438,9 @@ public class ProductList extends V2BaseFragment {
 
     private void actionChangeEtalase(int pos) {
         if (productShopParam.getSelectedEtalase() != pos) {
-            productShopParam.setEtalaseId(etalaseIdList.get(pos));
+            productShopParam.setEtalaseId(etalaseList.get(pos).getEtalaseId());
             productShopParam.setSelectedEtalase(pos);
+            productShopParam.setUseAce(etalaseList.get(pos).isUseAce());
             refreshProductList();
         }
     }
@@ -470,8 +484,7 @@ public class ProductList extends V2BaseFragment {
     private void initFacade() {
         facadeShopInfo = new GetShopInfoRetrofit(getActivity(), shopId, shopDomain);
         facadeShopInfo.setOnGetShopEtalase(onGetEtalaseListener());
-        boolean useAce = (getArguments().getInt(EXTRA_USE_ACE) == 1);
-        facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain, useAce);
+        facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain);
         facadeShopProd.setOnGetShopProductListener(onGetShopProductListener());
         facadeShopProdCampaign = new GetShopProductCampaignRetrofit(getActivity());
         facadeShopProdCampaign.setProductsCampaignListener(onGetProductCampaign());
@@ -555,10 +568,10 @@ public class ProductList extends V2BaseFragment {
                 updateEtalaseNameList();
                 int index = -1;
                 if (getArguments().getString(ETALASE_ID_BUNDLE) != null) {
-                    index = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                    index = indexOfEtalase(getArguments().getString(ETALASE_ID_BUNDLE));
                 } else if (getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
-                    for (int i = 0; i < etalaseNameList.size(); i++) {
-                        if (etalaseNameList.get(i).equalsIgnoreCase(
+                    for (int i = 0; i < etalaseList.size(); i++) {
+                        if (etalaseList.get(i).getEtalaseName().equalsIgnoreCase(
                                 removeDash(getActivity().getIntent().getExtras().getString(ETALASE_NAME))
                         )) {
                             index = i;
@@ -685,13 +698,14 @@ public class ProductList extends V2BaseFragment {
         if (productModel != null && productModel.list != null) {
             productModel.list.clear();
             GetShopProductParam newProductParam = new GetShopProductParam();
-            if (etalaseNameList.size() > 1) {
-                int selectedEtalase = etalaseNameList.indexOf(getString(R.string.title_all_etalase));
+            if (etalaseList.size() > 1) {
+                int selectedEtalase = indexOfEtalase(getString(R.string.title_all_etalase));
                 newProductParam.setSelectedEtalase(selectedEtalase == -1 ? 0 : selectedEtalase);
             } else {
                 newProductParam.setSelectedEtalase(0);
             }
             newProductParam.setListState(productShopParam.getListState());
+            newProductParam.setUseAce(productShopParam.isUseAce());
             productShopParam = newProductParam;
             adapter.setListType(productShopParam.getListState());
             adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
@@ -704,7 +718,7 @@ public class ProductList extends V2BaseFragment {
 
     public void refreshProductList(GetShopProductParam getShopProductParam) {
         if (adapter != null) {
-            int etalaseIndex = etalaseIdList.indexOf(getShopProductParam.getEtalaseId());
+            int etalaseIndex = indexOfEtalase(getShopProductParam.getEtalaseId());
             if (etalaseIndex != -1) {
                 adapter.setSelectedEtalasePos(etalaseIndex);
             }
@@ -749,5 +763,14 @@ public class ProductList extends V2BaseFragment {
         void onProductListCompleted();
 
         boolean isOfficialStore();
+    }
+
+    private int indexOfEtalase(String etalaseId) {
+        for (EtalaseAdapterModel model : etalaseList) {
+            if (model.getEtalaseId().equals(etalaseId)) {
+                return etalaseList.indexOf(model);
+            }
+        }
+        return -1;
     }
 }

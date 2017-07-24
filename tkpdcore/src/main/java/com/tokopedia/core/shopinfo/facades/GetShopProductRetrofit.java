@@ -45,17 +45,15 @@ public class GetShopProductRetrofit {
     private Context context;
     private String shopId;
     private String shopDomain;
-    private boolean useAce;
 
     private OnGetShopProductListener onGetShopProductListener;
 
     private Subscription onGetShopProductSubs;
 
-    public GetShopProductRetrofit(Context context, String shopId, String shopDomain, boolean useAce) {
+    public GetShopProductRetrofit(Context context, String shopId, String shopDomain) {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        this.useAce = useAce;
         shopService = new ShopService(TkpdBaseURL.ACE_DOMAIN);
         tomeService = new TomeService();
     }
@@ -65,7 +63,7 @@ public class GetShopProductRetrofit {
     }
 
     public void getShopProduct(GetShopProductParam param) {
-        if (useAce) {
+        if (param.isUseAce()) {
             Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
             onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
         } else {
