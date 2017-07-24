@@ -194,20 +194,6 @@ public class GoldMerchantDateUtils {
         }
     }
 
-    public static Pair<Long, String> getDateString(List<Integer> dateGraph, String[] monthNames, int position) {
-        if (dateGraph == null || dateGraph.size() <= 0)
-            return null;
-
-        return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithYear(dateGraph.get(position), monthNames));
-    }
-
-    public static Pair<Long, String> getDateStringWithoutYear(List<Integer> dateGraph, String[] monthNames, int position) {
-        if (dateGraph == null || dateGraph.size() <= 0)
-            return null;
-
-        return new Pair<>(getDateWithYear(dateGraph.get(position)), getDateWithoutYear(dateGraph.get(position), monthNames));
-    }
-
     public static void dumpDate(long date, boolean isWithYear) {
         String[] months = MainApplication.getAppContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
         if (isWithYear) {

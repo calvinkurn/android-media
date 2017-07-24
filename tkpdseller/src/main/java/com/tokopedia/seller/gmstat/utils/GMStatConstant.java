@@ -12,8 +12,6 @@ public final class GMStatConstant {
     public static final String LOWER_BUYER_FORMAT = "%3d%%";
     public static final String PERCENTAGE_FORMAT = "%s%%";
     public static final String NUMBER_TIMES_FORMAT = "%sx";
-    public static final String RANGE_DATE_FORMAT = "%s - %s";
-    public static final String SINGLE_DATE_FORMAT = "%s";
     public static final double NO_DATA_AVAILABLE = Double.MIN_VALUE;
     // this is used by automated testing.
     public static String baseUrl = TkpdBaseURL.GOLD_MERCHANT_DOMAIN;
