@@ -22,17 +22,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_med">
 
-            <include layout="@layout/partial_gm_statistic_dashboard_summary" />
+            <include layout="@layout/partial_gm_statistic_dashboard_summary_view_holder" />
 
         </LinearLayout>
 
         <include layout="@layout/include_separator_horizontal" />
 
+        <include layout="@layout/partial_gm_statistic_dashboard_gross_view_holder" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gmstat_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"/>
+            android:background="@android:color/white" />
 
         <LinearLayout
             android:id="@+id/chart_container"

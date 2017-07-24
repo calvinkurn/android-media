@@ -3,9 +3,12 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 import android.view.View;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
 import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummaryView;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 /**
  * Created by nathan on 7/24/17.

@@ -21,65 +21,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDash
 
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
         implements SessionHandler.onLogoutListener, HasComponent<GoldMerchantComponent> {
-    public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    public static final String SHOP_ID = "SHOP_ID";
-
-    private boolean isGoldMerchant;
-    private String shopId;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void setupVar() {
-        super.setupVar();
-        fetchIntent(getIntent().getExtras());
-        //TODO preserve cache, uncomment below
-//        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                Log.i("GMStat", "Failed clear GM cache");
-//            }
-//
-//            @Override
-//            public void onNext(Boolean aBoolean) {
-//                Log.i("GMStat", "Success clear GM cache");
-//            }
-//        });
-    }
-
-    @Override
-    protected void setupVar(Bundle savedInstanceState) {
-        super.setupVar(savedInstanceState);
-        fetchSaveInstance(savedInstanceState);
-    }
-
-    private void fetchSaveInstance(Bundle savedInstanceState) {
-        if (savedInstanceState == null)
-            return;
-
-        isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT, false);
-        shopId = savedInstanceState.getString(SHOP_ID);
-    }
-
-    private void fetchIntent(Bundle extras) {
-        if (extras != null) {
-            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
-            shopId = extras.getString(SHOP_ID, "");
-
-            //[START] This is staging version
-//            isGoldMerchant = true;
-//            shopId = shop_id_staging+"";
-            //[END] This is staging version
-        }
-    }
 
     @Override
     protected int setDrawerPosition() {
@@ -110,13 +51,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
-        outState.putString(SHOP_ID, shopId);
     }
 
     //[START] unused methods

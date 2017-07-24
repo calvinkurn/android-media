@@ -23,6 +23,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
@@ -123,6 +124,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private BuyerDataViewHelper buyerDataViewHelper;
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
+    private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
 
     public GMStatisticDashboardFragment() {
     }
@@ -157,6 +159,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     void initViews(View rootView) {
 
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(rootView);
+        gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(rootView);
 
         tryAgainText = getString(R.string.try_again);
         unknownExceptionDescription = getString(R.string.unknown_exception_description);
@@ -460,6 +463,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             //[END] try used willam chart
         }
 
+        gmStatisticGrossViewHolder.setData(getTransactionGraph);
+        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
 
         gmStatWidgetAdapter.addAll(baseGMModels);
         gmStatWidgetAdapter.notifyDataSetChanged();

@@ -356,8 +356,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
                     intent = new Intent(context, GMStatisticDashboardActivity.class);
-                    intent.putExtra(GMStatisticDashboardActivity.SHOP_ID, SessionHandler.getShopID(context));
-                    intent.putExtra(GMStatisticDashboardActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                     context.startActivity(intent);
                     UnifyTracking.eventClickGMStat();
                     break;
