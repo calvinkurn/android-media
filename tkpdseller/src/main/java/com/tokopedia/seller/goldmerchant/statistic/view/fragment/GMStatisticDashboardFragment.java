@@ -18,7 +18,6 @@ import android.widget.ScrollView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
@@ -31,7 +30,6 @@ import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.BuyerDataViewHelper;
 import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
-import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
 import com.tokopedia.seller.gmstat.views.MarketInsightViewHelper;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
 import com.tokopedia.seller.gmstat.views.PopularProductViewHelper;
@@ -43,11 +41,14 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
+import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
+import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
@@ -75,7 +76,7 @@ import static com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatis
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatisticDashboardFragment extends BasePresenterFragment implements GMFragmentView {
+public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMFragmentView {
     public static final String TAG = "GMStatisticDashboardFragment";
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
 
@@ -107,7 +108,6 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
     private GMFragmentPresenterImpl gmFragmentPresenter;
     private GMStat gmstat;
     private DataTransactionViewHelper dataTransactionViewHelper;
-    private GMStatHeaderViewHelper gmstatHeaderViewHelper;
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
     private long shopId;
@@ -118,10 +118,13 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
     public GMStatisticDashboardFragment() {
     }
 
-    public void onClickHeaderGMStat() {
-        if (gmstatHeaderViewHelper != null) {
-            gmstatHeaderViewHelper.onClick(getActivity());
-        }
+    @Override
+    protected void initInjector() {
+        DaggerGMStatisticDashboardComponent
+                .builder()
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
+                .build().inject(this);
     }
 
     void initViews(View rootView) {
@@ -136,15 +139,6 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
-
-        rootView.findViewById(R.id.header_gmstat).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onClickHeaderGMStat();
-                    }
-                }
-        );
 
         // analytic below : https://phab.tokopedia.com/T18496
         final ScrollView contentGMStat = (ScrollView) rootView.findViewById(R.id.content_gmstat);
@@ -216,17 +210,11 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
     @Override
     public void resetToLoading() {
         resetEmptyAdapter();
-        gmstatHeaderViewHelper.resetToLoading();
         initChartLoading();
         initPopularLoading();
         initTransactionDataLoading();
         initBuyerDataLoading();
         initMarketInsightLoading();
-    }
-
-    @Override
-    public void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
-        gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
     }
 
     @Override
@@ -309,7 +297,7 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         gmFragmentPresenter.setFirstTime(false);
-        rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
+        rootView = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
 
         initViews(rootView);
         initNumberFormatter();
@@ -320,8 +308,6 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
 
         TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
         dataTransactionViewHelper = new DataTransactionViewHelper(transactionDataCardView, gmstat.isGoldMerchant());
-
-        gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
 
         TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
         marketInsightViewHelper = new MarketInsightViewHelper(marketInsightCardView, gmstat.isGoldMerchant());
@@ -335,7 +321,7 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
         initMarketInsightLoading();
         gmFragmentPresenter.initInstance();
         baseWilliamChartConfig = new BaseWilliamChartConfig();
-        dataTransactionViewHelper.setDataTransactionChartConfig(new DataTransactionChartConfig(context));
+        dataTransactionViewHelper.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return rootView;
     }
 
@@ -488,15 +474,6 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
         gmStatWidgetAdapter.notifyDataSetChanged();
 
         dataTransactionViewHelper.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
-
-        if (sDate == -1 && eDate == -1) {
-            gmstatHeaderViewHelper.bindData(dateGraph, lastSelectionPeriod);
-            gmFragmentPresenter.setsDate(gmstatHeaderViewHelper.getsDate());
-            gmFragmentPresenter.seteDate(gmstatHeaderViewHelper.geteDate());
-        } else {
-            gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
-            gmstatHeaderViewHelper.stopLoading();
-        }
     }
 
     @Override
@@ -592,61 +569,9 @@ public class GMStatisticDashboardFragment extends BasePresenterFragment implemen
 
     }
 
-    //[START] unused methods
     @Override
-    protected void setViewListener() {
-    }
-
-    @Override
-    protected void initialVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return 0;
-    }
-
-    @Override
-    protected void initView(View view) {
+    protected String getScreenName() {
+        return null;
     }
     //[END] unused methods
 
