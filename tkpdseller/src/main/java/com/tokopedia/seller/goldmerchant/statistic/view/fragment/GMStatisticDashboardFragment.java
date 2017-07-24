@@ -35,13 +35,9 @@ import com.tokopedia.seller.gmstat.views.MarketInsightViewHelper;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
 import com.tokopedia.seller.gmstat.views.PopularProductViewHelper;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
-import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
-import com.tokopedia.seller.gmstat.views.models.ProdSeen;
-import com.tokopedia.seller.gmstat.views.models.ProdSold;
-import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
 import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -124,12 +120,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
 
-    @Inject
-    GMStatNetworkController gmStatNetworkController;
-
     private BuyerDataViewHelper buyerDataViewHelper;
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
+
     public GMStatisticDashboardFragment() {
     }
 
@@ -206,10 +200,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             @Override
             public int getSpanSize(int position) {
                 switch (gmStatWidgetAdapter.getItemViewType(position)) {
-                    case SuccessfulTransaction.TYPE:
-                    case ProdSeen.TYPE:
-                    case ProdSold.TYPE:
-                    case ConvRate.TYPE:
                     case LoadingGMModel.TYPE:
                         return 1;
                     case LoadingGMTwoModel.TYPE:
@@ -228,10 +218,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             @Override
             public int getSpanSize(int position) {
                 switch (gmStatWidgetAdapter.getItemViewType(position)) {
-                    case SuccessfulTransaction.TYPE:
-                    case ProdSeen.TYPE:
-                    case ProdSold.TYPE:
-                    case ConvRate.TYPE:
                     case LoadingGMModel.TYPE:
                         return 1;
                     case LoadingGMTwoModel.TYPE:
@@ -367,11 +353,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void loadData() {
         super.loadData();
         gmNetworkErrorHelper = new GMNetworkErrorHelper(null, rootView);
-    }
-
-    @Override
-    public void loadData() {
-        super.loadData();
         gmDashboardPresenter.onResume();
     }
 
@@ -489,23 +470,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime) {
         List<ItemType> baseGMModels = new ArrayList<>();
-        SuccessfulTransaction successfulTransaction
-                = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
-        successfulTransaction.percentage = getProductGraph.getDiffTrans() * 100;
-
-        ProdSeen prodSeen = new ProdSeen(getProductGraph.getProductView());
-        prodSeen.percentage = getProductGraph.getDiffView() * 100;
-
-        ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
-        prodSold.percentage = getProductGraph.getDiffSold() * 100;
-
-        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate());
-        convRate.percentage = getProductGraph.getDiffConv() * 100;
-
-        baseGMModels.add(successfulTransaction);
-        baseGMModels.add(prodSeen);
-        baseGMModels.add(prodSold);
-        baseGMModels.add(convRate);
         gmStatWidgetAdapter.clear();
         gmStatWidgetAdapter.addAll(baseGMModels);
         gmStatisticSummaryViewHolder.setData(getProductGraph);
@@ -576,7 +540,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     protected void onDateSelected(Intent intent) {
         super.onDateSelected(intent);
-        fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(), datePickerViewModel.getDatePickerType(), datePickerViewModel.getDatePickerSelection());
+        fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(),
+                datePickerViewModel.getDatePickerType(), datePickerViewModel.getDatePickerSelection());
     }
 
     @Override

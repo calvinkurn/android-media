@@ -26,13 +26,13 @@
 
         </LinearLayout>
 
+        <include layout="@layout/include_separator_horizontal" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gmstat_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white">
-
-        </android.support.v7.widget.RecyclerView>
+            android:background="@android:color/white"/>
 
         <LinearLayout
             android:id="@+id/chart_container"

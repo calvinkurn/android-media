@@ -8,19 +8,13 @@ import android.widget.ImageView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.gmstat.views.models.CommonGMModel;
-import com.tokopedia.seller.gmstat.views.models.ConvRate;
 import com.tokopedia.seller.gmstat.views.models.GrossIncome;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMModel;
 import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
-import com.tokopedia.seller.gmstat.views.models.ProdSeen;
-import com.tokopedia.seller.gmstat.views.models.ProdSold;
-import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
 import com.tokopedia.seller.gmstat.views.viewholder.EmptyVH;
 import com.tokopedia.seller.gmstat.views.viewholder.GrossEarnVH;
 import com.tokopedia.seller.gmstat.views.viewholder.LoadingGMGrossIncome;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,10 +25,6 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
 
     private List<ItemType> baseGMModels;
 
-    public GMStatWidgetAdapter() {
-        baseGMModels = new ArrayList<>();
-    }
-
     public GMStatWidgetAdapter(List<ItemType> baseGMModels) {
         this.baseGMModels = baseGMModels;
     }
@@ -44,8 +34,9 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
     }
 
     public void addAll(List<ItemType> baseGMModels) {
-        if (baseGMModels == null)
+        if (baseGMModels == null) {
             return;
+        }
         this.baseGMModels.addAll(baseGMModels);
     }
 
@@ -65,13 +56,6 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (baseGMModels.get(position).getType()) {
-            case SuccessfulTransaction.TYPE:
-            case ProdSeen.TYPE:
-            case ProdSold.TYPE:
-            case ConvRate.TYPE:
-                CommonGMVH commonGMVH = ((CommonGMVH) holder);
-                commonGMVH.bind((CommonGMModel) baseGMModels.get(position));
-                break;
             case GrossIncome.TYPE:
                 ((GrossEarnVH) holder).bind((GrossIncome) baseGMModels.get(position));
                 break;
@@ -86,11 +70,7 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         switch (baseGMModels.get(position).getType()) {
-            case SuccessfulTransaction.TYPE:
-            case ProdSeen.TYPE:
-            case ProdSold.TYPE:
             case GrossIncome.TYPE:
-            case ConvRate.TYPE:
             case LoadingGMModel.TYPE:
             case LoadingGMTwoModel.TYPE:
                 return baseGMModels.get(position).getType();
