@@ -103,12 +103,6 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    public com.tokopedia.seller.gmstat.apis.GMStatApi provideGmStatApi(@GoldMerchantQualifier Retrofit retrofit) {
-        return retrofit.create(com.tokopedia.seller.gmstat.apis.GMStatApi.class);
-    }
-
-    @GMStatisticScope
-    @Provides
     public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository,
                                                                    GetProductCategoryNameUseCase getProductCategoryNameUseCase) {
         return new GMStatNetworkController(gson, gmStatRepository, getProductCategoryNameUseCase);
