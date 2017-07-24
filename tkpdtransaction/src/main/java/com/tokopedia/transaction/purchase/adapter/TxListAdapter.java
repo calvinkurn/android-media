@@ -192,7 +192,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         PopupMenu popup = new PopupMenu(context, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(getMenuId(item), popup.getMenu());
-        addCancelReplacementMenu(item, popup);
+        if (getMenuId(item) != R.menu.order_status_menu_cancel_replacement)
+            addCancelReplacementMenu(item, popup);
         popup.setOnMenuItemClickListener(new OnMenuPopupClicked(item));
         popup.show();
     }
@@ -236,6 +237,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     default:
                         if (item.getOrderButton().getButtonUploadProof().equals(HAS_BUTTON))
                             MenuID = R.menu.order_status_menu_upload;
+                        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
+                            MenuID = R.menu.order_status_menu_cancel_replacement;
                         break;
                 }
 
