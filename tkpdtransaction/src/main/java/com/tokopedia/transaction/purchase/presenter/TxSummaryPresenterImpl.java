@@ -30,11 +30,9 @@ import rx.Subscriber;
  * @author Angga.Prasetiyo on 07/04/2016.
  */
 public class TxSummaryPresenterImpl implements TxSummaryPresenter {
-    private static final String TAG = TxSummaryPresenterImpl.class.getSimpleName();
     private final TxSummaryViewListener viewListener;
     private NotificationUseCase notificationUseCase;
     private LocalCacheHandler cacheHandler;
-
 
     public TxSummaryPresenterImpl(TxSummaryViewListener viewListener) {
         this.viewListener = viewListener;

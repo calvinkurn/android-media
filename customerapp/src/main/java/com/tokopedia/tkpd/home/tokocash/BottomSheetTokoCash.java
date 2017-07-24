@@ -84,6 +84,7 @@ public class BottomSheetTokoCash extends BottomSheetDialog {
             if (((Activity) context).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) context).getApplication())
                         .goToWallet(context, redirectURL);
+                dismiss();
             }
         }
     }

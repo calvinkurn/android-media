@@ -150,8 +150,7 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         viewModel.setUserLabelId(replyDiscussionData.getUserLabelId());
         viewModel.setUserName(replyDiscussionData.getUserName());
         viewModel.setConversationId(String.valueOf(replyDiscussionData.getConversationId()));
-        if (replyDiscussionData.getReplyAttachmentDomainData() != null)
-            viewModel.setAttachment(mappingAttachmentView(replyDiscussionData.getReplyAttachmentDomainData()));
+        viewModel.setAttachment(replyDiscussionData.getReplyAttachmentDomainData() != null ? mappingAttachmentView(replyDiscussionData.getReplyAttachmentDomainData()) : null);
         return viewModel;
     }
 
