@@ -12,10 +12,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
-import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDashboardFragment;
 
 /**
@@ -23,7 +20,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.fragment.GMStatisticDash
  */
 
 public class GMStatisticDashboardActivity extends DrawerPresenterActivity
-        implements SessionHandler.onLogoutListener, DaggerInjectorListener, HasComponent<GoldMerchantComponent> {
+        implements SessionHandler.onLogoutListener, HasComponent<GoldMerchantComponent> {
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
 
@@ -39,7 +36,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
     protected void setupVar() {
         super.setupVar();
         fetchIntent(getIntent().getExtras());
-        inject();
         //TODO preserve cache, uncomment below
 //        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
 //            @Override
@@ -63,16 +59,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
     protected void setupVar(Bundle savedInstanceState) {
         super.setupVar(savedInstanceState);
         fetchSaveInstance(savedInstanceState);
-        inject();
-    }
-
-    @Override
-    public void inject() {
-        DaggerGMStatisticDashboardComponent
-                .builder()
-                .goldMerchantComponent(getComponent())
-                .gMStatisticModule(new GMStatisticModule())
-                .build().inject(this);
     }
 
     private void fetchSaveInstance(Bundle savedInstanceState) {
