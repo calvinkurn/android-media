@@ -17,8 +17,8 @@ import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -164,6 +164,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         items.clear();
+        setShouldLoadAds(true);
     }
 
     @Override
@@ -201,6 +202,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedItemCount = arrayList.size();
         items.addAll(arrayList);
         mNeedsPlacement = false;
+        observer.onStreamLoaded(observerType);
     }
 
     private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
@@ -271,6 +273,8 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         if (list.size() > 0) {
             arrayList.add(pos, new TopAdsViewModel(list));
             mPage++;
+        } else {
+            setShouldLoadAds(false);
         }
     }
 

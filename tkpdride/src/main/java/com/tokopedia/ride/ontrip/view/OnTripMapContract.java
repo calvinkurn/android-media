@@ -195,6 +195,8 @@ public interface OnTripMapContract {
         void actionNavigateToCancelReasonPage(String requestId);
 
         void zoomMapFitByDriverAndCustomer(List<LatLng> latLngs);
+
+        void openInterruptConfirmationDialog(String tosUrl, String key, String value);
     }
 
     interface Presenter extends CustomerPresenter<View> {

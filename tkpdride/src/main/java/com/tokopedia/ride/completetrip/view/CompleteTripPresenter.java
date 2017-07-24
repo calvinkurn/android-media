@@ -86,7 +86,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                             rideHistory.getRating() != null &&
                             !rideHistory.getRating().getStar().equalsIgnoreCase("0")) {
                         getView().showRatingResultLayout(Integer.parseInt(rideHistory.getRating().getStar()));
-                    }else {
+                    } else {
                         getView().showRatingLayout();
                     }
                 }

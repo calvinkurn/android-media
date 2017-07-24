@@ -36,7 +36,7 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleLoyaltyBalance();
 
-    void renderCartListData(String token, List<CartItem> cartList);
+    void renderCartListData(String token, String ut, List<CartItem> cartList);
 
     void renderCheckoutCartDepositAmount(String depositAmount);
 

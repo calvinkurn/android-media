@@ -31,6 +31,8 @@ public class AttributesDigital implements Parcelable {
 
     private boolean enableVoucher;
 
+    private String voucherAutoCode;
+
     private UserInputPriceDigital userInputPrice;
 
     public String getUserId() {
@@ -129,6 +131,14 @@ public class AttributesDigital implements Parcelable {
         this.enableVoucher = enableVoucher;
     }
 
+    public String getVoucherAutoCode() {
+        return voucherAutoCode;
+    }
+
+    public void setVoucherAutoCode(String voucherAutoCode) {
+        this.voucherAutoCode = voucherAutoCode;
+    }
+
     public AttributesDigital() {
     }
 
@@ -151,6 +161,7 @@ public class AttributesDigital implements Parcelable {
         dest.writeByte(this.needOtp ? (byte) 1 : (byte) 0);
         dest.writeString(this.smsState);
         dest.writeByte(this.enableVoucher ? (byte) 1 : (byte) 0);
+        dest.writeString(this.voucherAutoCode);
         dest.writeParcelable(this.userInputPrice, flags);
     }
 
@@ -166,6 +177,7 @@ public class AttributesDigital implements Parcelable {
         this.needOtp = in.readByte() != 0;
         this.smsState = in.readString();
         this.enableVoucher = in.readByte() != 0;
+        this.voucherAutoCode = in.readString();
         this.userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
     }
 

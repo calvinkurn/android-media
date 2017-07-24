@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -76,13 +75,15 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.core.talkview.intentservice.TalkDetailIntentService.POSITION;
 
 /**
  * @author by nisie on 5/15/17.
@@ -108,6 +109,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private static final String TOPADS_ITEM = "4";
+    private static final String POSITION = "position";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
 
     @Override
@@ -133,8 +135,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         initVar();
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(POSITION, TAG);
+    }
+
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, this);
         adapter = new FeedPlusAdapter(typeFactory);
 
         Config config = new Config.Builder()
@@ -195,6 +204,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setRetainInstance(false);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
@@ -395,6 +405,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
                 .setProductId(String.valueOf(productFeedViewModel.getProductId()))
                 .setPrice(productFeedViewModel.getPrice())
+                .setImageUri(productFeedViewModel.getImageSource())
                 .build();
 
         Intent intent = TransactionAddToCartRouter
@@ -445,6 +456,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        topAdsRecyclerAdapter.showLoading();
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
@@ -465,24 +477,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
         adapter.addList(listFeed);
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onShowEmpty() {
+    public void onShowEmpty(boolean canShowTopads) {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 
         adapter.showEmpty();
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -700,11 +714,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private boolean hasFeed() {
+    @Override
+    public boolean hasFeed() {
         return adapter.getlist() != null
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
+    }
+
+    @Override
+    public void updateFavoriteFromEmpty() {
+        onRefresh();
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
+
+    }
+
+    @Override
+    public void showTopAds(boolean isTopAdsShown) {
+        topAdsRecyclerAdapter.shouldLoadAds(isTopAdsShown);
     }
 
 

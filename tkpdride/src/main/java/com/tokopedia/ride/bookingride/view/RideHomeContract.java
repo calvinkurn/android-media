@@ -42,6 +42,8 @@ public interface RideHomeContract {
 
         String getLastRequestId();
 
+        void clearActiveRequestId();
+
         void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle);
 
         void showDialogDriverCancelled();

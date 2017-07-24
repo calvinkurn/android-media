@@ -55,17 +55,21 @@ public class ReceiptEntityMapper {
     }
 
     private int transformDurationToMinute(String input) {
-        String[] parts = input.split(":");
-        if (parts.length == 3) {
-            int hours = Integer.parseInt(parts[0]);
-            int minutes = Integer.parseInt(parts[1]);
-            int seconds = Integer.parseInt(parts[2]);
-            return hours * 60 + minutes + Math.abs(seconds / 60);
-        } else if (parts.length == 2) {
-            int hours = Integer.parseInt(parts[0]);
-            int minutes = Integer.parseInt(parts[1]);
-            return hours * 60 + minutes;
-        } else {
+        try {
+            String[] parts = input.split(":");
+            if (parts.length == 3) {
+                int hours = Integer.parseInt(parts[0]);
+                int minutes = Integer.parseInt(parts[1]);
+                int seconds = Integer.parseInt(parts[2]);
+                return hours * 60 + minutes + Math.abs(seconds / 60);
+            } else if (parts.length == 2) {
+                int hours = Integer.parseInt(parts[0]);
+                int minutes = Integer.parseInt(parts[1]);
+                return hours * 60 + minutes;
+            } else {
+                return 0;
+            }
+        } catch (Exception ex) {
             return 0;
         }
     }

@@ -124,9 +124,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
                                 startLocationUpdates();
                             } else {
-                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
-                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
-//                                checkLocationSettings();
+                                checkLocationSettings();
                             }
                         }
 
@@ -164,21 +162,15 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
             @Override
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
-                //final LocationSettingsStates s= result.getLocationSettingsStates();
 
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
                         mCurrentLocation = getFuzedLocation();
-                        if (mCurrentLocation != null) {
-                            startLocationUpdates();
-                            if (!getView().isLaunchedWithLocation()) {
-                                setSourceAsCurrentLocation();
-                            } else {
-                                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
-                                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
-                            }
+                        startLocationUpdates();
+                        if (!getView().isLaunchedWithLocation()) {
+                            setSourceAsCurrentLocation();
                         }
 
                         break;
@@ -262,7 +254,6 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                                 placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
                                 placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                                 placeVm.setTitle(sourceAddress);
-//                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
                                 getView().setSourceLocation(placeVm);
                             }
                         }
@@ -329,16 +320,17 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     @Override
     public void getOverviewPolyline(double sourceLat, double sourceLng, double destinationLat, double destinationLng) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("origin", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                 sourceLat,
                 sourceLng
         ));
-        requestParams.putString("destination", String.format("%s,%s",
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destinationLat,
                 destinationLng
         ));
-        requestParams.putString("sensor", "false");
-//        requestParams.putString("key", getView().getActivity().getString(R.string.GOOGLE_API_KEY));
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_SENSOR, "false");
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getView().getActivity().getString(R.string.google_api_key));
+
         getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<OverviewPolyline>>() {
             @Override
             public void onCompleted() {
