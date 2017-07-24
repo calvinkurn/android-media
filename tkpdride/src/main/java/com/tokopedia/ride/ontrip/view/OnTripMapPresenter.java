@@ -994,6 +994,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = location;
+
+                if (getView() != null) {
+                    getView().saveDefaultLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                }
             }
         });
     }
