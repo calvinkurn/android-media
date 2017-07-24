@@ -126,7 +126,7 @@ public class MoEngageContainer implements IMoengageContainer {
                 new PayloadBuilder()
                     .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
                     .build()
-                , AppEventTracking.EventMoEngage.EVENT_REG_START
+                , AppEventTracking.EventMoEngage.REG_START
         );
     }
 
@@ -137,7 +137,7 @@ public class MoEngageContainer implements IMoengageContainer {
                     .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
                     .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
                     .build()
-                , AppEventTracking.EventMoEngage.EVENT_REG_COMPL
+                , AppEventTracking.EventMoEngage.REG_COMPL
         );
     }
 

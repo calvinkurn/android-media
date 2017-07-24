@@ -516,33 +516,31 @@ public interface AppEventTracking {
         String IS_OFFICIAL_STORE = "is_official_store";
         String IS_FEED_EMPTY = "is_feed_empty";
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
-
-        String REG_START = "Registration_Start";
-        String REG_COMPL = "Registration_Completed";
-        String ADDR_ADD = "Address_Added";
-
+        String KEYWORD = "keyword";
+        String IS_RESULT_FOUND = "IS_RESULT_FOUND";
     }
 
     interface EventMoEngage {
-        String EVENT_LOGIN = "Login";
-        String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
-        String EVENT_OPEN_FEED = "Feed_Screen_Launched";
-        String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
-        String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String EVENT_DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
-        String EVENT_PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
-        String EVENT_PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
-        String EVENT_PRODUCT_REMOVED_FROM_WISHLIST = "Product_Removed_From_Wishlist_Marketplace";
-        String EVENT_CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
-        String EVENT_CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
-        String EVENT_SEARCH_ATTEMPT = "Search_Attempt";
+        String LOGIN = "Login";
+        String OPEN_BERANDA = "Beranda_Screen_Launched";
+        String OPEN_FEED = "Feed_Screen_Launched";
+        String OPEN_FAVORITE = "Favorite_Screen_Launched";
+        String OPEN_HOTLIST = "Hotlist_Screen_Launched";
+        String OPEN_PRODUCTPAGE = "Product_Page_Opened";
+        String CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
+        String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String CAT_SCREEN_OPEN = "Category_Screen_Launched";
+        String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
+        String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
+        String PRODUCT_REMOVED_FROM_WISHLIST = "Product_Removed_From_Wishlist_Marketplace";
+        String CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
+        String CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
+        String SEARCH_ATTEMPT = "Search_Attempt";
 
-        String EVENT_REG_START = "Registration_Start";
-        String EVENT_REG_COMPL = "Registration_Completed";
+        String REG_START = "Registration_Start";
+        String REG_COMPL = "Registration_Completed";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
     }
