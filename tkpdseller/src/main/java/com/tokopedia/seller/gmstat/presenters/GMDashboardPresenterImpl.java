@@ -31,7 +31,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author normansyahputa
  */
 
-public class GMFragmentPresenterImpl extends GMFragmentPresenter {
+public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     public static final String IS_FETCH_DATA = "IS_FETCH_DATA";
     public static final String IS_FIRST_TIME = "IS_FIRST_TIME";
     private static final String TAG = "GMFragmentPresenterImpl";
@@ -120,7 +120,7 @@ public class GMFragmentPresenterImpl extends GMFragmentPresenter {
     };
     private GMStatNetworkController gmStatNetworkController;
 
-    public GMFragmentPresenterImpl(GMStatNetworkController gmStatNetworkController) {
+    public GMDashboardPresenterImpl(GMStatNetworkController gmStatNetworkController) {
         this.gmStatNetworkController = gmStatNetworkController;
     }
 
@@ -148,11 +148,13 @@ public class GMFragmentPresenterImpl extends GMFragmentPresenter {
 
     @Override
     public void fetchData() {
+        sDate = getView().datePickerViewModel().getStartDate();
+        eDate = getView().datePickerViewModel().getEndDate();
         if (isFirstTime && isFetchData) {
             getView().resetToLoading();
-            gmStatNetworkController.fetchData(shopId, -1, -1, compositeSubscription, gmStatListener);
+            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         } else if (!isFirstTime) {
-            gmStatNetworkController.fetchData(shopId, sDate, shopId, compositeSubscription, gmStatListener);
+            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         }
 
         if (isFetchData) {

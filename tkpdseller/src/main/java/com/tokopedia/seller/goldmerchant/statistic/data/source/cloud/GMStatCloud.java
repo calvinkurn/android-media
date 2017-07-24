@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.data.source.cloud;
 
-import com.tokopedia.seller.gmstat.models.GetShopCategoryOld;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
@@ -33,8 +32,8 @@ import rx.Observable;
 public class GMStatCloud {
 
     public static final String SHOP_ID = "shop_id";
-    public static final String S_DATE = "sDate";
-    public static final String E_DATE = "eDate";
+    public static final String S_DATE = "start_date";
+    public static final String E_DATE = "end_date";
     public static final String SORT_TYP = "sort_type";
     public static final String SORT_BY = "sort_by";
     public static final String PAGE = "page";

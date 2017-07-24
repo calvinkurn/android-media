@@ -26,10 +26,13 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
     private CircleTextView ctvOnHoldCount;
     private CircleTextView ctvOnHoldAmount;
     private CircleTextView ctvResCenterCount;
+    private String rupiahFormatText;
 
 
     public UnFinishedTransactionViewHolder(@Nullable Context context) {
         super(context);
+
+        rupiahFormatText = context.getString(R.string.rupiah_format_text);
     }
 
     @Override
@@ -46,6 +49,9 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
     }
 
     private void processView(UnFinishedTransactionViewModel data) {
+        data.setFormatAmount(rupiahFormatText);
+        data.formatText();
+
         ctvOnHoldCount.setValue(Long.toString(data.getOnHoldCount()));
         ctvOnHoldAmount.setValue(data.getOnHoldAmountText());
         ctvResCenterCount.setValue(Long.toString(data.getResoCount()));

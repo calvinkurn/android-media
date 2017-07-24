@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.presenters;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -43,4 +44,6 @@ public interface GMFragmentView extends CustomerView {
     void onScrollGMStatTracking();
 
     void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
+
+    DatePickerViewModel datePickerViewModel();
 }
