@@ -55,8 +55,10 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
         int countIncrement = column - (countList % column);
         dataList.clear();
         dataList.addAll(digitalCategoryItemDataList);
-        for (int i = 0; i < countIncrement; i++) {
-            dataList.add(null);
+        if (countIncrement < column) {
+            for (int i = 0; i < countIncrement; i++) {
+                dataList.add(null);
+            }
         }
         notifyDataSetChanged();
     }

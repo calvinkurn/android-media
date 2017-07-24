@@ -368,15 +368,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
         mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void showDeniedForLocation() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
         initFragment();
     }
@@ -423,7 +423,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
+        if (!isFinishing() && !fragment.isAdded()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
             fragmentTransaction.replace(containerViewId, fragment);
             fragmentTransaction.commit();
@@ -560,7 +560,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setMarkerText(timeEst);
         } else {
             fragment = RideHomeMapFragment.newInstance();
-            addFragment(R.id.top_container, fragment);
+            replaceFragment(R.id.top_container, fragment);
             fragment.setMarkerText(timeEst);
         }
     }
@@ -659,6 +659,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
+        } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof UberProductFragment &&
+                mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
