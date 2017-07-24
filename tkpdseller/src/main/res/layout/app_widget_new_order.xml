@@ -42,9 +42,6 @@
         android:divider="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <?xml version="1.0" encoding="utf-8"?>
-
     <RelativeLayout
         android:id="@+id/view_no_result"
         android:layout_width="match_parent"
@@ -60,10 +57,10 @@
 
         <TextView
             style="@style/TextView.Caption2.BlackSecondary"
-            android:text="@string/belum_ada_data"
+            android:text="@string/app_widget_new_order_wording_empty"
             android:layout_below="@id/image_no_result"
             android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/margin_sm"/>
+            android:layout_margin="@dimen/margin_vs"/>
     </RelativeLayout>
 
 </LinearLayout>
