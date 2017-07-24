@@ -31,7 +31,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author normansyahputa
  */
 
-public class GMFragmentPresenterImpl implements GMFragmentPresenter {
+public class GMFragmentPresenterImpl extends GMFragmentPresenter {
     public static final String IS_FETCH_DATA = "IS_FETCH_DATA";
     public static final String IS_FIRST_TIME = "IS_FIRST_TIME";
     private static final String TAG = "GMFragmentPresenterImpl";
@@ -46,60 +46,71 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
     private int selectionType;
-    private GMFragmentView gmFragmentView;
     private OldGMStatRepository gmStatListener = new OldGMStatRepository() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-            if (getShopCategory == null
-                    || getShopCategory.getShopCategory() == null
-                    || getShopCategory.getShopCategory().isEmpty()) {
-                gmFragmentView.onGetShopCategoryEmpty();
+            if (isViewAttached()) {
+                if (getShopCategory == null
+                        || getShopCategory.getShopCategory() == null
+                        || getShopCategory.getShopCategory().isEmpty()) {
+                    getView().onGetShopCategoryEmpty();
+                }
             }
         }
 
         @Override
         public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
-            gmFragmentView.onSuccessTransactionGraph(getTransactionGraph, sDate, eDate, lastSelectionPeriod, selectionType);
+            if (isViewAttached())
+                getView().onSuccessTransactionGraph(getTransactionGraph, sDate, eDate, lastSelectionPeriod, selectionType);
         }
 
         @Override
         public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
-            gmFragmentView.onSuccessProductnGraph(getProductGraph, isFirstTime);
+            if (isViewAttached())
+                getView().onSuccessProductnGraph(getProductGraph, isFirstTime);
         }
 
         @Override
         public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-            gmFragmentView.onSuccessPopularProduct(getPopularProduct);
+            if (isViewAttached())
+                getView().onSuccessPopularProduct(getPopularProduct);
         }
 
         @Override
         public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-            gmFragmentView.onSuccessBuyerGraph(getBuyerGraph);
+            if (isViewAttached())
+                getView().onSuccessBuyerGraph(getBuyerGraph);
         }
 
         @Override
         public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-            gmFragmentView.onSuccessGetKeyword(getKeywords);
+            if (isViewAttached())
+                getView().onSuccessGetKeyword(getKeywords);
         }
 
         @Override
         public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
+            if (!isViewAttached())
+                return;
+
             if (hadesV1Models == null || hadesV1Models.size() <= 0)
                 return;
 
             HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
 
-            gmFragmentView.onSuccessGetCategory(category.getName());
+            getView().onSuccessGetCategory(category.getName());
         }
 
         @Override
         public void onComplete() {
-            gmFragmentView.onComplete();
+            if (isViewAttached())
+                getView().onComplete();
         }
 
         @Override
         public void onError(Throwable e) {
-            gmFragmentView.onError(e);
+            if (isViewAttached())
+                getView().onError(e);
         }
 
         @Override
@@ -107,12 +118,10 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         }
     };
-    private GMStat gmStat;
+    private GMStatNetworkController gmStatNetworkController;
 
-    public GMFragmentPresenterImpl(GMFragmentView gmFragmentView, GMStat gmStat, long shopId) {
-        this.gmFragmentView = gmFragmentView;
-        this.gmStat = gmStat;
-        this.shopId = shopId;
+    public GMFragmentPresenterImpl(GMStatNetworkController gmStatNetworkController) {
+        this.gmStatNetworkController = gmStatNetworkController;
     }
 
     public void setFirstTime(boolean firstTime) {
@@ -139,16 +148,11 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
     @Override
     public void fetchData() {
-        GMStatNetworkController gmStatNetworkController = gmStat.getGmStatNetworkController();
         if (isFirstTime && isFetchData) {
-            gmFragmentView.resetToLoading();
-            if (gmStatNetworkController instanceof GMStatNetworkController) {
-                ((GMStatNetworkController) gmStatNetworkController).fetchData(shopId, -1, -1, compositeSubscription, gmStatListener);
-            }
+            getView().resetToLoading();
+            gmStatNetworkController.fetchData(shopId, -1, -1, compositeSubscription, gmStatListener);
         } else if (!isFirstTime) {
-            if (gmStatNetworkController instanceof GMStatNetworkController) {
-                ((GMStatNetworkController) gmStatNetworkController).fetchData(shopId, sDate, shopId, compositeSubscription, gmStatListener);
-            }
+            gmStatNetworkController.fetchData(shopId, sDate, shopId, compositeSubscription, gmStatListener);
         }
 
         if (isFetchData) {
@@ -187,7 +191,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
 
         resetDateSelection();
-        gmStat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, assets);
+        gmStatNetworkController.fetchDataEmptyState(gmStatListener, assets);
     }
 
     @Override

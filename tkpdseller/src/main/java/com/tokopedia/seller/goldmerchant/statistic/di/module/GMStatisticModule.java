@@ -8,6 +8,8 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenter;
+import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenterImpl;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
@@ -101,5 +103,11 @@ public class GMStatisticModule {
     @Provides
     public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository) {
         return new GMStatNetworkController(gson, gmStatRepository);
+    }
+
+    @GMStatisticScope
+    @Provides
+    public GMFragmentPresenter provideGmFragmentPresenter(GMStatNetworkController gmStatNetworkController) {
+        return new GMFragmentPresenterImpl(gmStatNetworkController);
     }
 }
