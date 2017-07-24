@@ -16,7 +16,7 @@ public class KeywordModel {
     private List<GetKeyword> keywords;
     private GetShopCategory shopCategory;
     private List<Response<GetKeyword>> responseList;
-    private List<HadesV1Model> hadesv1Models;
+    private List<String> categoryName;
 
     public List<GetKeyword> getKeywords() {
         return keywords;
@@ -42,11 +42,11 @@ public class KeywordModel {
         this.responseList = responseList;
     }
 
-    public List<HadesV1Model> getHadesv1Models() {
-        return hadesv1Models;
+    public List<String> getCategoryName() {
+        return categoryName;
     }
 
-    public void setHadesv1Models(List<HadesV1Model> hadesv1Models) {
-        this.hadesv1Models = hadesv1Models;
+    public void setCategoryNames(List<String> categoryName) {
+        this.categoryName = categoryName;
     }
 }

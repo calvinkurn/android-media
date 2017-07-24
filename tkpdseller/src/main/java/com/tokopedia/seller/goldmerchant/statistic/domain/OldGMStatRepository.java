@@ -28,7 +28,7 @@ public interface OldGMStatRepository extends CommonListener {
 
     void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
-    void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
+    void onSuccessGetCategory(List<String> categoryNameList);
 
     void onComplete();
 }

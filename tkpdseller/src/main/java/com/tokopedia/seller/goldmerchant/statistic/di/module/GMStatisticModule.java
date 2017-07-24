@@ -5,8 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -27,7 +25,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTra
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
-import com.tokopedia.seller.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.source.CategoryDataSource;
@@ -38,12 +35,7 @@ import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.ClearCategoryCacheUseCase;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.GetCategoryNameUseCase;
-import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 
@@ -118,8 +110,8 @@ public class GMStatisticModule {
     @GMStatisticScope
     @Provides
     public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository,
-                                                                   GetCategoryNameUseCase getCategoryNameUseCase) {
-        return new GMStatNetworkController(gson, gmStatRepository, getCategoryNameUseCase);
+                                                                   GetProductCategoryNameUseCase getProductCategoryNameUseCase) {
+        return new GMStatNetworkController(gson, gmStatRepository, getProductCategoryNameUseCase);
     }
 
     @GMStatisticScope

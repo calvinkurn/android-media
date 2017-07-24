@@ -26,7 +26,6 @@ import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.presenters.GMDashboardPresenter;
 import com.tokopedia.seller.gmstat.presenters.GMFragmentView;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
@@ -92,9 +91,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         suffixes.put(1_000_000_000_000_000L, "P");
         suffixes.put(1_000_000_000_000_000_000L, "E");
     }
-
-    @Inject
-    GMStatNetworkController gmStatNetworkController;
 
     @Inject
     GMStatClearCacheUseCase gmStatClearCacheUseCase;

@@ -17,11 +17,11 @@ import rx.Observable;
  * Created by hendry on 5/18/17.
  */
 
-public class GetCategoryNameUseCase extends BaseCategoryUseCase<String> {
+public class GetProductCategoryNameUseCase extends BaseCategoryUseCase<String> {
     public static final String CAT_ID = "cat_id";
 
     @Inject
-    public GetCategoryNameUseCase(
+    public GetProductCategoryNameUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             CategoryRepository categoryRepository
