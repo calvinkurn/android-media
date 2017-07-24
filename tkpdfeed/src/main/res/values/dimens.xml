@@ -30,4 +30,6 @@
     <dimen name="feed_detail_buy_height">32dp</dimen>
     <dimen name="arrow_size">14dp</dimen>
     <dimen name="share_header_height">52dp</dimen>
+    <dimen name="margin_top_os_feed">40dp</dimen>
+    <dimen name="feed_official_store_height">69dp</dimen>
 </resources>

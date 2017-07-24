@@ -30,6 +30,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -732,6 +733,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void showTopAds(boolean isTopAdsShown) {
         topAdsRecyclerAdapter.shouldLoadAds(isTopAdsShown);
+    }
+
+    @Override
+    public void onEmptyOfficialStoreClicked() {
+        if (SessionHandler.isV4Login(getContext())) {
+            UnifyTracking.eventViewAllOSLogin();
+        } else {
+            UnifyTracking.eventViewAllOSNonLogin();
+        }
+
+        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    private void openWebViewBrandsURL(String url) {
+        if (!url.trim().equals("")) {
+            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
+        }
     }
 
 

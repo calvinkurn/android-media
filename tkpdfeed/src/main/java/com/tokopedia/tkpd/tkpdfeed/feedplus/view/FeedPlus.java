@@ -109,6 +109,8 @@ public interface FeedPlus{
         void updateFavoriteFromEmpty();
 
         void showTopAds(boolean isTopAdsShown);
+
+        void onEmptyOfficialStoreClicked();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
