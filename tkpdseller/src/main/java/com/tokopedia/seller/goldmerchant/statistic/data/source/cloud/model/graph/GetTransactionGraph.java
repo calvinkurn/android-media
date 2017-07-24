@@ -63,7 +63,7 @@ public class GetTransactionGraph implements GetDateGraph{
     private double diffSuccessTrans;
     @SerializedName("diff_rejected_trans")
     @Expose
-    private int diffRejectedTrans;
+    private double diffRejectedTrans;
     @SerializedName("diff_finished_trans")
     @Expose
     private double diffFinishedTrans;
@@ -242,11 +242,11 @@ public class GetTransactionGraph implements GetDateGraph{
         this.diffSuccessTrans = diffSuccessTrans;
     }
 
-    public int getDiffRejectedTrans() {
+    public double getDiffRejectedTrans() {
         return diffRejectedTrans;
     }
 
-    public void setDiffRejectedTrans(int diffRejectedTrans) {
+    public void setDiffRejectedTrans(double diffRejectedTrans) {
         this.diffRejectedTrans = diffRejectedTrans;
     }
 

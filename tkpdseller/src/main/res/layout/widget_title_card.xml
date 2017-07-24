@@ -44,7 +44,6 @@
                 android:layout_width="15dp"
                 android:layout_height="8dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_arrow_down" />
