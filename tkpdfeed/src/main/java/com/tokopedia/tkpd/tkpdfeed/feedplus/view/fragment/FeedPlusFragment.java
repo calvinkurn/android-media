@@ -405,6 +405,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
                 .setProductId(String.valueOf(productFeedViewModel.getProductId()))
                 .setPrice(productFeedViewModel.getPrice())
+                .setImageUri(productFeedViewModel.getImageSource())
                 .build();
 
         Intent intent = TransactionAddToCartRouter
