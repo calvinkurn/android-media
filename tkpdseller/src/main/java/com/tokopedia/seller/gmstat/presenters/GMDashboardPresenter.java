@@ -9,7 +9,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
  * Created by normansyahputa on 1/2/17.
  */
 
-public abstract class GMFragmentPresenter extends BaseDaggerPresenter<GMFragmentView> {
+public abstract class GMDashboardPresenter extends BaseDaggerPresenter<GMFragmentView> {
     private boolean fetchData;
     private boolean firstTime;
 

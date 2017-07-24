@@ -18,6 +18,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountVie
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionView;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -90,7 +91,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void loadData() {
         super.loadData();
-        presenter.loadDataWithoutDate();
+        presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
     @Override
@@ -106,28 +107,47 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHelper.bind(mergeModel.gmTransactionGraphViewModel);
+        gmTransactionGraphViewHelper.bind(mergeWithIsCompare(mergeModel.gmTransactionGraphViewModel));
         unFinishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
+    }
+
+    private GMTransactionGraphViewModel mergeWithIsCompare(GMTransactionGraphViewModel viewModel) {
+        viewModel.grossRevenueModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.totalTransactionModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.successTransactionModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.netRevenueModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.rejectedAmountModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.shippingCostModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.rejectTransactionModel.isCompare = datePickerViewModel.isCompareDate();
+
+        return viewModel;
     }
 
     @Override
     public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindNoData(gmTopAdsAmountViewModel);
+        gmTopAdsAmountViewHelper.bindNoData(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bind(gmTopAdsAmountViewModel);
+        gmTopAdsAmountViewHelper.bind(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
+        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
+        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(setStaticText(gmTopAdsAmountViewModel));
+    }
+
+    private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
+        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
+
+        return gmTopAdsAmountViewModel;
     }
 
     @Override
