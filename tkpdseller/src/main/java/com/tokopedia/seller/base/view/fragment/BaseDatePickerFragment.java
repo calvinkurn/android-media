@@ -59,16 +59,14 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        if (datePickerViewModel == null) {
+        if (this.datePickerViewModel == null) {
             this.datePickerViewModel = datePickerViewModel;
-        } else if (this.datePickerViewModel != null &&
-                !DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
+        } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
                 this.datePickerViewModel.getStartDate(), this.datePickerViewModel.getEndDate(),
                 datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate())) {
             datePickerPresenter.saveDateSetting(this.datePickerViewModel);
         }
         loadData();
-
     }
 
     @Override

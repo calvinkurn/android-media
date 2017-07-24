@@ -73,6 +73,8 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
@@ -137,6 +139,22 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 .build().inject(this);
 
         gmFragmentPresenter.attachView(this);
+        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                // no op
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // no op
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                // no op
+            }
+        });
     }
 
     void initViews(View rootView) {

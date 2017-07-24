@@ -18,7 +18,7 @@ import rx.functions.Func1;
  */
 public class DatePickerCache {
 
-    private static final int CACHE_TIMEOUT = 24 * 60;
+    private static final int CACHE_TIMEOUT = 24 * 3600; // 1DAY
     private static final String DATE_PICKER_SETTING = "DATE_PICKER_SETTING";
 
     private final GlobalCacheManager cacheManager;

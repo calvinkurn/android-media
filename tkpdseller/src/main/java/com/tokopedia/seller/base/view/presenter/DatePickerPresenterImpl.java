@@ -46,7 +46,7 @@ public class DatePickerPresenterImpl<T extends DatePickerView> extends DatePicke
 
             @Override
             public void onNext(DatePickerDomainModel datePickerDomainModel) {
-                getView().onSuccessLoadDatePicker(new DatePickerViewModel(datePickerDomainModel));
+                 getView().onSuccessLoadDatePicker(new DatePickerViewModel(datePickerDomainModel));
             }
         });
     }

@@ -19,6 +19,7 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.GetCategoryNameUseCase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,10 +48,12 @@ public class GMStatNetworkController {
     private static final String TAG = "GMStatNetworkController";
     private Gson gson;
     private GMStatRepository repository;
+    private GetCategoryNameUseCase getCategoryNameUseCase;
 
-    public GMStatNetworkController(Gson gson, GMStatRepository repository) {
+    public GMStatNetworkController(Gson gson, GMStatRepository repository, GetCategoryNameUseCase getCategoryNameUseCase) {
         this.gson = gson;
         this.repository = repository;
+        this.getCategoryNameUseCase = getCategoryNameUseCase;
     }
 
     private static GetKeyword from(GetKeyword getKeyword) {
