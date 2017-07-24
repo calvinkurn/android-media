@@ -1,12 +1,11 @@
 package com.tokopedia.seller.gmstat.utils;
 
 import android.content.res.AssetManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
@@ -19,6 +18,7 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,10 +48,12 @@ public class GMStatNetworkController {
     private static final String TAG = "GMStatNetworkController";
     private Gson gson;
     private GMStatRepository repository;
+    private GetProductCategoryNameUseCase getProductCategoryNameUseCase;
 
-    public GMStatNetworkController(Gson gson, GMStatRepository repository) {
+    public GMStatNetworkController(Gson gson, GMStatRepository repository, GetProductCategoryNameUseCase getProductCategoryNameUseCase) {
         this.gson = gson;
         this.repository = repository;
+        this.getProductCategoryNameUseCase = getProductCategoryNameUseCase;
     }
 
     private static GetKeyword from(GetKeyword getKeyword) {
@@ -128,24 +130,17 @@ public class GMStatNetworkController {
                         if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null
                                 || keywordModel.getShopCategory().getShopCategory().isEmpty()) {
                             keywordModel.setResponseList(new ArrayList<Response<GetKeyword>>());
-                            keywordModel.setHadesv1Models(new ArrayList<HadesV1Model>());
+                            keywordModel.setCategoryNames(new ArrayList<String>());
                             return Observable.just(keywordModel);
                         }
 
                         List<Integer> shopCategory = GMStatisticUtil.subList(getShopCategory.getShopCategory(), MAXIMUM_CATEGORY);
-                        Observable<List<Response<HadesV1Model>>> getCategories = Observable.from(shopCategory).flatMap(
-                                new Func1<Integer, Observable<Response<HadesV1Model>>>() {
+                        Observable<List<String>> getCategories = Observable.from(shopCategory).flatMap(
+                                new Func1<Integer, Observable<String>>() {
                                     @Override
-                                    public Observable<Response<HadesV1Model>> call(Integer integer) {
-                                        CategoryDB kategoriByDepId = DbManagerImpl.getInstance().getKategoriByDepId(integer);
-                                        if (kategoriByDepId != null) {
-                                            Log.d(TAG, "get from local db : " + integer);
-                                            return Observable.just(from(kategoriByDepId));
-                                        } else {
-                                            Observable<Response<HadesV1Model>> hades
-                                                    = HadesNetwork.fetchDepartment(integer, INVALID_PARAM, HadesNetwork.TREE);
-                                            return Observable.just(hades.toBlocking().first());
-                                        }
+                                    public Observable<String> call(Integer integer) {
+                                        return getProductCategoryNameUseCase.createObservable(
+                                                GetProductCategoryNameUseCase.createRequestParam(integer));
                                     }
                                 }
                         ).toList();
@@ -161,24 +156,20 @@ public class GMStatNetworkController {
                                 .toList();
 
 
-                        return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<GetKeyword>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
+                        return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<GetKeyword>, List<String>, KeywordModel, KeywordModel>() {
                             @Override
-                            public KeywordModel call(List<GetKeyword> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
+                            public KeywordModel call(List<GetKeyword> responses, List<String> categoryNameList, KeywordModel keywordModel) {
                                 keywordModel.setKeywords(new ArrayList<GetKeyword>());
-                                keywordModel.setHadesv1Models(new ArrayList<HadesV1Model>());
-                                List<Integer> indexToRemoved = new ArrayList<>();
-                                List<HadesV1Model> hadesV1Models = new ArrayList<>();
-                                if (responses != null && responses2 != null
-                                        && responses.size() == responses2.size()) {
+                                keywordModel.setCategoryNames(new ArrayList<String>());
+                                if (responses != null && categoryNameList != null
+                                        && responses.size() == categoryNameList.size()) {
                                     int size = responses.size();
                                     for (int i = 0; i < size; i++) {
                                         GetKeyword h1 = responses.get(i);
-                                        Response<HadesV1Model> h2 = responses2.get(i);
-                                        if (h2.isSuccessful() && h2.errorBody() == null) {
+                                        String h2 = categoryNameList.get(i);
+                                        if (!TextUtils.isEmpty(h2)) {
                                             keywordModel.getKeywords().add(from(h1));
-                                            keywordModel.getHadesv1Models().add(h2.body());
-                                            hadesV1Models.add(h2.body());
-                                            indexToRemoved.add(i);
+                                            keywordModel.getCategoryName().add(h2);
                                         }
                                     }
                                 } else {
@@ -186,13 +177,7 @@ public class GMStatNetworkController {
                                     for (GetKeyword response : responses) {
                                         keywordModel.getKeywords().add(from(response));
                                     }
-
-                                    hadesV1Models = new ArrayList<>();
-                                    for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
-                                        hadesV1Models.add(hadesV1ModelResponse.body());
-                                    }
-
-                                    keywordModel.setHadesv1Models(hadesV1Models);
+                                    keywordModel.setCategoryNames(categoryNameList);
                                     return keywordModel;
                                 }
 
@@ -268,7 +253,7 @@ public class GMStatNetworkController {
         List<GetKeyword> getKeywords = keywordModel.getKeywords();
         oldGMStatRepository.onSuccessGetKeyword(getKeywords);
 
-        oldGMStatRepository.onSuccessGetCategory(keywordModel.getHadesv1Models());
+        oldGMStatRepository.onSuccessGetCategory(keywordModel.getCategoryName());
     }
 
     public void fetchDataEmptyState(final OldGMStatRepository oldGMStatRepository, AssetManager assetManager) {

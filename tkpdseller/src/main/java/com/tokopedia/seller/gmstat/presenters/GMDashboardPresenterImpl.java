@@ -89,16 +89,16 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         }
 
         @Override
-        public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
+        public void onSuccessGetCategory(List<String> categoryNameList) {
             if (!isViewAttached())
                 return;
 
-            if (hadesV1Models == null || hadesV1Models.size() <= 0)
+            if (categoryNameList == null || categoryNameList.size() <= 0)
                 return;
 
-            HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
+            String categoryName = categoryNameList.get(0);
 
-            getView().onSuccessGetCategory(category.getName());
+            getView().onSuccessGetCategory(categoryName);
         }
 
         @Override
