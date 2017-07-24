@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
  * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListAdapter extends ArrayAdapter<OrderData> {
+    private static final String HAS_BUTTON = "1";
     private final LayoutInflater inflater;
     private final int instanceType;
     private final Context context;
@@ -183,7 +184,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 break;
         }
 
-        if (item.getOrderButton().getButtonCancelReplacement().equals("1"))
+        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
             holder.btnOverflow.setVisibility(View.VISIBLE);
     }
 
@@ -191,8 +192,16 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         PopupMenu popup = new PopupMenu(context, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(getMenuId(item), popup.getMenu());
+        addCancelReplacementMenu(item, popup);
         popup.setOnMenuItemClickListener(new OnMenuPopupClicked(item));
         popup.show();
+    }
+
+    private void addCancelReplacementMenu(OrderData item, PopupMenu popup) {
+        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON)) {
+            popup.getMenu().add(Menu.NONE, R.id.action_cancel_replacement, Menu.NONE, getContext()
+                    .getString(R.string.cancel_replacement));
+        }
     }
 
     private int getMenuId(OrderData item) {
@@ -217,7 +226,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     case TkpdState.OrderStatusState.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_TRACKER_INVALID:
-                        MenuID = item.getOrderButton().getButtonOpenDispute().equals("1")
+                        MenuID = item.getOrderButton().getButtonOpenDispute().equals(HAS_BUTTON)
                                 ? R.menu.order_status_menu_confirm_track_dispute
                                 : R.menu.order_status_menu_confirm_track;
                         break;
@@ -225,10 +234,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                         MenuID = R.menu.order_status_menu_show_complain;
                         break;
                     default:
-                        if (item.getOrderButton().getButtonUploadProof().equals("1"))
+                        if (item.getOrderButton().getButtonUploadProof().equals(HAS_BUTTON))
                             MenuID = R.menu.order_status_menu_upload;
-                        if (item.getOrderButton().getButtonCancelReplacement().equals("1"))
-                            MenuID = R.menu.order_status_menu_cancel_replacement;
                         break;
                 }
 
