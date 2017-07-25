@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tokopedia.design.R;
-import com.tokopedia.seller.R;
 
 /**
  * Created by hendry on 7/14/2017.

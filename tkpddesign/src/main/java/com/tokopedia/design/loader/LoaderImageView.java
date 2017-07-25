@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.tokopedia.design.R;
-import com.tokopedia.seller.R;
 
 public class LoaderImageView extends ImageView implements ILoaderView {
 

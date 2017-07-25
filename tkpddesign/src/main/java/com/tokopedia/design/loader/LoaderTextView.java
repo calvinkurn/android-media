@@ -28,7 +28,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
-import com.tokopedia.seller.R;
 
 public class LoaderTextView extends TextView implements ILoaderView {
 

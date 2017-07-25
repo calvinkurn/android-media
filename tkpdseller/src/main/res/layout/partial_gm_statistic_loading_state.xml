@@ -14,13 +14,13 @@
         android:layout_height="@dimen/font_caption"
         app:use_gradient="true" />
 
-    <com.tokopedia.design.loader.LoaderTextView
+    <com.tokopedia.design.loader.LoaderView
         android:layout_width="@dimen/font_loading_width_l"
         android:layout_height="@dimen/font_display1"
         android:layout_marginTop="@dimen/padding_vs"
         app:use_gradient="true" />
 
-    <com.tokopedia.design.loader.LoaderTextView
+    <com.tokopedia.design.loader.LoaderView
         android:layout_width="@dimen/font_loading_width_s"
         android:layout_height="@dimen/font_caption"
         android:layout_gravity="end"

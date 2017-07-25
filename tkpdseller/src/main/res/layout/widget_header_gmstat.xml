@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.design.loader.LoaderImageView
+        <ImageView
             android:layout_alignParentLeft="true"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/calendar_icon"
             android:layout_alignParentRight="true">
-            <com.tokopedia.design.loader.LoaderTextView
+            <TextView
                 android:gravity="right"
                 android:id="@+id/calendar_range"
                 android:layout_gravity="center_vertical"
@@ -43,18 +43,14 @@
                 android:textSize="14sp"
                 android:textColor="#42b549"
                 android:text="26 Jul 2016 - 25 Des 2016"
-                app:use_gradient="true"
-                app:width_weight="0.6"
-                app:gravity="right"
                 android:layout_width="match_parent"
                 android:layout_weight="0.9"/>
-            <com.tokopedia.design.loader.LoaderImageView
+            <ImageView
                 android:layout_marginLeft="6dp"
                 android:id="@+id/calendar_arrow_icon"
                 android:layout_width="8dp"
                 android:layout_height="16dp"
-                android:layout_gravity="center_vertical"
-                app:use_gradient="true"/>
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
     </RelativeLayout>
 
