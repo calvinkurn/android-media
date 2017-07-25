@@ -68,7 +68,7 @@ public class ProductList extends V2BaseFragment {
     private ProductModel productModel;
     //    private List<String> etalaseNameList = new ArrayList<>();
 //    private List<String> etalaseIdList = new ArrayList<>();
-    private List<EtalaseAdapterModel> etalaseList = new ArrayList<>();
+    private ArrayList<EtalaseAdapterModel> etalaseList = new ArrayList<>();
     private ShopProductListAdapter adapter;
     //    private SimpleSpinnerAdapter etalaseAdapter;
     private EtalaseAdapter etalaseAdapter;

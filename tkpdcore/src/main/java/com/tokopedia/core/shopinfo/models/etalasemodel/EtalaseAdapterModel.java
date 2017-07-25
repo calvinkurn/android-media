@@ -35,4 +35,9 @@ public class EtalaseAdapterModel {
     public String getEtalaseId() {
         return etalaseId;
     }
+
+    @Override
+    public String toString() {
+        return getEtalaseName();
+    }
 }

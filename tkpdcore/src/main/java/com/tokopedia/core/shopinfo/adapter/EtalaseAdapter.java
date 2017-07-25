@@ -1,6 +1,7 @@
 package com.tokopedia.core.shopinfo.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,15 +20,17 @@ import java.util.List;
 public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
 
     private List<EtalaseAdapterModel> list;
-    private Context context;
-    private LayoutInflater inflater;
+    private LayoutInflater mInflater;
 
-    public EtalaseAdapter(Context context, List<EtalaseAdapterModel> list) {
+    public EtalaseAdapter(Context context, ArrayList<EtalaseAdapterModel> list) {
         super(context, 0, list);
-        this.context = context;
+        init(context);
         this.list = list;
         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    private void init(Context context) {
+        this.mInflater = LayoutInflater.from(context);
     }
 
     public void setList(List<EtalaseAdapterModel> list) {
@@ -35,23 +39,26 @@ public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        EtalaseAdapterModel model = getItem(i);
-        ViewHolder holder;
-        if(view == null){
-            holder = new ViewHolder();
-            view = inflater.inflate(android.R.layout.simple_spinner_item, viewGroup, false);
-            holder.textView = (TextView) view.findViewById(android.R.id.text1);
-            view.setTag(holder);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        final ViewHolder vh;
+        if (convertView == null) {
+            convertView = mInflater.inflate(android.R.layout.simple_spinner_item, parent, false);
+            vh = new ViewHolder(convertView);
+            convertView.setTag(vh);
         } else {
-            holder = (ViewHolder) view.getTag();
+            vh = (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(model.getEtalaseName());
-        return view;
+        vh.textView.setText(getItem(position).getEtalaseName());
+        return convertView;
     }
 
-    public static class ViewHolder {
-        public TextView textView;
+    static class ViewHolder {
+
+        TextView textView;
+
+        private ViewHolder(View rootView) {
+            textView = (TextView) rootView.findViewById(android.R.id.text1);
+        }
     }
 
 }
