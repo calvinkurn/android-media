@@ -1,10 +1,15 @@
 package com.tokopedia.core.analytics.fingerprint;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -14,6 +19,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 
 import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
@@ -29,13 +35,13 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private Context context;
     boolean isConnected;
 
-    public LocationUtils(Context ctx){
+    public LocationUtils(Context ctx) {
 
         context = ctx;
         CommonUtils.dumper("theresult initiated");
     }
 
-    public void initLocationBackground(){
+    public void initLocationBackground() {
         googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -50,8 +56,8 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         isConnected = false;
     }
 
-    public void deInitLocationBackground(){
-        if(googleApiClient.isConnected()){
+    public void deInitLocationBackground() {
+        if (googleApiClient.isConnected()) {
             googleApiClient.disconnect();
         }
     }
@@ -71,13 +77,13 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         requestLocationUpdates();
     }
 
-    private void getLastLocation(){
+    private void getLastLocation() {
         if (isLocationServiceConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             CommonUtils.dumper("theresult save location getLastLocation");
-            if(location!=null){
+            if (location != null) {
                 LocationCache.saveLocation(location);
-            }else{
+            } else {
                 CommonUtils.dumper("theresult location null");
             }
         }
@@ -107,13 +113,22 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         }
     }
 
-    private void requestLocationUpdates(){
+    private void requestLocationUpdates() {
         if (googleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+                }
+            } else {
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+            }
+
         }
     }
 
-    private void removeLocationUpdates(){
+    private void removeLocationUpdates() {
         if (googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         }
