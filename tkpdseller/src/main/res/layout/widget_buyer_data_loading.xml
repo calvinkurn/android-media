@@ -3,7 +3,6 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_below="@id/separator_1"
     android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
     android:layout_marginRight="@dimen/gmstat_padding_item_left_right"
     android:layout_marginTop="8dp"
@@ -16,17 +15,17 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.4"
         android:orientation="vertical">
-        <com.tokopedia.design.loader.SimpleLoaderView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="100dp"
             android:layout_height="15dp"
             android:layout_marginBottom="5dp"
             app:use_gradient="true"/>
-        <com.tokopedia.design.loader.SimpleLoaderView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="125dp"
             android:layout_height="25dp"
             android:layout_marginBottom="15dp"
             app:use_gradient="true"/>
-        <com.tokopedia.design.loader.SimpleLoaderView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="50dp"
             android:layout_height="15dp"
             app:use_gradient="true"/>
@@ -61,18 +60,18 @@
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
-            <com.tokopedia.design.loader.SimpleLoaderView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="50dp"
                 android:layout_height="25dp"
                 android:layout_marginBottom="5dp"
                 app:use_gradient="true"/>
-            <com.tokopedia.design.loader.SimpleLoaderView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="80dp"
                 android:layout_height="10dp"
                 android:layout_marginBottom="10dp"
                 app:use_gradient="true"/>
 
-            <com.tokopedia.design.loader.SimpleLoaderView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="60dp"
                 android:layout_height="15dp"
                 app:use_gradient="true"/>
