@@ -9,12 +9,12 @@
     android:paddingBottom="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.tokopedia.design.loader.LoaderView
+    <com.tokopedia.design.loader.SimpleLoaderView
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:use_gradient="true"/>
 
-    <com.tokopedia.design.loader.LoaderView
+    <com.tokopedia.design.loader.SimpleLoaderView
         android:layout_width="90dp"
         android:layout_height="24dp"
         android:layout_marginLeft="8dp"

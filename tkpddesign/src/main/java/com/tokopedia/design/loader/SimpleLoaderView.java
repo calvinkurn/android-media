@@ -16,26 +16,26 @@ import com.tokopedia.design.R;
  * Created by hendry on 7/14/2017.
  */
 
-public class LoaderView extends View implements ILoaderView {
+public class SimpleLoaderView extends View implements ILoaderView {
     private LoaderController loaderController;
 
-    public LoaderView(Context context) {
+    public SimpleLoaderView(Context context) {
         super(context);
         init(null);
     }
 
-    public LoaderView(Context context, @Nullable AttributeSet attrs) {
+    public SimpleLoaderView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public LoaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SimpleLoaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public LoaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SimpleLoaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
