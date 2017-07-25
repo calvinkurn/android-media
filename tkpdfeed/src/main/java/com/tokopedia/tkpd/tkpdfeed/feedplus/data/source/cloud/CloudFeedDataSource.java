@@ -23,19 +23,16 @@ import rx.Observable;
 public class CloudFeedDataSource {
 
     private ApolloClient apolloClient;
-    private Context context;
     private FeedListMapper feedListMapper;
     protected GlobalCacheManager globalCacheManager;
     protected FeedResultMapper feedResultMapper;
 
-    public CloudFeedDataSource(Context context,
-                               ApolloClient apolloClient,
+    public CloudFeedDataSource(ApolloClient apolloClient,
                                FeedListMapper feedListMapper,
                                FeedResultMapper feedResultMapper,
                                GlobalCacheManager globalCacheManager) {
 
         this.apolloClient = apolloClient;
-        this.context = context;
         this.feedListMapper = feedListMapper;
         this.globalCacheManager = globalCacheManager;
         this.feedResultMapper = feedResultMapper;
@@ -49,7 +46,7 @@ public class CloudFeedDataSource {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
-                .page(requestParams.getInt(GetFeedsUseCase.PARAM_PAGE,0))
+                .page(requestParams.getInt(GetFeedsUseCase.PARAM_PAGE, 0))
                 .limit(3)
                 .cursor(cursor)
                 .build()).watcher();

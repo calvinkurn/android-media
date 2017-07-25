@@ -35,7 +35,6 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
         public ImageView productImage;
         public ImageView shopAva;
         public TextView shopName;
-        public FloatingActionButton favoriteButton;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -44,8 +43,6 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
             productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
             shopAva = (ImageView) itemLayoutView.findViewById(R.id.shop_ava);
             shopName = (TextView) itemLayoutView.findViewById(R.id.shop_name);
-            favoriteButton = (FloatingActionButton) itemLayoutView.findViewById(R.id.fab);
-
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,8 +71,6 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ImageHandler.LoadImage(holder.shopAva, list.get(holder.getAdapterPosition()).getShopAva());
-        holder.favoriteButton.setBackgroundResource(
-                list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
         holder.shopName.setText(list.get(position).getShopName());
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));

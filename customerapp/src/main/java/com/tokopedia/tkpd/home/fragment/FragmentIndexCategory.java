@@ -136,6 +136,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private static final long TICKER_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+    private static final String FLAG_APP = "?flag_app=1";
 
     private ViewHolder holder;
 
@@ -356,7 +357,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra(BannerWebView.EXTRA_URL, TkpdBaseURL.URL_PROMO);
+                intent.putExtra(BannerWebView.EXTRA_URL, TkpdBaseURL.URL_PROMO + FLAG_APP);
                 startActivity(intent);
             }
         };

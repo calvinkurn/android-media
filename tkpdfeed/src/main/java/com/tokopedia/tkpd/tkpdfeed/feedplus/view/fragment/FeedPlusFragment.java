@@ -166,6 +166,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 int size = adapter.getlist().size();
                 int lastIndex = size - 1;
                 if (!(adapter.getlist().get(0) instanceof EmptyModel)
+
                         && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
                         && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
                         )
@@ -448,7 +449,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO);
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO
+                + TkpdBaseURL.FLAG_APP);
         startActivity(intent);
     }
 
