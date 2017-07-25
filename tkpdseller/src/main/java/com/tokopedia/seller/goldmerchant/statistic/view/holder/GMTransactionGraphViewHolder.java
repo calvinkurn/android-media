@@ -197,7 +197,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     private void setHeaderValue(GMGraphViewWithPreviousModel data) {
         gmTitleCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
 
-        gmLineChartContainer.setPercentage(data.percentage * 100);
+        gmLineChartContainer.setPercentage(data.percentage);
         gmLineChartContainer.setAmount(Integer.toString(data.amount));
     }
 

@@ -57,8 +57,9 @@ public class GMStatisticGrossViewHolder {
     }
 
     public void setData(GMTransactionGraphMergeModel getTransactionGraph) {
-        grossLineChartContainer.setSubtitle(grossLineChartContainer.getContext().getString(R.string.gm_statistic_dashboard_gross));
-        grossLineChartContainer.setAmount(String.valueOf(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
+        grossLineChartContainer.setAmount(
+                KMNumbers.formatRupiahString(grossLineChartContainer.getContext(),
+                getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
         grossLineChartContainer.setMainDate(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel);
         GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel = getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel;
         showTransactionGraph(gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.pDates);

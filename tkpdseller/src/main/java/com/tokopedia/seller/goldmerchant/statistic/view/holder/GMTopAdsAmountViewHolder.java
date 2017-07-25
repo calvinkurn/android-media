@@ -61,7 +61,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
     private void setTopAdsCardView(GMGraphViewModel data) {
         gmTopAdsLineChartWidget.setSubtitle(context.getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
 
-        gmTopAdsLineChartWidget.setPercentage(data.percentage * 100);
+        gmTopAdsLineChartWidget.setPercentage(data.percentage);
         gmTopAdsLineChartWidget.setAmount(Integer.toString(data.amount));
     }
 

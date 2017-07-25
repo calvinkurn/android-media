@@ -99,7 +99,7 @@ public class ArrowPercentageView extends FrameLayout {
                     tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
                 }
                 tvPercentage.setText(String.format(PERCENTAGE_FORMAT,
-                        KMNumbers.formatString(percentage).replace("-", "")));
+                        KMNumbers.formatString(percentage * 100).replace("-", "")));
             }
         }
     }
@@ -109,6 +109,7 @@ public class ArrowPercentageView extends FrameLayout {
         super.setEnabled(enabled);
     }
 
+    // input percentage 1 for 100%
     public void setPercentage(double percentage){
         this.percentage = percentage;
         setUIPercentage();

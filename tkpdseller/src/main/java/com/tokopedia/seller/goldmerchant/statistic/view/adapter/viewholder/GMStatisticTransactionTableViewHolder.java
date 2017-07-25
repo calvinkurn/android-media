@@ -25,7 +25,7 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
 
     public void bindData(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
         itemTransactionTableLeft.setText(gmStatisticTransactionTableModel.leftText);
-        itemTransactionTableRight.setText(itemTransactionTableRight.getContext().getString(R.string.rupiah_format_text,
-                KMNumbers.formatDecimalString(Long.parseLong(gmStatisticTransactionTableModel.rightText))));
+        itemTransactionTableRight.setText(KMNumbers.formatRupiahString(itemTransactionTableRight.getContext(),
+                Long.parseLong(gmStatisticTransactionTableModel.rightText)));
     }
 }

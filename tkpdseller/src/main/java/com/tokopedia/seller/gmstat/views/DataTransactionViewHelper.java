@@ -144,7 +144,7 @@ public class DataTransactionViewHelper {
         /* non empty state */
         tvTransactionCount.setText(KMNumbers.getFormattedString(totalTransactionModel.amount));
 
-        Double diffSuccessTrans = totalTransactionModel.percentage * 100;
+        Double diffSuccessTrans = totalTransactionModel.percentage;
         arrowPercentageView.setPercentage(diffSuccessTrans);
 
         displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, false);

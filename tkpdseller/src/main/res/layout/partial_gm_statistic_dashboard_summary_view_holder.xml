@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:gm_statistic_summary_content="@string/label_empty_value"
-                app:gm_statistic_summary_title="@string/title_transaction_success" />
+                app:gm_statistic_summary_title="@string/title_product_seen" />
         </com.tokopedia.seller.gmstat.views.widget.LoadingStateView>
     </LinearLayout>
 
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:gm_statistic_summary_content="@string/label_empty_value"
-                app:gm_statistic_summary_title="@string/title_transaction_success" />
+                app:gm_statistic_summary_title="@string/title_product_sold" />
         </com.tokopedia.seller.gmstat.views.widget.LoadingStateView>
 
         <include layout="@layout/include_separator_vertical" />
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:gm_statistic_summary_content="@string/label_empty_value"
-                app:gm_statistic_summary_title="@string/title_transaction_success" />
+                app:gm_statistic_summary_title="@string/title_conversion_rate" />
         </com.tokopedia.seller.gmstat.views.widget.LoadingStateView>
     </LinearLayout>
 
