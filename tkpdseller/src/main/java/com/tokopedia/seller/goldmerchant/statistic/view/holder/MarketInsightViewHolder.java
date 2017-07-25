@@ -4,14 +4,9 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
@@ -19,12 +14,11 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
+import com.tokopedia.seller.goldmerchant.statistic.view.adapter.MarketInsightAdapter;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.NUMBER_TIMES_FORMAT;
 
 /**
  * Created by normansyahputa on 11/23/16.
@@ -35,7 +29,6 @@ public class MarketInsightViewHolder {
     public static final String DEFAULT_CATEGORY = "kaos";
     public static final int MAX_KEYWORD_SHOWN = 3;
 
-    private RecyclerView marketInsightRecyclerView;
     private TextView tvMarketInsightFooter;
     private TitleCardView view;
     private boolean isGoldMerchant;
@@ -55,20 +48,20 @@ public class MarketInsightViewHolder {
         UnifyTracking.eventClickGMStatMarketInsight();
     }
 
-    public void moveToGMSubscribe() {
+    private void moveToGMSubscribe() {
         if (!isGoldMerchant) {
             Router.goToGMSubscribe(view.getContext());
         }
     }
 
     private void initView(final View view) {
-        marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
 
-        marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
+        recyclerView.setLayoutManager(new LinearLayoutManager(
                 this.view.getContext(), LinearLayoutManager.VERTICAL, false));
         marketInsightAdapter = new MarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
-        marketInsightRecyclerView.setAdapter(marketInsightAdapter);
+        recyclerView.setAdapter(marketInsightAdapter);
     }
 
     /**
@@ -129,7 +122,7 @@ public class MarketInsightViewHolder {
         view.setViewState(viewState);
     }
 
-    public void displayNonGoldMerchant() {
+    private void displayNonGoldMerchant() {
         view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_gm);
         View emptyView = view.getEmptyView();
         emptyView.setOnClickListener(
@@ -168,7 +161,7 @@ public class MarketInsightViewHolder {
         marketInsightAdapter.notifyDataSetChanged();
     }
 
-    public void displayEmptyState() {
+    private void displayEmptyState() {
         view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_data);
         view.getEmptyView().setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -184,68 +177,6 @@ public class MarketInsightViewHolder {
             displayEmptyState();
         else {
             displayNonGoldMerchant();
-        }
-    }
-
-    public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketViewHolder> {
-
-        List<GetKeyword.SearchKeyword> searchKeywords;
-
-        public MarketInsightAdapter(List<GetKeyword.SearchKeyword> searchKeywords) {
-            setSearchKeywords(searchKeywords);
-
-        }
-
-        public void setSearchKeywords(List<GetKeyword.SearchKeyword> searchKeywords) {
-            this.searchKeywords = searchKeywords;
-        }
-
-        @Override
-        public MarketViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View inflate = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.market_insight_item_layout, parent, false);
-            return new MarketViewHolder(inflate);
-        }
-
-        @Override
-        public void onBindViewHolder(MarketViewHolder holder, int position) {
-            holder.bindData(searchKeywords.get(position), searchKeywords);
-        }
-
-        @Override
-        public int getItemCount() {
-            return searchKeywords.size() >= MAX_KEYWORD_SHOWN ? MAX_KEYWORD_SHOWN : searchKeywords.size();
-        }
-    }
-
-    public static class MarketViewHolder extends RecyclerView.ViewHolder {
-
-        final String TAG = "MarketInsight";
-        TextView marketInsightKeyword;
-        TextView marketInsightNumber;
-        ImageView zoomIcon;
-        RoundCornerProgressBar marketInsightProgress;
-
-        public MarketViewHolder(View itemView) {
-            super(itemView);
-            initView(itemView);
-        }
-
-        void initView(View itemView) {
-            marketInsightKeyword = (TextView) itemView.findViewById(R.id.market_insight_keyword);
-            marketInsightNumber = (TextView) itemView.findViewById(R.id.market_insight_number);
-            zoomIcon = (ImageView) itemView.findViewById(R.id.zoom_icon);
-            marketInsightProgress = (RoundCornerProgressBar) itemView.findViewById(R.id.market_insight_progress);
-        }
-
-        public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list) {
-            double total = list.get(0).getFrequency();
-            double v = searchKeyword.getFrequency() / total;
-            double percentage = Math.floor((v * 100) + 0.5);
-            Log.d(TAG, "total " + total + " percentage " + percentage + " frequency " + searchKeyword.getFrequency());
-            marketInsightProgress.setProgress((float) percentage);
-            marketInsightNumber.setText(String.format(NUMBER_TIMES_FORMAT, String.valueOf(searchKeyword.getFrequency())));
-            marketInsightKeyword.setText(searchKeyword.getKeyword());
         }
     }
 }
