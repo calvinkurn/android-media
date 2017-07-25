@@ -8,7 +8,7 @@ import android.content.Intent;
 
 public interface IPaymentModuleRouter {
 
-    String getSchemeAppLinkCartPayment();
+    String getSchemeAppLinkCancelPayment();
 
     boolean isSupportedDelegateDeepLink(String appLinkScheme);
 

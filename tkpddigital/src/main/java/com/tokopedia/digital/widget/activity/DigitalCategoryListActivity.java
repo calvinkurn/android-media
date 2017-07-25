@@ -10,13 +10,10 @@ import android.support.v4.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 /**

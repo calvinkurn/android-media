@@ -3,7 +3,6 @@ package com.tokopedia.payment.listener;
 import android.content.Intent;
 
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 
 /**
  * @author anggaprasetiyo on 12/8/16.
@@ -36,7 +35,5 @@ public interface ITopPayView {
 
     PaymentPassData getPaymentPassData();
 
-    IPaymentModuleRouter getPaymentModuleRouter();
-
-    void navigateToCart(Intent intentCart);
+    void navigateToActivity(Intent intentCart);
 }

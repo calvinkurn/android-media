@@ -8,7 +8,6 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;

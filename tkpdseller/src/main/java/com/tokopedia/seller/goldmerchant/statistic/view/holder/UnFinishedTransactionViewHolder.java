@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
@@ -38,14 +39,14 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
     @Override
     public void initView(@Nullable View itemView) {
         notDoneTransStatisticCardView = (TitleCardView) itemView.findViewById(R.id.not_done_trans_statistic_card_view);
-        notDoneTransStatisticCardView.setLoadingState(true);
-
         gmStatisticTransDonutProgress = (DonutProgress) itemView.findViewById(R.id.gm_statistic_trans_donut_progress);
         gmStatisticTransDonutProgressLayout = (DonutProgressLayout) itemView.findViewById(R.id.gm_statistic_trans_donut_progress_layout);
 
         ctvOnHoldCount = (CircleTextView) itemView.findViewById(R.id.ctv_onhold_count);
         ctvOnHoldAmount = (CircleTextView) itemView.findViewById(R.id.ctv_onhold_amount);
         ctvResCenterCount = (CircleTextView) itemView.findViewById(R.id.ctv_res_center_count);
+
+        setLoadingState(LoadingStateView.VIEW_LOADING);
     }
 
     private void processView(UnFinishedTransactionViewModel data) {
@@ -59,7 +60,7 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
 
     @Override
     public void bind(@Nullable UnFinishedTransactionViewModel data) {
-        notDoneTransStatisticCardView.setLoadingState(false);
+        setLoadingState(LoadingStateView.VIEW_CONTENT);
         processView(data);
 
         if (data == null || data.getTotalTransactionCount() == 0) {
@@ -74,6 +75,13 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
             gmStatisticTransDonutProgressLayout.setAmount(
                     KMNumbers.formatDecimalString(data.getTotalTransactionCount()));
         }
+    }
 
+    public void setLoadingState(int state) {
+        if (state == LoadingStateView.VIEW_LOADING) {
+            notDoneTransStatisticCardView.setLoadingState(true);
+        } else {
+            notDoneTransStatisticCardView.setLoadingState(false);
+        }
     }
 }

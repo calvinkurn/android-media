@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
@@ -116,6 +117,14 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
             case GMTransactionGraphType.TOTAL_TRANSACTION:
                 bind(data.totalTransactionModel);
                 break;
+        }
+    }
+
+    public void setLoadingState(int state) {
+        if (state == LoadingStateView.VIEW_LOADING) {
+            gmTitleCardView.setLoadingState(true);
+        } else {
+            gmTitleCardView.setLoadingState(false);
         }
     }
 

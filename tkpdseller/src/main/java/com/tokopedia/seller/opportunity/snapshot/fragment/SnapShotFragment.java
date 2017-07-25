@@ -243,13 +243,15 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public void showProductDetailRetry() {
-        if (productPass != null && !productPass.getProductName().isEmpty()) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    initializationErrorListener()).showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getActivity().findViewById(R.id.root_view),
-                    initializationErrorListener());
+        if (getActivity() != null && productPass != null && presenter != null) {
+            if (!productPass.getProductName().isEmpty()) {
+                NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                        initializationErrorListener()).showRetrySnackbar();
+            } else if (getActivity().findViewById(R.id.root_view) != null) {
+                NetworkErrorHelper.showEmptyState(getActivity(),
+                        getActivity().findViewById(R.id.root_view),
+                        initializationErrorListener());
+            }
         }
     }
 

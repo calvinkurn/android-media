@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
@@ -99,6 +100,14 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
 
                     }
                 }).buildChart(gmStatisticTopAdsGraph);
+    }
+
+    public void setLoadingState(int state) {
+        if (state == LoadingStateView.VIEW_LOADING) {
+            gmStatisticTopAdsCardView.setLoadingState(true);
+        } else {
+            gmStatisticTopAdsCardView.setLoadingState(false);
+        }
     }
 
     public void bindNoData(@Nullable GMGraphViewModel data) {

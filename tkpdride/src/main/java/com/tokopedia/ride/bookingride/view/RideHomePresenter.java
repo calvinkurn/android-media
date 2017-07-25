@@ -84,7 +84,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 } else {
                                     getView().inflateMapAndProductFragment();
                                 }
-                                getView().clearActiveRequestId();`
+                                getView().clearActiveRequestId();
                                 break;
                             case RideStatus.COMPLETED:
                                 // if user didnt see last trip thanks page
