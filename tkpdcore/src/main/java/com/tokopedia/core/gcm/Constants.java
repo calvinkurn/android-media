@@ -38,6 +38,8 @@ public interface Constants {
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
 
+    String MOE_KEY_URL = "gcm_webUrl";
+
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
@@ -69,6 +71,12 @@ public interface Constants {
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
+    }
+
+    interface Schemes {
+        String HTTP = "http";
+        String HTTPS = HTTP+"s";
+        String APPLINKS = "tokopedia";
     }
 
     interface Settings {
