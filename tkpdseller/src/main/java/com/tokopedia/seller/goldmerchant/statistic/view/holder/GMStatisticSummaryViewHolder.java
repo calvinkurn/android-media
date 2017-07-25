@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummaryView;
 
@@ -43,7 +44,8 @@ public class GMStatisticSummaryViewHolder {
     public void setData(GetProductGraph getProductGraph) {
         successTransactionSummaryView.setContentText(String.valueOf(getProductGraph.getSuccessTrans()));
         successTransactionSummaryView.setPercentage(getProductGraph.getDiffTrans());
-        conversionSummaryView.setContentText(String.valueOf(getProductGraph.getConversionRate()));
+        conversionSummaryView.setContentText(KMNumbers.formatToPercentString(
+                conversionSummaryView.getContext(), getProductGraph.getConversionRate()));
         conversionSummaryView.setPercentage(getProductGraph.getDiffConv());
         productSeenSummaryView.setContentText(String.valueOf(getProductGraph.getProductView()));
         productSeenSummaryView.setPercentage(getProductGraph.getDiffView());

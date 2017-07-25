@@ -54,6 +54,10 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     @Override
     public void onResume() {
         super.onResume();
+        // fix when after setOnResult, view is not attached
+        if (!datePickerPresenter.isViewAttached()) {
+            datePickerPresenter.attachView(this);
+        }
         datePickerPresenter.fetchDatePickerSetting();
     }
 
@@ -61,12 +65,13 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
         if (this.datePickerViewModel == null) {
             this.datePickerViewModel = datePickerViewModel;
+            loadData();
         } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
                 this.datePickerViewModel.getStartDate(), this.datePickerViewModel.getEndDate(),
                 datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate())) {
             datePickerPresenter.saveDateSetting(this.datePickerViewModel);
+            loadData();
         }
-        loadData();
     }
 
     @Override

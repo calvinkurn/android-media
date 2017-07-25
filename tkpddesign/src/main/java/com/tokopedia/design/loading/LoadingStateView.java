@@ -64,8 +64,7 @@ public class LoadingStateView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_loading_state_view, this);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
 
-        setAddStatesFromChildren(true);
-        frameLayout.setAddStatesFromChildren(true);
+        setFocusableInTouchMode(true);
     }
 
     @Override

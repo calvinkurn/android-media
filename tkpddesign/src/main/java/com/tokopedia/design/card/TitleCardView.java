@@ -24,7 +24,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 
 public class TitleCardView extends CardView {
     @LayoutRes
-    public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
+    public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_title_card_loading;
 
     private LoadingStateView loadingStateView;
     private OnArrowDownClickListener onArrowDownClickListener;

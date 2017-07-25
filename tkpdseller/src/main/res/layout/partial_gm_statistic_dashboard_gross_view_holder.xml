@@ -10,7 +10,8 @@
     <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
         android:id="@+id/line_chart_container_gross"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:subtitle="@string/gm_statistic_dashboard_gross">
 
         <com.tokopedia.seller.lib.williamchart.view.LineChartView
             android:id="@+id/line_chart_gross"
