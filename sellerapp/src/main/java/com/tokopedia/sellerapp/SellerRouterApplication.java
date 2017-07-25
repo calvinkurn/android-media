@@ -18,12 +18,17 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
@@ -49,7 +54,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
-        IPaymentModuleRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -254,6 +259,31 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
+        return null;
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return DigitalCategoryListActivity.newInstance(this);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalWeb(String url) {
+        return DigitalWebActivity.newInstance(this, url);
+    }
+
+    @Override
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         return false;
     }
@@ -261,6 +291,11 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public Intent getIntentDeepLinkHandlerActivity() {
         return null;
+    }
+
+    @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+
     }
 
     @Override

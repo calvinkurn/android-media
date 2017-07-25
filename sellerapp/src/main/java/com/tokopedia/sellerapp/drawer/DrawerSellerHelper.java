@@ -24,8 +24,10 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -90,6 +92,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         data.add(getGoldMerchantMenu());
+        data.add(getPaymentAndTopupMenu());
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
@@ -178,6 +181,26 @@ public class DrawerSellerHelper extends DrawerHelper
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
         return inboxMenu;
+    }
+
+    private DrawerItem getPaymentAndTopupMenu() {
+        DrawerGroup sellerMenu = new DrawerGroup("Pembayaran dan Top Up",
+                R.drawable.ic_manage_produk,
+                TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
+                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
+                0);
+
+        sellerMenu.add(new DrawerItem("Daftar Produk Digital",
+                TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL,
+                true));
+        sellerMenu.add(new DrawerItem("Daftar Transaksi Digital",
+                TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
+                true));
+        sellerMenu.add(new DrawerItem("Daftar Harga Produk Digital",
+                TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL,
+                true));
+
+        return sellerMenu;
     }
 
     private DrawerItem getProductMenu() {
@@ -272,6 +295,7 @@ public class DrawerSellerHelper extends DrawerHelper
         checkExpand(DrawerAdapter.IS_INBOX_OPENED, TkpdState.DrawerPosition.INBOX);
         checkExpand(DrawerAdapter.IS_PEOPLE_OPENED, TkpdState.DrawerPosition.PEOPLE);
         checkExpand(DrawerAdapter.IS_SHOP_OPENED, TkpdState.DrawerPosition.SHOP);
+        checkExpand(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND);
         checkExpand(DrawerAdapter.IS_PRODUCT_OPENED, TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND);
         checkExpand(DrawerAdapter.IS_GM_OPENED, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE);
         adapter.notifyDataSetChanged();
@@ -338,6 +362,20 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
                     }
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL:
+                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
+                            .instanceIntentDigitalCategoryList());
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
+                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
+                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    break;
+                case TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL:
+                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
+                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST));
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
