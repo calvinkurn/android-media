@@ -65,7 +65,8 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
         if (savedState != null) {
             String message = activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState);
             log(message);
-            if (TooLargeTool.isPotentialCrash(savedState)) Crashlytics.logException(new Throwable(message));
+            if (TooLargeTool.isPotentialCrash(savedState))
+                Crashlytics.logException(new Throwable(message));
         }
     }
 }

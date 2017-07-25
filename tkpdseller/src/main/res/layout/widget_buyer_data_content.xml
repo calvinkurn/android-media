@@ -60,7 +60,7 @@
                 <!--android:textSize="12sp" />-->
         <!--</LinearLayout>-->
 
-        <com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView
+        <com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView
             android:id="@+id/arrow_buyer_data_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

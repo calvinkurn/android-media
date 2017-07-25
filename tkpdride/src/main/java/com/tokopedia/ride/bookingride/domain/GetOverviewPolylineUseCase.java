@@ -10,7 +10,6 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by alvarisi on 3/18/17.
@@ -24,6 +23,7 @@ public class GetOverviewPolylineUseCase extends UseCase<List<OverviewPolyline>> 
     public static final String PARAM_MODE = "mode";
     public static final String PARAM_DEPARTURE_TIME = "departure_time";
     public static final String PARAM_WAYPOINTS = "waypoints";
+    public static final String PARAM_KEY = "key";
     private final PlaceRepository placeRepository;
 
     public GetOverviewPolylineUseCase(ThreadExecutor threadExecutor,

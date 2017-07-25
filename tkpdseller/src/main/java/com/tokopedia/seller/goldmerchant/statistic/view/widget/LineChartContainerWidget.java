@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views.widget;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.lib.widget.GMDateRangeView;
 
 /**
