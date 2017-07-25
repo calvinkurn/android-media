@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views.widget;
+package com.tokopedia.design.card;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.design.R;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
 
 /**
  * Created by hendry on 7/10/2017.
@@ -24,7 +24,7 @@ import com.tokopedia.seller.R;
 
 public class TitleCardView extends CardView {
     @LayoutRes
-    public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_title_card_loading;
+    public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
 
     LoadingStateView mLoadingStateView;
     OnArrowDownClickListener onArrowDownClickListener;
@@ -63,7 +63,7 @@ public class TitleCardView extends CardView {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
-        mTitleString = a.getString(R.styleable.TitleCardView_title);
+        mTitleString = a.getString(R.styleable.TitleCardView_title_card_view_title);
         mTitleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_title_size, 0);
         mLoadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_loading_layout, 0);
         mEmptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_empty_layout, 0);
@@ -73,7 +73,7 @@ public class TitleCardView extends CardView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_title_card, this);
+        View view = View.inflate(getContext(), R.layout.widget_title_card, this);
         vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
         vgTitleContent = (ViewGroup) vgTitle.findViewById(R.id.vg_title_content);
         tvTitle = (TextView) vgTitleContent.findViewById(R.id.tv_title);
@@ -112,7 +112,7 @@ public class TitleCardView extends CardView {
             vgTitleContent.setOnClickListener(null);
             ivArrowDown.setOnClickListener(null);
         } else {
-            OnClickListener onClickListener = new OnClickListener() {
+            View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onArrowDownClickListener.onArrowDownClicked();

@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_sm"
             android:layout_marginTop="@dimen/margin_small">
             <ImageView
                 android:id="@+id/iv_icon"
@@ -29,7 +29,7 @@
                 android:layout_height="24dp"
                 android:visibility="gone"
                 tools:visibility="visible"
-                tools:src="@mipmap/ic_launcher"
+                tools:src="@drawable/ic_empty_state"
                 android:layout_marginRight="8dp"/>
             <TextView
                 android:id="@+id/tv_title"

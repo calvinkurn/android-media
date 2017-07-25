@@ -22,7 +22,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.MarketInsightView
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.PopularProductViewHolder;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;

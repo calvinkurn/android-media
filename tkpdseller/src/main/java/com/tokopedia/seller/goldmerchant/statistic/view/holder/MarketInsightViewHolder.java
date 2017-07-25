@@ -16,7 +16,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
@@ -190,7 +190,7 @@ public class MarketInsightViewHolder {
         }
     }
 
-    public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketInsightViewHolder> {
+    public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketViewHolder> {
 
         List<GetKeyword.SearchKeyword> searchKeywords;
 
@@ -204,14 +204,14 @@ public class MarketInsightViewHolder {
         }
 
         @Override
-        public MarketInsightViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MarketViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View inflate = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.market_insight_item_layout, parent, false);
-            return new MarketInsightViewHolder(inflate);
+            return new MarketViewHolder(inflate);
         }
 
         @Override
-        public void onBindViewHolder(MarketInsightViewHolder holder, int position) {
+        public void onBindViewHolder(MarketViewHolder holder, int position) {
             holder.bindData(searchKeywords.get(position), searchKeywords);
         }
 
@@ -221,7 +221,7 @@ public class MarketInsightViewHolder {
         }
     }
 
-    public static class MarketInsightViewHolder extends RecyclerView.ViewHolder {
+    public static class MarketViewHolder extends RecyclerView.ViewHolder {
 
         final String TAG = "MarketInsight";
 
@@ -233,7 +233,7 @@ public class MarketInsightViewHolder {
 
         RoundCornerProgressBar marketInsightProgress;
 
-        public MarketInsightViewHolder(View itemView) {
+        public MarketViewHolder(View itemView) {
             super(itemView);
             initView(itemView);
         }

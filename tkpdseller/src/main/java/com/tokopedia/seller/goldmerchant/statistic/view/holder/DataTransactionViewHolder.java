@@ -9,7 +9,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;

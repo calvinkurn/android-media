@@ -11,7 +11,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 

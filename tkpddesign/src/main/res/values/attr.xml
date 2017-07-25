@@ -72,7 +72,7 @@
     </declare-styleable>
 
     <declare-styleable name="TitleCardView">
-        <attr name="title" format="string" />
+        <attr name="title_card_view_title" format="string" />
         <attr name="title_size" format="dimension" />
         <attr name="icon" format="reference" />
         <attr name="loading_layout" format="reference" />
