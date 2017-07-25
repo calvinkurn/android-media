@@ -10,6 +10,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -57,13 +58,10 @@ public class PopularProductViewHolder {
     }
 
     public void bindData(GetPopularProduct getPopularProduct) {
-        popularProductCardView.setLoadingState(false);
 
         if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
             setEmptyState();
             return;
-        } else {
-            popularProductCardView.setEmptyState(false);
         }
         this.getPopularProduct = getPopularProduct;
 
@@ -86,7 +84,7 @@ public class PopularProductViewHolder {
                         clickAddProductTracking();
                     }
                 });
-        popularProductCardView.setEmptyState(true);
+        popularProductCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     public void gotoProductDetail() {
@@ -107,11 +105,7 @@ public class PopularProductViewHolder {
         popularProductCardView.getContext().startActivity(intent);
     }
 
-    public void showLoading(){
-        popularProductCardView.setLoadingState(true);
-    }
-
-    public void hideLoading(){
-        popularProductCardView.setLoadingState(false);
+    public void setViewState(int viewState) {
+        popularProductCardView.setViewState(viewState);
     }
 }

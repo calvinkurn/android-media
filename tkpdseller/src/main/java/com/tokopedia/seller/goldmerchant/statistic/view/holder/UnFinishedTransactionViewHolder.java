@@ -78,10 +78,6 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
     }
 
     public void setLoadingState(int state) {
-        if (state == LoadingStateView.VIEW_LOADING) {
-            notDoneTransStatisticCardView.setLoadingState(true);
-        } else {
-            notDoneTransStatisticCardView.setLoadingState(false);
-        }
+        notDoneTransStatisticCardView.setViewState(state);
     }
 }

@@ -53,8 +53,6 @@ public class BuyerDataViewHolder {
     }
 
     public void bindData(GetBuyerGraph getBuyerGraph) {
-        buyerDataCardView.setLoadingState(false);
-
         long totalBuyer = getBuyerGraph.getTotalBuyer();
         long maleBuyerCount = getBuyerGraph.getMaleBuyer();
         long femaleBuyerCount = getBuyerGraph.getFemaleBuyer();
@@ -109,12 +107,8 @@ public class BuyerDataViewHolder {
         arrowPercentageView.setPercentage(percentage);
     }
 
-    public void showLoading(){
-        buyerDataCardView.setLoadingState(true);
-    }
-
-    public void hideLoading(){
-        buyerDataCardView.setLoadingState(false);
+    public void setViewState(int viewState) {
+        buyerDataCardView.setViewState(viewState);
     }
 
 }

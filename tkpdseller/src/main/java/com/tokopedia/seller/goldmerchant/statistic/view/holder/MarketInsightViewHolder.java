@@ -15,6 +15,7 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
@@ -85,7 +86,6 @@ public class MarketInsightViewHolder {
     }
 
     public void bindData(List<GetKeyword> getKeywords) {
-        view.setLoadingState(false);
         if (!isGoldMerchant) {
             displayNonGoldMerchant();
             return;
@@ -124,11 +124,8 @@ public class MarketInsightViewHolder {
         marketInsightAdapter.notifyDataSetChanged();
     }
 
-    public void showLoading(){
-        view.setLoadingState(true);
-    }
-    public void hideLoading(){
-        view.setLoadingState(false);
+    public void setViewState(int viewState) {
+        view.setViewState(viewState);
     }
 
     public void displayNonGoldMerchant() {
@@ -142,7 +139,7 @@ public class MarketInsightViewHolder {
                     }
                 }
         );
-        view.setEmptyState(true);
+        view.setViewState(LoadingStateView.VIEW_EMPTY);
         // content will be overlayed behind the empty state
         view.getContentView().setVisibility(View.VISIBLE);
 
@@ -178,11 +175,10 @@ public class MarketInsightViewHolder {
                         addProductMarketInsight();
                     }
                 });
-        view.setEmptyState(true);
+        view.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     public void bindNoShopCategory() {
-        view.setLoadingState(false);
         if (isGoldMerchant)
             displayEmptyState();
         else {

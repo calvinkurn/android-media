@@ -25,14 +25,14 @@ public class LoadingStateView extends FrameLayout {
     @LayoutRes
     public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
 
-    FrameLayout mFrameLayout;
+    FrameLayout frameLayout;
 
     private View emptyView;
     private View loadingView;
     private View contentView;
 
-    private int mLoadingLayoutRes;
-    private int mEmptyLayoutRes;
+    private int loadingLayoutRes;
+    private int emptyLayoutRes;
 
     public LoadingStateView(Context context) {
         super(context);
@@ -55,22 +55,24 @@ public class LoadingStateView extends FrameLayout {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingStateView);
-        mLoadingLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
-        mEmptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, 0);
+        loadingLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
+        emptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, 0);
         a.recycle();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_loading_state_view, this);
-        mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
+        frameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
 
         setAddStatesFromChildren(true);
-        mFrameLayout.setAddStatesFromChildren(true);
+        frameLayout.setAddStatesFromChildren(true);
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        invalidate();
+        requestLayout();
     }
 
     @Override
@@ -88,15 +90,15 @@ public class LoadingStateView extends FrameLayout {
             // check if it is content, add to the first index, so loading and empty will be on front of content view
             if (contentView == null && child != loadingView && child != emptyView) {
                 contentView = child;
-                mFrameLayout.addView(child, 0, params);
+                frameLayout.addView(child, 0, params);
             } else {
-                mFrameLayout.addView(child, params);
+                frameLayout.addView(child, params);
             }
         }
     }
 
     public void setLoadingViewRes(int loadingViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, mFrameLayout, false);
+        View emptyView = LayoutInflater.from(getContext()).inflate(loadingViewRes, frameLayout, false);
         setLoadingView(emptyView);
     }
 
@@ -110,7 +112,7 @@ public class LoadingStateView extends FrameLayout {
 
     public void setLoadingView(View loadingView) {
         if (this.loadingView != null) {
-            mFrameLayout.removeView(this.loadingView);
+            frameLayout.removeView(this.loadingView);
         }
         this.loadingView = loadingView;
         loadingView.setVisibility(View.GONE);
@@ -118,7 +120,7 @@ public class LoadingStateView extends FrameLayout {
     }
 
     public void setEmptyViewRes(int emptyViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, mFrameLayout, false);
+        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, frameLayout, false);
         setEmptyView(emptyView);
     }
 
@@ -128,7 +130,7 @@ public class LoadingStateView extends FrameLayout {
 
     public void setEmptyView(View emptyView) {
         if (this.emptyView != null) {
-            mFrameLayout.removeView(this.emptyView);
+            frameLayout.removeView(this.emptyView);
         }
         this.emptyView = emptyView;
         emptyView.setVisibility(View.GONE);
@@ -136,7 +138,7 @@ public class LoadingStateView extends FrameLayout {
     }
 
     // showing that the content to loading state
-    public void setLoadingState(boolean isLoading) {
+    private void setLoadingState(boolean isLoading) {
         if (loadingView == null) {
             setDefaultLoadingView();
         }
@@ -153,7 +155,7 @@ public class LoadingStateView extends FrameLayout {
         }
     }
 
-    public void setEmptyState(boolean isEmpty) {
+    private void setEmptyState(boolean isEmpty) {
         if (emptyView == null) {
             setDefaultEmptyView();
         }
@@ -170,7 +172,7 @@ public class LoadingStateView extends FrameLayout {
         }
     }
 
-    public void setContentVisible() {
+    private void setContentVisible() {
         if (this.loadingView != null) {
             loadingView.setVisibility(View.GONE);
         }
@@ -180,20 +182,20 @@ public class LoadingStateView extends FrameLayout {
         contentView.setVisibility(View.VISIBLE);
     }
 
-    public void setDefaultLoadingView() {
-        if (mLoadingLayoutRes == 0) {
+    private void setDefaultLoadingView() {
+        if (loadingLayoutRes == 0) {
             return;
         }
-        this.loadingView = LayoutInflater.from(getContext()).inflate(mLoadingLayoutRes, mFrameLayout, false);
+        this.loadingView = LayoutInflater.from(getContext()).inflate(loadingLayoutRes, frameLayout, false);
         loadingView.setVisibility(View.GONE);
         addView(loadingView);
     }
 
-    public void setDefaultEmptyView() {
-        if (mEmptyLayoutRes == 0) {
+    private void setDefaultEmptyView() {
+        if (emptyLayoutRes == 0) {
             return;
         }
-        this.emptyView = LayoutInflater.from(getContext()).inflate(mEmptyLayoutRes, mFrameLayout, false);
+        this.emptyView = LayoutInflater.from(getContext()).inflate(emptyLayoutRes, frameLayout, false);
         emptyView.setVisibility(View.GONE);
         addView(emptyView);
     }

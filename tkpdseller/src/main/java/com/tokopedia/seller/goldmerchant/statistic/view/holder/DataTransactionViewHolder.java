@@ -6,15 +6,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
@@ -88,7 +89,7 @@ public class DataTransactionViewHolder {
                         moveToGMSubscribe();
                     }
                 });
-        transactionDataCardView.setEmptyState(true);
+        transactionDataCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     protected void setEmptyStatePercentage() {
@@ -113,8 +114,6 @@ public class DataTransactionViewHolder {
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel) {
-         transactionDataCardView.setLoadingState(false);
-
         if (dataTransactionChartConfig == null)
             throw new RuntimeException("please pass configuration for graphic !!");
 
@@ -150,10 +149,7 @@ public class DataTransactionViewHolder {
         displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, false);
     }
 
-    public void showLoading(){
-        transactionDataCardView.setLoadingState(true);
-    }
-    public void hideLoading(){
-        transactionDataCardView.setLoadingState(false);
+    public void setViewState(int viewState) {
+        transactionDataCardView.setViewState(viewState);
     }
 }

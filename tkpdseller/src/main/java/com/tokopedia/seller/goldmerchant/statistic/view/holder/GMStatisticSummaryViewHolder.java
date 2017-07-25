@@ -31,10 +31,6 @@ public class GMStatisticSummaryViewHolder {
         conversionSummaryView = (GmStatisticSummaryView) view.findViewById(R.id.summary_view_conversion);
         productSeenSummaryView = (GmStatisticSummaryView) view.findViewById(R.id.summary_view_product_seen);
         productSoldSummaryView = (GmStatisticSummaryView) view.findViewById(R.id.summary_view_product_sold);
-        successTransactionLoadingStateView.setLoadingState(true);
-        conversionLoadingStateView.setLoadingState(true);
-        productSeenLoadingStateView.setLoadingState(true);
-        productSoldLoadingStateView.setLoadingState(true);
     }
 
     public void setViewState(int state) {
