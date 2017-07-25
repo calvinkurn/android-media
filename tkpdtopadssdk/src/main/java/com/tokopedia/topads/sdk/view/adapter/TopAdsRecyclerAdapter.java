@@ -27,8 +27,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
  * @author by errysuprayogi on 4/11/17.
  */
 
-public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements TopAdsPlacer.DataObserver {
+public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = TopAdsRecyclerAdapter.class.getSimpleName();
 
@@ -62,13 +61,28 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     };
 
+    private TopAdsPlacer.DataObserver dataObserver = new TopAdsPlacer.DataObserver() {
+        @Override
+        public void onStreamLoaded(int type) {
+            switch (type) {
+                case ObserverType.CHANGE:
+                    notifyDataSetChanged();
+                    break;
+                case ObserverType.ITEM_RANGE_INSERTED:
+                    notifyItemRangeInserted(
+                            placer.getAjustedPositionStart(), placer.getAjustedItemCount());
+                    break;
+            }
+            hideLoading();
+        }
+    };
+
     public TopAdsRecyclerAdapter(
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
-
         mOriginalAdapter = originalAdapter;
         mContext = context;
         typeFactory = new TopAdsAdapterTypeFactory(context);
-        placer = new TopAdsPlacer(context, typeFactory, this);
+        placer = new TopAdsPlacer(this, context, typeFactory, dataObserver);
         mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
 
             @Override
@@ -106,23 +120,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-    @Override
-    public void onStreamLoaded(int type) {
-        switch (type) {
-            case ObserverType.CHANGE:
-                notifyDataSetChanged();
-                break;
-            case ObserverType.ITEM_RANGE_INSERTED:
-                notifyItemRangeInserted(
-                        placer.getAjustedPositionStart(), placer.getAjustedItemCount());
-                break;
-            case ObserverType.ITEM_RANGE_CHANGE:
-
-                break;
-        }
-        hideLoading();
-    }
-
     public void setConfig(Config config) {
         placer.setConfig(config);
     }
@@ -158,6 +155,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
+        this.recyclerView.setItemAnimator(null);
         setLayoutManager(this.recyclerView.getLayoutManager());
         setEndlessScrollListener();
     }
