@@ -9,18 +9,22 @@ import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenterImpl;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
@@ -35,7 +39,6 @@ import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.GetProductCategoryNameUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 
@@ -103,15 +106,19 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    public GMStatNetworkController provideGmStatNetworkController2(Gson gson, GMStatRepository gmStatRepository,
-                                                                   GetProductCategoryNameUseCase getProductCategoryNameUseCase) {
-        return new GMStatNetworkController(gson, gmStatRepository, getProductCategoryNameUseCase);
+    public GMStatNetworkController provideGmStatNetworkController(Gson gson, GMStatRepository gmStatRepository) {
+        return new GMStatNetworkController(gson, gmStatRepository);
     }
 
     @GMStatisticScope
     @Provides
-    public GMDashboardPresenter provideGmFragmentPresenter(GMStatNetworkController gmStatNetworkController) {
-        return new GMDashboardPresenterImpl(gmStatNetworkController);
+    public GMDashboardPresenter provideGmFragmentPresenter(GMStatNetworkController gmStatNetworkController,
+                                                           GMStatMarketInsightUseCase marketInsightUseCase,
+                                                           GMStatGetBuyerGraphUseCase buyerGraphUseCase,
+                                                           GMStatGetPopularProductUseCase popularProductUseCase,
+                                                           GMStatGetTransactionGraphUseCase transactionGraphUseCase,
+                                                           GMStatGetProductGraphUseCase productGraphUseCase) {
+        return new GMDashboardPresenterImpl(gmStatNetworkController, marketInsightUseCase, buyerGraphUseCase, popularProductUseCase, transactionGraphUseCase, productGraphUseCase);
     }
 
     @GMStatisticScope

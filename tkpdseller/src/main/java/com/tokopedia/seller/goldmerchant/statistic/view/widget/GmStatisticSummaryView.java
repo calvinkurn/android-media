@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView;
 
 /**
  * Created by nathan on 7/24/17.
@@ -81,7 +80,7 @@ public class GmStatisticSummaryView extends BaseCustomView {
         contentTextView.setText(contentText);
     }
 
-    public void setPercentage(double percentage){
+    public void setPercentage(double percentage) {
         arrowPercentageView.setPercentage(percentage);
     }
 }

@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_med"
+        android:clipChildren="false"
         android:clipToPadding="false"
-        android:clipChildren="false">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_med">
 
         <com.tokopedia.seller.lib.widget.DateLabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom" />
 
-        <com.tokopedia.seller.gmstat.views.widget.TitleCardView
+        <com.tokopedia.design.card.TitleCardView
             android:id="@+id/gold_merchant_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med">
 
-            <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
+            <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/gold_merchant_line_chart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -32,17 +31,17 @@
                     android:id="@+id/gm_statistic_transaction_income_graph"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
-            </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
+            </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
 
-        </com.tokopedia.seller.gmstat.views.widget.TitleCardView>
+        </com.tokopedia.design.card.TitleCardView>
 
-        <com.tokopedia.seller.gmstat.views.widget.TitleCardView
+        <com.tokopedia.design.card.TitleCardView
             android:id="@+id/not_done_trans_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            app:title="@string/unfinished_transaction_text"
-            app:loading_layout="@layout/item_loading_gmstat_pie_chart">
+            app:loading_layout="@layout/item_loading_gmstat_pie_chart"
+            app:title_card_view_title="@string/unfinished_transaction_text">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,15 +75,15 @@
                 <include layout="@layout/include_donut_legend" />
 
             </LinearLayout>
-        </com.tokopedia.seller.gmstat.views.widget.TitleCardView>
+        </com.tokopedia.design.card.TitleCardView>
 
-        <com.tokopedia.seller.gmstat.views.widget.TitleCardView
+        <com.tokopedia.design.card.TitleCardView
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@string/gold_merchant_top_ads_amount_title_text">
+            app:title_card_view_title="@string/gold_merchant_top_ads_amount_title_text">
 
-            <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
+            <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/topads_line_chart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -92,17 +91,17 @@
                     android:id="@+id/gm_statistic_topads_graph"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
-            </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
+            </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
 
-        </com.tokopedia.seller.gmstat.views.widget.TitleCardView>
+        </com.tokopedia.design.card.TitleCardView>
 
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardPreventCornerOverlap="false"
+            android:layout_marginTop="@dimen/product_margin_cards"
             app:cardElevation="1dp"
-            android:layout_marginTop="@dimen/product_margin_cards">
+            app:cardPreventCornerOverlap="false">
             <com.tokopedia.seller.lib.widget.LabelView
                 android:id="@+id/gm_statistic_label_sold_product_list_view"
                 android:layout_width="match_parent"

@@ -1,7 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.model;
 
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
-
 /**
  * Created by normansyahputa on 7/12/17.
  */

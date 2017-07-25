@@ -1165,7 +1165,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);

@@ -1,29 +1,29 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import android.content.res.AssetManager;
-import android.os.Bundle;
-import android.support.annotation.IntRange;
-import android.util.Log;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
+import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -32,19 +32,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class GMDashboardPresenterImpl extends GMDashboardPresenter {
-    public static final String IS_FETCH_DATA = "IS_FETCH_DATA";
-    public static final String IS_FIRST_TIME = "IS_FIRST_TIME";
-    private static final String TAG = "GMFragmentPresenterImpl";
-    private static final Locale locale = new Locale("in", "ID");
-    private boolean isFetchData = false, isFirstTime = false;
-    @IntRange(from = 0, to = 2)
-    private int lastSelectionPeriod = 1;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private long sDate = -1, eDate = -1;
-    private long shopId;
-    private float[] mValues = new float[10];
-    private String[] mLabels = new String[10];
-    private int selectionType;
     private OldGMStatRepository gmStatListener = new OldGMStatRepository() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
@@ -60,13 +48,13 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         @Override
         public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
             if (isViewAttached())
-                getView().onSuccessTransactionGraph(getTransactionGraph, sDate, eDate, lastSelectionPeriod, selectionType);
+                getView().onSuccessTransactionGraph(getTransactionGraph);
         }
 
         @Override
-        public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
+        public void onSuccessProductGraph(GetProductGraph getProductGraph) {
             if (isViewAttached())
-                getView().onSuccessProductnGraph(getProductGraph, isFirstTime);
+                getView().onSuccessProductnGraph(getProductGraph);
         }
 
         @Override
@@ -118,61 +106,197 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         }
     };
     private GMStatNetworkController gmStatNetworkController;
+    private GMStatMarketInsightUseCase marketInsightUseCase;
+    private GMStatGetBuyerGraphUseCase buyerGraphUseCase;
+    private GMStatGetPopularProductUseCase popularProductUseCase;
+    private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
+    private GMStatGetProductGraphUseCase productGraphUseCase;
 
-    public GMDashboardPresenterImpl(GMStatNetworkController gmStatNetworkController) {
+    public GMDashboardPresenterImpl(
+            GMStatNetworkController gmStatNetworkController,
+            GMStatMarketInsightUseCase marketInsightUseCase,
+            GMStatGetBuyerGraphUseCase buyerGraphUseCase,
+            GMStatGetPopularProductUseCase popularProductUseCase,
+            GMStatGetTransactionGraphUseCase transactionGraphUseCase,
+            GMStatGetProductGraphUseCase productGraphUseCase
+    ) {
         this.gmStatNetworkController = gmStatNetworkController;
+        this.marketInsightUseCase = marketInsightUseCase;
+        this.buyerGraphUseCase = buyerGraphUseCase;
+        this.popularProductUseCase = popularProductUseCase;
+        this.transactionGraphUseCase = transactionGraphUseCase;
+        this.productGraphUseCase = productGraphUseCase;
     }
 
-    public void setFirstTime(boolean firstTime) {
-        isFirstTime = firstTime;
+    private void processKeywordModel(KeywordModel keywordModel) {
+        if (keywordModel.getShopCategory() == null
+                || keywordModel.getShopCategory().getShopCategory() == null
+                || keywordModel.getShopCategory().getShopCategory().isEmpty())
+            return;
+
+        onSuccessGetShopCategory(keywordModel.getShopCategory());
+
+        onSuccessGetKeyword(keywordModel.getKeywords());
+
+        onSuccessGetCategory(keywordModel.getCategoryName());
     }
 
-    public void setFetchData(boolean fetchData) {
-        isFetchData = fetchData;
+    public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
+        if (isViewAttached())
+            getView().onSuccessPopularProduct(getPopularProduct);
     }
 
-    public void initInstance() {
-        for (int i = 0; i < mLabels.length; i++) {
-            mLabels[i] = "";
+    public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
+        if (isViewAttached()) {
+            if (getShopCategory == null
+                    || getShopCategory.getShopCategory() == null
+                    || getShopCategory.getShopCategory().isEmpty()) {
+                getView().onGetShopCategoryEmpty();
+            }
         }
     }
 
-    public float[] getmValues() {
-        return mValues;
+    private void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
+        if (isViewAttached())
+            getView().onSuccessGetKeyword(getKeywords);
     }
 
-    public String[] getmLabels() {
-        return mLabels;
+    private void onSuccessGetCategory(List<String> categoryNameList) {
+        if (!isViewAttached())
+            return;
+
+        if (categoryNameList == null || categoryNameList.size() <= 0)
+            return;
+
+        String categoryName = categoryNameList.get(0);
+
+        getView().onSuccessGetCategory(categoryName);
+    }
+
+    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
+        if (isViewAttached())
+            getView().onSuccessBuyerGraph(getBuyerGraph);
+    }
+
+    public void onSuccessProductGraph(GetProductGraph getProductGraph) {
+        if (isViewAttached())
+            getView().onSuccessProductnGraph(getProductGraph);
+    }
+
+    public void getPopularProduct() {
+
+        Calendar dayOne = Calendar.getInstance();
+        dayOne.add(Calendar.DATE, -30);
+
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, -1);
+
+        RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
+
+        popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetPopularProduct getPopularProduct) {
+                onSuccessPopularProduct(getPopularProduct);
+            }
+        });
+    }
+
+    public void getProductGraph(long startDate, long endDate) {
+        RequestParams productParam = GMStatGetProductGraphUseCase.createRequestParam(startDate, endDate);
+        productGraphUseCase.execute(productParam, new Subscriber<GetProductGraph>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetProductGraph getProductGraph) {
+                onSuccessProductGraph(getProductGraph);
+            }
+        });
+    }
+
+    public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
+        if (isViewAttached())
+            getView().onSuccessTransactionGraph(getTransactionGraph);
     }
 
     @Override
     public void fetchData() {
-        sDate = getView().datePickerViewModel().getStartDate();
-        eDate = getView().datePickerViewModel().getEndDate();
-        if (isFirstTime && isFetchData) {
-            getView().resetToLoading();
-            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        } else if (!isFirstTime) {
-            gmStatNetworkController.fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }
+        DatePickerViewModel datePickerViewModel = getView().datePickerViewModel();
+        getView().resetToLoading();
 
-        if (isFetchData) {
-            isFetchData = false;
-        }
-    }
+        getProductGraph(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
 
-    @Override
-    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
-        this.lastSelectionPeriod = lastSelectionPeriod;
-        this.selectionType = selectionType;
-        isFetchData = true;
-        isFirstTime = true;
-        this.sDate = sDate;
-        this.eDate = eDate;
+        RequestParams transactionParam = GMStatGetTransactionGraphUseCase.createRequestParam(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        transactionGraphUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
+            @Override
+            public void onCompleted() {
 
-        //[START] dummy data, dont remove this line of code - necessary for demo.
-//        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
-        //[END] dummy data
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GMTransactionGraphMergeModel mergeModel) {
+                onSuccessTransactionGraph(mergeModel);
+            }
+        });
+
+        getPopularProduct();
+
+        RequestParams buyerParam = GMStatGetBuyerGraphUseCase.createRequestParam(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        buyerGraphUseCase.execute(buyerParam, new Subscriber<GetBuyerGraph>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetBuyerGraph getBuyerGraph) {
+                onSuccessBuyerGraph(getBuyerGraph);
+            }
+        });
+
+        marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(KeywordModel keywordModel) {
+                processKeywordModel(keywordModel);
+            }
+        });
     }
 
     @Override
@@ -190,58 +314,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         if (assets == null)
             return;
 
-
-        resetDateSelection();
         gmStatNetworkController.fetchDataEmptyState(gmStatListener, assets);
-    }
-
-    @Override
-    public void saveState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(IS_FETCH_DATA, isFetchData);
-        savedInstanceState.putBoolean(IS_FIRST_TIME, isFirstTime);
-    }
-
-    @Override
-    public void restoreState(Bundle savedInstanceState) {
-        isFetchData = savedInstanceState.getBoolean(IS_FETCH_DATA);
-        isFirstTime = savedInstanceState.getBoolean(IS_FIRST_TIME);
-    }
-
-    /**
-     * reset sDate-eDate to 7 days
-     */
-    private void resetDateSelection(){
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DATE, -1);
-        endCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        endCalendar.set(Calendar.MINUTE, 59);
-        endCalendar.set(Calendar.SECOND, 59);
-
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
-        startCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        startCalendar.set(Calendar.MINUTE, 0);
-        startCalendar.set(Calendar.SECOND, 0);
-        startCalendar.set(Calendar.MILLISECOND, 0);
-
-
-        sDate = startCalendar.getTimeInMillis();
-        eDate = endCalendar.getTimeInMillis();
-        Log.d(TAG, String.format("resetDateSelection : %s - %s ", getFormattedDate(sDate), getFormattedDate(eDate)));
-        isFirstTime = false;
-    }
-
-    public String getFormattedDate(long dateLong) {
-        Date date = new Date(dateLong);
-        DateFormat formatter = new SimpleDateFormat("yyyyMMdd", locale);// "HH:mm:ss:SSS"
-        return formatter.format(date);
-    }
-
-    public void setsDate(long sDate) {
-        this.sDate = sDate;
-    }
-
-    public void seteDate(long eDate) {
-        this.eDate = eDate;
     }
 }

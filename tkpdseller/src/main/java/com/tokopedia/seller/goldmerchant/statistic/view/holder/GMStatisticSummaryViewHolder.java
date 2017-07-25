@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.view.View;
 
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;

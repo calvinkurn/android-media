@@ -24,7 +24,9 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -55,6 +57,7 @@ import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle4View;
+import com.tokopedia.digital.product.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
@@ -249,6 +252,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void initView(View view) {
         rvBanner.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
+        mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        mainHolderContainer.setFocusable(true);
+        mainHolderContainer.setFocusableInTouchMode(true);
+        mainHolderContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (view instanceof ClientNumberInputView) {
+                    view.requestFocusFromTouch();
+                } else {
+                    view.clearFocus();
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -275,8 +292,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
-        this.bannerDataListState = bannerDataList;
+        this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
         bannerAdapter.addBannerDataListAndTitle(bannerDataList, title);
+    }
+
+    private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
+        for (int i = bannerDataList.size() - 1; i >= 0; i--) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+                bannerDataList.remove(bannerDataList.get(i));
+            }
+        }
+        return bannerDataList;
     }
 
     @Override

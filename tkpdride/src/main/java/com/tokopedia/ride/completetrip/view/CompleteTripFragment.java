@@ -302,8 +302,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void renderReceipt(Receipt receipt) {
+    public void renderReceipt(Receipt receipt, boolean isPendingPaymentExists) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalChargedTopTextView.setText(receipt.getTotalFare());
@@ -344,7 +343,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             discountLabelTextView.setVisibility(View.GONE);
         }
 
-        if (receipt.getPendingPayment() != null && receipt.getPendingPayment().getPendingAmount() != null && receipt.getPendingPayment().getPendingAmount().length() > 0) {
+        if (isPendingPaymentExists) {
             passData = new DigitalCheckoutPassData();
             passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
             passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
@@ -372,7 +371,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
         } else {
-            pendingFareLayout.setVisibility(View.GONE);
+            ratingLayout.setVisibility(View.VISIBLE);
         }
     }
 

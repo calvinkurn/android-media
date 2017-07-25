@@ -17,9 +17,9 @@ import java.util.List;
 public interface GMStatisticDashboardView extends CustomerView {
     void onGetShopCategoryEmpty();
 
-    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
+    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
 
-    void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime);
+    void onSuccessProductnGraph(GetProductGraph getProductGraph);
 
     void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
 
@@ -27,23 +27,19 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onSuccessGetCategory(String categoryName);
 
+    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
+
     void onComplete();
 
     void onError(Throwable e);
 
     void onFailure();
 
-    void fetchData();
-
-    void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
-
     void resetToLoading();
 
     void onLoadGMStatTracking();
 
     void onScrollGMStatTracking();
-
-    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
 
     DatePickerViewModel datePickerViewModel();
 }

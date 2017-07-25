@@ -407,7 +407,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
-
     }
 
     @Override

@@ -7,8 +7,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;

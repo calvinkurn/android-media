@@ -13,10 +13,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
@@ -24,8 +24,9 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
@@ -116,6 +117,14 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
             case GMTransactionGraphType.TOTAL_TRANSACTION:
                 bind(data.totalTransactionModel);
                 break;
+        }
+    }
+
+    public void setLoadingState(int state) {
+        if (state == LoadingStateView.VIEW_LOADING) {
+            gmTitleCardView.setLoadingState(true);
+        } else {
+            gmTitleCardView.setLoadingState(false);
         }
     }
 

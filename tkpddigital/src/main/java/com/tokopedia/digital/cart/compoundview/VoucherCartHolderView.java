@@ -172,6 +172,8 @@ public class VoucherCartHolderView extends RelativeLayout {
         if (!TextUtils.isEmpty(voucherAutoCode)) {
             checkBoxVoucher.setChecked(true);
             editTextVoucher.setText(voucherAutoCode);
+            voucherCode = voucherAutoCode;
+            actionListener.onVoucherCheckButtonClicked();
         }
     }
 

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-
 import com.crashlytics.android.Crashlytics;
 
 import java.util.HashMap;
@@ -46,7 +45,8 @@ public class FragmentSavedStateLogger extends FragmentManager.FragmentLifecycleC
             if (f.getArguments() != null) {
                 message += "\n* fragment arguments = " + TooLargeTool.bundleBreakdown(f.getArguments());
             }
-            if (TooLargeTool.isPotentialCrash(savedState)) Crashlytics.logException(new Throwable(message));
+            if (TooLargeTool.isPotentialCrash(savedState))
+                Crashlytics.logException(new Throwable(message));
             log(message);
         }
     }
