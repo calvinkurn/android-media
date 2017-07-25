@@ -731,8 +731,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     public void appResumedFromBackground() {

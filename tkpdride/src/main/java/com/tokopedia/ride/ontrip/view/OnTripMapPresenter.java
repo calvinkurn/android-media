@@ -898,11 +898,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                currentLocation = getFuzedLocation();
-                                startLocationUpdates();
-                            } else {
-                                checkLocationSettings();
+                            if (isViewAttached()) {
+                                if (getFuzedLocation() != null) {
+                                    currentLocation = getFuzedLocation();
+                                    startLocationUpdates();
+                                } else {
+                                    checkLocationSettings();
+                                }
                             }
                         }
 
@@ -946,7 +948,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        currentLocation = getFuzedLocation();
+                        if (isViewAttached())
+                            currentLocation = getFuzedLocation();
                         startLocationUpdates();
 
                         break;
