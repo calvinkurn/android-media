@@ -109,10 +109,10 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     private void replaceSourceParams() {
-        if(adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
+        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
             adsParams.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
         }
-        if(adsParams.getParam().get(TopAdsParams.KEY_SRC).contains("hot_product")){
+        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains("hot_product")) {
             adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
         }
     }

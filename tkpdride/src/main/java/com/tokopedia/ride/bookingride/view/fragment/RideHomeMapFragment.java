@@ -50,6 +50,7 @@ import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
 import java.util.ArrayList;
@@ -72,7 +73,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private static final float DEFAULT_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
-    public static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
 
@@ -315,7 +315,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
+        MapConfiguration mapConfiguration = new MapConfiguration(getActivity());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude()), DEFAULT_MAP_ZOOM));
         if (source != null && destination != null) {
             presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
@@ -336,9 +337,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //animate marker to lift up
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        markerTimeLayout.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
-        markerTimeImageView.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setDuration(300);
-        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setEstimateTime(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(-toolBarHeightinPx).setEstimateTime(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setEstimateTime(300);
         */
         //animate toolbar and source destination layout
         if (interactionListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -362,9 +363,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        markerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        markerTimeImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
-        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
+        markerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setEstimateTime(300);
+        markerTimeImageView.animate().setInterpolator(interpolator).translationY(0).setEstimateTime(300);
+        markerTimeCrossImageView.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setEstimateTime(300);
         */
 
         //animate toolbar and source destination layout

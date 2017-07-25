@@ -1,13 +1,11 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,8 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 /**
  * @author by errysuprayogi on 4/11/17.

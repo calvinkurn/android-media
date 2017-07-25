@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by nisie on 1/24/17.
  */
 
-public class DrawerTokoCash implements Parcelable{
+public class DrawerTokoCash implements Parcelable {
 
     private DrawerTokoCashAction drawerTokoCashAction;
 

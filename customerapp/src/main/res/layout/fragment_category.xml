@@ -81,7 +81,7 @@
                     android:layout_height="1dip"
                     android:background="@color/grey_100"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:layout_marginBottom="@dimen/margin_small"/>
+                    android:layout_marginBottom="@dimen/margin_small" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                         android:textColor="@color/tkpd_main_green"
                         android:drawablePadding="@dimen/padding_small"
                         android:layout_marginRight="@dimen/margin_small"
-                        android:text="@string/lihat_semua_product"/>
+                        android:text="@string/lihat_semua_product" />
 
                 </RelativeLayout>
 

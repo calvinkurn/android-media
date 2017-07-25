@@ -36,8 +36,6 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;

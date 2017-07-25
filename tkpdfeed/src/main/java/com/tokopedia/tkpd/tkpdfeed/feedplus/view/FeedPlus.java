@@ -90,9 +90,9 @@ public interface FeedPlus{
 
         void onSeeAllRecentView();
 
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads);
 
-        void onShowEmpty();
+        void onShowEmpty(boolean canShowTopads);
 
         void clearData();
 
@@ -103,6 +103,12 @@ public interface FeedPlus{
         void onGoToPromoPageFromHeader();
 
         void onHideNewFeed();
+
+        boolean hasFeed();
+
+        void updateFavoriteFromEmpty();
+
+        void showTopAds(boolean isTopAdsShown);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

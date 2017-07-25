@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TokoCashData implements Parcelable{
+public class TokoCashData implements Parcelable {
 
     @SerializedName("action")
     private Action mAction;

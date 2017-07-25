@@ -15,7 +15,9 @@ import java.util.List;
 public class PendingPaymentEntityMapper {
     public PendingPayment transform(PendingPaymentEntity entity) {
         PendingPayment pendingPayment = null;
-        if (entity != null) {
+        if (entity != null
+                && entity.getPendingAmount() != null
+                && entity.getPendingAmount().length() != 0) {
             pendingPayment = new PendingPayment();
             pendingPayment.setBalance(entity.getBalance());
             pendingPayment.setCurrencyCode(transformCurrency(entity.getCurrencyCode()));

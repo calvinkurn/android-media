@@ -17,8 +17,8 @@ import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
