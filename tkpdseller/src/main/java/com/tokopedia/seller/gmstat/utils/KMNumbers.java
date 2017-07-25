@@ -1,5 +1,9 @@
 package com.tokopedia.seller.gmstat.utils;
 
+import android.content.Context;
+
+import com.tokopedia.seller.R;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
@@ -104,6 +108,16 @@ public final class KMNumbers {
         float truncated = number / (divideBy / 10);
         double v = truncated / 10d;
         return formatString(v) + suffix;
+    }
+
+    public static String formatRupiahString(Context context, long numberToFormat){
+        return context.getString(R.string.rupiah_format_text,
+                KMNumbers.formatDecimalString(numberToFormat));
+    }
+
+    // convert (double) 1.0 to "100%" (string)
+    public static String formatToPercentString(Context context, double percent) {
+        return context.getString(R.string.percent_format_text, formatString(percent * 100));
     }
 
     public static String formatDecimalString (long numberToFormat){
