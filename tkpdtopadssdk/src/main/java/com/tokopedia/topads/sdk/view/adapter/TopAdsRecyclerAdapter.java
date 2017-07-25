@@ -296,7 +296,12 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void showLoading() {
         if (!placer.getItems().contains(loadingViewModel)) {
             placer.getItems().add(loadingViewModel);
-            notifyItemInserted(placer.getItemCount() + 1);
+            recyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(placer.getItemCount() + 1);
+                }
+            });
         }
         loadMore = true;
     }
