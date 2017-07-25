@@ -156,6 +156,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
+        placer.attachRecycleView(this.recyclerView);
         setLayoutManager(this.recyclerView.getLayoutManager());
         setEndlessScrollListener();
     }

@@ -47,9 +47,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private boolean shouldLoadAds = true; //default load ads
     private int adsPos = 0;
     private final RecyclerView.Adapter adapter;
+    private RecyclerView recyclerView;
 
-    public TopAdsPlacer(RecyclerView.Adapter adapter,
-                        Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
+    public TopAdsPlacer(RecyclerView.Adapter adapter, Context context,
+                        TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         this.adapter = adapter;
         this.observer = observer;
@@ -169,6 +170,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         presenter.loadTopAds();
     }
 
+    public void attachRecycleView(RecyclerView recyclerView){
+        this.recyclerView = recyclerView;
+    }
+
     @Override
     public void displayAds(List<Item> list) {
         Log.d(TAG, "displayAds list size " + list.size());
@@ -187,6 +192,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
                 }
                 setTopAds(list, items, adsPos);
                 adapter.notifyItemInserted(adsPos);
+                if (recyclerView != null && adsPos == 0) {
+                    recyclerView.scrollToPosition(adsPos);
+                }
             }
         }
     }
