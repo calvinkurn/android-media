@@ -11,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="325dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="-75dp"
         app:lottie_autoPlay="true"
         app:lottie_fileName="empty_cactus.json"
@@ -61,11 +63,12 @@ mendapatkan update produk terbaru di isini."/>
             android:textColor="@color/white"/>
 
         <include
+            android:id="@+id/official_store_layout"
             layout="@layout/empty_feed_official_store"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_top_os_feed"
-            android:id="@+id/official_store_layout"/>
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.brands;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,31 +10,31 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.OfficialStoreAdapter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.BrandsAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsViewModel;
 
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreViewModel> {
+public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.official_store_layout;
+
     private static final int SPAN_1_PRODUCT = 6;
     public static final int SPAN_3_PRODUCT = 2;
     private static final int SPAN_2_PRODUCT = 3;
     private static final int MAX_OFFICIAL_PRODUCT = 6;
+
     private final FeedPlus.View viewListener;
 
     RecyclerView recyclerView;
     ImageView imageView;
 
-    private OfficialStoreAdapter adapter;
-    private OfficialStoreViewModel officialStoreViewModel;
+    private BrandsAdapter adapter;
 
-
-    public OfficialStoreViewHolder(View itemView, FeedPlus.View viewListener) {
+    public BrandsViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         imageView = (ImageView) itemView.findViewById(R.id.official_store_image);
@@ -61,14 +61,13 @@ public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreVie
                 }
             }
         });
-        adapter = new OfficialStoreAdapter(itemView.getContext(), viewListener);
+        adapter = new BrandsAdapter(viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void bind(OfficialStoreViewModel officialStoreViewModel) {
-        this.officialStoreViewModel = officialStoreViewModel;
+    public void bind(BrandsViewModel officialStoreViewModel) {
         adapter.setList(officialStoreViewModel.getListProduct());
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
     }

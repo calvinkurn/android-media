@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics;
 
 /**
  * @author by nisie on 7/10/17.

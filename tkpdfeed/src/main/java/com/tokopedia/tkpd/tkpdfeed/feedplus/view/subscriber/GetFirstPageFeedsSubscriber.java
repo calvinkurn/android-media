@@ -11,7 +11,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomai
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductCardHeaderViewModel;
@@ -64,13 +66,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
         if (hasRecentView(feedDomain) && hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            addFeedData(listFeedView, feedDomain.getListFeed());
-            addInspirationData(listFeedView, feedDomain.getListInspiration());
-            checkCanLoadNext(feedResult, listFeedView);
+            addMainData(listFeedView, feedDomain, feedResult);
         } else if (!hasRecentView(feedDomain) && hasFeed(feedDomain)) {
-            addFeedData(listFeedView, feedDomain.getListFeed());
-            addInspirationData(listFeedView, feedDomain.getListInspiration());
-            checkCanLoadNext(feedResult, listFeedView);
+            addMainData(listFeedView, feedDomain, feedResult);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
             viewListener.onShowEmptyWithRecentView(listFeedView,
@@ -85,6 +83,90 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.finishLoading();
 
+    }
+
+    private void addMainData(ArrayList<Visitable> listFeedView,
+                             FeedDomain feedDomain, FeedResult feedResult) {
+        addFeedData(listFeedView, feedDomain.getListFeed());
+        addInspirationData(listFeedView, feedDomain.getListInspiration());
+        addBrandsData(listFeedView, feedDomain.getListInspiration());
+        checkCanLoadNext(feedResult, listFeedView);
+    }
+
+    private void addBrandsData(ArrayList<Visitable> listFeedView,
+                               List<DataInspirationDomain> listInspiration) {
+        listFeedView.add(new BrandsViewModel("https://www.tokopedia" +
+                ".com/yupi-store?source=universe&st=product", convertToOfficialStoreProduct()));
+
+    }
+
+    private ArrayList<BrandsFeedViewModel> convertToOfficialStoreProduct() {
+        ArrayList<BrandsFeedViewModel> listProduct = new ArrayList<>();
+        listProduct.add(new BrandsFeedViewModel(
+                1, "Test", "Rp. 10.000",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://www.tokopedia" +
+                        "" +
+                        ".com/yupi-store/yupi-noodles?trkid=f%3DCa0000L000P0W0S0Sh00Co0Po0Fr0Cb0_src%3Dshop-product_page%3D1_ob%3D11_q%3D_catid%3D1142_po%3D1",
+                "Yupi",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
+                        "-45ab-9be7-b23ddc7d9653.jpg",
+                false));
+        listProduct.add(new BrandsFeedViewModel(
+                1, "Test2", "Rp. 10.000",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://www.tokopedia" +
+                        "" +
+                        ".com/yupi-store/yupi-noodles?trkid=f%3DCa0000L000P0W0S0Sh00Co0Po0Fr0Cb0_src%3Dshop-product_page%3D1_ob%3D11_q%3D_catid%3D1142_po%3D1",
+                "Yupi",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
+                        "-45ab-9be7-b23ddc7d9653.jpg",
+                false));
+        listProduct.add(new BrandsFeedViewModel(
+                1, "Test3", "Rp. 10.000",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://www.tokopedia" +
+                        "" +
+                        ".com/yupi-store/yupi-noodles?trkid=f%3DCa0000L000P0W0S0Sh00Co0Po0Fr0Cb0_src%3Dshop-product_page%3D1_ob%3D11_q%3D_catid%3D1142_po%3D1",
+                "Yupi",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
+                        "-45ab-9be7-b23ddc7d9653.jpg",
+                false));
+        listProduct.add(new BrandsFeedViewModel(
+                1, "Test4", "Rp. 10.000",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://ecs7.tokopedia" +
+                        ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
+                        "-eff8-4fd6-a1c2-663db49db715_564_468.jpg",
+                "https://www.tokopedia" +
+                        "" +
+                        ".com/yupi-store/yupi-noodles?trkid=f%3DCa0000L000P0W0S0Sh00Co0Po0Fr0Cb0_src%3Dshop-product_page%3D1_ob%3D11_q%3D_catid%3D1142_po%3D1",
+                "Yupi",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
+                        "-45ab-9be7-b23ddc7d9653.jpg",
+                false));
+        return listProduct;
     }
 
     private boolean checkCanShowTopads(int dataSource) {
@@ -176,6 +258,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
+
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType()) {
                     case TYPE_NEW_PRODUCT:

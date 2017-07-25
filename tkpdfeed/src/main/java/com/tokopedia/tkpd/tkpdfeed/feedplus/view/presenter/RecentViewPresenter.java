@@ -1,13 +1,12 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUsecase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.RecentView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.AddWishlistSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.RecentViewSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.RemoveWishlistSubscriber;

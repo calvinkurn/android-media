@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
 import android.content.Context;
 import android.content.res.Resources;

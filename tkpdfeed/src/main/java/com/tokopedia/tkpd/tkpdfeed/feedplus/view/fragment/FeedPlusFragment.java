@@ -44,8 +44,8 @@ import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedTrackingEventLabel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.RecentViewActivity;
@@ -83,8 +83,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.core.talkview.intentservice.TalkDetailIntentService.POSITION;
 
 /**
  * @author by nisie on 5/15/17.
