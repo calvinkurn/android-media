@@ -289,7 +289,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.BannerWebView"
-            android:label="@string/title_activity_promo"
+            android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.TopPicksWebView"
