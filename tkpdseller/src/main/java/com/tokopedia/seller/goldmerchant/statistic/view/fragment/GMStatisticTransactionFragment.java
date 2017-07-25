@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
@@ -35,10 +36,11 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Inject
     GMStatisticTransactionPresenter presenter;
 
-    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
-    private GMTransactionGraphViewHolder gmTransactionGraphViewHelper;
-    private UnFinishedTransactionViewHolder unFinishedTransactionViewHolder;
+
+    private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
+    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
+    private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -56,9 +58,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHolder(getActivity());
-        gmTransactionGraphViewHelper = new GMTransactionGraphViewHolder(getActivity());
-        unFinishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
+        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
+        gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(getActivity());
+        finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
     }
 
     @Nullable
@@ -66,9 +68,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
         presenter.attachView(this);
-        gmTopAdsAmountViewHelper.initView(view);
-        gmTransactionGraphViewHelper.initView(view);
-        unFinishedTransactionViewHolder.initView(view);
+        gmTopAdsAmountViewHolder.initView(view);
+        gmTransactionGraphViewHolder.initView(view);
+        finishedTransactionViewHolder.initView(view);
 
         gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
@@ -91,24 +93,20 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void loadData() {
         super.loadData();
+        loadingState(LoadingStateView.VIEW_LOADING);
         presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
+    private void loadingState(int state) {
+        gmTransactionGraphViewHolder.setLoadingState(state);
+        gmTopAdsAmountViewHolder.setLoadingState(state);
+        finishedTransactionViewHolder.setLoadingState(state);
     }
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHelper.bind(mergeWithIsCompare(mergeModel.gmTransactionGraphViewModel));
-        unFinishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
+        gmTransactionGraphViewHolder.bind(mergeWithIsCompare(mergeModel.gmTransactionGraphViewModel));
+        finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
     }
 
     private GMTransactionGraphViewModel mergeWithIsCompare(GMTransactionGraphViewModel viewModel) {
@@ -119,28 +117,27 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         viewModel.rejectedAmountModel.isCompare = datePickerViewModel.isCompareDate();
         viewModel.shippingCostModel.isCompare = datePickerViewModel.isCompareDate();
         viewModel.rejectTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-
         return viewModel;
     }
 
     @Override
     public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindNoData(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bindNoData(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bind(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bind(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindNoTopAdsCredit(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bindNoTopAdsCredit(setStaticText(gmTopAdsAmountViewModel));
     }
 
     @Override
     public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHelper.bindTopAdsCreditNotUsed(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(setStaticText(gmTopAdsAmountViewModel));
     }
 
     private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
@@ -153,5 +150,16 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public boolean isComparedDate() {
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
