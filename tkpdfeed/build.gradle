@@ -38,10 +38,7 @@ publishing {
             groupId 'com.tokopedia.customer'
             artifactId 'customer'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/t" +
-                    "" +
-                    "" +
-                    "-release.aar")
+            artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
@@ -111,7 +108,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile project(':tkpdcore')
+    compile getTkpdCore()
     compile getTopAdsSdk()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
