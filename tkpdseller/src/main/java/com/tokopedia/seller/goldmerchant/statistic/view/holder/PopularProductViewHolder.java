@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.content.Intent;
 import android.view.View;
@@ -19,14 +19,14 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
  * Created by normansyahputa on 11/9/16.
  */
 
-public class PopularProductViewHelper {
+public class PopularProductViewHolder {
     private final TitleCardView popularProductCardView;
     private ImageView ivPopularProduct;
     private TextView tvPopularProductDescription;
     private TextView tvNoOfSelling;
     private GetPopularProduct getPopularProduct;
 
-    public PopularProductViewHelper(TitleCardView popularProductCardView) {
+    public PopularProductViewHolder(TitleCardView popularProductCardView) {
         initView(popularProductCardView);
         this.popularProductCardView = popularProductCardView;
     }

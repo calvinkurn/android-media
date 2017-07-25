@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +29,7 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.NUMBER_TIMES_FORM
  * Created by normansyahputa on 11/23/16.
  */
 
-public class MarketInsightViewHelper {
+public class MarketInsightViewHolder {
 
     public static final String DEFAULT_CATEGORY = "kaos";
     public static final int MAX_KEYWORD_SHOWN = 3;
@@ -40,7 +40,7 @@ public class MarketInsightViewHelper {
     private boolean isGoldMerchant;
     private MarketInsightAdapter marketInsightAdapter;
 
-    public MarketInsightViewHelper(TitleCardView view, boolean isGoldMerchant) {
+    public MarketInsightViewHolder(TitleCardView view, boolean isGoldMerchant) {
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
         initView(view);

@@ -16,11 +16,11 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.BuyerDataViewHelper;
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
-import com.tokopedia.seller.gmstat.views.MarketInsightViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.BuyerDataViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.DataTransactionViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.MarketInsightViewHolder;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
-import com.tokopedia.seller.gmstat.views.PopularProductViewHelper;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.PopularProductViewHolder;
 import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
 import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
@@ -78,13 +78,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private String messageExceptionDescription;
     private String defaultExceptionDescription;
 
-    private MarketInsightViewHelper marketInsightViewHelper;
-    private PopularProductViewHelper popularProductViewHelper;
+    private MarketInsightViewHolder marketInsightViewHolder;
+    private PopularProductViewHolder popularProductViewHolder;
 
-    private DataTransactionViewHelper dataTransactionViewHelper;
+    private DataTransactionViewHolder dataTransactionViewHolder;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
 
-    private BuyerDataViewHelper buyerDataViewHelper;
+    private BuyerDataViewHolder buyerDataViewHolder;
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
@@ -166,7 +166,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-        buyerDataViewHelper.bindData(getBuyerGraph);
+        buyerDataViewHolder.bindData(getBuyerGraph);
     }
 
     @Override
@@ -183,16 +183,16 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         initViews(view);
         initNumberFormatter();
         TitleCardView popularProductCardView = (TitleCardView) view.findViewById(R.id.popular_product_card_view);
-        popularProductViewHelper = new PopularProductViewHelper(popularProductCardView);
+        popularProductViewHolder = new PopularProductViewHolder(popularProductCardView);
 
         TitleCardView transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
-        dataTransactionViewHelper = new DataTransactionViewHelper(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
+        dataTransactionViewHolder = new DataTransactionViewHolder(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
 
         TitleCardView marketInsightCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
-        marketInsightViewHelper = new MarketInsightViewHelper(marketInsightCardView, sessionHandler.isGoldMerchant(getActivity()));
+        marketInsightViewHolder = new MarketInsightViewHolder(marketInsightCardView, sessionHandler.isGoldMerchant(getActivity()));
 
         TitleCardView buyerDataCardView = (TitleCardView) view.findViewById(R.id.buyer_data_card_view);
-        buyerDataViewHelper = new BuyerDataViewHelper(buyerDataCardView);
+        buyerDataViewHolder = new BuyerDataViewHolder(buyerDataCardView);
 
         gmNetworkErrorHelper = new GMNetworkErrorHelper(null, view);
 
@@ -201,7 +201,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         initBuyerDataLoading();
         initMarketInsightLoading();
         gmDashboardPresenter.initInstance();
-        dataTransactionViewHelper.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
+        dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return view;
     }
 
@@ -211,19 +211,19 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     private void initMarketInsightLoading() {
-        marketInsightViewHelper.showLoading();
+        marketInsightViewHolder.showLoading();
     }
 
     private void initBuyerDataLoading() {
-        buyerDataViewHelper.showLoading();
+        buyerDataViewHolder.showLoading();
     }
 
     private void initTransactionDataLoading() {
-        dataTransactionViewHelper.showLoading();
+        dataTransactionViewHolder.showLoading();
     }
 
     private void initPopularLoading() {
-        popularProductViewHelper.showLoading();
+        popularProductViewHolder.showLoading();
     }
 
     @Override
@@ -255,14 +255,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onGetShopCategoryEmpty() {
-        marketInsightViewHelper.bindNoShopCategory();
+        marketInsightViewHolder.bindNoShopCategory();
     }
 
     @Override
     public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        dataTransactionViewHelper.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        dataTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
     }
 
     @Override
@@ -276,17 +276,17 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-        popularProductViewHelper.bindData(getPopularProduct);
+        popularProductViewHolder.bindData(getPopularProduct);
     }
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        marketInsightViewHelper.bindData(getKeywords);
+        marketInsightViewHolder.bindData(getKeywords);
     }
 
     @Override
     public void onSuccessGetCategory(String categoryName) {
-        marketInsightViewHelper.bindCategory(categoryName);
+        marketInsightViewHolder.bindCategory(categoryName);
     }
 
     @Override

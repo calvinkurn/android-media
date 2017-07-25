@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
@@ -20,7 +20,7 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMA
  * Created by normansyahputa on 11/11/16.
  */
 
-public class BuyerDataViewHelper {
+public class BuyerDataViewHolder {
 
     public static final String DEFAULT_PERCENT_PIE = "0%";
     private DonutProgress buyerDataPieChart;
@@ -36,7 +36,7 @@ public class BuyerDataViewHelper {
     private int redColor;
     private int greyColor;
 
-    public BuyerDataViewHelper(TitleCardView buyerDataCardView) {
+    public BuyerDataViewHolder(TitleCardView buyerDataCardView) {
         this.buyerDataCardView = buyerDataCardView;
         buyerDataPieChart = (DonutProgress) buyerDataCardView.findViewById(R.id.buyer_data_pie_chart);
         tvBuyerAmount = (TextView) buyerDataCardView.findViewById(R.id.tv_buyer_amount);

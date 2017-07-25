@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +27,7 @@ import java.util.List;
  * @author normansyahputa
  */
 
-public class DataTransactionViewHelper {
+public class DataTransactionViewHolder {
     private LineChartView transactionChart;
 
     private TitleCardView transactionDataCardView;
@@ -40,7 +40,7 @@ public class DataTransactionViewHelper {
     private DataTransactionChartConfig dataTransactionChartConfig;
     private String[] monthNamesAbrev;
 
-    public DataTransactionViewHelper(TitleCardView transactionDataCardView, boolean isGoldMerchant) {
+    public DataTransactionViewHolder(TitleCardView transactionDataCardView, boolean isGoldMerchant) {
         baseWilliamChartConfig = new BaseWilliamChartConfig();
 
         this.transactionDataCardView = transactionDataCardView;
