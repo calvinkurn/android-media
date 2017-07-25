@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
@@ -32,6 +34,8 @@ import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.appupdate.ApplicationUpdate;
+import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
@@ -56,6 +60,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -222,6 +227,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
         cacheHandler = new AnalyticsCacheHandler();
+
+        checkAppUpdate();
     }
 
     @Override
@@ -695,6 +702,45 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     public interface ChangeTabListener {
         void onChangeTab(int i);
+    }
+
+    private void checkAppUpdate() {
+        ApplicationUpdate appUpdate = FirebaseRemoteAppUpdate.getInstance(this);
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                showUpdatePrompt(detail);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void showUpdatePrompt(final DetailUpdate detail) {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(detail.getUpdateTitle());
+        dialog.setMessage(detail.getUpdateMessage());
+        dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink())));
+            }
+        });
+        dialog.setCancelable(false);
+
+        if(!detail.isForceUpdate()) {
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            dialog.setCancelable(true);
+        }
+        dialog.show();
     }
 
 }
