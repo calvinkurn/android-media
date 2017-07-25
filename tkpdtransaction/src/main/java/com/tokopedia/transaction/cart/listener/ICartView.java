@@ -112,4 +112,6 @@ public interface ICartView extends IBaseView {
 
     void refreshCartList();
 
+    void renderInstantPromo();
+
 }

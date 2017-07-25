@@ -172,6 +172,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     RelativeLayout layoutCartFragment;
     @BindView(R2.id.total_payment_loading)
     ProgressBar totalPaymentLoading;
+    @BindView(R2.id.instant_insert_voucher_layout)
+    LinearLayout instantInsertVoucherLayout;
+    @BindView(R2.id.instant_insert_voucher_text_view)
+    TextView instantInsertVoucherTextView;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -593,6 +597,17 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         donasiInfo.setOnClickListener(getDonasiInfoListener(donation));
     }
 
+    private View.OnClickListener insertCode(final String voucherCode) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cbUseVoucher.setChecked(true);
+                etVoucherCode.setText(voucherCode);
+                getButtonCheckVoucherClickListener();
+            }
+        };
+    }
+
     @Override
     public String getStringFromResource(@StringRes int resId) {
         return getResources().getString(resId);
@@ -677,6 +692,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             tvTotalPayment.setText(ValueConverter.getStringIdrFormat(grandTotal));
         }
         totalPaymentLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderInstantPromo() {
+        instantInsertVoucherTextView.setOnClickListener(insertCode("aaaaaa"));
     }
 
     @Override

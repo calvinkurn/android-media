@@ -354,6 +354,19 @@
 
                         </RelativeLayout>
 
+                        <LinearLayout
+                            android:id="@+id/instant_insert_voucher_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/instant_insert_voucher_text_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Ini tes kode Promo instant"/>
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
