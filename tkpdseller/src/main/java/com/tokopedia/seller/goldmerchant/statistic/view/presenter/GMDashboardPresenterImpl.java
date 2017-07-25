@@ -96,8 +96,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
         @Override
         public void onError(Throwable e) {
-            if (isViewAttached())
-                getView().onError(e);
+            showMessageError(e);
         }
 
         @Override
@@ -105,6 +104,12 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
         }
     };
+
+    private void showMessageError(Throwable e) {
+        if (isViewAttached())
+            getView().onError(e);
+    }
+
     private GMStatNetworkController gmStatNetworkController;
     private GMStatMarketInsightUseCase marketInsightUseCase;
     private GMStatGetBuyerGraphUseCase buyerGraphUseCase;
@@ -201,7 +206,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                showMessageError(e);
             }
 
             @Override
@@ -221,7 +226,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                showMessageError(e);
             }
 
             @Override
@@ -252,7 +257,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                showMessageError(e);
             }
 
             @Override
@@ -272,7 +277,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                showMessageError(e);
             }
 
             @Override
@@ -289,7 +294,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                showMessageError(e);
             }
 
             @Override

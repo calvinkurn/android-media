@@ -88,6 +88,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
     private NestedScrollView contentGMStat;
+    private boolean isErrorShow;
 
     public GMStatisticDashboardFragment() {
     }
@@ -278,6 +279,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onError(Throwable e) {
+        if(!isErrorShow)
+            isErrorShow = true;
+        else
+            return;
+
         gmDashboardPresenter.displayDefaultValue(getActivity().getAssets());
 
         final StringBuilder textMessage = new StringBuilder("");
@@ -298,6 +304,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                                 @Override
                                 public void onClick(@SuppressWarnings("UnusedParameters") View view) {
                                     gmDashboardPresenter.fetchData();
+                                    isErrorShow = false;
                                 }
                             });
                 }
