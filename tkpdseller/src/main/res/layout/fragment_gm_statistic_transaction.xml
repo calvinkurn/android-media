@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_med"
+        android:clipChildren="false"
         android:clipToPadding="false"
-        android:clipChildren="false">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_med">
 
         <com.tokopedia.seller.lib.widget.DateLabelView
             android:id="@+id/date_label_view"
@@ -41,8 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            app:title_card_view_title="@string/unfinished_transaction_text"
-            app:loading_layout="@layout/item_loading_gmstat_pie_chart">
+            app:loading_layout="@layout/item_loading_gmstat_pie_chart"
+            app:title_card_view_title="@string/unfinished_transaction_text">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,9 +99,9 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardPreventCornerOverlap="false"
+            android:layout_marginTop="@dimen/product_margin_cards"
             app:cardElevation="1dp"
-            android:layout_marginTop="@dimen/product_margin_cards">
+            app:cardPreventCornerOverlap="false">
             <com.tokopedia.seller.lib.widget.LabelView
                 android:id="@+id/gm_statistic_label_sold_product_list_view"
                 android:layout_width="match_parent"

@@ -12,9 +12,9 @@
         android:id="@+id/transaction_data_container_gold_merchant"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
         android:layout_marginRight="@dimen/gmstat_padding_item_left_right"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:weightSum="1">
         <LinearLayout

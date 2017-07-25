@@ -4,11 +4,11 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 import com.tokopedia.seller.gmstat.views.widget.ArrowPercentageView;
-import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 
 import java.util.Locale;

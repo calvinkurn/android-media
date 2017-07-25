@@ -3,7 +3,6 @@ package com.tokopedia.seller.gmstat.utils;
 import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;
 
 import java.text.DateFormat;

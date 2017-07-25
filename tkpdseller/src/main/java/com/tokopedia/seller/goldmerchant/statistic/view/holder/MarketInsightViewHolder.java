@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
-import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 

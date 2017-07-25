@@ -2,8 +2,8 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.view.View;
 
-import com.tokopedia.seller.R;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummaryView;
 

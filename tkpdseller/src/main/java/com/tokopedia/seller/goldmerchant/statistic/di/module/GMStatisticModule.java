@@ -9,8 +9,6 @@ import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenterImpl;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
@@ -21,6 +19,8 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTr
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionTableUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;

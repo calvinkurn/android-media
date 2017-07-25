@@ -13,10 +13,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
-import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
