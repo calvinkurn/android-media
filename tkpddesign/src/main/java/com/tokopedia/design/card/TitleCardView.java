@@ -26,20 +26,20 @@ public class TitleCardView extends CardView {
     @LayoutRes
     public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_title_card_loading;
 
-    LoadingStateView mLoadingStateView;
-    OnArrowDownClickListener onArrowDownClickListener;
+    private LoadingStateView loadingStateView;
+    private OnArrowDownClickListener onArrowDownClickListener;
     private TextView tvTitle;
-    private float mTitleTextSize;
+    private float titleTextSize;
     private ImageView ivArrowDown;
     private ViewGroup vgTitle;
 
     private View loadingTitleView;
 
-    private CharSequence mTitleString;
-    private int mLoadingLayoutRes;
-    private int mEmptyLayoutRes;
-    private Drawable mIconDrawable;
-    private boolean mUseGradientTitleLoading;
+    private CharSequence titleString;
+    private int loadingLayoutRes;
+    private int emptyLayoutRes;
+    private Drawable iconDrawable;
+    private boolean useGradientTitleLoading;
     private ViewGroup vgTitleContent;
 
     public TitleCardView(Context context) {
@@ -63,12 +63,12 @@ public class TitleCardView extends CardView {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
-        mTitleString = a.getString(R.styleable.TitleCardView_title_card_view_title);
-        mTitleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_title_size, 0);
-        mLoadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_loading_layout, 0);
-        mEmptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_empty_layout, 0);
-        mIconDrawable = a.getDrawable(R.styleable.TitleCardView_icon);
-        mUseGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_use_gradient_title_loading, true);
+        titleString = a.getString(R.styleable.TitleCardView_title_card_view_title);
+        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_title_size, 0);
+        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_loading_layout, 0);
+        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_empty_layout, 0);
+        iconDrawable = a.getDrawable(R.styleable.TitleCardView_icon);
+        useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_use_gradient_title_loading, true);
         a.recycle();
     }
 
@@ -77,33 +77,33 @@ public class TitleCardView extends CardView {
         vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
         vgTitleContent = (ViewGroup) vgTitle.findViewById(R.id.vg_title_content);
         tvTitle = (TextView) vgTitleContent.findViewById(R.id.tv_title);
-        if (mTitleTextSize!= 0) {
-            tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleTextSize);
+        if (titleTextSize != 0) {
+            tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         }
         ImageView ivIcon = (ImageView) vgTitleContent.findViewById(R.id.iv_icon);
-        if (mIconDrawable == null) {
+        if (iconDrawable == null) {
             ivIcon.setVisibility(View.GONE);
         } else {
-            ivIcon.setImageDrawable(mIconDrawable);
+            ivIcon.setImageDrawable(iconDrawable);
             ivIcon.setVisibility(View.VISIBLE);
         }
         ivArrowDown = (ImageView) vgTitleContent.findViewById(R.id.iv_arrow_down);
 
-        mLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view);
-        if (mEmptyLayoutRes!= 0) {
-            mLoadingStateView.setEmptyViewRes(mEmptyLayoutRes);
+        loadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view);
+        if (emptyLayoutRes != 0) {
+            loadingStateView.setEmptyViewRes(emptyLayoutRes);
         }
-        if (mLoadingLayoutRes!= 0) {
-            mLoadingStateView.setLoadingViewRes(mLoadingLayoutRes);
+        if (loadingLayoutRes != 0) {
+            loadingStateView.setLoadingViewRes(loadingLayoutRes);
         }
 
-        setTitle(mTitleString);
+        setTitle(titleString);
         ivArrowDown.setVisibility(View.GONE);
 
         this.setPreventCornerOverlap(false);
 
         setAddStatesFromChildren(true);
-        mLoadingStateView.setAddStatesFromChildren(true);
+        loadingStateView.setAddStatesFromChildren(true);
     }
 
     public void setOnArrowDownClickListener(final OnArrowDownClickListener onArrowDownClickListener) {
@@ -127,8 +127,8 @@ public class TitleCardView extends CardView {
     // there are 2 condition,
     // when the title is empty, or the listener is empty,
     // arrowDown will be hidden and title cannot be clicked
-    private void checkArrowDownVisibility(){
-        if (onArrowDownClickListener== null || TextUtils.isEmpty(tvTitle.getText())){
+    private void checkArrowDownVisibility() {
+        if (onArrowDownClickListener == null || TextUtils.isEmpty(tvTitle.getText())) {
             vgTitleContent.setClickable(false);
             ivArrowDown.setVisibility(View.GONE);
         } else {
@@ -148,43 +148,43 @@ public class TitleCardView extends CardView {
             // Carry on adding the View...
             super.addView(child, index, params);
         } else {
-            mLoadingStateView.addView(child, index, params);
+            loadingStateView.addView(child, index, params);
         }
     }
 
     public void setLoadingViewRes(int loadingViewRes) {
-        mLoadingStateView.setLoadingViewRes(loadingViewRes);
+        loadingStateView.setLoadingViewRes(loadingViewRes);
     }
 
     public View getLoadingView() {
-        return mLoadingStateView.getLoadingView();
+        return loadingStateView.getLoadingView();
     }
 
     public View getContentView() {
-        return mLoadingStateView.getContentView();
+        return loadingStateView.getContentView();
     }
 
     public void setLoadingView(View loadingView) {
-        mLoadingStateView.setLoadingView(loadingView);
+        loadingStateView.setLoadingView(loadingView);
     }
 
     public void setEmptyViewRes(int emptyViewRes) {
-        mLoadingStateView.setEmptyViewRes(emptyViewRes);
+        loadingStateView.setEmptyViewRes(emptyViewRes);
     }
 
     public View getEmptyView() {
-        return mLoadingStateView.getEmptyView();
+        return loadingStateView.getEmptyView();
     }
 
     public void setEmptyView(View emptyView) {
-        mLoadingStateView.setEmptyView(emptyView);
+        loadingStateView.setEmptyView(emptyView);
     }
 
     // showing that the content to loading state
-    public void setLoadingState (boolean isLoading){
-        mLoadingStateView.setLoadingState(isLoading);
-        if (isLoading && mLoadingStateView.getLoadingView()!= null) {
-            if (mUseGradientTitleLoading) {
+    private void setLoadingState(boolean isLoading) {
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        if (isLoading && loadingStateView.getLoadingView() != null) {
+            if (useGradientTitleLoading) {
                 setLoadingTitleState(true);
             }
         } else {
@@ -193,37 +193,44 @@ public class TitleCardView extends CardView {
     }
 
     // will animate the title to gradient, showing that the title is loading
-    private void setLoadingTitleState(boolean isLoading){
+    private void setLoadingTitleState(boolean isLoading) {
         if (loadingTitleView == null) {
             setDefaultLoadingTitleView();
         }
         if (isLoading && this.loadingTitleView != null) {
-            if (vgTitleContent!= null) {
+            if (vgTitleContent != null) {
                 vgTitleContent.setVisibility(View.GONE);
             }
             loadingTitleView.setVisibility(View.VISIBLE);
         } else {
-            if (loadingTitleView!= null) {
+            if (loadingTitleView != null) {
                 loadingTitleView.setVisibility(View.GONE);
             }
-            if (vgTitleContent!= null) {
+            if (vgTitleContent != null) {
                 vgTitleContent.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public void setEmptyState (boolean isEmpty){
-        mLoadingStateView.setEmptyState(isEmpty);
+    public void setViewState(int state) {
+        if (state == LoadingStateView.VIEW_LOADING) {
+            setLoadingState(true);
+        } else if (state == LoadingStateView.VIEW_EMPTY) {
+            setLoadingState(false);
+        } else {
+            setLoadingState(false);
+        }
+        loadingStateView.setViewState(state);
     }
 
-    public void setDefaultLoadingTitleView(){
+    public void setDefaultLoadingTitleView() {
         this.loadingTitleView = LayoutInflater.from(getContext()).inflate(DEFAULT_LOADING_TITLE_LAYOUT_RES, vgTitle, false);
         loadingTitleView.setVisibility(View.GONE);
         vgTitle.addView(loadingTitleView);
     }
 
     public void setTitle(CharSequence title) {
-        mTitleString = title;
+        titleString = title;
         tvTitle.setText(title);
         checkArrowDownVisibility();
     }

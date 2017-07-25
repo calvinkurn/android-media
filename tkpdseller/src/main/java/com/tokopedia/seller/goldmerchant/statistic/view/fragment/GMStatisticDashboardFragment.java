@@ -14,7 +14,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
@@ -77,19 +76,18 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private String messageExceptionDescription;
     private String defaultExceptionDescription;
 
-    private MarketInsightViewHolder marketInsightViewHolder;
-    private PopularProductViewHolder popularProductViewHolder;
-
-    private DataTransactionViewHolder dataTransactionViewHolder;
-    private GMNetworkErrorHelper gmNetworkErrorHelper;
-
-    private BuyerDataViewHolder buyerDataViewHolder;
-
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
+    private PopularProductViewHolder popularProductViewHolder;
+    private DataTransactionViewHolder dataTransactionViewHolder;
+    private BuyerDataViewHolder buyerDataViewHolder;
+    private MarketInsightViewHolder marketInsightViewHolder;
+
+    private GMNetworkErrorHelper gmNetworkErrorHelper;
+
     private NestedScrollView contentGMStat;
     private boolean isErrorShow;
-
+    
     public GMStatisticDashboardFragment() {
     }
 
@@ -100,7 +98,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
-
         gmDashboardPresenter.attachView(this);
         gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
             @Override
@@ -120,11 +117,43 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         });
     }
 
-    void initViews(View rootView) {
+    @Override
+    public void onLoadGMStatTracking() {
+        UnifyTracking.eventLoadGMStat();
+    }
 
+    @Override
+    public void onScrollGMStatTracking() {
+        UnifyTracking.eventScrollGMStat();
+    }
+
+    @Override
+    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
+        buyerDataViewHolder.bindData(getBuyerGraph);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
+        initViews(view);
+        initNumberFormatter();
+        gmNetworkErrorHelper = new GMNetworkErrorHelper(null, view);
+        resetToLoading();
+        dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
+        return view;
+    }
+
+    private void initViews(View rootView) {
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(rootView);
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(rootView);
-
+        TitleCardView popularProductCardView = (TitleCardView) rootView.findViewById(R.id.popular_product_card_view);
+        popularProductViewHolder = new PopularProductViewHolder(popularProductCardView);
+        TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
+        dataTransactionViewHolder = new DataTransactionViewHolder(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
+        marketInsightViewHolder = new MarketInsightViewHolder(rootView, sessionHandler.isGoldMerchant(getActivity()));
+        TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
+        buyerDataViewHolder = new BuyerDataViewHolder(buyerDataCardView);
         tryAgainText = getString(R.string.try_again);
         unknownExceptionDescription = getString(R.string.unknown_exception_description);
         messageExceptionDescription = getString(R.string.message_exception_description);
@@ -149,59 +178,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void resetToLoading() {
-        initPopularLoading();
-        initTransactionDataLoading();
-        initBuyerDataLoading();
-        initMarketInsightLoading();
-    }
-
-    @Override
-    public void onLoadGMStatTracking() {
-        UnifyTracking.eventLoadGMStat();
-    }
-
-    @Override
-    public void onScrollGMStatTracking() {
-        UnifyTracking.eventScrollGMStat();
-    }
-
-    @Override
-    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-        buyerDataViewHolder.bindData(getBuyerGraph);
-    }
-
-    @Override
-    public DatePickerViewModel datePickerViewModel() {
-        return datePickerViewModel;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
-
-        initViews(view);
-        initNumberFormatter();
-        TitleCardView popularProductCardView = (TitleCardView) view.findViewById(R.id.popular_product_card_view);
-        popularProductViewHolder = new PopularProductViewHolder(popularProductCardView);
-
-        TitleCardView transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
-        dataTransactionViewHolder = new DataTransactionViewHolder(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
-
-        TitleCardView marketInsightCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
-        marketInsightViewHolder = new MarketInsightViewHolder(marketInsightCardView, sessionHandler.isGoldMerchant(getActivity()));
-
-        TitleCardView buyerDataCardView = (TitleCardView) view.findViewById(R.id.buyer_data_card_view);
-        buyerDataViewHolder = new BuyerDataViewHolder(buyerDataCardView);
-
-        gmNetworkErrorHelper = new GMNetworkErrorHelper(null, view);
-
-        initPopularLoading();
-        initTransactionDataLoading();
-        initBuyerDataLoading();
-        initMarketInsightLoading();
-        dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
-        return view;
+        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        popularProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        dataTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        buyerDataViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        marketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     private void initNumberFormatter() {
@@ -209,26 +191,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
-    private void initMarketInsightLoading() {
-        marketInsightViewHolder.showLoading();
-    }
-
-    private void initBuyerDataLoading() {
-        buyerDataViewHolder.showLoading();
-    }
-
-    private void initTransactionDataLoading() {
-        dataTransactionViewHolder.showLoading();
-    }
-
-    private void initPopularLoading() {
-        popularProductViewHolder.showLoading();
-    }
-
     @Override
     public void loadData() {
         super.loadData();
         gmDashboardPresenter.onResume();
+        gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
     @Override
@@ -303,18 +270,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                             , new OnActionClickListener() {
                                 @Override
                                 public void onClick(@SuppressWarnings("UnusedParameters") View view) {
-                                    gmDashboardPresenter.fetchData();
+                                    gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
                                     isErrorShow = false;
                                 }
                             });
                 }
             }
         }, 100);
-    }
-
-    @Override
-    public void onFailure() {
-
     }
 
     @Override

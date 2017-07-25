@@ -11,7 +11,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDash
 
 public abstract class GMDashboardPresenter extends BaseDaggerPresenter<GMStatisticDashboardView> {
 
-    public abstract void fetchData();
+    public abstract void fetchData(long startDate, long endDate);
 
     public abstract void onResume();
 

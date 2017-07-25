@@ -44,7 +44,6 @@ public class GMStatisticGrossViewHolder {
         grossLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_gross);
         grossLineChartContainer = (LineChartContainerWidget) view.findViewById(R.id.line_chart_container_gross);
         grossLineChartView = (LineChartView) view.findViewById(R.id.line_chart_gross);
-        grossLoadingStateView.setLoadingState(true);
 
         monthNamesAbrev = view.getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
         baseWilliamChartConfig = new BaseWilliamChartConfig();

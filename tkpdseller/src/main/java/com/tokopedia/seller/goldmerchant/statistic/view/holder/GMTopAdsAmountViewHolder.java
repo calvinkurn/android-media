@@ -103,18 +103,14 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
     }
 
     public void setLoadingState(int state) {
-        if (state == LoadingStateView.VIEW_LOADING) {
-            gmStatisticTopAdsCardView.setLoadingState(true);
-        } else {
-            gmStatisticTopAdsCardView.setLoadingState(false);
-        }
+        gmStatisticTopAdsCardView.setViewState(state);
     }
 
     public void bindNoData(@Nullable GMGraphViewModel data) {
         gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
         EmptyViewHolder emptyNoDataViewHolder = new EmptyNoDataViewHolder(gmStatisticTopAdsCardView.getEmptyView());
         emptyNoDataViewHolder.bind(data);
-        gmStatisticTopAdsCardView.setEmptyState(true);
+        gmStatisticTopAdsCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
 
@@ -122,7 +118,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
         gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
         EmptyViewHolder emptyNoDataViewHolder = new EmptyNoTopAdsCreditHolder(gmStatisticTopAdsCardView.getEmptyView());
         emptyNoDataViewHolder.bind(data);
-        gmStatisticTopAdsCardView.setEmptyState(true);
+        gmStatisticTopAdsCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
 
@@ -130,7 +126,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
         gmStatisticTopAdsCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
         EmptyViewHolder emptyNoDataViewHolder = new EmptyTopAdsCreditNotUsedHolder(gmStatisticTopAdsCardView.getEmptyView());
         emptyNoDataViewHolder.bind(data);
-        gmStatisticTopAdsCardView.setEmptyState(true);
+        gmStatisticTopAdsCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     abstract class EmptyViewHolder {
