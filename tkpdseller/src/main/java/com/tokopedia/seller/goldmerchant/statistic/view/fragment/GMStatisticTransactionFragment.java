@@ -13,7 +13,7 @@ import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantCompone
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;

@@ -19,7 +19,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.db.GMStatActionType;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

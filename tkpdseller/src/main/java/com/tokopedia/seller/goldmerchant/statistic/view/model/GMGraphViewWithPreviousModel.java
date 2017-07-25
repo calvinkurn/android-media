@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper.model;
+package com.tokopedia.seller.goldmerchant.statistic.view.model;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.helper.model;
+package com.tokopedia.seller.goldmerchant.statistic.view.model;
 
 /**
  * Created by normansyahputa on 7/18/17.

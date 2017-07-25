@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
 
 /**
  * Created by normansyahputa on 7/11/17.
