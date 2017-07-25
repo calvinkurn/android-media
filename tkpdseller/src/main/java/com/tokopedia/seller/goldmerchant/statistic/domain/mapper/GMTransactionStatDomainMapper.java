@@ -190,7 +190,7 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
             gmTopAdsAmountViewModel.percentage = gmTopAdsAmountViewModel.amount - previousAmount / gmTopAdsAmountViewModel.amount;
         } catch (Exception e) {
             Log.e(TAG, String.format("amount %s previous amount %s", Integer.toString(gmTopAdsAmountViewModel.amount), Long.toString(previousAmount)));
-            gmTopAdsAmountViewModel.percentage = -GMStatConstant.NO_DATA_AVAILABLE * 100;
+            gmTopAdsAmountViewModel.percentage = -GMStatConstant.NO_DATA_AVAILABLE;
         }
 
         return gmTopAdsAmountViewModel;

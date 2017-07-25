@@ -105,7 +105,7 @@ public class BuyerDataViewHolder {
 
         tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
 
-        double percentage = diffTotalPercent * 100D;
+        double percentage = diffTotalPercent;
         arrowPercentageView.setPercentage(percentage);
     }
 

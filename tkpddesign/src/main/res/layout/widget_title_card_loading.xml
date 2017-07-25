@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginLeft="@dimen/margin_sm"
+    android:layout_marginRight="@dimen/margin_sm"
+    android:layout_marginTop="@dimen/margin_small"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <View
+        android:id="@+id/iv_icon" android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="#44DDDDDD"/>
+    <View
+        android:layout_width="150dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="20dp"
+        android:background="#44DDDDDD"/>
+</LinearLayout>

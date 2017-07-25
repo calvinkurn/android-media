@@ -51,7 +51,7 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
             tvPercentage.setTextColor(arrowUp);
             isDefault = true;
         } else if (percentage < 0) {// down here
-            if (percentage == GMStatConstant.NO_DATA_AVAILABLE * 100) {
+            if (percentage == GMStatConstant.NO_DATA_AVAILABLE) {
                 ivArrowIcon.setVisibility(View.GONE);
                 tvPercentage.setTextColor(greyColor);
                 isDefault = false;

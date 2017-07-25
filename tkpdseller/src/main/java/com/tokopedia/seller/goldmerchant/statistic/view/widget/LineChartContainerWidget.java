@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -29,6 +30,7 @@ public class LineChartContainerWidget extends LinearLayout {
     private GMDateRangeView gmStatisticTransactionRangeCompare;
 
     private ViewGroup chartInnerContainer;
+    private CharSequence subtitle;
 
     public LineChartContainerWidget(Context context) {
         super(context);
@@ -50,7 +52,9 @@ public class LineChartContainerWidget extends LinearLayout {
 
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
-
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LineChartContainerWidget);
+        subtitle = a.getString(R.styleable.LineChartContainerWidget_subtitle);
+        a.recycle();
     }
 
     private void init() {
@@ -66,7 +70,7 @@ public class LineChartContainerWidget extends LinearLayout {
         gmStatisticTransactionRangeCompare = (GMDateRangeView) vgDateRange.findViewById(R.id.gm_statistic_transaction_range_compare);
         gmStatisticTransactionRangeCompare.setDrawable(R.drawable.circle_grey);
 
-        tvSubtitle.setVisibility(View.GONE);
+        setSubtitle(subtitle);
         tvAmount.setVisibility(View.GONE);
         arrowPercentageView.setVisibility(View.GONE);
         tvPercentageDesc.setVisibility(View.GONE);
@@ -118,13 +122,14 @@ public class LineChartContainerWidget extends LinearLayout {
         }
     }
 
-
+    // set percentage 1 for 100%
     public void setPercentage(Double percentage) {
         arrowPercentageView.setPercentage(percentage);
         arrowPercentageView.setVisibility(View.VISIBLE);
     }
 
     public void setSubtitle(CharSequence subtitle) {
+        this.subtitle = subtitle;
         if (TextUtils.isEmpty(subtitle)) {
             tvSubtitle.setVisibility(View.GONE);
         } else {

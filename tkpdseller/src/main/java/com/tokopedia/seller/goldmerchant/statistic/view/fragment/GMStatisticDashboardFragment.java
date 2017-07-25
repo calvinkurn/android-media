@@ -2,11 +2,11 @@ package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -87,6 +87,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
+    private NestedScrollView contentGMStat;
+    private boolean isErrorShow;
 
     public GMStatisticDashboardFragment() {
     }
@@ -129,7 +131,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         defaultExceptionDescription = getString(R.string.default_exception_description);
 
         // analytic below : https://phab.tokopedia.com/T18496
-        final ScrollView contentGMStat = (ScrollView) rootView.findViewById(R.id.content_gmstat);
+        contentGMStat = (NestedScrollView) rootView.findViewById(R.id.content_gmstat);
         contentGMStat.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -198,7 +200,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         initTransactionDataLoading();
         initBuyerDataLoading();
         initMarketInsightLoading();
-        gmDashboardPresenter.initInstance();
         dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return view;
     }
@@ -278,6 +279,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onError(Throwable e) {
+        if(!isErrorShow)
+            isErrorShow = true;
+        else
+            return;
+
         gmDashboardPresenter.displayDefaultValue(getActivity().getAssets());
 
         final StringBuilder textMessage = new StringBuilder("");
@@ -298,6 +304,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                                 @Override
                                 public void onClick(@SuppressWarnings("UnusedParameters") View view) {
                                     gmDashboardPresenter.fetchData();
+                                    isErrorShow = false;
                                 }
                             });
                 }
