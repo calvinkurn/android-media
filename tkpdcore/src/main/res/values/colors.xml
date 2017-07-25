@@ -92,4 +92,7 @@
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
+
+    <color name="color_complain_header">#c0000000</color>
+    <color name="color_complain_body">#8a000000</color>
 </resources>

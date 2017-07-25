@@ -56,6 +56,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         void actionCopyResiNumber(String resiNumber);
 
         void actionCancelReplacement(OrderData orderData);
+
+        void actionComplain(OrderData orderData);
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
@@ -220,9 +222,10 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     case TkpdState.OrderStatusState.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_TRACKER_INVALID:
-                        MenuID = item.getOrderButton().getButtonOpenDispute().equals("1")
-                                ? R.menu.order_status_menu_confirm_track_dispute
-                                : R.menu.order_status_menu_confirm_track;
+//                        MenuID = item.getOrderButton().getButtonOpenDispute().equals("1")
+//                                ? R.menu.order_status_menu_confirm_track_dispute
+//                                : R.menu.order_status_menu_confirm_track;
+                        MenuID = R.menu.order_status_menu_confirm_track_complain;
                         break;
                     case TkpdState.OrderStatusState.ORDER_CONFLICTED:
                         MenuID = R.menu.order_status_menu_show_complain;
@@ -296,6 +299,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_cancel_replacement) {
                 actionListener.actionCancelReplacement(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_complain) {
+                actionListener.actionComplain(orderData);
                 return true;
             } else {
                 return false;

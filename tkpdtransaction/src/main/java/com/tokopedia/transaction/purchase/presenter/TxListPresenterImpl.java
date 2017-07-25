@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -393,6 +395,102 @@ public class TxListPresenterImpl implements TxListPresenter {
         Dialog alertDialog = builder.create();
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         viewListener.showDialog(builder.create());
+    }
+
+    @Override
+    public void processComplain(final Context context, final OrderData orderData) {
+        showComplainDialog(context, orderData);
+    }
+
+    private void showFinishDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_finish);
+        Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
+        Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
+        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnComplain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "komplain clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                showComplainDialog(context, orderData);
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "selesai clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showComplainDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_complain);
+        TextView tvBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
+        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
+        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        String bodyContent = String.format(context.getResources().getString(R.string.string_complain_body), orderData.getOrderShop().getShopName());
+        tvBody.setText(bodyContent);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnNotReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "belum sampai clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                showNotReceiveDialog(context, orderData);
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "sudah sampai clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showNotReceiveDialog(final Context context, OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_not_received);
+        Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
+        Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        btnRefund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "refund clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        btnCheckCourier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "check courier clicked", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void doCancelReplacement(OrderData orderData) {

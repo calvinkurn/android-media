@@ -524,6 +524,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
+    public void actionComplain(OrderData orderData) {
+        presenter.processComplain(getActivity(), orderData);
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (!isLoading) {
             pagingHandler.resetPage();

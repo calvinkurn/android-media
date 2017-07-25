@@ -33,6 +33,9 @@ public class OrderButton implements Parcelable {
     @SerializedName("button_open_complaint_received")
     @Expose
     private String buttonComplaintReceived;
+    @SerializedName("button_open_complaint_not_received")
+    @Expose
+    private String buttonComplaintNotReceived;
     @SerializedName("button_cancel_request")
     @Expose
     private String buttonCancelRequest;

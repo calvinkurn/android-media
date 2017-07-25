@@ -37,4 +37,6 @@ public interface TxListPresenter {
     void onDestroyView();
 
     void cancelReplacement(Context context, OrderData orderData);
+
+    void processComplain(Context context, OrderData orderData);
 }
