@@ -1,7 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.domain;
 
 import com.tkpd.library.utils.network.CommonListener;
-import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -20,7 +19,7 @@ public interface OldGMStatRepository extends CommonListener {
 
     void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
 
-    void onSuccessProductnGraph(GetProductGraph getTransactionGraph);
+    void onSuccessProductGraph(GetProductGraph getTransactionGraph);
 
     void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
 

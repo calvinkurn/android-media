@@ -91,7 +91,7 @@ public class GMStatNetworkController {
         return repository.getTransactionGraph(sDate, eDate);
     }
 
-    public Observable<GetPopularProduct> getPopularProduct(long shopId) {
+    public Observable<GetPopularProduct> getPopularProduct() {
 
         Calendar dayOne = Calendar.getInstance();
         dayOne.add(Calendar.DATE, -30);
@@ -189,12 +189,12 @@ public class GMStatNetworkController {
                 });
     }
 
-    public void fetchData(long shopId, long startDate, long endDate, CompositeSubscription compositeSubscription, final OldGMStatRepository oldGMStatRepository) {
+    public void fetchData(long startDate, long endDate, CompositeSubscription compositeSubscription, final OldGMStatRepository oldGMStatRepository) {
         compositeSubscription.add(
                 Observable.concat(
                         getProductGraph(startDate, endDate),
                         getTransactionGraph(startDate, endDate),
-                        getPopularProduct(shopId),
+                        getPopularProduct(),
                         getBuyerData(startDate, endDate),
                         getMarketInsight()
                 ).toList()
@@ -219,7 +219,7 @@ public class GMStatNetworkController {
                                         Log.d(TAG, "fetchData : " + responses.size());
 
                                         GetProductGraph getProductGraph = (GetProductGraph) responses.get(0);
-                                        oldGMStatRepository.onSuccessProductnGraph(getProductGraph);
+                                        oldGMStatRepository.onSuccessProductGraph(getProductGraph);
 
                                         GMTransactionGraphMergeModel gmTransactionGraphMergeModel = (GMTransactionGraphMergeModel) responses.get(1);
                                         oldGMStatRepository.onSuccessTransactionGraph(gmTransactionGraphMergeModel);
@@ -240,7 +240,7 @@ public class GMStatNetworkController {
 
     protected void showProductGraphEmpty(OldGMStatRepository oldGMStatRepository, AssetManager assetManager) {
         GetProductGraph body = gson.fromJson(readJson("get_product_graph_empty_state.json", assetManager), GetProductGraph.class);
-        oldGMStatRepository.onSuccessProductnGraph(body);
+        oldGMStatRepository.onSuccessProductGraph(body);
     }
 
     private void processKeywordModel(KeywordModel keywordModel, OldGMStatRepository oldGMStatRepository) {
