@@ -122,6 +122,7 @@ public class MarketInsightViewHolder {
         List<GetKeyword.SearchKeyword> searchKeyword = getKeyword.getSearchKeyword();
         marketInsightAdapter.setSearchKeywords(searchKeyword);
         marketInsightAdapter.notifyDataSetChanged();
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     public void setViewState(int viewState) {
@@ -139,11 +140,11 @@ public class MarketInsightViewHolder {
                     }
                 }
         );
-        view.setViewState(LoadingStateView.VIEW_EMPTY);
         // content will be overlayed behind the empty state
         view.getContentView().setVisibility(View.VISIBLE);
 
         displayDummyContentKeyword();
+        view.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     private void displayDummyContentKeyword(){
@@ -220,13 +221,9 @@ public class MarketInsightViewHolder {
     public static class MarketViewHolder extends RecyclerView.ViewHolder {
 
         final String TAG = "MarketInsight";
-
         TextView marketInsightKeyword;
-
         TextView marketInsightNumber;
-
         ImageView zoomIcon;
-
         RoundCornerProgressBar marketInsightProgress;
 
         public MarketViewHolder(View itemView) {
@@ -235,27 +232,19 @@ public class MarketInsightViewHolder {
         }
 
         void initView(View itemView) {
-
             marketInsightKeyword = (TextView) itemView.findViewById(R.id.market_insight_keyword);
-
             marketInsightNumber = (TextView) itemView.findViewById(R.id.market_insight_number);
-
             zoomIcon = (ImageView) itemView.findViewById(R.id.zoom_icon);
-
             marketInsightProgress = (RoundCornerProgressBar) itemView.findViewById(R.id.market_insight_progress);
         }
 
         public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list) {
             double total = list.get(0).getFrequency();
-
             double v = searchKeyword.getFrequency() / total;
             double percentage = Math.floor((v * 100) + 0.5);
             Log.d(TAG, "total " + total + " percentage " + percentage + " frequency " + searchKeyword.getFrequency());
-
             marketInsightProgress.setProgress((float) percentage);
-
             marketInsightNumber.setText(String.format(NUMBER_TIMES_FORMAT, String.valueOf(searchKeyword.getFrequency())));
-
             marketInsightKeyword.setText(searchKeyword.getKeyword());
         }
     }

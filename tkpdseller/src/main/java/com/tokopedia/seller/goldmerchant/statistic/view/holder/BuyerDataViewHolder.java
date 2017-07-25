@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
@@ -59,8 +60,7 @@ public class BuyerDataViewHolder {
         double diffTotalPercent = getBuyerGraph.getDiffTotal();
 
         /* this is empty state */
-        if (totalBuyer == 0 &&
-                (maleBuyerCount == 0 || femaleBuyerCount == 0)) {
+        if (totalBuyer == 0 && (maleBuyerCount == 0 || femaleBuyerCount == 0)) {
             tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
             buyerDataPieChart.setProgress(0f);
             arrowPercentageView.setNoDataPercentage();
@@ -68,43 +68,44 @@ public class BuyerDataViewHolder {
             tvMainLegendPie.setText(DEFAULT_PERCENT_PIE);
             tvMainLegendPieDesc.setVisibility(View.GONE);
             tvSecondLegendPie.setVisibility(View.GONE);
+            setViewState(LoadingStateView.VIEW_CONTENT);
             return;
-        } else {
-            tvMainLegendPie.setTextColor(redColor);
+        }
+        tvMainLegendPie.setTextColor(redColor);
 
-            tvMainLegendPieDesc.setVisibility(View.VISIBLE);
-            tvSecondLegendPie.setVisibility(View.VISIBLE);
-            tvMainLegendPie.setVisibility(View.VISIBLE);
+        tvMainLegendPieDesc.setVisibility(View.VISIBLE);
+        tvSecondLegendPie.setVisibility(View.VISIBLE);
+        tvMainLegendPie.setVisibility(View.VISIBLE);
 
-            double malePercentage = (double) maleBuyerCount / (double) totalBuyer;
-            double malePercent = Math.floor((malePercentage * 100) + 0.5);
+        double malePercentage = (double) maleBuyerCount / (double) totalBuyer;
+        double malePercent = Math.floor((malePercentage * 100) + 0.5);
 
-            double femalePercentage = (double) femaleBuyerCount / (double) totalBuyer;
-            double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
+        double femalePercentage = (double) femaleBuyerCount / (double) totalBuyer;
+        double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
 
-            if (malePercent >= femalePercent) { // the male will be bigger
-                tvMainLegendPieDesc.setText( genderArray[0]);
-                if(femalePercent <= 0){
-                    tvSecondLegendPie.setVisibility(View.GONE);
-                }else
-                    tvSecondLegendPie.setText(String.format(Locale.US, UPPER_BUYER_FORMAT, (int) femalePercent, genderArray[1]));
-                tvMainLegendPie.setText(String.format(Locale.US,LOWER_BUYER_FORMAT, (int) malePercent));
-                buyerDataPieChart.setProgress((float) malePercent);
-            } else { // the female will be bigger
-                tvMainLegendPieDesc.setText(genderArray[1]);
-                if(malePercent <= 0){
-                    tvSecondLegendPie.setVisibility(View.GONE);
-                }else
-                    tvSecondLegendPie.setText(String.format(Locale.US,UPPER_BUYER_FORMAT, (int) malePercent, genderArray[0]));
-                tvMainLegendPie.setText(String.format(Locale.US,LOWER_BUYER_FORMAT, (int) femalePercent));
-                buyerDataPieChart.setProgress((float) femalePercent);
-            }
+        if (malePercent >= femalePercent) { // the male will be bigger
+            tvMainLegendPieDesc.setText(genderArray[0]);
+            if (femalePercent <= 0) {
+                tvSecondLegendPie.setVisibility(View.GONE);
+            } else
+                tvSecondLegendPie.setText(String.format(Locale.US, UPPER_BUYER_FORMAT, (int) femalePercent, genderArray[1]));
+            tvMainLegendPie.setText(String.format(Locale.US, LOWER_BUYER_FORMAT, (int) malePercent));
+            buyerDataPieChart.setProgress((float) malePercent);
+        } else { // the female will be bigger
+            tvMainLegendPieDesc.setText(genderArray[1]);
+            if (malePercent <= 0) {
+                tvSecondLegendPie.setVisibility(View.GONE);
+            } else
+                tvSecondLegendPie.setText(String.format(Locale.US, UPPER_BUYER_FORMAT, (int) malePercent, genderArray[0]));
+            tvMainLegendPie.setText(String.format(Locale.US, LOWER_BUYER_FORMAT, (int) femalePercent));
+            buyerDataPieChart.setProgress((float) femalePercent);
         }
 
         tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
 
         double percentage = diffTotalPercent;
         arrowPercentageView.setPercentage(percentage);
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     public void setViewState(int viewState) {

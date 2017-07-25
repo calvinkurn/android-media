@@ -216,9 +216,9 @@ public class TitleCardView extends CardView {
         if (state == LoadingStateView.VIEW_LOADING) {
             setLoadingState(true);
         } else if (state == LoadingStateView.VIEW_EMPTY) {
-            loadingStateView.setViewState(state);
+            setLoadingState(false);
         } else {
-            loadingStateView.setViewState(state);
+            setLoadingState(false);
         }
         loadingStateView.setViewState(state);
     }

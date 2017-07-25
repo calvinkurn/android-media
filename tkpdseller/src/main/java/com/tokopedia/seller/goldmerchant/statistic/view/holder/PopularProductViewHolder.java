@@ -58,18 +58,17 @@ public class PopularProductViewHolder {
     }
 
     public void bindData(GetPopularProduct getPopularProduct) {
-
         if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
             setEmptyState();
             return;
         }
         this.getPopularProduct = getPopularProduct;
-
         new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
         tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = KMNumbers.getFormattedString(sold);
         tvNoOfSelling.setText(text);
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     private void setEmptyState(){
@@ -84,7 +83,7 @@ public class PopularProductViewHolder {
                         clickAddProductTracking();
                     }
                 });
-        popularProductCardView.setViewState(LoadingStateView.VIEW_EMPTY);
+        setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     public void gotoProductDetail() {
