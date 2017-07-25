@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.seller.gmstat.views.widget.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/loading_state_view_gross"
     android:layout_width="match_parent"
@@ -17,4 +17,4 @@
             android:layout_width="match_parent"
             android:layout_height="240dp" />
     </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
-</com.tokopedia.seller.gmstat.views.widget.LoadingStateView>
+</com.tokopedia.design.loading.LoadingStateView>

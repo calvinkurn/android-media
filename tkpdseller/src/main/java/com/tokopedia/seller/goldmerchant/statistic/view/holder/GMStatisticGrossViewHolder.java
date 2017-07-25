@@ -10,7 +10,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
-import com.tokopedia.seller.gmstat.views.widget.LoadingStateView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;

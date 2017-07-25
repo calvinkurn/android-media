@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views.widget;
+package com.tokopedia.design.loading;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.design.R;
 
 /**
  * Created by hendry on 7/10/2017.
