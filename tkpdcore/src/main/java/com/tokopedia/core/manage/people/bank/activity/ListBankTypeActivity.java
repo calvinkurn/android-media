@@ -1,5 +1,6 @@
 package com.tokopedia.core.manage.people.bank.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,6 +82,11 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
 
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
     private class BankListRecyclerAdapter extends RecyclerView.Adapter<BankListViewHolder> {
 
         BankListRecyclerAdapter() {
@@ -105,6 +111,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
                             Intent intent = new Intent(ListBankTypeActivity.this,
                                     ManagePeopleBankActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     });
                     break;
@@ -132,6 +139,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
                                     if ((getApplication() instanceof TransactionRouter)) {
                                         ((TransactionRouter) getApplication())
                                                 .goToBcaOneClick(ListBankTypeActivity.this, bundle);
+                                        finish();
                                     }
                                 }
                             });
@@ -161,7 +169,8 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
+        super.onStop();
         presenter.onDestroyed();
     }
 }

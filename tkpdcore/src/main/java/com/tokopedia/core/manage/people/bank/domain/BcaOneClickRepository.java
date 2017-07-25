@@ -3,6 +3,7 @@ package com.tokopedia.core.manage.people.bank.domain;
 import com.google.gson.Gson;
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
 import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -21,8 +22,11 @@ public class BcaOneClickRepository implements IBcaOneClickRepository {
     }
 
     @Override
-    public Observable<BcaOneClickData> getBcaOneClickAccessToken() {
-        return bcaOneClickService.getApi().getBcaOneClickAccessToken().map(new Func1<Response<String>, BcaOneClickData>() {
+    public Observable<BcaOneClickData> getBcaOneClickAccessToken(
+            TKPDMapParam<String, String> bcaOneClickParam
+    ) {
+        return bcaOneClickService.getApi().getBcaOneClickAccessToken(bcaOneClickParam)
+                .map(new Func1<Response<String>, BcaOneClickData>() {
             @Override
             public BcaOneClickData call(Response<String> stringResponse) {
                 return new Gson().fromJson(stringResponse.body(), BcaOneClickData.class);

@@ -785,7 +785,7 @@ public class TkpdBaseURL {
     }
 
     public static class Payment {
-        public static final String URL_BCA_ONE_CLICK = "https://devapi.klikbca.com/";
-        public static final String PATH_POST_ONE_CLICK = "api/oauth/token";
+        public static final String URL_BCA_ONE_CLICK = "https://pay.tokopedia.com/";
+        public static final String PATH_POST_ONE_CLICK = "oneclick/auth";
     }
 }

@@ -67,6 +67,10 @@ public class AuthUtil {
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
     }
 
+    /*public static String dynamicHmac(String key) {
+
+    }*/
+
     public static Map<String, String> generateHeadersWithXUserId(
             String path, String strParam, String method, String authKey, String contentType
     ) {
@@ -129,6 +133,8 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+
+
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);

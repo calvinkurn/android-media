@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.payment.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -17,7 +18,8 @@ import rx.Observable;
 
 public interface BcaOneClickApi {
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Payment.PATH_POST_ONE_CLICK)
     Observable<Response<String>>
-    getBcaOneClickAccessToken();
+    getBcaOneClickAccessToken(@FieldMap TKPDMapParam<String, String> params);
 }

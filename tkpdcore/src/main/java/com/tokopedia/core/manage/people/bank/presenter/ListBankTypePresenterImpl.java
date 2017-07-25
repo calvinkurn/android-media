@@ -5,6 +5,9 @@ import com.tokopedia.core.manage.people.bank.domain.BcaOneClickRepository;
 import com.tokopedia.core.manage.people.bank.listener.ListBankTypeActivityView;
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
 import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,9 +31,26 @@ public class ListBankTypePresenterImpl implements ListBankTypePresenter {
         bcaOneClickRepository = new BcaOneClickRepository(bcaOneClickService);
     }
 
+    /*@Override
+    public void onOneClickBcaChosen(Subscriber<BcaOneClickData> subscriber) {
+        TKPDMapParam<String, String> bcaOneClickParam = new TKPDMapParam<>();
+        bcaOneClickParam.put("grant_type", "client_credentials");
+        compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken(AuthUtil
+                .generateParamsNetwork(mainView.getContext() ,bcaOneClickParam))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }*/
+
     @Override
     public void onOneClickBcaChosen(Subscriber<BcaOneClickData> subscriber) {
-        compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken()
+        TKPDMapParam<String, String> bcaOneClickParam = new TKPDMapParam<>();
+        bcaOneClickParam.put("tokopedia_user_id", SessionHandler.getLoginID(mainView.getContext()));
+        bcaOneClickParam.put("merchant_code", "tokopedia");
+        bcaOneClickParam.put("profile_code", "TKPD_DEFAULT");
+        compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken(AuthUtil
+                .generateParamsNetwork(mainView.getContext() ,bcaOneClickParam))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

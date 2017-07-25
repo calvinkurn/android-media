@@ -1,6 +1,7 @@
 package com.tokopedia.core.manage.people.bank.domain;
 
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;
 
@@ -10,6 +11,8 @@ import rx.Observable;
 
 public interface IBcaOneClickRepository {
 
-    Observable<BcaOneClickData> getBcaOneClickAccessToken();
+    Observable<BcaOneClickData> getBcaOneClickAccessToken(
+            TKPDMapParam<String, String> bcaOneClickParam
+    );
 
 }
