@@ -14,13 +14,13 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget;
-import com.tokopedia.seller.gmstat.views.widget.TitleCardView;
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
@@ -35,7 +35,7 @@ import java.util.List;
 public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel> {
     private LineChartView gmStatisticTopAdsGraph;
     private BaseWilliamChartConfig baseWilliamChartConfig;
-    private GMPercentageViewHelper gmPercentageViewHelper2;
+    private GMPercentageViewHelper gmPercentageViewHelper;
 
     private String[] monthNamesAbrev;
     private Drawable oval2Copy6;
@@ -45,7 +45,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
     public GMTopAdsAmountViewHolder(@Nullable Context context) {
         super(context);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
-        gmPercentageViewHelper2 = new GMPercentageViewHelper(context);
+        gmPercentageViewHelper = new GMPercentageViewHelper(context);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
         gmStatisticTopAdsGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_topads_graph);
         gmStatisticTopAdsCardView = (TitleCardView) itemView.findViewById(R.id.topads_statistic_card_view);
         gmTopAdsLineChartWidget = (LineChartContainerWidget) gmStatisticTopAdsCardView.findViewById(R.id.topads_line_chart_container);
-        gmTopAdsLineChartWidget.setPercentageUtil(gmPercentageViewHelper2);
+        gmTopAdsLineChartWidget.setPercentageUtil(gmPercentageViewHelper);
     }
 
     private void setTopAdsCardView(GMGraphViewModel data) {

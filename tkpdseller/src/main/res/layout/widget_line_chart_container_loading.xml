@@ -9,13 +9,13 @@
     android:paddingRight="@dimen/gmstat_padding_item_left_right"
     android:paddingTop="8dp">
 
-    <com.tokopedia.seller.gmstat.library.LoaderView
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="100dp"
         android:layout_height="10dp"
         android:layout_marginBottom="2dp"
         app:use_gradient="true"/>
 
-    <com.tokopedia.seller.gmstat.library.LoaderView
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="150dp"
         android:layout_height="25dp"
         android:layout_marginBottom="4dp"
@@ -27,12 +27,12 @@
         android:layout_marginBottom="4dp"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="20dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="80dp"
             android:layout_height="10dp"
             android:layout_marginLeft="10dp"
@@ -40,7 +40,7 @@
             app:use_gradient="true"/>
     </LinearLayout>
 
-    <com.tokopedia.seller.gmstat.library.LoaderView
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:use_gradient="true"/>

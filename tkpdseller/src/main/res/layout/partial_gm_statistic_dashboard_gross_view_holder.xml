@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loading_state_view_gross"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    app:lsv_loading_layout="@layout/widget_line_chart_container_loading">
+
+    <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
+        android:id="@+id/line_chart_container_gross"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.seller.lib.williamchart.view.LineChartView
+            android:id="@+id/line_chart_gross"
+            android:layout_width="match_parent"
+            android:layout_height="240dp" />
+    </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
+</com.tokopedia.design.loading.LoadingStateView>

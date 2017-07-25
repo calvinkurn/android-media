@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="gm_statistic_dashboard_gross">Pendapatan Kotor</string>
+
     <string name="gold_merchant_transaction_label">Data Transaksi</string>
     <string name="gold_merchant_date_range_format_text">%1$s - %2$s</string>
     <string name="gold_merchant_default_percentage_text">100%</string>

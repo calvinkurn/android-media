@@ -10,10 +10,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
@@ -43,9 +43,9 @@ public class GMStatHeaderViewHelper {
     private static final String MIN_DATE = "25/07/2015";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale locale = new Locale("in", "ID");
-    protected LoaderTextView calendarRange;
-    protected LoaderImageView calendarArrowIcon;
-    protected LoaderImageView calendarIcon;
+    protected TextView calendarRange;
+    protected ImageView calendarArrowIcon;
+    protected ImageView calendarIcon;
     protected View itemView;
     private String[] monthNamesAbrev;
     private int gredyColor;
@@ -72,11 +72,11 @@ public class GMStatHeaderViewHelper {
     private void initView(View itemView) {
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
-        calendarRange = (LoaderTextView) itemView.findViewById(R.id.calendar_range);
+        calendarRange = (TextView) itemView.findViewById(R.id.calendar_range);
 
-        calendarArrowIcon = (LoaderImageView) itemView.findViewById(R.id.calendar_arrow_icon);
+        calendarArrowIcon = (ImageView) itemView.findViewById(R.id.calendar_arrow_icon);
 
-        calendarIcon = (LoaderImageView) itemView.findViewById(R.id.calendar_icon);
+        calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
@@ -84,10 +84,6 @@ public class GMStatHeaderViewHelper {
     }
 
     public void resetToLoading() {
-        calendarRange.resetLoader();
-        calendarArrowIcon.resetLoader();
-        calendarIcon.resetLoader();
-
         isLoading = false;
     }
 
@@ -131,10 +127,6 @@ public class GMStatHeaderViewHelper {
     }
 
     public void stopLoading() {
-        calendarRange.stopLoading();
-        calendarArrowIcon.stopLoading();
-        calendarIcon.stopLoading();
-
         isLoading = true;
     }
 

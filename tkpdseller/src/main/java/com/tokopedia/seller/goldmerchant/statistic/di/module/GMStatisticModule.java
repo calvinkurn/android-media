@@ -9,8 +9,8 @@ import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.gmstat.presenters.GMDashboardPresenter;
-import com.tokopedia.seller.gmstat.presenters.GMDashboardPresenterImpl;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenterImpl;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
@@ -99,12 +99,6 @@ public class GMStatisticModule {
             DashboardTopadsInteractor dashboardTopadsInteractor,
             SessionHandler sessionHandler) {
         return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, dashboardTopadsInteractor, sessionHandler);
-    }
-
-    @GMStatisticScope
-    @Provides
-    public com.tokopedia.seller.gmstat.apis.GMStatApi provideGmStatApi(@GoldMerchantQualifier Retrofit retrofit) {
-        return retrofit.create(com.tokopedia.seller.gmstat.apis.GMStatApi.class);
     }
 
     @GMStatisticScope

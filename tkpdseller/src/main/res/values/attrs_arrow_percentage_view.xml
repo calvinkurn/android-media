@@ -1,6 +1,0 @@
-<resources>
-    <declare-styleable name="ArrowPercentageView">
-        <attr name="percentage" format="float" />
-        <attr name="percentage_text_size" format="dimension" />
-    </declare-styleable>
-</resources>
