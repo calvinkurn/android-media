@@ -63,8 +63,6 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     @Override
     public void onResume() {
         super.onResume();
-        listener.changeActionBarTitle(getString(R.string.gm_home_title));
-        listener.setDrawer(true);
     }
 
     @Override

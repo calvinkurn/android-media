@@ -10,4 +10,8 @@
     <item name="shop_name" type="id" />
     <item name="price" type="id" />
     <item name="label_container" type="id" />
+    <item name="root" type="id" />
+    <item name="more" type="id" />
+    <item name="close_but" type="id" />
+
 </resources>

@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.util.SessionHandler;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -15,7 +18,6 @@ import com.tokopedia.core.drawer.DrawerVariable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-    DrawerVariable getDrawer(AppCompatActivity activity);
 
     void startInstopedActivity(Context context);
 
@@ -37,11 +39,21 @@ public interface TkpdCoreRouter {
 
     void goToMerchantRedirect(Context context);
 
+    void actionAppLink(Activity activity, String linkUrl);
+
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
+    DrawerHelper getDrawer(AppCompatActivity activity,
+                           SessionHandler sessionHandler,
+                           LocalCacheHandler drawerCache,
+                           GlobalCacheManager globalCacheManager);
+
+
     void onLogout(AppComponent appComponent);
 
-    void goToDeepLinkHandlerActivity(Context context, Bundle bundle, String url);
+    void goToCreateMerchantRedirect(Context context);
+
+    void goToRegister(Context context);
 }

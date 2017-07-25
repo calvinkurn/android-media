@@ -263,7 +263,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         initListener();
         CategoryAttributes categoryAttributes = category.getAttributes();
 
@@ -497,10 +496,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     hideFormAndImageOperator();
-                    setInitialClientNumberAfterOperatorSelection();
                     selectedOperator = operatorList.get(i);
                     setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                     selectedOperatorId = String.valueOf((selectedOperator.operatorId));
+                    setInitialClientNumberAfterOperatorSelection();
                     if (!category.getAttributes().getClientNumber().isShown()) {
                         setUpForNotUsingTextEdit();
                     } else {
@@ -533,16 +532,19 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     }
                 }
             }
-
         }
     }
 
     private void setInitialClientNumberAfterOperatorSelection() {
         if (SessionHandler.isV4Login(getActivity()) && lastOrder != null
-                && lastOrder.getData().getAttributes().getCategory_id() == category.getId()
                 && !TextUtils.isEmpty(lastOrder.getData().getAttributes().getClient_number())) {
-            rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
-        } else if (!lastClientNumberTyped.isEmpty()) {
+            if (lastOrder.getData().getAttributes().getCategory_id() == category.getId() &&
+                    lastOrder.getData().getAttributes().getOperator_id() == Integer.parseInt(selectedOperatorId)) {
+                rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
+            } else {
+                rechargeEditText.setEmptyString();
+            }
+        } else if (!lastClientNumberTyped.isEmpty() && lastOperatorSelected.equals(selectedOperatorId)) {
             rechargeEditText.setText(lastClientNumberTyped);
         } else {
             rechargeEditText.setEmptyString();
@@ -769,17 +771,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 hideFormAndImageOperator();
-                setInitialClientNumberAfterOperatorSelection();
                 selectedProduct = null;
                 selectedOperator = operators.get(i);
-                setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                 selectedOperatorId = String.valueOf((operators.get(i).operatorId));
                 minLengthDefaultOperator = selectedOperator.minimumLength;
-                rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+                setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
+                setInitialClientNumberAfterOperatorSelection();
             }
         });
-
-
     }
 
     private void setTextToEditTextOrSetVisibilityForm() {
@@ -792,7 +791,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             renderLastOrder();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+                && !TextUtils.isEmpty(lastClientNumberTyped)
+                && lastOperatorSelected.equals(selectedOperatorId) ) {
             rechargeEditText.setText(lastClientNumberTyped);
             handlingAppearanceFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())

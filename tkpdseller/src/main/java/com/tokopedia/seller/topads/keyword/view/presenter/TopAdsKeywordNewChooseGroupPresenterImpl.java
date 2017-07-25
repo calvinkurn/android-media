@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 
 import java.util.List;
@@ -79,7 +79,10 @@ public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewCh
 
             @Override
             public void onError(Throwable e) {
-                getView().onGetGroupAdListError();
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onGetGroupAdListError(e);
             }
 
             @Override

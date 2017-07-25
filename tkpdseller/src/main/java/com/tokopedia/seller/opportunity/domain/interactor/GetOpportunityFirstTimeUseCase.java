@@ -72,7 +72,7 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
 
     public static RequestParams getRequestParam(int page,
                                                 @Nullable String query,
-                                                @Nullable String key_sort,
+                                                @Nullable String keySort,
                                                 @Nullable String sort,
                                                 @Nullable ArrayList<FilterPass> listFilter,
                                                 String shopId) {
@@ -80,8 +80,8 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
         params.putInt(PAGE, page);
         if (query != null)
             params.putString(QUERY, query);
-        if (key_sort != null && sort != null) {
-            params.putString(KEY_SORT, key_sort);
+        if (keySort != null && sort != null) {
+            params.putString(KEY_SORT, keySort);
             params.putString(SORT, sort);
         }
         if (listFilter != null)

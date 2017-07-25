@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView
+    <com.tokopedia.seller.topads.dashboard.view.widget.TopAdsRadioExpandView
         android:id="@+id/view_radio_new_group"
         app:checked="true"
         app:radio_id="@+id/radio_promo_new_group"
@@ -33,6 +33,6 @@
                 android:id="@+id/view_info_radio_new_group"
                 style="@style/TextView.infoInputType" />
         </LinearLayout>
-    </com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView>
+    </com.tokopedia.seller.topads.dashboard.view.widget.TopAdsRadioExpandView>
 
 </merge>

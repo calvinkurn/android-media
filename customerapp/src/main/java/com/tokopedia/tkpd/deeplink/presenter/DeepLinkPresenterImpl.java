@@ -41,15 +41,12 @@ import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,6 +125,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 login(uriData);
             }
         }
+    }
+
+    @Override
+    public void actionGotUrlFromApplink(Uri uriData) {
+        prepareOpenWebView(uriData);
     }
 
     public void processDeepLinkAction(Uri uriData) {
@@ -306,12 +308,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
-        String url = encodeUrl(uriData.toString());
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(Uri.parse(url), uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
+            openWebView(uriData, uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
         } else {
-            openWebView(Uri.parse(url), false);
+            openWebView(uriData, false);
         }
     }
 
@@ -320,7 +320,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()), allowingOverriding);
+        Fragment fragment = FragmentGeneralWebView.createInstance(encodedUri.toString(), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
@@ -355,6 +355,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         .setProductUri(uriData.toString())
                         .build());
         viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
+        viewListener.hideActionBar();
     }
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {
@@ -532,6 +533,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
                 && !linkSegment.get(0).equals("hot")
+                && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")
                 && !linkSegment.get(0).equals("kartu-kredit")
                 && !linkSegment.get(0).equals("reset.pl")
@@ -547,7 +549,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
+                && !isBlog(linkSegment)
                 && !linkSegment.get(0).equals("pulsa"));
+    }
+
+    private boolean isBlog(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
     }
 
     private boolean isCatalog(List<String> linkSegment) {

@@ -94,4 +94,6 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
             ((DepositFragment)getFragmentManager().findFragmentByTag(TAG)).refresh();
         }
     }
+
+
 }

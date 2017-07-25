@@ -7,12 +7,12 @@ import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductFeedViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductGridViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductListViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopFeedViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopGridViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.ShopListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
@@ -26,14 +26,26 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
 public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
+    private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
+
+    int position;
     public AdsAdapterTypeFactory(Context context) {
+        this(context, 0);
+    }
+
+    public AdsAdapterTypeFactory(Context context, int clickPosition) {
         imageLoader = new ImageLoader(context);
+        this.clickPosition = clickPosition;
     }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setClickPosition(int adapterPosition) {
+        clickPosition = adapterPosition;
     }
 
     @Override

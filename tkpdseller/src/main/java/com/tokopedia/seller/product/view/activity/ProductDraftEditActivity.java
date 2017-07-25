@@ -15,8 +15,6 @@ import com.tokopedia.seller.product.view.fragment.ProductDraftEditFragment;
 
 public class ProductDraftEditActivity extends ProductDraftAddActivity  {
 
-    public static final String TAG = ProductDraftEditFragment.class.getSimpleName();
-
     public static Intent createInstance(Context context, String productId){
         Intent intent = new Intent(context, ProductDraftEditActivity.class);
         intent.putExtra(PRODUCT_DRAFT_ID, productId);
@@ -33,12 +31,12 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
     }
 
     private void inflateFragment(String productId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragment == null) {
             fragment = ProductDraftEditFragment.createInstance(productId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, TAG);
+        fragmentTransaction.replace(R.id.container, fragment, getFragmentTAG());
         fragmentTransaction.commit();
     }
 

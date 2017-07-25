@@ -185,19 +185,22 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             if (shareData.getType() != null) {
                 switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
-                        tvTitle.setText("Bagikan Katalog Ini!");
+                        tvTitle.setText(R.string.product_share_catalog);
                         break;
                     case ShareData.SHOP_TYPE:
-                        tvTitle.setText("Bagikan Toko Ini!");
+                        tvTitle.setText(R.string.product_share_shop);
                         break;
                     case ShareData.HOTLIST_TYPE:
-                        tvTitle.setText("Bagikan Hotlist Ini!");
+                        tvTitle.setText(R.string.product_share_hotlist);
                         break;
                     case ShareData.DISCOVERY_TYPE:
-                        tvTitle.setText("Bagikan Pencarian Ini!");
+                        tvTitle.setText(R.string.product_share_search);
                         break;
                     case ShareData.PRODUCT_TYPE:
-                        tvTitle.setText("Bagikan Produk Ini!");
+                        tvTitle.setText(R.string.product_share_product);
+                        break;
+                    case ShareData.RIDE_TYPE:
+                        tvTitle.setText(R.string.product_share_ride_trip);
                         break;
                 }
             }

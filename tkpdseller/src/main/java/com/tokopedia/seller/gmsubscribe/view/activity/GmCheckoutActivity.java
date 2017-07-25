@@ -13,6 +13,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragment;
@@ -28,6 +30,7 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
     private static final int CHANGE_SELECTED_PRODUCT = 100;
     private static final int SELECT_AUTO_SUBSCRIBE_PRODUCT = 200;
     private static final int CHANGE_AUTO_SUBSCRIBE_PRODUCT = 300;
+    private static final int REQUEST_CODE_PAYMENT_GM = 1;
     private int currentSelected;
     private FragmentManager fragmentManager;
 
@@ -88,7 +91,6 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
     @Override
     public void changeCurrentSelected(Integer selectedProduct) {
         Intent intent = GmProductActivity.changeProductSelected(this, selectedProduct);
-        ;
         startActivityForResult(intent, CHANGE_SELECTED_PRODUCT);
     }
 
@@ -106,8 +108,13 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
 
     @Override
     public void goToDynamicPayment(String url, String parameter, String callbackUrl, Integer paymentId) {
-        ((SellerModuleRouter)getApplication()).goToTkpdPayment(this, url, parameter, callbackUrl, paymentId);
-        finish();
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(url);
+        paymentPassData.setQueryString(parameter);
+        paymentPassData.setCallbackSuccessUrl(callbackUrl);
+        paymentPassData.setPaymentId(String.valueOf(paymentId));
+        Intent intent = TopPayActivity.createInstance(this, paymentPassData);
+        startActivityForResult(intent, REQUEST_CODE_PAYMENT_GM);
     }
 
     @Override
@@ -124,8 +131,18 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
                 default:
                     updateSelectedProduct(data);
             }
+        }else if(requestCode == REQUEST_CODE_PAYMENT_GM){
+            clearCacheShopInfo();
+            finish();
         }
 
+    }
+
+    private void clearCacheShopInfo() {
+        Fragment fragment = fragmentManager.findFragmentByTag(GmCheckoutFragment.TAG);
+        if (fragment != null && fragment instanceof GmCheckoutFragment) {
+            ((GmCheckoutFragment) fragment).clearCacheShopInfo();
+        }
     }
 
     private void updateAutoSubscribeSelectedProduct(Intent data) {
