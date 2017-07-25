@@ -62,8 +62,6 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                 } else if (e instanceof UnProcessableHttpException) {
                     message = ((UnProcessableHttpException) e).getMessage();
-                } else {
-                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
                 }
 
                 getView().onFailedApplyPromo(message);
