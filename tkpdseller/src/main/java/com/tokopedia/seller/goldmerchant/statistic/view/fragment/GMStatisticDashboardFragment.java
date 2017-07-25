@@ -198,7 +198,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         initTransactionDataLoading();
         initBuyerDataLoading();
         initMarketInsightLoading();
-        gmDashboardPresenter.initInstance();
         dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return view;
     }
