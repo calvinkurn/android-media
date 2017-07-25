@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <com.tokopedia.seller.gmstat.library.LoaderView
+    <com.tokopedia.design.loader.LoaderView
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
@@ -19,12 +19,12 @@
         android:layout_marginBottom="6dp"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="10dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="170dp"
             android:layout_height="10dp"
             android:layout_marginLeft="6dp"
@@ -35,7 +35,7 @@
             android:layout_height="10dp"
             android:layout_weight="1" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="100dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
@@ -51,7 +51,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="170dp"
             android:layout_height="10dp"
             android:layout_marginLeft="6dp"
@@ -62,7 +62,7 @@
             android:layout_height="10dp"
             android:layout_weight="1" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="100dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
@@ -82,12 +82,12 @@
         android:layout_marginBottom="6dp"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="10dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="170dp"
             android:layout_height="10dp"
             android:layout_marginLeft="6dp"
@@ -98,13 +98,13 @@
             android:layout_height="10dp"
             android:layout_weight="1" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderView
+        <com.tokopedia.design.loader.LoaderView
             android:layout_width="100dp"
             android:layout_height="10dp"
             app:use_gradient="true"/>
     </LinearLayout>
 
-    <com.tokopedia.seller.gmstat.library.LoaderView
+    <com.tokopedia.design.loader.LoaderView
         android:layout_width="200dp"
         android:layout_height="10dp"
         android:layout_gravity="center_horizontal"

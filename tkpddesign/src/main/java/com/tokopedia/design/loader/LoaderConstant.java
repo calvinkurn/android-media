@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.library;
+package com.tokopedia.design.loader;
 
 import android.graphics.Color;
 import android.view.Gravity;

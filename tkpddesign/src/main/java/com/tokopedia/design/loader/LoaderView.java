@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.library;
+package com.tokopedia.design.loader;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.design.R;
 import com.tokopedia.seller.R;
 
 /**

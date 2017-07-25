@@ -43,7 +43,7 @@ public class MarketInsightViewHelper {
     public MarketInsightViewHelper(TitleCardView view, boolean isGoldMerchant) {
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
-        initView(view);
+        initView(view);P
     }
 
     public void addProductMarketInsight() {

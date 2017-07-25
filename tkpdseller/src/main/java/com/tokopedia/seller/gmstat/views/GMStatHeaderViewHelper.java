@@ -12,8 +12,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
+import com.tokopedia.design.loader.LoaderImageView;
+import com.tokopedia.design.loader.LoaderTextView;
 import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;

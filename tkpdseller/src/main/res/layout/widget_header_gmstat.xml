@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.seller.gmstat.library.LoaderImageView
+        <com.tokopedia.design.loader.LoaderImageView
             android:layout_alignParentLeft="true"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/calendar_icon"
             android:layout_alignParentRight="true">
-            <com.tokopedia.seller.gmstat.library.LoaderTextView
+            <com.tokopedia.design.loader.LoaderTextView
                 android:gravity="right"
                 android:id="@+id/calendar_range"
                 android:layout_gravity="center_vertical"
@@ -48,7 +48,7 @@
                 app:gravity="right"
                 android:layout_width="match_parent"
                 android:layout_weight="0.9"/>
-            <com.tokopedia.seller.gmstat.library.LoaderImageView
+            <com.tokopedia.design.loader.LoaderImageView
                 android:layout_marginLeft="6dp"
                 android:id="@+id/calendar_arrow_icon"
                 android:layout_width="8dp"

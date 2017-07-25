@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <com.tokopedia.design.loader.LoaderTextView
         app:use_gradient="true"
         android:layout_width="138dp"
         android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         android:textColor="#B2000000"
         android:id="@+id/market_insight_keyword_loading" />
 
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <com.tokopedia.design.loader.LoaderTextView
         app:use_gradient="true"
         android:text="612.019x"
         android:textSize="12sp"

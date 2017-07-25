@@ -38,8 +38,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     private static final Locale locale = new Locale("in", "ID");
     private boolean isFetchData = false, isFirstTime = false;
     @IntRange(from = 0, to = 2)
-    private
-    int lastSelectionPeriod = 1;
+    private int lastSelectionPeriod = 1;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private long sDate = -1, eDate = -1;
     private long shopId;

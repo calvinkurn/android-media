@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <com.tokopedia.design.loader.LoaderTextView
         android:text="Pendapatan Kotor"
         android:textSize="12sp"
         android:textColor="#89000000"
@@ -20,7 +20,7 @@
         android:layout_alignLeft="@+id/text"
         android:layout_alignStart="@+id/text" />
 
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <com.tokopedia.design.loader.LoaderTextView
         android:text="Rp 999,9jt"
         android:layout_width="match_parent"
         app:width_weight= "0.5"
@@ -32,7 +32,7 @@
         android:layout_below="@id/grossIncomeHeader"
         android:id="@+id/text" />
 
-    <com.tokopedia.seller.gmstat.library.LoaderImageView
+    <com.tokopedia.design.loader.LoaderImageView
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:id="@+id/dot"
@@ -42,7 +42,7 @@
         android:layout_alignStart="@+id/text"
         android:layout_below="@+id/text" />
 
-    <com.tokopedia.seller.gmstat.library.LoaderTextView
+    <com.tokopedia.design.loader.LoaderTextView
         android:layout_alignBottom="@id/dot"
         android:text="26 Jul 2016 - 25 Des 2016"
         android:layout_width="match_parent"
