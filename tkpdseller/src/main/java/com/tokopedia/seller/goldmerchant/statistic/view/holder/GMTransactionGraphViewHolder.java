@@ -88,7 +88,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
         gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
 
-        gmTitleCardView.setViewState(LoadingStateView.VIEW_LOADING);
+        setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
         }
     }
 
-    public void setLoadingState(int state) {
+    public void setViewState(int state) {
         gmTitleCardView.setViewState(state);
     }
 
@@ -205,7 +205,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
         gmLineChartContainer.setAmount(Integer.toString(data.amount));
     }
 
-    protected void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
+    private void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
         // resize linechart according to data
         if (context != null && context instanceof Activity)
             GMStatisticUtil.resizeChart(baseWilliamChartModels.get(0).size(), gmStatisticIncomeGraph, (Activity) context);
@@ -240,6 +240,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
                     }
                 }).buildChart(gmStatisticIncomeGraph);
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     /**
@@ -286,6 +287,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
                     }
                 }).buildChart(gmStatisticIncomeGraph);
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
@@ -299,7 +301,6 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
                     }
                 });
     }
-
 
     @LayoutRes
     private int getTooltipResLayout() {

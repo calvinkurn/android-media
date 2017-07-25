@@ -39,8 +39,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private LabelView gmStatisticProductListText;
 
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
-    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
     private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
+    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -58,9 +58,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(getActivity());
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
+        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
     }
 
     @Nullable
@@ -98,8 +98,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     private void loadingState(int state) {
-        gmTransactionGraphViewHolder.setLoadingState(state);
-        gmTopAdsAmountViewHolder.setLoadingState(state);
+        gmTransactionGraphViewHolder.setViewState(state);
+        gmTopAdsAmountViewHolder.setViewState(state);
         finishedTransactionViewHolder.setLoadingState(state);
     }
 

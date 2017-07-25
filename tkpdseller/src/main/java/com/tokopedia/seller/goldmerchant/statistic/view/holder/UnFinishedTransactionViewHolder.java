@@ -32,7 +32,6 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
 
     public UnFinishedTransactionViewHolder(@Nullable Context context) {
         super(context);
-
         rupiahFormatText = context.getString(R.string.rupiah_format_text);
     }
 
