@@ -38,10 +38,7 @@ publishing {
             groupId 'com.tokopedia.customer'
             artifactId 'customer'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/t" +
-                    "" +
-                    "" +
-                    "-release.aar")
+            artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
