@@ -88,10 +88,10 @@ public class ManageShopAddress extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
-        noResult = new NoResultHandler(mainView);
         MainProgress = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         MainProgress.setLoadingViewId(R.id.include_loading);
         mainView = findViewById(R.id.main_view);
+        noResult = new NoResultHandler(mainView);
         LocationListView = (LazyListView) findViewById(R.id.listview_shop_location);
         LocationListView.AddLoadingView();
         LocationAdapter = new ListViewManageShopLocation(ManageShopAddress.this, LocationNameList, LocationAddressList, LocationPhoneList, LocationFaxList, LocationEmailList, IsAllowShop);
