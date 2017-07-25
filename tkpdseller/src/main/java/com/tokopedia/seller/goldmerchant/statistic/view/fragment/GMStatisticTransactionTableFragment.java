@@ -41,6 +41,7 @@ import javax.inject.Inject;
 public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GMStatisticTransactionTableModel>
         implements GMStatisticTransactionTableView {
     public static final String TAG = "GMStatisticTransactionT";
+    public static final int START_PAGE = 0;
 
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
@@ -256,5 +257,10 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    protected int getStartPage() {
+        return START_PAGE;
     }
 }
