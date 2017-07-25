@@ -9,6 +9,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.moengage.inapp.InAppManager;
+import com.moengage.inapp.InAppMessage;
+import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -27,7 +30,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends ConsumerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction{
+public class ConsumerMainApplication extends ConsumerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener{
 
     @Override
     public void onCreate() {
@@ -41,6 +44,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
+        InAppManager.getInstance().setInAppListener(this);
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
@@ -80,20 +84,59 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+        CommonUtils.dumper("FCM clicked standard zzzsss "+extras);
+        return handleClick(screenName,extras,deepLinkUri);
+    }
 
-        CommonUtils.dumper("FCM clicked in app messaging zzzsss "+extras);
+    @Override
+    public void onInAppShown(InAppMessage message) {
+        CommonUtils.dumper("FCM on in app messaging shown "+message.content);
+        InAppTracker.getInstance(this).trackInAppClicked(message);
+    }
 
-        if(!TextUtils.isEmpty(extras.getString("gcm_webUrl"))){
-            Uri uri = Uri.parse(extras.getString("gcm_webUrl"));
+    @Override
+    public boolean showInAppMessage(InAppMessage message) {
+        CommonUtils.dumper("FCM showing in app messaging "+message.content);
+        InAppTracker.getInstance(this).trackInAppClicked(message);
+        return false;
+    }
 
-            if(uri.getScheme().equals("http")||uri.getScheme().equals("https"))
+    @Override
+    public void onInAppClosed(InAppMessage message) {
+
+    }
+
+    @Override
+    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
+        CommonUtils.dumper("FCM clicked in app messaging "+extras + " URI "+ deepLinkUri.toString());
+        return handleClick(deepLinkUri);
+    }
+
+    private boolean handleClick(@Nullable Uri deepLinkUri){
+
+        Bundle bundle = new Bundle();
+
+        if(deepLinkUri!=null)
+        {
+            bundle.putString(Constants.MOE_KEY_URL, deepLinkUri.toString());
+        }
+
+        return handleClick(null, bundle, deepLinkUri);
+    }
+
+    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
+
+        if(!TextUtils.isEmpty(extras.getString(Constants.MOE_KEY_URL))){
+            Uri uri = Uri.parse(extras.getString(Constants.MOE_KEY_URL));
+
+            if(uri.getScheme().equals(Constants.Schemes.HTTP)||uri.getScheme().equals(Constants.Schemes.HTTPS))
             {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            }else if(uri.getScheme().equals("tokopedia")){
+            }else if(uri.getScheme().equals(Constants.Schemes.APPLINKS)){
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
