@@ -1,7 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -33,13 +32,9 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onError(Throwable e);
 
-    void onFailure();
-
     void resetToLoading();
 
     void onLoadGMStatTracking();
 
     void onScrollGMStatTracking();
-
-    DatePickerViewModel datePickerViewModel();
 }

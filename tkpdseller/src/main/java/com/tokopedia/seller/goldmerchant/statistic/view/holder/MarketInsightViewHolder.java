@@ -26,42 +26,32 @@ import java.util.List;
 
 public class MarketInsightViewHolder {
 
-    public static final String DEFAULT_CATEGORY = "kaos";
-    public static final int MAX_KEYWORD_SHOWN = 3;
+    private static final String DEFAULT_CATEGORY = "kaos";
 
     private TextView tvMarketInsightFooter;
-    private TitleCardView view;
-    private boolean isGoldMerchant;
+    private TitleCardView titleCardView;
     private MarketInsightAdapter marketInsightAdapter;
 
-    public MarketInsightViewHolder(TitleCardView view, boolean isGoldMerchant) {
-        this.view = view;
-        this.isGoldMerchant = isGoldMerchant;
-        initView(view);
-    }
+    private boolean goldMerchant;
 
-    public void addProductMarketInsight() {
-        Intent intent = new Intent(view.getContext(), ProductAddActivity.class);
-        view.getContext().startActivity(intent);
-
-        // analytic below : https://phab.tokopedia.com/T18496
-        UnifyTracking.eventClickGMStatMarketInsight();
-    }
-
-    private void moveToGMSubscribe() {
-        if (!isGoldMerchant) {
-            Router.goToGMSubscribe(view.getContext());
-        }
-    }
-
-    private void initView(final View view) {
+    public MarketInsightViewHolder(View view, boolean goldMerchant) {
+        this.goldMerchant = goldMerchant;
+        titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(
-                this.view.getContext(), LinearLayoutManager.VERTICAL, false));
+                titleCardView.getContext(), LinearLayoutManager.VERTICAL, false));
         marketInsightAdapter = new MarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(marketInsightAdapter);
+    }
+
+    private void addProductMarketInsight() {
+        Intent intent = new Intent(titleCardView.getContext(), ProductAddActivity.class);
+        titleCardView.getContext().startActivity(intent);
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        UnifyTracking.eventClickGMStatMarketInsight();
     }
 
     /**
@@ -79,7 +69,7 @@ public class MarketInsightViewHolder {
     }
 
     public void bindData(List<GetKeyword> getKeywords) {
-        if (!isGoldMerchant) {
+        if (!goldMerchant) {
             displayNonGoldMerchant();
             return;
         }
@@ -118,29 +108,37 @@ public class MarketInsightViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    public void setViewState(int viewState) {
-        view.setViewState(viewState);
+    public void bindNoShopCategory() {
+        if (goldMerchant)
+            displayEmptyState();
+        else {
+            displayNonGoldMerchant();
+        }
     }
 
     private void displayNonGoldMerchant() {
-        view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_gm);
-        View emptyView = view.getEmptyView();
-        emptyView.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        moveToGMSubscribe();
-                    }
+        titleCardView.setEmptyViewRes(R.layout.widget_market_insight_empty_no_gm);
+        View emptyView = titleCardView.getEmptyView();
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToGMSubscribe();
+            }
+
+            private void moveToGMSubscribe() {
+                if (!goldMerchant) {
+                    Router.goToGMSubscribe(titleCardView.getContext());
                 }
-        );
+            }
+        });
         // content will be overlayed behind the empty state
-        view.getContentView().setVisibility(View.VISIBLE);
+        titleCardView.getContentView().setVisibility(View.VISIBLE);
 
         displayDummyContentKeyword();
-        view.setViewState(LoadingStateView.VIEW_EMPTY);
+        setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
-    private void displayDummyContentKeyword(){
+    private void displayDummyContentKeyword() {
         // create dummy data as replacement for non gold merchant user.
         List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
@@ -148,7 +146,7 @@ public class MarketInsightViewHolder {
             searchKeyword1.setFrequency(1000);
             searchKeyword1.setKeyword(
                     String.format(
-                            view.getContext().getString(R.string.market_insight_item_non_gm_text),
+                            titleCardView.getContext().getString(R.string.market_insight_item_non_gm_text),
                             Integer.toString(i)
                     )
             );
@@ -162,21 +160,17 @@ public class MarketInsightViewHolder {
     }
 
     private void displayEmptyState() {
-        view.setEmptyViewRes(R.layout.widget_market_insight_empty_no_data);
-        view.getEmptyView().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addProductMarketInsight();
-                    }
-                });
-        view.setViewState(LoadingStateView.VIEW_EMPTY);
+        titleCardView.setEmptyViewRes(R.layout.widget_market_insight_empty_no_data);
+        titleCardView.getEmptyView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addProductMarketInsight();
+            }
+        });
+        titleCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
-    public void bindNoShopCategory() {
-        if (isGoldMerchant)
-            displayEmptyState();
-        else {
-            displayNonGoldMerchant();
-        }
+    public void setViewState(int viewState) {
+        titleCardView.setViewState(viewState);
     }
 }

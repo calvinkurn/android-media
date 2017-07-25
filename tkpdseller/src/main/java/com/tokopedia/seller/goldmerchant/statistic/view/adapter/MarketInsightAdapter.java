@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder.MarketViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.MarketInsightViewHolder;
 
 import java.util.List;
 
@@ -16,6 +15,8 @@ import java.util.List;
  * Created by Nathan on 7/25/2017.
  */
 public class MarketInsightAdapter extends RecyclerView.Adapter<MarketViewHolder> {
+
+    private static final int MAX_KEYWORD_SHOWN = 3;
 
     List<GetKeyword.SearchKeyword> searchKeywords;
 
@@ -42,6 +43,6 @@ public class MarketInsightAdapter extends RecyclerView.Adapter<MarketViewHolder>
 
     @Override
     public int getItemCount() {
-        return searchKeywords.size() >= MarketInsightViewHolder.MAX_KEYWORD_SHOWN ? MarketInsightViewHolder.MAX_KEYWORD_SHOWN : searchKeywords.size();
+        return searchKeywords.size() >= MAX_KEYWORD_SHOWN ? MAX_KEYWORD_SHOWN : searchKeywords.size();
     }
 }

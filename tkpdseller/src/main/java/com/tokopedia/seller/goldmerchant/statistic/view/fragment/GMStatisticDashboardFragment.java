@@ -14,7 +14,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
@@ -134,11 +133,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public DatePickerViewModel datePickerViewModel() {
-        return datePickerViewModel;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
@@ -157,8 +151,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         popularProductViewHolder = new PopularProductViewHolder(popularProductCardView);
         TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
         dataTransactionViewHolder = new DataTransactionViewHolder(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
-        TitleCardView marketInsightCardView = (TitleCardView) rootView.findViewById(R.id.market_insight_card_view);
-        marketInsightViewHolder = new MarketInsightViewHolder(marketInsightCardView, sessionHandler.isGoldMerchant(getActivity()));
+        marketInsightViewHolder = new MarketInsightViewHolder(rootView, sessionHandler.isGoldMerchant(getActivity()));
         TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
         buyerDataViewHolder = new BuyerDataViewHolder(buyerDataCardView);
         tryAgainText = getString(R.string.try_again);
@@ -202,6 +195,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void loadData() {
         super.loadData();
         gmDashboardPresenter.onResume();
+        gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
     @Override
@@ -276,18 +270,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                             , new OnActionClickListener() {
                                 @Override
                                 public void onClick(@SuppressWarnings("UnusedParameters") View view) {
-                                    gmDashboardPresenter.fetchData();
+                                    gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
                                     isErrorShow = false;
                                 }
                             });
                 }
             }
         }, 100);
-    }
-
-    @Override
-    public void onFailure() {
-
     }
 
     @Override
