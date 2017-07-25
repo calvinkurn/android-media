@@ -23,7 +23,7 @@
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med">
 
-            <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
+            <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/gold_merchant_line_chart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -31,7 +31,7 @@
                     android:id="@+id/gm_statistic_transaction_income_graph"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
-            </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
+            </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
 
         </com.tokopedia.design.card.TitleCardView>
 
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             app:title_card_view_title="@string/gold_merchant_top_ads_amount_title_text">
 
-            <com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget
+            <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/topads_line_chart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -91,7 +91,7 @@
                     android:id="@+id/gm_statistic_topads_graph"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
-            </com.tokopedia.seller.gmstat.views.widget.LineChartContainerWidget>
+            </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
 
         </com.tokopedia.design.card.TitleCardView>
 

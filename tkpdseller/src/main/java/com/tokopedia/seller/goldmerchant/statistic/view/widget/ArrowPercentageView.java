@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views.widget;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

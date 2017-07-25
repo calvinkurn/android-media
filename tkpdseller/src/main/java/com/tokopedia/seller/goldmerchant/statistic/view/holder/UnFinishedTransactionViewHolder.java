@@ -11,9 +11,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout;
-import com.tokopedia.seller.gmstat.views.widget.CircleTextView;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.CircleTextView;
 
 /**
  * Created by normansyahputa on 7/13/17.
