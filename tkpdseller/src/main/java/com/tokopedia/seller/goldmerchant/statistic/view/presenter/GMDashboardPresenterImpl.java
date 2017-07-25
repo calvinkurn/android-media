@@ -15,7 +15,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -81,7 +81,7 @@ public class GmStatisticSummaryView extends BaseCustomView {
         contentTextView.setText(contentText);
     }
 
-    public void setPercentage(double percentage){
+    public void setPercentage(double percentage) {
         arrowPercentageView.setPercentage(percentage);
     }
 }

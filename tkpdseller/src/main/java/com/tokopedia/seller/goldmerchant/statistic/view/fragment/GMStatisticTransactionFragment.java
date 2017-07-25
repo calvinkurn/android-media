@@ -14,14 +14,14 @@ import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantCompone
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.seller.lib.widget.LabelView;
 
 import javax.inject.Inject;

@@ -5,13 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgressLayout;
 import com.tokopedia.seller.gmstat.views.widget.CircleTextView;
-import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.UnFinishedTransactionViewModel;
 
