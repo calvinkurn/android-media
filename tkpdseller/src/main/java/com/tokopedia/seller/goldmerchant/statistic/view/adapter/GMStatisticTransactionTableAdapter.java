@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder.GMStatisticTransactionTableViewHolder;
 
@@ -13,12 +14,19 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.viewholder.GMSta
  */
 
 public class GMStatisticTransactionTableAdapter extends BaseListAdapter<GMStatisticTransactionTableModel> {
+
+    private @GMTransactionTableSortBy int sortBy = GMTransactionTableSortBy.TRANS_SUM;
+
+    public void setSortBy(@GMTransactionTableSortBy int sortBy){
+        this.sortBy = sortBy;
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         switch (getItemViewType(position)) {
             case GMStatisticTransactionTableModel.TYPE:
-                ((GMStatisticTransactionTableViewHolder) holder).bindData(data.get(position));
+                ((GMStatisticTransactionTableViewHolder) holder).bindData(data.get(position), sortBy);
                 break;
         }
     }

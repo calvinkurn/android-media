@@ -5,8 +5,8 @@ package com.tokopedia.seller.goldmerchant.statistic.constant;
  */
 
 public @interface GMTransactionTableSortType {
-    int ASCENDING = 3;
     int DESCENDING = 5;
+    int ASCENDING = 3;
 
     String param = "sort_type";
 }

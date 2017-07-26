@@ -56,7 +56,7 @@
             app:donut_finished_color="#ff5722"
             app:donut_finished_stroke_width="4dp"
             app:donut_max="100"
-            app:donut_show_text="true"
+            app:donut_show_text="false"
             app:donut_unfinished_color="#cecece"
             app:donut_unfinished_stroke_width="4dp" />
 

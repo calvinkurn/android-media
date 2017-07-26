@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 /**
@@ -23,9 +24,20 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
         itemTransactionTableRight = (TextView) itemView.findViewById(R.id.item_transaction_table_right);
     }
 
-    public void bindData(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
-        itemTransactionTableLeft.setText(gmStatisticTransactionTableModel.leftText);
-        itemTransactionTableRight.setText(KMNumbers.formatRupiahString(itemTransactionTableRight.getContext(),
-                Long.parseLong(gmStatisticTransactionTableModel.rightText)));
+    public void bindData(GMStatisticTransactionTableModel gmStatisticTransactionTableModel, @GMTransactionTableSortBy int sortBy) {
+        itemTransactionTableLeft.setText(gmStatisticTransactionTableModel.productName);
+        switch (sortBy){
+            case GMTransactionTableSortBy.DELIVERED_AMT:
+                itemTransactionTableRight.setText(KMNumbers.formatRupiahString(itemTransactionTableRight.getContext(),
+                        gmStatisticTransactionTableModel.getDeliveredAmount()));
+                break;
+            case GMTransactionTableSortBy.ORDER_SUM:
+                itemTransactionTableRight.setText(String.valueOf( gmStatisticTransactionTableModel.getOrderSum()));
+                break;
+            case GMTransactionTableSortBy.TRANS_SUM:
+                itemTransactionTableRight.setText(String.valueOf(gmStatisticTransactionTableModel.getDeliveredSum()));
+                break;
+        }
+
     }
 }
