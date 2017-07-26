@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
@@ -41,6 +42,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                 views.setEmptyView(R.id.list_order, R.id.view_no_result);
                 views.setTextViewText(R.id.count_order, String.valueOf(dataOrderViewWidget.getDataOrderCount()));
                 Intent intentOrder = ActivitySellingTransaction.createIntent(context, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER);
+                intentOrder.putExtra(ActivitySellingTransaction.FROM_WIDGET_TAG, true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOrder, 0);
                 views.setOnClickPendingIntent(R.id.container_order_count, pendingIntent);
 
@@ -68,12 +70,12 @@ public class NewOrderWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        UnifyTracking.eventWidgetInstalled();
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        UnifyTracking.eventWidgetRemoved();
     }
 
     @Override

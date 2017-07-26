@@ -64,6 +64,8 @@ public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
         DownloadResultReceiver.Receiver {
 
+    public static final String FROM_WIDGET_TAG = "from widget";
+
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     private TabLayout indicator;
@@ -131,10 +133,19 @@ public class ActivitySellingTransaction extends TkpdActivity
         setAdapter();
         openTab();
 
+        setTrackerWidget();
+
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
 
         fragmentManager = getFragmentManager();
+    }
+
+    private void setTrackerWidget() {
+        boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
+        if(fromWidget){
+            UnifyTracking.eventAccessAppViewWidget();
+        }
     }
 
     @Override
