@@ -29,19 +29,24 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.PlaceAutoCompleteDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
+import com.tokopedia.ride.bookingride.view.PlaceAutoCompletePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,8 +61,10 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     private static final String SHOW_SELECT_LOCATION_ON_MAP = "SHOW_SELECT_LOCATION_ON_MAP";
     public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 101;
 
+    @Inject
+    PlaceAutoCompletePresenter mPresenter;
+
     private PlaceAutoCompleteAdapter mAdapter;
-    private PlaceAutoCompleteContract.Presenter mPresenter;
     private Paging paging;
     private boolean isMarketPlaceSource;
 
@@ -115,9 +122,18 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
 
