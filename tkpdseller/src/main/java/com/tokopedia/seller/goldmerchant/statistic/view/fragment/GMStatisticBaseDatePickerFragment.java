@@ -27,13 +27,14 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
     }
 
     @Override
-    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
+    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerFromDatabase) {
         // Check if date compared changed
-        if (this.datePickerViewModel != null && isComparedDate() &&
-                (this.datePickerViewModel.isCompareDate() != datePickerViewModel.isCompareDate()) ) {
+        if (datePickerViewModel != null && isComparedDate() &&
+                (datePickerViewModel.isCompareDate() != datePickerFromDatabase.isCompareDate()) ) {
+            datePickerPresenter.saveDateSetting(datePickerViewModel);
             loadData();
         } else {
-            super.onSuccessLoadDatePicker(datePickerViewModel);
+            super.onSuccessLoadDatePicker(datePickerFromDatabase);
         }
     }
 

@@ -36,6 +36,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        datePickerPresenter.attachView(this);
     }
 
     @Override
@@ -47,7 +48,6 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
                 openDatePicker();
             }
         });
-        datePickerPresenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -62,14 +62,14 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        if (this.datePickerViewModel == null) {
-            this.datePickerViewModel = datePickerViewModel;
+    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerFromDatabase) {
+        if (datePickerViewModel == null) {
+            datePickerViewModel = datePickerFromDatabase;
             loadData();
         } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
-                this.datePickerViewModel.getStartDate(), this.datePickerViewModel.getEndDate(),
-                datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate())) {
-            datePickerPresenter.saveDateSetting(this.datePickerViewModel);
+                datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(),
+                datePickerFromDatabase.getStartDate(), datePickerFromDatabase.getEndDate())) {
+            datePickerPresenter.saveDateSetting(datePickerViewModel);
             loadData();
         }
     }

@@ -66,6 +66,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        datePickerPresenter.clearDatePickerSetting();
+    }
+
+    @Override
     protected void initInjector() {
         DaggerGMStatisticDashboardComponent
                 .builder()
