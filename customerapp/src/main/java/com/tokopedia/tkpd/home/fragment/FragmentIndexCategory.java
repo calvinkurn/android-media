@@ -540,7 +540,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
                     Uri.encode(redirectUrl), MainApplication.getAppContext());
 
-            navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
+            navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue(), categoryItemModel.getName());
         }
     }
 
@@ -585,10 +585,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
 
-    private void navigateToGimmicWebview(String url, String label) {
+    private void navigateToGimmicWebview(String url, String label, String title) {
         if (!url.equals("")) {
             Intent intent = new Intent(getActivity(), BannerWebView.class);
             intent.putExtra("url", url);
+            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
 
             UnifyTracking.eventHomeGimmick(label);
