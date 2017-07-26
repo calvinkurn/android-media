@@ -47,11 +47,18 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
         itemRowHolder.categoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activePosition = position;
-                clickListener.onChildClicked((com.tokopedia.discovery.categorynav.domain.model.Category) getItemAt(position));
+                Category categoryClicked = (Category)getItemAt(position);
+                if (categoryClicked.getChildren()!=null && categoryClicked.getChildren().size()>0) {
+                    toggleSelectedChild();
+                    notifyDataSetChanged();
+                } else {
+                    activePosition = position;
+                    clickListener.onChildClicked(categoryClicked);
+                }
             }
         });
     }
+
 
 
     class ItemRowHolder extends RecyclerView.ViewHolder {

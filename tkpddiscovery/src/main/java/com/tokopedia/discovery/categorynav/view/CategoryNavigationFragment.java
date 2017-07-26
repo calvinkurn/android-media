@@ -99,7 +99,6 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
         categoryRootRecyclerView.setAdapter(categoryParentAdapter);
         categoryParentAdapter.setDataList(categoryNavDomainModel.getCategories());
-        categoryParentAdapter.notifyDataSetChanged();
 
         if (!TextUtils.isEmpty(rootCategoryId)) {
             LinearLayoutManager linearLayoutManagerChild = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -113,6 +112,9 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 categoryParentAdapter.notifyDataSetChanged();
             }
         }
+
+        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getActivePosition(), 0);
+
     }
 
     @Override

@@ -81,6 +81,10 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
         this.indentation = indentation;
     }
 
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
+
     public void addChildren(List<Category> children, int increment) {
         this.children.addAll(children);
         for (Category category : children) {

@@ -495,7 +495,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
     }
-    private boolean isFromCategory() {
+    public boolean isFromCategory() {
         return !TextUtils.isEmpty(browseModel.getParentDepartement())
                 && !("0").equals(browseModel.getParentDepartement());
     }

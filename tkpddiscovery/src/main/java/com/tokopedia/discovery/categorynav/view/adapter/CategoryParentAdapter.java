@@ -25,6 +25,7 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     private List<com.tokopedia.discovery.categorynav.domain.model.Category> categories;
     private OnItemClickListener clickListener;
     private String activeId;
+    private int activePosition;
 
     public CategoryParentAdapter(OnItemClickListener itemListener, String activeId) {
         clickListener = itemListener;
@@ -95,11 +96,16 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
             ImageHandler.LoadImage(this.categoryIcon,category.getIconImageUrl());
             if (category.getId().equals(activeId)) {
                 this.categoryContainer.setSelected(true);
+                activePosition = position;
             } else {
                 this.categoryContainer.setSelected(false);
             }
         }
 
+    }
+
+    public int getActivePosition() {
+        return activePosition;
     }
 
     public interface OnItemClickListener {

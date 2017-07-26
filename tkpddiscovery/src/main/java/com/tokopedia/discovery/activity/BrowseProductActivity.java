@@ -409,7 +409,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        if (!browsePresenter.isFromCategory()) {
+            items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        } else {
+            items.add(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_category_black));
+        }
         return items;
     }
 
@@ -693,10 +697,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public void setUpBottomNavCategory() {
-        if (bottomNavigation.getChildCount()>3) {
-            bottomNavigation.removeItemAtIndex(3);
-            bottomNavigation.addItem(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_share_black));
-        }
+//        if (bottomNavigation.getChildCount()>3) {
+//            bottomNavigation.removeItemAtIndex(3);
+//            bottomNavigation.addItem(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_share_black));
+//        }
     }
 
     @Override
