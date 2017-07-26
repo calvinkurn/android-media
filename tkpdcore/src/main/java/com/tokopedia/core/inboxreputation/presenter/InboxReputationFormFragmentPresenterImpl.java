@@ -283,9 +283,6 @@ public class InboxReputationFormFragmentPresenterImpl
         if (isMessageEmpty()) {
             viewListener.showMessageReviewError(R.string.error_review_message_empty);
             isValid = false;
-//        } else if (isMessageInvalid()) {
-//            viewListener.showMessageReviewError(R.string.error_review_message);
-//            isValid = false;
         }
 
         if (isRatingQualityEmpty()) {
