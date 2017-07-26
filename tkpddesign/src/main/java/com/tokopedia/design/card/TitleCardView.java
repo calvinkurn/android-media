@@ -182,7 +182,6 @@ public class TitleCardView extends CardView {
 
     // showing that the content to loading state
     private void setLoadingState(boolean isLoading) {
-        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         if (isLoading && loadingStateView.getLoadingView() != null) {
             if (useGradientTitleLoading) {
                 setLoadingTitleState(true);

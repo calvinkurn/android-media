@@ -4,7 +4,7 @@
     <string name="title_activity_gmstat">Statistik</string>
     <string name="action_settings">Settings</string>
     <string name="set_date">Atur Tanggal</string>
-    <string name="title_transaction_success">Transaksi Berhasil</string>
+    <string name="title_transaction_success">Transaksi Sukses</string>
     <string name="title_product_seen">Produk Dilihat</string>
     <string name="title_product_sold">Produk Terjual</string>
     <string name="title_conversion_rate">Tingkat Konversi</string>

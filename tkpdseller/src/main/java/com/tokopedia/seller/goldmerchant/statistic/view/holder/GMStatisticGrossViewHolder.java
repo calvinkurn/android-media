@@ -60,7 +60,7 @@ public class GMStatisticGrossViewHolder {
                 getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
         grossLineChartContainer.setMainDate(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel);
         GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel = getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel;
-        showTransactionGraph(gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.pDates);
+        showTransactionGraph(gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.dates);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 

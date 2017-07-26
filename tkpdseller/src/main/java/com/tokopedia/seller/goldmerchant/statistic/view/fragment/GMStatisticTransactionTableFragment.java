@@ -78,12 +78,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public void loadData() {
-        super.loadData();
-        searchData();
-    }
-
-    @Override
     protected void searchData() {
         super.searchData();
         transactionTablePresenter.loadData(new Date(datePickerViewModel.getStartDate()), new Date(datePickerViewModel.getEndDate()), sortBy, sortType, page);

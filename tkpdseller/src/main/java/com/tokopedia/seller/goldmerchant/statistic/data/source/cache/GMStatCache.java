@@ -27,7 +27,8 @@ import rx.Observable;
 
 public class GMStatCache {
     public static final long DATE_MIN_THRES = 86400000000L;
-    private static final long EXPIRED_TIME = 3600; // 1 HOUR
+    private static final long EXPIRED_TIME = 3600 * 24; // 24 HOUR
+    public static final int ONE_DAY_SECOND = 86400;
 
     @Inject
     public GMStatCache() {
@@ -112,7 +113,7 @@ public class GMStatCache {
     public long getNormalizedDate(long dateLong) {
         if (dateLong > DATE_MIN_THRES) { // we just want to normalize long if it is date
             long dateLongSecond = dateLong / 1000L;
-            return dateLongSecond - (dateLongSecond % 86400);
+            return dateLongSecond - (dateLongSecond % ONE_DAY_SECOND);
         }
         return dateLong;
     }

@@ -17,6 +17,7 @@ public final class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_DOUBLE = "%.1f";
+    public static final String FORMAT_2_DOUBLE = "%.2f";
     public static final String FORMAT = "%.1f%c";
     public static final String SUFFIXES = "KMGTPE";
     public static final String COMMA = ",";
@@ -115,9 +116,9 @@ public final class KMNumbers {
                 KMNumbers.formatDecimalString(numberToFormat));
     }
 
-    // convert (double) 1.0 to "100%" (string)
+    // convert (double) 1.12345 to "123,34%" (string)
     public static String formatToPercentString(Context context, double percent) {
-        return context.getString(R.string.percent_format_text, formatString(percent * 100));
+        return context.getString(R.string.percent_format_text, formatDouble2P(percent * 100));
     }
 
     public static String formatDecimalString (long numberToFormat){
@@ -130,6 +131,10 @@ public final class KMNumbers {
         } else {
             return NumberFormat.getNumberInstance(locale).format(numberToFormat);
         }
+    }
+
+    public static String formatDouble2P(Double number) {
+        return String.format(locale, FORMAT_2_DOUBLE, number);
     }
 
     public static String formatString(Double number) {
