@@ -16,8 +16,17 @@ import com.tokopedia.core.appupdate.model.DetailUpdate;
  */
 
 public class AppUpdateDialogBuilder {
-    public static AlertDialog getAlertDialog(final Activity activity, final DetailUpdate detail) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(activity)
+    private Activity activity;
+    private DetailUpdate detail;
+    private AlertDialog alertDialog;
+
+    public AppUpdateDialogBuilder(Activity activity, DetailUpdate detail) {
+        this.activity = activity;
+        this.detail = detail;
+    }
+
+    public AlertDialog getAlertDialog() {
+        alertDialog = new AlertDialog.Builder(activity)
                 .setTitle(detail.getUpdateTitle())
                 .setMessage(detail.getUpdateMessage())
                 .setPositiveButton(R.string.appupdate_update, null)

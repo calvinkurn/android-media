@@ -711,7 +711,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                AppUpdateDialogBuilder.getAlertDialog(ParentIndexHome.this, detail).show();
+                new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+                        .getAlertDialog().show();
             }
 
             @Override
