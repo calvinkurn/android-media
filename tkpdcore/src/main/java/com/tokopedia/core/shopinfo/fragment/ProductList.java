@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -135,7 +136,7 @@ public class ProductList extends V2BaseFragment {
         if (productShopParam.getPage() == 1) {
             getProductNextPage();
         }
-        if(sortList.isEmpty()){
+        if (sortList.isEmpty()) {
             getSortFilter();
         }
     }
@@ -145,7 +146,7 @@ public class ProductList extends V2BaseFragment {
         if (facadeShopProd != null) {
             facadeShopProd.unsubscribeGetShopProduct();
         }
-        if(facadeSort != null){
+        if (facadeSort != null) {
             facadeSort.unsubscribeGetSortFilter();
         }
         super.onStop();
@@ -432,7 +433,7 @@ public class ProductList extends V2BaseFragment {
                 if (getActivity() != null) {
                     CommonUtils.dumper("GAv4 clicked filter shops");
                 }
-                if(sortList.isEmpty()){
+                if (sortList.isEmpty()) {
                     facadeSort.getSort(new GetSortRetrofit.OnGetSortFilterListener() {
                         @Override
                         public void onSuccess(List<Sort> sorts) {
@@ -468,7 +469,7 @@ public class ProductList extends V2BaseFragment {
         }
     }
 
-    private void showSortDialog(List<Sort> sorts) {
+    private void showSortDialog(final List<Sort> sorts) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         final String[] Value = getResources().getStringArray(R.array.sort_value);
         final ArrayAdapter<Sort> adapterSort = new ArrayAdapter<Sort>(getActivity(),
@@ -478,15 +479,10 @@ public class ProductList extends V2BaseFragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 TextView textView = (TextView) v.findViewById(android.R.id.text1);
-
-                try {
-                    if (Integer.parseInt(productShopParam.getOrderBy()) - 2 == position) {
-                        textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.green_500));
-                    } else {
-                        textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.black));
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                if (productShopParam.getOrderBy().equals(sorts.get(position).getValue())) {
+                    textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_500));
+                } else {
+                    textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
                 }
                 return v;
             }
@@ -515,7 +511,7 @@ public class ProductList extends V2BaseFragment {
         facadeSort = new GetSortRetrofit(getActivity());
     }
 
-    private GetSortRetrofit.OnGetSortFilterListener onGetSortListener(){
+    private GetSortRetrofit.OnGetSortFilterListener onGetSortListener() {
         return new GetSortRetrofit.OnGetSortFilterListener() {
             @Override
             public void onSuccess(List<Sort> sorts) {
@@ -524,7 +520,7 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onFailure(int connectionTypeError, String message) {
-                Log.e(TAG, "onFailure "+message);
+                Log.e(TAG, "onFailure " + message);
             }
         };
     }
@@ -713,7 +709,7 @@ public class ProductList extends V2BaseFragment {
         facadeShopInfo.getShopEtalase();
     }
 
-    private void getSortFilter(){
+    private void getSortFilter() {
         facadeSort.getSort(onGetSortListener());
     }
 
