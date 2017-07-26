@@ -1,6 +1,8 @@
-package com.tokopedia.seller.lib.williamchart.util;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.graphics.Color;
+
+import com.tokopedia.seller.lib.williamchart.util.DataSetConfiguration;
 
 /**
  * Created by normansyahputa on 7/7/17.

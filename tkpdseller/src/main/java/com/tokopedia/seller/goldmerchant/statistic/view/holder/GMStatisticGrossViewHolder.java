@@ -20,8 +20,8 @@ import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public class GMStatisticGrossViewHolder {
      * @param data
      * @param dateGraph
      */
-    protected void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
+    private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         // create model for chart
         final BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);

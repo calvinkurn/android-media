@@ -1,5 +1,6 @@
 package com.tokopedia.seller.lib.williamchart.util;
 
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
 import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 

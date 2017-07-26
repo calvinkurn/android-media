@@ -32,7 +32,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.PopularProductVie
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 
 import java.util.List;
 

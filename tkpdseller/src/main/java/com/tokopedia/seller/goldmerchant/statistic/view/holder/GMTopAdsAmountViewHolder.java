@@ -23,8 +23,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewH
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.List;

@@ -17,7 +17,7 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.lib.williamchart.model.TooltipModel;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.TooltipWithDynamicPointer;
-import com.tokopedia.seller.lib.williamchart.util.GrossGraphDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.util.TopAdsBaseWilliamChartConfig;
 import com.tokopedia.seller.lib.williamchart.util.TopAdsTooltipConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;

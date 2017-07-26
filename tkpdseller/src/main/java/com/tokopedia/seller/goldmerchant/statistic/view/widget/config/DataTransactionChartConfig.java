@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.williamchart.util;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.content.Context;
 

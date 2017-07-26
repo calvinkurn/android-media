@@ -16,9 +16,9 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
-import com.tokopedia.seller.lib.williamchart.util.DataTransactionDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.util.EmptyDataTransactionDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.List;

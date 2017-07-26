@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.williamchart.util;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.graphics.Color;
 
@@ -6,6 +6,7 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.lib.williamchart.util.AnimationGraphConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.ChartView;
 
 /**
