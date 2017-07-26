@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     app:lsv_loading_layout="@layout/widget_line_chart_container_loading">
-
     <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
         android:id="@+id/line_chart_container_gross"
         android:layout_width="match_parent"
@@ -18,4 +17,5 @@
             android:layout_width="match_parent"
             android:layout_height="240dp" />
     </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
+
 </com.tokopedia.design.loading.LoadingStateView>

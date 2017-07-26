@@ -69,13 +69,13 @@
         android:layout_marginBottom="@dimen/gmstat_margin_bottom"
         android:background="@android:color/white">
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/gm_statistic_transaction_graph_container_inner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <!-- inflate line chart programmatically-->
-        </LinearLayout>
+        </FrameLayout>
     </HorizontalScrollView>
 </LinearLayout>
