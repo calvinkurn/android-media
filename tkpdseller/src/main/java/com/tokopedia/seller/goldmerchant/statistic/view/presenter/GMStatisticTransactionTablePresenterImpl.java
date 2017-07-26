@@ -29,7 +29,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
         this.gmStatGetTransactionTableUseCase = gmStatGetTransactionTableUseCase;
     }
 
-    public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy int sortBy,
+    public void loadData(Date startDate, Date endDate, @GMTransactionTableSortType int sortType, @GMTransactionTableSortBy final int sortBy,
                          int page) {
         RequestParams requestParam = GMStatGetTransactionTableUseCase.createRequestParam(
                 startDate.getTime(),
@@ -52,28 +52,30 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
             @Override
             public void onNext(GetTransactionTableModel getTransactionTable) {
                 Log.d(TAG, getTransactionTable.toString());
-                revealData(getTransactionTable);
+                revealData(getTransactionTable, sortBy);
             }
         });
     }
 
-    protected void revealData(GetTransactionTableModel getTransactionTable) {
+    protected void revealData(GetTransactionTableModel getTransactionTable, final @GMTransactionTableSortBy int sortBy) {
         if (isViewAttached()) {
             getView().onSearchLoaded(
-                    convertToViewModel(getTransactionTable.getCells()),
+                    convertToViewModel(getTransactionTable.getCells(), sortBy),
                     (int) getTransactionTable.getTotalCellCount()
             );
         }
     }
 
-    private List<GMStatisticTransactionTableModel> convertToViewModel(List<Cell> datas) {
+    private List<GMStatisticTransactionTableModel> convertToViewModel(List<Cell> datas, final @GMTransactionTableSortBy int sortBy) {
         List<GMStatisticTransactionTableModel> gmStatisticTransactionTableModels =
                 new ArrayList<>();
         for (Cell data : datas) {
             GMStatisticTransactionTableModel gmStatisticTransactionTableModel
                     = new GMStatisticTransactionTableModel();
-            gmStatisticTransactionTableModel.rightText = Integer.toString(data.getDeliveredAmt());
-            gmStatisticTransactionTableModel.leftText = data.getProductProductName();
+            gmStatisticTransactionTableModel.productName = data.getProductProductName();
+            gmStatisticTransactionTableModel.setDeliveredAmount(data.getDeliveredAmt());
+            gmStatisticTransactionTableModel.setDeliveredSum(data.getDeliveredSum());
+            gmStatisticTransactionTableModel.setOrderSum(data.getOrderSum());
             gmStatisticTransactionTableModels.add(gmStatisticTransactionTableModel);
         }
         return gmStatisticTransactionTableModels;

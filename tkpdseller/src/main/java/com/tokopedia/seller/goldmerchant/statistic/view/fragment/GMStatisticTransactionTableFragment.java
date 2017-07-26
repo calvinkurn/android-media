@@ -47,18 +47,19 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     GMStatisticTransactionTablePresenter transactionTablePresenter;
 
     @GMTransactionTableSortBy
-    int sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
+    int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
-    int sortType = GMTransactionTableSortType.ASCENDING;
-    private LinearLayout sortTypeContainer;
+    int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
     private boolean showingSimpleDialog;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
-    private int sortByIndexSelection;
+    private int sortByIndexSelection = 2; // default to Pendapatan Bersih
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
-    private int sortTypeIndexSelection = -1;
+    private int sortTypeIndexSelection = 0; // this is for DESCENDING default
     private TextView tvSortBy;
+    private int savedSortTypeAfterChangeKeyFigure;
+    private int savedSortByAfterChangeKeyFigure;
 
     public static Fragment createInstance() {
         GMStatisticTransactionTableFragment fragment = new GMStatisticTransactionTableFragment();
@@ -80,7 +81,12 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     protected void searchData() {
         super.searchData();
-        transactionTablePresenter.loadData(new Date(datePickerViewModel.getStartDate()), new Date(datePickerViewModel.getEndDate()), sortBy, sortType, page);
+        transactionTablePresenter.loadData(
+                new Date(datePickerViewModel.getStartDate()),
+                new Date(datePickerViewModel.getEndDate()),
+                sortType,
+                sortBy,
+                page);
     }
 
     @Override
@@ -121,21 +127,23 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     protected void initView(View view) {
         super.initView(view);
-        sortTypeContainer = (LinearLayout) view.findViewById(R.id.sort_by_container);
-        sortTypeContainer.setOnClickListener(new View.OnClickListener() {
+        LinearLayout sortByContainer = (LinearLayout) view.findViewById(R.id.sort_by_container);
+        sortByContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSortBy();
             }
         });
-        tvSortBy = (TextView) sortTypeContainer.findViewById(R.id.sort_by_text);
+        tvSortBy = (TextView) sortByContainer.findViewById(R.id.sort_by_text);
 
         gmStatSortBy = getResources().getStringArray(R.array.gm_stat_sort_by);
         sortBySelections = new boolean[gmStatSortBy.length];
         sortBySelections[sortByIndexSelection] = true;
 
+        tvSortBy.setText(gmStatSortBy[sortByIndexSelection]);
+
         gmStatSortType = getResources().getStringArray(R.array.gm_stat_sort_type);
-        sortTypeSelections = new boolean[gmStatSortBy.length];
+        sortTypeSelections = new boolean[gmStatSortType.length];
         if (sortTypeIndexSelection > -1) {
             sortTypeSelections[sortTypeIndexSelection] = true;
         }
@@ -153,7 +161,9 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected BaseListAdapter getNewAdapter() {
-        return new GMStatisticTransactionTableAdapter();
+        GMStatisticTransactionTableAdapter adapter = new GMStatisticTransactionTableAdapter();
+        adapter.setSortBy(sortBy);
+        return adapter;
     }
 
     @Override
@@ -166,6 +176,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         showBottomSheetDialog(gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
+                int previousSortBy = sortBy;
                 switch (sortByIndexSelection = GMStatisticUtil.findSelection(gmStatSortBy, item.getTitle().toString())) {
                     case 0:
                         sortBy = GMTransactionTableSortBy.ORDER_SUM;
@@ -179,33 +190,59 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                         break;
 
                 }
+                showingSimpleDialog = false;
+                if (previousSortBy == sortBy) {
+                    return;
+                }
                 resetSelectionSortBy(sortByIndexSelection);
                 tvSortBy.setText(item.getTitle());
-                searchData();
-                showingSimpleDialog = false;
+                GMStatisticTransactionTableAdapter gmAdapter = (GMStatisticTransactionTableAdapter)adapter;
+                gmAdapter.setSortBy(sortBy);
+                gmAdapter.notifyDataSetChanged();
+
+                // save sort type after change key figure
+                if (savedSortByAfterChangeKeyFigure == 0) {
+                    savedSortTypeAfterChangeKeyFigure = sortType;
+                    savedSortByAfterChangeKeyFigure = previousSortBy;
+                    //reset it, but retrieve it again when doing sort
+                    sortType = -1;
+                    resetSelectionSortType(sortType);
+                }
+                // no need to search data
             }
         });
     }
 
     private void showSortType() {
+        // retrieve saved sort type
+        if (savedSortByAfterChangeKeyFigure!= 0 && savedSortByAfterChangeKeyFigure == sortBy) {
+            sortType = savedSortTypeAfterChangeKeyFigure;
+            savedSortByAfterChangeKeyFigure = 0;
+            int sortTypeSelection = (sortType == GMTransactionTableSortType.DESCENDING)? 0 : 1;
+            resetSelectionSortType(sortTypeSelection);
+        }
         showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
+                int previousSortType = sortType;
                 switch (sortTypeIndexSelection = GMStatisticUtil.findSelection(gmStatSortType, menuItem.getTitle().toString())) {
                     case 0:
-                        sortType = GMTransactionTableSortType.ASCENDING;
+                        sortType = GMTransactionTableSortType.DESCENDING;
                         break;
                     case 1:
-                        sortType = GMTransactionTableSortType.DESCENDING;
+                        sortType = GMTransactionTableSortType.ASCENDING;
                         break;
                     default:
                         sortType = -1;
                         break;
                 }
                 Log.d("Item click", menuItem.getTitle() + " findSelection : " + sortType);
+                showingSimpleDialog = false;
+                if (previousSortType == sortType) {
+                    return;
+                }
                 resetSelectionSortType(sortTypeIndexSelection);
                 searchData();
-                showingSimpleDialog = false;
             }
         });
     }

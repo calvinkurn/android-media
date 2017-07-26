@@ -62,7 +62,7 @@
                     <TextView
                         android:id="@+id/sort_by_text"
                         style="@style/TextView.Body1.Green"
-                        android:text="@string/gm_statistic_total_transaction"/>
+                        tools:text="@string/gm_statistic_total_transaction"/>
 
                     <android.support.v7.widget.AppCompatImageView
                         android:layout_width="10dp"
