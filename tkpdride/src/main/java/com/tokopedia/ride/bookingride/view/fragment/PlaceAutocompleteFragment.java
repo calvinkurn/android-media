@@ -148,20 +148,21 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                CommonUtils.dumper("af : " + mAutocompleteEditText.getText().toString());
+                if (TextUtils.isEmpty(s.toString())) {
                     CommonUtils.dumper("Executed OTC M");
                     setActiveMarketplaceSource();
                     mPresenter.actionGetUserAddressesFromCache();
                 } else {
                     setActiveGooglePlaceSource();
                     CommonUtils.dumper("Executed OTC G");
-                    mPresenter.actionQueryPlacesByKeyword(String.valueOf(s));
+                    mPresenter.actionQueryPlacesByKeyword(String.valueOf(s.toString()));
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                CommonUtils.dumper("af : " + mAutocompleteEditText.getText().toString());
             }
         });
 

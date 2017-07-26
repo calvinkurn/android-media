@@ -34,6 +34,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
 import com.tokopedia.ride.history.di.RideHistoryComponent;
@@ -223,7 +224,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
         System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
 
-        requestTimeTextView.setText(rideHistory.getRequestTime());
+        requestTimeTextView.setText(RideUtils.convertTime(rideHistory.getRequestTime()));
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
         setPickupLocationText(rideHistory.getStartAddress());
@@ -253,7 +254,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         }
 
         if (rideHistory.getDiscount() > 0) {
-            discountValueTextView.setText("- " + rideHistory.getDiscountDisplayFormat());
+            discountValueTextView.setText(String.format("- %s", rideHistory.getDiscountDisplayFormat()));
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);

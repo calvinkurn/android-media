@@ -102,7 +102,10 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener,
-        SeatAdapter.OnItemClickListener, RideHomeContract.View, HasComponent<RideComponent> {
+        SeatAdapter.OnItemClickListener, RideHomeContract.View, HasComponent<RideComponent>  {
+    private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+    private static final String PRODUCTS_FRAGMENT_TAG = "products_fragment_tag";
+    private static final String CONFIRM_FRAGMENT_TAG = "confirm_fragment_tag";
     private static final int RIDE_PHONE_VERIFY_REQUEST_CODE = 1011;
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static final int REQUEST_GO_TO_ONTRIP_REQUEST_CODE = 1009;
@@ -385,15 +388,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
         mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
     }
 
     @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void showDeniedForLocation() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        listPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
         initFragment();
     }
@@ -423,11 +426,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolbar.setVisibility(View.GONE);
 
         if (source != null && destination != null) {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
-            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination));
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination), PRODUCTS_FRAGMENT_TAG);
         } else {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
-            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
         }
     }
 
@@ -439,10 +442,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         }
     }
 
-    private void replaceFragment(int containerViewId, Fragment fragment) {
-        if (!isFinishing()) {
+    private void replaceFragment(int containerViewId, Fragment fragment, String tag) {
+        if (!isFinishing() && !fragment.isAdded()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(containerViewId, fragment);
+            Fragment prevFragment = getFragmentManager().findFragmentByTag(tag);
+            if (prevFragment != null) {
+                fragmentTransaction.remove(prevFragment);
+            }
+            fragmentTransaction.replace(containerViewId, fragment, tag);
             fragmentTransaction.commit();
         }
     }
@@ -466,7 +473,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             }
         } else {
             UberProductFragment productFragment = UberProductFragment.newInstance(source, destination);
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
         }
     }
 
@@ -576,7 +583,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setMarkerText(timeEst);
         } else {
             fragment = RideHomeMapFragment.newInstance();
-            addFragment(R.id.top_container, fragment);
+            replaceFragment(R.id.top_container, fragment, MAP_FRAGMENT_TAG);
             fragment.setMarkerText(timeEst);
         }
     }
@@ -634,7 +641,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setAllowReturnTransitionOverlap(true);
             fragment.setSharedElementEnterTransition(changeBoundsTransition);
         }
-        replaceFragment(R.id.bottom_container, fragment);
+        replaceFragment(R.id.bottom_container, fragment, CONFIRM_FRAGMENT_TAG);
     }
 
     private void onBottomContainerChangeToBookingScreen() {
@@ -674,7 +681,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof UberProductFragment &&
+                mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
@@ -845,7 +855,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment);
+            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
         }
     }
 

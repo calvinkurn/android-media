@@ -287,7 +287,9 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void hidePromoLoading() {
-        mPromoListProgressBar.setVisibility(View.GONE);
+        if (mPromoListProgressBar != null) {
+            mPromoListProgressBar.setVisibility(View.GONE);
+        }
     }
 
     public ApplyPromoActivity.BackButtonListener getBackButtonListener() {
@@ -377,5 +379,11 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     public void hideErrorPromoMessage() {
         descriptionTextView.setVisibility(View.GONE);
         descriptionTextView.setText("");
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
     }
 }
