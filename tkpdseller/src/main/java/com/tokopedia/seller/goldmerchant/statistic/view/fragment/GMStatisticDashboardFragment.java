@@ -165,7 +165,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
-        gmStatisticGrossViewHolder.setData(getTransactionGraph);
+        gmStatisticGrossViewHolder.setData(getActivity(), getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         dataTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
         hideSnackBarRetry();

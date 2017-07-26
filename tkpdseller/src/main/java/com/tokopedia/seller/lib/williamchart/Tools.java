@@ -148,11 +148,9 @@ public class Tools {
                     public boolean filterX(@IntRange(from = 0L) int i) {
                         if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
                             return true;
-
                         if (baseWilliamChartModel.getValues().length <= 15) {
                             return true;
                         }
-
                         return indexToDisplay.contains(i);
 
                     }
