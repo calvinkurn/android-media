@@ -1,5 +1,8 @@
 package com.tokopedia.core.util;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -22,6 +25,8 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
+import static com.tokopedia.core.util.TokenSessionHelper.getExistingAccountAuthToken;
+
 /**
  * @author ricoharisin .
  */
@@ -30,11 +35,12 @@ public class AccessTokenRefresh {
 
     public String refreshToken() throws IOException {
         Context context = MainApplication.getAppContext();
+
         SessionHandler sessionHandler = new SessionHandler(context);
         Map<String, String> params = new HashMap<>();
 
         params.put("grant_type", "refresh_token");
-        params.put("refresh_token", SessionHandler.getRefreshToken(context));
+        params.put("refresh_token", getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
 
         AccountsService service = new AccountsService(new Bundle());
         Call<retrofit2.Response<String>> responseCall = service.getApi().getTokenSynchronous(params);
@@ -49,10 +55,9 @@ public class AccessTokenRefresh {
         TokenModel model = null;
         if (tokenResponse != null) {
             model = new GsonBuilder().create().fromJson(tokenResponse.body(), TokenModel.class);
-            sessionHandler.setToken(model.getAccessToken(), model.getTokenType(), model.getRefreshToken());
+            sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
         }
 
         return model.getRefreshToken();
     }
-
 }
