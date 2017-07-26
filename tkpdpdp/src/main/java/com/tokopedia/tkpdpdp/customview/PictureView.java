@@ -134,7 +134,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         productImage.setImageSrc300(productPass.getProductImage());
         productImage.setImageSrc(productPass.getProductImage());
         productImage.setImageDescription("");
-        imagePagerAdapter.add(productImage);
+        imagePagerAdapter.addFirst(productImage);
         indicator.notifyDataSetChanged();
     }
 

@@ -1,19 +1,15 @@
 package com.tokopedia.tkpdpdp.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
@@ -31,6 +27,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     private List<ProductImage> productImages = new ArrayList<>();
 
     private OnActionListener actionListener;
+    private String urlTemporary;
 
     public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages) {
         this.context = context;
@@ -46,44 +43,45 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(final ViewGroup container, final int position) {
         final ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        String urlImageTemp = productImages.get(position).getImageSrc300();
         final String urlImage = productImages.get(position).getImageSrc();
+        
+        if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+            Glide.with(context).load(urlTemporary)
+                    .dontAnimate()
+                    .centerCrop()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Glide.with(context)
+                                    .load(urlImage)
+                                    .centerCrop()
+                                    .listener(new RequestListener<String, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, String model,
+                                                                   Target<GlideDrawable> target, boolean isFirstResource) {
+                                            return false;
+                                        }
 
-        if (urlImageTemp != null && !urlImageTemp.isEmpty()) {
-            Glide.with(context).load(urlImageTemp)
-                .dontAnimate()
-                .centerCrop()
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model,
-                                                   Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        Glide.with(context)
-                                .load(urlImage)
-                                .dontAnimate()
-                                .centerCrop()
-                                .listener(new RequestListener<String, GlideDrawable>() {
-                                    @Override
-                                    public boolean onException(Exception e, String model,
-                                                               Target<GlideDrawable> target, boolean isFirstResource) {
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                })
-                                .into(imageView);
-                        return false;
-                    }
-                })
-                .into(imageView);
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                                                       boolean isFromMemoryCache, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
+                                    .into(imageView);
+                            return false;
+                        }
+                    })
+                    .into(imageView);
+        } else {
+            ImageHandler.loadImageFit2(context, imageView, urlImage);
         }
+
 
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
@@ -112,8 +110,10 @@ public class ImagePagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void add(ProductImage productImage) {
+    public void addFirst(ProductImage productImage) {
+        this.productImages.clear();
         this.productImages.add(productImage);
+        urlTemporary = productImage.getImageSrc();
         notifyDataSetChanged();
     }
 
