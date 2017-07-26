@@ -1,14 +1,17 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore;
 
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.OfficialStoreCampaignAdapter;
@@ -26,20 +29,24 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
     public static final int SPAN_3_PRODUCT = 2;
     private static final int SPAN_2_PRODUCT = 3;
     private static final int MAX_OFFICIAL_PRODUCT = 6;
-
     private final FeedPlus.View viewListener;
 
     RecyclerView recyclerView;
     ImageView imageView;
+    TextView title;
+    View mainView;
+    View seeAll;
 
     private OfficialStoreCampaignAdapter adapter;
 
-    public OfficialStoreCampaignViewHolder(View itemView, FeedPlus.View viewListener) {
+    public OfficialStoreCampaignViewHolder(View itemView, final FeedPlus.View viewListener) {
         super(itemView);
+        this.viewListener = viewListener;
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         imageView = (ImageView) itemView.findViewById(R.id.official_store_image);
-
-        this.viewListener = viewListener;
+        title = (TextView) itemView.findViewById(R.id.official_store_title);
+        mainView = itemView.findViewById(R.id.main_view);
+        seeAll = itemView.findViewById(R.id.footer);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
                 6,
@@ -64,12 +71,30 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         adapter = new OfficialStoreCampaignAdapter(viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
+
+        seeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSeeAllOfficialStores();
+            }
+        });
+
+
     }
 
     @Override
-    public void bind(OfficialStoreCampaignViewModel officialStoreViewModel) {
+    public void bind(final OfficialStoreCampaignViewModel officialStoreViewModel) {
         adapter.setList(officialStoreViewModel.getListProduct());
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
+        title.setText(MethodChecker.fromHtml(officialStoreViewModel.getTitle()));
+        mainView.setBackgroundColor(Color.parseColor(officialStoreViewModel.getHexColor()));
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToCampaign(officialStoreViewModel.getRedirectUrl());
+            }
+        });
     }
 
 }

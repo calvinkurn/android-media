@@ -11,13 +11,22 @@ import java.util.ArrayList;
 
 public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFactory> {
 
-    private String officialStoreHeaderImageUrl;
-    private ArrayList<OfficialStoreCampaignProductViewModel> listProduct;
+    private final String officialStoreHeaderImageUrl;
+    private final String redirectUrl;
+    private final String hexColor;
+    private final String title;
+    private final ArrayList<OfficialStoreCampaignProductViewModel> listProduct;
 
     public OfficialStoreCampaignViewModel(String url,
+                                          String redirectUrl,
+                                          String hexColor,
+                                          String title,
                                           ArrayList<OfficialStoreCampaignProductViewModel> listProduct) {
         this.officialStoreHeaderImageUrl = url;
+        this.redirectUrl = redirectUrl;
+        this.hexColor = hexColor;
         this.listProduct = listProduct;
+        this.title = title;
     }
 
 
@@ -30,16 +39,19 @@ public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFac
         return favoriteTypeFactory.type(this);
     }
 
-
-    public void setListProduct(ArrayList<OfficialStoreCampaignProductViewModel> listProduct) {
-        this.listProduct = listProduct;
-    }
-
     public String getOfficialStoreHeaderImageUrl() {
         return officialStoreHeaderImageUrl;
     }
 
-    public void setOfficialStoreHeaderImageUrl(String officialStoreHeaderImageUrl) {
-        this.officialStoreHeaderImageUrl = officialStoreHeaderImageUrl;
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public String getHexColor() {
+        return hexColor;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

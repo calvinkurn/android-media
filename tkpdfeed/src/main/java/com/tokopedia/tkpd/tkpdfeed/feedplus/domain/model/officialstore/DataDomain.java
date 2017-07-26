@@ -76,4 +76,64 @@ public class DataDomain {
         this.badges = badges;
         this.labels = labels;
     }
+
+    @Nullable
+    public Integer getId() {
+        return id;
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    @Nullable
+    public String getUrl_app() {
+        return url_app;
+    }
+
+    @Nullable
+    public String getImage_url() {
+        return image_url;
+    }
+
+    @Nullable
+    public String getImage_url_700() {
+        return image_url_700;
+    }
+
+    @Nullable
+    public String getPrice() {
+        return price;
+    }
+
+    @Nullable
+    public ShopDomain getShop() {
+        return shop;
+    }
+
+    @Nullable
+    public String getOriginal_price() {
+        return original_price;
+    }
+
+    @Nullable
+    public Integer getDiscount_percentage() {
+        return discount_percentage;
+    }
+
+    @Nullable
+    public String getDiscount_expired() {
+        return discount_expired;
+    }
+
+    @Nullable
+    public List<BadgeDomain> getBadges() {
+        return badges;
+    }
+
+    @Nullable
+    public List<LabelDomain> getLabels() {
+        return labels;
+    }
 }

@@ -26,4 +26,19 @@ public class OfficialStoreProductDomain {
         this.brand_logo = brand_logo;
         this.data = data;
     }
+
+    @Nullable
+    public Integer getBrand_id() {
+        return brand_id;
+    }
+
+    @Nullable
+    public String getBrand_logo() {
+        return brand_logo;
+    }
+
+    @Nullable
+    public DataDomain getData() {
+        return data;
+    }
 }

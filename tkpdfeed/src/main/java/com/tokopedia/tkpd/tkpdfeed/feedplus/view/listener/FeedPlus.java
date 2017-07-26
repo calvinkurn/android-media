@@ -114,6 +114,10 @@ public interface FeedPlus{
         void onEmptyOfficialStoreClicked();
 
         void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
+
+        void onSeeAllOfficialStores();
+
+        void onGoToCampaign(String redirectUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

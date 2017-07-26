@@ -14,7 +14,6 @@ public class OfficialStoreCampaignProductViewModel {
     private String url;
     private String shopName;
     private String shopAva;
-    private boolean isFavorited;
 
     public OfficialStoreCampaignProductViewModel(Integer productId,
                                                  String name,
@@ -23,8 +22,7 @@ public class OfficialStoreCampaignProductViewModel {
                                                  String imageSourceSingle,
                                                  String url,
                                                  String shopName,
-                                                 String shopAva,
-                                                 boolean isFavorited) {
+                                                 String shopAva) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -33,7 +31,6 @@ public class OfficialStoreCampaignProductViewModel {
         this.url = url;
         this.shopName = shopName;
         this.shopAva = shopAva;
-        this.isFavorited = isFavorited;
     }
 
     public Integer getProductId() {
@@ -68,7 +65,4 @@ public class OfficialStoreCampaignProductViewModel {
         return shopAva;
     }
 
-    public boolean isFavorited() {
-        return isFavorited;
-    }
 }

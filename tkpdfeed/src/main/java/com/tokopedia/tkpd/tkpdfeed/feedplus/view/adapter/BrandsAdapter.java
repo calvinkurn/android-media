@@ -73,7 +73,7 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
     }
 
     public void setList(ArrayList<OfficialStoreViewModel> listStore) {
-        this.listStore.addAll(listStore);
+        this.listStore = listStore;
         notifyDataSetChanged();
     }
 

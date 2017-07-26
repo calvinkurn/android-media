@@ -9,67 +9,44 @@
     app:cardCornerRadius="0dip"
     app:cardElevation="0dip">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@id/rl_title_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_vs"
-            android:layout_marginStart="@dimen/padding_vs"
-            android:layout_marginTop="@dimen/padding_vs"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false">
+        <TextView
+            android:id="@id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/header_official_store_height"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:text="@string/title_official_store"
+            android:textColor="@color/black_70"
+            android:textStyle="normal"/>
 
-            <TextView
-                android:id="@id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:paddingBottom="13dp"
-                android:text="@string/title_official_store"
-                android:textColor="@color/grey_750"
-                />
-
-            <View
-                android:layout_width="25dp"
-                android:layout_height="3dp"
-                android:layout_below="@id/tv_title"
-                android:background="@color/deep_orange_500"/>
-
-        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@id/rv_brands_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_title_layout"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
-            android:padding="@dimen/padding_vs"
             android:scrollbars="none"/>
 
         <TextView
             android:id="@+id/text_view_all_brands"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/rv_brands_list"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_height="@dimen/header_official_store_height"
+            android:layout_gravity="end"
             android:layout_marginRight="@dimen/margin_small"
             android:clickable="true"
             android:drawableRight="@drawable/ic_chevron_right"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
             android:text="@string/see_all"
-            android:textColor="@color/green_400"
-            android:textSize="15sp"/>
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/unify_font_normal"
+            android:textStyle="normal"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

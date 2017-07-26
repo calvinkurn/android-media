@@ -38,7 +38,6 @@ public class OfficialStoreBrandsViewHolder extends AbstractViewHolder<OfficialSt
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
                 GridLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), R.drawable.divider300));
         recyclerView.setAdapter(adapter);
     }
 

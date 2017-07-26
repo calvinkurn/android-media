@@ -25,4 +25,19 @@ public class ShopDomain {
         this.url = url;
         this.location = location;
     }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    @Nullable
+    public String getUrl() {
+        return url;
+    }
+
+    @Nullable
+    public String getLocation() {
+        return location;
+    }
 }

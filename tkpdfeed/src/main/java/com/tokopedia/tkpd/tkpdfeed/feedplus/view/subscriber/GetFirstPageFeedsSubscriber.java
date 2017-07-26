@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomai
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
@@ -41,7 +42,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
-    private static final String TYPE_OS_CAMPAIGN = "official_store_brand";
+    private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
 
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
@@ -190,6 +191,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
+                    case TYPE_OS_CAMPAIGN:
+                        if (domain.getContent().getOfficialStores() != null
+                                && !domain.getContent().getOfficialStores().isEmpty()) {
+                            OfficialStoreCampaignViewModel campaign =
+                                    convertToOfficialStoreCampaign(domain);
+                            listFeedView.add(campaign);
+                        }
+                        break;
                     case TYPE_OS_BRANDS:
                         if (domain.getContent().getOfficialStores() != null
                                 && !domain.getContent().getOfficialStores().isEmpty()) {
@@ -198,6 +207,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             if (!officialStore.getListStore().isEmpty())
                                 listFeedView.add(officialStore);
                         }
+                        break;
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
                         if (model.getListProduct() != null && model.getListProduct().size() > 0)
@@ -212,6 +222,39 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                 }
             }
+    }
+
+    private OfficialStoreCampaignViewModel convertToOfficialStoreCampaign(DataFeedDomain domain) {
+        return new OfficialStoreCampaignViewModel(
+                domain.getContent().getOfficialStores().get(0).getMobile_img_url(),
+                domain.getContent().getOfficialStores().get(0).getRedirect_url_app(),
+                domain.getContent().getOfficialStores().get(0).getFeed_hexa_color(),
+                domain.getContent().getOfficialStores().get(0).getTitle(),
+                convertToOfficialStoreProducts(domain.getContent().getOfficialStores().get(0))
+        );
+    }
+
+    private ArrayList<OfficialStoreCampaignProductViewModel>
+    convertToOfficialStoreProducts(OfficialStoreDomain domain) {
+        ArrayList<OfficialStoreCampaignProductViewModel> listStore = new ArrayList<>();
+        if (domain.getProducts() != null)
+            for (OfficialStoreProductDomain productDomain : domain.getProducts()) {
+                listStore.add(convertToOfficialStoreProduct(productDomain));
+            }
+        return listStore;
+    }
+
+    private OfficialStoreCampaignProductViewModel
+    convertToOfficialStoreProduct(OfficialStoreProductDomain productDomain) {
+        return new OfficialStoreCampaignProductViewModel(
+                productDomain.getData().getId(),
+                productDomain.getData().getName(),
+                productDomain.getData().getPrice(),
+                productDomain.getData().getImage_url(),
+                productDomain.getData().getImage_url_700(),
+                productDomain.getData().getUrl_app(),
+                productDomain.getData().getShop().getName(),
+                productDomain.getBrand_logo());
     }
 
     private OfficialStoreBrandsViewModel convertToBrandsViewModel(DataFeedDomain domain) {

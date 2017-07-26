@@ -737,12 +737,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyOfficialStoreClicked() {
-        if (SessionHandler.isV4Login(getContext())) {
-            UnifyTracking.eventViewAllOSLogin();
-        } else {
-            UnifyTracking.eventViewAllOSNonLogin();
-        }
-
+        UnifyTracking.eventViewAllOSLogin();
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
@@ -754,6 +749,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent intent = ShopInfoActivity.getCallingIntent(
                 getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
         getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onSeeAllOfficialStores() {
+        UnifyTracking.eventViewAllOSLogin();
+        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    @Override
+    public void onGoToCampaign(String redirectUrl) {
+        UnifyTracking.eventViewAllOSLogin();
+        openWebViewBrandsURL(redirectUrl);
     }
 
     private void openWebViewBrandsURL(String url) {
