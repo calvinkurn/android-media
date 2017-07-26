@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.product.AddF
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.brands.BrandsViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromotedProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
@@ -24,7 +24,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.Promot
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
@@ -63,8 +63,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public int type(BrandsViewModel officialStoreViewModel) {
-        return BrandsViewHolder.LAYOUT;
+    public int type(OfficialStoreCampaignViewModel officialStoreViewModel) {
+        return OfficialStoreCampaignViewHolder.LAYOUT;
     }
 
     @Override
@@ -127,8 +127,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedShopViewHolder(view, viewListener);
         else if (type == PromoViewHolder.LAYOUT)
             viewHolder = new PromoViewHolder(view, viewListener);
-        else if (type == BrandsViewHolder.LAYOUT)
-            viewHolder = new BrandsViewHolder(view, viewListener);
+        else if (type == OfficialStoreCampaignViewHolder.LAYOUT)
+            viewHolder = new OfficialStoreCampaignViewHolder(view, viewListener);
         else if (type == InspirationViewHolder.LAYOUT)
             viewHolder = new InspirationViewHolder(view, viewListener);
         else if (type == ImageBlogViewHolder.LAYOUT)

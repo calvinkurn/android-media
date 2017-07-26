@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.brands;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,13 +11,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.BrandsAdapter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.OfficialStoreCampaignAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
+public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<OfficialStoreCampaignViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.official_store_layout;
@@ -32,9 +32,9 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
     RecyclerView recyclerView;
     ImageView imageView;
 
-    private BrandsAdapter adapter;
+    private OfficialStoreCampaignAdapter adapter;
 
-    public BrandsViewHolder(View itemView, FeedPlus.View viewListener) {
+    public OfficialStoreCampaignViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         imageView = (ImageView) itemView.findViewById(R.id.official_store_image);
@@ -61,13 +61,13 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
                 }
             }
         });
-        adapter = new BrandsAdapter(viewListener);
+        adapter = new OfficialStoreCampaignAdapter(viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void bind(BrandsViewModel officialStoreViewModel) {
+    public void bind(OfficialStoreCampaignViewModel officialStoreViewModel) {
         adapter.setList(officialStoreViewModel.getListProduct());
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
     }

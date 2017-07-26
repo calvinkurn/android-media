@@ -1,10 +1,10 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore;
 
 /**
  * @author by nisie on 7/24/17.
  */
 
-public class BrandsFeedViewModel {
+public class OfficialStoreCampaignProductViewModel {
 
     private Integer productId;
     private String name;
@@ -16,15 +16,15 @@ public class BrandsFeedViewModel {
     private String shopAva;
     private boolean isFavorited;
 
-    public BrandsFeedViewModel(Integer productId,
-                               String name,
-                               String price,
-                               String imageSource,
-                               String imageSourceSingle,
-                               String url,
-                               String shopName,
-                               String shopAva,
-                               boolean isFavorited) {
+    public OfficialStoreCampaignProductViewModel(Integer productId,
+                                                 String name,
+                                                 String price,
+                                                 String imageSource,
+                                                 String imageSourceSingle,
+                                                 String url,
+                                                 String shopName,
+                                                 String shopAva,
+                                                 boolean isFavorited) {
         this.productId = productId;
         this.name = name;
         this.price = price;

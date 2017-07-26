@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +11,19 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 
 import java.util.ArrayList;
 
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder> {
+public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialStoreCampaignAdapter.ViewHolder> {
 
-    protected ArrayList<BrandsFeedViewModel> list;
+    protected ArrayList<OfficialStoreCampaignProductViewModel> list;
     private final FeedPlus.View viewListener;
 
-    public BrandsAdapter(FeedPlus.View viewListener) {
+    public OfficialStoreCampaignAdapter(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -87,12 +86,12 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
             return list.size();
     }
 
-    public void setList(ArrayList<BrandsFeedViewModel> list) {
+    public void setList(ArrayList<OfficialStoreCampaignProductViewModel> list) {
         this.list = list;
         notifyDataSetChanged();
     }
 
-    public ArrayList<BrandsFeedViewModel> getList() {
+    public ArrayList<OfficialStoreCampaignProductViewModel> getList() {
         return list;
     }
 

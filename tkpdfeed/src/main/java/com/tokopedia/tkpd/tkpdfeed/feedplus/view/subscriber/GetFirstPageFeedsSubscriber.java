@@ -3,19 +3,20 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands.BrandsViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductCardHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -23,7 +24,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,9 @@ import rx.Subscriber;
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     protected final FeedPlus.View viewListener;
+    private static final String TYPE_OS_BRANDS = "official_store_brand";
+    private static final String TYPE_OS_CAMPAIGN = "official_store_brand";
+
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
 
@@ -89,20 +92,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                              FeedDomain feedDomain, FeedResult feedResult) {
         addFeedData(listFeedView, feedDomain.getListFeed());
         addInspirationData(listFeedView, feedDomain.getListInspiration());
-        addBrandsData(listFeedView, feedDomain.getListInspiration());
         checkCanLoadNext(feedResult, listFeedView);
     }
 
     private void addBrandsData(ArrayList<Visitable> listFeedView,
                                List<DataInspirationDomain> listInspiration) {
-        listFeedView.add(new BrandsViewModel("https://www.tokopedia" +
+        listFeedView.add(new OfficialStoreCampaignViewModel("https://www.tokopedia" +
                 ".com/yupi-store?source=universe&st=product", convertToOfficialStoreProduct()));
 
     }
 
-    private ArrayList<BrandsFeedViewModel> convertToOfficialStoreProduct() {
-        ArrayList<BrandsFeedViewModel> listProduct = new ArrayList<>();
-        listProduct.add(new BrandsFeedViewModel(
+    private ArrayList<OfficialStoreCampaignProductViewModel> convertToOfficialStoreProduct() {
+        ArrayList<OfficialStoreCampaignProductViewModel> listProduct = new ArrayList<>();
+        listProduct.add(new OfficialStoreCampaignProductViewModel(
                 1, "Test", "Rp. 10.000",
                 "https://ecs7.tokopedia" +
                         ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
@@ -118,7 +120,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
                         "-45ab-9be7-b23ddc7d9653.jpg",
                 false));
-        listProduct.add(new BrandsFeedViewModel(
+        listProduct.add(new OfficialStoreCampaignProductViewModel(
                 1, "Test2", "Rp. 10.000",
                 "https://ecs7.tokopedia" +
                         ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
@@ -134,7 +136,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
                         "-45ab-9be7-b23ddc7d9653.jpg",
                 false));
-        listProduct.add(new BrandsFeedViewModel(
+        listProduct.add(new OfficialStoreCampaignProductViewModel(
                 1, "Test3", "Rp. 10.000",
                 "https://ecs7.tokopedia" +
                         ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
@@ -150,7 +152,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ".com/img/215-square/shops-1/2016/12/15/1691911/1691911_023c775a-49fa" +
                         "-45ab-9be7-b23ddc7d9653.jpg",
                 false));
-        listProduct.add(new BrandsFeedViewModel(
+        listProduct.add(new OfficialStoreCampaignProductViewModel(
                 1, "Test4", "Rp. 10.000",
                 "https://ecs7.tokopedia" +
                         ".net/img/cache/230-square/product-1/2017/6/5/14759203/14759203_41e2d647" +
@@ -261,6 +263,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType()) {
+                    case TYPE_OS_BRANDS:
+                        ActivityCardViewModel model = convertToActivityViewModel(domain);
+                        if (model.getListProduct() != null && model.getListProduct().size() > 0)
+                            listFeedView.add(model);
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
                         if (model.getListProduct() != null && model.getListProduct().size() > 0)

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.brands;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
@@ -9,19 +9,19 @@ import java.util.ArrayList;
  * Created by stevenfredian on 5/18/17.
  */
 
-public class BrandsViewModel implements Visitable<FeedPlusTypeFactory> {
+public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFactory> {
 
     private String officialStoreHeaderImageUrl;
-    private ArrayList<BrandsFeedViewModel> listProduct;
+    private ArrayList<OfficialStoreCampaignProductViewModel> listProduct;
 
-    public BrandsViewModel(String url,
-                           ArrayList<BrandsFeedViewModel> listProduct) {
+    public OfficialStoreCampaignViewModel(String url,
+                                          ArrayList<OfficialStoreCampaignProductViewModel> listProduct) {
         this.officialStoreHeaderImageUrl = url;
         this.listProduct = listProduct;
     }
 
 
-    public ArrayList<BrandsFeedViewModel> getListProduct() {
+    public ArrayList<OfficialStoreCampaignProductViewModel> getListProduct() {
         return listProduct;
     }
 
@@ -31,7 +31,7 @@ public class BrandsViewModel implements Visitable<FeedPlusTypeFactory> {
     }
 
 
-    public void setListProduct(ArrayList<BrandsFeedViewModel> listProduct) {
+    public void setListProduct(ArrayList<OfficialStoreCampaignProductViewModel> listProduct) {
         this.listProduct = listProduct;
     }
 
