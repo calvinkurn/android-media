@@ -23,7 +23,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.BuyerDataViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.DataTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
@@ -36,12 +35,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPre
 import com.tokopedia.seller.lib.williamchart.util.DataTransactionChartConfig;
 
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -49,9 +44,6 @@ import rx.Subscriber;
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
     public static final String TAG = "GMStatisticDashboardFragment";
-
-    @Inject
-    GMStatClearCacheUseCase gmStatClearCacheUseCase;
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -81,22 +73,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         gmDashboardPresenter.attachView(this);
-        gmStatClearCacheUseCase.execute(null, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-                // no op
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // no op
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                // no op
-            }
-        });
     }
 
     @Override
