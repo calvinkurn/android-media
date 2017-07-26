@@ -518,6 +518,9 @@ public interface AppEventTracking {
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
         String KEYWORD = "keyword";
         String IS_RESULT_FOUND = "IS_RESULT_FOUND";
+        String PAYMENT_TYPE = "payment_type";
+        String PURCHASE_SITE = "purchase_site";
+        String TOTAL_PRICE = "purchase_site";
     }
 
     interface EventMoEngage {
@@ -538,6 +541,7 @@ public interface AppEventTracking {
         String CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
         String CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
         String SEARCH_ATTEMPT = "Search_Attempt";
+        String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";

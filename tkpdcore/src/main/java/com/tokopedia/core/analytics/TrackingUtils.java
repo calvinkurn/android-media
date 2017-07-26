@@ -386,6 +386,17 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
+    public static void sendMoEngageOpenThankYouPage(String paymentType, String purchaseSite, double totalPrice) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.PAYMENT_TYPE, paymentType);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PURCHASE_SITE, purchaseSite);
+        builder.putAttrDouble(AppEventTracking.MOENGAGE.TOTAL_PRICE, totalPrice);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.OPEN_THANKYOU_PAGE
+        );
+    }
+
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)){
