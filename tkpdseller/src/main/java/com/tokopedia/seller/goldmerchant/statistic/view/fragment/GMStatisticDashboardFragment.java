@@ -96,7 +96,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
         initViews(view);
         initNumberFormatter();
-        resetToLoading();
         dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return view;
     }
@@ -130,20 +129,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+                resetToLoading();
                 gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-    }
-
-    @Override
-    public void resetToLoading() {
-        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        popularProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        dataTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        buyerDataViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        marketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     private void initNumberFormatter() {
@@ -154,6 +144,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void loadData() {
         super.loadData();
+        resetToLoading();
         gmDashboardPresenter.onResume();
         gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
@@ -162,6 +153,15 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onPause() {
         super.onPause();
         gmDashboardPresenter.onPause();
+    }
+
+    private void resetToLoading() {
+        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        popularProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        dataTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        buyerDataViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        marketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override

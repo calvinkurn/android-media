@@ -32,8 +32,6 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onError(Throwable e);
 
-    void resetToLoading();
-
     void onLoadGMStatTracking();
 
     void onScrollGMStatTracking();

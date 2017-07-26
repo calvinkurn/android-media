@@ -173,7 +173,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
     @Override
     public void fetchData(long starDate, long endDate) {
-        getView().resetToLoading();
         getProductGraph(starDate, endDate);
         RequestParams transactionParam = GMStatGetTransactionGraphUseCase.createRequestParam(starDate, endDate);
         transactionGraphUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
