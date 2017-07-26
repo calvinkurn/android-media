@@ -48,12 +48,16 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     public void onBindViewHolder(final ItemRowHolder holder, final int position) {
         ItemRowHolder itemRowHolder = (ItemRowHolder) holder;
         itemRowHolder.bindData(position);
-        itemRowHolder.categoryContainer.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onParentClicked = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               clickListener.onItemClicked(categories.get(position));
+                clickListener.onItemClicked(categories.get(position),position);
             }
-        });
+        };
+        itemRowHolder.categoryContainer.setOnClickListener(onParentClicked);
+        itemRowHolder.categoryIcon.setOnClickListener(onParentClicked);
+        itemRowHolder.categoryName.setOnClickListener(onParentClicked);
+        itemRowHolder.categoryContainer.setOnClickListener(onParentClicked);
 
     }
 
@@ -99,7 +103,7 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     }
 
     public interface OnItemClickListener {
-        void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
+        void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category category, int position);
     }
 
 }

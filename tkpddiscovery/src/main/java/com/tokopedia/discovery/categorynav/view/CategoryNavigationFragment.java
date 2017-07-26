@@ -157,9 +157,10 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
 
     @Override
-    public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent) {
+    public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent, int position) {
         rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
+        linearLayoutManager.scrollToPositionWithOffset(position, 0);
         for (Category category: categoryNavDomainModel.getCategories()) {
             if (category.getId() == rootCategoryId) {
                 if (category.getChildren()!=null && category.getChildren().size()>0) {
@@ -182,6 +183,12 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             } else {
                 presenter.getChildren(3,category.getId());
             }
+        } else {
+            IntermediaryActivity.moveTo(
+                    getActivity(),
+                    category.getId(),
+                    category.getName()
+            );
         }
     }
 }
