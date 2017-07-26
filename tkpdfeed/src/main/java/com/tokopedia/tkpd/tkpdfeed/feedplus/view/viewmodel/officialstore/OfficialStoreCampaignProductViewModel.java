@@ -1,12 +1,14 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore;
 
+import android.graphics.PointF;
+
 /**
  * @author by nisie on 7/24/17.
  */
 
 public class OfficialStoreCampaignProductViewModel {
 
-    private Integer productId;
+    private int productId;
     private String name;
     private String price;
     private String imageSource;
@@ -14,26 +16,42 @@ public class OfficialStoreCampaignProductViewModel {
     private String url;
     private String shopName;
     private String shopAva;
+    private String originalPrice;
+    private int discount;
+    private String cashback;
+    private boolean wholesale;
+    private boolean preorder;
 
-    public OfficialStoreCampaignProductViewModel(Integer productId,
+
+    public OfficialStoreCampaignProductViewModel(int productId,
                                                  String name,
                                                  String price,
+                                                 String originalPrice,
+                                                 int discount,
                                                  String imageSource,
                                                  String imageSourceSingle,
                                                  String url,
                                                  String shopName,
-                                                 String shopAva) {
+                                                 String shopAva,
+                                                 String cashback,
+                                                 boolean wholesale,
+                                                 boolean preorder) {
         this.productId = productId;
         this.name = name;
         this.price = price;
+        this.originalPrice = originalPrice;
+        this.discount = discount;
         this.imageSource = imageSource;
         this.imageSourceSingle = imageSourceSingle;
         this.url = url;
         this.shopName = shopName;
         this.shopAva = shopAva;
+        this.cashback = cashback;
+        this.wholesale = wholesale;
+        this.preorder = preorder;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
@@ -65,4 +83,35 @@ public class OfficialStoreCampaignProductViewModel {
         return shopAva;
     }
 
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
+
+    public boolean isWholesale() {
+        return wholesale;
+    }
+
+    public void setWholesale(boolean wholesale) {
+        this.wholesale = wholesale;
+    }
+
+    public boolean isPreorder() {
+        return preorder;
+    }
+
+    public void setPreorder(boolean preorder) {
+        this.preorder = preorder;
+    }
 }

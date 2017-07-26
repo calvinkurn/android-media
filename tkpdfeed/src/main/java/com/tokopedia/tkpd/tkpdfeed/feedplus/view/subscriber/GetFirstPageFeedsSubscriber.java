@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
@@ -40,6 +41,9 @@ import rx.Subscriber;
 
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
+    private static final String CASHBACK = "Cashback";
+    private static final String WHOLESALE = "Grosir";
+    private static final String PREORDER = "PO";
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
@@ -250,11 +254,42 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getId(),
                 productDomain.getData().getName(),
                 productDomain.getData().getPrice(),
+                productDomain.getData().getOriginal_price(),
+                productDomain.getData().getDiscount_percentage(),
                 productDomain.getData().getImage_url(),
                 productDomain.getData().getImage_url_700(),
                 productDomain.getData().getUrl_app(),
                 productDomain.getData().getShop().getName(),
-                productDomain.getBrand_logo());
+                productDomain.getBrand_logo(),
+                getCashbackLabel(productDomain.getData().getLabels()),
+                isWholesale(productDomain.getData().getLabels()),
+                isPreorder(productDomain.getData().getLabels()));
+    }
+
+    private boolean isPreorder(List<LabelDomain> labels) {
+        for (LabelDomain labelDomain : labels) {
+            if (labelDomain.getTitle().contains(PREORDER)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isWholesale(List<LabelDomain> labels) {
+        for (LabelDomain labelDomain : labels) {
+            if (labelDomain.getTitle().contains(WHOLESALE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getCashbackLabel(List<LabelDomain> labels) {
+        for (LabelDomain labelDomain : labels) {
+            if (labelDomain.getTitle().contains(CASHBACK))
+                return labelDomain.getTitle();
+        }
+        return "";
     }
 
     private OfficialStoreBrandsViewModel convertToBrandsViewModel(DataFeedDomain domain) {

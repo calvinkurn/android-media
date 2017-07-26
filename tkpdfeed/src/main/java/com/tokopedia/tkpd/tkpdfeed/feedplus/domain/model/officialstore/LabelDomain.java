@@ -21,4 +21,14 @@ public class LabelDomain {
         this.title = title;
         this.color = color;
     }
+
+    @Nonnull
+    public String getTitle() {
+        return title;
+    }
+
+    @Nonnull
+    public String getColor() {
+        return color;
+    }
 }
