@@ -58,7 +58,7 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageHandler.LoadImage(holder.logo, listStore.get(position).getLogoUrl());
 
-        if (listStore.get(position).getIsNew() == IS_NEW)
+        if (listStore.get(position).getIsNew())
             holder.labelNew.setVisibility(View.VISIBLE);
         else
             holder.labelNew.setVisibility(View.GONE);
