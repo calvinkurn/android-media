@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
 
@@ -23,6 +24,17 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
 
     protected long getComparedEndDate() {
         return comparedEndDate;
+    }
+
+    @Override
+    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
+        // Check if date compared changed
+        if (this.datePickerViewModel != null && isComparedDate() &&
+                (this.datePickerViewModel.isCompareDate() != datePickerViewModel.isCompareDate()) ) {
+            loadData();
+        } else {
+            super.onSuccessLoadDatePicker(datePickerViewModel);
+        }
     }
 
     @Override
