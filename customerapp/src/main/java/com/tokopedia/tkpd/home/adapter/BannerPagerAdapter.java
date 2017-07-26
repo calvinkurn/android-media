@@ -51,33 +51,11 @@ public class BannerPagerAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.layout_slider_banner_category, container, false);
 
         ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
-        if (bannerList.get(position).imgUrl!=null && bannerList.get(position).promoUrl.length()>0) {
-            bannerImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String url = bannerList.get(position).promoUrl;
-                    try {
-                        UnifyTracking.eventSlideBannerClicked(url);
-                        Uri uri = Uri.parse(url);
-                        String host = uri.getHost();
-                        List<String> linkSegment = uri.getPathSegments();
-                        if (isBaseHost(host) && isShop(linkSegment)) {
-                            String shopDomain = linkSegment.get(0);
-                            getShopInfo(url, shopDomain);
-                        } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                            String shopDomain = linkSegment.get(0);
-                            openProductPageIfValid(url, shopDomain);
-                        } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
-                            DeepLinkChecker.openCategory(url, context);
-                        } else {
-                            openWebViewURL(url);
-                        }
-
-                    } catch (Exception e) {
-                        openWebViewURL(url);
-                    }
-                }
-            });
+        if (bannerList.get(position).imgUrl!=null &&
+                bannerList.get(position).promoUrl.length()>0) {
+            bannerImage.setOnClickListener(
+                    getBannerImageOnClickListener(bannerList.get(position).promoUrl)
+            );
         }
 
         CardView cardView = (CardView) view.findViewById(R.id.card_view);
@@ -92,6 +70,34 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
+    }
+
+    private View.OnClickListener getBannerImageOnClickListener(final String url) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    UnifyTracking.eventSlideBannerClicked(url);
+                    Uri uri = Uri.parse(url);
+                    String host = uri.getHost();
+                    List<String> linkSegment = uri.getPathSegments();
+                    if (isBaseHost(host) && isShop(linkSegment)) {
+                        String shopDomain = linkSegment.get(0);
+                        getShopInfo(url, shopDomain);
+                    } else if (isBaseHost(host) && isProduct(linkSegment)) {
+                        String shopDomain = linkSegment.get(0);
+                        openProductPageIfValid(url, shopDomain);
+                    } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
+                        DeepLinkChecker.openCategory(url, context);
+                    } else {
+                        openWebViewURL(url);
+                    }
+
+                } catch (Exception e) {
+                    openWebViewURL(url);
+                }
+            }
+        };
     }
 
     @Override
