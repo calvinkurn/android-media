@@ -8,6 +8,8 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -207,5 +209,15 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 }
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        buyerGraphUseCase.unsubscribe();
+        transactionGraphUseCase.unsubscribe();
+        productGraphUseCase.unsubscribe();
+        popularProductUseCase.unsubscribe();
+        marketInsightUseCase.unsubscribe();
     }
 }

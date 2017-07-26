@@ -43,6 +43,16 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
     private TitleCardView gmStatisticTopAdsCardView;
     private LineChartContainerWidget gmTopAdsLineChartWidget;
 
+    private OnTopAdsViewHolderListener onTopAdsViewHolderListener;
+    public interface OnTopAdsViewHolderListener{
+        void onChangeDateClicked();
+        void onFindOutTopAdsClicked();
+    }
+
+    public void setOnTopAdsViewHolderListener(OnTopAdsViewHolderListener onTopAdsViewHolderListener) {
+        this.onTopAdsViewHolderListener = onTopAdsViewHolderListener;
+    }
+
     public GMTopAdsAmountViewHolder(@Nullable Context context) {
         super(context);
         baseWilliamChartConfig = new BaseWilliamChartConfig();
@@ -146,7 +156,9 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO hendry dafter topads sekarang ke mana.?
+                    if (onTopAdsViewHolderListener!= null) {
+                        onTopAdsViewHolderListener.onFindOutTopAdsClicked();
+                    }
                 }
             });
         }
@@ -168,7 +180,9 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO hendry ubah tanggal
+                    if (onTopAdsViewHolderListener!= null) {
+                        onTopAdsViewHolderListener.onChangeDateClicked();
+                    }
                 }
             });
             button.setVisibility(View.GONE);
@@ -189,7 +203,9 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO hendry cari tahu topads ke mana?
+                    if (onTopAdsViewHolderListener!= null) {
+                        onTopAdsViewHolderListener.onFindOutTopAdsClicked();
+                    }
                 }
             });
             button.setVisibility(View.VISIBLE);
@@ -216,7 +232,9 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO hendry cari tahu topads ke mana?
+                    if (onTopAdsViewHolderListener!= null) {
+                        onTopAdsViewHolderListener.onFindOutTopAdsClicked();
+                    }
                 }
             });
             button.setVisibility(View.VISIBLE);
