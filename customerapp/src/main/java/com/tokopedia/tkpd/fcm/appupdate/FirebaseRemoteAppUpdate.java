@@ -23,22 +23,13 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private static final String IS_FORCE_UPDATE = "is_force_update";
     private static final String UPDATE_LINK = "update_link";
 
-    private static FirebaseRemoteAppUpdate instance;
     private Activity activity;
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
-    private FirebaseRemoteAppUpdate(Activity activity) {
+    public FirebaseRemoteAppUpdate(Activity activity) {
         this.activity = activity;
 
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-    }
-
-    public static FirebaseRemoteAppUpdate getInstance(Activity activity) {
-        if(instance == null) {
-            instance = new FirebaseRemoteAppUpdate(activity);
-        }
-
-        return instance;
     }
 
     @Override

@@ -2008,4 +2008,8 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_loading">Loading..</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+
+    <string name="appupdate_update">Update</string>
+    <string name="appupdate_later">Nanti</string>
+    <string name="appupdate_close">Tutup</string>
 </resources>

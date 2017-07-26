@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -34,6 +35,7 @@ import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -705,11 +707,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkAppUpdate() {
-        ApplicationUpdate appUpdate = FirebaseRemoteAppUpdate.getInstance(this);
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                showUpdatePrompt(detail);
+                AppUpdateDialogBuilder.getAlertDialog(ParentIndexHome.this, detail).show();
             }
 
             @Override
@@ -717,30 +719,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 e.printStackTrace();
             }
         });
-    }
-
-    private void showUpdatePrompt(final DetailUpdate detail) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle(detail.getUpdateTitle());
-        dialog.setMessage(detail.getUpdateMessage());
-        dialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink())));
-            }
-        });
-        dialog.setCancelable(false);
-
-        if(!detail.isForceUpdate()) {
-            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-            dialog.setCancelable(true);
-        }
-        dialog.show();
     }
 
 }
