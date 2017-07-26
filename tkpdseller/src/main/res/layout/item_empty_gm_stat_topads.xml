@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:src="@drawable/ic_top_ads" />
+        android:src="@drawable/icon_empty_state_empty_top_ads" />
 
     <TextView
         android:id="@+id/tv_title"

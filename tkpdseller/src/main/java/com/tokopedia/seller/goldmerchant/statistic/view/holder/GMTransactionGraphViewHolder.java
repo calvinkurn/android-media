@@ -202,7 +202,20 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
         gmTitleCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
 
         gmLineChartContainer.setPercentage(data.percentage);
-        gmLineChartContainer.setAmount(Integer.toString(data.amount));
+
+        switch (selection()) {
+            case GMTransactionGraphType.GROSS_REVENUE:
+            case GMTransactionGraphType.NET_REVENUE:
+            case GMTransactionGraphType.REJECTED_AMOUNT:
+            case GMTransactionGraphType.SHIPPING_COST:
+                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(context, data.amount));
+                break;
+            case GMTransactionGraphType.REJECT_TRANS:
+            case GMTransactionGraphType.SUCCESS_TRANS:
+            case GMTransactionGraphType.TOTAL_TRANSACTION:
+                gmLineChartContainer.setAmount(Integer.toString(data.amount));
+                break;
+        }
     }
 
     private void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {

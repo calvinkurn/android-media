@@ -23,6 +23,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import javax.inject.Inject;
 
@@ -30,7 +31,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView, GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -61,6 +62,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(getActivity());
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
         gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
+        gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
     }
 
     @Nullable
@@ -161,5 +163,16 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onChangeDateClicked() {
+        dateLabelView.performClick();
+    }
+
+    @Override
+    public void onFindOutTopAdsClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
+        startActivity(intent);
     }
 }
