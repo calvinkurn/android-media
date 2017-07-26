@@ -449,7 +449,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO);
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO +
+                TkpdBaseURL.FLAG_APP);
         startActivity(intent);
     }
 
