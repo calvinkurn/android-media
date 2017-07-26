@@ -203,8 +203,6 @@ public interface OnTripMapContract {
 
         void initialize();
 
-        void actionCancelRide();
-
         /**
          * This function handles an action to create ride request. It makes composite call, first for fare-estimate  and then uber/request
          *
