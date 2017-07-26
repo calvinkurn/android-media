@@ -18,6 +18,8 @@ public interface ProfileCompletionContract extends CustomerView {
 
         void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData);
 
+        void onErrorGetUserInfo(String string);
+
         void onSuccessEditProfile(int edit);
 
         void onFailedEditProfile(String errorMessage);

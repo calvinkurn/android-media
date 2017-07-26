@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +70,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     ProfileCompletionPresenter presenter;
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
+    private NetworkErrorHelper.RetryClickedListener retryAction;
 
 
     public static ProfileCompletionFragment createInstance() {
@@ -154,23 +153,34 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         animation = new ProgressBarAnimation(progressBar);
         filled = "filled";
         pair = new Pair<>(R.anim.slide_in_right, R.anim.slide_out_left);
+        retryAction = new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getUserInfo();
+            }
+        };
     }
 
     @Override
     public void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData) {
         this.data = getUserInfoDomainData;
-        testDummyData();
+//        testDummyData();
         updateProgressBar(0, data.getCompletion());
         loading.setVisibility(View.GONE);
         loadFragment(getUserInfoDomainData, new Pair<>(0, 0));
     }
 
-    private void testDummyData() {
-        data.setCompletion(50);
-        data.setPhoneVerified(false);
-        data.setGender(0);
-        data.setBday("0");
+    @Override
+    public void onErrorGetUserInfo(String string) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), string, retryAction).showRetrySnackbar();
     }
+//
+//    private void testDummyData() {
+//        data.setCompletion(50);
+//        data.setPhoneVerified(false);
+//        data.setGender(0);
+//        data.setBday("0");
+//    }
 
     private void updateProgressBar(int oldValue, int newValue) {
         data.setCompletion(newValue);

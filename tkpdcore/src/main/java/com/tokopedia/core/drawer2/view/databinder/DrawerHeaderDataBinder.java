@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,6 +56,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         private final TextView verifiedText;
         private final View verifiedIcon;
         private final View layoutProgress;
+        private final ProgressBar progressBar;
 
         @BindView(R2.id.user_avatar)
         ImageView avatar;
@@ -114,6 +116,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             layoutProgress = itemView.findViewById(R.id.layout_progress);
             verifiedText = (TextView) itemView.findViewById(R.id.verified);
             verifiedIcon = itemView.findViewById(R.id.verified_icon);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.ProgressBar);
 
         }
     }
@@ -196,6 +199,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.verifiedIcon.setVisibility(View.VISIBLE);
             holder.verifiedText.setVisibility(View.VISIBLE);
         }else {
+            holder.progressBar.setProgress(data.getProfileCompletion());
             holder.layoutProgress.setVisibility(View.VISIBLE);
             holder.verifiedIcon.setVisibility(View.GONE);
             holder.verifiedText.setVisibility(View.GONE);
