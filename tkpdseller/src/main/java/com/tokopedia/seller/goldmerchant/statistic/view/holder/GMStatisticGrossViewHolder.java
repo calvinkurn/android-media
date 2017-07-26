@@ -1,10 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
@@ -17,9 +13,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPre
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.List;
@@ -30,9 +23,7 @@ import java.util.List;
 
 public class GMStatisticGrossViewHolder {
 
-    private BaseWilliamChartConfig baseWilliamChartConfig;
     private String[] monthNamesAbrev;
-    private Drawable oval2Copy6;
 
     private LoadingStateView grossLoadingStateView;
     private LineChartContainerWidget grossLineChartContainer;
@@ -44,8 +35,6 @@ public class GMStatisticGrossViewHolder {
         grossLineChartView = (LineChartView) view.findViewById(R.id.line_chart_gross);
 
         monthNamesAbrev = view.getContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        baseWilliamChartConfig = new BaseWilliamChartConfig();
-        oval2Copy6 = ResourcesCompat.getDrawable(view.getContext().getResources(), R.drawable.oval_2_copy_6, null);
     }
 
     public void setViewState(int state) {
@@ -71,33 +60,7 @@ public class GMStatisticGrossViewHolder {
     private void showTransactionGraph(Activity activity, List<Integer> data, List<Integer> dateGraph) {
         // create model for chart
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(activity,
-                grossLineChartView, baseWilliamChartModel);
-        Tooltip tooltip = getTooltip(grossLineChartView.getContext(), getTooltipResLayout());
-        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(activity, grossLineChartView, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(grossLineChartView);
-    }
-
-    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
-        return new Tooltip(context,
-                layoutRes,
-                R.id.gm_stat_tooltip_textview,
-                new StringFormatRenderer() {
-                    @Override
-                    public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
-                    }
-                });
-    }
-
-
-    @LayoutRes
-    private int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip;
-        }
-        return layoutTooltip;
     }
 }

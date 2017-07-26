@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.res.ResourcesCompat;
@@ -28,9 +27,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraph
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -216,12 +212,9 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     }
 
     private void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
-        // get tooltip
-        Tooltip tooltip = getTooltip(context, getTooltipResLayout());
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
                 gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
         baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
-        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
@@ -237,31 +230,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
                 gmStatisticIncomeGraph, baseWilliamChartModel);
-        Tooltip tooltip = getTooltip(context, getTooltipResLayout());
-        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
-    }
-
-    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
-        return new Tooltip(context,
-                layoutRes,
-                R.id.gm_stat_tooltip_textview,
-                new StringFormatRenderer() {
-                    @Override
-                    public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
-                    }
-                });
-    }
-
-    @LayoutRes
-    private int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip;
-        }
-        return layoutTooltip;
     }
 }
