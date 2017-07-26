@@ -98,7 +98,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public boolean showInAppMessage(InAppMessage message) {
         CommonUtils.dumper("FCM showing in app messaging "+message.content);
         InAppTracker.getInstance(this).trackInAppClicked(message);
-        return false;
+        return true;
     }
 
     @Override
