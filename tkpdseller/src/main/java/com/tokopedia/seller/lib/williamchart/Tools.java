@@ -16,13 +16,27 @@
 
 package com.tokopedia.seller.lib.williamchart;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
+import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+
+import java.util.List;
 
 
 public class Tools {
@@ -112,5 +126,37 @@ public class Tools {
             }
         }
         return 1;
+    }
+
+    public static BaseWilliamChartConfig getCommonWilliamChartConfig(Activity activity,
+                                    LineChartView lineChartView,
+                                    final BaseWilliamChartModel baseWilliamChartModel) {
+
+        // resize linechart according to data
+        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView, activity);
+        // get index to display
+        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
+        Drawable oval2Copy6 = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.oval_2_copy_6, null);
+        BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
+        baseWilliamChartConfig
+                .reset()
+                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
+                .setDotDrawable(oval2Copy6)
+                .setBasicGraphConfiguration(new GrossGraphChartConfig())
+                .setxRendererListener(new XRenderer.XRendererListener() {
+                    @Override
+                    public boolean filterX(@IntRange(from = 0L) int i) {
+                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
+                            return true;
+
+                        if (baseWilliamChartModel.getValues().length <= 15) {
+                            return true;
+                        }
+
+                        return indexToDisplay.contains(i);
+
+                    }
+                });
+        return baseWilliamChartConfig;
     }
 }

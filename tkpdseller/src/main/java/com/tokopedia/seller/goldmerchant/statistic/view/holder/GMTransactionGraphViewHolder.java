@@ -27,13 +27,14 @@ import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewH
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
+import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -219,40 +220,13 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     }
 
     private void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
-        // resize linechart according to data
-        if (context != null && context instanceof Activity)
-            GMStatisticUtil.resizeChart(baseWilliamChartModels.get(0).size(), gmStatisticIncomeGraph, (Activity) context);
-
-        // get index to display
-        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModels.get(0).getValues());
-
         // get tooltip
-        Tooltip tooltip = getTooltip(
-                context,
-                getTooltipResLayout()
-        );
-
-        baseWilliamChartConfig
-                .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig())
-                .addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig())
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setDotDrawable(oval2Copy6)
-                .setTooltip(tooltip, new DefaultTooltipConfiguration())
-                .setxRendererListener(new XRenderer.XRendererListener() {
-                    @Override
-                    public boolean filterX(@IntRange(from = 0L) int i) {
-                        if (i == 0 || baseWilliamChartModels.get(0).getValues().length - 1 == i)
-                            return true;
-
-                        if (baseWilliamChartModels.get(0).getValues().length <= 15) {
-                            return true;
-                        }
-
-                        return indexToDisplay.contains(i);
-
-                    }
-                }).buildChart(gmStatisticIncomeGraph);
+        Tooltip tooltip = getTooltip(context, getTooltipResLayout());
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
+                gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
+        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
+        baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 

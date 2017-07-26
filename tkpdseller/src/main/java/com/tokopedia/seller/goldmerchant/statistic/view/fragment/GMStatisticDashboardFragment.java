@@ -145,14 +145,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void loadData() {
         super.loadData();
         resetToLoading();
-        gmDashboardPresenter.onResume();
         gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        gmDashboardPresenter.onPause();
     }
 
     private void resetToLoading() {
@@ -211,11 +204,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onError(Throwable e) {
-        gmDashboardPresenter.displayDefaultValue(getActivity().getAssets());
-        showSnackbarRerty();
+        showSnackbarRetry();
     }
 
-    private void showSnackbarRerty() {
+    public void showSnackbarRetry() {
         if (!snackbarRetry.isShown()) {
             snackbarRetry.showRetrySnackbar();
         }

@@ -1,20 +1,20 @@
 package com.tokopedia.seller.goldmerchant.statistic.di.module;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -106,19 +106,19 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    public GMStatNetworkController provideGmStatNetworkController(Gson gson, GMStatRepository gmStatRepository) {
-        return new GMStatNetworkController(gson, gmStatRepository);
+    public GMDashboardPresenter provideGmFragmentPresenter(GMStatMarketInsightUseCase marketInsightUseCase,
+                                                           GMStatGetBuyerGraphUseCase buyerGraphUseCase,
+                                                           GMStatGetPopularProductUseCase popularProductUseCase,
+                                                           GMStatGetTransactionGraphUseCase transactionGraphUseCase,
+                                                           GMStatGetProductGraphUseCase productGraphUseCase,
+                                                           GMStatEmptyUseCase gmStatEmptyUseCase) {
+        return new GMDashboardPresenterImpl(marketInsightUseCase, buyerGraphUseCase, popularProductUseCase, transactionGraphUseCase, productGraphUseCase, gmStatEmptyUseCase);
     }
 
     @GMStatisticScope
     @Provides
-    public GMDashboardPresenter provideGmFragmentPresenter(GMStatNetworkController gmStatNetworkController,
-                                                           GMStatMarketInsightUseCase marketInsightUseCase,
-                                                           GMStatGetBuyerGraphUseCase buyerGraphUseCase,
-                                                           GMStatGetPopularProductUseCase popularProductUseCase,
-                                                           GMStatGetTransactionGraphUseCase transactionGraphUseCase,
-                                                           GMStatGetProductGraphUseCase productGraphUseCase) {
-        return new GMDashboardPresenterImpl(gmStatNetworkController, marketInsightUseCase, buyerGraphUseCase, popularProductUseCase, transactionGraphUseCase, productGraphUseCase);
+    public AssetManager provideAssetManager(@ApplicationContext Context context) {
+        return context.getAssets();
     }
 
     @GMStatisticScope

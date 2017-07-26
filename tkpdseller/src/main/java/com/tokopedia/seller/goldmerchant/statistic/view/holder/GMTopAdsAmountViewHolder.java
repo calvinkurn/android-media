@@ -2,10 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,12 +19,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
+import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
-
-import java.util.List;
 
 /**
  * Created by normansyahputa on 7/11/17.
@@ -35,11 +28,9 @@ import java.util.List;
 
 public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel> {
     private LineChartView gmStatisticTopAdsGraph;
-    private BaseWilliamChartConfig baseWilliamChartConfig;
     private GMPercentageViewHelper gmPercentageViewHelper;
 
     private String[] monthNamesAbrev;
-    private Drawable oval2Copy6;
     private TitleCardView gmStatisticTopAdsCardView;
     private LineChartContainerWidget gmTopAdsLineChartWidget;
 
@@ -55,13 +46,11 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
 
     public GMTopAdsAmountViewHolder(@Nullable Context context) {
         super(context);
-        baseWilliamChartConfig = new BaseWilliamChartConfig();
         gmPercentageViewHelper = new GMPercentageViewHelper(context);
     }
 
     @Override
     public void initView(@Nullable View itemView) {
-        oval2Copy6 = ResourcesCompat.getDrawable(itemView.getResources(), R.drawable.oval_2_copy_6, null);
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         gmStatisticTopAdsGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_topads_graph);
         gmStatisticTopAdsCardView = (TitleCardView) itemView.findViewById(R.id.topads_statistic_card_view);
@@ -79,37 +68,12 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
     @Override
     public void bind(@Nullable GMGraphViewModel data) {
         setTopAdsCardView(data);
-
+        BaseWilliamChartModel baseWilliamChartModel =
+                GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
         // create model for chart
-        final BaseWilliamChartModel baseWilliamChartModel
-                = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
-
-        // resize linechart according to data
-        if (context != null && context instanceof Activity)
-            GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticTopAdsGraph, (Activity) context);
-
-        // get index to display
-        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
-
-        baseWilliamChartConfig
-                .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .setDotDrawable(oval2Copy6)
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setxRendererListener(new XRenderer.XRendererListener() {
-                    @Override
-                    public boolean filterX(@IntRange(from = 0L) int i) {
-                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
-                            return true;
-
-                        if (baseWilliamChartModel.getValues().length <= 15) {
-                            return true;
-                        }
-
-                        return indexToDisplay.contains(i);
-
-                    }
-                }).buildChart(gmStatisticTopAdsGraph);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
+                gmStatisticTopAdsGraph, baseWilliamChartModel);
+        baseWilliamChartConfig.buildChart(gmStatisticTopAdsGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
