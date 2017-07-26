@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
@@ -111,6 +112,8 @@ public interface FeedPlus{
         void showTopAds(boolean isTopAdsShown);
 
         void onEmptyOfficialStoreClicked();
+
+        void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

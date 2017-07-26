@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -26,6 +27,8 @@ public interface FeedPlusTypeFactory  {
     int type(PromotedShopViewModel viewModel);
 
     int type(PromoCardViewModel promoCardViewModel);
+
+    int type(OfficialStoreBrandsViewModel brandsViewModel);
 
     int type(OfficialStoreCampaignViewModel officialStoreViewModel);
 

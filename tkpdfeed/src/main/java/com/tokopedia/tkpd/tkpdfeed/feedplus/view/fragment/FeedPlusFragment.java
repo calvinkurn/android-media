@@ -60,6 +60,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -743,6 +744,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
 
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    @Override
+    public void onBrandClicked(OfficialStoreViewModel officialStoreViewModel) {
+        UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE +
+                officialStoreViewModel.getShopName());
+
+        Intent intent = ShopInfoActivity.getCallingIntent(
+                getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        getActivity().startActivity(intent);
     }
 
     private void openWebViewBrandsURL(String url) {

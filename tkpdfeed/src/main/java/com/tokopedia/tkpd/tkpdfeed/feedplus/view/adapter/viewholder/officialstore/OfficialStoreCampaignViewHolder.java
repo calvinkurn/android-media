@@ -20,7 +20,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.Officia
 public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<OfficialStoreCampaignViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.official_store_layout;
+    public static final int LAYOUT = R.layout.layout_official_store_campaign;
 
     private static final int SPAN_1_PRODUCT = 6;
     public static final int SPAN_3_PRODUCT = 2;
