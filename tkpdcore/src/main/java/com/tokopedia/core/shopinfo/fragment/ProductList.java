@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
@@ -28,6 +30,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -37,6 +40,7 @@ import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductCampaignRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
+import com.tokopedia.core.shopinfo.facades.GetSortRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
@@ -52,8 +56,7 @@ import java.util.List;
 public class ProductList extends V2BaseFragment {
 
     private final String CACHE_SHOP_PRODUCT = "CACHE_SHOP_PRODUCT";
-
-    private boolean mHasFocus;
+    private final String TAG = ProductList.class.getSimpleName();
 
     private class ViewHolder {
         RecyclerView list;
@@ -66,11 +69,9 @@ public class ProductList extends V2BaseFragment {
     private ViewHolder holder;
     private EtalaseModel etalaseModel;
     private ProductModel productModel;
-    //    private List<String> etalaseNameList = new ArrayList<>();
-//    private List<String> etalaseIdList = new ArrayList<>();
     private ArrayList<EtalaseAdapterModel> etalaseList = new ArrayList<>();
+    private List<Sort> sortList = new ArrayList<>();
     private ShopProductListAdapter adapter;
-    //    private SimpleSpinnerAdapter etalaseAdapter;
     private EtalaseAdapter etalaseAdapter;
     private GetShopProductParam productShopParam;
     private String shopId;
@@ -78,6 +79,7 @@ public class ProductList extends V2BaseFragment {
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
     private GetShopProductCampaignRetrofit facadeShopProdCampaign;
+    private GetSortRetrofit facadeSort;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
     public static final String EXTRA_USE_ACE = "EXTRA_USE_ACE";
     private boolean isConnectionErrorShow = false;
@@ -133,12 +135,18 @@ public class ProductList extends V2BaseFragment {
         if (productShopParam.getPage() == 1) {
             getProductNextPage();
         }
+        if(sortList.isEmpty()){
+            getSortFilter();
+        }
     }
 
     @Override
     public void onStop() {
         if (facadeShopProd != null) {
             facadeShopProd.unsubscribeGetShopProduct();
+        }
+        if(facadeSort != null){
+            facadeSort.unsubscribeGetSortFilter();
         }
         super.onStop();
     }
@@ -424,7 +432,22 @@ public class ProductList extends V2BaseFragment {
                 if (getActivity() != null) {
                     CommonUtils.dumper("GAv4 clicked filter shops");
                 }
-                showSortDialog();
+                if(sortList.isEmpty()){
+                    facadeSort.getSort(new GetSortRetrofit.OnGetSortFilterListener() {
+                        @Override
+                        public void onSuccess(List<Sort> sorts) {
+                            sortList = sorts;
+                            showSortDialog(sortList);
+                        }
+
+                        @Override
+                        public void onFailure(int connectionTypeError, String message) {
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    showSortDialog(sortList);
+                }
             }
 
             @Override
@@ -445,12 +468,12 @@ public class ProductList extends V2BaseFragment {
         }
     }
 
-    private void showSortDialog() {
+    private void showSortDialog(List<Sort> sorts) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         final String[] Value = getResources().getStringArray(R.array.sort_value);
-        ArrayAdapter<CharSequence> adapterSort = new ArrayAdapter<CharSequence>(getActivity(),
+        final ArrayAdapter<Sort> adapterSort = new ArrayAdapter<Sort>(getActivity(),
                 android.R.layout.select_dialog_item,
-                android.R.id.text1, getResources().getStringArray(R.array.sort_option)) {
+                android.R.id.text1, sorts) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
@@ -473,7 +496,8 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                productShopParam.setOrderBy(Value[which + 1]);
+                Sort sort = adapterSort.getItem(which);
+                productShopParam.setOrderBy(sort.getValue());
                 if (!adapter.isLoading())
                     refreshProductList();
             }
@@ -488,6 +512,21 @@ public class ProductList extends V2BaseFragment {
         facadeShopProd.setOnGetShopProductListener(onGetShopProductListener());
         facadeShopProdCampaign = new GetShopProductCampaignRetrofit(getActivity());
         facadeShopProdCampaign.setProductsCampaignListener(onGetProductCampaign());
+        facadeSort = new GetSortRetrofit(getActivity());
+    }
+
+    private GetSortRetrofit.OnGetSortFilterListener onGetSortListener(){
+        return new GetSortRetrofit.OnGetSortFilterListener() {
+            @Override
+            public void onSuccess(List<Sort> sorts) {
+                sortList = sorts;
+            }
+
+            @Override
+            public void onFailure(int connectionTypeError, String message) {
+                Log.e(TAG, "onFailure "+message);
+            }
+        };
     }
 
     private GetShopProductRetrofit.OnGetShopProductListener onGetShopProductListener() {
@@ -672,6 +711,10 @@ public class ProductList extends V2BaseFragment {
 
     private void getEtalase() {
         facadeShopInfo.getShopEtalase();
+    }
+
+    private void getSortFilter(){
+        facadeSort.getSort(onGetSortListener());
     }
 
     private boolean isAtBottom() {
