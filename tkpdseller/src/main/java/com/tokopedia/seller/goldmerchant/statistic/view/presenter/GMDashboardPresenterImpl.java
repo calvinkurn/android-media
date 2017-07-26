@@ -1,29 +1,25 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
-import android.content.res.AssetManager;
-
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.empty.GMEmptyModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.util.Calendar;
 import java.util.List;
 
 import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created on 1/2/17.
@@ -32,99 +28,27 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class GMDashboardPresenterImpl extends GMDashboardPresenter {
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private OldGMStatRepository gmStatListener = new OldGMStatRepository() {
-        @Override
-        public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-            if (isViewAttached()) {
-                if (getShopCategory == null
-                        || getShopCategory.getShopCategory() == null
-                        || getShopCategory.getShopCategory().isEmpty()) {
-                    getView().onGetShopCategoryEmpty();
-                }
-            }
-        }
 
-        @Override
-        public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
-            if (isViewAttached())
-                getView().onSuccessTransactionGraph(getTransactionGraph);
-        }
-
-        @Override
-        public void onSuccessProductGraph(GetProductGraph getProductGraph) {
-            if (isViewAttached())
-                getView().onSuccessProductnGraph(getProductGraph);
-        }
-
-        @Override
-        public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-            if (isViewAttached())
-                getView().onSuccessPopularProduct(getPopularProduct);
-        }
-
-        @Override
-        public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-            if (isViewAttached())
-                getView().onSuccessBuyerGraph(getBuyerGraph);
-        }
-
-        @Override
-        public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-            if (isViewAttached())
-                getView().onSuccessGetKeyword(getKeywords);
-        }
-
-        @Override
-        public void onSuccessGetCategory(List<String> categoryNameList) {
-            if (!isViewAttached())
-                return;
-
-            if (categoryNameList == null || categoryNameList.size() <= 0)
-                return;
-
-            String categoryName = categoryNameList.get(0);
-
-            getView().onSuccessGetCategory(categoryName);
-        }
-
-        @Override
-        public void onComplete() {
-            if (isViewAttached())
-                getView().onComplete();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            showMessageError(e);
-        }
-
-        @Override
-        public void onFailure() {
-
-        }
-    };
-
-    private GMStatNetworkController gmStatNetworkController;
     private GMStatMarketInsightUseCase marketInsightUseCase;
     private GMStatGetBuyerGraphUseCase buyerGraphUseCase;
     private GMStatGetPopularProductUseCase popularProductUseCase;
     private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
     private GMStatGetProductGraphUseCase productGraphUseCase;
+    private GMStatEmptyUseCase gmStatEmptyUseCase;
 
     public GMDashboardPresenterImpl(
-            GMStatNetworkController gmStatNetworkController,
             GMStatMarketInsightUseCase marketInsightUseCase,
             GMStatGetBuyerGraphUseCase buyerGraphUseCase,
             GMStatGetPopularProductUseCase popularProductUseCase,
             GMStatGetTransactionGraphUseCase transactionGraphUseCase,
-            GMStatGetProductGraphUseCase productGraphUseCase) {
-        this.gmStatNetworkController = gmStatNetworkController;
+            GMStatGetProductGraphUseCase productGraphUseCase,
+            GMStatEmptyUseCase gmStatEmptyUseCase) {
         this.marketInsightUseCase = marketInsightUseCase;
         this.buyerGraphUseCase = buyerGraphUseCase;
         this.popularProductUseCase = popularProductUseCase;
         this.transactionGraphUseCase = transactionGraphUseCase;
         this.productGraphUseCase = productGraphUseCase;
+        this.gmStatEmptyUseCase = gmStatEmptyUseCase;
     }
 
     public void getPopularProduct() {
@@ -229,49 +153,59 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 onSuccessGetKeyword(keywordModel.getKeywords());
                 onSuccessGetCategory(keywordModel.getCategoryName());
             }
-
-            private void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-                if (getShopCategory == null
-                        || getShopCategory.getShopCategory() == null
-                        || getShopCategory.getShopCategory().isEmpty()) {
-                    getView().onGetShopCategoryEmpty();
-                }
-            }
-
-            private void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-                getView().onSuccessGetKeyword(getKeywords);
-            }
-
-            private void onSuccessGetCategory(List<String> categoryNameList) {
-                if (categoryNameList == null || categoryNameList.size() <= 0) {
-                    return;
-                }
-                String categoryName = categoryNameList.get(0);
-                getView().onSuccessGetCategory(categoryName);
-            }
         });
     }
 
-    @Override
-    public void onResume() {
-        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+    private void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
+        if (getShopCategory == null
+                || getShopCategory.getShopCategory() == null
+                || getShopCategory.getShopCategory().isEmpty()) {
+            getView().onGetShopCategoryEmpty();
+        }
     }
 
-    @Override
-    public void onPause() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+    private void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
+        getView().onSuccessGetKeyword(getKeywords);
     }
 
-    public void displayDefaultValue(AssetManager assets) {
-        if (assets == null) {
+    private void onSuccessGetCategory(List<String> categoryNameList) {
+        if (categoryNameList == null || categoryNameList.size() <= 0) {
             return;
         }
-        gmStatNetworkController.fetchDataEmptyState(gmStatListener, assets);
+        String categoryName = categoryNameList.get(0);
+        getView().onSuccessGetCategory(categoryName);
     }
 
     private void showMessageError(Throwable e) {
-        if (isViewAttached()) {
-            getView().onError(e);
-        }
+        gmStatEmptyUseCase.execute(RequestParams.EMPTY, new Subscriber<GMEmptyModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GMEmptyModel gmEmptyModel) {
+                if (isViewAttached()) {
+                    getView().onSuccessProductnGraph(gmEmptyModel.productGraph);
+                    getView().onSuccessTransactionGraph(gmEmptyModel.transactionGraph);
+                    getView().onSuccessBuyerGraph(gmEmptyModel.buyerGraph);
+                    getView().onSuccessPopularProduct(gmEmptyModel.popularProduct);
+
+                    if (gmEmptyModel.keywordModel.getShopCategory() == null
+                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory() == null
+                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory().isEmpty()) {
+                        onSuccessGetShopCategory(gmEmptyModel.keywordModel.getShopCategory());
+                        onSuccessGetKeyword(gmEmptyModel.keywordModel.getKeywords());
+                    }
+
+                    getView().showSnackbarRetry();
+                }
+            }
+        });
     }
 }

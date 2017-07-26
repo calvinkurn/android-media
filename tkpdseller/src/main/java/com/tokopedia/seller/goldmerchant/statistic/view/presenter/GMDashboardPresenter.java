@@ -1,7 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
-import android.content.res.AssetManager;
-
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 
@@ -12,10 +10,4 @@ import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDash
 public abstract class GMDashboardPresenter extends BaseDaggerPresenter<GMStatisticDashboardView> {
 
     public abstract void fetchData(long startDate, long endDate);
-
-    public abstract void onResume();
-
-    public abstract void onPause();
-
-    public abstract void displayDefaultValue(AssetManager assets);
 }
