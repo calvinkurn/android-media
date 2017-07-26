@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -28,11 +27,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPre
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.Tools;
 import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
@@ -236,44 +232,14 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
      * @param data
      * @param dateGraph
      */
-    protected void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
-        // create model for chart
-        final BaseWilliamChartModel baseWilliamChartModel
-                = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
+    private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
+        BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
 
-        // resize linechart according to data
-        if (context != null && context instanceof Activity)
-            GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph, (Activity) context);
-
-        // get index to display
-        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
-
-        // get tooltip
-        Tooltip tooltip = getTooltip(
-                context,
-                getTooltipResLayout()
-        );
-
-        baseWilliamChartConfig
-                .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setDotDrawable(oval2Copy6)
-                .setTooltip(tooltip, new DefaultTooltipConfiguration())
-                .setxRendererListener(new XRenderer.XRendererListener() {
-                    @Override
-                    public boolean filterX(@IntRange(from = 0L) int i) {
-                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
-                            return true;
-
-                        if (baseWilliamChartModel.getValues().length <= 15) {
-                            return true;
-                        }
-
-                        return indexToDisplay.contains(i);
-
-                    }
-                }).buildChart(gmStatisticIncomeGraph);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
+                gmStatisticIncomeGraph, baseWilliamChartModel);
+        Tooltip tooltip = getTooltip(context, getTooltipResLayout());
+        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
+        baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 

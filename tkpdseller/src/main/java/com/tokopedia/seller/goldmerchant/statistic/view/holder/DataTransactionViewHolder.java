@@ -37,12 +37,10 @@ public class DataTransactionViewHolder {
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
 
-    private BaseWilliamChartConfig baseWilliamChartConfig;
     private DataTransactionChartConfig dataTransactionChartConfig;
     private String[] monthNamesAbrev;
 
     public DataTransactionViewHolder(TitleCardView transactionDataCardView, boolean isGoldMerchant) {
-        baseWilliamChartConfig = new BaseWilliamChartConfig();
         this.transactionDataCardView = transactionDataCardView;
         this.isGoldMerchant = isGoldMerchant;
         monthNamesAbrev = transactionDataCardView.getContext().getResources()
@@ -132,7 +130,7 @@ public class DataTransactionViewHolder {
     private void displayGraphic(List<Integer> data, List<Integer> dateGraph, boolean emptyState) {
         BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-        baseWilliamChartConfig.reset();
+        BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
         baseWilliamChartConfig.setBasicGraphConfiguration(dataTransactionChartConfig);
         if (emptyState) {
             baseWilliamChartConfig.addBaseWilliamChartModels(
