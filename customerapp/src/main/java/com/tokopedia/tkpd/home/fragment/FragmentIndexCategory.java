@@ -12,7 +12,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -84,6 +87,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
+import com.tokopedia.tkpd.home.adapter.BannerPagerAdapter;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
@@ -159,15 +163,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private BottomSheetTokoCash bottomSheetDialogTokoCash;
 
-    private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (holder.bannerPager != null) {
-                holder.bannerPager.stopTurning();
-            }
-        }
-    };
     private DrawerTokoCash tokoCashData;
+    private BannerPagerAdapter bannerPagerAdapter;
 
     @Override
     public void onTopUpTokoCashClicked() {
@@ -198,10 +195,32 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         bottomSheetDialogTokoCash.show();
     }
 
+    public ViewPager.OnPageChangeListener getOnBannerPageChangeListener() {
+        return new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position,
+                                       float positionOffset,
+                                       int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+    }
+
     private class ViewHolder {
         private View MainView;
         private View banner;
-        private ConvenientBanner bannerPager;
+        private ViewPager bannerPager;
+        private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
         private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
@@ -324,28 +343,29 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
+            bannerPagerAdapter = new BannerPagerAdapter(getActivity(), promoList);
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
-            holder.bannerPager = (ConvenientBanner) holder.banner.findViewById(R.id.bannerViewPager);
-            holder.bannerPager.setPages(getFragmentManager(), new BannerViewHolderCreator<BannerHolderView>() {
-                @Override
-                public BannerHolderView createHolder() {
-                    return new BannerHolderView();
-                }
-            }, promoList)
-                    .setPageIndicator(new int[]{R.drawable.indicator, R.drawable.indicator_focus});
-            holder.bannerPager.getViewPager().setPageMargin(getResources()
-                    .getDimensionPixelOffset(R.dimen.viewpager_margin));
-            holder.bannerPager.setOnPromoLinkClickListener(onPromoLinkClicked());
-            holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                        holder.bannerPager.stopTurning();
-                    }
-                    return false;
-                }
-            });
-            holder.bannerPager.startTurning(SLIDE_DELAY);
+            holder.bannerPager = (ViewPager) holder.banner.findViewById(R.id.viewpager_banner_category);
+            holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator_banner_category);
+            holder.bannerPager.setAdapter(bannerPagerAdapter);
+            holder.bannerPager.addOnPageChangeListener(getOnBannerPageChangeListener());
+            holder.bannerIndicator.setFillColor(ContextCompat.getColor(getActivity(), com.tokopedia.discovery.R.color.tkpd_dark_orange));
+            holder.bannerIndicator.setPageColor(ContextCompat.getColor(getActivity(), com.tokopedia.discovery.R.color.white));
+            holder.bannerIndicator.setViewPager(holder.bannerPager);
+            bannerPagerAdapter.notifyDataSetChanged();
+//            holder.bannerPager.setPageMargin(getResources()
+//                    .getDimensionPixelOffset(R.dimen.viewpager_margin));
+//            holder.bannerPager.setOnPromoLinkClickListener(onPromoLinkClicked());
+//            holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+//                        holder.bannerPager.stopTurning();
+//                    }
+//                    return false;
+//                }
+//            });
+//            holder.bannerPager.startTurning(SLIDE_DELAY);
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
@@ -448,13 +468,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
         super.onResume();
-        getActivity().registerReceiver(stopBannerReceiver, new IntentFilter(BANNER_RECEIVER_INTENT));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().unregisterReceiver(stopBannerReceiver);
     }
 
     @Override
