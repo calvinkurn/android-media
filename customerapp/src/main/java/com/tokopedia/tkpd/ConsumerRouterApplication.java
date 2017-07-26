@@ -277,6 +277,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent instanceIntentDigitalWeb(String url) {
+        return null;
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
     }
