@@ -19,13 +19,12 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func3;
 
-import static com.tokopedia.seller.gmstat.utils.GMStatNetworkController.MAXIMUM_CATEGORY;
-
 /**
  * Created by normansyahputa on 7/25/17.
  */
 
 public class GMStatMarketInsightMapper implements Func1<GetShopCategory, Observable<KeywordModel>> {
+    public static final int MAXIMUM_CATEGORY = 1;
 
     private GetProductCategoryNameUseCase categoryNameUseCase;
     private GMStatGetKeywordUseCase keywordUseCase;

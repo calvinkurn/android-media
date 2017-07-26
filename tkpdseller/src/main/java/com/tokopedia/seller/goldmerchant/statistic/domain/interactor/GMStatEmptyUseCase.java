@@ -1,9 +1,12 @@
-package com.tokopedia.seller.gmstat.utils;
+package com.tokopedia.seller.goldmerchant.statistic.domain.interactor;
 
 import android.content.res.AssetManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -12,7 +15,8 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.domain.model.empty.GMEmptyModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,58 +24,51 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import rx.Observable;
+
 /**
- * @author normansyahputa on 7/19/17.
- * <p>https://phab.tokopedia.com/w/api/krabs/shopstatistic/</> for more detail
+ * Created by normansyahputa on 7/26/17.
  */
 
-public class GMStatNetworkController {
+public class GMStatEmptyUseCase extends CompositeUseCase<GMEmptyModel> {
 
-    public static final int MAXIMUM_CATEGORY = 1;
-    private static final int INVALID_PARAM = -1;
-    private static final String TAG = "GMStatNetworkController";
+    private AssetManager assetManager;
     private Gson gson;
     private GMStatRepository repository;
 
-    public GMStatNetworkController(Gson gson, GMStatRepository repository) {
+    @Inject
+    public GMStatEmptyUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                              AssetManager assetManager, Gson gson, GMStatRepository repository) {
+        super(threadExecutor, postExecutionThread);
+        this.assetManager = assetManager;
         this.gson = gson;
         this.repository = repository;
     }
 
-    private void showTransactionEmptyView(OldGMStatRepository oldGMStatRepository, AssetManager assetManager) {
-        GetTransactionGraph body2 = gson.fromJson(readJson("get_transaction_graph_empty_state.json", assetManager), GetTransactionGraph.class);
-        oldGMStatRepository.onSuccessTransactionGraph(repository.getTransactionGraph(body2));
-    }
 
-    private void showProductGraphEmpty(OldGMStatRepository oldGMStatRepository, AssetManager assetManager) {
-        GetProductGraph body = gson.fromJson(readJson("get_product_graph_empty_state.json", assetManager), GetProductGraph.class);
-        oldGMStatRepository.onSuccessProductGraph(body);
-    }
+    @Override
+    public Observable<GMEmptyModel> createObservable(RequestParams requestParams) {
+        GMEmptyModel gmEmptyModel = new GMEmptyModel();
 
-    public void fetchDataEmptyState(final OldGMStatRepository oldGMStatRepository, AssetManager assetManager) {
-
-        showProductGraphEmpty(oldGMStatRepository, assetManager);
-
-        showTransactionEmptyView(oldGMStatRepository, assetManager);
-
-        GetPopularProduct body3 = gson.fromJson(readJson("popular_product_empty_state.json", assetManager), GetPopularProduct.class);
-        oldGMStatRepository.onSuccessPopularProduct(body3);
-
-        GetBuyerGraph body4 = gson.fromJson(readJson("buyer_graph_empty_state.json", assetManager), GetBuyerGraph.class);
-        oldGMStatRepository.onSuccessBuyerGraph(body4);
-
+        GMTransactionGraphMergeModel transactionGraph = repository.getTransactionGraph(gson.fromJson(readJson("get_transaction_graph_empty_state.json", assetManager), GetTransactionGraph.class));
+        GetProductGraph getProductGraph = gson.fromJson(readJson("get_product_graph_empty_state.json", assetManager), GetProductGraph.class);
+        GetPopularProduct getPopularProduct = gson.fromJson(readJson("popular_product_empty_state.json", assetManager), GetPopularProduct.class);
+        GetBuyerGraph getBuyerGraph = gson.fromJson(readJson("buyer_graph_empty_state.json", assetManager), GetBuyerGraph.class);
         KeywordModel keywordModel = new KeywordModel();
         keywordModel.setShopCategory(gson.fromJson(readJson("shop_category_empty.json", assetManager), GetShopCategory.class));
-
-        if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null || keywordModel.getShopCategory().getShopCategory().isEmpty()) {
-            oldGMStatRepository.onSuccessGetShopCategory(keywordModel.getShopCategory());
-            return;
-        }
-
         List<GetKeyword> getKeywords = new ArrayList<>();
         getKeywords.add(gson.fromJson(readJson("search_keyword.json", assetManager), GetKeyword.class));
         keywordModel.setKeywords(getKeywords);
-        oldGMStatRepository.onSuccessGetKeyword(getKeywords);
+
+        gmEmptyModel.productGraph = getProductGraph;
+        gmEmptyModel.transactionGraph = transactionGraph;
+        gmEmptyModel.popularProduct = getPopularProduct;
+        gmEmptyModel.buyerGraph = getBuyerGraph;
+        gmEmptyModel.keywordModel = keywordModel;
+
+        return Observable.just(gmEmptyModel);
     }
 
     private String readJson(String fileName, AssetManager assetManager) {
@@ -97,7 +94,6 @@ public class GMStatNetworkController {
                     //log the exception
                 }
             }
-            Log.i("MNORMANSYAH", total);
         }
         return total;
     }
