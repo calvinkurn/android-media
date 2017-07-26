@@ -45,6 +45,7 @@ public class TkpdBaseURL {
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
+    public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
 
     public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
@@ -785,7 +786,11 @@ public class TkpdBaseURL {
     }
 
     public static class Payment {
-        public static final String URL_BCA_ONE_CLICK = "https://pay.tokopedia.com/";
-        public static final String PATH_POST_ONE_CLICK = "oneclick/auth";
+        public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
+        public static final String PATH_ONE_CLICK_GET_ACCESS_TOKEN = "oneclick/auth";
+        public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
+        public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
+        public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
+        public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
     }
 }

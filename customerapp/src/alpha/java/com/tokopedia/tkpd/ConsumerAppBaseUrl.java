@@ -28,5 +28,5 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_TOKO_CASH_DOMAIN = "https://wallet-staging.tokopedia.id/";
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-alpha.tokopedia.com/";
     public static final String GRAPHQL_DOMAIN = "http://3-feature-m-alpha.tokopedia.com/graphql";
-
+    public static final String SCROOGE_DOMAIN = "https://pay-staging.tokopedia.com/";
 }
