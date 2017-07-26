@@ -3,6 +3,7 @@ package com.tokopedia.core.base.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
@@ -10,6 +11,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -23,6 +25,7 @@ import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -90,5 +93,10 @@ public interface AppComponent {
 
     PostExecutionThread postExecutionThread();
 
+    OkHttpRetryPolicy okHttpRetryPolicy();
+
+    ChuckInterceptor chuckInterceptor();
+
+    DebugInterceptor debugInterceptor();
 
 }
