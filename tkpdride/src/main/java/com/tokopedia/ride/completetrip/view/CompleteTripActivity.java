@@ -10,15 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
-public class CompleteTripActivity extends BaseActivity implements CompleteTripFragment.OnFragmentInteractionListener {
+public class CompleteTripActivity extends BaseActivity implements CompleteTripFragment.OnFragmentInteractionListener,
+        HasComponent<RideComponent>{
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_DRIVER_VEHICLE = "EXTRA_DRIVER_VEHICLE";
+    private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity, String requestId, DriverVehicleAddressViewModel driverVehicleAddressViewModel) {
         Intent intent = new Intent(activity, CompleteTripActivity.class);
@@ -106,5 +111,17 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
     @Override
     public void actionSuccessRatingSubmited() {
         actionBackToAppHomeScreen();
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 }
