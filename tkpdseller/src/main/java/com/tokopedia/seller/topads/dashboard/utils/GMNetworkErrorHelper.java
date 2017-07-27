@@ -1,17 +1,16 @@
-package com.tokopedia.seller.gmstat.utils;
+package com.tokopedia.seller.topads.dashboard.utils;
 
 import android.graphics.Color;
 import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.BaseNetworkErrorHandlerImpl;
-import com.tokopedia.seller.gmstat.views.OnActionClickListener;
-import com.tokopedia.seller.gmstat.views.SnackBar;
+import com.tokopedia.seller.topads.dashboard.utils.SnackBar;
 
 /**
  * Created by normansyahputa on 1/19/17.
  */
-
+@Deprecated
 public class GMNetworkErrorHelper extends BaseNetworkErrorHandlerImpl {
 
     protected View rootView;
@@ -31,7 +30,7 @@ public class GMNetworkErrorHelper extends BaseNetworkErrorHandlerImpl {
         snackBar = null;
     }
 
-    public void showSnackbar(String titleText, String actionText, OnActionClickListener onActionClickListener) {
+    public void showSnackbar(String titleText, String actionText, SnackBar.OnActionClickListener onActionClickListener) {
         snackBar
                 .duration(SnackBar.SnackBarDuration.INDEFINITE)
                 .text(titleText, actionText)

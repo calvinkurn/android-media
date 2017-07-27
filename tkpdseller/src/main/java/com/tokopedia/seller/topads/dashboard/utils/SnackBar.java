@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.topads.dashboard.utils;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 /**
  * Created by Chandru-MacBook on 10/20/15.
  */
+@Deprecated
 public class SnackBar {
 
 
@@ -206,6 +207,14 @@ public class SnackBar {
         LEFT, RIGHT, TOP, BOTTOM
     }
 
+    /**
+     * Created by Chandru-MacBook on 10/20/15.
+     */
+    public interface OnActionClickListener {
+
+        void onClick(@SuppressWarnings("UnusedParameters") View view);
+
+    }
 }
 
 
