@@ -48,8 +48,8 @@ public class GMTransactionGraphViewHolder {
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
     boolean compareGraph;
 
-    public GMTransactionGraphViewHolder(View itemView) {
-        gmTitleCardView = (TitleCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
+    public GMTransactionGraphViewHolder(View view) {
+        gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
         gmTitleCardView.setOnArrowDownClickListener(new TitleCardView.OnArrowDownClickListener() {
             @Override
             public void onArrowDownClicked() {
@@ -58,13 +58,13 @@ public class GMTransactionGraphViewHolder {
         });
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
         gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(gmTitleCardView.getContext()));
-        gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
+        gmStatisticIncomeGraph = (LineChartView) view.findViewById(R.id.gm_statistic_transaction_income_graph);
 
         gmStatGraphSelection = 0;
-        gmStatTransactionEntries = gmTitleCardView.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
+        gmStatTransactionEntries = view.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
         selections = new boolean[gmStatTransactionEntries.length];
         selections[gmStatGraphSelection] = true;
-        monthNamesAbrev = gmTitleCardView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
     public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel, boolean compareGraph) {

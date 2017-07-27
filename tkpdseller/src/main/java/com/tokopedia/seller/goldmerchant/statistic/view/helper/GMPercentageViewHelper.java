@@ -19,7 +19,7 @@ import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstan
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMPercentageViewHelper extends BaseGMViewHelper implements PercentageUtil {
+public class GMPercentageViewHelper implements PercentageUtil {
     private final int arrowDown;
     private final int arrowUp;
     private final int greyColor;
@@ -29,12 +29,8 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
     private Drawable icRectagleUp;
 
     public GMPercentageViewHelper(@Nullable Context context) {
-        super(context);
-
-        icRectagleDown = AppCompatDrawableManager.get().getDrawable(context,
-                R.drawable.ic_rectangle_down);
-        icRectagleUp = AppCompatDrawableManager.get().getDrawable(context,
-                R.drawable.ic_rectangle_up);
+        icRectagleDown = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_rectangle_down);
+        icRectagleUp = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_rectangle_up);
 
         arrowDown = ResourcesCompat.getColor(context.getResources(), R.color.arrow_down, null);
         arrowUp = ResourcesCompat.getColor(context.getResources(), R.color.arrow_up, null);
@@ -74,12 +70,4 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
             tvPercentage.setText(R.string.no_data);
         }
     }
-
-    @Override
-    public void initView(@Nullable View itemView) {
-
-    }
-
-    @Override
-    public void bind(@Nullable Object data) { /* remain empty */ }
 }

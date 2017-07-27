@@ -20,42 +20,20 @@ import rx.Subscriber;
  *
  */
 public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionPresenter {
-    private GMStatGetTransactionGraphUseCase useCase;
-    private DashboardTopadsInteractor topadsUseCase;
+    private GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase;
+    private DashboardTopadsInteractor dashboardTopadsInteractor;
     private SessionHandler sessionHandler;
 
     private GMDateRangeDateViewModel gmDateRangeDateViewModel;
-    private GMDateRangeDateViewModel previousGmDateRangeDateViewModel;
 
     public GMStatisticTransactionPresenterImpl(
-            GMStatGetTransactionGraphUseCase useCase,
-            DashboardTopadsInteractor topadsUseCase,
+            GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
+            DashboardTopadsInteractor dashboardTopadsInteractor,
             SessionHandler sessionHandler) {
         super();
-        this.useCase = useCase;
-        this.topadsUseCase = topadsUseCase;
+        this.gmStatGetTransactionGraphUseCase = gmStatGetTransactionGraphUseCase;
+        this.dashboardTopadsInteractor = dashboardTopadsInteractor;
         this.sessionHandler = sessionHandler;
-    }
-
-    @Override
-    public void loadDataWithoutDate() {
-        useCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(-1, -1), new Subscriber<GMTransactionGraphMergeModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
-                revealData(mergeModel);
-            }
-        });
     }
 
     @Override
@@ -70,7 +48,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
     @Override
     public void loadDataWithDate(long startDate, long endDate) {
-        useCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
+        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 
@@ -89,13 +67,10 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
         });
     }
 
-    protected void revealData(GMTransactionGraphMergeModel mergeModel) {
+    private void revealData(GMTransactionGraphMergeModel mergeModel) {
         if (isViewAttached()) {
             // get necessary object, just take from transaction graph view
             gmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.dateRangeModel;
-            previousGmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.pDateRangeModel;
-
-
             getView().revealData(mergeModel);
         }
     }
@@ -103,7 +78,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
         HashMap<String, String> param = new HashMap<>();
         param.put("shop_id", sessionHandler.getShopID());
-        topadsUseCase.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
+        dashboardTopadsInteractor.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
             @Override
             public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {
                 if (isViewAttached()) {
@@ -126,7 +101,9 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
             @Override
             public void onError(Throwable throwable) {
-                getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
+                if (isViewAttached()) {
+                    getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
+                }
             }
         });
     }
@@ -142,7 +119,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     @Override
     public void detachView() {
         super.detachView();
-        useCase.unsubscribe();
-        topadsUseCase.unSubscribe();
+        gmStatGetTransactionGraphUseCase.unsubscribe();
+        dashboardTopadsInteractor.unSubscribe();
     }
 }

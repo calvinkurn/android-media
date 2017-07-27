@@ -56,22 +56,16 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
                 .build().inject(this);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
-        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
-        gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
         presenter.attachView(this);
-        gmTopAdsAmountViewHolder.initView(view);
+        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(view);
+        gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
-        finishedTransactionViewHolder.initView(view);
+        finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
+
         gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +126,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
         gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
         gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
-
         return gmTopAdsAmountViewModel;
     }
 
