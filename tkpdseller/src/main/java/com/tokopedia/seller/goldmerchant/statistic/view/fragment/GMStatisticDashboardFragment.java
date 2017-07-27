@@ -68,6 +68,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datePickerPresenter.clearDatePickerSetting();
+        initNumberFormatter();
+    }
+
+    private void initNumberFormatter() {
+        KMNumbers.overrideSuffixes(1000L, "Rb");
+        KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
     @Override
@@ -81,25 +87,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onScrollGMStatTracking() {
-        UnifyTracking.eventScrollGMStat();
-    }
-
-    @Override
-    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-        buyerDataViewHolder.bindData(getBuyerGraph);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
-        initViews(view);
-        initNumberFormatter();
-        return view;
-    }
-
-    private void initViews(View view) {
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(view);
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
         popularProductViewHolder = new PopularProductViewHolder(view);
@@ -118,7 +107,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
                 // if diff is zero, then the bottom has been reached
                 if (diff == 0) {
-                    onScrollGMStatTracking();
+                    UnifyTracking.eventScrollGMStat();
                 }
             }
         });
@@ -130,11 +119,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-    }
-
-    private void initNumberFormatter() {
-        KMNumbers.overrideSuffixes(1000L, "Rb");
-        KMNumbers.overrideSuffixes(1000000L, "jt");
+        return view;
     }
 
     @Override
@@ -151,6 +136,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         dataTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         buyerDataViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         marketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+    }
+
+    @Override
+    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
+        buyerDataViewHolder.bindData(getBuyerGraph);
     }
 
     @Override
