@@ -24,7 +24,7 @@ import java.util.List;
  * Created by normansyahputa on 11/23/16.
  */
 
-public class MarketInsightViewHolder implements GMStatisticViewHolder {
+public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder {
 
     private static final String DEFAULT_CATEGORY = "kaos";
 
@@ -34,7 +34,7 @@ public class MarketInsightViewHolder implements GMStatisticViewHolder {
 
     private boolean goldMerchant;
 
-    public MarketInsightViewHolder(View view, boolean goldMerchant) {
+    public GmStatisticMarketInsightViewHolder(View view, boolean goldMerchant) {
         this.goldMerchant = goldMerchant;
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);

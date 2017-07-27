@@ -29,7 +29,7 @@ import java.util.List;
  * @author normansyahputa
  */
 
-public class DataTransactionViewHolder implements GMStatisticViewHolder {
+public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     private LineChartView transactionChart;
 
     private TitleCardView transactionDataCardView;
@@ -40,7 +40,7 @@ public class DataTransactionViewHolder implements GMStatisticViewHolder {
 
     private String[] monthNamesAbrev;
 
-    public DataTransactionViewHolder(View view, boolean isGoldMerchant) {
+    public GMStatisticTransactionViewHolder(View view, boolean isGoldMerchant) {
         transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);

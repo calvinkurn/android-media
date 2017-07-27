@@ -20,14 +20,14 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
  * Created by normansyahputa on 11/9/16.
  */
 
-public class PopularProductViewHolder implements GMStatisticViewHolder {
+public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
     private final TitleCardView popularProductCardView;
     private ImageView ivPopularProduct;
     private TextView tvPopularProductDescription;
     private TextView tvNoOfSelling;
     private GetPopularProduct getPopularProduct;
 
-    public PopularProductViewHolder(View view) {
+    public GMStatisticProductViewHolder(View view) {
         popularProductCardView = (TitleCardView) view.findViewById(R.id.popular_product_card_view);
         ivPopularProduct = (ImageView) view.findViewById(R.id.image_popular_product);
         tvPopularProductDescription = (TextView) view.findViewById(R.id.tv_popular_product);

@@ -8,8 +8,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -114,7 +112,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                getView().onSuccessTransactionGraph(mergeModel);
+                getView().onTransactionGraphLoaded(mergeModel);
             }
         });
 
@@ -194,7 +192,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
             public void onNext(GMEmptyModel gmEmptyModel) {
                 if (isViewAttached()) {
                     getView().onSuccessProductnGraph(gmEmptyModel.productGraph);
-                    getView().onSuccessTransactionGraph(gmEmptyModel.transactionGraph);
+                    getView().onTransactionGraphLoaded(gmEmptyModel.transactionGraph);
                     getView().onSuccessBuyerGraph(gmEmptyModel.buyerGraph);
                     getView().onSuccessPopularProduct(gmEmptyModel.popularProduct);
 

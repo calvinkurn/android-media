@@ -22,16 +22,15 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.BuyerDataViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.DataTransactionViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GmStatisticBuyerViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticTransactionViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.MarketInsightViewHolder;
-import com.tokopedia.seller.goldmerchant.statistic.view.holder.PopularProductViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GmStatisticMarketInsightViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 
 import java.util.List;
 
@@ -54,10 +53,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
-    private PopularProductViewHolder popularProductViewHolder;
-    private DataTransactionViewHolder dataTransactionViewHolder;
-    private BuyerDataViewHolder buyerDataViewHolder;
-    private MarketInsightViewHolder marketInsightViewHolder;
+    private GMStatisticProductViewHolder GMStatisticProductViewHolder;
+    private GMStatisticTransactionViewHolder GMStatisticTransactionViewHolder;
+    private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
+    private GmStatisticMarketInsightViewHolder gmStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
 
@@ -91,10 +90,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(view);
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
-        popularProductViewHolder = new PopularProductViewHolder(view);
-        dataTransactionViewHolder = new DataTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
-        marketInsightViewHolder = new MarketInsightViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
-        buyerDataViewHolder = new BuyerDataViewHolder(view);
+        GMStatisticProductViewHolder = new GMStatisticProductViewHolder(view);
+        GMStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        gmStatisticMarketInsightViewHolder = new GmStatisticMarketInsightViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        gmStatisticBuyerViewHolder = new GmStatisticBuyerViewHolder(view);
 
         // analytic below : https://phab.tokopedia.com/T18496
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.content_gmstat);
@@ -132,28 +131,28 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private void resetToLoading() {
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        popularProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        dataTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        buyerDataViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        marketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        GMStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        GMStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override
     public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-        buyerDataViewHolder.bindData(getBuyerGraph);
+        gmStatisticBuyerViewHolder.bindData(getBuyerGraph);
     }
 
     @Override
     public void onGetShopCategoryEmpty() {
-        marketInsightViewHolder.bindNoShopCategory();
+        gmStatisticMarketInsightViewHolder.bindNoShopCategory();
         hideSnackBarRetry();
     }
 
     @Override
-    public void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
+    public void onTransactionGraphLoaded(GMTransactionGraphMergeModel getTransactionGraph) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        dataTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        GMStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
         hideSnackBarRetry();
     }
 
@@ -167,19 +166,19 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-        popularProductViewHolder.bindData(getPopularProduct);
+        GMStatisticProductViewHolder.bindData(getPopularProduct);
         hideSnackBarRetry();
     }
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        marketInsightViewHolder.bindData(getKeywords);
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords);
         hideSnackBarRetry();
     }
 
     @Override
     public void onSuccessGetCategory(String categoryName) {
-        marketInsightViewHolder.bindCategory(categoryName);
+        gmStatisticMarketInsightViewHolder.bindCategory(categoryName);
         hideSnackBarRetry();
     }
 

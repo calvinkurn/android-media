@@ -21,7 +21,7 @@ import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstan
  * Created by normansyahputa on 11/11/16.
  */
 
-public class BuyerDataViewHolder implements GMStatisticViewHolder {
+public class GmStatisticBuyerViewHolder implements GMStatisticViewHolder {
 
     public static final String DEFAULT_PERCENT_PIE = "0%";
     private DonutProgress buyerDataPieChart;
@@ -37,7 +37,7 @@ public class BuyerDataViewHolder implements GMStatisticViewHolder {
     private int redColor;
     private int greyColor;
 
-    public BuyerDataViewHolder(View view) {
+    public GmStatisticBuyerViewHolder(View view) {
         buyerDataCardView = (TitleCardView) view.findViewById(R.id.buyer_data_card_view);
         buyerDataPieChart = (DonutProgress) buyerDataCardView.findViewById(R.id.buyer_data_pie_chart);
         tvBuyerAmount = (TextView) buyerDataCardView.findViewById(R.id.tv_buyer_amount);
