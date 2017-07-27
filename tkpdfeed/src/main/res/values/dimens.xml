@@ -36,4 +36,5 @@
     <dimen name="unify_font_small">11sp</dimen>
     <dimen name="unify_font_normal">13sp</dimen>
     <dimen name="header_official_store_height">44dp</dimen>
+    <dimen name="official_store_item_height">300dp</dimen>
 </resources>

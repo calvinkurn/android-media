@@ -21,6 +21,7 @@ public class OfficialStoreCampaignProductViewModel {
     private String cashback;
     private boolean wholesale;
     private boolean preorder;
+    private String shopUrl;
 
 
     public OfficialStoreCampaignProductViewModel(int productId,
@@ -35,7 +36,8 @@ public class OfficialStoreCampaignProductViewModel {
                                                  String shopAva,
                                                  String cashback,
                                                  boolean wholesale,
-                                                 boolean preorder) {
+                                                 boolean preorder,
+                                                 String shopUrl) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -49,6 +51,7 @@ public class OfficialStoreCampaignProductViewModel {
         this.cashback = cashback;
         this.wholesale = wholesale;
         this.preorder = preorder;
+        this.shopUrl = shopUrl;
     }
 
     public int getProductId() {
@@ -113,5 +116,13 @@ public class OfficialStoreCampaignProductViewModel {
 
     public void setPreorder(boolean preorder) {
         this.preorder = preorder;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
     }
 }

@@ -5,15 +5,19 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
-import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentTopPicksWebView;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -27,7 +31,22 @@ public class TopPicksWebView extends TActivity implements
 
     private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
+    private static final java.lang.String ARGS_TOPPICKS_ID = "toppicks_id";
     private FragmentTopPicksWebView fragment;
+
+    @DeepLink({Constants.Applinks.TOPPICKS})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        String promoId = bundle.getString(ARGS_TOPPICKS_ID, "");
+        String result = TkpdBaseURL.URL_TOPPICKS;
+        if (!TextUtils.isEmpty(promoId)) {
+            result += promoId;
+        }
+        result += TkpdBaseURL.FLAG_APP;
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, BannerWebView.class)
+                .setData(uri.build())
+                .putExtra(BannerWebView.EXTRA_URL, result);
+    }
 
     public static Intent newInstance(Context context, String url) {
         Intent intent = new Intent(context, TopPicksWebView.class);

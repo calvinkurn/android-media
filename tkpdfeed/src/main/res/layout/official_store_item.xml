@@ -3,8 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/bg_product_list"
-              android:orientation="vertical">
+              android:background="@color/white"
+              android:orientation="vertical"
+              tools:layout_height="match_parent">
 
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
@@ -43,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vvs"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/black_38"
         android:textSize="@dimen/unify_font_small"
@@ -56,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vvs"
         android:orientation="horizontal">
 
         <TextView
@@ -138,7 +139,6 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/image"
         android:background="@drawable/dotted_top_border"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small"
@@ -159,8 +159,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Belli to Baby"
-            android:textColor="@color/black_70"/>
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/unify_font_small"
+            android:textStyle="normal"
+            tools:text="Belli to Baby"/>
     </LinearLayout>
 
 

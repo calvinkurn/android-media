@@ -115,9 +115,15 @@ public interface FeedPlus{
 
         void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
 
-        void onSeeAllOfficialStores();
+        void onSeeAllOfficialStoresFromCampaign();
 
-        void onGoToCampaign(String redirectUrl);
+        void onGoToCampaign(String redirectUrl, String title);
+
+        void onSeeAllOfficialStoresFromBrands();
+
+        void onGoToProductDetailFromCampaign(String productId);
+
+        void onGoToShopDetailFromCampaign(String shopUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

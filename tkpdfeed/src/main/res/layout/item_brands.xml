@@ -4,7 +4,6 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center_horizontal"
               android:orientation="horizontal"
-              android:background="@drawable/cards_ui_feed"
               android:weightSum="1">
 
     <RelativeLayout

@@ -737,13 +737,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyOfficialStoreClicked() {
-        UnifyTracking.eventViewAllOSLogin();
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
     @Override
     public void onBrandClicked(OfficialStoreViewModel officialStoreViewModel) {
-        UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE +
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND +
                 officialStoreViewModel.getShopName());
 
         Intent intent = ShopInfoActivity.getCallingIntent(
@@ -752,15 +751,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSeeAllOfficialStores() {
-        UnifyTracking.eventViewAllOSLogin();
+    public void onSeeAllOfficialStoresFromCampaign() {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
     @Override
-    public void onGoToCampaign(String redirectUrl) {
-        UnifyTracking.eventViewAllOSLogin();
-        openWebViewBrandsURL(redirectUrl);
+    public void onGoToCampaign(String redirectUrl, String title) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
+
+    }
+
+    @Override
+    public void onSeeAllOfficialStoresFromBrands() {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
+        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+    }
+
+    @Override
+    public void onGoToProductDetailFromCampaign(String productId) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_PDP);
+        goToProductDetail(productId);
+
+    }
+
+    @Override
+    public void onGoToShopDetailFromCampaign(String shopUrl) {
+        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
+
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle("", shopUrl);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void openWebViewBrandsURL(String url) {
