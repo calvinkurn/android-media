@@ -6,8 +6,10 @@ package com.tokopedia.core.onboarding.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -22,24 +24,29 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
+import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-public class OnBoardingFragment extends Fragment {
+public class OnBoardingFragment extends Fragment implements ISlideBackgroundColorHolder{
 
-    private static final String ARG_TITLE = "title";
-    private static final String ARG_DESC = "desc";
-    private static final String ARG_DRAWABLE = "drawable";
-    private static final String ARG_BG_COLOR = "bg_color";
-    private static final String ARG_TITLE_COLOR = "title_color";
-    private static final String ARG_DESC_COLOR = "desc_color";
-    private static final String ARG_VIEW_TYPE = "view_type";
+    protected static final String ARG_TITLE = "title";
+    protected static final String ARG_DESC = "desc";
+    protected static final String ARG_DRAWABLE = "drawable";
+    protected static final String ARG_BG_COLOR = "bg_color";
+    protected static final String ARG_TITLE_COLOR = "title_color";
+    protected static final String ARG_DESC_COLOR = "desc_color";
+    protected static final String ARG_VIEW_TYPE = "view_type";
+    protected static final String ARG_POSITION = "position";
 
     public static final int VIEW_DEFAULT = 100;
     public static final int VIEW_ENDING = 101;
     public static final int VIEW_FREE_RETURN = 102;
+    protected View main;
 
     public static OnBoardingFragment newInstance(CharSequence title, CharSequence description,
                                                  int imageDrawable, int bgColor, int viewType) {
@@ -66,8 +73,8 @@ public class OnBoardingFragment extends Fragment {
         return sampleSlide;
     }
 
-    private int drawable, bgColor, titleColor, descColor, viewType;
-    private CharSequence title, description;
+    protected int drawable, bgColor, titleColor, descColor, viewType;
+    protected CharSequence title, description;
 
     public OnBoardingFragment() {
     }
@@ -85,7 +92,6 @@ public class OnBoardingFragment extends Fragment {
             descColor = getArguments().containsKey(ARG_DESC_COLOR) ? getArguments().getInt(ARG_DESC_COLOR) : 0;
             viewType = descColor = getArguments().containsKey(ARG_VIEW_TYPE) ? getArguments().getInt(ARG_VIEW_TYPE) : VIEW_DEFAULT;
         }
-
     }
 
     @Nullable
@@ -102,11 +108,12 @@ public class OnBoardingFragment extends Fragment {
 
     }
 
-    private View inflateFreeReturnView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateFreeReturnView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_onboarding_free_return, container, false);
         TextView d = (TextView) v.findViewById(R.id.description);
         ImageView i = (ImageView) v.findViewById(R.id.image);
-        RelativeLayout m = (RelativeLayout) v.findViewById(R.id.main);
+//        RelativeLayout main = (RelativeLayout) v.findViewById(R.id.main);
+        main = v.findViewById(R.id.main);
 
 
         d.setText(description);
@@ -116,27 +123,31 @@ public class OnBoardingFragment extends Fragment {
             AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
             notifAnimation.start();
         }
-        m.setBackgroundColor(bgColor);
+        main.setBackgroundColor(bgColor);
 
         return v;
     }
 
-    private View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending, container, false);
+    protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = getEndingView(inflater, container);
         TextView t = (TextView) v.findViewById(R.id.title);
         ImageView i = (ImageView) v.findViewById(R.id.image);
-        ImageView logo = (ImageView) v.findViewById(R.id.logo);
-        RelativeLayout m = (RelativeLayout) v.findViewById(R.id.main);
+        TextView d = (TextView) v.findViewById(R.id.description);
+//        ImageView logo = (ImageView) v.findViewById(R.id.logo);
+//        RelativeLayout main = (RelativeLayout) v.findViewById(R.id.main);
+        main = v.findViewById(R.id.main);
 
-        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
+//        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
 
         t.setText(title);
         if (titleColor != 0) {
             t.setTextColor(titleColor);
         }
 
+        d.setText(description);
+
         i.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
-        m.setBackgroundColor(bgColor);
+        main.setBackgroundColor(bgColor);
 
         Button login = (Button) v.findViewById(R.id.button_login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -177,19 +188,24 @@ public class OnBoardingFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
         return v;
     }
 
-    private View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro, container, false);
+    protected View getEndingView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_onboarding_intro_ending, container, false);
+    }
+
+    protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = getDefaultView(inflater,container);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView d = (TextView) v.findViewById(R.id.description);
         ImageView i = (ImageView) v.findViewById(R.id.image);
-        ImageView logo = (ImageView) v.findViewById(R.id.logo);
-        LinearLayout m = (LinearLayout) v.findViewById(R.id.main);
+//        ImageView logo = (ImageView) v.findViewById(R.id.logo);
+//        LinearLayout main = (LinearLayout) v.findViewById(R.id.main);
+        main = v.findViewById(R.id.main);
 
-        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
+//        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
+
 
         t.setText(title);
         if (titleColor != 0) {
@@ -203,9 +219,26 @@ public class OnBoardingFragment extends Fragment {
             AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
             notifAnimation.start();
         }
-        m.setBackgroundColor(bgColor);
-
+        main.setBackgroundColor(bgColor);
         return v;
+    }
+
+    protected View getDefaultView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_onboarding_intro, container, false);
+    }
+
+    @Override
+    public int getDefaultBackgroundColor() {
+        // Return the default background color of the slide.
+        return Color.parseColor("#000000");
+    }
+
+    @Override
+    public void setBackgroundColor(@ColorInt int backgroundColor) {
+        // Set the background color of the view within your slide to which the transition should be applied.
+        if (main != null) {
+            main.setBackgroundColor(backgroundColor);
+        }
     }
 
 }

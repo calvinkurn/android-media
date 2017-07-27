@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_300"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_nob"/>
+
+    <include
+        layout="@layout/step_list"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:padding="@dimen/padding_med"
+        tools:background="@color/colorAccent">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_small"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:letterSpacing="0.02"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_large"
+        android:textStyle="bold"
+        tools:text="Judul" />
+
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
+        android:gravity="center"
+        android:letterSpacing="0.02"
+        android:lineSpacingExtra="@dimen/line_spacing_8"
+        android:minLines="2"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="normal"
+        tools:text="Deskripsi" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_nob"/>
+
+</LinearLayout>

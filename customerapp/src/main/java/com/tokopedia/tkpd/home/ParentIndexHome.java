@@ -44,6 +44,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
