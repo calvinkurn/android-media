@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/topads_detail_padding_item" />
 
-                <include layout="@layout/partial_layout_grup_labelview" />
+                <include layout="@layout/partial_top_ads_grup_labelview" />
 
                 <include layout="@layout/partial_top_ads_content_detail" />
             </LinearLayout>

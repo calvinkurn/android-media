@@ -21,7 +21,7 @@
 
             <include
                 android:layout_marginTop="@dimen/topads_detail_padding_item"
-                layout="@layout/partial_layout_grup_labelview"
+                layout="@layout/partial_top_ads_grup_labelview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"/>
         </LinearLayout>
