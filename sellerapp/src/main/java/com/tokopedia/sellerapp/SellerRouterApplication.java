@@ -41,8 +41,8 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.sellerapp.applink.ApplinkHandlerActivity;
-import com.tokopedia.sellerapp.applink.DeepLinkDelegate;
+import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
@@ -288,7 +288,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isSupportedDelegateDeepLink(String appLinks) {
-        DeepLinkDelegate deepLinkDelegate = ApplinkHandlerActivity.getDelegateInstance();
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
@@ -299,7 +299,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        DeepLinkDelegate deepLinkDelegate = ApplinkHandlerActivity.getDelegateInstance();
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = activity.getIntent();
         intent.putExtras(bundle);
         intent.setData(Uri.parse(applinks));
