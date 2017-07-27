@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewmodel.feed;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 
 /**
@@ -11,6 +12,7 @@ import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 public class ShopFeedViewModel implements Item<AdsTypeFactory> {
 
     Data data;
+    private DisplayMode displayMode;
 
     @Override
     public int type(AdsTypeFactory typeFactory) {
@@ -28,5 +30,13 @@ public class ShopFeedViewModel implements Item<AdsTypeFactory> {
     @Override
     public int originalPos() {
         return 0;
+    }
+
+    public void setDisplayMode(DisplayMode displayMode) {
+        this.displayMode = displayMode;
+    }
+
+    public DisplayMode getDisplayMode() {
+        return displayMode;
     }
 }

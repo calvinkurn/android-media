@@ -35,6 +35,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
@@ -64,6 +65,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
     private boolean mSourceIsCurrentLocation;
+    private MapConfiguration mapConfiguration;
 
     public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
@@ -71,12 +73,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void initialize() {
+        mapConfiguration = new MapConfiguration(getView().getActivityContext());
+
         if (getView().isUserLoggedIn()) {
             if (checkPlayServices()) {
                 createLocationRequest();
                 initializeLocationService();
             } else {
-                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                getView().moveMapToLocation(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude());
                 getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
 
@@ -113,18 +117,20 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                mCurrentLocation = getFuzedLocation();
-                                if (!getView().isLaunchedWithLocation()) {
-                                    setSourceAsCurrentLocation();
-                                    mRenderProductListBasedOnLocationUpdates = true;
-                                } else {
-                                    mRenderProductListBasedOnLocationUpdates = false;
-                                }
+                            if (isViewAttached()) {
+                                if (getFuzedLocation() != null) {
+                                    mCurrentLocation = getFuzedLocation();
+                                    if (!getView().isLaunchedWithLocation()) {
+                                        setSourceAsCurrentLocation();
+                                        mRenderProductListBasedOnLocationUpdates = true;
+                                    } else {
+                                        mRenderProductListBasedOnLocationUpdates = false;
+                                    }
 
-                                startLocationUpdates();
-                            } else {
-                                checkLocationSettings();
+                                    startLocationUpdates();
+                                } else {
+                                    checkLocationSettings();
+                                }
                             }
                         }
 
@@ -167,12 +173,17 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        mCurrentLocation = getFuzedLocation();
-                        startLocationUpdates();
-                        if (!getView().isLaunchedWithLocation()) {
-                            setSourceAsCurrentLocation();
-                        }
+                        if (isViewAttached()){
+                            mCurrentLocation = getFuzedLocation();
+                            startLocationUpdates();
+                            if (!getView().isLaunchedWithLocation()) {
+                                setSourceAsCurrentLocation();
+                            }
 
+                            if (mapConfiguration != null && mCurrentLocation != null) {
+                                mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                            }
+                        }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
@@ -263,7 +274,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         }
     }
 
-    public Location getFuzedLocation() {
+    private Location getFuzedLocation() {
         if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
                 && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -289,6 +300,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     mRenderProductListBasedOnLocationUpdates = false;
                     setSourceAsCurrentLocation();
                 }
+
+                if (mapConfiguration != null) {
+                    mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                }
+
             }
         });
     }
@@ -371,17 +387,19 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void handleEnableLocationDialogResult(int resultCode) {
-        if (resultCode == RESULT_OK) {
-            if (getFuzedLocation() != null) {
-                mCurrentLocation = getFuzedLocation();
-                startLocationUpdates();
-                setSourceAsCurrentLocation();
+        if (isViewAttached()) {
+            if (resultCode == RESULT_OK) {
+                if (getFuzedLocation() != null) {
+                    mCurrentLocation = getFuzedLocation();
+                    startLocationUpdates();
+                    setSourceAsCurrentLocation();
+                } else {
+                    mRenderProductListBasedOnLocationUpdates = true;
+                    startLocationUpdates();
+                }
             } else {
-                mRenderProductListBasedOnLocationUpdates = true;
-                startLocationUpdates();
+                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
-        } else {
-            getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
         }
     }
 
@@ -524,5 +542,4 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
     }
-
 }

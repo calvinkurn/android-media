@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -67,4 +68,5 @@ public interface TkpdCoreRouter {
     Intent getRegisterIntent(Context context);
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
+
 }

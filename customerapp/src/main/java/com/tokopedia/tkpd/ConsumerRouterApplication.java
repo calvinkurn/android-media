@@ -19,8 +19,8 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -32,16 +32,14 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
-import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -332,8 +330,8 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public String getSchemeAppLinkCartPayment() {
-        return Constants.Applinks.CART;
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
     }
 
 

@@ -40,8 +40,6 @@ public interface ConfirmBookingContract {
 
         void showToastMessage(String message);
 
-        void setViewListener();
-
         void renderInitialView();
 
         void openInterruptConfirmationWebView(String tosUrl);
