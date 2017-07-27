@@ -3,10 +3,10 @@ package com.tokopedia.digital.tokocash.presenter;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
+import com.tokopedia.digital.tokocash.exception.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.RequestOTPWalletView;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
@@ -54,7 +54,11 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                errorOnRequestOTPWallet(e);
+                if (e instanceof ResponseTokoCashRuntimeException) {
+                    view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                } else {
+                    errorOnRequestOTPWallet(e);
+                }
             }
 
             @Override
@@ -74,7 +78,11 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                errorOnRequestOTPWallet(e);
+                if (e instanceof ResponseTokoCashRuntimeException) {
+                    view.onErrorOTPWallet("");
+                } else {
+                    errorOnRequestOTPWallet(e);
+                }
             }
 
             @Override
@@ -90,8 +98,6 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
         } else if (e instanceof SocketTimeoutException) {
             view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-        } else if (e instanceof ResponseErrorException) {
-            view.onErrorOTPWallet(e.getMessage());
         } else if (e instanceof ResponseDataNullException) {
             view.onErrorOTPWallet(e.getMessage());
         } else if (e instanceof HttpErrorException) {
