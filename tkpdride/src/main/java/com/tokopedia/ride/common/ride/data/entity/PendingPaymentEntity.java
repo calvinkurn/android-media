@@ -2,7 +2,8 @@ package com.tokopedia.ride.common.ride.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.apiservices.search.SearchService;
+
+import java.util.List;
 
 /**
  * Created by alvarisi on 7/10/17.
@@ -26,7 +27,7 @@ public class PendingPaymentEntity {
     private String currencyCode;
     @SerializedName("topup_options")
     @Expose
-    private String topUpOptions;
+    private List<TopUpOptionEntity> topUpOptions;
     @SerializedName("topup_url")
     @Expose
     private String topupUrl;
@@ -43,7 +44,7 @@ public class PendingPaymentEntity {
         return currencyCode;
     }
 
-    public String getTopUpOptions() {
+    public List<TopUpOptionEntity> getTopUpOptions() {
         return topUpOptions;
     }
 

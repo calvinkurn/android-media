@@ -36,36 +36,36 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .putExtra(EXTRA_CATEGORY_PASS_DATA, passData);
     }
 
+    @Override
+    protected void setupURIPass(Uri data) {
+
+    }
+
+
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL, Constants.Applinks.DIGITAL_PRODUCT})
-    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+    public static Intent getcallingIntent(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-
-        Intent homeIntent;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
+        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(context);
+            }
+            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            taskStackBuilder.addNextIntent(homeIntent);
         }
-        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_HOME);
-
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                 .appLinks(uri.toString())
                 .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
                 .build();
         Intent destination = DigitalProductActivity.newInstance(context, passData);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
-
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
+        return destination;
     }
 
     @Override

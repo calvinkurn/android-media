@@ -4,12 +4,15 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
@@ -26,6 +29,7 @@ import rx.functions.Func1;
  */
 
 public class CloudBookingRideDataStore implements BookingRideDataStore {
+
     private final RideApi mRideApi;
 
     public CloudBookingRideDataStore(RideApi rideApi) {
@@ -35,6 +39,17 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<ProductEntity> getProduct(TKPDMapParam<String, Object> params) {
         return mRideApi.getProduct(params);
+    }
+
+    @Override
+    public Observable<List<PriceEntity>> getPrices(TKPDMapParam<String, Object> params) {
+        return mRideApi.getPrices(params)
+                .map(new Func1<PriceResponseEntity, List<PriceEntity>>() {
+                    @Override
+                    public List<PriceEntity> call(PriceResponseEntity priceResponseEntity) {
+                        return priceResponseEntity.getPrices();
+                    }
+                });
     }
 
     @Override
@@ -98,6 +113,11 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
+    public Observable<RideHistoryResponse> getHistoriesWithPagination(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getHistoriesWithPagination(parameters);
+    }
+
+    @Override
     public Observable<List<RideHistoryEntity>> getHistory(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getHistory(parameters);
     }
@@ -109,7 +129,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters) {
-        return mRideApi.getAddresses(parameters); 
+        return mRideApi.getAddresses(parameters);
     }
 
     @Override

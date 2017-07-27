@@ -3,12 +3,14 @@ package com.tokopedia.ride.common.ride.data.source.api;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
@@ -31,6 +33,9 @@ import rx.Observable;
 public interface RideApi {
     @GET(RideUrl.PRODUCTS)
     Observable<ProductResponseEntity> getProducts(@QueryMap Map<String, Object> param);
+
+    @GET(RideUrl.ESTIMATED_PRICE)
+    Observable<PriceResponseEntity> getPrices(@QueryMap Map<String, Object> param);
 
     @GET(RideUrl.ESTIMATED_TIME)
     Observable<TimesEstimateResponseEntity> getEstimateds(@QueryMap Map<String, Object> param);
@@ -61,6 +66,9 @@ public interface RideApi {
 
     @GET(RideUrl.TRANSACTIONS_ALL)
     Observable<List<RideHistoryEntity>> getHistories(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @GET(RideUrl.TRANSACTIONS_ALL_V2)
+    Observable<RideHistoryResponse> getHistoriesWithPagination(@QueryMap TKPDMapParam<String, Object> parameters);
 
     @GET(RideUrl.TRANSACTION)
     Observable<List<RideHistoryEntity>> getHistory(@QueryMap TKPDMapParam<String, Object> parameters);

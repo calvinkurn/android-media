@@ -17,7 +17,7 @@ public interface CompleteTripContract {
 
         RequestParams getReceiptParam();
 
-        void renderReceipt(Receipt receipt);
+        void renderReceipt(Receipt receipt, boolean isPendingPaymentExists);
 
         void showMessage(String message);
 

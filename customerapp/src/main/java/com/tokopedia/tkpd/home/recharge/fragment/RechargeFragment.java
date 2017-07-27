@@ -413,6 +413,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
+
         if (SessionHandler.isV4Login(getActivity())) {
             sendGTMClickBeli();
 
@@ -475,7 +476,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private boolean isRechargeEditTextFilled() {
-        return rechargeEditText.getText().length() >= 0;
+        return rechargeEditText.getText().length() >= 0 && !rechargeEditText.getText().trim().equals("");
     }
 
     @Override
@@ -700,16 +701,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void initListener() {
         rechargeEditText.setRechargeEditTextListener(this);
         rechargeEditText.setButtonPickerListener(this);
-        buyWithCreditCheckbox.setOnCheckedChangeListener(this);
     }
 
     private void renderDefaultView(CategoryAttributes categoryAttributes) {
         ClientNumber clientNumber = categoryAttributes.getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
         rechargeEditText.setHint(clientNumber.getPlaceholder());
-        buyWithCreditCheckbox.setVisibility(
-                categoryAttributes.isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE
-        );
+        renderInstantCheckoutOption(categoryAttributes.isInstantCheckoutAvailable());
 
         setTextToEditTextOrSetVisibilityForm();
         setPhoneBookVisibility();
@@ -724,6 +722,19 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (category.getAttributes().isShowOperator()) {
                 this.rechargePresenter.getListOperatorFromCategory(category.getId());
             }
+        }
+    }
+
+    private void renderInstantCheckoutOption(boolean isInstantCheckoutAvailable) {
+        buyWithCreditCheckbox.setVisibility(isInstantCheckoutAvailable ? View.VISIBLE : View.GONE);
+        if (isInstantCheckoutAvailable) {
+            buyWithCreditCheckbox.setVisibility(View.VISIBLE);
+            buyWithCreditCheckbox.setOnCheckedChangeListener(this);
+            buyWithCreditCheckbox.setChecked(
+                    rechargePresenter.isRecentInstantCheckoutUsed(String.valueOf(category.getId())));
+        } else {
+            buyWithCreditCheckbox.setChecked(false);
+            buyWithCreditCheckbox.setVisibility(View.GONE);
         }
     }
 
@@ -1039,6 +1050,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void goToNativeCheckout() {
+        rechargePresenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
+                buyWithCreditCheckbox.isChecked());
+
         String clientNumber = rechargeEditText.getText();
         DigitalCheckoutPassData digitalCheckoutPassData = getGeneratedCheckoutPassData(clientNumber);
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
@@ -1228,5 +1242,4 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, ""
         );
     }
-
 }

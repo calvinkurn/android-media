@@ -32,8 +32,10 @@ public class SingleFeedDetailViewHolder extends FeedDetailViewHolder {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToBuyProduct(String.valueOf(feedDetailViewModel.getProductId())
-                        ,feedDetailViewModel.getPrice());
+                viewListener.onGoToBuyProduct(
+                        String.valueOf(feedDetailViewModel.getProductId())
+                        ,feedDetailViewModel.getPrice(),
+                        feedDetailViewModel.getImageSource());
             }
         });
     }

@@ -133,7 +133,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 }
                             };
                         }
-                    }).debounce(150, TimeUnit.MILLISECONDS)
+                    }).debounce(250, TimeUnit.MILLISECONDS)
                             .subscribeOn(Schedulers.from(new JobExecutor()))
                             .observeOn(new UIThread().getScheduler())
                             .subscribe(new AutoCompletePlaceTextChanged())
@@ -670,27 +670,31 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                renderPlaceList(addresses);
+                if (isViewAttached()) {
+                    renderPlaceList(addresses);
+                }
             }
 
             @Override
             public void onNext(DistanceMatrixEntity distanceMatrixEntity) {
-                //add distance to the addresses
-                if (distanceMatrixEntity != null && distanceMatrixEntity.getRows().size() > 0 && distanceMatrixEntity.getRows().get(0).getElements() != null) {
-                    int index = 0;
-                    for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
-                        if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
-                            String distance = element.getDistance().getText();
+                if (isViewAttached()) {
+                    //add distance to the addresses
+                    if (distanceMatrixEntity != null && distanceMatrixEntity.getRows().size() > 0 && distanceMatrixEntity.getRows().get(0).getElements() != null) {
+                        int index = 0;
+                        for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
+                            if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
+                                String distance = element.getDistance().getText();
 
-                            if (addresses.size() > index) {
-                                ((PlaceAutoCompeleteViewModel) addresses.get(index)).setDistance(distance);
+                                if (addresses.size() > index) {
+                                    ((PlaceAutoCompeleteViewModel) addresses.get(index)).setDistance(distance);
+                                }
                             }
+                            index++;
                         }
-                        index++;
                     }
-                }
 
-                renderPlaceList(addresses);
+                    renderPlaceList(addresses);
+                }
             }
         });
     }

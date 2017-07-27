@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -53,10 +54,13 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -68,7 +72,6 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
-import com.tokopedia.transaction.cart.activity.TopPayActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
@@ -80,6 +83,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
@@ -101,7 +105,8 @@ import butterknife.ButterKnife;
  */
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
-        TopPayBroadcastReceiver.ActionTopPayListener, TopAdsItemClickListener {
+        TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
+    private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -173,11 +178,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
-    private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
+
     private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
@@ -246,7 +251,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void initialVar() {
         topPayBroadcastReceiver = new TopPayBroadcastReceiver(this);
         getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
-                TopPayBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
+                TopPayBroadcastReceiver.ACTION_TOP_PAY
         ));
     }
 
@@ -351,11 +356,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCartListData(String keroToken, final List<CartItem> cartList) {
+    public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
-        presenter.processCartRates(keroToken, cartList);
+        presenter.processCartRates(keroToken, ut, cartList);
         rvCart.setAdapter(cartItemAdapter);
         btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
@@ -749,9 +754,17 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
-        navigateToActivityRequest(
-                TopPayActivity.createInstance(getActivity(), data), TopPayActivity.REQUEST_CODE
-        );
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(data.getRedirectUrl());
+        paymentPassData.setTransactionId(data.getParameter().getTransactionId());
+        paymentPassData.setPaymentId(data.getParameter().getTransactionId());
+        paymentPassData.setCallbackSuccessUrl(data.getCallbackUrl());
+        paymentPassData.setCallbackFailedUrl(data.getCallbackUrl());
+        paymentPassData.setQueryString(data.getQueryString());
+        navigateToActivityRequest
+                (TopPayActivity.createInstance(getActivity(), paymentPassData),
+                        TopPayActivity.REQUEST_CODE
+                );
     }
 
     @Override
@@ -772,6 +785,66 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
+        presenter.processCheckoutAnalytics(
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
+                data.getParameter().getGatewayName()
+        );
+        presenter.clearNotificationCart();
+        try {
+            presenter.processPaymentAnalytics(
+                    new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA), data
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        hideProgressLoading();
+        showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
+        navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+        CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+        closeView();
+    }
+
+    @Override
+    public void onGetThanksTopPayFailed(String message, final String paymentId) {
+        hideProgressLoading();
+        presenter.processCheckoutAnalytics(
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
+                ANALYTICS_GATEWAY_PAYMENT_FAILED
+        );
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        closeView();
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onGetThanksTopPayNotValid(String message, final String paymentId) {
+        hideProgressLoading();
+        showToastMessage(message);
+    }
+
+    @Override
+    public void onGetThanksTopPayNoConnection(String message, final String paymentId) {
+        hideProgressLoading();
+        NetworkErrorHelper.showDialog(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.processValidationPayment(paymentId);
+                    }
+                });
+    }
+
+    @Override
+    public void onGetThanksTopPayOngoing(String message, String paymentId) {
+        showProgressLoading();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribeObservable();
@@ -781,18 +854,34 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TopPayActivity.REQUEST_CODE) {
-            if (resultCode == TopPayActivity.RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED) {
-                if (data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE) != null) {
-                    NetworkErrorHelper.showSnackbar(
-                            getActivity(), data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE)
-                    );
-                }
-            }
-            presenter.processGetCartData();
-        } else if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
+        if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             presenter.processGetCartData();
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case TopPayActivity.PAYMENT_CANCELLED:
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(),
+                            getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+                    );
+                    break;
+                case TopPayActivity.PAYMENT_SUCCESS:
+                    presenter.processValidationPayment(
+                            ((PaymentPassData) data.getParcelableExtra(
+                                    com.tokopedia.payment.activity
+                                            .TopPayActivity.EXTRA_PARAMETER_TOP_PAY_DATA
+                            )).getPaymentId()
+                    );
+                    break;
+                case TopPayActivity.PAYMENT_FAILED:
+                    presenter.processValidationPayment(
+                            ((PaymentPassData) data.getParcelableExtra(
+                                    com.tokopedia.payment.activity
+                                            .TopPayActivity.EXTRA_PARAMETER_TOP_PAY_DATA
+                            )).getPaymentId()
+                    );
+                    break;
+            }
         }
     }
 
@@ -854,7 +943,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 if (isChecked) {
                     holderUseVoucher.setVisibility(View.VISIBLE);
                     btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
-                    tvTotalPayment.setText(totalPaymentWithoutLoyaltyIdr);
                     renderInvisibleLoyaltyBalance();
                 } else {
                     holderUseVoucher.setVisibility(View.GONE);
@@ -862,7 +950,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     etVoucherCode.setText("");
                     tvVoucherDesc.setText("");
                     tilEtVoucherCode.setErrorEnabled(false);
-                    tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
                 }
@@ -981,7 +1068,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_donasi_info, null);
+                @SuppressLint("InflateParams")
+                View view = LayoutInflater.from(
+                        getActivity()).inflate(R.layout.dialog_donasi_info, null
+                );
                 dialog.setContentView(view);
                 setDataDialog(dialog, view, donation);
                 dialog.show();
@@ -998,7 +1088,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         Glide.with(getActivity())
                 .load(donation.getDonationPopupImg())
                 .into(imgDonation);
-        title.setText(donation.getDonationNoteTitle());
+        title.setText(donation.getDonationPopupTitle());
         content.setText(donation.getDonationPopupInfo());
         closeDialog.setOnClickListener(new View.OnClickListener() {
             @Override

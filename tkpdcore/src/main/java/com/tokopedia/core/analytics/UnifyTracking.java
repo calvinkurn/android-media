@@ -1704,4 +1704,30 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventSwitchRpToDollarAddProduct(){
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
+    }
+
+    public static void eventClickVideoAddProduct(){
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
+    }
+
+    public static void eventClickYesGoldMerchantAddProduct(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+                AppEventTracking.Category.GOLD_MERCHANT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT
+        ).getEvent());
+    }
+
+    public static void eventClickGoldMerchantViaDrawer(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM
+        ).getEvent());
+    }
 }

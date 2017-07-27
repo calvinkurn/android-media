@@ -56,6 +56,9 @@ public class AttributesCart {
     @SerializedName("additional_info")
     @Expose
     private List<AdditionalInfo> additionalInfo = null;
+    @SerializedName("voucher_autocode")
+    @Expose
+    private String voucherAutoCode;
 
     public String getClientNumber() {
         return clientNumber;
@@ -115,5 +118,9 @@ public class AttributesCart {
 
     public boolean isEnableVoucher() {
         return enableVoucher;
+    }
+
+    public String getVoucherAutoCode() {
+        return voucherAutoCode;
     }
 }
