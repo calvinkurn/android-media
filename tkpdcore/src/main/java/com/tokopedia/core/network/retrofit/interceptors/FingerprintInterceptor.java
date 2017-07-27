@@ -26,6 +26,13 @@ import rx.functions.Func1;
  */
 
 public class FingerprintInterceptor implements Interceptor {
+
+    private static final String KEY_SESSION_ID  = "Tkpd-SessionId";
+    private static final String KEY_USER_ID     = "Tkpd-UserId";
+    private static final String KEY_ACC_AUTH    = "Accounts-Authorization";
+    private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
+    private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder newRequest = chain.request().newBuilder();
@@ -49,12 +56,13 @@ public class FingerprintInterceptor implements Interceptor {
                 }).toSingle().toBlocking().value();
 
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
-        newRequest.addHeader("Tkpd-SessionId", FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
+        newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
         if (session.isV4Login()) {
-            newRequest.addHeader("Tkpd-UserId", session.getLoginID());
+            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+            newRequest.addHeader(KEY_ACC_AUTH,SessionHandler.getAccessToken());
         }
-        newRequest.addHeader("Fingerprint-Data", json);
-        newRequest.addHeader("Fingerprint-Hash", AuthUtil.md5(json+"+"+session.getLoginID()));
+        newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
+        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
 
         CommonUtils.dumper("theresult returned request "+json);
         return newRequest;
