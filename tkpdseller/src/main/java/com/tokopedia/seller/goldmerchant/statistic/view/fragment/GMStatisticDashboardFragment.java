@@ -53,8 +53,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
-    private GMStatisticProductViewHolder GMStatisticProductViewHolder;
-    private GMStatisticTransactionViewHolder GMStatisticTransactionViewHolder;
+    private GMStatisticProductViewHolder gmStatisticProductViewHolder;
+    private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
     private GmStatisticMarketInsightViewHolder gmStatisticMarketInsightViewHolder;
 
@@ -90,8 +90,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(view);
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
-        GMStatisticProductViewHolder = new GMStatisticProductViewHolder(view);
-        GMStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        gmStatisticProductViewHolder = new GMStatisticProductViewHolder(view);
+        gmStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
         gmStatisticMarketInsightViewHolder = new GmStatisticMarketInsightViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
         gmStatisticBuyerViewHolder = new GmStatisticBuyerViewHolder(view);
 
@@ -131,33 +131,29 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private void resetToLoading() {
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        GMStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
-        GMStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override
-    public void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph) {
-        gmStatisticBuyerViewHolder.bindData(getBuyerGraph);
-    }
-
-    @Override
-    public void onGetShopCategoryEmpty() {
-        gmStatisticMarketInsightViewHolder.bindNoShopCategory();
-        hideSnackBarRetry();
-    }
-
-    @Override
-    public void onTransactionGraphLoaded(GMTransactionGraphMergeModel getTransactionGraph) {
+    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        GMStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
         hideSnackBarRetry();
     }
 
     @Override
-    public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
+    public void onErrorLoadTransactionGraph(Throwable t) {
+        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        showSnackbarRetry();
+    }
+
+    @Override
+    public void onSuccessLoadProductGraph(GetProductGraph getProductGraph) {
         gmStatisticSummaryViewHolder.setData(getProductGraph);
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         UnifyTracking.eventLoadGMStat();
@@ -165,8 +161,38 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-        GMStatisticProductViewHolder.bindData(getPopularProduct);
+    public void onErrorLoadProductGraph(Throwable t) {
+        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        showSnackbarRetry();
+    }
+
+    @Override
+    public void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct) {
+        gmStatisticProductViewHolder.bindData(getPopularProduct);
+        hideSnackBarRetry();
+    }
+
+    @Override
+    public void onErrorLoadPopularProduct(Throwable t) {
+        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        showSnackbarRetry();
+    }
+
+    @Override
+    public void onSuccessLoadBuyerGraph(GetBuyerGraph getBuyerGraph) {
+        gmStatisticBuyerViewHolder.bindData(getBuyerGraph);
+        hideSnackBarRetry();
+    }
+
+    @Override
+    public void onErrorLoadBuyerGraph(Throwable t) {
+        gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        showSnackbarRetry();
+    }
+
+    @Override
+    public void onGetShopCategoryEmpty() {
+        gmStatisticMarketInsightViewHolder.bindNoShopCategory();
         hideSnackBarRetry();
     }
 
@@ -183,11 +209,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onError(Throwable e) {
+    public void onErrorLoadMarketInsight(Throwable t) {
+        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         showSnackbarRetry();
     }
 
-    public void showSnackbarRetry() {
+    private void showSnackbarRetry() {
         if (!snackbarRetry.isShown()) {
             snackbarRetry.showRetrySnackbar();
         }

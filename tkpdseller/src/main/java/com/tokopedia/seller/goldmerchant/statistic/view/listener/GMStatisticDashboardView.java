@@ -15,11 +15,21 @@ import java.util.List;
 
 public interface GMStatisticDashboardView extends CustomerView {
 
-    void onTransactionGraphLoaded(GMTransactionGraphMergeModel getTransactionGraph);
+    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
 
-    void onSuccessProductnGraph(GetProductGraph getProductGraph);
+    void onErrorLoadTransactionGraph(Throwable t);
 
-    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
+    void onSuccessLoadProductGraph(GetProductGraph getProductGraph);
+
+    void onErrorLoadProductGraph(Throwable t);
+
+    void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct);
+
+    void onErrorLoadPopularProduct(Throwable t);
+
+    void onSuccessLoadBuyerGraph(GetBuyerGraph getBuyerGraph);
+
+    void onErrorLoadBuyerGraph(Throwable t);
 
     void onGetShopCategoryEmpty();
 
@@ -27,9 +37,5 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
-    void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
-
-    void onError(Throwable e);
-
-    void showSnackbarRetry();
+    void onErrorLoadMarketInsight(Throwable t);
 }
