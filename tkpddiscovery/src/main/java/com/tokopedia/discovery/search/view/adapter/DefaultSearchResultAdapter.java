@@ -68,7 +68,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
 
     @Override
     public int getItemCount() {
-        return model.getSearchItems().size();
+        return (model != null ? model.getSearchItems().size(): 0);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
