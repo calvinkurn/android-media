@@ -1443,7 +1443,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
     <string name="pending_cashback_info">Pending Cashback</string>
-    <string name="toko_cash_top_up">Topup</string>
+    <string name="toko_cash_top_up">Top Up</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
@@ -1941,7 +1941,7 @@ di Tokopedia Sekarang!</string>
     <!-- Marketing Campaign Official Store START-->
     <string name="title_discount_timer">Promo berakhir dalam:</string>
     <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
-    <string name="label_discount">%1$d%%OFF</string>
+    <string name="label_discount_percentage">%1$d%%OFF</string>
     <!-- Marketing Campaign Official Store END-->
 
     <!-- String related to Official Store START -->

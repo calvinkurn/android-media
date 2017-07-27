@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class InterruptConfirmationMetaEntity {
+    @SerializedName("tos_tokopedia")
+    @Expose
+    InterruptTokopediaConfirmationExceptionEntity tosTokopediaConfirmationExceptionEntity;
     @SerializedName("tos_accept_confirmation")
     @Expose
     TosAcceptConfirmationEntity tosAcceptConfirmationEntity;
@@ -42,5 +45,9 @@ public class InterruptConfirmationMetaEntity {
 
     public InterruptMetaEntity getInterruptEntity() {
         return interruptEntity;
+    }
+
+    public InterruptTokopediaConfirmationExceptionEntity getTosTokopediaConfirmationExceptionEntity() {
+        return tosTokopediaConfirmationExceptionEntity;
     }
 }

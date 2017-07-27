@@ -84,6 +84,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 } else {
                                     getView().inflateMapAndProductFragment();
                                 }
+                                getView().clearActiveRequestId();
                                 break;
                             case RideStatus.COMPLETED:
                                 // if user didnt see last trip thanks page
@@ -101,12 +102,14 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                     driverAndVehicle.setAddress(rideRequestAddress);
                                     getView().navigateToCompleteTripScreen(rideRequest.getRequestId(), driverAndVehicle);
                                 } else {
+                                    getView().clearActiveRequestId();
                                     getView().showMainLayout();
                                     getView().hideCheckPendingRequestLoading();
                                     getView().inflateMapAndProductFragment();
                                 }
                                 break;
                             default:
+                                getView().clearActiveRequestId();
                                 getView().showMainLayout();
                                 getView().inflateMapAndProductFragment();
                         }
@@ -123,6 +126,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
 
     @Override
     public void onDestroy() {
+        detachView();
         getCurrentRideRequestUseCase.unsubscribe();
     }
 

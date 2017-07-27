@@ -159,6 +159,9 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         void onProductDetailLinkClicked(String url);
 
+        boolean isRecentInstantCheckoutUsed(String categoryId);
+
+        void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
     }
 
     public static class PreCheckoutProduct {

@@ -372,10 +372,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = null;
                     if (SessionHandler.isUserSeller(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                                .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     } else {
                         intent = moveToCreateShop(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_FEED);
                     startActivity(intent);

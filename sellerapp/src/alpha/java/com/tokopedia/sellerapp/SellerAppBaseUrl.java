@@ -22,4 +22,5 @@ public class SellerAppBaseUrl {
     public static final String BASE_WEB_DOMAIN = "https://alpha.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-alpha.tokopedia.com/";
     public static final String TOKOPEDIA_CART_DOMAIN = "https://tkpd-cart-alpha.tokopedia.com";
+    public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay-alpha.tokopedia.com";
 }

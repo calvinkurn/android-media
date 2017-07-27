@@ -13,12 +13,12 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHo
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 /**
  * @author by errysuprayogi on 3/29/17.

@@ -20,7 +20,7 @@ public class ValueConverter {
         formatRp.setDecimalSeparator('.');
         kursIndonesia.setDecimalFormatSymbols(formatRp);
 
-        return kursIndonesia.format(value);
+        return kursIndonesia.format(value).replace(",", ".");
     }
 
 }

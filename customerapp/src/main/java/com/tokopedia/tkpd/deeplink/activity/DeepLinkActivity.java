@@ -210,9 +210,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-            this.startActivity(intent);
-            this.finish();
+            if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                this.startActivity(intent);
+                this.finish();
+            }
         }
     }
 
