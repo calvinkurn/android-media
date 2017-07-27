@@ -59,6 +59,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void reloadDataForDate() {
+        // important to reattach here, or the presenter will attach to the previous fragment when onResume
         datePickerPresenter.attachView(this);
         datePickerPresenter.fetchDatePickerSetting();
     }

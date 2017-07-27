@@ -75,6 +75,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
 
     @Override
     public void reloadDataForDate() {
+        // important to reattach here, or the presenter will attach to the previous fragment when onResume
         datePickerPresenter.attachView(this);
         datePickerPresenter.fetchDatePickerSetting();
     }
@@ -102,7 +103,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onErrorLoadDatePicker(Throwable throwable) {
         if (datePickerViewModel == null) {
-            getDefaultDateViewModel();
+            datePickerViewModel = getDefaultDateViewModel();
         } else {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
