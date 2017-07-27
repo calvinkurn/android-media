@@ -75,7 +75,9 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+            startTimer();
+        }
     }
 
     @Override
@@ -178,11 +180,14 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
 
     @Override
     public void onSuccessRequestOtpWallet() {
+        finishProgressDialog();
         startTimer();
     }
 
     @Override
     public void onSuccessLinkWalletToTokoCash() {
+        finishProgressDialog();
+        SessionHandler.setIsMSISDNVerified(true);
         listener.directToSuccessActivateTokoCashPage();
     }
 
@@ -207,7 +212,7 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
     }
 
     private void startTimer() {
-        if (cacheHandler.isExpired() || cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
             cacheHandler.putBoolean(HAS_PHONE_VERIF_TIMER, true);
             cacheHandler.setExpire(DEFAULT_COUNTDOWN_TIMER_SECOND);
             cacheHandler.applyEditor();

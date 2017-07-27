@@ -36,6 +36,7 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
 
     @Override
     public void requestOTPWallet() {
+        view.showProgressDialog();
         activateTokoCashInteractor.requestOTPWallet(getSubscriberRequestOTPWallet());
     }
 

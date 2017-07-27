@@ -72,7 +72,7 @@
     <string name="tokocash_desc_activation">Anda bisa melakukan aktivasi TokoCash dengan nomor handphone yang terdaftar di akun Tokopedia Anda</string>
     <string name="tokocash_phone_number">Nomor Handphone</string>
     <string name="tokocash_activation">Aktivasi</string>
-    <string name="tokocash_desc_request_otp">Nomor Handphone Anda belum terverifikasi. Setelah terverivikasi, Tokocash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
+    <string name="tokocash_desc_request_otp">Nomor Handphone Anda belum terverifikasi. Setelah terverifikasi, Tokocash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
     <string name="tokocash_send_sms_verification">Kirim SMS Verifikasi</string>
     <string name="tokocash_button_verification">Verifikasi</string>
     <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
