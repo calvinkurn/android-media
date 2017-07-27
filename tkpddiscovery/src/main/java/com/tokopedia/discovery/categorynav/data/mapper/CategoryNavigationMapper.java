@@ -35,16 +35,29 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                 categoryModel.setIconImageUrl(category.getIconImageUrl());
                 categoryModel.setIndentation(1);
                 if (category.getChild()!=null && category.getChild().size()>0) {
-                    List<com.tokopedia.discovery.categorynav.domain.model.Category> children = new ArrayList<>();
+                    List<com.tokopedia.discovery.categorynav.domain.model.Category> childrenLevel2 = new ArrayList<>();
                     for (Child child: category.getChild()) {
-                        com.tokopedia.discovery.categorynav.domain.model.Category childCategory =
+                        com.tokopedia.discovery.categorynav.domain.model.Category childCategoryLevel2 =
                                 new com.tokopedia.discovery.categorynav.domain.model.Category();
-                        childCategory.setId(child.getId());
-                        childCategory.setName(child.getName());
-                        childCategory.setHasChild(child.getHasChild());
-                        children.add(childCategory);
+                        childCategoryLevel2.setId(child.getId());
+                        childCategoryLevel2.setName(child.getName());
+                        childCategoryLevel2.setHasChild(child.getHasChild());
+                        if (child.getChild()!=null && child.getChild().size()>0) {
+                            List<com.tokopedia.discovery.categorynav.domain.model.Category> childrenLevel3 =
+                                    new ArrayList<>();
+                            for (Child childLevel3: category.getChild()) {
+                                com.tokopedia.discovery.categorynav.domain.model.Category childCategoryLevel3 =
+                                        new com.tokopedia.discovery.categorynav.domain.model.Category();
+                                childCategoryLevel3.setId(childLevel3.getId());
+                                childCategoryLevel3.setName(childLevel3.getName());
+                                childCategoryLevel3.setHasChild(false);
+                                childrenLevel3.add(childCategoryLevel3);
+                            }
+                            childCategoryLevel2.addChildren(childrenLevel3,categoryModel.getIndentation());
+                        }
+                        childrenLevel2.add(childCategoryLevel2);
                     }
-                    categoryModel.addChildren(children,categoryModel.getIndentation());
+                    categoryModel.addChildren(childrenLevel2,categoryModel.getIndentation());
                 }
                 categoryList.add(categoryModel);
             }
