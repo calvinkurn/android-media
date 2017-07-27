@@ -9,10 +9,10 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
@@ -23,10 +23,11 @@ import com.tokopedia.seller.lib.williamchart.view.LineChartView;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTopAdsAmountViewHolder {
+public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
-    public interface OnTopAdsViewHolderListener{
+    public interface OnTopAdsViewHolderListener {
         void onChangeDateClicked();
+
         void onFindOutTopAdsClicked();
     }
 
@@ -67,10 +68,6 @@ public class GMTopAdsAmountViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    public void setViewState(int state) {
-        titleCardView.setViewState(state);
-    }
-
     public void bindNoData(@Nullable GMGraphViewModel data) {
         titleCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
         EmptyViewHolder emptyNoDataViewHolder = new EmptyNoDataViewHolder(titleCardView.getEmptyView());
@@ -94,6 +91,11 @@ public class GMTopAdsAmountViewHolder {
         setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
+    @Override
+    public void setViewState(int state) {
+        titleCardView.setViewState(state);
+    }
+
     abstract class EmptyViewHolder {
         ImageView ivIcon;
         TextView tvTitle;
@@ -110,7 +112,7 @@ public class GMTopAdsAmountViewHolder {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onTopAdsViewHolderListener!= null) {
+                    if (onTopAdsViewHolderListener != null) {
                         onTopAdsViewHolderListener.onFindOutTopAdsClicked();
                     }
                 }
@@ -134,7 +136,7 @@ public class GMTopAdsAmountViewHolder {
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onTopAdsViewHolderListener!= null) {
+                    if (onTopAdsViewHolderListener != null) {
                         onTopAdsViewHolderListener.onChangeDateClicked();
                     }
                 }
@@ -157,7 +159,7 @@ public class GMTopAdsAmountViewHolder {
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onTopAdsViewHolderListener!= null) {
+                    if (onTopAdsViewHolderListener != null) {
                         onTopAdsViewHolderListener.onFindOutTopAdsClicked();
                     }
                 }
@@ -186,7 +188,7 @@ public class GMTopAdsAmountViewHolder {
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onTopAdsViewHolderListener!= null) {
+                    if (onTopAdsViewHolderListener != null) {
                         onTopAdsViewHolderListener.onFindOutTopAdsClicked();
                     }
                 }

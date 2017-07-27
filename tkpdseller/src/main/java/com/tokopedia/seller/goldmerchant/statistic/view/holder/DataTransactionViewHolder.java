@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -10,13 +9,13 @@ import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
@@ -30,7 +29,7 @@ import java.util.List;
  * @author normansyahputa
  */
 
-public class DataTransactionViewHolder {
+public class DataTransactionViewHolder implements GMStatisticViewHolder {
     private LineChartView transactionChart;
 
     private TitleCardView transactionDataCardView;
@@ -127,6 +126,7 @@ public class DataTransactionViewHolder {
         baseWilliamChartConfig.buildChart(transactionChart);
     }
 
+    @Override
     public void setViewState(int viewState) {
         transactionDataCardView.setViewState(viewState);
     }

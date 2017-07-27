@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.util.Log;
@@ -10,11 +9,11 @@ import android.view.View;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
@@ -33,7 +32,7 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTransactionGraphViewHolder {
+public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
@@ -46,7 +45,7 @@ public class GMTransactionGraphViewHolder {
     private LineChartContainerWidget gmLineChartContainer;
 
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
-    boolean compareGraph;
+    private boolean compareGraph;
 
     public GMTransactionGraphViewHolder(View view) {
         gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
@@ -93,10 +92,6 @@ public class GMTransactionGraphViewHolder {
                 bind(gmTransactionGraphViewModel.totalTransactionModel);
                 break;
         }
-    }
-
-    public void setViewState(int state) {
-        gmTitleCardView.setViewState(state);
     }
 
     private void showGraphSelectionDialog() {
@@ -204,5 +199,10 @@ public class GMTransactionGraphViewHolder {
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
+    public void setViewState(int state) {
+        gmTitleCardView.setViewState(state);
     }
 }

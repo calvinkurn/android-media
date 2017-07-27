@@ -20,7 +20,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransac
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -94,7 +93,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private void loadingState(int state) {
         gmTransactionGraphViewHolder.setViewState(state);
         gmTopAdsAmountViewHolder.setViewState(state);
-        finishedTransactionViewHolder.setLoadingState(state);
+        finishedTransactionViewHolder.setViewState(state);
     }
 
     @Override

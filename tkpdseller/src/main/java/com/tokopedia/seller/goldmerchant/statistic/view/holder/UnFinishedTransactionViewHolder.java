@@ -17,7 +17,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.Do
  * Created by normansyahputa on 7/13/17.
  */
 
-public class UnFinishedTransactionViewHolder {
+public class UnFinishedTransactionViewHolder implements GMStatisticViewHolder {
 
     private TitleCardView titleCardView;
     private DonutProgress donutProgress;
@@ -49,7 +49,7 @@ public class UnFinishedTransactionViewHolder {
     }
 
     public void bind(@Nullable UnFinishedTransactionViewModel unFinishedTransactionViewModel) {
-        setLoadingState(LoadingStateView.VIEW_CONTENT);
+        setViewState(LoadingStateView.VIEW_CONTENT);
         processView(unFinishedTransactionViewModel);
         if (unFinishedTransactionViewModel == null || unFinishedTransactionViewModel.getTotalTransactionCount() == 0) {
             donutProgress.setUnfinishedStrokeColor(ContextCompat.getColor(titleCardView.getContext(), R.color.black_12));
@@ -63,7 +63,8 @@ public class UnFinishedTransactionViewHolder {
         }
     }
 
-    public void setLoadingState(int state) {
+    @Override
+    public void setViewState(int state) {
         titleCardView.setViewState(state);
     }
 }

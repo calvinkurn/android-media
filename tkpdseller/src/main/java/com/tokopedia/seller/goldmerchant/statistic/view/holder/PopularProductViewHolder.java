@@ -12,15 +12,15 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 /**
  * Created by normansyahputa on 11/9/16.
  */
 
-public class PopularProductViewHolder {
+public class PopularProductViewHolder implements GMStatisticViewHolder {
     private final TitleCardView popularProductCardView;
     private ImageView ivPopularProduct;
     private TextView tvPopularProductDescription;
@@ -81,7 +81,7 @@ public class PopularProductViewHolder {
         setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
-    public void gotoProductDetail() {
+    private void gotoProductDetail() {
         if (getPopularProduct == null)
             return;
 
@@ -94,11 +94,12 @@ public class PopularProductViewHolder {
         clickGMStat();
     }
 
-    public void moveToAddProduct() {
+    private void moveToAddProduct() {
         Intent intent = new Intent(popularProductCardView.getContext(), ProductAddActivity.class);
         popularProductCardView.getContext().startActivity(intent);
     }
 
+    @Override
     public void setViewState(int viewState) {
         popularProductCardView.setViewState(viewState);
     }

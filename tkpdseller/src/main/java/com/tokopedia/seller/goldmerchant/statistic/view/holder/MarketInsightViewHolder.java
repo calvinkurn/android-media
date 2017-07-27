@@ -24,7 +24,7 @@ import java.util.List;
  * Created by normansyahputa on 11/23/16.
  */
 
-public class MarketInsightViewHolder {
+public class MarketInsightViewHolder implements GMStatisticViewHolder {
 
     private static final String DEFAULT_CATEGORY = "kaos";
 
@@ -170,6 +170,7 @@ public class MarketInsightViewHolder {
         titleCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
+    @Override
     public void setViewState(int viewState) {
         titleCardView.setViewState(viewState);
     }
