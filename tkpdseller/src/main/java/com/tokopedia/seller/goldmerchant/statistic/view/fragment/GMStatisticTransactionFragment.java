@@ -99,19 +99,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, datePickerViewModel.isCompareDate());
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, isComparingDate());
         finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
-    }
-
-    private GMTransactionGraphViewModel mergeWithIsCompare(GMTransactionGraphViewModel viewModel) {
-        viewModel.grossRevenueModel.isCompare = isComparingDate();
-        viewModel.totalTransactionModel.isCompare = isComparingDate();
-        viewModel.successTransactionModel.isCompare = isComparingDate();
-        viewModel.netRevenueModel.isCompare = isComparingDate();
-        viewModel.rejectedAmountModel.isCompare = isComparingDate();
-        viewModel.shippingCostModel.isCompare = isComparingDate();
-        viewModel.rejectTransactionModel.isCompare = isComparingDate();
-        return viewModel;
     }
 
     @Override

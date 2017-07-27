@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 
 /**
  * Created by User on 7/10/2017.

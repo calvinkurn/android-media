@@ -16,7 +16,6 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
