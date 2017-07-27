@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.home.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +42,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;

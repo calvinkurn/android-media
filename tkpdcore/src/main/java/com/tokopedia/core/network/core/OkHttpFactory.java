@@ -63,6 +63,14 @@ public class OkHttpFactory {
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
+    private Interceptor getHeaderHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.HEADERS;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
     private OkHttpRetryPolicy getOkHttpRetryPolicy() {
         if (okHttpRetryPolicy == null) {
             return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
@@ -121,11 +129,9 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC, isUsingBothAuthorization))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(getHeaderHttpLoggingInterceptor())
                 .build();
     }
 

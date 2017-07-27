@@ -2,6 +2,7 @@
 <resources>
     <dimen name="dimen_id_image">300dp</dimen>
     <dimen name="width_icon_register">216dp</dimen>
+    <dimen name="btn_login_height">52dp</dimen>
     <dimen name="space_vs">5dp</dimen>
     <dimen name="space_small">10dp</dimen>
     <dimen name="space_med">16dp</dimen>
@@ -25,5 +26,4 @@
     <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
-    <dimen name="btn_login_height">52dp</dimen>
 </resources>

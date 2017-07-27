@@ -611,12 +611,9 @@ public class CartPresenter implements ICartPresenter {
             if (data.isPartialDeliver()) {
                 partialDeliverStringList.add(data.getCartStringForDeliverOption());
             }
-            if (data.getCartCourierPrices() != null) {
+            if (data.getCartCourierPrices() != null && !hasError(data.getCartItem())) {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
-            } else {
-                rateKeyList.add("");
-                rateDataList.add("");
             }
         }
 
@@ -667,11 +664,16 @@ public class CartPresenter implements ICartPresenter {
             return;
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
-        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
-                TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
-        view.executeIntentService(bundle, TopPayIntentService.class);
+        if (checkoutData.getKeroKeyParams().size() < 1) {
+            view.showToastMessage(view.getStringFromResource(
+                    R.string.label_message_error_cannot_checkout));
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+            bundle.putInt(TopPayIntentService.EXTRA_ACTION,
+                    TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
+            view.executeIntentService(bundle, TopPayIntentService.class);
+        }
     }
 
     private void handleThrowableGeneral(Throwable e) {
@@ -838,5 +840,12 @@ public class CartPresenter implements ICartPresenter {
             }
         }
 
+    }
+
+    private boolean hasError(CartItem cartItem) {
+        return (cartItem.getCartErrorMessage2() != null
+                && !cartItem.getCartErrorMessage2().equals("0"))
+                || (cartItem.getCartErrorMessage1() != null
+                && !cartItem.getCartErrorMessage1().equals("0"));
     }
 }

@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
@@ -26,6 +28,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -52,7 +55,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter,
+        IPaymentModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -120,12 +124,12 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+    public void actionAppLink(Activity activity, String linkUrl) {
 
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
 
     }
 
@@ -161,12 +165,6 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToProfileCompletion(Context context) {
-        Intent intent = new Intent(context, ProfileCompletionActivity.class);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToRegister(Context context) {
         Intent intent = Login.getSellerRegisterIntent(context);
         context.startActivity(intent);
@@ -182,6 +180,12 @@ public class SellerRouterApplication extends MainApplication
     public Intent getRegisterIntent(Context context) {
         Intent intent = Login.getSellerRegisterIntent(context);
         return intent;
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -261,4 +265,25 @@ public class SellerRouterApplication extends MainApplication
                 SellerReputationFragment.TAG,
                 SellerReputationFragment.createInstance());
     }
+
+    @Override
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
+    }
+
+    @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        return false;
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return null;
+    }
+
+    @Override
+    public String getBaseUrlDomainPayment() {
+        return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
 }
