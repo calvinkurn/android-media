@@ -361,7 +361,7 @@ public class HotListImpl implements HotList {
                 bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
                         BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
 
-                bundle.putString(BrowseProductRouter.EXTRA_TITLE, urlParser.getDeepestCategoryName());
+                bundle.putString(BrowseProductRouter.EXTRA_TITLE, temp.getHotListName());
                 bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
                 bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
                 hotListView.moveToOtherActivity(bundle);
