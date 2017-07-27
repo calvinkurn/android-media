@@ -6,28 +6,26 @@ package com.tokopedia.core.analytics.fingerprint.domain.model;
 
 public class FingerPrint {
 
-    private String deviceID;
-    private String deviceName;
-    private String device_manufacturer;
+    private String device_model;
     private String device_system;
     private String current_os;
+    private String device_manufacturer;
+    private String device_name;
     private boolean is_jailbroken_rooted;
     private String timezone;
     private String user_agent;
     private boolean is_emulator;
     private boolean is_tablet;
+    private String language;
+    private String carrier;
+    private String ssid;
+    private String screen_resolution;
     private double location_latitude;
     private double location_longitude;
-    private String buildNumber;
-    private String ipAddress;
-    private String screen_resolution;
-    private String language;
-    private String ssid;
-    private String carrier;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
-        deviceID = fingerPrintBuilder.deviceID;
-        deviceName = fingerPrintBuilder.deviceName;
+        device_model = fingerPrintBuilder.deviceModel;
+        device_name = fingerPrintBuilder.deviceName;
         device_manufacturer = fingerPrintBuilder.deviceManufacturer;
         current_os = fingerPrintBuilder.currentOS;
         is_jailbroken_rooted = fingerPrintBuilder.isJailBreak;
@@ -37,12 +35,18 @@ public class FingerPrint {
         is_tablet = fingerPrintBuilder.istablet;
         location_latitude = fingerPrintBuilder.lat;
         location_longitude = fingerPrintBuilder.lng;
-        buildNumber = fingerPrintBuilder.buildNumber;
-        ipAddress = fingerPrintBuilder.ipAddress;
         screen_resolution = fingerPrintBuilder.screenResolution;
         language = fingerPrintBuilder.language;
         ssid = fingerPrintBuilder.ssid;
         carrier = fingerPrintBuilder.carrier;
+    }
+
+    public String getDevice_model() {
+        return device_model;
+    }
+
+    public void setDevice_model(String device_model) {
+        this.device_model = device_model;
     }
 
     public void setSsid(String ssid) {
@@ -85,22 +89,6 @@ public class FingerPrint {
         this.screen_resolution = screen_resolution;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public String getBuildNumber() {
-        return buildNumber;
-    }
-
-    public void setBuildNumber(String buildNumber) {
-        this.buildNumber = buildNumber;
-    }
-
     public boolean istablet() {
         return is_tablet;
     }
@@ -133,20 +121,12 @@ public class FingerPrint {
         this.is_emulator = is_emulator;
     }
 
-    public String getDeviceID() {
-        return deviceID;
+    public String getDevice_name() {
+        return device_name;
     }
 
-    public void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
-    }
-
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setDevice_name(String device_name) {
+        this.device_name = device_name;
     }
 
     public String getDevice_manufacturer() {
@@ -190,8 +170,8 @@ public class FingerPrint {
     }
 
     public static class FingerPrintBuilder {
-        private String deviceID;
         private String deviceName;
+        private String deviceModel;
         private String deviceManufacturer;
         private String currentOS;
         private boolean isJailBreak;
@@ -201,11 +181,8 @@ public class FingerPrint {
         private boolean istablet;
         private double lat;
         private double lng;
-        private String buildNumber;
-        private String ipAddress;
         private String screenResolution;
         private String language;
-        private String deviceSystem;
         private String ssid;
         private String carrier;
 
@@ -218,8 +195,8 @@ public class FingerPrint {
             return this;
         }
 
-        public FingerPrintBuilder deviceSystem(String deviceSystem) {
-            this.deviceSystem = deviceSystem;
+        public FingerPrintBuilder model(String model) {
+            this.deviceModel = model;
             return this;
         }
 
@@ -235,16 +212,6 @@ public class FingerPrint {
 
         public FingerPrintBuilder screenReso(String screenResolution) {
             this.screenResolution = screenResolution;
-            return this;
-        }
-
-        public FingerPrintBuilder ipAddres(String ipAddress) {
-            this.ipAddress = ipAddress;
-            return this;
-        }
-
-        public FingerPrintBuilder buildNumber(String buildNumber) {
-            this.buildNumber = buildNumber;
             return this;
         }
 
@@ -275,11 +242,6 @@ public class FingerPrint {
 
         public FingerPrintBuilder timezone(String timezone) {
             this.timezone = timezone;
-            return this;
-        }
-
-        public FingerPrintBuilder deviceID(String deviceID) {
-            this.deviceID = deviceID;
             return this;
         }
 
