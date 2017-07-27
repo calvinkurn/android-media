@@ -24,6 +24,7 @@ public class BrowseProductRouter {
     public static final int VALUES_HISTORY_FRAGMENT_ID = 192_471;
     public static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_FILTER = "EXTRA_FILTER";
     public static final String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
 
     public static final String VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT = "search_product";

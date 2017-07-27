@@ -47,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,6 +129,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent(intent);
             deleteFilterAndSortCache();
+            setFilterOptionsFromIntent(intent);
         } else {
             isBottomBarFirstTimeChange = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
@@ -202,6 +204,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     browseView.showSearchPage();
                     break;
             }
+        }
+    }
+
+    private void setFilterOptionsFromIntent(Intent intent) {
+        Serializable filterOptions = intent.getSerializableExtra(BrowseProductRouter.EXTRA_FILTER);
+        if (filterOptions != null) {
+            browseModel.setFilterOptions((HashMap<String, String>) filterOptions);
         }
     }
 
