@@ -98,4 +98,7 @@
     <string name="product_draft_save_as_draft">Simpan Draft</string>
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
+    <string name="app_widget_label_today">Hari ini</string>
+    <string name="app_widget_label_tomorrow">Besok</string>
+    <string name="app_widget_label_left_day">%d Hari Lagi</string>
 </resources>

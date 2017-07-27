@@ -2,6 +2,7 @@ package com.tokopedia.seller.transaction.neworder.common;
 
 import com.tokopedia.core.R;
 
+import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntegerRes;
 
@@ -10,14 +11,15 @@ import android.support.annotation.IntegerRes;
  */
 
 public class UtilsWidget {
-    public static String getDaysLeftDeadlineOrder(int orderDayLeft){
+
+    public static String getDaysLeftDeadlineOrder(int orderDayLeft, Context context){
         switch (orderDayLeft) {
             case 0:
-                return "Hari ini";
+                return context.getString(com.tokopedia.seller.R.string.app_widget_label_today);
             case 1:
-                return "Besok";
+                return context.getString(com.tokopedia.seller.R.string.app_widget_label_tomorrow);
             default:
-                return orderDayLeft + " Hari Lagi";
+                return String.format(context.getString(com.tokopedia.seller.R.string.app_widget_label_left_day), orderDayLeft);
         }
     }
 

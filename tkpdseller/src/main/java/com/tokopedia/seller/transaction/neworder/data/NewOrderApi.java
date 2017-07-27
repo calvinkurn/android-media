@@ -1,5 +1,6 @@
 package com.tokopedia.seller.transaction.neworder.data;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.transaction.neworder.data.source.cloud.model.neworder.NewOrderResult;
 
@@ -15,6 +16,6 @@ import rx.Observable;
 
 public interface NewOrderApi {
     @FormUrlEncoded
-    @POST("https://ws.tokopedia.com/v4/myshop-order/" + "get_order_new.pl")
+    @POST(TkpdBaseURL.Shop.URL_ACTION_SHOP_ORDER + TkpdBaseURL.Shop.PATH_GET_ORDER_NEW)
     Observable<Response<NewOrderResult>> getOrderNew(@FieldMap TKPDMapParam<String, String> var1);
 }

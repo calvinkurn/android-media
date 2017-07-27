@@ -22,6 +22,8 @@ import rx.functions.Func1;
  */
 
 public class GetNewOrderCloud {
+    public static final String BYPASS_HASH = "bypass_hash";
+    public static final String VALUE_BYPASS = "1";
     private final NewOrderApi newOrderApi;
     private final Context context;
 
@@ -38,7 +40,7 @@ public class GetNewOrderCloud {
     }
 
     public TKPDMapParam<String,String> getParamsNewOrder(TKPDMapParam<String, String> parameters) {
-        parameters.put("bypass_hash", "1");
+        parameters.put(BYPASS_HASH, VALUE_BYPASS);
         return parameters;
     }
 

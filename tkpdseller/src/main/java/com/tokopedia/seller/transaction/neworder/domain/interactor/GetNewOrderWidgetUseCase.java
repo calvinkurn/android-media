@@ -23,6 +23,10 @@ import rx.functions.Func2;
  */
 
 public class GetNewOrderWidgetUseCase extends UseCase<DataOrderDomainWidget> {
+    public static final String STATUS = "status";
+    public static final String PAGE = "page";
+    public static final String PER_PAGE = "per_page";
+    public static final String DEADLINE = "deadline";
     private final GetNewOrderRepository getNewOrderRepository;
     private final NotificationRepository notificationRepository;
 
@@ -50,10 +54,10 @@ public class GetNewOrderWidgetUseCase extends UseCase<DataOrderDomainWidget> {
 
     public static RequestParams createRequestParams(String page, String filter, String perPage, String deadline) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("status", filter);
-        requestParams.putString("page", page);
-        requestParams.putString("per_page", perPage);
-        requestParams.putString("deadline", deadline);
+        requestParams.putString(STATUS, filter);
+        requestParams.putString(PAGE, page);
+        requestParams.putString(PER_PAGE, perPage);
+        requestParams.putString(DEADLINE, deadline);
         return requestParams;
     }
 }

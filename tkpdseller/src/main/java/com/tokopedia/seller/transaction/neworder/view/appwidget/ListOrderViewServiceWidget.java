@@ -63,7 +63,7 @@ public class ListOrderViewServiceWidget extends RemoteViewsService {
         public RemoteViews getViewAt(int i) {
             DataOrderDetailView dataOrder = dataOrders.get(i);
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order_detail_list);
-            remoteViews.setTextViewText(R.id.new_order_remaining_days, UtilsWidget.getDaysLeftDeadlineOrder(dataOrder.getPaymentProcessDayLeft()));
+            remoteViews.setTextViewText(R.id.new_order_remaining_days, UtilsWidget.getDaysLeftDeadlineOrder(dataOrder.getPaymentProcessDayLeft(), context));
             remoteViews.setInt(R.id.new_order_remaining_days, "setBackgroundResource", UtilsWidget.getColorLeftDeadLineOrder(dataOrder.getPaymentProcessDayLeft()));
             remoteViews.setTextViewText(R.id.new_order_date, dataOrder.getDetailOrderDate());
             remoteViews.setTextViewText(R.id.new_order_name, dataOrder.getCustomerName());
