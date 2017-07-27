@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.utils;
+package com.tokopedia.seller.goldmerchant.statistic.utils;
 
 import android.util.Log;
 

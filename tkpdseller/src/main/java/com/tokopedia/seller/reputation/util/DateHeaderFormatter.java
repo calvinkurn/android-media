@@ -1,12 +1,12 @@
-package com.tokopedia.seller.gmstat.utils;
+package com.tokopedia.seller.reputation.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateFormatForInput;
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
+import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateFormatForInput;
+import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateRaw;
+import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateWithYear;
 
 /**
  * Created by normansyahputa on 3/29/17.

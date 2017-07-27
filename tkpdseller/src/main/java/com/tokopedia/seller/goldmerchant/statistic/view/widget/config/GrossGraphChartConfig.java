@@ -67,7 +67,7 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public StringFormatRenderer yStringFormatRenderer() {
-        return new com.tokopedia.seller.gmstat.views.YAxisRenderer();
+        return new YAxisRenderer();
     }
 
     @Override

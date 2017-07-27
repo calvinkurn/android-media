@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.utils;
+package com.tokopedia.seller.reputation.view.helper;
 
 import android.app.Fragment;
 import android.content.Context;

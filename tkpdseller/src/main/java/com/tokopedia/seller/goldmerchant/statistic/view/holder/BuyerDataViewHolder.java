@@ -7,15 +7,15 @@ import android.widget.TextView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 
 import java.util.Locale;
 
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LOWER_BUYER_FORMAT;
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMAT;
+import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.LOWER_BUYER_FORMAT;
+import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.UPPER_BUYER_FORMAT;
 
 /**
  * Created by normansyahputa on 11/11/16.

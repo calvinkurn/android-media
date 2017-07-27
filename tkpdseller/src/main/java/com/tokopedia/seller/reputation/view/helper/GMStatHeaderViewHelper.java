@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views;
+package com.tokopedia.seller.reputation.view.helper;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,7 +17,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
+import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
+import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateWithYear;
 
 /**
  * Created by normansyahputa on 11/21/16.

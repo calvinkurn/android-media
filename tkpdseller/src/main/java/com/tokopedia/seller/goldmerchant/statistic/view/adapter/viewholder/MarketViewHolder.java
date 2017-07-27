@@ -12,7 +12,7 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 
 import java.util.List;
 
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.NUMBER_TIMES_FORMAT;
+import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.NUMBER_TIMES_FORMAT;
 
 /**
  * Created by Nathan on 7/25/2017.

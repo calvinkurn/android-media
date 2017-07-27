@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmstat.views.circleprogress;
+package com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

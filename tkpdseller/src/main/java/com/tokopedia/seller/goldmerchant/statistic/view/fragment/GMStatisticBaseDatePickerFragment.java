@@ -18,14 +18,6 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
     private long comparedStartDate;
     private long comparedEndDate;
 
-    protected long getComparedStartDate() {
-        return comparedStartDate;
-    }
-
-    protected long getComparedEndDate() {
-        return comparedEndDate;
-    }
-
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerFromDatabase) {
         // Check if date compared changed

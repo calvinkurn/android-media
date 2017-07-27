@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GMStatConstant;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 
-import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
+import static com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant.PERCENTAGE_FORMAT;
 
 /**
  * Created by normansyahputa on 7/11/17.

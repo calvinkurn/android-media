@@ -47,7 +47,7 @@
         android:layout_weight="0.6"
         android:gravity="center"
         android:orientation="horizontal">
-        <com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress
+        <com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress
             android:id="@+id/buyer_data_pie_chart"
             android:layout_width="80dp"
             android:layout_height="80dp"
