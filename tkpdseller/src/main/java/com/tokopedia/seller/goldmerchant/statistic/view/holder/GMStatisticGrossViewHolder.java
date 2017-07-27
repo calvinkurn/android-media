@@ -41,13 +41,13 @@ public class GMStatisticGrossViewHolder {
         grossLoadingStateView.setViewState(state);
     }
 
-    public void setData(Activity activity, GMTransactionGraphMergeModel getTransactionGraph) {
+    public void setData(GMTransactionGraphMergeModel getTransactionGraph) {
         grossLineChartContainer.setAmount(
                 KMNumbers.formatRupiahString(grossLineChartContainer.getContext(),
                 getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
         grossLineChartContainer.setMainDate(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel);
         GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel = getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel;
-        showTransactionGraph(activity, gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.dates);
+        showTransactionGraph(gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.dates);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
@@ -57,10 +57,10 @@ public class GMStatisticGrossViewHolder {
      * @param data
      * @param dateGraph
      */
-    private void showTransactionGraph(Activity activity, List<Integer> data, List<Integer> dateGraph) {
+    private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         // create model for chart
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(activity, grossLineChartView, baseWilliamChartModel);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(grossLineChartView, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(grossLineChartView);
     }
 }

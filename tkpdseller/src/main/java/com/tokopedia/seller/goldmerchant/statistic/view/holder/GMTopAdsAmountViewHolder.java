@@ -71,8 +71,7 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
         BaseWilliamChartModel baseWilliamChartModel =
                 GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
         // create model for chart
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
-                gmStatisticTopAdsGraph, baseWilliamChartModel);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticTopAdsGraph, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(gmStatisticTopAdsGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }

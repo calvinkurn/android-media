@@ -1,7 +1,9 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -50,17 +52,15 @@ public final class GMStatisticUtil {
      *
      * @param numChart
      */
-    public static void resizeChart(int numChart, LineChartView chartView, Activity activity) {
+    public static void resizeChart(int numChart, LineChartView chartView) {
         int maxNumberChart = 7;
         int scrolledWidth = 680;
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int width = metrics.widthPixels;
         int height = chartView.getLayoutParams().height;
         double newSizeRatio = ((double) numChart) / maxNumberChart;
         if (newSizeRatio > 1 && width < scrolledWidth) {
-            width = (int) CommonUtils.DptoPx(activity, scrolledWidth);
+            width = (int) CommonUtils.DptoPx(chartView.getContext(), scrolledWidth);
         }
         if (chartView.getParent() instanceof LinearLayout) {
             chartView.setLayoutParams(new LinearLayout.LayoutParams(width, height));

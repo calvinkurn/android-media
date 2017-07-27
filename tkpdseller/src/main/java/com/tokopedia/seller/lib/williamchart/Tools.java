@@ -134,15 +134,14 @@ public class Tools {
         return 1;
     }
 
-    public static BaseWilliamChartConfig getCommonWilliamChartConfig(Activity activity,
-                                                                     LineChartView lineChartView,
+    public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
                                                                      final BaseWilliamChartModel baseWilliamChartModel) {
         lineChartView.dismissAllTooltips();
         // resize linechart according to data
-        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView, activity);
+        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView);
         // get index to display
         final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
-        Drawable oval2Copy6 = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.oval_2_copy_6, null);
+        Drawable oval2Copy6 = ResourcesCompat.getDrawable(lineChartView.getResources(), R.drawable.oval_2_copy_6, null);
         Tooltip tooltip = getTooltip(lineChartView.getContext(), getTooltipResLayout());
         BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
         baseWilliamChartConfig

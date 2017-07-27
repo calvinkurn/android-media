@@ -59,7 +59,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(getActivity());
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(getActivity());
         gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(getActivity());
         gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
@@ -71,9 +70,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         View view = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
         presenter.attachView(this);
         gmTopAdsAmountViewHolder.initView(view);
-        gmTransactionGraphViewHolder.initView(view);
+        gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
         finishedTransactionViewHolder.initView(view);
-
         gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,19 +105,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHolder.bind(mergeWithIsCompare(mergeModel.gmTransactionGraphViewModel));
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, datePickerViewModel.isCompareDate());
         finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
-    }
-
-    private GMTransactionGraphViewModel mergeWithIsCompare(GMTransactionGraphViewModel viewModel) {
-        viewModel.grossRevenueModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.totalTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.successTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.netRevenueModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.rejectedAmountModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.shippingCostModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.rejectTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-        return viewModel;
     }
 
     @Override
