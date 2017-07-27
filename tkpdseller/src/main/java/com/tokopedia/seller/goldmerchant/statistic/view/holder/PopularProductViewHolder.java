@@ -27,32 +27,27 @@ public class PopularProductViewHolder {
     private TextView tvNoOfSelling;
     private GetPopularProduct getPopularProduct;
 
-    public PopularProductViewHolder(TitleCardView popularProductCardView) {
-        initView(popularProductCardView);
-        this.popularProductCardView = popularProductCardView;
-    }
-
-    private void initView(TitleCardView titleCardView) {
-        ivPopularProduct = (ImageView) titleCardView.findViewById(R.id.image_popular_product);
-        tvPopularProductDescription = (TextView) titleCardView.findViewById(R.id.tv_popular_product);
-        tvNoOfSelling = (TextView) titleCardView.findViewById(R.id.tv_no_of_selling);
-
+    public PopularProductViewHolder(View view) {
+        popularProductCardView = (TitleCardView) view.findViewById(R.id.popular_product_card_view);
+        ivPopularProduct = (ImageView) view.findViewById(R.id.image_popular_product);
+        tvPopularProductDescription = (TextView) view.findViewById(R.id.tv_popular_product);
+        tvNoOfSelling = (TextView) view.findViewById(R.id.tv_no_of_selling);
         View.OnClickListener goToProductDetailClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoProductDetail();
             }
         };
-        ivPopularProduct.setOnClickListener( goToProductDetailClickListener);
-        tvPopularProductDescription.setOnClickListener( goToProductDetailClickListener);
+        ivPopularProduct.setOnClickListener(goToProductDetailClickListener);
+        tvPopularProductDescription.setOnClickListener(goToProductDetailClickListener);
     }
 
-    private void clickAddProductTracking(){
+    private void clickAddProductTracking() {
         UnifyTracking.eventClickAddProduct();
     }
 
-    private void clickGMStat(){
-        if(getPopularProduct != null){
+    private void clickGMStat() {
+        if (getPopularProduct != null) {
             UnifyTracking.eventClickGMStatProduct(getPopularProduct.getProductName());
         }
     }
@@ -71,7 +66,7 @@ public class PopularProductViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    private void setEmptyState(){
+    private void setEmptyState() {
         popularProductCardView.setEmptyViewRes(R.layout.widget_popular_product_empty);
         popularProductCardView.getEmptyView().findViewById(R.id.add_product_popular_product)
                 .setOnClickListener(new View.OnClickListener() {

@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
@@ -51,7 +50,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Inject
     SessionHandler sessionHandler;
 
-    private NestedScrollView contentGMStat;
+    private NestedScrollView nestedScrollView;
 
     private GMStatisticSummaryViewHolder gmStatisticSummaryViewHolder;
     private GMStatisticGrossViewHolder gmStatisticGrossViewHolder;
@@ -82,11 +81,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onLoadGMStatTracking() {
-        UnifyTracking.eventLoadGMStat();
-    }
-
-    @Override
     public void onScrollGMStatTracking() {
         UnifyTracking.eventScrollGMStat();
     }
@@ -102,29 +96,25 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         View view = inflater.inflate(R.layout.fragment_gm_statistic_dashboard, container, false);
         initViews(view);
         initNumberFormatter();
-        dataTransactionViewHolder.setDataTransactionChartConfig(new DataTransactionChartConfig(getActivity()));
         return view;
     }
 
-    private void initViews(View rootView) {
-        gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(rootView);
-        gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(rootView);
-        TitleCardView popularProductCardView = (TitleCardView) rootView.findViewById(R.id.popular_product_card_view);
-        popularProductViewHolder = new PopularProductViewHolder(popularProductCardView);
-        TitleCardView transactionDataCardView = (TitleCardView) rootView.findViewById(R.id.transaction_data_card_view);
-        dataTransactionViewHolder = new DataTransactionViewHolder(transactionDataCardView, sessionHandler.isGoldMerchant(getActivity()));
-        marketInsightViewHolder = new MarketInsightViewHolder(rootView, sessionHandler.isGoldMerchant(getActivity()));
-        TitleCardView buyerDataCardView = (TitleCardView) rootView.findViewById(R.id.buyer_data_card_view);
-        buyerDataViewHolder = new BuyerDataViewHolder(buyerDataCardView);
+    private void initViews(View view) {
+        gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(view);
+        gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
+        popularProductViewHolder = new PopularProductViewHolder(view);
+        dataTransactionViewHolder = new DataTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        marketInsightViewHolder = new MarketInsightViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        buyerDataViewHolder = new BuyerDataViewHolder(view);
 
         // analytic below : https://phab.tokopedia.com/T18496
-        contentGMStat = (NestedScrollView) rootView.findViewById(R.id.content_gmstat);
-        contentGMStat.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.content_gmstat);
+        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                View view = contentGMStat.getChildAt(contentGMStat.getChildCount() - 1);
-                int diff = (view.getBottom() + contentGMStat.getPaddingBottom()
-                        - (contentGMStat.getHeight() + contentGMStat.getScrollY()));
+                View view = nestedScrollView.getChildAt(nestedScrollView.getChildCount() - 1);
+                int diff = (view.getBottom() + nestedScrollView.getPaddingBottom()
+                        - (nestedScrollView.getHeight() + nestedScrollView.getScrollY()));
 
                 // if diff is zero, then the bottom has been reached
                 if (diff == 0) {
@@ -181,6 +171,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
         gmStatisticSummaryViewHolder.setData(getProductGraph);
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        UnifyTracking.eventLoadGMStat();
         hideSnackBarRetry();
     }
 
@@ -200,12 +191,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onSuccessGetCategory(String categoryName) {
         marketInsightViewHolder.bindCategory(categoryName);
         hideSnackBarRetry();
-    }
-
-    @Override
-    public void onComplete() {
-        // tracking below : https://phab.tokopedia.com/T18496
-        onLoadGMStatTracking();
     }
 
     @Override

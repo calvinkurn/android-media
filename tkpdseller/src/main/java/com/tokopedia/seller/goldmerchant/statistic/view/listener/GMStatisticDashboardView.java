@@ -28,11 +28,7 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
 
-    void onComplete();
-
     void onError(Throwable e);
-
-    void onLoadGMStatTracking();
 
     void onScrollGMStatTracking();
 

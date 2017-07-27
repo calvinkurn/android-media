@@ -37,8 +37,8 @@ public class BuyerDataViewHolder {
     private int redColor;
     private int greyColor;
 
-    public BuyerDataViewHolder(TitleCardView buyerDataCardView) {
-        this.buyerDataCardView = buyerDataCardView;
+    public BuyerDataViewHolder(View view) {
+        buyerDataCardView = (TitleCardView) view.findViewById(R.id.buyer_data_card_view);
         buyerDataPieChart = (DonutProgress) buyerDataCardView.findViewById(R.id.buyer_data_pie_chart);
         tvBuyerAmount = (TextView) buyerDataCardView.findViewById(R.id.tv_buyer_amount);
 

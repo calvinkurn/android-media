@@ -1,5 +1,6 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.List;
 
 /**
  * Created on 11/10/16.
+ *
  * @author normansyahputa
  */
 
@@ -37,19 +39,10 @@ public class DataTransactionViewHolder {
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
 
-    private DataTransactionChartConfig dataTransactionChartConfig;
     private String[] monthNamesAbrev;
 
-    public DataTransactionViewHolder(TitleCardView transactionDataCardView, boolean isGoldMerchant) {
-        this.transactionDataCardView = transactionDataCardView;
-        this.isGoldMerchant = isGoldMerchant;
-        monthNamesAbrev = transactionDataCardView.getContext().getResources()
-                .getStringArray(R.array.lib_date_picker_month_entries);
-        initView(transactionDataCardView);
-    }
-
-    private void initView(final TitleCardView transactionDataCardView) {
-        this.transactionDataCardView = transactionDataCardView;
+    public DataTransactionViewHolder(View view, boolean isGoldMerchant) {
+        transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
@@ -63,20 +56,12 @@ public class DataTransactionViewHolder {
                 context.startActivity(intent);
             }
         });
-    }
-
-    public void setDataTransactionChartConfig(DataTransactionChartConfig dataTransactionChartConfig) {
-        this.dataTransactionChartConfig = dataTransactionChartConfig;
-    }
-
-    private void moveToGMSubscribe() {
-        Router.goToGMSubscribe(transactionDataCardView.getContext());
+        monthNamesAbrev = transactionDataCardView.getContext().getResources()
+                .getStringArray(R.array.lib_date_picker_month_entries);
+        this.isGoldMerchant = isGoldMerchant;
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel) {
-        if (dataTransactionChartConfig == null)
-            throw new RuntimeException("please pass configuration for graphic !!");
-
         /* non gold merchant */
         if (!isGoldMerchant) {
             setEmptyViewNoGM();
@@ -111,13 +96,13 @@ public class DataTransactionViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    private void setEmptyViewNoGM(){
+    private void setEmptyViewNoGM() {
         transactionDataCardView.setEmptyViewRes(R.layout.widget_transaction_data_empty_no_gm);
         transactionDataCardView.getEmptyView().findViewById(R.id.move_to_gmsubscribe)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        moveToGMSubscribe();
+                        Router.goToGMSubscribe(transactionDataCardView.getContext());
                     }
                 });
         transactionDataCardView.setViewState(LoadingStateView.VIEW_EMPTY);
@@ -131,7 +116,7 @@ public class DataTransactionViewHolder {
         BaseWilliamChartModel baseWilliamChartModel
                 = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
         BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
-        baseWilliamChartConfig.setBasicGraphConfiguration(dataTransactionChartConfig);
+        baseWilliamChartConfig.setBasicGraphConfiguration(new DataTransactionChartConfig(transactionChart.getContext()));
         if (emptyState) {
             baseWilliamChartConfig.addBaseWilliamChartModels(
                     baseWilliamChartModel, new EmptyDataTransactionDataSetConfig());
