@@ -53,7 +53,7 @@ public class ActivateTokoCashPresenter implements IActivateTokoCashPresenter {
                 } else if (e instanceof SocketTimeoutException) {
                     view.onErrorLinkWalletToTokoCash(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof ResponseTokoCashRuntimeException) {
-                    view.onErrorLinkWalletToTokoCash(e.getMessage());
+                    view.onErrorLinkWalletToTokoCash("");
                 } else if (e instanceof ResponseDataNullException) {
                     view.onErrorLinkWalletToTokoCash(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
