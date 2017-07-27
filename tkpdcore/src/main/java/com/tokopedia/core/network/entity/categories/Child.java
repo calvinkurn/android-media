@@ -13,7 +13,7 @@ public class Child implements Parcelable {
 
     @SerializedName("child")
     @Expose
-    private List<Object> child = null;
+    private List<Child> child = null;
     @SerializedName("id")
     @Expose
     private String id;
@@ -36,11 +36,11 @@ public class Child implements Parcelable {
     @Expose
     private Boolean hasChild;
 
-    public List<Object> getChild() {
+    public List<Child> getChild() {
         return child;
     }
 
-    public void setChild(List<Object> child) {
+    public void setChild(List<Child> child) {
         this.child = child;
     }
 
@@ -103,7 +103,7 @@ public class Child implements Parcelable {
 
     protected Child(Parcel in) {
         if (in.readByte() == 0x01) {
-            child = new ArrayList<Object>();
+            child = new ArrayList<Child>();
             in.readList(child, Object.class.getClassLoader());
         } else {
             child = null;

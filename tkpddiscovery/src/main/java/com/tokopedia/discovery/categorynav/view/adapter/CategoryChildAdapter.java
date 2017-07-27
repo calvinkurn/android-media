@@ -49,6 +49,7 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
             public void onClick(View view) {
                 Category categoryClicked = (Category)getItemAt(position);
                 if (categoryClicked.getChildren()!=null && categoryClicked.getChildren().size()>0) {
+                    activePosition = position;
                     toggleSelectedChild();
                     notifyDataSetChanged();
                 } else {
@@ -93,6 +94,19 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
     public void toggleSelectedChild() {
         toggleGroup(activePosition);
+        notifyDataSetChanged();
+    }
+
+    public void toggleSelectedChildbyId(String categoryId) {
+        for (int i=0; i< getItemCount(); i++) {
+            Category category = (Category) getItemAt(i);
+            if (category.getId().equals(categoryId)) {
+                activePosition = i;
+                toggleSelectedChild();
+                break;
+            }
+        }
+
     }
 
     public interface OnItemClickListener {

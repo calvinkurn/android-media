@@ -28,6 +28,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     private FragmentManager fragmentManager;
     private String departmentId = "";
+    private String rootDepartementId = "";
     private TextView topBarTitle;
 
     ProgressBar progressBar;

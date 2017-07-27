@@ -45,7 +45,7 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                         if (child.getChild()!=null && child.getChild().size()>0) {
                             List<com.tokopedia.discovery.categorynav.domain.model.Category> childrenLevel3 =
                                     new ArrayList<>();
-                            for (Child childLevel3: category.getChild()) {
+                            for (Child childLevel3: child.getChild()) {
                                 com.tokopedia.discovery.categorynav.domain.model.Category childCategoryLevel3 =
                                         new com.tokopedia.discovery.categorynav.domain.model.Category();
                                 childCategoryLevel3.setId(childLevel3.getId());
@@ -53,11 +53,11 @@ public class CategoryNavigationMapper implements Func1<Response<Data>,CategoryNa
                                 childCategoryLevel3.setHasChild(false);
                                 childrenLevel3.add(childCategoryLevel3);
                             }
-                            childCategoryLevel2.addChildren(childrenLevel3,categoryModel.getIndentation());
+                            childCategoryLevel2.addChildren(childrenLevel3,3);
                         }
                         childrenLevel2.add(childCategoryLevel2);
                     }
-                    categoryModel.addChildren(childrenLevel2,categoryModel.getIndentation());
+                    categoryModel.addChildren(childrenLevel2,2);
                 }
                 categoryList.add(categoryModel);
             }

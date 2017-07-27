@@ -32,6 +32,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener{
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
+    private String categoryId = "";
     private String rootCategoryId = "";
     private CategoryNavDomainModel categoryNavDomainModel;
     private CategoryNavigationContract.Presenter presenter;
@@ -54,7 +55,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static CategoryNavigationFragment createInstance(String departmentId) {
         CategoryNavigationFragment categoryNavigationFragment = new CategoryNavigationFragment();
-        categoryNavigationFragment.rootCategoryId = departmentId;
+        categoryNavigationFragment.categoryId = departmentId;
         return categoryNavigationFragment;
     }
 
@@ -67,7 +68,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         categoryChildRecyclerView = (RecyclerView) parentView.findViewById(R.id.category_child_recyclerview);
 
         presenter.attachView(this);
-        presenter.getRootCategory(rootCategoryId);
+        presenter.getRootCategory(categoryId);
 
         return parentView;
     }
@@ -94,6 +95,13 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     @Override
     public void renderRootCategory(CategoryNavDomainModel domainModel) {
         categoryNavDomainModel = domainModel;
+        Category rootCategory = new Category();
+        for (Category category: categoryNavDomainModel.getCategories()) {
+            if (category.getChildren()!=null && category.getChildren().size()>0) {
+                rootCategoryId = category.getId();
+                rootCategory = category;
+            }
+        }
         categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         categoryRootRecyclerView.setLayoutManager(linearLayoutManager);
@@ -105,11 +113,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             categoryChildRecyclerView.setLayoutManager(linearLayoutManagerChild);
             categoryChildAdapter = new CategoryChildAdapter(this);
             categoryChildRecyclerView.setAdapter(categoryChildAdapter);
-            Category parentCategory = categoryNavDomainModel.getCategoryIndexById(rootCategoryId);
-            if (parentCategory!=null && parentCategory.getChildren().size()>0) {
+            if (rootCategory!=null && rootCategory.getChildren().size()>0) {
                 categoryChildAdapter.clear();
-                categoryChildAdapter.addAll(parentCategory.getChildren());
+                categoryChildAdapter.addAll(rootCategory.getChildren());
                 categoryParentAdapter.notifyDataSetChanged();
+                if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
             }
         }
 
@@ -121,7 +129,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     public void renderCategoryLevel2(String parentCategoryId, List<Category> children) {
         Category parentCategory = categoryNavDomainModel.getCategoryIndexById(parentCategoryId);
 
-        parentCategory.addChildren(children,1);
+        parentCategory.addChildren(children,2);
         categoryChildAdapter.clear();
         categoryChildAdapter.addAll(parentCategory.getChildren());
         categoryParentAdapter.notifyDataSetChanged();
@@ -133,7 +141,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             if (category.getId().equals(rootCategoryId)) {
                 for (Category categoryLevel2: (List<Category>) category.getChildren()) {
                     if (categoryLevel2.getId().equals(categoryId)) {
-                        categoryLevel2.addChildren(children,categoryLevel2.getIndentation()+1);
+                        categoryLevel2.addChildren(children,3);
                         categoryChildAdapter.clear();
                         categoryChildAdapter.addAll(category.getChildren());
                         categoryChildAdapter.toggleSelectedChild();
