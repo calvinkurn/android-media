@@ -26,7 +26,7 @@
 
         </LinearLayout>
 
-        <include layout="@layout/include_separator_horizontal" />
+        <include layout="@layout/partial_separator_horizontal" />
 
         <include layout="@layout/partial_gm_statistic_dashboard_gross_view_holder" />
 

@@ -57,7 +57,7 @@
             android:paddingStart="10dp" />
     </LinearLayout>
 
-    <include layout="@layout/include_separator_horizontal" />
+    <include layout="@layout/partial_separator_horizontal" />
 
     <LinearLayout
         android:id="@+id/see_detail_container"

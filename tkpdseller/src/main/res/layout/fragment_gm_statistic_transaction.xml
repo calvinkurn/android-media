@@ -72,7 +72,7 @@
                         app:donut_unfinished_stroke_width="8dp" />
                 </com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout>
 
-                <include layout="@layout/include_donut_legend" />
+                <include layout="@layout/partial_donut_legend" />
 
             </LinearLayout>
         </com.tokopedia.design.card.TitleCardView>

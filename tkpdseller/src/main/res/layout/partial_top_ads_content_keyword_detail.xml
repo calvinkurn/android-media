@@ -12,6 +12,6 @@
         android:layout_height="wrap_content"
         app:title="@string/label_top_ads_max_bid"
         app:title_textStyle="bold"/>
-    <include layout="@layout/include_topads_context_max_price_detail" />
-    <include layout="@layout/include_topads_content_statistic_detail" />
+    <include layout="@layout/partial_top_ads_context_max_price_detail" />
+    <include layout="@layout/partial_top_ads_content_statistic_detail" />
 </LinearLayout>

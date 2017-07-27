@@ -2,7 +2,7 @@
 <merge xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:showIn="@layout/include_topads_content_detail">
+    tools:showIn="@layout/partial_top_ads_content_detail">
 
     <com.tokopedia.seller.lib.widget.LabelView
         android:id="@+id/title_statistic_review"

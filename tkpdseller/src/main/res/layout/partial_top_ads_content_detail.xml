@@ -14,7 +14,7 @@
         app:title="@string/label_topads_price_and_schedule"
         app:title_textStyle="bold"/>
 
-    <include layout="@layout/include_topads_context_max_price_detail" />
+    <include layout="@layout/partial_top_ads_context_max_price_detail" />
 
     <com.tokopedia.seller.lib.widget.LabelView
         android:id="@+id/start"
@@ -37,5 +37,5 @@
         app:content_small="true"
         app:title="@string/label_top_ads_daily_budget"/>
 
-    <include layout="@layout/include_topads_content_statistic_detail" />
+    <include layout="@layout/partial_top_ads_content_statistic_detail" />
 </LinearLayout>

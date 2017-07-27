@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         app:title="@string/label_top_ads_keyword"/>
 
-    <include layout="@layout/include_separator_horizontal"/>
+    <include layout="@layout/partial_separator_horizontal"/>
 
-    <include layout="@layout/include_topads_header_detail"/>
+    <include layout="@layout/partial_top_ads_header_detail"/>
 
 </merge>
