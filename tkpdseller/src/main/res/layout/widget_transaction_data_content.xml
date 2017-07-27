@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- change the height 160dp, we also have to change height of widget_transaction_data_empty_no_gm -->
+<?xml version="1.0" encoding="utf-8"?><!-- change the height 160dp, we also have to change height of widget_transaction_data_empty_no_gm -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/transaction_data_container_upper"
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:orientation="vertical"
-    android:paddingTop="8dp" >
+    android:paddingTop="@dimen/padding_ms">
 
     <LinearLayout
         android:id="@+id/transaction_data_container_gold_merchant"
@@ -17,11 +16,13 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:weightSum="1">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,6 +30,7 @@
                 android:text="@string/transaction_count"
                 android:textColor="#89000000"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/tv_transaction_count"
                 android:layout_width="wrap_content"
@@ -36,7 +38,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="0"
                 android:textColor="#B2000000"
-                android:textSize="24sp"/>
+                android:textSize="24sp" />
 
             <com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView
                 android:id="@+id/view_arrow_percentage"
@@ -45,27 +47,42 @@
                 app:arrow_percentage_text_size="12sp" />
 
         </LinearLayout>
+
         <com.tokopedia.seller.lib.williamchart.view.LineChartView
             android:id="@+id/transaction_chart"
             android:layout_width="0dp"
             android:layout_height="101.3dp"
             android:layout_weight="0.7"
             android:paddingLeft="10dp"
-            android:paddingStart="10dp"/>
-        <!--<com.tokopedia.seller.gmstat.views.NChart-->
-        <!--android:id="@+id/transaction_chart"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_weight="0.7"-->
-        <!--android:layout_height="91.3dp" />-->
+            android:paddingStart="10dp" />
     </LinearLayout>
 
-    <View
+    <include layout="@layout/partial_separator_horizontal" />
+
+    <LinearLayout
+        android:id="@+id/see_detail_container"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="6dp"
-        android:background="#1E000000" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_small">
 
-    <include
-        layout="@layout/widget_gm_see_detail" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gm_statistic_see_detail"
+            android:textColor="@color/tkpd_main_green" />
 
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginStart="@dimen/margin_ms"
+            android:src="@drawable/ic_set_date_next" />
+
+    </LinearLayout>
 </LinearLayout>

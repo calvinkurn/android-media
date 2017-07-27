@@ -2,8 +2,8 @@ package com.tokopedia.seller.goldmerchant.statistic.domain.mapper;
 
 import android.util.Log;
 
-import com.tokopedia.seller.gmstat.utils.GMStatConstant;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;

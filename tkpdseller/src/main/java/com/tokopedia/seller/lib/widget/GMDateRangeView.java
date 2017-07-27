@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
 
 /**

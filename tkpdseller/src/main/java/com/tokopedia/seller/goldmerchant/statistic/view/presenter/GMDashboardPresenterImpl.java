@@ -8,14 +8,11 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.OldGMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.model.empty.GMEmptyModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.util.Calendar;
@@ -53,50 +50,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         this.gmStatEmptyUseCase = gmStatEmptyUseCase;
     }
 
-    public void getPopularProduct() {
-        Calendar dayOne = Calendar.getInstance();
-        dayOne.add(Calendar.DATE, -30);
-        Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, -1);
-        RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
-        popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessageError(e);
-            }
-
-            @Override
-            public void onNext(GetPopularProduct getPopularProduct) {
-                getView().onSuccessPopularProduct(getPopularProduct);
-            }
-        });
-    }
-
-    public void getProductGraph(long startDate, long endDate) {
-        RequestParams productParam = GMStatGetProductGraphUseCase.createRequestParam(startDate, endDate);
-        productGraphUseCase.execute(productParam, new Subscriber<GetProductGraph>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessageError(e);
-            }
-
-            @Override
-            public void onNext(GetProductGraph getProductGraph) {
-                getView().onSuccessProductnGraph(getProductGraph);
-            }
-        });
-    }
-
     @Override
     public void fetchData(long starDate, long endDate) {
         getProductGraph(starDate, endDate);
@@ -109,12 +62,14 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadTransactionGraph(e);
+                }
             }
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                getView().onSuccessTransactionGraph(mergeModel);
+                getView().onSuccessLoadTransactionGraph(mergeModel);
             }
         });
 
@@ -129,12 +84,14 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadBuyerGraph(e);
+                }
             }
 
             @Override
             public void onNext(GetBuyerGraph getBuyerGraph) {
-                getView().onSuccessBuyerGraph(getBuyerGraph);
+                getView().onSuccessLoadBuyerGraph(getBuyerGraph);
             }
         });
 
@@ -146,7 +103,9 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onError(Throwable e) {
-                showMessageError(e);
+                if (isViewAttached()) {
+                    getView().onErrorLoadMarketInsight(e);
+                }
             }
 
             @Override
@@ -154,6 +113,54 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 onSuccessGetShopCategory(keywordModel.getShopCategory());
                 onSuccessGetKeyword(keywordModel.getKeywords());
                 onSuccessGetCategory(keywordModel.getCategoryName());
+            }
+        });
+    }
+
+    private void getProductGraph(long startDate, long endDate) {
+        RequestParams productParam = GMStatGetProductGraphUseCase.createRequestParam(startDate, endDate);
+        productGraphUseCase.execute(productParam, new Subscriber<GetProductGraph>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorLoadProductGraph(e);
+                }
+            }
+
+            @Override
+            public void onNext(GetProductGraph getProductGraph) {
+                getView().onSuccessLoadProductGraph(getProductGraph);
+            }
+        });
+    }
+
+    private void getPopularProduct() {
+        Calendar dayOne = Calendar.getInstance();
+        dayOne.add(Calendar.DATE, -30);
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, -1);
+        RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
+        popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorLoadPopularProduct(e);
+                }
+            }
+
+            @Override
+            public void onNext(GetPopularProduct getPopularProduct) {
+                getView().onSuccessLoadPopularProduct(getPopularProduct);
             }
         });
     }
@@ -176,39 +183,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         }
         String categoryName = categoryNameList.get(0);
         getView().onSuccessGetCategory(categoryName);
-    }
-
-    private void showMessageError(Throwable e) {
-        gmStatEmptyUseCase.execute(RequestParams.EMPTY, new Subscriber<GMEmptyModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GMEmptyModel gmEmptyModel) {
-                if (isViewAttached()) {
-                    getView().onSuccessProductnGraph(gmEmptyModel.productGraph);
-                    getView().onSuccessTransactionGraph(gmEmptyModel.transactionGraph);
-                    getView().onSuccessBuyerGraph(gmEmptyModel.buyerGraph);
-                    getView().onSuccessPopularProduct(gmEmptyModel.popularProduct);
-
-                    if (gmEmptyModel.keywordModel.getShopCategory() == null
-                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory() == null
-                            || gmEmptyModel.keywordModel.getShopCategory().getShopCategory().isEmpty()) {
-                        onSuccessGetShopCategory(gmEmptyModel.keywordModel.getShopCategory());
-                        onSuccessGetKeyword(gmEmptyModel.keywordModel.getKeywords());
-                    }
-
-                    getView().showSnackbarRetry();
-                }
-            }
-        });
     }
 
     @Override

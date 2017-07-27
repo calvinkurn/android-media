@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummaryView;
 
@@ -12,7 +12,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.GmStatisticSummar
  * Created by nathan on 7/24/17.
  */
 
-public class GMStatisticSummaryViewHolder {
+public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
 
     private LoadingStateView successTransactionLoadingStateView;
     private LoadingStateView conversionLoadingStateView;
@@ -34,13 +34,6 @@ public class GMStatisticSummaryViewHolder {
         productSoldSummaryView = (GmStatisticSummaryView) view.findViewById(R.id.summary_view_product_sold);
     }
 
-    public void setViewState(int state) {
-        successTransactionLoadingStateView.setViewState(state);
-        conversionLoadingStateView.setViewState(state);
-        productSeenLoadingStateView.setViewState(state);
-        productSoldLoadingStateView.setViewState(state);
-    }
-
     public void setData(GetProductGraph getProductGraph) {
         successTransactionSummaryView.setContentText(String.valueOf(getProductGraph.getSuccessTrans()));
         successTransactionSummaryView.setPercentage(getProductGraph.getDiffTrans());
@@ -52,5 +45,13 @@ public class GMStatisticSummaryViewHolder {
         productSoldSummaryView.setContentText(String.valueOf(getProductGraph.getProductSold()));
         productSoldSummaryView.setPercentage(getProductGraph.getDiffSold());
         setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
+    public void setViewState(int state) {
+        successTransactionLoadingStateView.setViewState(state);
+        conversionLoadingStateView.setViewState(state);
+        productSeenLoadingStateView.setViewState(state);
+        productSoldLoadingStateView.setViewState(state);
     }
 }

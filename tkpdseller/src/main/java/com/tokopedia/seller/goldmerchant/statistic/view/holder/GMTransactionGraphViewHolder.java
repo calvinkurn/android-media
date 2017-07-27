@@ -1,16 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,25 +9,18 @@ import android.view.View;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.BaseGMViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.lib.williamchart.util.DefaultTooltipConfiguration;
 import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
 import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -48,7 +32,7 @@ import java.util.List;
  * Created by normansyahputa on 7/11/17.
  */
 
-public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransactionGraphViewModel> {
+public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
@@ -56,31 +40,15 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
     private LineChartView gmStatisticIncomeGraph;
     private String[] monthNamesAbrev;
-    private Drawable oval2Copy6;
 
-    private BaseWilliamChartConfig baseWilliamChartConfig;
     private TitleCardView gmTitleCardView;
     private LineChartContainerWidget gmLineChartContainer;
 
-    private boolean showingSimpleDialog;
-    private GMTransactionGraphViewModel data;
+    private GMTransactionGraphViewModel gmTransactionGraphViewModel;
+    private boolean compareGraph;
 
-    public GMTransactionGraphViewHolder(@NonNull Context context) {
-        super(context);
-
-        gmStatGraphSelection = 0;
-        gmStatTransactionEntries = context.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
-        selections = new boolean[gmStatTransactionEntries.length];
-        selections[gmStatGraphSelection] = true;
-
-        monthNamesAbrev = context.getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        baseWilliamChartConfig = new BaseWilliamChartConfig();
-        oval2Copy6 = ResourcesCompat.getDrawable(context.getResources(), R.drawable.oval_2_copy_6, null);
-    }
-
-    @Override
-    public void initView(@NonNull View itemView) {
-        gmTitleCardView = (TitleCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
+    public GMTransactionGraphViewHolder(View view) {
+        gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
         gmTitleCardView.setOnArrowDownClickListener(new TitleCardView.OnArrowDownClickListener() {
             @Override
             public void onArrowDownClicked() {
@@ -88,49 +56,47 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
             }
         });
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
-        gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
+        gmStatisticIncomeGraph = (LineChartView) view.findViewById(R.id.gm_statistic_transaction_income_graph);
 
-        setViewState(LoadingStateView.VIEW_LOADING);
+        gmStatGraphSelection = 0;
+        gmStatTransactionEntries = view.getResources().getStringArray(R.array.lib_gm_stat_transaction_entries);
+        selections = new boolean[gmStatTransactionEntries.length];
+        selections[gmStatGraphSelection] = true;
+        monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
-    @Override
-    public void bind(@Nullable GMTransactionGraphViewModel data) {
-        this.data = data;
-
+    public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel, boolean compareGraph) {
+        this.compareGraph = compareGraph;
+        this.gmTransactionGraphViewModel = gmTransactionGraphViewModel;
         switch (selection()) {
             case GMTransactionGraphType.GROSS_REVENUE:
-                bind(data.grossRevenueModel);
+                bind(gmTransactionGraphViewModel.grossRevenueModel);
                 break;
             case GMTransactionGraphType.NET_REVENUE:
-                bind(data.netRevenueModel);
+                bind(gmTransactionGraphViewModel.netRevenueModel);
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
-                bind(data.rejectTransactionModel);
+                bind(gmTransactionGraphViewModel.rejectTransactionModel);
                 break;
             case GMTransactionGraphType.REJECTED_AMOUNT:
-                bind(data.rejectedAmountModel);
+                bind(gmTransactionGraphViewModel.rejectedAmountModel);
                 break;
             case GMTransactionGraphType.SHIPPING_COST:
-                bind(data.shippingCostModel);
+                bind(gmTransactionGraphViewModel.shippingCostModel);
                 break;
             case GMTransactionGraphType.SUCCESS_TRANS:
-                bind(data.successTransactionModel);
+                bind(gmTransactionGraphViewModel.successTransactionModel);
                 break;
             case GMTransactionGraphType.TOTAL_TRANSACTION:
-                bind(data.totalTransactionModel);
+                bind(gmTransactionGraphViewModel.totalTransactionModel);
                 break;
         }
     }
 
-    public void setViewState(int state) {
-        gmTitleCardView.setViewState(state);
-    }
-
     private void showGraphSelectionDialog() {
-        showingSimpleDialog = true;
-        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(context)
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(gmTitleCardView.getContext())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(context.getString(R.string.gold_merchant_transaction_summary_text));
+                .addTitleItem(gmTitleCardView.getContext().getString(R.string.gold_merchant_transaction_summary_text));
 
         for (int i = 0; i < gmStatTransactionEntries.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
@@ -147,17 +113,10 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
                         Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
                         resetSelection(gmStatGraphSelection);
-                        GMTransactionGraphViewHolder.this.bind(data);
-                        showingSimpleDialog = false;
+                        GMTransactionGraphViewHolder.this.bind(gmTransactionGraphViewModel, compareGraph);
                     }
                 })
                 .createDialog();
-        bottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                showingSimpleDialog = false;
-            }
-        });
         bottomSheetDialog.show();
     }
 
@@ -174,8 +133,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
 
         setHeaderValue(data);
-
-        if (data.isCompare) {
+        if (compareGraph) {
             gmLineChartContainer.setPercentage(data.percentage);
             gmLineChartContainer.setCompareDate(data);
             gmLineChartContainer.setMainDate(data);
@@ -212,7 +170,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
             case GMTransactionGraphType.NET_REVENUE:
             case GMTransactionGraphType.REJECTED_AMOUNT:
             case GMTransactionGraphType.SHIPPING_COST:
-                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(context, data.amount));
+                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(gmTitleCardView.getContext(), data.amount));
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
             case GMTransactionGraphType.SUCCESS_TRANS:
@@ -222,13 +180,9 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
         }
     }
 
-    private void showTransactionGraph(final List<BaseWilliamChartModel> baseWilliamChartModels) {
-        // get tooltip
-        Tooltip tooltip = getTooltip(context, getTooltipResLayout());
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig((Activity) context,
-                gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
+    private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
         baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
-        baseWilliamChartConfig.setTooltip(tooltip, new DefaultTooltipConfiguration());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
@@ -239,67 +193,16 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
      * @param data
      * @param dateGraph
      */
-    protected void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
-        // create model for chart
-        final BaseWilliamChartModel baseWilliamChartModel
-                = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
+    private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
+        BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
 
-        // resize linechart according to data
-        if (context != null && context instanceof Activity){
-            GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph, (Activity) context);
-        }
-
-        // get index to display
-        final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
-
-        // get tooltip
-        Tooltip tooltip = getTooltip(
-                context,
-                getTooltipResLayout()
-        );
-
-        baseWilliamChartConfig
-                .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setDotDrawable(oval2Copy6)
-                .setTooltip(tooltip, new DefaultTooltipConfiguration())
-                .setxRendererListener(new XRenderer.XRendererListener() {
-                    @Override
-                    public boolean filterX(@IntRange(from = 0L) int i) {
-                        if (i == 0 || baseWilliamChartModel.getValues().length - 1 == i)
-                            return true;
-
-                        if (baseWilliamChartModel.getValues().length <= 15) {
-                            return true;
-                        }
-
-                        return indexToDisplay.contains(i);
-
-                    }
-                }).buildChart(gmStatisticIncomeGraph);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModel);
+        baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
-        return new Tooltip(context,
-                layoutRes,
-                R.id.gm_stat_tooltip_textview,
-                new StringFormatRenderer() {
-                    @Override
-                    public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
-                    }
-                });
-    }
-
-    @LayoutRes
-    private int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip;
-        }
-        return layoutTooltip;
+    @Override
+    public void setViewState(int state) {
+        gmTitleCardView.setViewState(state);
     }
 }

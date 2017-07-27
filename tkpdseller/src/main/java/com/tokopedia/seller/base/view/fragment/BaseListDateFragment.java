@@ -38,6 +38,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        datePickerPresenter.attachView(this);
     }
 
     @Override
@@ -50,7 +51,6 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
                 openDatePicker();
             }
         });
-        datePickerPresenter.attachView(this);
     }
 
     @Override

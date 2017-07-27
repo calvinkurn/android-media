@@ -36,6 +36,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        datePickerPresenter.attachView(this);
     }
 
     @Override
@@ -47,7 +48,6 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
                 openDatePicker();
             }
         });
-        datePickerPresenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
     }
 

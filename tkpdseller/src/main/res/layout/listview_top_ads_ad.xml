@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/top_ads_item_padding_left">
 
     <include
-        layout="@layout/include_top_ads_ad"
+        layout="@layout/partial_top_ads_ad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -14,27 +14,28 @@ import java.util.List;
  */
 
 public interface GMStatisticDashboardView extends CustomerView {
+
+    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
+
+    void onErrorLoadTransactionGraph(Throwable t);
+
+    void onSuccessLoadProductGraph(GetProductGraph getProductGraph);
+
+    void onErrorLoadProductGraph(Throwable t);
+
+    void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct);
+
+    void onErrorLoadPopularProduct(Throwable t);
+
+    void onSuccessLoadBuyerGraph(GetBuyerGraph getBuyerGraph);
+
+    void onErrorLoadBuyerGraph(Throwable t);
+
     void onGetShopCategoryEmpty();
-
-    void onSuccessTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
-
-    void onSuccessProductnGraph(GetProductGraph getProductGraph);
-
-    void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
-
-    void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
     void onSuccessGetCategory(String categoryName);
 
-    void onSuccessBuyerGraph(GetBuyerGraph getBuyerGraph);
+    void onSuccessGetKeyword(List<GetKeyword> getKeywords);
 
-    void onComplete();
-
-    void onError(Throwable e);
-
-    void onLoadGMStatTracking();
-
-    void onScrollGMStatTracking();
-
-    void showSnackbarRetry();
+    void onErrorLoadMarketInsight(Throwable t);
 }

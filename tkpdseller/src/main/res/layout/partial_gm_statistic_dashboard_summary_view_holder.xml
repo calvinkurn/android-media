@@ -27,7 +27,7 @@
 
         </com.tokopedia.design.loading.LoadingStateView>
 
-        <include layout="@layout/include_separator_vertical" />
+        <include layout="@layout/partial_separator_vertical" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/loading_state_view_product_seen"
@@ -45,7 +45,7 @@
         </com.tokopedia.design.loading.LoadingStateView>
     </LinearLayout>
 
-    <include layout="@layout/include_separator_horizontal" />
+    <include layout="@layout/partial_separator_horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 app:gm_statistic_summary_title="@string/title_product_sold" />
         </com.tokopedia.design.loading.LoadingStateView>
 
-        <include layout="@layout/include_separator_vertical" />
+        <include layout="@layout/partial_separator_vertical" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/loading_state_view_conversion"

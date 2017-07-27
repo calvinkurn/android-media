@@ -12,7 +12,7 @@ import android.view.ViewParent;
 
 import com.squareup.spoon.Spoon;
 import com.tokopedia.seller.gmstat.hades.HadesNetwork;
-import com.tokopedia.seller.gmstat.utils.GMStatConstant;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.sellerapp.DaggerTestComponent;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;

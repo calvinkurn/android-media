@@ -35,7 +35,7 @@
                 android:orientation="vertical">
 
                 <include
-                    layout="@layout/include_topads_header_detail"
+                    layout="@layout/partial_top_ads_header_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -46,7 +46,7 @@
                     android:layout_marginBottom="@dimen/topads_detail_padding_item"
                     app:title="@string/top_ads_title_product" />
 
-                <include layout="@layout/include_topads_content_detail" />
+                <include layout="@layout/partial_top_ads_content_detail" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
