@@ -131,11 +131,13 @@ public class DatePickerUtils {
         long endDate = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
         int lastSelection = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
         int selectionType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        boolean isComparedDate = intent.getBooleanExtra(DatePickerConstant.EXTRA_COMPARE_DATE, false);
         DatePickerViewModel datePickerViewModel = new DatePickerViewModel();
         datePickerViewModel.setStartDate(starDate);
         datePickerViewModel.setEndDate(endDate);
         datePickerViewModel.setDatePickerSelection(lastSelection);
         datePickerViewModel.setDatePickerType(selectionType);
+        datePickerViewModel.setCompareDate(isComparedDate);
         return datePickerViewModel;
     }
 }

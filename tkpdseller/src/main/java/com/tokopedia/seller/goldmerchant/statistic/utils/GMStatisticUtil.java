@@ -59,6 +59,8 @@ public final class GMStatisticUtil {
         double newSizeRatio = ((double) numChart) / 7;
         if (newSizeRatio > 1) {
             chartView.setLayoutParams(new LinearLayout.LayoutParams ((int) CommonUtils.DptoPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+        } else {
+            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) CommonUtils.DptoPx(activity, 360), chartView.getLayoutParams().height));
         }
     }
 

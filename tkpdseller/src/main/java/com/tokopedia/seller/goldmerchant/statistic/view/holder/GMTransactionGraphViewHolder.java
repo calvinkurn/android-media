@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.MenuItem;
@@ -63,7 +65,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     private boolean showingSimpleDialog;
     private GMTransactionGraphViewModel data;
 
-    public GMTransactionGraphViewHolder(@Nullable Context context) {
+    public GMTransactionGraphViewHolder(@NonNull Context context) {
         super(context);
 
         gmStatGraphSelection = 0;
@@ -77,7 +79,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     }
 
     @Override
-    public void initView(@Nullable View itemView) {
+    public void initView(@NonNull View itemView) {
         gmTitleCardView = (TitleCardView) itemView.findViewById(R.id.gold_merchant_statistic_card_view);
         gmTitleCardView.setOnArrowDownClickListener(new TitleCardView.OnArrowDownClickListener() {
             @Override
@@ -86,7 +88,6 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
             }
         });
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
-        gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(context));
         gmStatisticIncomeGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_transaction_income_graph);
 
         setViewState(LoadingStateView.VIEW_LOADING);
@@ -171,8 +172,11 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
     }
 
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
+
         setHeaderValue(data);
+
         if (data.isCompare) {
+            gmLineChartContainer.setPercentage(data.percentage);
             gmLineChartContainer.setCompareDate(data);
             gmLineChartContainer.setMainDate(data);
             // create model for current Data
@@ -189,6 +193,7 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
             showTransactionGraph(baseWilliamChartModels);
         } else {
+            gmLineChartContainer.hidePercentageView();
             fillTransactionGraphMain(data);
         }
     }
@@ -201,8 +206,6 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
 
     private void setHeaderValue(GMGraphViewWithPreviousModel data) {
         gmTitleCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
-
-        gmLineChartContainer.setPercentage(data.percentage);
 
         switch (selection()) {
             case GMTransactionGraphType.GROSS_REVENUE:
@@ -242,8 +245,9 @@ public class GMTransactionGraphViewHolder extends BaseGMViewHelper<GMTransaction
                 = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
 
         // resize linechart according to data
-        if (context != null && context instanceof Activity)
+        if (context != null && context instanceof Activity){
             GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), gmStatisticIncomeGraph, (Activity) context);
+        }
 
         // get index to display
         final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());

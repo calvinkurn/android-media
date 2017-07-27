@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * Created by nathan on 7/19/17.
  */
 
-public class GMStatatisticDateUtils {
+public class GMStatisticDateUtils {
 
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25 07 2015";

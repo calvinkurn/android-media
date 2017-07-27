@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.helper;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -28,7 +29,7 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
 
     private Drawable icRectagleUp;
 
-    public GMPercentageViewHelper(@Nullable Context context) {
+    public GMPercentageViewHelper(@NonNull Context context) {
         super(context);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(context,
@@ -76,7 +77,7 @@ public class GMPercentageViewHelper extends BaseGMViewHelper implements Percenta
     }
 
     @Override
-    public void initView(@Nullable View itemView) {
+    public void initView(@NonNull View itemView) {
 
     }
 

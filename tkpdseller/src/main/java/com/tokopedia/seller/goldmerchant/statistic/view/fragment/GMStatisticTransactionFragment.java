@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.DatePickerView;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
@@ -93,8 +95,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public void loadData() {
-        super.loadData();
+    public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
         loadingState(LoadingStateView.VIEW_LOADING);
         presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
@@ -112,13 +113,13 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     private GMTransactionGraphViewModel mergeWithIsCompare(GMTransactionGraphViewModel viewModel) {
-        viewModel.grossRevenueModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.totalTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.successTransactionModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.netRevenueModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.rejectedAmountModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.shippingCostModel.isCompare = datePickerViewModel.isCompareDate();
-        viewModel.rejectTransactionModel.isCompare = datePickerViewModel.isCompareDate();
+        viewModel.grossRevenueModel.isCompare = isComparingDate();
+        viewModel.totalTransactionModel.isCompare = isComparingDate();
+        viewModel.successTransactionModel.isCompare = isComparingDate();
+        viewModel.netRevenueModel.isCompare = isComparingDate();
+        viewModel.rejectedAmountModel.isCompare = isComparingDate();
+        viewModel.shippingCostModel.isCompare = isComparingDate();
+        viewModel.rejectTransactionModel.isCompare = isComparingDate();
         return viewModel;
     }
 
@@ -150,7 +151,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public boolean isComparedDate() {
+    public boolean allowComparedDate() {
         return true;
     }
 

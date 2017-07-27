@@ -2,6 +2,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,18 +45,17 @@ public class GMTopAdsAmountViewHolder extends BaseGMViewHelper<GMGraphViewModel>
         this.onTopAdsViewHolderListener = onTopAdsViewHolderListener;
     }
 
-    public GMTopAdsAmountViewHolder(@Nullable Context context) {
+    public GMTopAdsAmountViewHolder(@NonNull Context context) {
         super(context);
         gmPercentageViewHelper = new GMPercentageViewHelper(context);
     }
 
     @Override
-    public void initView(@Nullable View itemView) {
+    public void initView(@NonNull View itemView) {
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         gmStatisticTopAdsGraph = (LineChartView) itemView.findViewById(R.id.gm_statistic_topads_graph);
         gmStatisticTopAdsCardView = (TitleCardView) itemView.findViewById(R.id.topads_statistic_card_view);
         gmTopAdsLineChartWidget = (LineChartContainerWidget) gmStatisticTopAdsCardView.findViewById(R.id.topads_line_chart_container);
-        gmTopAdsLineChartWidget.setPercentageUtil(gmPercentageViewHelper);
     }
 
     private void setTopAdsCardView(GMGraphViewModel data) {

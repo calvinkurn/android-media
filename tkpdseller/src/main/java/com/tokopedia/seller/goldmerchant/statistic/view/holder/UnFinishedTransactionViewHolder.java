@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -30,13 +31,13 @@ public class UnFinishedTransactionViewHolder extends BaseGMViewHelper<UnFinished
     private String rupiahFormatText;
 
 
-    public UnFinishedTransactionViewHolder(@Nullable Context context) {
+    public UnFinishedTransactionViewHolder(@NonNull Context context) {
         super(context);
         rupiahFormatText = context.getString(R.string.rupiah_format_text);
     }
 
     @Override
-    public void initView(@Nullable View itemView) {
+    public void initView(@NonNull View itemView) {
         notDoneTransStatisticCardView = (TitleCardView) itemView.findViewById(R.id.not_done_trans_statistic_card_view);
         gmStatisticTransDonutProgress = (DonutProgress) itemView.findViewById(R.id.gm_statistic_trans_donut_progress);
         gmStatisticTransDonutProgressLayout = (DonutProgressLayout) itemView.findViewById(R.id.gm_statistic_trans_donut_progress_layout);

@@ -128,6 +128,10 @@ public class LineChartContainerWidget extends LinearLayout {
         arrowPercentageView.setVisibility(View.VISIBLE);
     }
 
+    public void hidePercentageView(){
+        arrowPercentageView.setVisibility(View.GONE);
+    }
+
     public void setSubtitle(CharSequence subtitle) {
         this.subtitle = subtitle;
         if (TextUtils.isEmpty(subtitle)) {
@@ -145,10 +149,6 @@ public class LineChartContainerWidget extends LinearLayout {
             tvPercentageDesc.setText(percentageDesc);
             tvPercentageDesc.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void setPercentageUtil(PercentageUtil percentageUtil) {
-        arrowPercentageView.setPercentageUtil(percentageUtil);
     }
 
     @Override
