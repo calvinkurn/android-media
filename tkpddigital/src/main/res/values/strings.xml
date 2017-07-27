@@ -78,5 +78,4 @@
     <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
     <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
-    <string name="tokocash_error_message_activation">Gagal melakukan aktivasi TokoCash, silakan coba beberapa saat lagi</string>
 </resources>

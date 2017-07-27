@@ -3,7 +3,7 @@ package com.tokopedia.digital.tokocash.interactor;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
-import com.tokopedia.digital.tokocash.exception.ResponseTokoCashRuntimeException;
+import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,7 +32,7 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
                         .doOnNext(new Action1<RequestOtpModel>() {
                             @Override
                             public void call(RequestOtpModel requestOtpModel) {
-                                if (!requestOtpModel.getErrorMessage().isEmpty()) {
+                                if (requestOtpModel.getErrorMessage() != null) {
                                     throw new ResponseTokoCashRuntimeException(requestOtpModel.getErrorMessage());
                                 }
                             }
@@ -51,7 +51,7 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
                         .doOnNext(new Action1<ValidateOtpModel>() {
                             @Override
                             public void call(ValidateOtpModel validateOtpModel) {
-                                if (!validateOtpModel.getErrorMessage().isEmpty()) {
+                                if (validateOtpModel.getErrorMessage()  != null) {
                                     throw new ResponseTokoCashRuntimeException(validateOtpModel.getErrorMessage());
                                 }
                             }

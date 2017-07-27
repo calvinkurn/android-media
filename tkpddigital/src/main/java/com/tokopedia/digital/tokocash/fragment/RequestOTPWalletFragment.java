@@ -189,9 +189,6 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
     @Override
     public void onErrorOTPWallet(String message) {
         finishProgressDialog();
-        if (message.equals("")) {
-            message = getString(R.string.tokocash_error_message_activation);
-        }
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 

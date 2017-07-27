@@ -161,9 +161,6 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
     @Override
     public void onErrorLinkWalletToTokoCash(String message) {
         finishProgressDialog();
-        if (message.equals("")) {
-            message = getString(R.string.tokocash_error_message_activation);
-        }
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 

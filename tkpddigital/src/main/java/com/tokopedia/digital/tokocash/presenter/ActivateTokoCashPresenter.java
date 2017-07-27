@@ -5,7 +5,8 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
-import com.tokopedia.digital.tokocash.exception.ResponseTokoCashRuntimeException;
+import com.tokopedia.digital.tokocash.errorhandle.ErrorHandleTokoCashUtil;
+import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.ActivateTokoCashView;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
@@ -53,7 +54,7 @@ public class ActivateTokoCashPresenter implements IActivateTokoCashPresenter {
                 } else if (e instanceof SocketTimeoutException) {
                     view.onErrorLinkWalletToTokoCash(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof ResponseTokoCashRuntimeException) {
-                    view.onErrorLinkWalletToTokoCash("");
+                    view.onErrorLinkWalletToTokoCash(ErrorHandleTokoCashUtil.handleError(e.getMessage()));
                 } else if (e instanceof ResponseDataNullException) {
                     view.onErrorLinkWalletToTokoCash(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
