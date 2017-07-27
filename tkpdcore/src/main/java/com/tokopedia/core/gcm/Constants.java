@@ -82,7 +82,8 @@ public interface Constants {
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
         String WISHLIST = "tokopedia://wishlist";
         String RECENT_VIEW = "tokopedia://recentlyviewed";
-        String TOPPICKS_DETAIL = "tokopedia://toppick/{toppick_id}";
+        String TOPPICKS = "tokopedia://toppicks";
+        String TOPPICK_DETAIL = "tokopedia://toppick/{toppick_id}";
     }
 
     interface Settings {

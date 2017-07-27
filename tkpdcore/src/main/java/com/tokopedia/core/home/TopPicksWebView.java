@@ -43,7 +43,7 @@ public class TopPicksWebView extends TActivity implements
         return intent;
     }
 
-    @DeepLink(Constants.Applinks.TOPPICKS_DETAIL)
+    @DeepLink({Constants.Applinks.TOPPICKS, Constants.Applinks.TOPPICK_DETAIL})
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle bundle) {
         String toppickId = bundle.getString(ARGS_TOPPICK_ID, "");
         String result = TkpdBaseURL.WEB_DOMAIN + TOPPICK_SEGMENT;
