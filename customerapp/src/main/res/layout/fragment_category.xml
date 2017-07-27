@@ -13,7 +13,8 @@
         android:id="@+id/wrapperLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusableInTouchMode="true" >
 
         <com.tokopedia.core.home.customview.TokoCashHeaderView
             android:id="@+id/toko_cash_header_layout"
@@ -85,11 +86,12 @@
             android:layout_marginTop="@dimen/margin_small"
             app:cardCornerRadius="0dip"
             app:cardElevation="0dip"
-            android:visibility="gone">
+            android:visibility="gone" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true" >
 
                 <RelativeLayout
                     android:id="@id/rl_title_layout"
@@ -131,7 +133,7 @@
                     android:layout_marginBottom="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_centerInParent="true"
-                    android:nestedScrollingEnabled="false"
+                    android:padding="@dimen/padding_vs"
                     android:scrollbars="none" />
 
                 <TextView
@@ -161,7 +163,6 @@
             android:id="@+id/recycler_view_toppicks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
             android:scrollbars="none" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relative_layout_product_scoring"
-    style="@style/LabelLayoutWithBorderBottom"
+    style="@style/LabelLayout.BorderBottom"
     app:layout_scrollFlags="scroll|snap|enterAlways">
 
     <LinearLayout
@@ -18,21 +18,19 @@
             android:layout_marginBottom="3dp">
 
             <TextView
-                style="@style/TextView"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_title_activity_product_score"
-                android:textColor="@color/thirty_eight_percent_black"
-                android:textSize="12sp" />
+                android:textColor="@color/font_black_disabled_38" />
 
             <TextView
                 android:id="@+id/text_score"
-                style="@style/TextView"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="@string/product_score_label_minus"
-                android:textColor="@color/low_score_value"
-                android:textSize="11sp" />
+                android:textColor="@color/low_score_value" />
         </RelativeLayout>
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar

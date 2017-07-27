@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import android.text.TextUtils;
+
 import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -300,4 +302,64 @@ public class UploadProductInputViewModel {
     public int getProductChangeCatalog() {
         return productChangeCatalog;
     }
+
+    /**
+     * check if the modelview has the same value as default
+     */
+    public boolean equalsDefault(UploadProductInputViewModel defaultModel) {
+        List<ImageProductInputViewModel> imageSelectModelList = productPhotos.getPhotos();
+        if (imageSelectModelList!= null && imageSelectModelList.size() > 0) {
+            return false;
+        }
+        if (!TextUtils.isEmpty(productName)){
+            return false;
+        }
+        if (productVideos!= null && productVideos.size() > 0) {
+            return false;
+        }
+        if (productWholesaleList!= null && productWholesaleList.size() > 0) {
+            return false;
+        }
+        if (!TextUtils.isEmpty(productDescription)){
+            return false;
+        }
+        if (productPrice > 0) {
+            return false;
+        }
+        if (productCatalogId > 0) {
+            return false;
+        }
+        if (productDepartmentId > 0) {
+            return false;
+        }
+        if (productCondition!= defaultModel.getProductCondition()) {
+            return false;
+        }
+        if (productEtalaseId > 0) {
+            return false;
+        }
+        if (productMinOrder!= defaultModel.getProductMinOrder()) {
+            return false;
+        }
+        if (productMustInsurance!= defaultModel.getProductMustInsurance()) {
+            return false;
+        }
+        if (productReturnable!= defaultModel.getProductReturnable()) {
+            return false;
+        }
+        if (productInvenageValue!= defaultModel.getProductInvenageValue()) {
+            return false;
+        }
+        if (productWeight!= defaultModel.getProductWeight()) {
+            return false;
+        }
+        if (poProcessType!= defaultModel.getPoProcessType()) {
+            return false;
+        }
+        if (poProcessValue!= defaultModel.getPoProcessValue()) {
+            return false;
+        }
+        return true;
+    }
+
 }

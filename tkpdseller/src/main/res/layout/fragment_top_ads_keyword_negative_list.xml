@@ -19,7 +19,7 @@
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_filter"
+        android:id="@+id/fab_add"
         style="@style/Fab"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"

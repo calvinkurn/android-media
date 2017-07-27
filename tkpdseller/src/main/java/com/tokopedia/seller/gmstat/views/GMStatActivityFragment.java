@@ -138,7 +138,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         messageExceptionDescription = getString(R.string.message_exception_description);
         defaultExceptionDescription = getString(R.string.default_exception_description);
 
-        monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+        monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);

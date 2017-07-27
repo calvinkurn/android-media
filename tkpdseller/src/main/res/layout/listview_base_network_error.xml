@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@android:color/white"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@android:color/white"
     android:padding="@dimen/padding_small">
 
     <!-- Untuk onRetry satu halaman -->
@@ -18,37 +18,26 @@
         android:layout_marginBottom="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center_horizontal"
-        tools:src="@drawable/ic_error_network"/>
+        tools:src="@drawable/ic_error_network" />
 
     <TextView
         android:id="@+id/retry_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        style="@style/TextView.Title.Bold"
         android:layout_margin="@dimen/margin_vs"
-        android:text="@string/msg_network_error_1"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_large"
-        android:textStyle="bold" />
+        android:gravity="center"
+        android:text="@string/msg_network_error_1" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        style="@style/TextView.Body1.BlackDisabled.Bold"
         android:layout_margin="@dimen/margin_vs"
-        android:text="@string/msg_network_error_2"
-        android:textColor="@color/grey_400"
-        android:textSize="@dimen/text_size_medium"
-        android:textStyle="bold" />
+        android:gravity="center"
+        android:text="@string/msg_network_error_2" />
 
     <TextView
         android:id="@+id/retry_but"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        style="@style/TextView.Body1.Green.Bold"
         android:layout_margin="@dimen/margin_med"
-        android:text="@string/title_try_again_caps"
-        android:textColor="@color/tkpd_main_green"
-        android:textStyle="bold" />
+        android:gravity="center"
+        android:text="@string/title_try_again_caps" />
 
 </LinearLayout>

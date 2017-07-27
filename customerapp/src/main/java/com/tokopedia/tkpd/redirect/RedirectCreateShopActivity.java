@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
 
@@ -32,6 +33,7 @@ public class RedirectCreateShopActivity extends TActivity {
                     public void onClick(View view) {
                         startActivity(new Intent(Intent.ACTION_VIEW,
                                 Uri.parse(MARKET_URL + TOP_SELLER_APPLICATION_PACKAGE)));
+                        UnifyTracking.eventDownloadFromSwitcher();
                     }
                 });
     }

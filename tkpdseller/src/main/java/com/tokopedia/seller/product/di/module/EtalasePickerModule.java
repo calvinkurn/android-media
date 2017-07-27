@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.di.module;
 
-import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.data.repository.MyEtalaseRepositoryImpl;
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
@@ -11,9 +10,9 @@ import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenterImpl;
-import com.tokopedia.seller.topads.data.factory.TopAdsEtalaseFactory;
-import com.tokopedia.seller.topads.data.repository.TopAdsEtalaseListRepositoryImpl;
-import com.tokopedia.seller.topads.domain.TopAdsEtalaseListRepository;
+import com.tokopedia.seller.topads.dashboard.data.factory.TopAdsEtalaseFactory;
+import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsEtalaseListRepositoryImpl;
+import com.tokopedia.seller.topads.dashboard.domain.TopAdsEtalaseListRepository;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_vs"
+    android:paddingRight="@dimen/padding_vs"
     android:paddingTop="@dimen/padding_small"
+    android:paddingBottom="@dimen/padding_small"
     android:orientation="vertical">
 
     <TextView
@@ -152,28 +153,4 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_small" />
 
-    <LinearLayout
-        android:id="@+id/view_no_free_return"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small"
-        android:padding="@dimen/padding_small"
-        android:background="@drawable/bg_grey_no_border"
-        android:weightSum="1">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_weight="0.10"
-            android:src="@drawable/icon_no_return" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.90"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/font_small"
-            android:text="Produk yang sudah dibeli tidak dapat ditukar atau dikembalikan " />
-    </LinearLayout>
 </LinearLayout>

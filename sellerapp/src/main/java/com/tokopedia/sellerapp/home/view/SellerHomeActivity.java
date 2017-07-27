@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.home.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +42,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -91,6 +91,7 @@ import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
@@ -212,6 +213,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     LinearLayout sellerHomeLinLayContainer;
     String userId;
     String shopId;
+    String gcmId;
     ActionBarDrawerToggle mDrawerToggle;
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
@@ -409,10 +411,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         final String userId = this.userId;
         ShopNetworkController.ShopInfoParam shopInfoParam = new ShopNetworkController.ShopInfoParam();
         shopInfoParam.shopId = this.shopId;
+        this.gcmId = gcmId;
 
         shopController.getShopInfo(gcmId, userId, shopInfoParam, getShopInfo());
 
-        shopController.getNotif(gcmId, userId, getNotif(gcmId, userId));
+        drawerDataManager.getNotification();
 
         shopController.getResCenter(userId, gcmId, getResCenter());
 
@@ -518,72 +521,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                     Log.d("STUART", "number of seller complain : " + sellerResol);
                     sellerHomeBuyerComplain.setText(Integer.toString(sellerResol));
                 }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessageError(e);
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        };
-    }
-
-    @NonNull
-    protected NotifNetworkController.GetNotif getNotif(final String gcmId, final String userId) {
-        return new NotifNetworkController.GetNotif() {
-            @Override
-            public void onSuccess(Notification.Data notification) {
-                String sales_new_order = notification.getSales().getSales_new_order();
-                int i = Integer.parseInt(sales_new_order);
-                cardNewOrderContainer.removeAllViews();
-                if (i > 0) {
-                    RelativeLayout.LayoutParams layoutParamsHeader =
-                            new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                            );
-                    layoutParamsHeader.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    NewOrderHeaderView newOrderHeaderView = new NewOrderHeaderView(SellerHomeActivity.this);
-                    newOrderHeaderView.setId(R.id.seller_home_new_order_container);
-
-                    RelativeLayout.LayoutParams layoutParams2 =
-                            new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                            );
-                    layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    LinearLayout container = new LinearLayout(SellerHomeActivity.this);
-                    container.setOrientation(LinearLayout.VERTICAL);
-                    container.setId(R.id.seller_home_latest_new_order);
-
-                    RelativeLayout.LayoutParams layoutParams =
-                            new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                            );
-                    layoutParams.addRule(RelativeLayout.ABOVE, container.getId());
-                    NewOrderView newOrderView = new NewOrderView(SellerHomeActivity.this);
-                    newOrderView.init(notification.getSales());
-                    newOrderView.setId(R.id.card_new_order);
-
-                    cardNewOrderContainer.addView(newOrderHeaderView, layoutParamsHeader);
-                    cardNewOrderContainer.addView(newOrderView, layoutParams);
-                    cardNewOrderContainer.addView(container, layoutParams2);
-
-                    getNewOrder(gcmId, userId, container);
-                } else {
-                    setDisplayNewOrder();
-                }
-
-                if (sellerProductDiscussion != null) {
-                    sellerProductDiscussion.setText(notification.getInbox().getInbox_talk());
-                }
-                sellerHomeNewMessages.setText(notification.getInbox().getInbox_message());
-
             }
 
             @Override
@@ -863,7 +800,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                         switch (buttonIndex) {
                             case 0:
                                 context.startActivity(new Intent(
-                                        context, ManageProduct.class
+                                        context, ManageProductSeller.class
                                 ));
                                 break;
                             case 1:
@@ -979,7 +916,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     private void updateDrawerData() {
-        drawerDataManager.getNotification();
         drawerDataManager.getDeposit();
         drawerDataManager.getProfile();
     }
@@ -1051,11 +987,12 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
     public void onGetNotificationDrawer(DrawerNotification notification) {
+        setNotificationToSellerPage(notification);
+
         int notificationCount = notification.getTotalNotif();
 
         TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
@@ -1080,9 +1017,61 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         drawerHelper.setExpand();
     }
 
+    private void setNotificationToSellerPage(DrawerNotification notification) {
+        int sales_new_order = notification.getSellingNewOrder();
+        cardNewOrderContainer.removeAllViews();
+        if (sales_new_order > 0) {
+            RelativeLayout.LayoutParams layoutParamsHeader =
+                    new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT
+                    );
+            layoutParamsHeader.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            NewOrderHeaderView newOrderHeaderView = new NewOrderHeaderView(SellerHomeActivity.this);
+            newOrderHeaderView.setId(R.id.seller_home_new_order_container);
+
+            RelativeLayout.LayoutParams layoutParams2 =
+                    new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT
+                    );
+            layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            LinearLayout container = new LinearLayout(SellerHomeActivity.this);
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.setId(R.id.seller_home_latest_new_order);
+
+            RelativeLayout.LayoutParams layoutParams =
+                    new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT
+                    );
+            layoutParams.addRule(RelativeLayout.ABOVE, container.getId());
+            NewOrderView newOrderView = new NewOrderView(SellerHomeActivity.this);
+            Notification.Sales sales = new Notification.Sales();
+            sales.setSales_new_order(String.valueOf(notification
+                    .getSellingNewOrder()));
+            newOrderView.init(sales);
+            newOrderView.setId(R.id.card_new_order);
+
+            cardNewOrderContainer.addView(newOrderHeaderView, layoutParamsHeader);
+            cardNewOrderContainer.addView(newOrderView, layoutParams);
+            cardNewOrderContainer.addView(container, layoutParams2);
+
+            if (gcmId != null && !gcmId.equals(""))
+                getNewOrder(gcmId, userId, container);
+
+        } else {
+            setDisplayNewOrder();
+        }
+
+        if (sellerProductDiscussion != null) {
+            sellerProductDiscussion.setText(String.valueOf(notification.getInboxTalk()));
+        }
+        sellerHomeNewMessages.setText(String.valueOf(notification.getInboxMessage()));
+    }
+
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -1117,7 +1106,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     public static class SellerHomeNewOrderView {

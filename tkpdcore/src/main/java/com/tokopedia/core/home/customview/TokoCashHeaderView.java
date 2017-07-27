@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,12 @@ public class TokoCashHeaderView extends RelativeLayout {
     private TextView tokoCashAmount;
     private TextView tokoCashButton;
     private ActionListener actionListener;
+    private LinearLayout pendingLayout;
+    private LinearLayout normalLayout;
+    private TextView pendingAmount;
+    private TextView pendingCashBackInfo;
+
+    private String activationRedirectUrl;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -53,14 +60,31 @@ public class TokoCashHeaderView extends RelativeLayout {
             setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getData().getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
-            // tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashActionRedirectUrl));
             tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
         } else {
+            actionListener.onRequestPendingCashBack();
             tokoCashButton.setOnClickListener(onActivationClickedListener(
                     tokoCashActionRedirectUrl
             ));
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_activation));
+            activationRedirectUrl = tokoCashRedirectUrl;
         }
+    }
+
+    public void showPendingTokoCash(String amount) {
+        normalLayout.setVisibility(GONE);
+        pendingLayout.setVisibility(VISIBLE);
+        pendingAmount.setText(amount);
+        pendingCashBackInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onShowTokoCashBottomSheet();
+            }
+        });
+    }
+
+    public void activateTokoCashFromBottomSheet() {
+        onActivationClickedListener(activationRedirectUrl);
     }
 
     @NonNull
@@ -105,8 +129,12 @@ public class TokoCashHeaderView extends RelativeLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.toko_cash_header_view_home, this, true);
 
+        pendingLayout = (LinearLayout) findViewById(R.id.pending_cash_back_layout);
+        normalLayout = (LinearLayout) findViewById(R.id.toko_cash_normal_layout);
         tokoCashAmount = (TextView) findViewById(R.id.header_toko_cash_amount);
         tokoCashButton = (TextView) findViewById(R.id.header_toko_cash_button);
+        pendingAmount = (TextView) findViewById(R.id.pending_amount);
+        pendingCashBackInfo = (TextView) findViewById(R.id.pending_cashback_info);
     }
 
     private void openTokoCashWebView(String redirectURL) {
@@ -133,6 +161,10 @@ public class TokoCashHeaderView extends RelativeLayout {
         void onTopUpTokoCashClicked();
 
         void onActivationTokoCashClicked();
+
+        void onRequestPendingCashBack();
+
+        void onShowTokoCashBottomSheet();
     }
 
 }
