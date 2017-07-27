@@ -137,11 +137,11 @@ public class LoadingStateView extends FrameLayout {
     }
 
     // showing that the content to loading state
-    private void setLoadingState(boolean isLoading) {
+    private void setLoadingVisible() {
         if (loadingView == null) {
             setDefaultLoadingView();
         }
-        if (isLoading && this.loadingView != null) {
+        if (this.loadingView != null) {
             if (contentView != null) {
                 contentView.setVisibility(View.GONE);
             }
@@ -149,16 +149,14 @@ public class LoadingStateView extends FrameLayout {
                 emptyView.setVisibility(View.GONE);
             }
             loadingView.setVisibility(View.VISIBLE);
-        } else {
-            setContentVisible();
         }
     }
 
-    private void setEmptyState(boolean isEmpty) {
+    private void setEmptyVisible() {
         if (emptyView == null) {
             setDefaultEmptyView();
         }
-        if (isEmpty && emptyView != null) {
+        if (emptyView != null) {
             if (contentView != null) {
                 contentView.setVisibility(View.GONE);
             }
@@ -166,8 +164,6 @@ public class LoadingStateView extends FrameLayout {
                 loadingView.setVisibility(View.GONE);
             }
             emptyView.setVisibility(View.VISIBLE);
-        } else {
-            setContentVisible();
         }
     }
 
@@ -201,9 +197,9 @@ public class LoadingStateView extends FrameLayout {
 
     public void setViewState(int state) {
         if (state == VIEW_LOADING) {
-            setLoadingState(true);
+            setLoadingVisible();
         } else if (state == VIEW_EMPTY) {
-            setEmptyState(true);
+            setEmptyVisible();
         } else {
             setContentVisible();
         }
