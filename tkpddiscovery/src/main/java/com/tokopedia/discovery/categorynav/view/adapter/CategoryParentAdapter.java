@@ -104,6 +104,17 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
 
     }
 
+    public int getPositionById(String categoryId) {
+        for (int i=0; i< getItemCount(); i++) {
+            Category category = categories.get(i);
+            if (category.getId().equals(categoryId)) {
+                return i;
+            }
+        }
+        return 0;
+
+    }
+
     public int getActivePosition() {
         return activePosition;
     }

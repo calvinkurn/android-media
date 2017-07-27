@@ -75,8 +75,8 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void showLoading() {
-        if (isAdded() && ((IntermediaryActivity) getActivity()).getProgressBar() !=null) {
-            ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
+        if (isAdded() && ((CategoryNavigationActivity) getActivity()).getProgressBar() !=null) {
+            ((CategoryNavigationActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
         }
     }
 
@@ -120,9 +120,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
             }
         }
-
-        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getActivePosition(), 0);
-
+        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), 0);
     }
 
     @Override
