@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 
@@ -113,16 +111,10 @@ public class InterruptDialogFragment extends DialogFragment {
             public void onClick(View view) {
                 Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), url);
                 startActivity(intent);
-                isProgramaticallyDismissed = true;
-                getTargetFragment().onActivityResult(
-                        getTargetRequestCode(),
-                        Activity.RESULT_CANCELED,
-                        null);
-                dismiss();
             }
         });
 
-        String full = "By clicking Booking Ride,\n I agree with terms and conditions.";
+        String full = "By clicking Booking Ride,\nI agree with terms and conditions.";
         String keyword = "terms and conditions";
         int startIndex = indexOfSearchQuery(keyword, full);
         if (startIndex == -1) {

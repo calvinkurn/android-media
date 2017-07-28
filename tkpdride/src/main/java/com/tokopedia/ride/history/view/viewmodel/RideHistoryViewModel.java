@@ -26,7 +26,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String requestId;
     private String requestTime;
     private String driverCarDisplay;
-    private String fare;
     private String status;
     private String driverName;
     private String driverPictureUrl;
@@ -44,6 +43,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String helpUrl;
     private String cashbackDisplayFormat;
     private String discountDisplayFormat;
+    private String pendingAmount;
+    private String tokoCashCharged;
 
     public RideHistoryViewModel() {
     }
@@ -52,7 +53,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         requestId = in.readString();
         requestTime = in.readString();
         driverCarDisplay = in.readString();
-        fare = in.readString();
         status = in.readString();
         driverName = in.readString();
         driverPictureUrl = in.readString();
@@ -73,6 +73,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         helpUrl = in.readString();
         cashbackDisplayFormat = in.readString();
         discountDisplayFormat = in.readString();
+        pendingAmount = in.readString();
+        tokoCashCharged = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -106,14 +108,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public void setDriverCarDisplay(String driverCarDisplay) {
         this.driverCarDisplay = driverCarDisplay;
-    }
-
-    public String getFare() {
-        return fare;
-    }
-
-    public void setFare(String fare) {
-        this.fare = fare;
     }
 
     public String getStatus() {
@@ -276,6 +270,22 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.discountDisplayFormat = discountDisplayFormat;
     }
 
+    public String getPendingAmount() {
+        return pendingAmount;
+    }
+
+    public void setPendingAmount(String pendingAmount) {
+        this.pendingAmount = pendingAmount;
+    }
+
+    public String getTokoCashCharged() {
+        return tokoCashCharged;
+    }
+
+    public void setTokoCashCharged(String tokoCashCharged) {
+        this.tokoCashCharged = tokoCashCharged;
+    }
+
     public static String transformToDisplayStatus(String status) {
         switch (status) {
             case "arriving":
@@ -331,7 +341,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(requestId);
         parcel.writeString(requestTime);
         parcel.writeString(driverCarDisplay);
-        parcel.writeString(fare);
         parcel.writeString(status);
         parcel.writeString(driverName);
         parcel.writeString(driverPictureUrl);
@@ -352,6 +361,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(helpUrl);
         parcel.writeString(cashbackDisplayFormat);
         parcel.writeString(discountDisplayFormat);
+        parcel.writeString(pendingAmount);
+        parcel.writeString(tokoCashCharged);
     }
 
     public static String formatStringToPriceString(String numberString, String currency) {
