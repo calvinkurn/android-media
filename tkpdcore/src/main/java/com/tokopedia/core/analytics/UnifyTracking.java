@@ -1571,6 +1571,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventSelectProductWidget(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.SELECT_PRODUCT_FROM_WIDGET,
+                el
+        ).getEvent());
+    }
+
     public static void eventClickBeli(String ec, String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

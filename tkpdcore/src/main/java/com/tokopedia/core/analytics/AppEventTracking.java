@@ -247,6 +247,7 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
+        String SELECT_PRODUCT_FROM_WIDGET = "Select Product from Widget";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
