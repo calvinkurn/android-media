@@ -1,13 +1,13 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -33,21 +33,18 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     private GMStatGetPopularProductUseCase popularProductUseCase;
     private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
     private GMStatGetProductGraphUseCase productGraphUseCase;
-    private GMStatEmptyUseCase gmStatEmptyUseCase;
 
     public GMDashboardPresenterImpl(
             GMStatMarketInsightUseCase marketInsightUseCase,
             GMStatGetBuyerGraphUseCase buyerGraphUseCase,
             GMStatGetPopularProductUseCase popularProductUseCase,
             GMStatGetTransactionGraphUseCase transactionGraphUseCase,
-            GMStatGetProductGraphUseCase productGraphUseCase,
-            GMStatEmptyUseCase gmStatEmptyUseCase) {
+            GMStatGetProductGraphUseCase productGraphUseCase) {
         this.marketInsightUseCase = marketInsightUseCase;
         this.buyerGraphUseCase = buyerGraphUseCase;
         this.popularProductUseCase = popularProductUseCase;
         this.transactionGraphUseCase = transactionGraphUseCase;
         this.productGraphUseCase = productGraphUseCase;
-        this.gmStatEmptyUseCase = gmStatEmptyUseCase;
     }
 
     @Override
@@ -72,8 +69,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 getView().onSuccessLoadTransactionGraph(mergeModel);
             }
         });
-
-        getPopularProduct();
 
         RequestParams buyerParam = GMStatGetBuyerGraphUseCase.createRequestParam(starDate, endDate);
         buyerGraphUseCase.execute(buyerParam, new Subscriber<GetBuyerGraph>() {
@@ -115,6 +110,8 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 onSuccessGetCategory(keywordModel.getCategoryName());
             }
         });
+
+        getPopularProduct();
     }
 
     private void getProductGraph(long startDate, long endDate) {
@@ -141,9 +138,9 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
     private void getPopularProduct() {
         Calendar dayOne = Calendar.getInstance();
-        dayOne.add(Calendar.DATE, -30);
+        dayOne.add(Calendar.DATE, -GMStatConstant.POPULAR_PRODUCT_DATE_RANGE);
         Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, -1);
+        yesterday.add(Calendar.DATE, GMStatConstant.MAX_DAY_FROM_CURRENT_DATE);
         RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
         popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
             @Override

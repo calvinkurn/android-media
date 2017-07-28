@@ -142,13 +142,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         hideSnackBarRetry();
     }
 
     @Override
     public void onErrorLoadTransactionGraph(Throwable t) {
-        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 
@@ -162,19 +163,20 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onErrorLoadProductGraph(Throwable t) {
-        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 
     @Override
     public void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct) {
         gmStatisticProductViewHolder.bindData(getPopularProduct);
+        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         hideSnackBarRetry();
     }
 
     @Override
     public void onErrorLoadPopularProduct(Throwable t) {
-        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 
@@ -186,7 +188,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onErrorLoadBuyerGraph(Throwable t) {
-        gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticBuyerViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 
@@ -210,7 +212,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onErrorLoadMarketInsight(Throwable t) {
-        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticMarketInsightViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 

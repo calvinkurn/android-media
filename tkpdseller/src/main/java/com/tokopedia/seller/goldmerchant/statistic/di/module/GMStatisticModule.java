@@ -14,7 +14,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
 import com.tokopedia.seller.goldmerchant.statistic.di.scope.GMStatisticScope;
 import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -110,9 +109,8 @@ public class GMStatisticModule {
                                                            GMStatGetBuyerGraphUseCase buyerGraphUseCase,
                                                            GMStatGetPopularProductUseCase popularProductUseCase,
                                                            GMStatGetTransactionGraphUseCase transactionGraphUseCase,
-                                                           GMStatGetProductGraphUseCase productGraphUseCase,
-                                                           GMStatEmptyUseCase gmStatEmptyUseCase) {
-        return new GMDashboardPresenterImpl(marketInsightUseCase, buyerGraphUseCase, popularProductUseCase, transactionGraphUseCase, productGraphUseCase, gmStatEmptyUseCase);
+                                                           GMStatGetProductGraphUseCase productGraphUseCase) {
+        return new GMDashboardPresenterImpl(marketInsightUseCase, buyerGraphUseCase, popularProductUseCase, transactionGraphUseCase, productGraphUseCase);
     }
 
     @GMStatisticScope

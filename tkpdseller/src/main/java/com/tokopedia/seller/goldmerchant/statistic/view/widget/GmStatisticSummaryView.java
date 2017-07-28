@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 
 /**
  * Created by nathan on 7/24/17.
@@ -82,5 +83,9 @@ public class GmStatisticSummaryView extends BaseCustomView {
 
     public void setPercentage(double percentage) {
         arrowPercentageView.setPercentage(percentage);
+    }
+
+    public void setNoDataPercentage(){
+        arrowPercentageView.setNoDataPercentage();
     }
 }

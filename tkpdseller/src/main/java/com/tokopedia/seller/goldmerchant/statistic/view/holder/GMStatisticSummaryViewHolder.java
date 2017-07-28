@@ -22,8 +22,10 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
     private GmStatisticSummaryView conversionSummaryView;
     private GmStatisticSummaryView productSeenSummaryView;
     private GmStatisticSummaryView productSoldSummaryView;
+    private String errorValue;
 
     public GMStatisticSummaryViewHolder(View view) {
+        errorValue = view.getContext().getString(R.string.label_empty_value);
         successTransactionLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_success_transaction);
         conversionLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_conversion);
         productSeenLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_product_seen);
@@ -44,14 +46,32 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
         productSeenSummaryView.setPercentage(getProductGraph.getDiffView());
         productSoldSummaryView.setContentText(KMNumbers.getFormattedString(getProductGraph.getProductSold()));
         productSoldSummaryView.setPercentage(getProductGraph.getDiffSold());
-        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     @Override
     public void setViewState(int state) {
-        successTransactionLoadingStateView.setViewState(state);
-        conversionLoadingStateView.setViewState(state);
-        productSeenLoadingStateView.setViewState(state);
-        productSoldLoadingStateView.setViewState(state);
+        if (state == LoadingStateView.VIEW_LOADING) {
+            successTransactionLoadingStateView.setViewState(state);
+            conversionLoadingStateView.setViewState(state);
+            productSeenLoadingStateView.setViewState(state);
+            productSoldLoadingStateView.setViewState(state);
+            return;
+        }
+        successTransactionLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        conversionLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        productSeenLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        productSoldLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        switch (state) {
+            case LoadingStateView.VIEW_ERROR:
+            case LoadingStateView.VIEW_EMPTY:
+                successTransactionSummaryView.setContentText(errorValue);
+                successTransactionSummaryView.setNoDataPercentage();
+                conversionSummaryView.setContentText(errorValue);
+                conversionSummaryView.setNoDataPercentage();
+                productSeenSummaryView.setContentText(errorValue);
+                productSeenSummaryView.setNoDataPercentage();
+                productSoldSummaryView.setContentText(errorValue);
+                productSoldSummaryView.setNoDataPercentage();
+        }
     }
 }
