@@ -77,7 +77,7 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
 
     @Override
     protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.DRAFT_PRODUCT;
+        return TkpdState.DrawerPosition.SELLER_GM_STAT;
     }
 
     @Override
