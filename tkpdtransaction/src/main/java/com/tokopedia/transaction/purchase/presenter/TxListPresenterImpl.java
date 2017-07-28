@@ -402,32 +402,28 @@ public class TxListPresenterImpl implements TxListPresenter {
         showComplainDialog(context, orderData);
     }
 
+    @Override
+    public void processComplainConfirmDeliver(Context context, OrderData orderData) {
+        showFinishDialog(context, orderData);
+    }
+
     private void showFinishDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_finish);
         Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
         Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
-        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        btnFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "komplain clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 showComplainDialog(context, orderData);
             }
         });
 
-        btnReceive.setOnClickListener(new View.OnClickListener() {
+        btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "selesai clicked", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                confirmPurchaseOrder(context, dialog, orderData);
             }
         });
 
@@ -452,7 +448,6 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnNotReceive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "belum sampai clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 showNotReceiveDialog(context, orderData);
             }
@@ -461,15 +456,29 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnReceive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "sudah sampai clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                LocalCacheHandler cache = new LocalCacheHandler(context,
+                        ConstantOnBoarding.CACHE_FREE_RETURN);
+                if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getCreateResCenterActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                } else {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                }
             }
         });
 
         dialog.show();
     }
 
-    private void showNotReceiveDialog(final Context context, OrderData orderData) {
+    private void showNotReceiveDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_not_received);
         Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
@@ -477,7 +486,6 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "refund clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
@@ -485,8 +493,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnCheckCourier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "check courier clicked", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                processTrackOrder(context, orderData);
             }
         });
 

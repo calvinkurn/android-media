@@ -8,7 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -43,6 +47,7 @@ import java.util.Map;
  * @author by Angga.Prasetiyo on 28/04/2016.
  */
 public class TxDetailPresenterImpl implements TxDetailPresenter {
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
 
@@ -209,6 +214,11 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 });
     }
 
+    @Override
+    public void processComplain(Context context, OrderData orderData){
+        showComplainDialog(context, orderData);
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -228,6 +238,77 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         Dialog alertDialog = builder.create();
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         viewListener.showDialog(builder.create());
+    }
+
+    private void showComplainDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_complain);
+        TextView tvBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
+        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
+        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        String bodyContent = String.format(context.getResources().getString(R.string.string_complain_body), orderData.getOrderShop().getShopName());
+        tvBody.setText(bodyContent);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnNotReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                showNotReceiveDialog(context, orderData);
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                LocalCacheHandler cache = new LocalCacheHandler(context,
+                        ConstantOnBoarding.CACHE_FREE_RETURN);
+                if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getCreateResCenterActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                } else {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showNotReceiveDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_not_received);
+        Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
+        Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        btnRefund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnCheckCourier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                processTrackOrder(context, orderData);
+            }
+        });
+
+        dialog.show();
     }
 
     private void processResolution(final Context context, String message) {

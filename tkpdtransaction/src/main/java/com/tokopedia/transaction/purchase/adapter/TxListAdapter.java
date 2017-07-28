@@ -45,6 +45,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
         void actionConfirmDeliver(OrderData data);
 
+        void actionComplainConfirmDeliver(OrderData orderData);
+
         void actionTrackOrder(OrderData data);
 
         void actionReject(OrderData data);
@@ -290,6 +292,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_confirm_package) {
                 actionListener.actionConfirmDeliver(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_complain_confirm_package) {
+                actionListener.actionComplainConfirmDeliver(orderData);
                 return true;
             } else if (item.getItemId() == R.id.action_open_dispute) {
                 actionListener.actionDispute(orderData, 0);
