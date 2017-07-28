@@ -19,6 +19,8 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -118,7 +120,15 @@ import com.tokopedia.tkpd.home.tokocash.BottomSheetTokoCash;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+import rx.schedulers.TimeInterval;
 
 
 /**
@@ -219,7 +229,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private class ViewHolder {
         private View MainView;
         private View banner;
-        private ViewPager bannerPager;
+        private RecyclerView bannerPager;
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
         private TokoCashHeaderView tokoCashHeaderView;
@@ -341,31 +351,43 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         };
     }
 
+    int currentPosition;
+
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
-            bannerPagerAdapter = new BannerPagerAdapter(getActivity(), promoList);
+            bannerPagerAdapter = new BannerPagerAdapter(promoList);
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
-            holder.bannerPager = (ViewPager) holder.banner.findViewById(R.id.viewpager_banner_category);
-            holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator_banner_category);
+            holder.bannerPager = (RecyclerView) holder.banner.findViewById(R.id.viewpager_banner_category);
+            holder.bannerPager.setHasFixedSize(true);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            holder.bannerPager.setLayoutManager(layoutManager);
             holder.bannerPager.setAdapter(bannerPagerAdapter);
-            holder.bannerPager.addOnPageChangeListener(getOnBannerPageChangeListener());
-            holder.bannerIndicator.setFillColor(ContextCompat.getColor(getActivity(), com.tokopedia.discovery.R.color.tkpd_dark_orange));
-            holder.bannerIndicator.setPageColor(ContextCompat.getColor(getActivity(), com.tokopedia.discovery.R.color.white));
-            holder.bannerIndicator.setViewPager(holder.bannerPager);
-            bannerPagerAdapter.notifyDataSetChanged();
-//            holder.bannerPager.setPageMargin(getResources()
-//                    .getDimensionPixelOffset(R.dimen.viewpager_margin));
-//            holder.bannerPager.setOnPromoLinkClickListener(onPromoLinkClicked());
-//            holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View view, MotionEvent motionEvent) {
-//                    if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-//                        holder.bannerPager.stopTurning();
-//                    }
-//                    return false;
-//                }
-//            });
-//            holder.bannerPager.startTurning(SLIDE_DELAY);
+
+            holder.bannerPager.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                }
+            });
+
+            PagerSnapHelper snapHelper = new PagerSnapHelper();
+            snapHelper.attachToRecyclerView(holder.bannerPager);
+
+            Observable.interval(3000L, TimeUnit.MILLISECONDS)
+                    .timeInterval()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<TimeInterval<Long>>() {
+                        @Override
+                        public void call(TimeInterval<Long> longTimeInterval) {
+                            if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
+                                currentPosition = -1;
+                            }
+                            holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
+                        }
+                    });
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }

@@ -1,12 +1,12 @@
 package com.tokopedia.tkpd.home.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -29,23 +28,81 @@ import com.tokopedia.tkpd.home.facade.FacadePromo;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by hangnadi on 7/24/17.
  */
 
-public class BannerPagerAdapter extends PagerAdapter {
+public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
-    private final Context context;
-    private final List<FacadePromo.PromoItem> bannerList;
+    private List<FacadePromo.PromoItem> bannerList;
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
-    public BannerPagerAdapter(Context context, List<FacadePromo.PromoItem> promoList) {
-        this.context = context;
+    public BannerPagerAdapter(List<FacadePromo.PromoItem> promoList) {
         this.bannerList = promoList;
     }
 
+    public class BannerViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView bannerImage;
+        CardView cardView;
+
+        public BannerViewHolder(View itemView) {
+            super(itemView);
+            bannerImage = (ImageView) itemView.findViewById(R.id.image);
+            cardView = (CardView) itemView.findViewById(R.id.card_view);
+        }
+    }
+
     @Override
+    public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new BannerViewHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.layout_slider_banner_category, parent, false)
+        );
+    }
+
+    @Override
+    public void onBindViewHolder(BannerViewHolder holder, int position) {
+        if (bannerList.get(position).imgUrl!=null &&
+                bannerList.get(position).promoUrl.length()>0) {
+            holder.bannerImage.setOnClickListener(
+                    getBannerImageOnClickListener(bannerList.get(position).promoUrl)
+            );
+        }
+
+        float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
+        int padding_8dp = (int) (8 * scale + 0.5f);
+
+        if (position == getItemCount() - 1) {
+            holder.itemView.setPadding(padding_8dp, 0, padding_8dp, 0);
+        } else {
+            holder.itemView.setPadding(padding_8dp, 0, 0, 0);
+        }
+
+        int width320dp = (int) (320 * scale + 0.5f);
+        int height160dp = (int) (160 * scale + 0.5f);
+        ViewGroup.LayoutParams layoutParams = holder.bannerImage.getLayoutParams();
+        layoutParams.height = height160dp;
+        layoutParams.width = width320dp;
+        holder.bannerImage.setLayoutParams(layoutParams);
+        holder.bannerImage.requestLayout();
+
+        ImageHandler.LoadImage(
+                holder.bannerImage,
+                bannerList.get(position).imgUrl
+        );
+
+        Log.d("hangnadi", String.format(Locale.US, "onBindViewHolder: %s", bannerList.get(position).imgUrl));
+    }
+
+    @Override
+    public int getItemCount() {
+        return bannerList.size();
+    }
+
+    /*@Override
     public Object instantiateItem(ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.layout_slider_banner_category, container, false);
@@ -70,7 +127,7 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
-    }
+    }*/
 
     private View.OnClickListener getBannerImageOnClickListener(final String url) {
         return new View.OnClickListener() {
@@ -83,24 +140,24 @@ public class BannerPagerAdapter extends PagerAdapter {
                     List<String> linkSegment = uri.getPathSegments();
                     if (isBaseHost(host) && isShop(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
-                        getShopInfo(url, shopDomain);
+                        getShopInfo(url, shopDomain, view.getContext());
                     } else if (isBaseHost(host) && isProduct(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
-                        openProductPageIfValid(url, shopDomain);
+                        openProductPageIfValid(url, shopDomain, view.getContext());
                     } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
-                        DeepLinkChecker.openCategory(url, context);
+                        DeepLinkChecker.openCategory(url, view.getContext());
                     } else {
-                        openWebViewURL(url);
+                        openWebViewURL(url, view.getContext());
                     }
 
                 } catch (Exception e) {
-                    openWebViewURL(url);
+                    openWebViewURL(url, view.getContext());
                 }
             }
         };
     }
 
-    @Override
+    /*@Override
     public int getCount() {
         return bannerList.size();
     }
@@ -113,7 +170,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         if (object != null && object instanceof View) container.removeView((View) object);
-    }
+    }*/
 
     private boolean isBaseHost(String host) {
         return (host.contains(TkpdBaseURL.BASE_DOMAIN) || host.contains(TkpdBaseURL.MOBILE_DOMAIN));
@@ -147,7 +204,7 @@ public class BannerPagerAdapter extends PagerAdapter {
                 || link.startsWith("invoice.pl");
     }
 
-    public void openProductPageIfValid(final String url, final String shopDomain) {
+    public void openProductPageIfValid(final String url, final String shopDomain, final Context context) {
         getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
         getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
             @Override
@@ -158,27 +215,27 @@ public class BannerPagerAdapter extends PagerAdapter {
                     if (shopModel.info != null) {
                         DeepLinkChecker.openProduct(url, context);
                     } else {
-                        openWebViewURL(url);
+                        openWebViewURL(url, context);
                     }
                 } catch (Exception e) {
-                    openWebViewURL(url);
+                    openWebViewURL(url, context);
                 }
             }
 
             @Override
             public void onError(String message) {
-                openWebViewURL(url);
+                openWebViewURL(url, context);
             }
 
             @Override
             public void onFailure() {
-                openWebViewURL(url);
+                openWebViewURL(url, context);
             }
         });
         getShopInfoRetrofit.getShopInfo();
     }
 
-    public void getShopInfo(final String url, final String shopDomain) {
+    public void getShopInfo(final String url, final String shopDomain, final Context context) {
         getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
         getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
             @Override
@@ -195,28 +252,28 @@ public class BannerPagerAdapter extends PagerAdapter {
                         intent.putExtras(bundle);
                         context.startActivity(intent);
                     } else {
-                        openWebViewURL(url);
+                        openWebViewURL(url, context);
                     }
                 } catch (Exception e) {
-                    openWebViewURL(url);
+                    openWebViewURL(url, context);
                 }
             }
 
             @Override
             public void onError(String message) {
-                openWebViewURL(url);
+                openWebViewURL(url, context);
             }
 
             @Override
             public void onFailure() {
-                openWebViewURL(url);
+                openWebViewURL(url, context);
             }
         });
         getShopInfoRetrofit.getShopInfo();
     }
 
-    public void openWebViewURL(String url) {
-        if (url != "") {
+    public void openWebViewURL(String url, Context context) {
+        if (url != "" && context != null) {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra("url", url);
             context.startActivity(intent);
