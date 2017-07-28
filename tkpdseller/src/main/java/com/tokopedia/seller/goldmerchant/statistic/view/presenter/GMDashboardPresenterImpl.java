@@ -7,7 +7,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatEmptyUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
@@ -33,21 +32,18 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     private GMStatGetPopularProductUseCase popularProductUseCase;
     private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
     private GMStatGetProductGraphUseCase productGraphUseCase;
-    private GMStatEmptyUseCase gmStatEmptyUseCase;
 
     public GMDashboardPresenterImpl(
             GMStatMarketInsightUseCase marketInsightUseCase,
             GMStatGetBuyerGraphUseCase buyerGraphUseCase,
             GMStatGetPopularProductUseCase popularProductUseCase,
             GMStatGetTransactionGraphUseCase transactionGraphUseCase,
-            GMStatGetProductGraphUseCase productGraphUseCase,
-            GMStatEmptyUseCase gmStatEmptyUseCase) {
+            GMStatGetProductGraphUseCase productGraphUseCase) {
         this.marketInsightUseCase = marketInsightUseCase;
         this.buyerGraphUseCase = buyerGraphUseCase;
         this.popularProductUseCase = popularProductUseCase;
         this.transactionGraphUseCase = transactionGraphUseCase;
         this.productGraphUseCase = productGraphUseCase;
-        this.gmStatEmptyUseCase = gmStatEmptyUseCase;
     }
 
     @Override
