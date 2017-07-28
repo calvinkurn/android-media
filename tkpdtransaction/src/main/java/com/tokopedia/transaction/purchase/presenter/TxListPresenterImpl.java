@@ -487,6 +487,11 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, 1
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
             }
         });
 
@@ -494,7 +499,12 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                processTrackOrder(context, orderData);
+//                processTrackOrder(context, orderData);
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, 6
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
             }
         });
 
