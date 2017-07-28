@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.payment.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import retrofit2.Response;
@@ -16,9 +17,9 @@ import rx.Observable;
 public interface BcaOneClickApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_GET_ACCESS_TOKEN)
-    Observable<Response<String>>
-    getBcaOneClickAccessToken(@FieldMap TKPDMapParam<String, String> params);
+    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK)
+    Observable<Response<TkpdResponse>>
+    accessBcaOneClick(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_GET_USER_DATA)
@@ -26,8 +27,8 @@ public interface BcaOneClickApi {
     getBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_ADD_USER_DATA)
-    Observable<Response<String>>
+    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK)
+    Observable<Response<TkpdResponse>>
     registerBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded

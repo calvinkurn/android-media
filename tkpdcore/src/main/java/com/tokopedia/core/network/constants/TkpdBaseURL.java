@@ -787,7 +787,7 @@ public class TkpdBaseURL {
 
     public static class Payment {
         public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
-        public static final String PATH_ONE_CLICK_GET_ACCESS_TOKEN = "oneclick/auth";
+        public static final String PATH_ONE_CLICK = "ws/oneclick";
         public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
         public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
         public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";

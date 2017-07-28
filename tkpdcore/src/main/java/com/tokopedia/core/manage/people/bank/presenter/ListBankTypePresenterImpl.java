@@ -35,7 +35,7 @@ public class ListBankTypePresenterImpl implements ListBankTypePresenter {
     public void onOneClickBcaChosen(Subscriber<BcaOneClickData> subscriber) {
         TKPDMapParam<String, String> bcaOneClickParam = new TKPDMapParam<>();
         bcaOneClickParam.put("grant_type", "client_credentials");
-        compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken(AuthUtil
+        compositeSubscription.add(bcaOneClickRepository.accessBcaOneClick(AuthUtil
                 .generateParamsNetwork(mainView.getContext() ,bcaOneClickParam))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -48,6 +48,7 @@ public class ListBankTypePresenterImpl implements ListBankTypePresenter {
         TKPDMapParam<String, String> bcaOneClickParam = new TKPDMapParam<>();
         bcaOneClickParam.put("tokopedia_user_id", SessionHandler.getLoginID(mainView.getContext()));
         bcaOneClickParam.put("merchant_code", "tokopedia");
+        bcaOneClickParam.put("action", "auth");
         bcaOneClickParam.put("profile_code", "TKPD_DEFAULT");
         compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken(AuthUtil
                 .generateParamsNetwork(mainView.getContext() ,bcaOneClickParam))

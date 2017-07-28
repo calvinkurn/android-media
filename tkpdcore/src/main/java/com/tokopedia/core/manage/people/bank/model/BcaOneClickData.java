@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class BcaOneClickData {
 
-    @SerializedName("data")
+    @SerializedName("access_token")
     private String accessToken;
 
     @SerializedName("message")
