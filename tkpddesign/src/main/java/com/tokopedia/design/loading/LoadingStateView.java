@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 
 import com.tokopedia.design.R;
 
-import java.util.HashSet;
-
 /**
  * Created by hendry on 7/10/2017.
  */
@@ -36,8 +34,6 @@ public class LoadingStateView extends FrameLayout {
     private View errorView;
     private View emptyView;
     private View contentView;
-
-    private HashSet<View> viewSet;
 
     @LayoutRes
     private int loadingLayoutRes;
@@ -76,7 +72,6 @@ public class LoadingStateView extends FrameLayout {
     private void init() {
         View view = inflate(getContext(), R.layout.widget_loading_state_view, this);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
-        viewSet = new HashSet<>();
         setFocusableInTouchMode(true);
     }
 
@@ -121,7 +116,6 @@ public class LoadingStateView extends FrameLayout {
 
     public void setLoadingView(View view) {
         if (loadingView != null) {
-            removeViewFromSet(view);
             frameLayout.removeView(loadingView);
         }
         loadingView = view;
@@ -140,7 +134,6 @@ public class LoadingStateView extends FrameLayout {
 
     public void setEmptyView(View view) {
         if (emptyView != null) {
-            removeViewFromSet(emptyView);
             frameLayout.removeView(emptyView);
         }
         emptyView = view;
@@ -188,28 +181,14 @@ public class LoadingStateView extends FrameLayout {
         if (view == null) {
             return;
         }
-        if (!viewSet.contains(view)) {
-            viewSet.add(view);
-        }
-        for (View viewTemp : viewSet) {
-            if (viewTemp == null) {
-                continue;
-            }
-            if (viewTemp != view) {
-                viewTemp.setVisibility(View.GONE);
+        for (int i=0, sizei= frameLayout.getChildCount(); i<sizei; i++) {
+            View childView = frameLayout.getChildAt(i);
+            if (childView == view) {
+                childView.setVisibility(View.VISIBLE);
             } else {
-                viewTemp.setVisibility(View.VISIBLE);
+                childView.setVisibility(View.GONE);
             }
-
         }
     }
 
-    private void removeViewFromSet(View view) {
-        if (view == null) {
-            return;
-        }
-        if (!viewSet.contains(view)) {
-            viewSet.add(view);
-        }
-    }
 }
