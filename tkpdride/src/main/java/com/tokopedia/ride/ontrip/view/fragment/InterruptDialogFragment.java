@@ -111,12 +111,7 @@ public class InterruptDialogFragment extends DialogFragment {
         labelDescriptionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String seamlessURL = URLGenerator.generateURLSessionLogin(
-                        (Uri.encode(url)),
-                        getActivity()
-                );
-                Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), seamlessURL);
+                Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), url);
                 startActivity(intent);
                 isProgramaticallyDismissed = true;
                 getTargetFragment().onActivityResult(
