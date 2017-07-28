@@ -779,11 +779,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToShopDetailFromCampaign(String shopUrl) {
         UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
-
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle("", shopUrl);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), shopUrl);
     }
 
     private void openWebViewBrandsURL(String url) {

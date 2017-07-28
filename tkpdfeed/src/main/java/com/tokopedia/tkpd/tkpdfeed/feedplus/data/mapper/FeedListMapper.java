@@ -272,7 +272,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     private ShopDomain convertToOfficialStoreProductShopDomain(Feeds.Data.Shop1 shop) {
         return new ShopDomain(shop.name(),
                 shop.url(),
-                shop.location());
+                shop.url_app(), shop.location());
     }
 
 

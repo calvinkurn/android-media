@@ -264,7 +264,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 getCashbackLabel(productDomain.getData().getLabels()),
                 isWholesale(productDomain.getData().getLabels()),
                 isPreorder(productDomain.getData().getLabels()),
-                productDomain.getData().getShop().getUrl());
+                productDomain.getData().getShop().getUrl_app());
     }
 
     private boolean isPreorder(List<LabelDomain> labels) {

@@ -78,6 +78,7 @@ query Feeds ($userID: Int!, $limit: Int!, $cursor: String, $page: Int!) {
                                 shop {
                                     name
                                     url
+                                    url_app
                                     location
                                 }
                                 original_price

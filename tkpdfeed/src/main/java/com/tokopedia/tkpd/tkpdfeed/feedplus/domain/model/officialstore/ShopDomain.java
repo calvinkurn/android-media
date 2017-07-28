@@ -7,22 +7,28 @@ import javax.annotation.Nullable;
  */
 
 public class ShopDomain {
-        private final
-        @Nullable
-        String name;
+    private final
+    @Nullable
+    String name;
 
-        private final
-        @Nullable
-        String url;
+    private final
+    @Nullable
+    String url;
 
-        private final
-        @Nullable
-        String location;
+    private final
+    @Nullable
+    String url_app;
 
 
-    public ShopDomain(String name, String url, String location) {
+    private final
+    @Nullable
+    String location;
+
+
+    public ShopDomain(String name, String url, String url_app, String location) {
         this.name = name;
         this.url = url;
+        this.url_app = url_app;
         this.location = location;
     }
 
@@ -39,5 +45,10 @@ public class ShopDomain {
     @Nullable
     public String getLocation() {
         return location;
+    }
+
+    @Nullable
+    public String getUrl_app() {
+        return url_app;
     }
 }
