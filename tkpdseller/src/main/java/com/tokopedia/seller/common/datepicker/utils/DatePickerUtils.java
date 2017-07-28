@@ -126,12 +126,17 @@ public class DatePickerUtils {
         return timeUnit.convert(diffInMillis, TimeUnit.MILLISECONDS);
     }
 
-    public static DatePickerViewModel convertDatePickerFromIntent(Intent intent) {
+    public static DatePickerViewModel convertDatePickerFromIntent(Intent intent, DatePickerViewModel prevDatePickerViewModel) {
         long starDate = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
         long endDate = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
         int lastSelection = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
         int selectionType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
-        boolean isComparedDate = intent.getBooleanExtra(DatePickerConstant.EXTRA_COMPARE_DATE, false);
+        boolean isComparedDate;
+        if (intent.hasExtra(DatePickerConstant.EXTRA_COMPARE_DATE)) {
+            isComparedDate = intent.getBooleanExtra(DatePickerConstant.EXTRA_COMPARE_DATE, false);
+        } else { // no compare date in intent, we use the previous compare date
+            isComparedDate = prevDatePickerViewModel != null && prevDatePickerViewModel.isCompareDate();
+        }
         DatePickerViewModel datePickerViewModel = new DatePickerViewModel();
         datePickerViewModel.setStartDate(starDate);
         datePickerViewModel.setEndDate(endDate);
