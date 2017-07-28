@@ -222,12 +222,12 @@ public class TitleCardView extends CardView {
     }
 
     public void setViewState(int state) {
-        if (state == LoadingStateView.VIEW_LOADING) {
-            setLoadingState(true);
-        } else if (state == LoadingStateView.VIEW_EMPTY) {
-            setLoadingState(false);
-        } else {
-            setLoadingState(false);
+        switch (state) {
+            case LoadingStateView.VIEW_LOADING:
+                setLoadingState(true);
+                break;
+            default:
+                setLoadingState(false);
         }
         loadingStateView.setViewState(state);
     }

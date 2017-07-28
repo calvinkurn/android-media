@@ -195,7 +195,7 @@ public class LoadingStateView extends FrameLayout {
         if (view == null) {
             return;
         }
-        int childSize = frameLayout.getChildCount()
+        int childSize = frameLayout.getChildCount();
         for (int i = 0; i < childSize; i++) {
             View childView = frameLayout.getChildAt(i);
             if (childView == view) {
