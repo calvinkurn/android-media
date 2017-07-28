@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.topads.WebViewTopAdsActivity;
+import com.tokopedia.core.topads.WebViewTopAdsFragment;
+import com.tokopedia.core.var.TkpdUrl;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
@@ -157,8 +159,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void onFindOutTopAdsClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(getActivity(), WebViewTopAdsActivity.class);
+        intent.putExtra(WebViewTopAdsFragment.SOURCE_EXTRA, TkpdUrl.INFO_TOPADS);
+        getActivity().startActivity(intent);
     }
 
     @Override
