@@ -45,7 +45,7 @@
         tools:text="@string/find_out" />
 
     <Button
-        android:id="@+id/button_action"
+        android:id="@+id/button_register_topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tkpd_main_orange"

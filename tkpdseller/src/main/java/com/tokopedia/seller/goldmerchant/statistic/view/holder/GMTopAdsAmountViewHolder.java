@@ -26,7 +26,8 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
     public interface OnTopAdsViewHolderListener {
         void onChangeDateClicked();
-
+        void onViewTopAdsClicked();
+        void onRegisterTopAdsNowClicked();
         void onFindOutTopAdsClicked();
     }
 
@@ -44,9 +45,18 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
     public GMTopAdsAmountViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.topads_statistic_card_view);
+        View vSeeTopAds = titleCardView.findViewById(R.id.tv_see_topads);
         gmStatisticTopAdsGraph = (LineChartView) view.findViewById(R.id.gm_statistic_topads_graph);
         gmTopAdsLineChartWidget = (LineChartContainerWidget) titleCardView.findViewById(R.id.topads_line_chart_container);
         monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        vSeeTopAds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onTopAdsViewHolderListener!= null) {
+                    onTopAdsViewHolderListener.onViewTopAdsClicked();
+                }
+            }
+        });
     }
 
     private void setTopAdsCardView(GMGraphViewModel gmGraphViewModel) {
@@ -104,12 +114,12 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvSubtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
             tvAction = (TextView) itemView.findViewById(R.id.tv_action);
-            button = itemView.findViewById(R.id.button_action);
+            button = itemView.findViewById(R.id.button_register_topads);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onTopAdsViewHolderListener != null) {
-                        onTopAdsViewHolderListener.onFindOutTopAdsClicked();
+                        onTopAdsViewHolderListener.onRegisterTopAdsNowClicked();
                     }
                 }
             });

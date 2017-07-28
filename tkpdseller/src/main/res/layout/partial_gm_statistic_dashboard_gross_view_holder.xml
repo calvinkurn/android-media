@@ -13,6 +13,10 @@
         android:id="@+id/line_chart_container_gross"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/gmstat_padding_item_left_right"
+        android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+        android:paddingRight="@dimen/gmstat_padding_item_left_right"
+        android:paddingTop="8dp"
         app:subtitle="@string/gm_statistic_dashboard_gross">
 
         <com.tokopedia.seller.lib.williamchart.view.LineChartView
