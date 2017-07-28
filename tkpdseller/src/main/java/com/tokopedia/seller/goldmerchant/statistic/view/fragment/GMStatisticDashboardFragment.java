@@ -142,13 +142,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         hideSnackBarRetry();
     }
 
     @Override
     public void onErrorLoadTransactionGraph(Throwable t) {
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
-        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
+        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         showSnackbarRetry();
     }
 

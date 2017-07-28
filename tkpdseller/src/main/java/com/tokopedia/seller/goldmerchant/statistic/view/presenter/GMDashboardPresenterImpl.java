@@ -69,8 +69,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
             }
         });
 
-        getPopularProduct();
-
         RequestParams buyerParam = GMStatGetBuyerGraphUseCase.createRequestParam(starDate, endDate);
         buyerGraphUseCase.execute(buyerParam, new Subscriber<GetBuyerGraph>() {
             @Override
@@ -111,6 +109,8 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 onSuccessGetCategory(keywordModel.getCategoryName());
             }
         });
+
+        getPopularProduct();
     }
 
     private void getProductGraph(long startDate, long endDate) {

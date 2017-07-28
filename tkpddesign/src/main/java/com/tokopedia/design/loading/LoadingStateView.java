@@ -95,7 +95,7 @@ public class LoadingStateView extends FrameLayout {
             }
 
             // check if it is content, add to the first index, so loading and empty will be on front of content view
-            if (contentView == null && child != loadingView && child != emptyView) {
+            if (contentView == null && child != loadingView && child != emptyView && child != errorView) {
                 contentView = child;
                 frameLayout.addView(child, 0, params);
             } else {
