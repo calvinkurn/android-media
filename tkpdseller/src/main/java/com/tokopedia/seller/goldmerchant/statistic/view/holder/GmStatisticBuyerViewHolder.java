@@ -63,7 +63,7 @@ public class GmStatisticBuyerViewHolder implements GMStatisticViewHolder {
         if (totalBuyer == 0 && (maleBuyerCount == 0 || femaleBuyerCount == 0)) {
             tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
             buyerDataPieChart.setProgress(0f);
-            arrowPercentageView.setNoDataPercentage();
+            arrowPercentageView.setPercentage(diffTotalPercent);
             tvMainLegendPie.setTextColor(greyColor);
             tvMainLegendPie.setText(DEFAULT_PERCENT_PIE);
             tvMainLegendPieDesc.setVisibility(View.GONE);
@@ -103,8 +103,7 @@ public class GmStatisticBuyerViewHolder implements GMStatisticViewHolder {
 
         tvBuyerAmount.setText(KMNumbers.getFormattedString(totalBuyer));
 
-        double percentage = diffTotalPercent;
-        arrowPercentageView.setPercentage(percentage);
+        arrowPercentageView.setPercentage(diffTotalPercent);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 

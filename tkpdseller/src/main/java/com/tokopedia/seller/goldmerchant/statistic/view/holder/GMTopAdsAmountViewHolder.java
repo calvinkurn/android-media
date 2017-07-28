@@ -177,7 +177,7 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
                 tvSubtitle.setVisibility(View.GONE);
             } else {
                 tvSubtitle.setText(MethodChecker.fromHtml(tvSubtitle.getContext().getString(R.string.gm_stat_top_ads_empty_desc_credit_not_used,
-                        KMNumbers.formatString((double) data.amount))));
+                        KMNumbers.formatRupiahString(tvSubtitle.getContext(), data.amount))));
                 tvSubtitle.setVisibility(View.VISIBLE);
             }
             tvAction.setText(tvAction.getContext().getString(R.string.find_out));

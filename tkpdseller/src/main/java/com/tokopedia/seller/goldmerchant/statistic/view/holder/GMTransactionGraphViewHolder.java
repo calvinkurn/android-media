@@ -184,7 +184,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
             case GMTransactionGraphType.REJECT_TRANS:
             case GMTransactionGraphType.SUCCESS_TRANS:
             case GMTransactionGraphType.TOTAL_TRANSACTION:
-                gmLineChartContainer.setAmount(Integer.toString(data.amount));
+                gmLineChartContainer.setAmount(Long.toString(data.amount));
                 break;
         }
     }

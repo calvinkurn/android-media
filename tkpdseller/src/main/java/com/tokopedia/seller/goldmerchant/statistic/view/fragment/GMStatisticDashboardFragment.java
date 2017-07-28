@@ -236,4 +236,9 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     protected String getScreenName() {
         return null;
     }
+
+    @Override
+    public boolean allowCompareDate() {
+        return false;
+    }
 }

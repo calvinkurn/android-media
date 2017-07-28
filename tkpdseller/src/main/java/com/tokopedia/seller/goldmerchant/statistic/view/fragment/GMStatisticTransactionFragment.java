@@ -159,4 +159,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public boolean isComparingDate() {
         return isComparingDate;
     }
+
+    @Override
+    public boolean allowCompareDate() {
+        return true;
+    }
 }
