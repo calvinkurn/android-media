@@ -13,7 +13,6 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.lib.williamchart.Tools;
@@ -32,7 +31,6 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
     }
 
     private LineChartView gmStatisticTopAdsGraph;
-    private GMPercentageViewHelper gmPercentageViewHelper;
 
     private String[] monthNamesAbrev;
     private TitleCardView titleCardView;
@@ -48,8 +46,6 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
         titleCardView = (TitleCardView) view.findViewById(R.id.topads_statistic_card_view);
         gmStatisticTopAdsGraph = (LineChartView) view.findViewById(R.id.gm_statistic_topads_graph);
         gmTopAdsLineChartWidget = (LineChartContainerWidget) titleCardView.findViewById(R.id.topads_line_chart_container);
-        gmTopAdsLineChartWidget.setPercentageUtil(gmPercentageViewHelper);
-        gmPercentageViewHelper = new GMPercentageViewHelper(view.getContext());
         monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 

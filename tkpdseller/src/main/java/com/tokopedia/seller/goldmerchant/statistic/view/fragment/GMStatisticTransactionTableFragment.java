@@ -16,12 +16,13 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatatisticDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
@@ -79,8 +80,11 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    protected void searchData() {
-        super.searchData();
+    public void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page) {
+        // when we pulldown to refresh, we default the sorttype to default
+        if (savedSortByAfterChangeKeyFigure!= 0) {
+            reselectSortType();
+        }
         transactionTablePresenter.loadData(
                 new Date(datePickerViewModel.getStartDate()),
                 new Date(datePickerViewModel.getEndDate()),
@@ -90,13 +94,13 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public Intent getDatePickerIntent() {
-        return GMStatatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
+    public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
+        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
     }
 
     @Override
-    public void setDefaultDateViewModel() {
-        datePickerViewModel = GMStatatisticDateUtils.getDefaultDatePickerViewModel();
+    public DatePickerViewModel getDefaultDateViewModel() {
+        return GMStatisticDateUtils.getDefaultDatePickerViewModel();
     }
 
     @Override
@@ -213,13 +217,17 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         });
     }
 
+    private void reselectSortType(){
+        sortType = savedSortTypeAfterChangeKeyFigure;
+        savedSortByAfterChangeKeyFigure = 0;
+        int sortTypeSelection = (sortType == GMTransactionTableSortType.DESCENDING)? 0 : 1;
+        resetSelectionSortType(sortTypeSelection);
+    }
+
     private void showSortType() {
         // retrieve saved sort type
         if (savedSortByAfterChangeKeyFigure!= 0 && savedSortByAfterChangeKeyFigure == sortBy) {
-            sortType = savedSortTypeAfterChangeKeyFigure;
-            savedSortByAfterChangeKeyFigure = 0;
-            int sortTypeSelection = (sortType == GMTransactionTableSortType.DESCENDING)? 0 : 1;
-            resetSelectionSortType(sortTypeSelection);
+            reselectSortType();
         }
         showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
@@ -293,5 +301,10 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     protected int getStartPage() {
         return START_PAGE;
+    }
+
+    @Override
+    public boolean allowComparedDate() {
+        return false;
     }
 }

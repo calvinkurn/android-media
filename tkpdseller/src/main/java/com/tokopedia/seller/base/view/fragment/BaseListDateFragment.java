@@ -7,16 +7,16 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.base.view.listener.DatePicker;
+import com.tokopedia.seller.base.view.listener.DatePickerList;
 import com.tokopedia.seller.base.view.listener.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.lib.widget.DateLabelView;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -24,13 +24,15 @@ import javax.inject.Inject;
  * Created by nathan on 7/21/17.
  */
 
-public abstract class BaseListDateFragment<T extends ItemType> extends BaseListFragment<BlankPresenter, T> implements DatePicker, DatePickerView {
+public abstract class BaseListDateFragment<T extends ItemType> extends BaseListFragment<BlankPresenter, T>
+        implements DatePickerList, DatePickerView {
 
     protected DateLabelView dateLabelView;
 
     @Inject
     public DatePickerPresenter datePickerPresenter;
-    protected DatePickerViewModel datePickerViewModel;
+    private DatePickerViewModel datePickerViewModel;
+    private boolean needReloadData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,44 +56,59 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onResume() {
         super.onResume();
-        if (!datePickerPresenter.isViewAttached()) {
-            datePickerPresenter.attachView(this);
+        if (datePickerViewModel!= null && needReloadData) {
+            reloadDataForDate();
+            needReloadData = false;
         }
+    }
+
+    @Override
+    protected final void loadData() {
+        super.loadData();
+    }
+
+    @Override
+    protected final void searchData() {
+        super.searchData();
+        reloadDataForDate();
+    }
+
+    @Override
+    public void reloadDataForDate() {
+        // important to reattach here, or the presenter will attach to the previous fragment when onResume
+        datePickerPresenter.attachView(this);
         datePickerPresenter.fetchDatePickerSetting();
     }
 
     @Override
-    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerFromDatabase) {
-        if (datePickerViewModel == null) {
-            datePickerViewModel = datePickerFromDatabase;
-            loadData();
-        } else if (!DatePickerUtils.isDateEqual(DatePickerConstant.DATE_FORMAT,
-                datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate(),
-                datePickerFromDatabase.getStartDate(), datePickerFromDatabase.getEndDate())) {
-            datePickerPresenter.saveDateSetting(datePickerViewModel);
-            loadData();
-        }
+    public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
+        this.datePickerViewModel = datePickerViewModel;
+        loadDataByDateAndPage(datePickerViewModel, page);
+        setDateLabelView();
     }
 
     @Override
-    public void loadData() {
-        super.loadData();
-        dateLabelView.setDate(new Date(datePickerViewModel.getStartDate()), new Date(datePickerViewModel.getEndDate()));
+    public abstract void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page);
+
+    private void setDateLabelView() {
+        dateLabelView.setDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        if (isComparingDate()) {
+            PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(
+                    datePickerViewModel.getStartDate(),
+                    datePickerViewModel.getEndDate());
+            dateLabelView.setComparedDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
+        }
     }
 
     @Override
     public void onErrorLoadDatePicker(Throwable throwable) {
         if (datePickerViewModel == null) {
-            setDefaultDateViewModel();
+            datePickerViewModel = getDefaultDateViewModel();
         } else {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
-        loadData();
-    }
-
-    @Override
-    protected void setActionVar() {
-        // Do nothing
+        setDateLabelView();
+        loadDataByDateAndPage(datePickerViewModel, page);
     }
 
     @Override
@@ -127,12 +144,27 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     }
 
     protected void onDateSelected(Intent intent) {
-        datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
+        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
+        if (datePickerViewModel!= null && !datePickerViewModel.equals(this.datePickerViewModel)) {
+            datePickerPresenter.saveDateSetting(datePickerViewModel);
+            needReloadData = true;
+        }
+    }
+
+    @Override
+    public abstract boolean allowComparedDate();
+
+    @Override
+    public final boolean isComparingDate() {
+        if (datePickerViewModel!= null) {
+            return datePickerViewModel.isCompareDate();
+        }
+        return false;
     }
 
     @Override
     public void openDatePicker() {
-        startActivityForResult(getDatePickerIntent(), DatePickerConstant.REQUEST_CODE_DATE);
+        startActivityForResult(getDatePickerIntent(datePickerViewModel), DatePickerConstant.REQUEST_CODE_DATE);
     }
 
     @Override

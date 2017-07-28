@@ -15,6 +15,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
@@ -114,7 +115,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             @Override
             public void onRetryClicked() {
                 resetToLoading();
-                gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+                reloadDataForDate();
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
@@ -122,8 +123,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void loadData() {
-        super.loadData();
+    public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
         resetToLoading();
         gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
@@ -235,5 +235,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public boolean allowComparedDate() {
+        return false;
     }
 }

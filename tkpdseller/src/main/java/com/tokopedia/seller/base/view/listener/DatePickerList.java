@@ -8,8 +8,7 @@ import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
  * Created by nathan on 7/18/17.
  */
 
-public interface DatePicker extends BaseDatePicker {
+public interface DatePickerList extends BaseDatePicker{
 
-    void loadDataByDate(DatePickerViewModel datePickerViewModel);
-
+    void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page);
 }

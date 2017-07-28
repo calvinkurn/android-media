@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.DatePickerView;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
@@ -84,8 +86,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public void loadData() {
-        super.loadData();
+    public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
         loadingState(LoadingStateView.VIEW_LOADING);
         presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
@@ -98,7 +99,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, datePickerViewModel.isCompareDate());
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, isComparingDate());
         finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
     }
 
@@ -129,7 +130,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public boolean isComparedDate() {
+    public boolean allowComparedDate() {
         return true;
     }
 

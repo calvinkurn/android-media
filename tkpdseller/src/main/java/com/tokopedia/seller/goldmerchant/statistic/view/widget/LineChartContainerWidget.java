@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.PercentageUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView;
 import com.tokopedia.seller.lib.widget.GMDateRangeView;
 
 /**
@@ -128,6 +126,10 @@ public class LineChartContainerWidget extends LinearLayout {
         arrowPercentageView.setVisibility(View.VISIBLE);
     }
 
+    public void hidePercentageView(){
+        arrowPercentageView.setVisibility(View.GONE);
+    }
+
     public void setSubtitle(CharSequence subtitle) {
         this.subtitle = subtitle;
         if (TextUtils.isEmpty(subtitle)) {
@@ -145,10 +147,6 @@ public class LineChartContainerWidget extends LinearLayout {
             tvPercentageDesc.setText(percentageDesc);
             tvPercentageDesc.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void setPercentageUtil(PercentageUtil percentageUtil) {
-        arrowPercentageView.setPercentageUtil(percentageUtil);
     }
 
     @Override

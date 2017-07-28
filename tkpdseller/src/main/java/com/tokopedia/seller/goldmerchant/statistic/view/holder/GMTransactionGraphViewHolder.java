@@ -15,7 +15,6 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMPercentageViewHelper;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
@@ -56,7 +55,6 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
             }
         });
         gmLineChartContainer = (LineChartContainerWidget) gmTitleCardView.findViewById(R.id.gold_merchant_line_chart_container);
-        gmLineChartContainer.setPercentageUtil(new GMPercentageViewHelper(gmTitleCardView.getContext()));
         gmStatisticIncomeGraph = (LineChartView) view.findViewById(R.id.gm_statistic_transaction_income_graph);
 
         gmStatGraphSelection = 0;
@@ -132,8 +130,10 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void bind(@Nullable GMGraphViewWithPreviousModel data) {
+
         setHeaderValue(data);
         if (compareGraph) {
+            gmLineChartContainer.setPercentage(data.percentage);
             gmLineChartContainer.setCompareDate(data);
             gmLineChartContainer.setMainDate(data);
             // create model for current Data
@@ -150,6 +150,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
             showTransactionGraph(baseWilliamChartModels);
         } else {
+            gmLineChartContainer.hidePercentageView();
             fillTransactionGraphMain(data);
         }
     }
@@ -162,8 +163,6 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private void setHeaderValue(GMGraphViewWithPreviousModel data) {
         gmTitleCardView.setTitle(gmStatTransactionEntries[gmStatGraphSelection]);
-
-        gmLineChartContainer.setPercentage(data.percentage);
 
         switch (selection()) {
             case GMTransactionGraphType.GROSS_REVENUE:
