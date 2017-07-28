@@ -26,5 +26,7 @@
     <dimen name="car_marker_height">35dp</dimen>
     <dimen name="thirty_two_dp">32dp</dimen>
     <dimen name="history_map_height">120dp</dimen>
+    <dimen name="width_iv_arrow_pending_fare_dropdown">20dp</dimen>
+    <dimen name="height_iv_arrow_pending_fare_dropdown">20dp</dimen>
     <integer name="anim_duration_medium">300</integer>
 </resources>

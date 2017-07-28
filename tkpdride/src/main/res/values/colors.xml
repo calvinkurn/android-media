@@ -16,6 +16,7 @@
     <color name="overflow_menu_color">#ff333333</color>
     <color name="black_400">#313034</color>
     <color name="black_full">#000000</color>
+    <color name="button_form_grey">#878787</color>
 
     <color name="grey_sep">#f4f4f5</color>
     <color name="grey_label">#7d939c</color>

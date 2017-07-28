@@ -31,7 +31,9 @@ public class ReplyDiscussionSubscriber extends Subscriber<DiscussionItemViewMode
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS " + e.toString());
+        for (StackTraceElement st: e.getStackTrace()) {
+            CommonUtils.dumper("NISNIS " + st.toString());
+        }
         if (e instanceof UnknownHostException) {
             viewListener.onErrorSendReply(
                     viewListener.getString(R.string.msg_no_connection));

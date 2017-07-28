@@ -34,7 +34,7 @@ import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
@@ -102,6 +102,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private LocationRequest locationRequest;
     private Location currentLocation;
     private CompositeSubscription subscription;
+    private boolean isZoomFitByDriverAndCustomer;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -241,14 +242,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (!isViewAttached()) return;
                 getView().hideRequestLoadingLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
-                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+                    if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                        getView().openInterruptConfirmationDialog(
+                                ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                ((InterruptConfirmationHttpException) e).getKey(),
+                                ((InterruptConfirmationHttpException) e).getId()
+                        );
+                    } else if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide(e.getMessage());
                     }
-                    ///getView().hideLoadingWaitingResponse();
-                    //getView().hideRideRequestStatus();
+
                 } else if (e instanceof UnprocessableEntityHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
@@ -363,11 +369,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 } else {
                     getView().setTitle(R.string.title_trip_accepted);
                 }
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
                 break;
             case RideStatus.ARRIVING:
@@ -382,11 +389,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCurrentLocationIndicator();
                 updatePolylineIfResetedByUiLifecycle(result);
 
-                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null) {
+                if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
                     latLngs.add(new LatLng(result.getPickup().getLatitude(), result.getPickup().getLongitude()));
                     latLngs.add(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()));
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
+                    isZoomFitByDriverAndCustomer = true;
                 }
 
                 break;
@@ -890,11 +898,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                currentLocation = getFuzedLocation();
-                                startLocationUpdates();
-                            } else {
-                                checkLocationSettings();
+                            if (isViewAttached()) {
+                                if (getFuzedLocation() != null) {
+                                    currentLocation = getFuzedLocation();
+                                    startLocationUpdates();
+                                } else {
+                                    checkLocationSettings();
+                                }
                             }
                         }
 
@@ -938,7 +948,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        currentLocation = getFuzedLocation();
+                        if (isViewAttached())
+                            currentLocation = getFuzedLocation();
                         startLocationUpdates();
 
                         break;
@@ -986,6 +997,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = location;
+
+                if (getView() != null) {
+                    getView().saveDefaultLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                }
             }
         });
     }
