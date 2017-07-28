@@ -77,6 +77,7 @@ public class ImagePagerAdapter extends PagerAdapter {
                                         @Override
                                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
+                                            notifyDataSetChanged();
                                             return false;
                                         }
                                     })
