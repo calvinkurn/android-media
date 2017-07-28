@@ -1561,6 +1561,16 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+    public static void eventClickCategoriesIcon(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                el
+        ).getEvent());
+    }
+
     public static void eventClickBeli(String ec, String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
