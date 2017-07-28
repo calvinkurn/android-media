@@ -11,14 +11,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
@@ -28,11 +31,16 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
+import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
+import static android.widget.RelativeLayout.BELOW;
+import static android.widget.RelativeLayout.LayoutParams;
+
 /**
  * Created by hafizh HERDI on 3/7/2016.
  */
 public class OnboardingActivity extends BaseOnboardingActivity {
 
+    private RelativeLayout main;
     protected View decorView;
     protected View indicator;
     protected View bottom;
@@ -43,6 +51,8 @@ public class OnboardingActivity extends BaseOnboardingActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
+
+        setStepper();
 
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
                 getString(R.string.nonb_1_desc), R.drawable.onboarding_toped_animation,
@@ -66,7 +76,6 @@ public class OnboardingActivity extends BaseOnboardingActivity {
                 ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
                 OnBoardingFragment.VIEW_ENDING,4));
 
-//        showStatusBar(false);
         decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -90,11 +99,26 @@ public class OnboardingActivity extends BaseOnboardingActivity {
             nextView.setColorFilter(MethodChecker.getColor(this, R.color.transparent));
         }
 
-
-//        setFadeAnimation();
-
         setSkip();
         setTransitionBackground();
+    }
+
+    private void setStepper() {
+        main = (RelativeLayout) pager.getParent();
+        main.setId(R.id.main);
+
+        LayoutParams params1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        float d = getResources().getDisplayMetrics().density;
+        params1.setMargins((int)(70*d), (int)(65*d), (int)(70*d), 0);
+        params1.addRule(ALIGN_PARENT_TOP);
+
+        RelativeLayout.LayoutParams params2 = (LayoutParams) pager.getLayoutParams();
+        params2.addRule(BELOW, R.id.main);
+
+        LinearLayout stepper = (LinearLayout) View.inflate(this, R.layout.step_list, null);
+        Log.i("setStepper: ", String.valueOf(main.getChildCount()));
+        main.addView(stepper, params1);
+        Log.i("setStepper: ", String.valueOf(main.getChildCount()));
     }
 
     private void setSkip() {

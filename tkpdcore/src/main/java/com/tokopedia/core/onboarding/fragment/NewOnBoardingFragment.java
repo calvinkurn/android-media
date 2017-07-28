@@ -5,41 +5,33 @@ package com.tokopedia.core.onboarding.fragment;
  */
 
 import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
-import com.tokopedia.core.onboarding.OnboardingActivity;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DOWN_DIRECTION;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.UP_DIRECTION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.expandTextView;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.fadeText;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToAbove;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideTo;
 
 public class NewOnBoardingFragment extends OnBoardingFragment {
 
@@ -48,7 +40,11 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     private ValueAnimator expandAnimator;
     private ObjectAnimator fadeAnimator;
     private AnimatorSet animatorSet;
-    private Animation slideAnimator;
+    private ValueAnimator slideAnimator;
+    private ValueAnimator slideAnimator2;
+    private TextView skip;
+    private ObjectAnimator fadeAnimator2;
+    private LinearLayout stepper;
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
                                                     int imageDrawable, int bgColor, int viewType, int position) {
@@ -78,11 +74,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ((OnboardingActivity) getActivity()).showSkipButton(true);
-//        ((OnboardingActivity) getActivity()).setSkipText("LEWATI");
-        if (getArguments() != null && getArguments().size() != 0) {
-//            ((OnboardingActivity) getActivity()).setSeparatorColor(MethodChecker.getColor(getActivity(), bgColor));
-        }
     }
 
     @Nullable
@@ -101,8 +92,9 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final int position = getArguments().getInt(ARG_POSITION);
-
         view.setTag(position);
+//        stepper.getChildAt(position).setAlpha(1.00f);
+//        stepper.requestLayout();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -115,12 +107,20 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     }
 
     @Override
+    protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = getDefaultView(inflater, container);
+//        stepper = (LinearLayout) v.findViewById(R.id.stepper);
+        return super.inflateDefaultView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = getEndingView(inflater, container);
         TextView t = (TextView) v.findViewById(R.id.title);
         ImageView i = (ImageView) v.findViewById(R.id.image);
         TextView d = (TextView) v.findViewById(R.id.description);
         main = v.findViewById(R.id.main);
+//        stepper = (LinearLayout) v.findViewById(R.id.stepper);
 
         t.setText(title);
         if (titleColor != 0) {
@@ -146,8 +146,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             }
         });
 
-        TextView register = (TextView) v.findViewById(R.id.button_register);
-        register.setOnClickListener(new View.OnClickListener() {
+        skip = (TextView) v.findViewById(R.id.button_register);
+        skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SessionHandler.setFirstTimeUser(getActivity(), false);
@@ -180,13 +180,15 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         if(viewType == VIEW_ENDING){
             expandAnimator = expandTextView(login, mScreenWidth);
             fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.medium_green);
-//            slideAnimator = slideToAbove(login);
-//            slideAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
-//            slideAnimator.start();
+            slideAnimator = slideTo(login, UP_DIRECTION);
+            slideAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
+            fadeAnimator2 = fadeText(skip, getActivity(), R.color.transparent, R.color.white);
+            fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 1.5));
+            slideAnimator2 = slideTo(skip, DOWN_DIRECTION);
+            slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 1.5));
 
             animatorSet = new AnimatorSet();
-
-            animatorSet.playSequentially(expandAnimator, fadeAnimator);
+            animatorSet.playTogether(expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
             animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
             animatorSet.start();
         }

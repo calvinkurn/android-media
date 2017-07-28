@@ -50,6 +50,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
         } catch (NoSuchMethodError error) {
             Log.d(getClass().getSimpleName(), error.toString());
         }
+        showSkipButton(false);
     }
 
     @Override
