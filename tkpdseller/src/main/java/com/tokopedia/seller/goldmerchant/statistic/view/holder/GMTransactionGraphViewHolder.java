@@ -102,7 +102,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     private void showGraphSelectionDialog() {
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(gmTitleCardView.getContext())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(gmTitleCardView.getContext().getString(R.string.gold_merchant_transaction_summary_text));
+                .addTitleItem(gmTitleCardView.getContext().getString(R.string.gm_statistic_summary_text));
 
         for (int i = 0; i < gmStatTransactionEntries.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {

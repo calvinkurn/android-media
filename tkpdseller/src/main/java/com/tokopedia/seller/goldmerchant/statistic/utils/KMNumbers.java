@@ -112,13 +112,13 @@ public final class KMNumbers {
     }
 
     public static String formatRupiahString(Context context, long numberToFormat){
-        return context.getString(R.string.rupiah_format_text,
+        return context.getString(R.string.gm_statistic_rupiah_format_text,
                 KMNumbers.formatDecimalString(numberToFormat));
     }
 
     // convert (double) 1.12345 to "123,34%" (string)
     public static String formatToPercentString(Context context, double percent) {
-        return context.getString(R.string.percent_format_text, formatDouble2P(percent * 100));
+        return context.getString(R.string.gm_statistic_percent_format_text, formatDouble2P(percent * 100));
     }
 
     public static String formatDecimalString (long numberToFormat){

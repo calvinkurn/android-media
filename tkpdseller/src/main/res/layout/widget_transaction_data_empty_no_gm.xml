@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="@string/transaction_data_no_gm_text"
+            android:text="@string/gm_statistic_transaction_data_no_gm_text"
             android:textAlignment="center"
             android:textColor="#80ffffff"
             android:textSize="14sp"

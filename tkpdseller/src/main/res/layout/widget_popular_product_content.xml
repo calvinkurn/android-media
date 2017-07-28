@@ -21,7 +21,7 @@
         android:layout_marginTop="10dp"
         android:textColor="#89000000"
         android:textSize="12sp"
-        android:text="@string/most_popular_product"
+        android:text="@string/gm_statistic_most_popular_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="11dp"
@@ -62,7 +62,7 @@
     <TextView
         android:textColor="#61000000"
         android:textSize="12sp"
-        android:text="@string/x_sold"
+        android:text="@string/gm_statistic_x_sold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
@@ -72,7 +72,7 @@
         android:layout_toEndOf="@+id/tv_no_of_selling" />
 
     <TextView
-        android:text="@string/last_thirty_days_ago"
+        android:text="@string/gm_statistic_last_thirty_days_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="11sp"

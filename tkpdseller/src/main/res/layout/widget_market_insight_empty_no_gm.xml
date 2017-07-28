@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/get_access_to_see_gm_stat"
+            android:text="@string/gm_statistic_get_access_to_see_gm_stat"
             android:textSize="14sp"
             android:textColor="#80ffffff"
             android:textAlignment="center"
@@ -40,7 +40,7 @@
             android:id="@+id/market_insight_gmsubscribe_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/upgrade_to_gold_merchant"
+            android:text="@string/gm_statistic_upgrade_to_gold_merchant"
             android:textColor="@color/colorGreen"
             android:layout_centerInParent="true"
             />

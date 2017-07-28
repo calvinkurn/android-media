@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
         android:gravity="center_horizontal"
-        tools:text="@string/gm_stat_top_ads_empty_title_no_topads_credit" />
+        tools:text="@string/gm_statistic_top_ads_empty_title_no_topads_credit" />
 
     <TextView
         android:id="@+id/tv_subtitle"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_med"
         android:gravity="center_horizontal"
-        tools:text="@string/gm_stat_top_ads_empty_desc_no_topads_credit" />
+        tools:text="@string/gm_statistic_top_ads_empty_desc_no_topads_credit" />
 
     <TextView
         android:id="@+id/tv_action"
@@ -42,7 +42,7 @@
         android:clickable="true"
         android:padding="8dp"
         android:textColor="@color/tkpd_main_green"
-        tools:text="@string/find_out" />
+        tools:text="@string/gm_statistic_find_out" />
 
     <Button
         android:id="@+id/button_register_topads"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:background="@color/tkpd_main_orange"
         android:paddingTop="8dp"
-        android:text="@string/gm_stat_empty_register_topads_now"
+        android:text="@string/gm_statistic_empty_register_topads_now"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 </LinearLayout>

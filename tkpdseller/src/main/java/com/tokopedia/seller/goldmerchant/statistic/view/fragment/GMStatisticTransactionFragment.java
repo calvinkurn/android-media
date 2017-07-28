@@ -130,8 +130,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
-        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
+        gmTopAdsAmountViewModel.title = getString(R.string.gm_statistic_top_ads_amount_title_text);
+        gmTopAdsAmountViewModel.subtitle = getString(R.string.gm_statistic_top_ads_amount_subtitle_text);
         return gmTopAdsAmountViewModel;
     }
 

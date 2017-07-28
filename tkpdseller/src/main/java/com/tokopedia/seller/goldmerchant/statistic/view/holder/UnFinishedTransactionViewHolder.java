@@ -37,7 +37,7 @@ public class UnFinishedTransactionViewHolder implements GMStatisticViewHolder {
         onHoldAmountCircleTextView = (CircleTextView) view.findViewById(R.id.ctv_onhold_amount);
         resCenterCountCircleTextView = (CircleTextView) view.findViewById(R.id.ctv_res_center_count);
 
-        rupiahFormatText = view.getContext().getString(R.string.rupiah_format_text);
+        rupiahFormatText = view.getContext().getString(R.string.gm_statistic_rupiah_format_text);
     }
 
     private void processView(UnFinishedTransactionViewModel unFinishedTransactionViewModel) {

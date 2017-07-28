@@ -60,7 +60,7 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
     }
 
     private void setTopAdsCardView(GMGraphViewModel gmGraphViewModel) {
-        gmTopAdsLineChartWidget.setSubtitle(gmTopAdsLineChartWidget.getContext().getString(R.string.gold_merchant_top_ads_amount_subtitle_text));
+        gmTopAdsLineChartWidget.setSubtitle(gmTopAdsLineChartWidget.getContext().getString(R.string.gm_statistic_top_ads_amount_subtitle_text));
         gmTopAdsLineChartWidget.setPercentage(gmGraphViewModel.percentage);
         gmTopAdsLineChartWidget.setAmount(KMNumbers.formatRupiahString(titleCardView.getContext(), gmGraphViewModel.amount));
     }
@@ -136,9 +136,9 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
         @Override
         public void bind(@Nullable GMGraphViewModel data) {
-            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_stat_top_ads_empty_title_no_data));
-            tvSubtitle.setText(tvSubtitle.getContext().getString(R.string.gm_stat_top_ads_empty_desc_no_data));
-            tvAction.setText(MethodChecker.fromHtml(tvAction.getContext().getString(R.string.change_date)));
+            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_statistic_top_ads_empty_title_no_data));
+            tvSubtitle.setText(tvSubtitle.getContext().getString(R.string.gm_statistic_top_ads_empty_desc_no_data));
+            tvAction.setText(MethodChecker.fromHtml(tvAction.getContext().getString(R.string.gm_statistic_change_date)));
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -159,9 +159,9 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
         @Override
         public void bind(@Nullable GMGraphViewModel data) {
-            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_stat_top_ads_empty_title_no_topads_credit));
-            tvSubtitle.setText(tvSubtitle.getContext().getString(R.string.gm_stat_top_ads_empty_desc_no_topads_credit));
-            tvAction.setText(tvAction.getContext().getString(R.string.find_out));
+            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_statistic_top_ads_empty_title_no_topads_credit));
+            tvSubtitle.setText(tvSubtitle.getContext().getString(R.string.gm_statistic_top_ads_empty_desc_no_topads_credit));
+            tvAction.setText(tvAction.getContext().getString(R.string.gm_statistic_find_out));
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -182,15 +182,15 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
 
         @Override
         public void bind(@Nullable GMGraphViewModel data) {
-            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_stat_top_ads_empty_title_credit_not_used));
+            tvTitle.setText(tvTitle.getContext().getString(R.string.gm_statistic_top_ads_empty_title_credit_not_used));
             if (data == null) {
                 tvSubtitle.setVisibility(View.GONE);
             } else {
-                tvSubtitle.setText(MethodChecker.fromHtml(tvSubtitle.getContext().getString(R.string.gm_stat_top_ads_empty_desc_credit_not_used,
+                tvSubtitle.setText(MethodChecker.fromHtml(tvSubtitle.getContext().getString(R.string.gm_statistic_top_ads_empty_desc_credit_not_used,
                         KMNumbers.formatRupiahString(tvSubtitle.getContext(), data.amount))));
                 tvSubtitle.setVisibility(View.VISIBLE);
             }
-            tvAction.setText(tvAction.getContext().getString(R.string.find_out));
+            tvAction.setText(tvAction.getContext().getString(R.string.gm_statistic_find_out));
             tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

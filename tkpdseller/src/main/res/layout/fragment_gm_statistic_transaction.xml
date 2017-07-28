@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             app:tcv_loading_layout="@layout/item_loading_gmstat_pie_chart"
-            app:tcv_title="@string/unfinished_transaction_text">
+            app:tcv_title="@string/gm_statistic_unfinished_transaction_text">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     app:donut_pl_amount_text_size="32sp"
-                    app:donut_pl_title="@string/total_trans_text"
+                    app:donut_pl_title="@string/gm_statistic_total_trans_text"
                     app:donut_pl_title_text_size="14sp">
 
                     <com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgress
@@ -85,7 +85,7 @@
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tcv_title="@string/gold_merchant_top_ads_amount_title_text">
+            app:tcv_title="@string/gm_statistic_top_ads_amount_title_text">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp"
                     android:gravity="center"
-                    android:text="@string/see_topads"
+                    android:text="@string/gm_statistic_see_topads"
                     android:background="@drawable/rect_stroke_gray"
                     android:clickable="true"
                     android:textSize="@dimen/font_button"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 app:content_color="@color/tkpd_main_green"
                 app:label_show_arrow="true"
-                app:title="@string/gold_merchant_sold_product_list_text" />
+                app:title="@string/gm_statistic_sold_product_list_text" />
         </android.support.v7.widget.CardView>
 
 

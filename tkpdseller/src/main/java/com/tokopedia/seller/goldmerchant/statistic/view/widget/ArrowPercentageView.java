@@ -31,7 +31,7 @@ public class ArrowPercentageView extends FrameLayout {
     private int redColor = R.color.arrow_down;
     private int greenColor = R.color.arrow_up;
     private int greyColor = R.color.grey_400;
-    private int noDataRes = R.string.no_data;
+    private int noDataRes = R.string.gm_statistic_no_data;
 
     public ArrowPercentageView(Context context) {
         super(context);

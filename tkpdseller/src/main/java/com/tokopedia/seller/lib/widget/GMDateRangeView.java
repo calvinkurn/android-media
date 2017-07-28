@@ -61,7 +61,7 @@ public class GMDateRangeView extends RelativeLayout {
             String endDate = GoldMerchantDateUtils.getDateWithYear(GoldMerchantDateUtils.getDateFormatForInput(data.getEndDate()), monthNamesAbrev);
 
             String dateRangeFormatString = getContext().getString(
-                    R.string.gold_merchant_date_range_format_text,
+                    R.string.gm_statistic_date_range_format_text,
                     startDate,
                     endDate);
 
