@@ -35,14 +35,14 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
     }
 
     public void setData(GetProductGraph getProductGraph) {
-        successTransactionSummaryView.setContentText(String.valueOf(getProductGraph.getSuccessTrans()));
+        successTransactionSummaryView.setContentText(KMNumbers.getFormattedString(getProductGraph.getSuccessTrans()));
         successTransactionSummaryView.setPercentage(getProductGraph.getDiffTrans());
         conversionSummaryView.setContentText(KMNumbers.formatToPercentString(
                 conversionSummaryView.getContext(), getProductGraph.getConversionRate()));
         conversionSummaryView.setPercentage(getProductGraph.getDiffConv());
-        productSeenSummaryView.setContentText(String.valueOf(getProductGraph.getProductView()));
+        productSeenSummaryView.setContentText(KMNumbers.getFormattedString(getProductGraph.getProductView()));
         productSeenSummaryView.setPercentage(getProductGraph.getDiffView());
-        productSoldSummaryView.setContentText(String.valueOf(getProductGraph.getProductSold()));
+        productSoldSummaryView.setContentText(KMNumbers.getFormattedString(getProductGraph.getProductSold()));
         productSoldSummaryView.setPercentage(getProductGraph.getDiffSold());
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
