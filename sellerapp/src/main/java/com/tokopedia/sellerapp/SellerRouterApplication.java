@@ -111,14 +111,14 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        //no route to merchant redirect on seller, go to default
-        goToDefaultRoute(context);
+    public void actionAppLink(Context context, String linkUrl) {
+
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
-
+    public void goToCreateMerchantRedirect(Context context) {
+        //no route to merchant redirect on seller, go to default
+        goToDefaultRoute(context);
     }
 
     @Override
