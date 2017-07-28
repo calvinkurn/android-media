@@ -1,9 +1,9 @@
-package com.tokopedia.seller.logout.di.module;
+package com.tokopedia.seller.common.logout.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
-import com.tokopedia.seller.logout.di.scope.TkpdSellerLogoutScope;
+import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.source.CategoryDataSource;

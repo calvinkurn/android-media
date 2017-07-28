@@ -1,4 +1,4 @@
-package com.tokopedia.seller.logout.di.scope;
+package com.tokopedia.seller.common.logout.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

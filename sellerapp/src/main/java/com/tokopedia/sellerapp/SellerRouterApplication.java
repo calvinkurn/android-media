@@ -27,13 +27,13 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -204,8 +204,8 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotToProductDetail(Context context) {
-//        Intent intent = ProductInfoActivity.createInstance(context);
-//        context.startActivity(intent);
+        Intent intent = ProductInfoActivity.createInstance(context);
+        context.startActivity(intent);
     }
 
     @Override
@@ -215,26 +215,26 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToProductDetail(Context context, ProductPass productPass) {
-//        Intent intent = ProductInfoActivity.createInstance(context, productPass);
-//        context.startActivity(intent);
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToProductDetail(Context context, ShareData shareData) {
-//        Intent intent = ProductInfoActivity.createInstance(context, shareData);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
-//        intent.putExtras(bundle);
-//        context.startActivity(intent);
+        Intent intent = ProductInfoActivity.createInstance(context, shareData);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToAddProductDetail(Context context) {
-//        Intent intent = ProductInfoActivity.createInstance(context);
-//        Bundle bundle = new Bundle();
-//        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
-//        intent.putExtras(bundle);
-//        context.startActivity(intent);
+        Intent intent = ProductInfoActivity.createInstance(context);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
@@ -292,5 +292,4 @@ public class SellerRouterApplication extends MainApplication
     public String getBaseUrlDomainPayment() {
         return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
     }
-
 }
