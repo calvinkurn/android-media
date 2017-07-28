@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -137,9 +138,9 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
     private void getPopularProduct() {
         Calendar dayOne = Calendar.getInstance();
-        dayOne.add(Calendar.DATE, -30);
+        dayOne.add(Calendar.DATE, -GMStatConstant.POPULAR_PRODUCT_DATE_RANGE);
         Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, -1);
+        yesterday.add(Calendar.DATE, GMStatConstant.MAX_DAY_FROM_CURRENT_DATE);
         RequestParams popularParam = GMStatGetPopularProductUseCase.createRequestParam(dayOne.getTimeInMillis(), yesterday.getTimeInMillis());
         popularProductUseCase.execute(popularParam, new Subscriber<GetPopularProduct>() {
             @Override

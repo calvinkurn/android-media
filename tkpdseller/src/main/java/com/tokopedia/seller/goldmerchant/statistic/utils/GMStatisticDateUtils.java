@@ -10,6 +10,7 @@ import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.goldmerchant.statistic.constant.GMStatConstant;
 import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDatePickerActivity;
 
 import java.text.DateFormat;
@@ -77,6 +78,7 @@ public class GMStatisticDateUtils {
 
     private static Calendar getMaxDateCalendar() {
         Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.add(Calendar.DATE, GMStatConstant.MAX_DAY_FROM_CURRENT_DATE);
         maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
         maxCalendar.set(Calendar.MINUTE, 59);
         maxCalendar.set(Calendar.SECOND, 59);
