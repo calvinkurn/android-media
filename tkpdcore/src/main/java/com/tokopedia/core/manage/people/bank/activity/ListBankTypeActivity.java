@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.bank.listener.ListBankTypeActivityView;
@@ -32,6 +33,8 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
     private RecyclerView mainRecyclerView;
 
     private BankListRecyclerAdapter adapter;
+
+    private TkpdProgressDialog progressDialog;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -59,6 +62,8 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
         mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
         mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mainRecyclerView.setAdapter(adapter);
+        progressDialog = new TkpdProgressDialog(ListBankTypeActivity.this,
+                TkpdProgressDialog.NORMAL_PROGRESS);
         adapter.notifyDataSetChanged();
     }
 
@@ -120,6 +125,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
                     holder.mainView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            progressDialog.showDialog();
                             presenter.onOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
                                 @Override
                                 public void onCompleted() {
@@ -128,7 +134,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    progressDialog.dismiss();
                                 }
 
                                 @Override
@@ -139,8 +145,9 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
                                     if ((getApplication() instanceof TransactionRouter)) {
                                         ((TransactionRouter) getApplication())
                                                 .goToBcaOneClick(ListBankTypeActivity.this, bundle);
-                                        finish();
+                                        presenter.onDestroyed();
                                     }
+                                    progressDialog.dismiss();
                                 }
                             });
                         }

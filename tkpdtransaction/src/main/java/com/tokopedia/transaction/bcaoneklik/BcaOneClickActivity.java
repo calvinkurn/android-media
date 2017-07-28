@@ -1,11 +1,13 @@
 package com.tokopedia.transaction.bcaoneklik;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.bca.xco.widget.BCARegistrasiXCOWidget;
 import com.bca.xco.widget.BCAXCOListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
@@ -64,16 +66,19 @@ public class BcaOneClickActivity extends TActivity implements BcaOneClickView{
 
             @Override
             public void onBCATokenExpired(String s) {
+                NetworkErrorHelper.showSnackbar(BcaOneClickActivity.this, s);
                 CommonUtils.dumper("PORING EXPIRED " + s);
             }
 
             @Override
             public void onBCARegistered(String s) {
+                NetworkErrorHelper.showSnackbar(BcaOneClickActivity.this, s);
                 CommonUtils.dumper("PORING REGISTERED " + s);
             }
 
             @Override
             public void onBCACloseWidget() {
+                finish();
                 CommonUtils.dumper("PORING CLOSED");
             }
         });
