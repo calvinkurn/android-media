@@ -37,6 +37,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     private TextView errorProductSubitle;
 
     private ImagePagerAdapter imagePagerAdapter;
+    private String urlTemporary;
 
     public PictureView(Context context) {
         super(context);
@@ -81,7 +82,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>());
+        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
@@ -136,6 +137,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         productImage.setImageDescription("");
         imagePagerAdapter.addFirst(productImage);
         indicator.notifyDataSetChanged();
+        urlTemporary = productPass.getProductImage();
     }
 
     private class PagerAdapterAction implements ImagePagerAdapter.OnActionListener {

@@ -34,6 +34,12 @@ public class ImagePagerAdapter extends PagerAdapter {
         this.productImages = productImages;
     }
 
+    public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages, String urlTemporary) {
+        this.context = context;
+        this.productImages = productImages;
+        this.urlTemporary = urlTemporary;
+    }
+
     @Override
     public int getCount() {
         return productImages.size();
@@ -48,7 +54,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         if (!TextUtils.isEmpty(urlTemporary) && position==0) {
             Glide.with(context).load(urlTemporary)
                     .dontAnimate()
-                    .centerCrop()
+                    .fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -59,7 +65,8 @@ public class ImagePagerAdapter extends PagerAdapter {
                                                        Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             Glide.with(context)
                                     .load(urlImage)
-                                    .centerCrop()
+                                    .dontAnimate()
+                                    .fitCenter()
                                     .listener(new RequestListener<String, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, String model,
