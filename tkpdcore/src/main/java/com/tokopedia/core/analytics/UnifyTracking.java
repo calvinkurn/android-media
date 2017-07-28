@@ -1616,6 +1616,14 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickSearchBar(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_SEARCH_BAR,
+                el
+        ).getEvent());
+    }
 
     public static void eventClickBeliInstantSaldo(String ec, String el){
         sendGTMEvent(new EventTracking(
