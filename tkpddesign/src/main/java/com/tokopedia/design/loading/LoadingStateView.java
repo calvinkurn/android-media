@@ -23,8 +23,9 @@ public class LoadingStateView extends FrameLayout {
     public static final int VIEW_NOT_AVAILABLE = -1;
 
     public static final int VIEW_LOADING = 0;
-    public static final int VIEW_EMPTY = 1;
-    public static final int VIEW_CONTENT = 2;
+    public static final int VIEW_ERROR = 1;
+    public static final int VIEW_EMPTY = 2;
+    public static final int VIEW_CONTENT = 3;
 
     @LayoutRes
     public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
@@ -40,6 +41,8 @@ public class LoadingStateView extends FrameLayout {
 
     @LayoutRes
     private int loadingLayoutRes;
+    @LayoutRes
+    private int errorLayoutRes;
     @LayoutRes
     private int emptyLayoutRes;
 
@@ -65,6 +68,7 @@ public class LoadingStateView extends FrameLayout {
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingStateView);
         loadingLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
+        errorLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_error_layout, VIEW_NOT_AVAILABLE);
         emptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, VIEW_NOT_AVAILABLE);
         a.recycle();
     }
@@ -153,6 +157,10 @@ public class LoadingStateView extends FrameLayout {
             case VIEW_LOADING:
                 loadingView = getView(loadingView, loadingLayoutRes);
                 setViewVisible(loadingView);
+                break;
+            case VIEW_ERROR:
+                errorView = getView(errorView, errorLayoutRes);
+                setViewVisible(errorView);
                 break;
             case VIEW_EMPTY:
                 emptyView = getView(emptyView, emptyLayoutRes);

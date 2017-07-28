@@ -63,12 +63,12 @@ public class TitleCardView extends CardView {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
-        titleString = a.getString(R.styleable.TitleCardView_title_card_view_title);
-        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_title_size, 0);
-        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_loading_layout, 0);
-        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_empty_layout, 0);
-        iconDrawable = a.getDrawable(R.styleable.TitleCardView_icon);
-        useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_use_gradient_title_loading, true);
+        titleString = a.getString(R.styleable.TitleCardView_tcv_title);
+        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_size, 0);
+        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, 0);
+        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, 0);
+        iconDrawable = a.getDrawable(R.styleable.TitleCardView_tcv_icon);
+        useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_tcv_use_gradient_title, true);
         a.recycle();
     }
 

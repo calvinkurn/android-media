@@ -40,8 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            app:loading_layout="@layout/item_loading_gmstat_pie_chart"
-            app:title_card_view_title="@string/unfinished_transaction_text">
+            app:tcv_loading_layout="@layout/item_loading_gmstat_pie_chart"
+            app:tcv_title="@string/unfinished_transaction_text">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title_card_view_title="@string/gold_merchant_top_ads_amount_title_text">
+            app:tcv_title="@string/gold_merchant_top_ads_amount_title_text">
 
             <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/topads_line_chart_container"
