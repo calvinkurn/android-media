@@ -158,7 +158,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         }
     }
 
-
     @Override
     public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
         if (view.isUserLoggedIn()) {
