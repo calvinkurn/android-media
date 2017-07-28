@@ -430,6 +430,8 @@ public interface AppEventTracking {
         String BUY_GM = "Buy GM";
         String WIDGET_ORDER = "Widget - Order";
         String TO_APP_ORDER = "To App - Order";
+        String TOPADS = "TopAds";
+        String SELLER_HOME = "Home - SellerApp";
     }
 
     interface SOCIAL_MEDIA {

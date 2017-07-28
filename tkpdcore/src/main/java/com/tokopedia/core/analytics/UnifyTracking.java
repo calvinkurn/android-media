@@ -1755,4 +1755,12 @@ public class UnifyTracking extends TrackingUtils {
                 eventLabel
         ).getEvent());
     }
+
+    public static void eventDrawerTopads(){
+        eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
+    }
+
+    public static void eventDrawerSellerHome(){
+        eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
+    }
 }

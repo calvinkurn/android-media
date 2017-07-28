@@ -311,6 +311,7 @@ public class DrawerSellerHelper extends DrawerHelper
             Intent intent;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
+                    UnifyTracking.eventDrawerSellerHome();
                     context.startActivity(SellerHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
@@ -362,6 +363,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickGMStat();
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                    UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
