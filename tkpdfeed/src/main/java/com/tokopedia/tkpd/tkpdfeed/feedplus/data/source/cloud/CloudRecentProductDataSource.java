@@ -9,15 +9,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 
 import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
-
-import static com.tokopedia.core.network.v4.NetworkConfig.key;
 
 /**
  * @author Kulomady on 12/9/16.
@@ -41,7 +39,7 @@ public class CloudRecentProductDataSource {
 
         return mojitoService.getRecentProduct(
                 String.valueOf(requestParams.getParameters()
-                        .get(GetRecentProductUseCase.PARAM_USER_ID)))
+                        .get(GetRecentViewUseCase.PARAM_USER_ID)))
                 .doOnNext(validateError())
                 .map(recentProductMapper)
                 .doOnNext(saveToCache());

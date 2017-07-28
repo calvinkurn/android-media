@@ -18,12 +18,12 @@ import rx.functions.Func2;
 
 public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
-    GetRecentProductUseCase getRecentProductUseCase;
+    GetRecentViewUseCase getRecentProductUseCase;
 
     public GetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          FeedRepository feedRepository,
-                                         GetRecentProductUseCase getRecentProductUseCase) {
+                                         GetRecentViewUseCase getRecentProductUseCase) {
         super(threadExecutor, postExecutionThread, feedRepository);
         this.getRecentProductUseCase = getRecentProductUseCase;
     }

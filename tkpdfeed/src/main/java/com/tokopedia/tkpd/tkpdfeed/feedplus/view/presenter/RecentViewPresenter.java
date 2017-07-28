@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         implements RecentView.Presenter {
 
-    private final GetRecentProductUseCase getRecentProductUseCase;
+    private final GetRecentViewUseCase getRecentProductUseCase;
     private final AddWishlistUseCase addWishlistUseCase;
     private final RemoveWishlistUseCase removeWishlistUseCase;
     private final SessionHandler sessionHandler;
@@ -28,7 +28,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     private WishlistListener wishlistListener;
 
     @Inject
-    RecentViewPresenter(GetRecentProductUseCase getRecentProductUseCase,
+    RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
                         AddWishlistUseCase addWishlistUseCase,
                         RemoveWishlistUseCase removeWishlistUseCase,
                         SessionHandler sessionHandler) {

@@ -15,14 +15,14 @@ import rx.Observable;
  * @author Kulomady on 12/8/16.
  */
 
-public class GetRecentProductUseCase extends UseCase<List<RecentViewProductDomain>> {
+public class GetRecentViewUseCase extends UseCase<List<RecentViewProductDomain>> {
     public static final String PARAM_USER_ID = "user_id";
 
     private final FeedRepository feedRepository;
 
-    public GetRecentProductUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   FeedRepository feedRepository) {
+    public GetRecentViewUseCase(ThreadExecutor threadExecutor,
+                                PostExecutionThread postExecutionThread,
+                                FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread);
         this.feedRepository = feedRepository;
     }

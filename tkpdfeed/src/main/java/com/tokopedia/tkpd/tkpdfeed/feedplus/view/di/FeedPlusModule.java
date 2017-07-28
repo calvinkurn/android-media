@@ -42,7 +42,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseC
 import javax.inject.Named;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentProductUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
@@ -235,10 +235,10 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    GetRecentProductUseCase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           FeedRepository feedRepository) {
-        return new GetRecentProductUseCase(threadExecutor,
+    GetRecentViewUseCase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
+                                                        PostExecutionThread postExecutionThread,
+                                                        FeedRepository feedRepository) {
+        return new GetRecentViewUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);
     }
@@ -248,7 +248,7 @@ public class FeedPlusModule {
     GetFirstPageFeedsCloudUseCase provideGetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
                                                                        PostExecutionThread postExecutionThread,
                                                                        FeedRepository feedRepository,
-                                                                       GetRecentProductUseCase getRecentProductUsecase) {
+                                                                       GetRecentViewUseCase getRecentProductUsecase) {
         return new GetFirstPageFeedsCloudUseCase(
                 threadExecutor, postExecutionThread,
                 feedRepository,

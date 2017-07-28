@@ -45,7 +45,7 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
         RequestParams params = RequestParams.create();
         params.putInt(GetFeedsUseCase.PARAM_USER_ID,
                 Integer.parseInt(sessionHandler.getLoginID()));
-        params.putInt(GetRecentProductUseCase.PARAM_USER_ID,
+        params.putInt(GetRecentViewUseCase.PARAM_USER_ID,
                 Integer.parseInt(sessionHandler.getLoginID()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
         params.putInt(GetFeedsUseCase.PARAM_PAGE, 1);
