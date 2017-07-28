@@ -57,6 +57,7 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
             setEmptyState();
             return;
         }
+        setViewState(LoadingStateView.VIEW_CONTENT);
         this.getPopularProduct = getPopularProduct;
         new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
         tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));

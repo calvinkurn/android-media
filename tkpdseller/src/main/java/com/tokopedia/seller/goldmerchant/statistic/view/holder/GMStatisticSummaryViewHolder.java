@@ -46,6 +46,7 @@ public class GMStatisticSummaryViewHolder implements GMStatisticViewHolder{
         productSeenSummaryView.setPercentage(getProductGraph.getDiffView());
         productSoldSummaryView.setContentText(KMNumbers.getFormattedString(getProductGraph.getProductSold()));
         productSoldSummaryView.setPercentage(getProductGraph.getDiffSold());
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     @Override
