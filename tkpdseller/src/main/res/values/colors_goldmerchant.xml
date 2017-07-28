@@ -8,7 +8,7 @@
     <color name="black_seventy_percent">#B3000000</color>
     <color name="black_fifty_four_percent">#8A000000</color>
     <color name="color_gray">#1f000000</color>
-    <color name="tkpd_button">#ff5722</color>
+    <color name="tkpd_red">#ff5722</color>
     <color name="gmsubscribe_product_price_color">#ff5722</color>
     <color name="gmsubscribe_product_line_color">#e0e0e0</color>
     <color name="gmsubscribe_content_textview_color">#8A000000</color>

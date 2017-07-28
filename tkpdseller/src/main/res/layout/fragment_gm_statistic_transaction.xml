@@ -72,7 +72,7 @@
                         app:donut_max="100"
                         app:donut_progress="0"
                         app:donut_show_text="false"
-                        app:donut_unfinished_color="@color/tkpd_dark_red"
+                        app:donut_unfinished_color="@color/tkpd_red"
                         app:donut_unfinished_stroke_width="8dp" />
                 </com.tokopedia.seller.goldmerchant.statistic.view.widget.circleprogress.DonutProgressLayout>
 
