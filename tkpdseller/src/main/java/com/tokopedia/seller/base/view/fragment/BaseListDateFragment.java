@@ -54,7 +54,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onResume() {
         super.onResume();
-        if (datePickerViewModel!= null && needReloadData) {
+        if (needReloadData) {
             // reload from page 1
             loadData();
             needReloadData = false;
