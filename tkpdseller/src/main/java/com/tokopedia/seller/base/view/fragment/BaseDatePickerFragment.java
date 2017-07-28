@@ -30,8 +30,6 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public DatePickerPresenter datePickerPresenter;
     private DatePickerViewModel datePickerViewModel;
 
-    private boolean isDateNoChangeFromPicker;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
