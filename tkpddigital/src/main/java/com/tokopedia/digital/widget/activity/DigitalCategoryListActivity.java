@@ -22,6 +22,8 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
 
+//    private static boolean isFromSeller;
+
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -49,6 +51,12 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         return new Intent(context, DigitalCategoryListActivity.class);
     }
 
+    public static Intent newInstance(Context context, boolean isFromSeller) {
+        Intent intent = new Intent(context, DigitalCategoryListActivity.class);
+//        intent.putExtra(Constants.EXTRA_IS_FROM_SELLER, isFromSeller);
+        return intent;
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -56,7 +64,7 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+//        isFromSeller = extras.getBoolean(Constants.EXTRA_IS_FROM_SELLER);
     }
 
     @Override
@@ -77,9 +85,13 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     @Override
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment))
+        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
+            DigitalCategoryListFragment digitalCategoryListFragment
+                    = DigitalCategoryListFragment.newInstance();
+//            digitalCategoryListFragment.setIsFromSeller(isFromSeller);
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalCategoryListFragment.newInstance()).commit();
+                    digitalCategoryListFragment).commit();
+        }
     }
 
     @Override

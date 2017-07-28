@@ -12,6 +12,7 @@ import android.support.annotation.StringRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -26,6 +27,7 @@ import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
@@ -74,6 +76,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private TokoCashData tokoCashData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
+//    private boolean isFromSeller;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -118,6 +121,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 MainApplication.getAppContext()
         ));
         presenter = new DigitalCategoryListPresenter(
+                GlobalConfig.isSellerApp(),
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
                         new DigitalCategoryListRepository(
@@ -379,4 +383,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         adapter.addErrorData(new DigitalCategoryItemDataError.Builder().message(message).build());
     }
 
+//    public void setIsFromSeller(boolean isFromSeller) {
+//        this.isFromSeller = isFromSeller;
+//    }
 }

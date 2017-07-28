@@ -2,6 +2,7 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
@@ -16,6 +17,7 @@ import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 import java.util.List;
 
 import rx.Subscriber;
@@ -29,10 +31,13 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
     private final IDigitalCategoryListView digitalCategoryListView;
 
+    private boolean isFromSeller;
+
     public DigitalCategoryListPresenter(
-            IDigitalCategoryListInteractor digitalCategoryListInteractor,
+            boolean isFromSeller, IDigitalCategoryListInteractor digitalCategoryListInteractor,
             IDigitalCategoryListView iDigitalCategoryListView
     ) {
+        this.isFromSeller = isFromSeller;
         this.digitalCategoryListInteractor = digitalCategoryListInteractor;
         this.digitalCategoryListView = iDigitalCategoryListView;
     }
@@ -55,11 +60,13 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
         return new Subscriber<List<DigitalCategoryItemData>>() {
             @Override
             public void onCompleted() {
+                Log.d("DigitalCategoryListPresenter", "onCompleted");
                 digitalCategoryListView.enableSwipeRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
+                Log.d("DigitalCategoryListPresenter", "onError");
                 if (e instanceof RuntimeHttpErrorException) {
                     digitalCategoryListView.renderErrorHttpGetDigitalCategoryList(
                             e.getMessage()
@@ -73,6 +80,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
                     );
                 } else {
+                    Log.d("DigitalCategoryListPresenter", e.getMessage());
                     digitalCategoryListView.renderErrorGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT
                     );
@@ -81,6 +89,16 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
             @Override
             public void onNext(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
+                Log.d("DigitalCategoryListPresenter", "onNext");
+                if (isFromSeller) {
+                    Iterator<DigitalCategoryItemData> iter = digitalCategoryItemDataList.iterator();
+                    while (iter.hasNext()) {
+                        DigitalCategoryItemData digitalCategoryItemData = iter.next();
+                        if (digitalCategoryItemData.getName().equals("Uber")) {
+                            iter.remove();
+                        }
+                    }
+                }
                 digitalCategoryListView.renderDigitalCategoryDataList(
                         digitalCategoryItemDataList
                 );
