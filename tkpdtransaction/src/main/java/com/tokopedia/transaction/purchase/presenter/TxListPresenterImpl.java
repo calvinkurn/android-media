@@ -335,7 +335,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 6
+                                        context, data.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
                                 ), CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -350,7 +350,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 1
+                                        context, data.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
                                 ), CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -489,7 +489,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                 dialog.dismiss();
                 viewListener.navigateToActivityRequest(
                         InboxRouter.getCreateResCenterActivityIntent(
-                                context, orderData.getOrderDetail().getDetailOrderId(), 5, 1
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
                         ), CREATE_RESCENTER_REQUEST_CODE
                 );
             }
@@ -502,7 +502,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 //                processTrackOrder(context, orderData);
                 viewListener.navigateToActivityRequest(
                         InboxRouter.getCreateResCenterActivityIntent(
-                                context, orderData.getOrderDetail().getDetailOrderId(), 5, 6
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
                         ), CREATE_RESCENTER_REQUEST_CODE
                 );
             }
