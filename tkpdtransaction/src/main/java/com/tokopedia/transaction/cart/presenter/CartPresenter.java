@@ -787,7 +787,8 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
-        view.renderInstantPromo();
+        //TODO uncomment if ws done
+        view.renderInstantPromo(data.getCartPromo());
     }
 
     @Override

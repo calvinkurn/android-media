@@ -8,6 +8,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 
@@ -112,6 +113,6 @@ public interface ICartView extends IBaseView {
 
     void refreshCartList();
 
-    void renderInstantPromo();
+    void renderInstantPromo(CartPromo cartPromo);
 
 }

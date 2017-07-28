@@ -9,6 +9,7 @@ import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,6 +81,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
@@ -176,6 +178,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     LinearLayout instantInsertVoucherLayout;
     @BindView(R2.id.instant_insert_voucher_text_view)
     TextView instantInsertVoucherTextView;
+    @BindView(R2.id.instant_insert_voucher_button)
+    TextView instantInsertVoucherButton;
+    @BindView(R2.id.instant_promo_placeholder)
+    CardView instantPromoPlaceHolder;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -695,8 +701,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderInstantPromo() {
-        instantInsertVoucherTextView.setOnClickListener(insertCode("aaaaaa"));
+    public void renderInstantPromo(CartPromo cartPromo) {
+        /*if(cartPromo.isVisible()) {
+            instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+            instantInsertVoucherTextView
+                    .setText(Html.fromHtml("Dapatkan kode Promo <b>XYZ</b> dalam rangka merayakan hari raya XYZ"));
+            instantInsertVoucherButton.setText("Rayakan Hari XYZ sekarang!");
+            instantInsertVoucherButton.setTextColor(Color.parseColor("#228B22"));
+            instantInsertVoucherButton.setOnClickListener(insertCode("aaaaaa"));
+        }*/
+        instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+        instantInsertVoucherTextView
+                .setText(Html.fromHtml("Dapatkan kode Promo <b>XYZ</b> dalam rangka merayakan hari raya XYZ"));
+        instantInsertVoucherButton.setText("Rayakan Hari XYZ sekarang!");
+        instantInsertVoucherButton.setTextColor(Color.parseColor("#228B22"));
+        instantInsertVoucherButton.setOnClickListener(insertCode("aaaaaa"));
     }
 
     @Override
