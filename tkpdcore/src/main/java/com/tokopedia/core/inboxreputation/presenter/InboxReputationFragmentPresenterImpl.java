@@ -106,13 +106,9 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
 
     @Override
     public void getNextPage(int itemPosition, int visibleItem) {
-        if (hasNextPage() && isOnLastPosition(itemPosition, visibleItem) && canLoadMore()) {
+        if (hasNextPage() && isOnLastPosition(itemPosition, visibleItem)) {
             loadMore();
         }
-    }
-
-    private boolean canLoadMore() {
-        return viewListener.getAdapter().isLoading();
     }
 
     @Override
@@ -295,7 +291,7 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
                         viewListener.setActionEnabled(true);
 
                         viewListener.getAdapter().getList().set(position, response.getList().get(0));
-                        viewListener.getAdapter().notifyDataSetChanged();
+                        viewListener.getAdapter().notifyItemRangeChanged(position, 1);
 
                         if (page.getPage() == 1 && !response.getList().isEmpty() && isFilterDefault()) {
                             cacheInboxReputationInteractor.getInboxReputationCache(viewListener.getArguments().getString(PARAM_NAV),

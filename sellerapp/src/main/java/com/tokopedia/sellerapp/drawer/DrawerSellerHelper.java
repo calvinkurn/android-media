@@ -117,13 +117,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
-                    0,
-                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
-                    true));
-        }
-
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
         return data;
@@ -314,6 +307,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(SellerHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
+                    UnifyTracking.eventClickGoldMerchantViaDrawer();
                     context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:

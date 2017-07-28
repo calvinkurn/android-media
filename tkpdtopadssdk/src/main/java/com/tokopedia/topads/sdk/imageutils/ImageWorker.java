@@ -24,11 +24,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.ImageView;
-
 
 import com.tokopedia.topads.sdk.BuildConfig;
 
@@ -74,7 +71,7 @@ public abstract class ImageWorker {
      * @param imageView The ImageView to bind the downloaded image to.
      * @param listener  A listener that will be called back once the image has been loaded.
      */
-    public void loadImage(Object data, ImageView imageView, OnImageLoadedListener listener) {
+    public void loadImage(Object data, ImageView imageView, OnImageLoadedListener listener, boolean loadOnMemory) {
         if (data == null) {
             return;
         }
@@ -88,7 +85,7 @@ public abstract class ImageWorker {
         if (value != null) {
             // Bitmap found in memory cache
             imageView.setImageDrawable(value);
-            if (listener != null) {
+            if (listener != null && loadOnMemory) {
                 listener.onImageLoaded(true);
             }
         } else if (cancelPotentialWork(data, imageView)) {
@@ -97,6 +94,7 @@ public abstract class ImageWorker {
             final AsyncDrawable asyncDrawable =
                     new AsyncDrawable(mResources, mLoadingBitmap, task);
             imageView.setImageDrawable(asyncDrawable);
+
 
             // NOTE: This uses a custom version of AsyncTask that has been pulled from the
             // framework and slightly modified. Refer to the docs at the top of the class
@@ -118,7 +116,7 @@ public abstract class ImageWorker {
      * @param imageView The ImageView to bind the downloaded image to.
      */
     public void loadImage(Object data, ImageView imageView) {
-        loadImage(data, imageView, null);
+        loadImage(data, imageView, null, true);
     }
 
     /**
