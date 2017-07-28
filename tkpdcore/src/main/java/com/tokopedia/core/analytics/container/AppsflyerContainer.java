@@ -3,7 +3,6 @@ package com.tokopedia.core.analytics.container;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -74,17 +73,11 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAndroidID() {
-        getAdsID(new AFAdsIDCallback() {
-            @Override
-            public void onGetAFAdsID(String adsId) {
-                AppsFlyerLib.getInstance().setAndroidIdData(adsId);
-            }
-
-            @Override
-            public void onErrorAFAdsID() {
-                Log.d(TAG, "Appsflyer error cant get advertisment ID");
-            }
-        });
+        String androidID = GCMHandler.getRegistrationId(context);
+        if (!TextUtils.isEmpty(androidID)) {
+            AppsFlyerLib.getInstance().setAndroidIdData(androidID);
+            CommonUtils.dumper(TAG + " appsflyer sent android ID " + androidID + " ids");
+        }
     }
 
     private void setGCMId(String gcmID) {
