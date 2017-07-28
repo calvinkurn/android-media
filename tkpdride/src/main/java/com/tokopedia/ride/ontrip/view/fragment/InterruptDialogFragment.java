@@ -64,6 +64,7 @@ public class InterruptDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         setCancelable(false);
         return inflater.inflate(R.layout.fragment_interrupt_dialog, container);
     }
