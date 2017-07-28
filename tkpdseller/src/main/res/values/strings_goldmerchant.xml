@@ -9,6 +9,7 @@
     <string name="gold_merchant_top_ads_amount_subtitle_text">Total Pengeluaran TopAds</string>
     <string name="gold_merchant_sold_product_list_text">Daftar Produk Terjual</string>
     <string name="gold_merchant_transaction_summary_text">Ringkasan Transaksi</string>
+    <string name="gm_statistic_card_error_content">Data Error</string>
     <string name="unfinished_transaction_text">Transaksi Belum Selesai</string>
     <string name="on_hold_trans_text">Transaksi dalam proses</string>
     <string name="trans_amount_text">Nominal Transaksi</string>

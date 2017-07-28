@@ -23,6 +23,8 @@ import com.tokopedia.design.loading.LoadingStateView;
  */
 
 public class TitleCardView extends CardView {
+    public static final int VIEW_NOT_AVAILABLE = -1;
+
     @LayoutRes
     public static final int DEFAULT_LOADING_TITLE_LAYOUT_RES = R.layout.widget_title_card_loading;
 
@@ -36,7 +38,11 @@ public class TitleCardView extends CardView {
     private View loadingTitleView;
 
     private CharSequence titleString;
+    @LayoutRes
     private int loadingLayoutRes;
+    @LayoutRes
+    private int errorLayoutRes;
+    @LayoutRes
     private int emptyLayoutRes;
     private Drawable iconDrawable;
     private boolean useGradientTitleLoading;
@@ -65,8 +71,9 @@ public class TitleCardView extends CardView {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
         titleString = a.getString(R.styleable.TitleCardView_tcv_title);
         titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_size, 0);
-        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, 0);
-        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, 0);
+        loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, VIEW_NOT_AVAILABLE);
+        errorLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_error_layout, VIEW_NOT_AVAILABLE);
+        emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, VIEW_NOT_AVAILABLE);
         iconDrawable = a.getDrawable(R.styleable.TitleCardView_tcv_icon);
         useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_tcv_use_gradient_title, true);
         a.recycle();
@@ -90,11 +97,14 @@ public class TitleCardView extends CardView {
         ivArrowDown = (ImageView) vgTitleContent.findViewById(R.id.iv_arrow_down);
 
         loadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view);
-        if (emptyLayoutRes != 0) {
-            loadingStateView.setEmptyViewRes(emptyLayoutRes);
-        }
-        if (loadingLayoutRes != 0) {
+        if (loadingLayoutRes != VIEW_NOT_AVAILABLE) {
             loadingStateView.setLoadingViewRes(loadingLayoutRes);
+        }
+        if (errorLayoutRes != VIEW_NOT_AVAILABLE) {
+            loadingStateView.setErrorViewRes(errorLayoutRes);
+        }
+        if (emptyLayoutRes != VIEW_NOT_AVAILABLE) {
+            loadingStateView.setEmptyViewRes(emptyLayoutRes);
         }
 
         setTitle(titleString);

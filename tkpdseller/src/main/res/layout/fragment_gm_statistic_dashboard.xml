@@ -35,6 +35,7 @@
             android:layout_marginTop="@dimen/margin_sm"
             app:tcv_icon="@drawable/icon_produk"
             app:tcv_loading_layout="@layout/widget_popular_product_loading"
+
             app:tcv_title="@string/product_data"
             app:tcv_title_size="@dimen/font_body1">
 

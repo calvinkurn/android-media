@@ -63,7 +63,6 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
         long sold = getPopularProduct.getSold();
         String text = KMNumbers.getFormattedString(sold);
         tvNoOfSelling.setText(text);
-        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     private void setEmptyState() {

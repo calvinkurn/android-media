@@ -123,12 +123,26 @@ public class LoadingStateView extends FrameLayout {
         addView(view);
     }
 
+    public void setErrorViewRes(@LayoutRes int layoutRes) {
+        View view = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
+        setErrorView(view);
+    }
+
+    public void setErrorView(View view) {
+        if (errorView != null) {
+            frameLayout.removeView(errorView);
+        }
+        errorView = view;
+        view.setVisibility(View.GONE);
+        addView(view);
+    }
+
     public View getEmptyView() {
         return emptyView;
     }
 
-    public void setEmptyViewRes(int emptyViewRes) {
-        View emptyView = LayoutInflater.from(getContext()).inflate(emptyViewRes, frameLayout, false);
+    public void setEmptyViewRes(@LayoutRes int layoutRes) {
+        View emptyView = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
         setEmptyView(emptyView);
     }
 
@@ -181,7 +195,8 @@ public class LoadingStateView extends FrameLayout {
         if (view == null) {
             return;
         }
-        for (int i=0, sizei= frameLayout.getChildCount(); i<sizei; i++) {
+        int childSize = frameLayout.getChildCount()
+        for (int i = 0; i < childSize; i++) {
             View childView = frameLayout.getChildAt(i);
             if (childView == view) {
                 childView.setVisibility(View.VISIBLE);
