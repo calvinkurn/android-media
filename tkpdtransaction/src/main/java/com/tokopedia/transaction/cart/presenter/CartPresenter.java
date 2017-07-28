@@ -388,10 +388,11 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode() {
+    public void processCheckVoucherCode(int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        params.put("is_suggested", String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override

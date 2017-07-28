@@ -12,12 +12,15 @@ import com.google.gson.annotations.SerializedName;
 public class CartPromo implements Parcelable{
 
     @SerializedName("is_visible")
-    private boolean isVisible;
+    private int isVisible;
 
-    @SerializedName("promo_text")
+    @SerializedName("text")
     private String promoText;
 
-    @SerializedName("cta_text")
+    @SerializedName("promo_code")
+    private String promoCode;
+
+    @SerializedName("cta")
     private String ctaText;
 
     @SerializedName("cta_color")
@@ -28,10 +31,25 @@ public class CartPromo implements Parcelable{
     }
 
     protected CartPromo(Parcel in) {
-        isVisible = in.readByte() != 0;
+        isVisible = in.readInt();
         promoText = in.readString();
+        promoCode = in.readString();
         ctaText = in.readString();
         ctaColor = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(isVisible);
+        dest.writeString(promoText);
+        dest.writeString(promoCode);
+        dest.writeString(ctaText);
+        dest.writeString(ctaColor);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<CartPromo> CREATOR = new Creator<CartPromo>() {
@@ -46,11 +64,11 @@ public class CartPromo implements Parcelable{
         }
     };
 
-    public boolean isVisible() {
+    public int isVisible() {
         return isVisible;
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(int visible) {
         isVisible = visible;
     }
 
@@ -78,16 +96,12 @@ public class CartPromo implements Parcelable{
         this.ctaColor = ctaColor;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isVisible ? 1 : 0));
-        dest.writeString(promoText);
-        dest.writeString(ctaText);
-        dest.writeString(ctaColor);
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
+
 }

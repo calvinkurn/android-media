@@ -84,7 +84,7 @@ public class CartData implements Parcelable {
     @SerializedName("donation")
     @Expose
     private CartDonation donation;
-    @SerializedName("promo")
+    @SerializedName("promo_suggestion")
     private CartPromo cartPromo;
 
     public String getGrandTotalWithoutLP() {

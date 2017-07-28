@@ -610,6 +610,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 cbUseVoucher.setChecked(true);
                 etVoucherCode.setText(voucherCode);
                 getButtonCheckVoucherClickListener();
+                presenter.processCheckVoucherCode(1);
             }
         };
     }
@@ -702,20 +703,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderInstantPromo(CartPromo cartPromo) {
-        /*if(cartPromo.isVisible()) {
+        if(cartPromo.isVisible() == 1) {
             instantPromoPlaceHolder.setVisibility(View.VISIBLE);
             instantInsertVoucherTextView
-                    .setText(Html.fromHtml("Dapatkan kode Promo <b>XYZ</b> dalam rangka merayakan hari raya XYZ"));
-            instantInsertVoucherButton.setText("Rayakan Hari XYZ sekarang!");
-            instantInsertVoucherButton.setTextColor(Color.parseColor("#228B22"));
-            instantInsertVoucherButton.setOnClickListener(insertCode("aaaaaa"));
-        }*/
-        instantPromoPlaceHolder.setVisibility(View.VISIBLE);
-        instantInsertVoucherTextView
-                .setText(Html.fromHtml("Dapatkan kode Promo <b>XYZ</b> dalam rangka merayakan hari raya XYZ"));
-        instantInsertVoucherButton.setText("Rayakan Hari XYZ sekarang!");
-        instantInsertVoucherButton.setTextColor(Color.parseColor("#228B22"));
-        instantInsertVoucherButton.setOnClickListener(insertCode("aaaaaa"));
+                    .setText(Html.fromHtml(cartPromo.getPromoText()));
+            instantInsertVoucherButton.setText(cartPromo.getCtaText());
+            instantInsertVoucherButton.setTextColor(Color.parseColor(cartPromo.getCtaColor()));
+            instantInsertVoucherButton.setOnClickListener(insertCode(cartPromo.getPromoCode()));
+        }
     }
 
     @Override
@@ -1006,7 +1001,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     renderErrorCheckVoucher(
                             getStringFromResource(R.string.label_error_form_voucher_code_empty));
                 } else {
-                    presenter.processCheckVoucherCode();
+                    presenter.processCheckVoucherCode(0);
                 }
             }
         };
