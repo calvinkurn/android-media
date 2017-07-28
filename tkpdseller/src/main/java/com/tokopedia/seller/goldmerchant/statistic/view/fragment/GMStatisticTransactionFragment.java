@@ -32,7 +32,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView, GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView, GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener, GMTransactionGraphViewHolder.OnTransactioNGraphViewHolderListener {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -43,6 +43,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
     private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
     private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
+
+    private boolean isComparingDate = false;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -65,6 +67,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(view);
         gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
+        gmTransactionGraphViewHolder.setOnTransactioNGraphViewHolderListener(this);
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
 
         gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
@@ -88,6 +91,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
         loadingState(LoadingStateView.VIEW_LOADING);
+        isComparingDate = datePickerViewModel.isCompareDate();
         presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
@@ -99,7 +103,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, isComparingDate());
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel);
         finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
     }
 
@@ -130,11 +134,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public boolean allowComparedDate() {
-        return true;
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
@@ -154,5 +153,10 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public void onFindOutTopAdsClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean isComparingDate() {
+        return isComparingDate;
     }
 }

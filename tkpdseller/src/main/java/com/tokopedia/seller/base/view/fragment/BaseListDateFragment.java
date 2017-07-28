@@ -14,8 +14,6 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 
 import javax.inject.Inject;
@@ -92,12 +90,6 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
 
     private void setDateLabelView() {
         dateLabelView.setDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
-        if (isComparingDate()) {
-            PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(
-                    datePickerViewModel.getStartDate(),
-                    datePickerViewModel.getEndDate());
-            dateLabelView.setComparedDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
-        }
     }
 
     @Override
@@ -144,22 +136,11 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     }
 
     protected void onDateSelected(Intent intent) {
-        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
-        if (datePickerViewModel!= null && !datePickerViewModel.equals(this.datePickerViewModel)) {
+        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent, this.datePickerViewModel);
+        if (datePickerViewModel!= null && !datePickerViewModel.equal(this.datePickerViewModel)) {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
             needReloadData = true;
         }
-    }
-
-    @Override
-    public abstract boolean allowComparedDate();
-
-    @Override
-    public final boolean isComparingDate() {
-        if (datePickerViewModel!= null) {
-            return datePickerViewModel.isCompareDate();
-        }
-        return false;
     }
 
     @Override

@@ -303,8 +303,4 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         return START_PAGE;
     }
 
-    @Override
-    public boolean allowComparedDate() {
-        return false;
-    }
 }

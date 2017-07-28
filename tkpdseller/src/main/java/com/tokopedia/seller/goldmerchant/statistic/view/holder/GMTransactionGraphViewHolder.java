@@ -44,7 +44,6 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     private LineChartContainerWidget gmLineChartContainer;
 
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
-    private boolean compareGraph;
 
     public GMTransactionGraphViewHolder(View view) {
         gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
@@ -64,30 +63,38 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
         monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
-    public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel, boolean compareGraph) {
-        this.compareGraph = compareGraph;
+    OnTransactioNGraphViewHolderListener onTransactioNGraphViewHolderListener;
+    public interface OnTransactioNGraphViewHolderListener{
+        boolean isComparingDate();
+    }
+
+    public void setOnTransactioNGraphViewHolderListener(OnTransactioNGraphViewHolderListener onTransactioNGraphViewHolderListener) {
+        this.onTransactioNGraphViewHolderListener = onTransactioNGraphViewHolderListener;
+    }
+
+    public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel) {
         this.gmTransactionGraphViewModel = gmTransactionGraphViewModel;
         switch (selection()) {
             case GMTransactionGraphType.GROSS_REVENUE:
-                bind(gmTransactionGraphViewModel.grossRevenueModel);
+                bindForSelection(gmTransactionGraphViewModel.grossRevenueModel);
                 break;
             case GMTransactionGraphType.NET_REVENUE:
-                bind(gmTransactionGraphViewModel.netRevenueModel);
+                bindForSelection(gmTransactionGraphViewModel.netRevenueModel);
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
-                bind(gmTransactionGraphViewModel.rejectTransactionModel);
+                bindForSelection(gmTransactionGraphViewModel.rejectTransactionModel);
                 break;
             case GMTransactionGraphType.REJECTED_AMOUNT:
-                bind(gmTransactionGraphViewModel.rejectedAmountModel);
+                bindForSelection(gmTransactionGraphViewModel.rejectedAmountModel);
                 break;
             case GMTransactionGraphType.SHIPPING_COST:
-                bind(gmTransactionGraphViewModel.shippingCostModel);
+                bindForSelection(gmTransactionGraphViewModel.shippingCostModel);
                 break;
             case GMTransactionGraphType.SUCCESS_TRANS:
-                bind(gmTransactionGraphViewModel.successTransactionModel);
+                bindForSelection(gmTransactionGraphViewModel.successTransactionModel);
                 break;
             case GMTransactionGraphType.TOTAL_TRANSACTION:
-                bind(gmTransactionGraphViewModel.totalTransactionModel);
+                bindForSelection(gmTransactionGraphViewModel.totalTransactionModel);
                 break;
         }
     }
@@ -112,7 +119,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
                         Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
                         resetSelection(gmStatGraphSelection);
-                        GMTransactionGraphViewHolder.this.bind(gmTransactionGraphViewModel, compareGraph);
+                        GMTransactionGraphViewHolder.this.bind(gmTransactionGraphViewModel);
                     }
                 })
                 .createDialog();
@@ -129,10 +136,13 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
         return gmStatGraphSelection;
     }
 
-    private void bind(@Nullable GMGraphViewWithPreviousModel data) {
-
+    private void bindForSelection(@Nullable GMGraphViewWithPreviousModel data) {
+        boolean isCompareGraph = false;
+        if (onTransactioNGraphViewHolderListener!= null) {
+            isCompareGraph = onTransactioNGraphViewHolderListener.isComparingDate();
+        }
         setHeaderValue(data);
-        if (compareGraph) {
+        if (isCompareGraph) {
             gmLineChartContainer.setPercentage(data.percentage);
             gmLineChartContainer.setCompareDate(data);
             gmLineChartContainer.setMainDate(data);

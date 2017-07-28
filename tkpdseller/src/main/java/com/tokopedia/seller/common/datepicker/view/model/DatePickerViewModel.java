@@ -19,23 +19,23 @@ public class DatePickerViewModel extends DatePickerDomainModel {
         super(datePickerDomainModel);
     }
 
-    public boolean equals(@Nullable DatePickerViewModel datePickerViewModel) {
-        if (datePickerViewModel == null) {
+    public boolean equal(@Nullable DatePickerViewModel previousDatePickerViewModel) {
+        if (previousDatePickerViewModel == null) {
             return false;
         }
-        if (this.getStartDate() != datePickerViewModel.getStartDate()) {
+        if (this.getStartDate() != previousDatePickerViewModel.getStartDate()) {
             return false;
         }
-        if (this.getEndDate() != datePickerViewModel.getEndDate()) {
+        if (this.getEndDate() != previousDatePickerViewModel.getEndDate()) {
             return false;
         }
-        if (this.getDatePickerType() != datePickerViewModel.getDatePickerType()) {
+        if (this.getDatePickerType() != previousDatePickerViewModel.getDatePickerType()) {
             return false;
         }
-        if (this.getDatePickerSelection() != datePickerViewModel.getDatePickerSelection()) {
+        if (this.getDatePickerSelection() != previousDatePickerViewModel.getDatePickerSelection()) {
             return false;
         }
-        if (this.isCompareDate() != datePickerViewModel.isCompareDate()) {
+        if (this.isCompareDate() != previousDatePickerViewModel.isCompareDate()) {
             return false;
         }
         return true;

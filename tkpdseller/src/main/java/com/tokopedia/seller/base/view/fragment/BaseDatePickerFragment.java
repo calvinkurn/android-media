@@ -13,8 +13,6 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 
 import javax.inject.Inject;
@@ -31,6 +29,8 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     @Inject
     public DatePickerPresenter datePickerPresenter;
     private DatePickerViewModel datePickerViewModel;
+
+    private boolean isDateNoChangeFromPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,23 +66,16 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        this.datePickerViewModel = datePickerViewModel;
-        loadDataByDate(datePickerViewModel);
-        setDateLabelView();
+        if (! datePickerViewModel.equal(this.datePickerViewModel)) {
+            this.datePickerViewModel = datePickerViewModel;
+            loadDataByDate(datePickerViewModel);
+            setDateLabelView(datePickerViewModel);
+        }
     }
 
-    private void setDateLabelView() {
+    protected void setDateLabelView(DatePickerViewModel datePickerViewModel) {
         dateLabelView.setDate(datePickerViewModel.getStartDate(),
                 datePickerViewModel.getEndDate());
-        if (allowComparedDate() && isComparingDate()) {
-            PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(
-                    datePickerViewModel.getStartDate(),
-                    datePickerViewModel.getEndDate());
-            dateLabelView.setComparedDate(periodRangeModel.getStartDate(), periodRangeModel.getEndDate());
-            dateLabelView.setComparedDateVisibility(View.VISIBLE);
-        } else {
-            dateLabelView.setComparedDateVisibility(View.GONE);
-        }
     }
 
     public abstract void loadDataByDate(DatePickerViewModel datePickerViewModel);
@@ -94,7 +87,7 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
         } else {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
-        setDateLabelView();
+        setDateLabelView(datePickerViewModel);
         loadDataByDate(datePickerViewModel);
     }
 
@@ -131,20 +124,10 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     }
 
     protected void onDateSelected(Intent intent) {
-        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
-        if (datePickerViewModel!= null && !datePickerViewModel.equals(this.datePickerViewModel)) {
+        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent, this.datePickerViewModel);
+        if (datePickerViewModel!= null && !datePickerViewModel.equal(this.datePickerViewModel)) {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
-    }
-
-    public abstract boolean allowComparedDate();
-
-    @Override
-    public final boolean isComparingDate() {
-        if (datePickerViewModel!= null) {
-            return datePickerViewModel.isCompareDate();
-        }
-        return false;
     }
 
     @Override

@@ -13,10 +13,6 @@ public interface BaseDatePicker {
 
     void openDatePicker();
 
-    boolean allowComparedDate();
-
-    boolean isComparingDate();
-
     DatePickerViewModel getDefaultDateViewModel();
 
     void reloadDataForDate();

@@ -31,7 +31,11 @@ public class SaveDatePickerUseCase extends CompositeUseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return datePickerRepository.saveSetting((DatePickerDomainModel) requestParams.getObject(DATE_PICKER_MODEL));
+        return Observable.just(
+                datePickerRepository.saveSetting(
+                        (DatePickerDomainModel) requestParams.getObject(DATE_PICKER_MODEL)
+                ).toBlocking().first()
+        );
     }
 
     public static RequestParams createRequestParams(DatePickerViewModel datePickerViewModel){
