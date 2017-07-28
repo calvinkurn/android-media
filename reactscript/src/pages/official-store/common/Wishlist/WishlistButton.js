@@ -10,28 +10,29 @@ import {
   View,
   Image,
 } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { icons } from '../../../../components/icons'
 import { addToWishlist, removeFromWishlist } from '../../actions/actions'
 
 class Wishlist extends Component {
-  _onTap = (isWishlist, pId) => {
+  _onTap = (isWishlist, pId, User_ID) => {
     if (isWishlist) {
-      this.props.dispatch(removeFromWishlist(pId))
+      this.props.dispatch(removeFromWishlist(pId, User_ID))
     } else {
-      this.props.dispatch(addToWishlist(pId))
+      this.props.dispatch(addToWishlist(pId, User_ID))
     }
   }
+
   render() {
     const isWishlist = this.props.isWishlist || false
-    const productId = this.props.productId
+    const { productId, User_ID } = this.props
     const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
     return (
       <View style={styles.wrapper}>
-        <Touchable onPress={() => this._onTap(isWishlist, productId)}>
+        <Touchable onPress={() => this._onTap(isWishlist, productId, User_ID)}>
            <View>
             {
-              isWishlist ? (<Icon name='ios-heart' size={25} color="#f33960" />) :
-                (<Icon name='ios-heart-outline' size={25} />)
+              isWishlist ? (<Image source={icons.icon_wishlist_red} style={{width:20, height:20, margin:10}} />) :
+                (<Image source={icons.icon_wishlist} style={{width:20, height:20, margin:10}} />)
             }
           </View> 
         </Touchable>

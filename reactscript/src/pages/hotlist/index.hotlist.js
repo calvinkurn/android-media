@@ -78,20 +78,23 @@ class Hotlist extends React.PureComponent {
 
   render() {
     return (
-      <FlatList
-        style={styles.wrapper}
-        onEndReached={ (distanceFromEnd) => {
-          if(!this.state.isLoading) {
-            this.loadData()
-          }
-        }}
-        ListFooterComponent={this._loadingIndicator}
-        keyExtractor={(item, index) => item.url}
-        data={this.state.dataSource}
-        onRefresh={this._onRefresh}
-        numColumns={1}
-        refreshing={false}
-        renderItem={this._renderItem}/>
+      <View>
+        <Text>AJKhdsjhdkahdsahdk</Text>
+        <FlatList
+          style={styles.wrapper}
+          onEndReached={ (distanceFromEnd) => {
+            if(!this.state.isLoading) {
+              this.loadData()
+            }
+          }}
+          ListFooterComponent={this._loadingIndicator}
+          keyExtractor={(item, index) => item.url}
+          data={this.state.dataSource}
+          onRefresh={this._onRefresh}
+          numColumns={1}
+          refreshing={false}
+          renderItem={this._renderItem}/>
+      </View>
     );
   }
 

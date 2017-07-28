@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native'
-import Icon from 'react-native-vector-icons/EvilIcons'
+import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native'
+import { icons } from '../../../../components/icons'
 
 const BackToTop = (props) => {
   return (
@@ -9,7 +9,7 @@ const BackToTop = (props) => {
         underlayColor='#fff' onPress={props.onTap}>
         <View style={{ flex: 1, flexDirection: 'row', padding: 10, alignSelf: 'center', justifyContent: 'center', }}>
           <Text style={{ color: 'rgba(0,0,0,.7)', textAlign: 'center', fontSize: 13}}>Kembali ke atas</Text>
-          <Icon name='chevron-up' size={30}/>
+          <Image source={icons.chevron_thin_up} style={{width:15, height:20, marginLeft:10}} />
         </View>
       </TouchableOpacity>
     </View>

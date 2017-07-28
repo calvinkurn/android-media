@@ -10,10 +10,13 @@ import {
   TouchableWithoutFeedback,
   Linking
 } from 'react-native'
+import { NetworkModule, NavigationModule } from 'NativeModules';
+import unescape from 'lodash/unescape'
 import LoadMore from './LoadMore'
 import Grid from '../common/grid/grid'
 import FavouriteBtn from '../common/Favourite/favBtn'
 import WishlistBtn from '../common/Wishlist/WishlistButton'
+
 
 const BrandList = (props) => {
   const gridProps = {
@@ -38,22 +41,23 @@ const BrandList = (props) => {
           <View key={b.id} style={styles.brandContainer}>
             <View style={styles.shopHeadContainer}>
               <View style={styles.shopImageWrapper}>
-                <TouchableWithoutFeedback onPress={() => Linking.openURL(b.shop_mobile_url)}>
+                <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(b.shop_apps_url, '')}>
                   <Image style={styles.shopImage} source={{ uri: b.logo_url }} />
                 </TouchableWithoutFeedback>
               </View>
-              <TouchableWithoutFeedback onPress={() => Linking.openURL(b.shop_mobile_url)} >
+              <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(b.shop_apps_url, '')}>
                 <View>
                   <Text
                     style={styles.shopName}
                     ellipsizeMode='tail'
                     numberOfLines={1}>
-                    {b.name}
+                    {unescape(b.name)}
                   </Text>
                 </View>
               </TouchableWithoutFeedback>
               <View style={{ marginLeft: 'auto' }}>
                 <FavouriteBtn
+                  User_ID={props.User_ID}
                   shopId={b.id}
                   isFav={b.isFav} />
               </View>
@@ -66,12 +70,12 @@ const BrandList = (props) => {
                 {
                   b.products.map(p => (
                     <View style={styles.thumb} key={p.id}>
-                      <TouchableWithoutFeedback onPress={() => Linking.openURL(p.url)}>
+                      <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(p.url_app, '')}>
                         <View>
                           <Image style={styles.productImage} source={{ uri: p.image_url }} />
                           <Text style={styles.productName}
                             ellipsizeMode='tail'
-                            numberOfLines={2}>{p.name}
+                            numberOfLines={2}>{unescape(p.name)}
                           </Text>
                         </View>
                       </TouchableWithoutFeedback>
@@ -122,7 +126,10 @@ const BrandList = (props) => {
                           })
                         }
                       </View>
-                      <WishlistBtn isWishlist={p.is_wishlist} productId={p.id} />
+                      <WishlistBtn
+                        User_ID={props.User_ID}
+                        isWishlist={p.is_wishlist} 
+                        productId={p.id} />
                     </View>
                   ))
                 }

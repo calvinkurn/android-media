@@ -33,7 +33,8 @@ class BrandContainer extends Component {
       canFetch,
       isFetching,
       loadMore: this.props.loadMore,
-      slideMore: this.props.slideMore
+      slideMore: this.props.slideMore,
+      User_ID: this.props.User_ID
     }
 
     return (

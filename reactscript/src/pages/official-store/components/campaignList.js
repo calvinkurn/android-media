@@ -9,12 +9,19 @@ import {
   Linking,
   TouchableWithoutFeedback
 } from 'react-native';
+import unescape from 'lodash/unescape'
+import { NavigationModule, NetworkModule } from 'NativeModules';
 import WishListButton from '../common/Wishlist/WishlistButton';
+let ID_User;
 
-const CampaignList = ({ campaigns }) => {
+
+const CampaignList = ({ campaigns, User_ID }) => {
+  ID_User = User_ID
+
   return (
     <View style={styles.container}>
       <FlatList
+        User_ID={ID_User}
         data={campaigns}
         keyExtractor={item => item.banner_id}
         renderItem={this.renderCampaign}
@@ -68,7 +75,10 @@ this.renderCampaign = (c) => {
 
         productRow.push(
           <View style={productCell} key={dataProducts.id}>
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(dataProducts.url)}>
+            <TouchableWithoutFeedback onPress={() => {
+                console.log("di klik: ", dataProducts.url_app);
+                NavigationModule.navigate(dataProducts.url_app, "")
+              }}>
               <View>
                 <View style={productImageWrapper}>
                   <Image source={{ uri: dataProducts.image_url }} style={productImage} />
@@ -76,7 +86,7 @@ this.renderCampaign = (c) => {
                 <Text
                   style={productName}
                   ellipsizeMode='tail'
-                  numberOfLines={2}>{dataProducts.name}</Text>
+                  numberOfLines={2}>{unescape(dataProducts.name)}</Text>
               </View>
             </TouchableWithoutFeedback>
             <View style={productGridNormalPrice}>
@@ -128,7 +138,9 @@ this.renderCampaign = (c) => {
                 })
               }
             </View>
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(dataProducts.shop.url)}>
+            <TouchableWithoutFeedback onPress={() => {
+              console.log("Shop: ", dataProducts.shop.url_app)
+              NavigationModule.navigate(dataProducts.shop.url_app, "")}}>
               <View style={shopSection}>
                 <View style={shopImageWrapper}>
                   <Image source={{ uri: products[j].brand_logo }} style={shopImage} />
@@ -137,7 +149,7 @@ this.renderCampaign = (c) => {
                   <Text
                     style={{ lineHeight: 15 }}
                     ellipsizeMode='tail'
-                    numberOfLines={1}>{dataProducts.shop.name}</Text>
+                    numberOfLines={1}>{unescape(dataProducts.shop.name)}</Text>
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -166,7 +178,9 @@ this.renderCampaign = (c) => {
           </TouchableWithoutFeedback>
         ) :
           (
-            <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_mobile)}>
+            <TouchableWithoutFeedback onPress={() => {
+              console.log('banner: ', item.redirect_url_app)
+              NavigationModule.navigate(item.redirect_url_app, "")}}>
               <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
             </TouchableWithoutFeedback>
           )
@@ -176,7 +190,9 @@ this.renderCampaign = (c) => {
         c.html_id === 6 ? null : (<View style={viewAll}>
           <Text
             style={viewAllText}
-            onPress={() => Linking.openURL(item.redirect_url_mobile)}>Lihat Semua &gt;
+            onPress={() => {
+              console.log('Lihat semua: ', item.redirect_url_app)
+              NavigationModule.navigate(item.redirect_url_app, '')}}>Lihat Semua &gt;
           </Text>
         </View>)
       }

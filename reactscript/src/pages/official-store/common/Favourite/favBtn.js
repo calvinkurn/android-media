@@ -13,11 +13,11 @@ import { addToFavourite, removeFromFavourite } from '../../actions/actions'
 class FavouriteButton extends Component {
 
   _onTap = (isShopFav, shopId) => {
-    const { dispatch } = this.props
+    const { dispatch, User_ID } = this.props
     if (isShopFav) {
-      return dispatch(removeFromFavourite(shopId))
+      return dispatch(removeFromFavourite(shopId, User_ID))
     } else {
-      return dispatch(addToFavourite(shopId))
+      return dispatch(addToFavourite(shopId, User_ID))
     }
   }
 
