@@ -30,8 +30,6 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public DatePickerPresenter datePickerPresenter;
     private DatePickerViewModel datePickerViewModel;
 
-    private boolean isDateNoChangeFromPicker;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,11 +121,20 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
         }
     }
 
-    protected void onDateSelected(Intent intent) {
-        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent, this.datePickerViewModel);
+    private void onDateSelected(Intent intent) {
+        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
+        datePickerViewModel = revisitExtraIntent(intent, datePickerViewModel, this.datePickerViewModel);
         if (datePickerViewModel!= null && !datePickerViewModel.equal(this.datePickerViewModel)) {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
+    }
+
+    /**
+     * if there are any intent extra to be put on datepickerViewModel, add it here
+     */
+    public DatePickerViewModel revisitExtraIntent(Intent intent, DatePickerViewModel datePickerViewModel,
+                                                  DatePickerViewModel prevDatePickerViewModel){
+        return datePickerViewModel;
     }
 
     @Override

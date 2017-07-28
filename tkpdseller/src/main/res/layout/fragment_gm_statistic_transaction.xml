@@ -26,7 +26,11 @@
             <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
                 android:id="@+id/gold_merchant_line_chart_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/gmstat_padding_item_left_right"
+                android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+                android:paddingRight="@dimen/gmstat_padding_item_left_right"
+                android:paddingTop="8dp">
                 <com.tokopedia.seller.lib.williamchart.view.LineChartView
                     android:id="@+id/gm_statistic_transaction_income_graph"
                     android:layout_width="match_parent"
@@ -83,15 +87,38 @@
             android:layout_height="wrap_content"
             app:tcv_title="@string/gold_merchant_top_ads_amount_title_text">
 
-            <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
-                android:id="@+id/topads_line_chart_container"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.tokopedia.seller.lib.williamchart.view.LineChartView
-                    android:id="@+id/gm_statistic_topads_graph"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/gmstat_padding_item_left_right"
+                android:paddingRight="@dimen/gmstat_padding_item_left_right"
+                android:paddingBottom="@dimen/activity_vertical_margin">
+                <com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget
+                    android:id="@+id/topads_line_chart_container"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp" />
-            </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+                    <com.tokopedia.seller.lib.williamchart.view.LineChartView
+                        android:id="@+id/gm_statistic_topads_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp" />
+                </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
+
+                <TextView
+                    android:id="@+id/tv_see_topads"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    android:text="@string/see_topads"
+                    android:background="@drawable/rect_stroke_gray"
+                    android:clickable="true"
+                    android:textSize="@dimen/font_button"
+                    android:textStyle="bold"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
 
         </com.tokopedia.design.card.TitleCardView>
 

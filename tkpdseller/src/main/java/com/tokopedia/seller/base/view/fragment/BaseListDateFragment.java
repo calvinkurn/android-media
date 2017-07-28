@@ -54,8 +54,9 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onResume() {
         super.onResume();
-        if (datePickerViewModel!= null && needReloadData) {
-            reloadDataForDate();
+        if (needReloadData) {
+            // reload from page 1
+            loadData();
             needReloadData = false;
         }
     }
@@ -136,7 +137,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     }
 
     protected void onDateSelected(Intent intent) {
-        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent, this.datePickerViewModel);
+        DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
         if (datePickerViewModel!= null && !datePickerViewModel.equal(this.datePickerViewModel)) {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
             needReloadData = true;

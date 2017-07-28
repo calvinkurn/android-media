@@ -150,7 +150,19 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
+    public void onViewTopAdsClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void onFindOutTopAdsClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRegisterTopAdsNowClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
         startActivity(intent);
     }
@@ -158,5 +170,10 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public boolean isComparingDate() {
         return isComparingDate;
+    }
+
+    @Override
+    public boolean allowCompareDate() {
+        return true;
     }
 }

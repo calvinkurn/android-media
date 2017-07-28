@@ -115,6 +115,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
             @Override
             public void onRetryClicked() {
                 resetToLoading();
+                hideSnackBarRetry();
                 reloadDataForDate();
             }
         });
@@ -140,10 +141,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
-        gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
-        gmStatisticTransactionViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        hideSnackBarRetry();
     }
 
     @Override
@@ -156,9 +154,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadProductGraph(GetProductGraph getProductGraph) {
         gmStatisticSummaryViewHolder.setData(getProductGraph);
-        gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
         UnifyTracking.eventLoadGMStat();
-        hideSnackBarRetry();
     }
 
     @Override
@@ -170,8 +166,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadPopularProduct(GetPopularProduct getPopularProduct) {
         gmStatisticProductViewHolder.bindData(getPopularProduct);
-        gmStatisticProductViewHolder.setViewState(LoadingStateView.VIEW_CONTENT);
-        hideSnackBarRetry();
     }
 
     @Override
@@ -183,7 +177,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadBuyerGraph(GetBuyerGraph getBuyerGraph) {
         gmStatisticBuyerViewHolder.bindData(getBuyerGraph);
-        hideSnackBarRetry();
     }
 
     @Override
@@ -195,19 +188,16 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onGetShopCategoryEmpty() {
         gmStatisticMarketInsightViewHolder.bindNoShopCategory();
-        hideSnackBarRetry();
     }
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
         gmStatisticMarketInsightViewHolder.bindData(getKeywords);
-        hideSnackBarRetry();
     }
 
     @Override
     public void onSuccessGetCategory(String categoryName) {
         gmStatisticMarketInsightViewHolder.bindCategory(categoryName);
-        hideSnackBarRetry();
     }
 
     @Override
@@ -237,5 +227,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public boolean allowCompareDate() {
+        return false;
     }
 }

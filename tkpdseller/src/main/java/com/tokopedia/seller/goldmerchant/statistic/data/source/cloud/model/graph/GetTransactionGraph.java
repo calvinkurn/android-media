@@ -9,139 +9,183 @@ import java.util.List;
 /**
  * @author normansyahputa on 7/6/17.
  */
-public class GetTransactionGraph implements GetDateGraph{
+public class GetTransactionGraph implements GetDateGraph {
     @SerializedName("p_cpc_product")
     @Expose
     private long pCpcProduct;
+
     @SerializedName("p_cpc_shop")
     @Expose
     private long pCpcShop;
+
     @SerializedName("onhold_count")
     @Expose
     private long onholdCount;
+
     @SerializedName("onhold_amt")
     @Expose
     private long onholdAmt;
+
     @SerializedName("reso_count")
     @Expose
     private long resoCount;
+
     @SerializedName("success_trans")
     @Expose
     private int successTrans;
+
     @SerializedName("rejected_trans")
     @Expose
     private int rejectedTrans;
+
     @SerializedName("finished_trans")
     @Expose
     private int finishedTrans;
+
     @SerializedName("new_order")
     @Expose
     private int newOrder;
+
     @SerializedName("delivered_product")
     @Expose
     private int deliveredProduct;
+
     @SerializedName("gross_revenue")
     @Expose
-    private int grossRevenue;
+    private long grossRevenue;
+
     @SerializedName("net_revenue")
     @Expose
-    private int netRevenue;
+    private long netRevenue;
+
     @SerializedName("rejected_amount")
     @Expose
-    private int rejectedAmount;
+    private long rejectedAmount;
+
     @SerializedName("shipping_cost")
     @Expose
-    private int shippingCost;
+    private long shippingCost;
+
     @SerializedName("cpc_product")
     @Expose
     private int cpcProduct;
+
     @SerializedName("cpc_shop")
     @Expose
     private int cpcShop;
+
     @SerializedName("diff_success_trans")
     @Expose
     private double diffSuccessTrans;
+
     @SerializedName("diff_rejected_trans")
     @Expose
     private double diffRejectedTrans;
+
     @SerializedName("diff_finished_trans")
     @Expose
     private double diffFinishedTrans;
+
     @SerializedName("diff_new_order")
     @Expose
     private double diffNewOrder;
+
     @SerializedName("diff_delivered_product")
     @Expose
     private double diffDeliveredProduct;
+
     @SerializedName("diff_gross_revenue")
     @Expose
     private double diffGrossRevenue;
+
     @SerializedName("diff_net_revenue")
     @Expose
     private double diffNetRevenue;
+
     @SerializedName("diff_rejected_amount")
     @Expose
     private double diffRejectedAmount;
+
     @SerializedName("diff_shipping_cost")
     @Expose
     private double diffShippingCost;
+
     @SerializedName("diff_cpc_shop")
     @Expose
     private double diffCpcShop;
+
     @SerializedName("diff_cpc_prod")
     @Expose
     private double diffCpcProd;
+
     @SerializedName("date_graph")
     @Expose
     private List<Integer> dateGraph = null;
+
     @SerializedName("success_trans_graph")
     @Expose
     private List<Integer> successTransGraph = null;
+
     @SerializedName("rejected_trans_graph")
     @Expose
     private List<Integer> rejectedTransGraph = null;
+
     @SerializedName("gross_graph")
     @Expose
     private List<Integer> grossGraph = null;
+
     @SerializedName("net_graph")
     @Expose
     private List<Integer> netGraph = null;
+
     @SerializedName("rejected_amt_graph")
     @Expose
     private List<Integer> rejectedAmtGraph = null;
+
     @SerializedName("shipping_graph")
     @Expose
     private List<Integer> shippingGraph = null;
+
     @SerializedName("ads_p_graph")
     @Expose
     private List<Integer> adsPGraph = null;
+
     @SerializedName("ads_s_graph")
     @Expose
     private List<Integer> adsSGraph = null;
+
     @SerializedName("p_date_graph")
     @Expose
     private List<Integer> pDateGraph = null;
+
     @SerializedName("p_success_trans_graph")
     @Expose
     private List<Integer> pSuccessTransGraph = null;
+
     @SerializedName("p_rejected_trans_graph")
     @Expose
     private List<Integer> pRejectedTransGraph = null;
+
     @SerializedName("p_gross_graph")
     @Expose
     private List<Integer> pGrossGraph = null;
+
     @SerializedName("p_net_graph")
     @Expose
     private List<Integer> pNetGraph = null;
+
     @SerializedName("p_rejected_amt_graph")
     @Expose
     private List<Integer> pRejectedAmtGraph = null;
+
     @SerializedName("p_shipping_graph")
     @Expose
     private List<Integer> pShippingGraph = null;
+
     @SerializedName("p_ads_p_graph")
     @Expose
     private List<Integer> pAdsPGraph = null;
+
     @SerializedName("p_ads_s_graph")
     @Expose
     private List<Integer> pAdsSGraph = null;
@@ -186,35 +230,35 @@ public class GetTransactionGraph implements GetDateGraph{
         this.deliveredProduct = deliveredProduct;
     }
 
-    public int getGrossRevenue() {
+    public long getGrossRevenue() {
         return grossRevenue;
     }
 
-    public void setGrossRevenue(int grossRevenue) {
+    public void setGrossRevenue(long grossRevenue) {
         this.grossRevenue = grossRevenue;
     }
 
-    public int getNetRevenue() {
+    public long getNetRevenue() {
         return netRevenue;
     }
 
-    public void setNetRevenue(int netRevenue) {
+    public void setNetRevenue(long netRevenue) {
         this.netRevenue = netRevenue;
     }
 
-    public int getRejectedAmount() {
+    public long getRejectedAmount() {
         return rejectedAmount;
     }
 
-    public void setRejectedAmount(int rejectedAmount) {
+    public void setRejectedAmount(long rejectedAmount) {
         this.rejectedAmount = rejectedAmount;
     }
 
-    public int getShippingCost() {
+    public long getShippingCost() {
         return shippingCost;
     }
 
-    public void setShippingCost(int shippingCost) {
+    public void setShippingCost(long shippingCost) {
         this.shippingCost = shippingCost;
     }
 

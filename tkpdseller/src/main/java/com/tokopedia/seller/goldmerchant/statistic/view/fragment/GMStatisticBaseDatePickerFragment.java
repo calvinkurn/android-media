@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
@@ -14,11 +15,9 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
 public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFragment {
 
-    public static final boolean ALLOW_COMPARE_DATE = true;
-
     @Override
     public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
-        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel, ALLOW_COMPARE_DATE );
+        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel, allowCompareDate() );
     }
 
     @Override
@@ -29,7 +28,7 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
     @Override
     protected void setDateLabelView(DatePickerViewModel datePickerViewModel) {
         super.setDateLabelView(datePickerViewModel);
-        if (ALLOW_COMPARE_DATE && datePickerViewModel.isCompareDate()) {
+        if (allowCompareDate() && datePickerViewModel.isCompareDate()) {
             PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(
                     datePickerViewModel.getStartDate(),
                     datePickerViewModel.getEndDate());
@@ -40,4 +39,14 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
         }
     }
 
+    @Override
+    public DatePickerViewModel revisitExtraIntent(Intent intent, DatePickerViewModel datePickerViewModel,
+                                                  DatePickerViewModel prevDatePickerViewModel) {
+        boolean previousCompareDate = prevDatePickerViewModel != null && prevDatePickerViewModel.isCompareDate();
+        boolean isComparedDate = intent.getBooleanExtra(DatePickerConstant.EXTRA_COMPARE_DATE, previousCompareDate);
+        datePickerViewModel.setCompareDate(isComparedDate);
+        return datePickerViewModel;
+    }
+
+    public abstract boolean allowCompareDate();
 }

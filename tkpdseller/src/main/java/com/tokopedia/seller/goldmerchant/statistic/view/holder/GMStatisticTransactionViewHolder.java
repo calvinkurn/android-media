@@ -82,6 +82,8 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
             return;
         }
 
+        setViewState(LoadingStateView.VIEW_CONTENT);
+
         seeDetailView.setClickable(true);
         seeDetailView.setVisibility(View.VISIBLE);
 
