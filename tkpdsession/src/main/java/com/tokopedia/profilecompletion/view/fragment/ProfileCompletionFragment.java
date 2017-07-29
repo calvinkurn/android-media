@@ -156,6 +156,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         retryAction = new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+                loading.setVisibility(View.VISIBLE);
                 presenter.getUserInfo();
             }
         };
@@ -163,6 +164,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     public void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData) {
+        main.setVisibility(View.VISIBLE);
         this.data = getUserInfoDomainData;
 //        testDummyData();
         updateProgressBar(0, data.getCompletion());
@@ -172,7 +174,9 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetUserInfo(String string) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), string, retryAction).showRetrySnackbar();
+        loading.setVisibility(View.GONE);
+        main.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), string, retryAction);
     }
 //
 //    private void testDummyData() {
