@@ -7,8 +7,6 @@ package com.tokopedia.core.onboarding.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -19,32 +17,37 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DOWN_DIRECTION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.UP_DIRECTION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.expandTextView;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.fadeText;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideTo;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.setVisibilityGone;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToY;
 
 public class NewOnBoardingFragment extends OnBoardingFragment {
 
     private int mScreenWidth;
+    private int mScreenHeight;
     private TextView login;
     private ValueAnimator expandAnimator;
     private ObjectAnimator fadeAnimator;
     private AnimatorSet animatorSet;
-    private ValueAnimator slideAnimator;
+    private ObjectAnimator slideAnimator;
     private ValueAnimator slideAnimator2;
     private TextView skip;
     private ObjectAnimator fadeAnimator2;
     private LinearLayout stepper;
+    private ValueAnimator slideAnimatorX;
+    private ObjectAnimator goneAnimation;
+    private View footer;
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
                                                     int imageDrawable, int bgColor, int viewType, int position) {
@@ -74,6 +77,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((OnboardingActivity)(getActivity())).setNextResource();
     }
 
     @Nullable
@@ -104,6 +108,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScreenWidth = displaymetrics.widthPixels;
+        mScreenHeight = displaymetrics.heightPixels;
     }
 
     @Override
@@ -136,13 +141,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
-
+//                SessionHandler.setFirstTimeUser(getActivity(), false);
+//                Intent intent = new Intent();
+//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+//                getActivity().setResult(Activity.RESULT_OK, intent);
+//                getActivity().finish();
+                Toast.makeText(v.getContext(), "login", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -150,16 +155,17 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
-
-
+//                SessionHandler.setFirstTimeUser(getActivity(), false);
+//                Intent intent = new Intent();
+//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+//                getActivity().setResult(Activity.RESULT_OK, intent);
+//                getActivity().finish();
+                Toast.makeText(v.getContext(), "skip", Toast.LENGTH_LONG).show();
             }
         });
+
+        footer = v.findViewById(R.id.footer);
         return v;
     }
 
@@ -176,22 +182,47 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
 
     public void playAnimation() {
         final int viewType = getArguments().getInt(ARG_VIEW_TYPE);
-        login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+
         if(viewType == VIEW_ENDING){
+            login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+
+            View next = getView().findViewById(R.id.dummy_next);
+            slideAnimatorX = slideToX(next, -1, mScreenWidth/2);
+            goneAnimation = setVisibilityGone(next);
             expandAnimator = expandTextView(login, mScreenWidth);
             fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.medium_green);
-            slideAnimator = slideTo(login, UP_DIRECTION);
-            slideAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
+            slideAnimator = slideToY(login, UP_DIRECTION, footer);
+
             fadeAnimator2 = fadeText(skip, getActivity(), R.color.transparent, R.color.white);
-            fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 1.5));
-            slideAnimator2 = slideTo(skip, DOWN_DIRECTION);
-            slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 1.5));
+            slideAnimator2 = slideToY(skip, DOWN_DIRECTION, footer);
+
+
+            goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.75));
+            expandAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
+            fadeAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
+
+            slideAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION*2);
+            fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
+            slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
 
             animatorSet = new AnimatorSet();
-            animatorSet.playTogether(expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
+            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
             animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
             animatorSet.start();
         }
+        else {
+        }
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(viewType == VIEW_ENDING) {
+            login.clearAnimation();
+            skip.clearAnimation();
+        }
+
     }
 }
 

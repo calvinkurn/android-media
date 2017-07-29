@@ -26,8 +26,8 @@ public class OnboardingAnimation {
     public static final int UP_DIRECTION = -1;
     public static final int DOWN_DIRECTION = 1;
 
-    public static ValueAnimator expandTextView(final TextView v, float mScreenWidth){
-        if(v != null){
+    public static ValueAnimator expandTextView(final TextView v, float mScreenWidth) {
+        if (v != null) {
             ValueAnimator anim = ValueAnimator.ofInt(0, (int) mScreenWidth);
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -44,9 +44,9 @@ public class OnboardingAnimation {
         return null;
     }
 
-    public static ObjectAnimator fadeText(final TextView v, Context context, int colorFrom, int colorTo){
-        if(v != null){
-            v.setTextColor(MethodChecker.getColor(context,colorFrom));
+    public static ObjectAnimator fadeText(final TextView v, Context context, int colorFrom, int colorTo) {
+        if (v != null) {
+            v.setTextColor(MethodChecker.getColor(context, colorFrom));
             ObjectAnimator anim = ObjectAnimator.ofObject(v, "textColor",
                     new ArgbEvaluator(),
                     MethodChecker.getColor(context, colorFrom),
@@ -56,27 +56,32 @@ public class OnboardingAnimation {
         return null;
     }
 
-    public static ValueAnimator slideTo(final View view, int direction) {
-        if(view!=null){
-            final float yDelta = view.getHeight();
-            int from = (int)view.getY();
-            int to = (int)view.getY() + (int)(yDelta * direction);
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(from, to);
+    public static ObjectAnimator slideToY(final View view, int direction, View footer) {
+        if (view != null) {
 
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    int val = (Integer) valueAnimator.getAnimatedValue();
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(view.getLayoutParams());
-                    params.gravity = Gravity.CENTER;
-                    view.setY(val);
-                    view.setLayoutParams(params);
-                    view.requestLayout();
-                }
-            });
-            return valueAnimator;
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY",
+                    0, view.getHeight() * direction);
+            return objectAnimator;
         }
         return null;
     }
+
+    public static ValueAnimator slideToX(final View view, int direction, int delta) {
+        if (view != null) {
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX",
+                    0, -delta + view.getWidth()/2);
+            return objectAnimator;
+        }
+        return null;
+    }
+
+    public static ObjectAnimator setVisibilityGone(final View view) {
+        if (view != null) {
+            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
+            return objectAnimator;
+        }
+        return null;
+    }
+
 
 }

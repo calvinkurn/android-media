@@ -158,14 +158,14 @@ public class NewOnboardingActivity extends OnboardingActivity {
 //        }
 
         if (pager.getCurrentItem() == fragments.size()-1) {
-//            showSkipButton(false);
-//            indicator.setVisibility(View.GONE);
-            if(bottom!=null) bottom.setVisibility(View.GONE);
+            showSkipButton(false);
+            indicator.setVisibility(View.GONE);
+//            if(bottom!=null) bottom.setVisibility(View.GONE);
             ((NewOnBoardingFragment)fragments.get(pager.getCurrentItem())).playAnimation();
         } else {
-//            showSkipButton(true);
-//            indicator.setVisibility(View.VISIBLE);
-            if(bottom!=null) bottom.setVisibility(View.VISIBLE);
+            showSkipButton(true);
+            indicator.setVisibility(View.VISIBLE);
+//            if(bottom!=null) bottom.setVisibility(View.VISIBLE);
         }
 
     }
