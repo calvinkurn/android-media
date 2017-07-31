@@ -189,3 +189,7 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
+
+# -- Feeds --
+-keep class com.tkpdfeed.feeds.** { *; }
+# -- End of Feeds --

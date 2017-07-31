@@ -25,10 +25,12 @@ import static com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory.KEY_
 
 public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener{
 
+    public static final String EXTRA_URL = "url";
     private String url;
 
     private TkpdWebView webView;
     private ProgressBar progressBar;
+
 
     @Override
     public String getScreenName() {
@@ -38,7 +40,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        url = getIntent().getExtras().getString("url");
+        url = getIntent().getExtras().getString(EXTRA_URL);
         inflateView(R.layout.wallet_webview);
         initiateView();
         setWebView();

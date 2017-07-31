@@ -5,7 +5,7 @@ import android.content.Intent;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -17,11 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -44,6 +46,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
 
     public RideInterceptor(String authorizationString, String userId) {
         this.authorizationString = authorizationString;
+        this.maxRetryAttempt = 0;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         String bodyResponse = response.body().string();
         int code = response.code();
         switch (code) {
+            case 404:
             case 422:
             case 500:
                 response.body().close();
@@ -155,5 +159,13 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
         return headerMap;
+    }
+
+    protected Response getResponse(Chain chain, Request request) throws IOException {
+        try {
+            return chain.proceed(request);
+        } catch (Error e) {
+            throw new UnknownHostException("tidak ada koneksi internet");
+        }
     }
 }

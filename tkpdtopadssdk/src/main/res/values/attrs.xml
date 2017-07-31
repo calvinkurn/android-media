@@ -23,4 +23,5 @@
             <enum name="list" value="1" />
         </attr>
     </declare-styleable>
+
 </resources>

@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"
             android:text="Solusi dari Pembeli - 24 Juli 2016 10.10 WIB"
-            android:textColor="@color/grey"
+            android:textColor="@color/label_text_color"
             android:textSize="@dimen/fontvs"
             />
 

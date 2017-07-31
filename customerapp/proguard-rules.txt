@@ -317,5 +317,9 @@
 -dontwarn com.beloo.widget.**
 
 
+# -- Feeds --
+-keep class com.tkpdfeed.feeds.** { *; }
+# -- End of Feeds --
+
 
 
