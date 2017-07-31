@@ -20,6 +20,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
@@ -216,7 +217,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     @Override
     public void onFailedSaveKeyword(Throwable e) {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(), ViewUtils.getErrorMessage(getContext(), e));
+        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), e));
         if (e instanceof ResponseErrorException) {
             List<Error> errorList = ((ResponseErrorException) e).getErrorList();
             errorStringList = convertResponseErrorToErrorStringList(errorList);
