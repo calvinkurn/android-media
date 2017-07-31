@@ -32,7 +32,7 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
                         .doOnNext(new Action1<RequestOtpModel>() {
                             @Override
                             public void call(RequestOtpModel requestOtpModel) {
-                                if (requestOtpModel.getErrorMessage() != null) {
+                                if (!requestOtpModel.getErrorMessage().isEmpty()) {
                                     throw new ResponseTokoCashRuntimeException(requestOtpModel.getErrorMessage());
                                 }
                             }
@@ -51,7 +51,7 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
                         .doOnNext(new Action1<ValidateOtpModel>() {
                             @Override
                             public void call(ValidateOtpModel validateOtpModel) {
-                                if (validateOtpModel.getErrorMessage()  != null) {
+                                if (!validateOtpModel.getErrorMessage().isEmpty()) {
                                     throw new ResponseTokoCashRuntimeException(validateOtpModel.getErrorMessage());
                                 }
                             }
