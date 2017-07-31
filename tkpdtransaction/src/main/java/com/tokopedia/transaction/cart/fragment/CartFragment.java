@@ -409,10 +409,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderSuccessCheckVoucher(String descVoucher) {
+    public void renderSuccessCheckVoucher(String descVoucher, int instantCheck) {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
         tvVoucherDesc.setText(descVoucher);
+        if(instantCheck == 1) {
+            instantPromoPlaceHolder.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -49,7 +49,7 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleErrorPaymentCart();
 
-    void renderSuccessCheckVoucher(String descVoucher);
+    void renderSuccessCheckVoucher(String descVoucher, int instantCheckVoucher);
 
     void renderErrorCheckVoucher(String message);
 
