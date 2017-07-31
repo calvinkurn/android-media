@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -54,6 +55,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         if (!TextUtils.isEmpty(urlTemporary) && position==0) {
             Glide.with(context).load(urlTemporary)
                     .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
