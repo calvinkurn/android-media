@@ -249,7 +249,8 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                     return;
                 }
                 resetSelectionSortType(sortTypeIndexSelection);
-                searchData();
+                // we load data, instead search data to reset the page to 1
+                loadData();
             }
         });
     }

@@ -163,7 +163,7 @@ public abstract class TopAdsAdListFragment<T extends
             boolean adChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
             if (adChanged || adDeleted) {
-                searchData(START_PAGE);
+                setAndSearchForPage(START_PAGE);
                 setResultAdListChanged();
             }
         } else if (requestCode == REQUEST_CODE_AD_FILTER) {
@@ -263,7 +263,7 @@ public abstract class TopAdsAdListFragment<T extends
     @Override
     public void onSearch(String keyword) {
         this.keyword = keyword;
-        searchData(START_PAGE);
+        setAndSearchForPage(START_PAGE);
         if (!searchMode && !TextUtils.isEmpty(keyword)) {
             searchMode = true;
         }
