@@ -57,6 +57,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             shopAva = (ImageView) itemLayoutView.findViewById(R.id.shop_ava);
             shopName = (TextView) itemLayoutView.findViewById(R.id.shop_name);
             labels = (RecyclerView) itemLayoutView.findViewById(R.id.labels);
+            freeReturn = (ImageView) itemLayoutView.findViewById(R.id.free_return);
 
             labels.setLayoutManager(new StaggeredGridLayoutManager(3,
                     StaggeredGridLayoutManager.VERTICAL));
