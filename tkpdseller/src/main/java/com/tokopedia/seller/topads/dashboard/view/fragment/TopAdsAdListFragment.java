@@ -22,7 +22,7 @@ import android.view.View;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.seller.common.widget.DateLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAdListAdapter;
