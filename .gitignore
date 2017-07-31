@@ -48,3 +48,4 @@ gradlew.bat
 
 # react native
 node_modules/
+jsconfig.json
