@@ -1562,7 +1562,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventClickCategoriesIcon(String ec, String el){
+    public static void eventClickCategoriesIcon(String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,

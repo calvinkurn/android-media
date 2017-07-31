@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -568,6 +569,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
+
+        UnifyTracking.eventClickCategoriesIcon("Product - "+itemModel.getName());
+
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getLink() != 1) {
             String urlActivation = getTokoCashActionRedirectUrl(tokoCashData
