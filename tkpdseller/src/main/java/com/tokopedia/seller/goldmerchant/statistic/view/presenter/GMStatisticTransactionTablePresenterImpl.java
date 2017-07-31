@@ -1,7 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortType;
@@ -73,7 +71,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
                     = new GMStatisticTransactionTableModel();
             gmStatisticTransactionTableModel.productName = data.getProductProductName();
             gmStatisticTransactionTableModel.setDeliveredAmount(data.getDeliveredAmt());
-            gmStatisticTransactionTableModel.setDeliveredSum(data.getDeliveredSum());
+            gmStatisticTransactionTableModel.setTransSum(data.getTransSum());
             gmStatisticTransactionTableModel.setOrderSum(data.getOrderSum());
             gmStatisticTransactionTableModels.add(gmStatisticTransactionTableModel);
         }
