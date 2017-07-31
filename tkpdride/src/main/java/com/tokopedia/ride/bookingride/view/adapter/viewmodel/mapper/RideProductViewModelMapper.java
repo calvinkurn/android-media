@@ -206,7 +206,7 @@ public class RideProductViewModelMapper {
             String lowFormattedPrice = getStringIdrFormat(lowEstimate);
             String higFormattedPrice = getStringIdrFormat(highEstimate).replace(IND_LOCAL_CURRENCY + " ", "");
 
-            formattedPrice = lowFormattedPrice + "-" + higFormattedPrice;
+            formattedPrice = lowFormattedPrice + " - " + higFormattedPrice;
         } catch (Exception ex) {
         }
 
