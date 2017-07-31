@@ -48,7 +48,7 @@
 
         </LinearLayout>
 
-        <com.tokopedia.seller.lib.williamchart.view.LineChartView
+        <com.tokopedia.seller.common.williamchart.view.LineChartView
             android:id="@+id/transaction_chart"
             android:layout_width="0dp"
             android:layout_height="101.3dp"

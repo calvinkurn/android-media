@@ -19,7 +19,7 @@
         android:paddingTop="8dp"
         app:subtitle="@string/gm_statistic_dashboard_gross">
 
-        <com.tokopedia.seller.lib.williamchart.view.LineChartView
+        <com.tokopedia.seller.common.williamchart.view.LineChartView
             android:id="@+id/line_chart_gross"
             android:layout_width="wrap_content"
             android:layout_height="240dp" />

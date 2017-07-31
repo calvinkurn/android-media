@@ -19,7 +19,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageVi
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.List;
 

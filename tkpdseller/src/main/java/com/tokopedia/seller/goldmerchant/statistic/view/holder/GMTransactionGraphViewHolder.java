@@ -19,8 +19,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPre
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 

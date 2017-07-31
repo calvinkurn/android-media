@@ -11,8 +11,8 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
-import com.tokopedia.seller.lib.williamchart.Tools;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.List;
 

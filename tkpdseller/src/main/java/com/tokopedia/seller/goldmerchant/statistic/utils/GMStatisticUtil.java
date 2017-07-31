@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
 import java.util.List;

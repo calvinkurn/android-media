@@ -1,11 +1,6 @@
-package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
+package com.tokopedia.seller.common.williamchart.util;
 
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
-
-/**
- * Created by sebastianuskh on 12/20/16.
- */
 
 public class YAxisRenderer implements StringFormatRenderer {
     @Override
