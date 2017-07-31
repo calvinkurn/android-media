@@ -10,7 +10,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
-import com.tokopedia.core.shopinfo.facades.authservices.ShopWebService;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
