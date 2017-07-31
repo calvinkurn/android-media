@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.seller.lib.widget.LabelView xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.tokopedia.seller.common.widget.LabelView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/label_view_promo_group"

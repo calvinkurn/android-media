@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:showIn="@layout/partial_top_ads_content_detail">
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/title_statistic_review"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,35 +12,35 @@
         app:title="@string/topads_title_review_statistic"
         app:title_textStyle="bold" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/sent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_sent" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/impr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_impression" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_click" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/ctr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_ctr" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

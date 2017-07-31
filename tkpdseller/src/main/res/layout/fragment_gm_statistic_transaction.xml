@@ -129,7 +129,7 @@
             android:layout_marginTop="@dimen/product_margin_cards"
             app:cardElevation="1dp"
             app:cardPreventCornerOverlap="false">
-            <com.tokopedia.seller.lib.widget.LabelView
+            <com.tokopedia.seller.common.widget.LabelView
                 android:id="@+id/gm_statistic_label_sold_product_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

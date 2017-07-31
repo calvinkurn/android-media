@@ -36,7 +36,7 @@
                 android:paddingTop="0.5dp"
                 android:showDividers="middle">
 
-                <com.tokopedia.seller.lib.widget.LabelView
+                <com.tokopedia.seller.common.widget.LabelView
                     android:id="@+id/label_view_group_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                     app:content_color="@color/tkpd_main_green"
                     app:title="@string/label_top_ads_groups" />
 
-                <com.tokopedia.seller.lib.widget.LabelView
+                <com.tokopedia.seller.common.widget.LabelView
                     android:id="@+id/label_view_item_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                     app:content_color="@color/tkpd_main_green"
                     app:title="@string/label_top_ads_items" />
 
-                <com.tokopedia.seller.lib.widget.LabelView
+                <com.tokopedia.seller.common.widget.LabelView
                     android:id="@+id/label_view_keyword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

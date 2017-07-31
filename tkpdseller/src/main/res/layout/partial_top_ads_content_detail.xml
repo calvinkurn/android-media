@@ -7,7 +7,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/title_price_and_schedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,21 +16,21 @@
 
     <include layout="@layout/partial_top_ads_context_max_price_detail" />
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_start"/>
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_end"/>
 
-    <com.tokopedia.seller.lib.widget.LabelView
+    <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/daily_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
