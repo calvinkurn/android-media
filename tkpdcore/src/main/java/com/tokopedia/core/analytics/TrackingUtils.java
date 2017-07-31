@@ -185,7 +185,7 @@ public class TrackingUtils extends TrackingConfig {
                     && productData.getProductImages().get(0) != null) {
                 builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, productData.getProductImages().get(0).getImageSrc());
             }
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPrice());
+            builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
         }
 
         if(productData.getShopInfo() != null) {
