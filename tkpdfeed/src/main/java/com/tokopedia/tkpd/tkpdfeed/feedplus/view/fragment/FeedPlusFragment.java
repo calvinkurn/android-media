@@ -99,6 +99,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
     View newFeed;
+
     @Inject
     FeedPlusPresenter presenter;
 
@@ -205,12 +206,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        setRetainInstance(false);
+        setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+
         prepareView();
         presenter.attachView(this);
         return parentView;

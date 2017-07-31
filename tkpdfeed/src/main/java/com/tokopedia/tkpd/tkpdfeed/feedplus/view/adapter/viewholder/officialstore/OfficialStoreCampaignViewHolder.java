@@ -54,10 +54,12 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
                 6,
                 LinearLayoutManager.VERTICAL,
                 false);
+        gridLayoutManager.setAutoMeasureEnabled(true);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
             @Override
             public int getSpanSize(int position) {
+
                 if (adapter.getList().size() == 1) {
                     return SPAN_1_PRODUCT;
                 } else if (adapter.getList().size() % 3 == 0
@@ -72,7 +74,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         });
 
         recyclerView.addItemDecoration(new BorderItemDecoration(
-                recyclerView.getContext(), BorderItemDecoration.GRID));
+                recyclerView.getContext(), BorderItemDecoration.HORIZONTAL_LIST));
 
         adapter = new OfficialStoreCampaignAdapter(viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);

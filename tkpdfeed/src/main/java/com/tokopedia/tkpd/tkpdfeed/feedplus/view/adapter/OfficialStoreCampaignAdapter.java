@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
 import android.graphics.Paint;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
  */
 public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialStoreCampaignAdapter.ViewHolder> {
 
-    private static final String CASHBACK = "Cashback";
+    private static final String DEFAULT_EMPTY_PRICE = "Rp 0";
     protected ArrayList<OfficialStoreCampaignProductViewModel> list;
     private final FeedPlus.View viewListener;
 
@@ -41,9 +43,8 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
         public ImageView productImage;
         public ImageView shopAva;
         public TextView shopName;
-        public TextView cashback;
-        public TextView wholesale;
-        public TextView preorder;
+        public RecyclerView labels;
+        public LabelsAdapter adapter;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -54,9 +55,13 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
             shopAva = (ImageView) itemLayoutView.findViewById(R.id.shop_ava);
             shopName = (TextView) itemLayoutView.findViewById(R.id.shop_name);
-            cashback = (TextView) itemView.findViewById(R.id.cashback);
-            wholesale = (TextView) itemView.findViewById(R.id.wholesale);
-            preorder = (TextView) itemView.findViewById(R.id.preorder);
+            labels = (RecyclerView) itemLayoutView.findViewById(R.id.labels);
+
+            labels.setLayoutManager(new StaggeredGridLayoutManager(3,
+                    StaggeredGridLayoutManager.VERTICAL));
+            adapter = new LabelsAdapter();
+            labels.setAdapter(adapter);
+
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,7 +110,8 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
 
-        if (!TextUtils.isEmpty(list.get(position).getOriginalPrice())) {
+        if (!TextUtils.isEmpty(list.get(position).getOriginalPrice())
+                && !list.get(position).getOriginalPrice().equals(DEFAULT_EMPTY_PRICE)) {
             holder.originalPrice.setVisibility(View.VISIBLE);
             holder.originalPrice.setText(list.get(position).getOriginalPrice());
             holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -122,34 +128,20 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             holder.discountLabel.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(list.get(position).getCashback())) {
-            holder.cashback.setVisibility(View.VISIBLE);
-            holder.cashback.setText(CASHBACK + " " + list.get(position).getCashback());
-        } else {
-            holder.cashback.setVisibility(View.GONE);
-        }
-
-        if (list.get(position).isWholesale())
-            holder.wholesale.setVisibility(View.VISIBLE);
-        else
-            holder.wholesale.setVisibility(View.GONE);
-
-
-        if (list.get(position).isPreorder())
-            holder.preorder.setVisibility(View.VISIBLE);
-        else
-            holder.preorder.setVisibility(View.GONE);
-
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
+
+        if (!list.get(position).getLabels().isEmpty()) {
+            holder.labels.setVisibility(View.VISIBLE);
+            holder.adapter.setList(list.get(position).getLabels());
+        } else {
+            holder.labels.setVisibility(View.GONE);
+        }
 
     }
 
     @Override
     public int getItemCount() {
-        if (list.size() > 6)
-            return 6;
-        else
-            return list.size();
+        return list.size();
     }
 
     public void setList(ArrayList<OfficialStoreCampaignProductViewModel> list) {

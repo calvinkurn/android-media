@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
@@ -41,9 +42,6 @@ import rx.Subscriber;
 
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
-    private static final String CASHBACK = "Cashback";
-    private static final String WHOLESALE = "Grosir";
-    private static final String PREORDER = "PO";
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
@@ -261,36 +259,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getUrl_app(),
                 productDomain.getData().getShop().getName(),
                 productDomain.getBrand_logo(),
-                getCashbackLabel(productDomain.getData().getLabels()),
-                isWholesale(productDomain.getData().getLabels()),
-                isPreorder(productDomain.getData().getLabels()),
-                productDomain.getData().getShop().getUrl_app());
+                productDomain.getData().getShop().getUrl_app(),
+                convertLabels(productDomain.getData().getLabels()));
     }
 
-    private boolean isPreorder(List<LabelDomain> labels) {
+    private List<LabelsViewModel> convertLabels(List<LabelDomain> labels) {
+        List<LabelsViewModel> labelsViewModels = new ArrayList<>();
         for (LabelDomain labelDomain : labels) {
-            if (labelDomain.getTitle().contains(PREORDER)) {
-                return true;
-            }
+            labelsViewModels.add(new LabelsViewModel(labelDomain.getTitle(),
+                    labelDomain.getColor()));
         }
-        return false;
-    }
-
-    private boolean isWholesale(List<LabelDomain> labels) {
-        for (LabelDomain labelDomain : labels) {
-            if (labelDomain.getTitle().contains(WHOLESALE)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String getCashbackLabel(List<LabelDomain> labels) {
-        for (LabelDomain labelDomain : labels) {
-            if (labelDomain.getTitle().contains(CASHBACK))
-                return labelDomain.getTitle();
-        }
-        return "";
+        return labelsViewModels;
     }
 
     private OfficialStoreBrandsViewModel convertToBrandsViewModel(DataFeedDomain domain) {
