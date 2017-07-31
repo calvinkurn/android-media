@@ -35,8 +35,8 @@ def getTopAdsSdk() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.customer'
-            artifactId 'customer'
+            groupId 'com.tokopedia.feed'
+            artifactId 'feed'
             version getArtifactVersionCode()
             artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
             pom.withXml {
