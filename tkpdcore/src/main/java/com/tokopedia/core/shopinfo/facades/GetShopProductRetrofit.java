@@ -63,17 +63,16 @@ public class GetShopProductRetrofit {
     }
 
     public void getShopProduct(GetShopProductParam param) {
+        Observable<Response<TkpdResponse>> observable;
         if (param.isUseAce()) {
-            Observable<Response<TkpdResponse>> observable = shopService.getApi()
+            observable = shopService.getApi()
                     .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
         } else {
-            Observable<Response<TkpdResponse>> observable = tomeService.getApi()
+            observable = tomeService.getApi()
                     .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
         }
+        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
     }
 
     public void unsubscribeGetShopProduct() {
