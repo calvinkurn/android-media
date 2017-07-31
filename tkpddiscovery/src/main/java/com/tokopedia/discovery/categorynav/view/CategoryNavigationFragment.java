@@ -142,7 +142,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                         categoryLevel2.addChildren(children,3);
                         categoryChildAdapter.clear();
                         categoryChildAdapter.addAll(category.getChildren());
-                        categoryChildAdapter.toggleSelectedChild();
+                        categoryChildAdapter.toggleSelectedChildbyId(categoryLevel2.getId());
                         break;
                     }
                 }

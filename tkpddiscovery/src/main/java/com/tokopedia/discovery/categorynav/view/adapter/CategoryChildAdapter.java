@@ -76,7 +76,15 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
         public void bindData(Category category) {
             this.categoryName.setText(category.getName());
-            if (!category.getHasChild()) dropdown.setVisibility(View.GONE);
+            if (category.getChildren()!=null && category.getChildren().size()>0 && !category.isGroup()) {
+                dropdown.setImageResource(R.drawable.carret_up);
+                dropdown.setVisibility(View.VISIBLE);
+            } else if (category.getHasChild() ) {
+                dropdown.setImageResource(R.drawable.carret_down);
+                dropdown.setVisibility(View.VISIBLE);
+            } else {
+                dropdown.setVisibility(View.GONE);
+            }
             int pad = getPaddingPixels(10);
             if (category.getIndentation()>2) {
                 categoryContainer.setPadding(getPaddingPixels(25), pad, pad, pad);
@@ -93,8 +101,8 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
     }
 
     public void toggleSelectedChild() {
-        toggleGroup(activePosition);
         notifyDataSetChanged();
+        toggleGroup(activePosition);
     }
 
     public void toggleSelectedChildbyId(String categoryId) {
