@@ -209,6 +209,13 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void actionAppLink(Context context, String linkUrl) {
+        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+        intent.setData(Uri.parse(linkUrl));
+        context.startActivity(intent);
+    }
+
+    @Override
     public void onLogout(AppComponent appComponent) {
         TkpdSellerLogout.onLogOut(appComponent);
     }
