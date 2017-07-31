@@ -35,7 +35,7 @@ public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder vh;
         if (convertView == null) {
-            convertView = LayoutInflater.from(convertView.getContext())
+            convertView = LayoutInflater.from(parent.getContext())
                     .inflate(android.R.layout.simple_spinner_item, parent, false);
             vh = new ViewHolder(convertView);
             convertView.setTag(vh);
