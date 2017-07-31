@@ -204,4 +204,9 @@
         <item name="behavior_skipCollapsed">true</item>
     </style>
 
+    <style name="TextView.GMTableTitle">
+        <item name="android:textSize">@dimen/font_body1</item>
+        <item name="android:textColor">@color/tkpd_grey_text</item>
+    </style>
+
 </resources>

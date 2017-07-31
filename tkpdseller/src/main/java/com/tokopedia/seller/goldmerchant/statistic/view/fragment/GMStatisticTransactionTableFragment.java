@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionTableSortBy;
@@ -29,8 +31,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisti
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
-import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 
 import java.util.Date;
 
@@ -177,7 +177,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     private void showSortBy() {
-        showBottomSheetDialog(gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.filter), gmStatSortBy, sortBySelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int previousSortBy = sortBy;
@@ -229,7 +229,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         if (savedSortByAfterChangeKeyFigure!= 0 && savedSortByAfterChangeKeyFigure == sortBy) {
             reselectSortType();
         }
-        showBottomSheetDialog(gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.gm_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
                 int previousSortType = sortType;
@@ -255,11 +255,11 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         });
     }
 
-    private void showBottomSheetDialog(final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
+    private void showBottomSheetDialog(String bottomDialogTitle, final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
         showingSimpleDialog = true;
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.filter));
+                .addTitleItem(bottomDialogTitle);
 
         for (int i = 0; i < text.length; i++) {
             if (bottomSheetBuilder instanceof CheckedBottomSheetBuilder) {
