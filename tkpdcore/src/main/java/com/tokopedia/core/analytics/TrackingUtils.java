@@ -10,6 +10,7 @@ import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Product;
@@ -259,31 +260,46 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void sendMoEngageAddToCart(@NonNull Product product) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, product.getCategoryName());
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, product.getCategoryId());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, product.getPrice());
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, product.getCategoryName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, product.getCategoryId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
 
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.PRODUCT_ADDED_TO_CART
-        );
+            builder.putAttrInt(
+                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
+                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
+            );
+
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.PRODUCT_ADDED_TO_CART
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void sendMoEngageRemoveProductFromCart(@NonNull Product product) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, product.getUrl());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, product.getImageUrl());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, product.getPrice());
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, product.getShopId());
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_CART
-        );
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, product.getUrl());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, product.getImageUrl());
+            builder.putAttrInt(
+                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
+                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
+            );
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, product.getShopId());
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_CART
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {
