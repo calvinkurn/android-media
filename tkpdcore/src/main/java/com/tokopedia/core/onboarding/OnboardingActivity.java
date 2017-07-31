@@ -2,34 +2,23 @@ package com.tokopedia.core.onboarding;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.animation.BounceInterpolator;
@@ -41,10 +30,8 @@ import com.tokopedia.core.util.SessionHandler;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static android.widget.RelativeLayout.ABOVE;
 import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
 import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
-import static android.widget.RelativeLayout.BELOW;
 import static android.widget.RelativeLayout.LayoutParams;
 
 /**
@@ -59,7 +46,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     private TextView skipView;
     private ImageButton nextView;
     private Integer[] listId;
-    private int previousPage;
+    private boolean isFirst;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -114,7 +101,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     private void setStepper() {
         main = (RelativeLayout) pager.getParent();
         main.setId(R.id.main);
-        previousPage = -1;
+        isFirst = true;
         setStepperLayout();
         setSelectedStepper();
         setStepperClickAnimation();
@@ -158,33 +145,33 @@ public class OnboardingActivity extends BaseOnboardingActivity {
         selectStepper.setImageDrawable(drawable);
 
 
-        main.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                main.getViewTreeObserver().removeOnPreDrawListener(this);
-                LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                int centreX = (int) (view.getX() );
-                int centreY = (int) (view.getLeft() );
-
-                float d = getResources().getDisplayMetrics().density;
-                params.addRule(ALIGN_PARENT_TOP);
-                params.addRule(ALIGN_PARENT_LEFT);
-                params.setMargins(0, (int) (65 * d), 0, 0);
-
-                main.addView(selectStepper, params);
-
-                pager.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View viewX, MotionEvent motionEvent) {
-                        final View view = main.findViewById(R.id.step_1);
-                        Log.i("onTouch: main", String.valueOf(main.getX()) + " " + String.valueOf(main.getX()));
-                        Log.i("onTouch: step1", String.valueOf(view.getX()) + " " + String.valueOf(view.getX()));
-                        return false;
-                    }
-                });
-                return false;
-            }
-        });
+//        main.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            @Override
+//            public boolean onPreDraw() {
+//                main.getViewTreeObserver().removeOnPreDrawListener(this);
+//                LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//                int centreX = (int) (view.getX() );
+//                int centreY = (int) (view.getLeft() );
+//
+//                float d = getResources().getDisplayMetrics().density;
+//                params.addRule(ALIGN_PARENT_TOP);
+//                params.addRule(ALIGN_PARENT_LEFT);
+//                params.setMargins(0, (int) (65 * d), 0, 0);
+//
+//                main.addView(selectStepper, params);
+//
+//                pager.setOnTouchListener(new View.OnTouchListener() {
+//                    @Override
+//                    public boolean onTouch(View viewX, MotionEvent motionEvent) {
+//                        final View view = main.findViewById(R.id.step_1);
+//                        Log.i("onTouch: main", String.valueOf(main.getX()) + " " + String.valueOf(main.getX()));
+//                        Log.i("onTouch: step1", String.valueOf(view.getX()) + " " + String.valueOf(view.getX()));
+//                        return false;
+//                    }
+//                });
+//                return false;
+//            }
+//        });
     }
 
     private void setSkip() {
@@ -256,19 +243,24 @@ public class OnboardingActivity extends BaseOnboardingActivity {
 //        }
 
         if (listId != null) {
-            if (previousPage != pager.getCurrentItem() && previousPage!=-1) {
-                findViewById(listId[previousPage]).setAlpha(0.65f);
+            for (int i = 0; i < fragments.size(); i++) {
+                if(i != pager.getCurrentItem()){
+                    Log.i("onSlideChanged: ", pager.getCurrentItem() + " " +i);
+                    findViewById(listId[i]).setAlpha(0.65f);
+                }
             }
-            previousPage = pager.getCurrentItem();
+
             BounceInterpolator interpolator = new BounceInterpolator(0.15, 10);
             Animator animator = AnimatorInflater.loadAnimator(getBaseContext(), R.animator.bounce_animator);
             animator.setInterpolator(interpolator);
             animator.setTarget(findViewById(listId[pager.getCurrentItem()]));
             animator.start();
+            Log.i("onSlideChanged: ", pager.getCurrentItem() + " animator");
         }
 
-        if (fragments != null && fragments.size() > 0 && pager != null)
+        if (fragments != null && fragments.size() > 0 && pager != null && pager.getCurrentItem() == fragments.size()-1) {
             ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).playAnimation();
+        }
         if (pager.getCurrentItem() == fragments.size() - 1) {
             setButtonVisibility(bottom, GONE);
             setButtonVisibility(skipButton, GONE);
