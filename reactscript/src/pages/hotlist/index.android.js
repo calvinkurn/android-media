@@ -156,6 +156,6 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = Hotlist;
+module.exports = Hotlist___;
 
-AppRegistry.registerComponent('HotList', () => Hotlist);
+AppRegistry.registerComponent('HotList___', () => Hotlist);

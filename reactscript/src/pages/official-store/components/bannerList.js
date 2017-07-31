@@ -11,7 +11,7 @@ import {
   Text,
   Linking,
 } from 'react-native'
-
+import { NetworkModule, NavigationModule } from 'NativeModules';
 import Swiper from 'react-native-swiper'
 
 const { height, width } = Dimensions.get('window')
@@ -24,7 +24,9 @@ const BannerList = ({ banners, onBannerPress, onViewAllPress }) => {
         {
           topBanners.map((banner, index) => (
             <View key={banner.banner_id}>
-              <TouchableWithoutFeedback onPress={(e) => onBannerPress(e, banner)}>
+              <TouchableWithoutFeedback onPress={(e) => {
+                console.log('Banner: ', banner.redirect_url_app)
+                NavigationModule.navigate(banner.redirect_url_app, "")}}>
                 <Image source={{ uri: banner.image_url }} style={styles.pageStyle}></Image>
               </TouchableWithoutFeedback>
             </View>

@@ -21,7 +21,6 @@ class BannerContainer extends Component {
   }
 
   render() {
-    console.log('BannerContainer rendered')
     const banners = this.props.banners.items
     return (
       this.props.banners.isFetching ? null : <BannerList

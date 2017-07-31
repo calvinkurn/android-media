@@ -3,11 +3,16 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 import App from './components/App'
 
+
 class Root extends Component {
+  componentDidMount(){
+    console.log('UserID in Official Store: ', this.props)    
+  }
+
   render() {
     return (
     <Provider store={store}>
-      <App/>
+      <App screenProps={this.props.screenProps} />
     </Provider>
     )
   }

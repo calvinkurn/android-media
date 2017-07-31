@@ -16,13 +16,15 @@ import com.tokopedia.core.react.ReactSingleton;
 
 public class ReactNativeActivity extends BaseActivity implements DefaultHardwareBackBtnHandler {
 
+    public static final String USER_ID = "User_ID";
     protected ReactRootView reactRootView;
     protected ReactInstanceManager reactInstanceManager;
 
-    public static Intent createReactNativeActivity(Context context, String reactScreenName) {
+    public static Intent createReactNativeActivity(Context context, String reactScreenName, String userId) {
         Intent intent = new Intent(context, ReactNativeActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(USER_ID, userId);
         intent.putExtras(extras);
         return intent;
     }

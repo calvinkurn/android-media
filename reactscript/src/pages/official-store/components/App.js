@@ -12,6 +12,7 @@ export default class App extends Component {
     super(props);
     this.state = { showBtn: false };
   }
+
   onBackToTopTap = (event) => {
     var currentOffset = event.nativeEvent
     console.log(currentOffset)
@@ -34,11 +35,11 @@ export default class App extends Component {
     return (
       <View>
         <ScrollView ref="scrollView" onScroll={this.onScroll}>
-           <BannerContainer /> 
-          <CampaignContainer />
-           <BrandContainer /> 
-           <Infographic /> 
-           <Seo /> 
+          <BannerContainer /> 
+          <CampaignContainer screenProps={this.props.screenProps} />
+          <BrandContainer screenProps={this.props.screenProps} />
+          <Infographic /> 
+          <Seo /> 
         </ScrollView>
         {
           this.state.showBtn ? (<BackToTop onTap={this.onBackToTopTap} />) : null

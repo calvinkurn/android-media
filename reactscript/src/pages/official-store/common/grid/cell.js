@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Image, StyleSheet, TouchableWithoutFeedback , Linking} from 'react-native'
+import { NetworkModule, NavigationModule } from 'NativeModules';
 import PropTypes from 'prop-types'
 import LoadMoreButton from './loadBtn'
 
@@ -23,7 +24,7 @@ const Cell = ({ isLastRowCell, isLastCell, data, loadMore, limit, offset, onSlid
 const getCellContent = (data) => {
   if (data) {
     return (
-      <TouchableWithoutFeedback onPress={() => Linking.openURL(data.shop_mobile_url)}>
+      <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(data.shop_apps_url, '')}>
       <View style={styles.cellWrapper}>
         <Image style={styles.img} source={{ uri: data.microsite_url }} />
       </View>
