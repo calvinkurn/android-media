@@ -53,11 +53,6 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         String bodyResponse = response.body().string();
         int code = response.code();
         switch (code) {
-            //case 404:
-            //case 422:
-            //case 500:
-            //response.body().close();
-            //throw new UnProcessableHttpException(bodyResponse);
             case 409:
                 response.body().close();
                 throw new InterruptConfirmationHttpException(bodyResponse);
@@ -84,7 +79,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
                         }
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    throw new UnProcessableHttpException();
                 }
         }
     }
