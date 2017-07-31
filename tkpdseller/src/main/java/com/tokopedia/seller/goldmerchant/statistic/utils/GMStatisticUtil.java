@@ -1,10 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
-import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -27,7 +24,7 @@ public final class GMStatisticUtil {
             if (datas.size() <= size) {
                 return datas;
             } else {
-                return datas.subList(0, 3);
+                return datas.subList(0, size);
             }
         }
         return null;
