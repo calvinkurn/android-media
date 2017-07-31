@@ -45,6 +45,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
         public TextView shopName;
         public RecyclerView labels;
         public LabelsAdapter adapter;
+        public ImageView freeReturn;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -136,6 +137,11 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
         } else {
             holder.labels.setVisibility(View.GONE);
         }
+
+        if (list.get(position).isFreeReturn()) {
+            holder.freeReturn.setVisibility(View.VISIBLE);
+        } else
+            holder.freeReturn.setVisibility(View.GONE);
 
     }
 

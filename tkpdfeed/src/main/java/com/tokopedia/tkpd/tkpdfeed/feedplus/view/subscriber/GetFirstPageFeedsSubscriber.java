@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
@@ -42,6 +43,7 @@ import rx.Subscriber;
 
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
+    private static final String FREE_RETURN = "Free Return";
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
@@ -260,7 +262,16 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getShop().getName(),
                 productDomain.getBrand_logo(),
                 productDomain.getData().getShop().getUrl_app(),
-                convertLabels(productDomain.getData().getLabels()));
+                convertLabels(productDomain.getData().getLabels()),
+                isFreeReturn(productDomain.getData().getBadges()));
+    }
+
+    private boolean isFreeReturn(List<BadgeDomain> badges) {
+        for(BadgeDomain domain : badges){
+            if(domain.getTitle().equals(FREE_RETURN))
+                return true;
+        }
+        return false;
     }
 
     private List<LabelsViewModel> convertLabels(List<LabelDomain> labels) {

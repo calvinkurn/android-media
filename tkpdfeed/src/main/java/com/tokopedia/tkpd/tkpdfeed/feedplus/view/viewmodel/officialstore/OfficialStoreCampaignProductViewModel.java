@@ -23,7 +23,7 @@ public class OfficialStoreCampaignProductViewModel {
     private int discount;
     private String shopUrl;
     private List<LabelsViewModel> labels;
-
+    private boolean isFreeReturn;
 
     public OfficialStoreCampaignProductViewModel(int productId,
                                                  String name,
@@ -36,7 +36,8 @@ public class OfficialStoreCampaignProductViewModel {
                                                  String shopName,
                                                  String shopAva,
                                                  String shopUrl,
-                                                 List<LabelsViewModel> labels) {
+                                                 List<LabelsViewModel> labels,
+                                                 boolean isFreeReturn) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -49,6 +50,7 @@ public class OfficialStoreCampaignProductViewModel {
         this.shopAva = shopAva;
         this.shopUrl = shopUrl;
         this.labels = labels;
+        this.isFreeReturn=isFreeReturn;
     }
 
     public int getProductId() {
@@ -97,5 +99,9 @@ public class OfficialStoreCampaignProductViewModel {
 
     public List<LabelsViewModel> getLabels() {
         return labels;
+    }
+
+    public boolean isFreeReturn() {
+        return isFreeReturn;
     }
 }

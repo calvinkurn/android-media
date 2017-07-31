@@ -132,9 +132,10 @@
 
         <TextView
             android:id="@id/shop_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
@@ -143,6 +144,16 @@
             android:textSize="@dimen/unify_font_small"
             android:textStyle="normal"
             tools:text="Belli to Baby"/>
+
+        <ImageView
+            android:id="@+id/free_return"
+            android:layout_width="@dimen/badge_size"
+            android:layout_height="@dimen/badge_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_badge_free_return"
+            android:visibility="visible"/>
     </LinearLayout>
 
     <View

@@ -21,4 +21,14 @@ public class BadgeDomain {
         this.title = title;
         this.image_url = image_url;
     }
+
+    @Nonnull
+    public String getTitle() {
+        return title;
+    }
+
+    @Nonnull
+    public String getImage_url() {
+        return image_url;
+    }
 }
