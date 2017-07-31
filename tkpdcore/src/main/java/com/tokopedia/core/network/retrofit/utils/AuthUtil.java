@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -394,6 +395,19 @@ public class AuthUtil {
         return params;
     }
 
+    public static RequestParams generateRequestParamsNetwork(Context context) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams params = RequestParams.create();
+
+        params.putString(PARAM_USER_ID, userId);
+        params.putString(PARAM_DEVICE_ID, deviceId);
+        params.putString(PARAM_HASH, hash);
+        params.putString(PARAM_OS_TYPE, "1");
+        params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return params;
+    }
 
     private static String calculateRFC2104HMAC(String authString, String authKey) {
         try {

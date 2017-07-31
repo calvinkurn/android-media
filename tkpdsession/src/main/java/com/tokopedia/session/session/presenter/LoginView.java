@@ -39,6 +39,8 @@ public interface LoginView extends BaseView {
 
     void showProvider(List<LoginProviderModel.ProvidersBean> data);
 
+    void hideProvider();
+
     void addProgressbar();
 
     void removeProgressBar();

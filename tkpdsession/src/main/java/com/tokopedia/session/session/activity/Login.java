@@ -117,6 +117,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public static final String DEFAULT = "not";
     private static final int AUTOMATIC_LOGIN = 1;
     private static final int UNIQUE_CODE_LOGIN = 2;
+    public static final String IS_PROVIDER_NEEDED = "IS_PROVIDER_NEEDED";
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -204,6 +205,14 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         callingIntent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.REGISTER);
         callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        return callingIntent;
+    }
+
+    public static Intent getPosLoginIntent(Context context) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        callingIntent.putExtra(IS_PROVIDER_NEEDED, false);
         return callingIntent;
     }
 
@@ -447,7 +456,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToLogin() {
-        Fragment loginFragment = LoginFragment.newInstance("", false, "", "", "");
+        Fragment loginFragment = LoginFragment.newInstance("", false, "", "", "",
+                getIntent().getBooleanExtra(IS_PROVIDER_NEEDED, true));
         moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
@@ -497,7 +507,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                         url = intent.getStringExtra("url");
                         name = intent.getStringExtra("name");
                     }
-                    Fragment loginFragment = LoginFragment.newInstance(mEmail, GoToIndex, login, name, url);
+
+                    Fragment loginFragment = LoginFragment.newInstance(mEmail, GoToIndex, login,
+                            name, url, intent.getBooleanExtra(IS_PROVIDER_NEEDED, true));
                     moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
                 } else {
                     Log.d(TAG, messageTAG + LoginFragment.class.getSimpleName() + " is not created !!!");

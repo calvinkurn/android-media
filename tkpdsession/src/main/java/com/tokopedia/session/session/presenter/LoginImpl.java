@@ -91,9 +91,19 @@ public class LoginImpl implements Login {
     LocalCacheHandler cacheInfo;
     private int successLoginVia;
 
+    private boolean isProviderNeeded;
+
+    public static LoginImpl createLoginWithoutProvider(LoginView view) {
+        LoginImpl loginImpl = new LoginImpl(view);
+        loginImpl.isProviderNeeded = false;
+
+        return loginImpl;
+    }
+
     public LoginImpl(LoginView view) {
         loginView = view;
         facade = LoginInteractorImpl.createInstance(this);
+        this.isProviderNeeded = true;
     }
 
     @Override
@@ -146,15 +156,19 @@ public class LoginImpl implements Login {
     }
 
     public void getProvider() {
-        if (loginView.checkHasNoProvider()) {
-            loginView.addProgressbar();
-            List<LoginProviderModel.ProvidersBean> providerList = loadProvider();
-            if (providerList == null || providerListCache.isExpired()) {
-                downloadProviderLogin();
-            } else {
-                loginView.removeProgressBar();
-                loginView.showProvider(providerList);
+        if(isProviderNeeded) {
+            if (loginView.checkHasNoProvider()) {
+                loginView.addProgressbar();
+                List<LoginProviderModel.ProvidersBean> providerList = loadProvider();
+                if (providerList == null || providerListCache.isExpired()) {
+                    downloadProviderLogin();
+                } else {
+                    loginView.removeProgressBar();
+                    loginView.showProvider(providerList);
+                }
             }
+        } else {
+            loginView.hideProvider();
         }
     }
 

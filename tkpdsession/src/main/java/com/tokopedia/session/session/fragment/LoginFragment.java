@@ -97,6 +97,7 @@ public class
 LoginFragment extends Fragment implements LoginView {
 
     private static final String REGISTER = "Daftar";
+    public static final String IS_PROVIDER_NEEDED = "IS_PROVIDER_NEEDED";
 
     // demo only
     int anTestInt = 0;
@@ -129,6 +130,8 @@ LoginFragment extends Fragment implements LoginView {
     TextInputLayout wrapperPassword;
     @BindView(R2.id.remember_account)
     CheckBox rememberAccount;
+    @BindView(R2.id.provider_separator)
+    LinearLayout providerSeparator;
 
     ArrayAdapter<String> autoCompleteAdapter;
     List<LoginProviderModel.ProvidersBean> listProvider;
@@ -136,13 +139,16 @@ LoginFragment extends Fragment implements LoginView {
     private Unbinder unbinder;
     private CallbackManager callbackManager;
 
-    public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url) {
+    private boolean isProviderNeeded;
+
+    public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url, boolean isProviderNeeded) {
         Bundle extras = new Bundle();
         extras.putString("mEmail", mEmail);
         extras.putBoolean("goToIndex", goToIndex);
         extras.putString("login", login);
         extras.putString("name", name);
         extras.putString("url", url);
+        extras.putBoolean(IS_PROVIDER_NEEDED, isProviderNeeded);
         LoginFragment loginFragment = new LoginFragment();
         loginFragment.setArguments(extras);
         return loginFragment;
@@ -162,7 +168,13 @@ LoginFragment extends Fragment implements LoginView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        login = new LoginImpl(this);
+        isProviderNeeded = getArguments().getBoolean(IS_PROVIDER_NEEDED);
+        if(isProviderNeeded) {
+            login = new LoginImpl(this);
+        } else {
+            login = LoginImpl.createLoginWithoutProvider(this);
+        }
+
         login.initLoginInstance(mContext);
         login.fetchDataAfterRotate(savedInstanceState);
         login.fetchIntenValues(getArguments());
@@ -583,6 +595,7 @@ LoginFragment extends Fragment implements LoginView {
 
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
+        providerSeparator.setVisibility(View.VISIBLE);
         accountSignIn.setEnabled(true);
         registerButton.setEnabled(true);
         listProvider = data;
@@ -638,6 +651,11 @@ LoginFragment extends Fragment implements LoginView {
                 }
             }
         }
+    }
+
+    @Override
+    public void hideProvider() {
+        providerSeparator.setVisibility(View.GONE);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
