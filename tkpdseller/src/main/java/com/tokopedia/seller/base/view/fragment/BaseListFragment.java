@@ -102,14 +102,14 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         recyclerView.setAdapter(adapter);
         RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
         if (itemDecoration!= null) {
-            recyclerView.addItemDecoration(getItemDecoration());
+            recyclerView.addItemDecoration(itemDecoration);
         }
         recyclerView.addOnScrollListener(onScrollListener);
         if (swipeToRefresh!= null) {
             new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
                 @Override
                 public void onRefresh(View view) {
-                    searchData(START_PAGE);
+                    searchData(getStartPage());
                 }
             });
         }
@@ -122,7 +122,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     @Override
     protected void initialVar() {
         super.initialVar();
-        page = START_PAGE;
+        page = getStartPage();
         totalItem = Integer.MAX_VALUE;
         searchMode = false;
         adapter = getNewAdapter();
@@ -135,7 +135,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 hideLoading();
                 adapter.showRetryFull(false);
                 adapter.showLoadingFull(true);
-                searchData(START_PAGE);
+                searchData(getStartPage());
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
@@ -148,7 +148,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     protected void loadData() {
-        page = START_PAGE;
+        page = getStartPage();
         adapter.clearData();
         adapter.showRetryFull(false);
         adapter.showLoadingFull(true);
@@ -196,7 +196,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     protected void showViewList(@NonNull List list) {
-        if (page == START_PAGE) {
+        if (page == getStartPage()) {
             adapter.clearData();
             layoutManager.scrollToPositionWithOffset(0, 0);
         }
@@ -248,6 +248,10 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
+    }
+
+    protected int getStartPage(){
+        return START_PAGE;
     }
 
 }

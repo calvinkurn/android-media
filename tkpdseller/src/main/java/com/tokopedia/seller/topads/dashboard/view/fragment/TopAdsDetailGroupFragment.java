@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
@@ -125,8 +125,8 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof OnTopAdsDetailGroupListener) {
             listener = (OnTopAdsDetailGroupListener) context;
         }

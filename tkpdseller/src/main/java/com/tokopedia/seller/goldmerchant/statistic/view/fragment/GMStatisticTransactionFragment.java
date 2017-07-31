@@ -1,235 +1,182 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.topads.WebViewTopAdsActivity;
+import com.tokopedia.core.topads.WebViewTopAdsFragment;
+import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.table.GetTransactionTable;
+import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMTransactionComponent;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTopAdsAmountViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.GMTransactionGraphViewHelper;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMDateRangeDateViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTopAdsAmountViewModel;
-import com.tokopedia.seller.goldmerchant.statistic.view.helper.model.GMTransactionGraphViewModel;
-import com.tokopedia.seller.lib.widget.LabelView;
-
-import java.util.HashMap;
-import java.util.List;
+import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticTransactionTableActivity;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTopAdsAmountViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMTransactionGraphViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.holder.UnFinishedTransactionViewHolder;
+import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionView;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
+import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import javax.inject.Inject;
-
-import retrofit2.Response;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends BaseDaggerFragment {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView, GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener, GMTransactionGraphViewHolder.OnTransactioNGraphViewHolderListener {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
-    ImageHandler imageHandler;
+    GMStatisticTransactionPresenter presenter;
 
-    @Inject
-    GMStatApi gmStatApi;
-
-    @Inject
-    SessionHandler sessionHandler;
-
-    private View rootView;
-
-    private String[] monthNamesAbrev;
-
-    private GMTopAdsAmountViewHelper gmTopAdsAmountViewHelper;
     private LabelView gmStatisticProductListText;
-    private GMTransactionGraphViewHelper gmTransactionGraphViewHelper;
+
+    private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
+    private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
+    private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
+
+    private boolean isComparingDate = false;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
-        initVar();
-        initView();
-        return rootView;
-    }
-
-    private void initVar() {
-        monthNamesAbrev = rootView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
-
-        gmTopAdsAmountViewHelper = new GMTopAdsAmountViewHelper(getActivity());
-        gmTransactionGraphViewHelper = new GMTransactionGraphViewHelper(getActivity());
-    }
-
-    private void initView() {
-        if (rootView == null)
-            return;
-
-        gmTopAdsAmountViewHelper.initView(rootView);
-        gmTransactionGraphViewHelper.initView(rootView);
-
-        gmStatisticProductListText = (LabelView) rootView.findViewById(R.id.gm_statistic_label_sold_product_list_view);
-        gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
     protected void initInjector() {
         DaggerGMTransactionComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
+                .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
     }
 
+    @Nullable
     @Override
-    public void onResume() {
-        super.onResume();
-        gmStatApi.getTransactionGraph(sessionHandler.getShopID(), new HashMap<String, String>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<GetTransactionGraph>>() {
-                    @Override
-                    public void onCompleted() {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_gm_statistic_transaction, container, false);
+        presenter.attachView(this);
+        gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(view);
+        gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
+        gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
+        gmTransactionGraphViewHolder.setOnTransactioNGraphViewHolderListener(this);
+        finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onNext(Response<GetTransactionGraph> stringResponse) {
-                        Log.e(TAG, stringResponse.body().toString());
-
-                        // get data from network
-                        GetTransactionGraph getTransactionGraph = stringResponse.body();
-
-                        // get range from network
-                        List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-                        Pair<Long, String> startDateString = GoldMerchantDateUtils.getDateStringWithoutYear(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                0);
-                        Pair<Long, String> endDateString = GoldMerchantDateUtils.getDateString(dateGraph,
-                                GMStatisticTransactionFragment.this.monthNamesAbrev,
-                                dateGraph.size() - 1);
-                        if (startDateString.getModel2() == null || endDateString.getModel2() == null)
-                            return;
-
-                        // create object for range date.
-                        GMDateRangeDateViewModel gmDateRangeDateViewModel
-                                = new GMDateRangeDateViewModel();
-                        gmDateRangeDateViewModel.setStartDate(startDateString);
-                        gmDateRangeDateViewModel.setEndDate(endDateString);
-
-
-                        // display percentage demo
-                        GMTransactionGraphViewModel gmTransactionGraphViewModel
-                                = new GMTransactionGraphViewModel();
-                        gmTransactionGraphViewModel.dates = dateGraph;
-                        switch (gmTransactionGraphViewHelper.selection()) {
-                            case GMTransactionGraphType.GROSS_REVENUE:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getGrossGraph();
-                                break;
-                            case GMTransactionGraphType.NET_REVENUE:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getNetGraph();
-                                break;
-                            case GMTransactionGraphType.REJECT_TRANS:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedTransGraph();
-                                break;
-                            case GMTransactionGraphType.REJECTED_AMOUNT:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getRejectedAmtGraph();
-                                break;
-                            case GMTransactionGraphType.SHIPPING_COST:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getShippingGraph();
-                                break;
-                            case GMTransactionGraphType.SUCCESS_TRANS:
-                                gmTransactionGraphViewModel.values = getTransactionGraph.getSuccessTransGraph();
-                                break;
-                            case GMTransactionGraphType.TOTAL_TRANSACTION:
-                                gmTransactionGraphViewModel.values = GMStatisticUtil.sumTwoGraph(
-                                        getTransactionGraph.getSuccessTransGraph(),
-                                        getTransactionGraph.getRejectedTransGraph());
-                                break;
-                        }
-                        gmTransactionGraphViewModel.dateRangeModel = gmDateRangeDateViewModel;
-                        gmTransactionGraphViewHelper.bind(gmTransactionGraphViewModel);
-
-                        // set top ads amount
-                        GMTopAdsAmountViewModel gmTopAdsAmountViewModel
-                                = new GMTopAdsAmountViewModel();
-                        gmTopAdsAmountViewModel.dates = dateGraph;
-                        gmTopAdsAmountViewModel.values = joinAdsGraph(getTransactionGraph.getAdsPGraph(), getTransactionGraph.getAdsSGraph());
-                        gmTopAdsAmountViewModel.title = getString(R.string.gold_merchant_top_ads_amount_title_text);
-                        gmTopAdsAmountViewModel.subtitle = getString(R.string.gold_merchant_top_ads_amount_subtitle_text);
-
-                        // TODO get topads percentage maybe cpc
-                        gmTopAdsAmountViewModel.percentage = 1f;
-
-                        // TODO get topads amount
-                        gmTopAdsAmountViewModel.amount = 100_000;
-
-                        gmTopAdsAmountViewHelper.bind(
-                                gmTopAdsAmountViewModel
-                        );
-
-                    }
-                });
-
-        gmStatApi.getTransactionTable(sessionHandler.getShopID(), new HashMap<String, String>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<GetTransactionTable>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onNext(Response<GetTransactionTable> stringResponse) {
-                        Log.e(TAG, stringResponse.body().toString());
-                    }
-                });
+        gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
+        gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (presenter != null) {
+                    presenter.startTransactionProductList();
+                }
+            }
+        });
+        return view;
     }
 
-    private List<Integer> joinAdsGraph(List<Integer> adsPGraph, List<Integer> adsSGraph) {
-        return GMStatisticUtil.sumTwoGraph(adsPGraph, adsSGraph);
+    @Override
+    public void startTransactionProductList(long startDate, long endDate) {
+        Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
+        loadingState(LoadingStateView.VIEW_LOADING);
+        isComparingDate = datePickerViewModel.isCompareDate();
+        presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+    }
+
+    private void loadingState(int state) {
+        gmTransactionGraphViewHolder.setViewState(state);
+        gmTopAdsAmountViewHolder.setViewState(state);
+        finishedTransactionViewHolder.setViewState(state);
+    }
+
+    @Override
+    public void revealData(GMTransactionGraphMergeModel mergeModel) {
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel);
+        finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
+    }
+
+    @Override
+    public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHolder.bindNoData(setStaticText(gmTopAdsAmountViewModel));
+    }
+
+    @Override
+    public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHolder.bind(setStaticText(gmTopAdsAmountViewModel));
+    }
+
+    @Override
+    public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHolder.bindNoTopAdsCredit(setStaticText(gmTopAdsAmountViewModel));
+    }
+
+    @Override
+    public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(setStaticText(gmTopAdsAmountViewModel));
+    }
+
+    private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
+        gmTopAdsAmountViewModel.title = getString(R.string.gm_statistic_top_ads_amount_title_text);
+        gmTopAdsAmountViewModel.subtitle = getString(R.string.gm_statistic_top_ads_amount_subtitle_text);
+        return gmTopAdsAmountViewModel;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onChangeDateClicked() {
+        dateLabelView.performClick();
+    }
+
+    @Override
+    public void onViewTopAdsClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onFindOutTopAdsClicked() {
+        Intent intent = new Intent(getActivity(), WebViewTopAdsActivity.class);
+        intent.putExtra(WebViewTopAdsFragment.SOURCE_EXTRA, TkpdUrl.INFO_TOPADS);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onRegisterTopAdsNowClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean isComparingDate() {
+        return isComparingDate;
+    }
+
+    @Override
+    public boolean allowCompareDate() {
+        return true;
     }
 }

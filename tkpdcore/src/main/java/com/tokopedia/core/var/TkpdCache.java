@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 
 /**
  * Created by Nisie on 11/11/15.
@@ -46,12 +47,12 @@ public class TkpdCache {
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
-    public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET = "DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET";
+    public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
 
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
-        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
         LocalCacheHandler.clearCache(context, TkpdCache.REGISTERED);
         LocalCacheHandler.clearCache(context, TkpdCache.VERIFICATION_NUMBER);
@@ -189,6 +190,11 @@ public class TkpdCache {
         public static final String DIGITAL_CLIENT_NUMBER_CATEGORY = "DIGITAL_CLIENT_NUMBER_CATEGORY_";
         public static final String DIGITAL_OPERATOR_ID_CATEGORY = "DIGITAL_OPERATOR_ID_CATEGORY_";
         public static final String DIGITAL_PRODUCT_ID_CATEGORY = "DIGITAL_PRODUCT_ID_CATEGORY_";
+        public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
+
+        public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
+
+        public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
     }
 
 }

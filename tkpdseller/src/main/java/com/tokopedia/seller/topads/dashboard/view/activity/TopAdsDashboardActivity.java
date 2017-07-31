@@ -25,7 +25,7 @@ import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardFragme
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDashboardTabListener;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -79,7 +79,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     protected void initView() {
         super.initView();
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_TOP_ADS);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
         datePickerPresenter.resetDate();

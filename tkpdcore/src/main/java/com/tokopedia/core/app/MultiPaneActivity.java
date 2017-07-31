@@ -30,7 +30,6 @@ public abstract class MultiPaneActivity extends TkpdActivity implements MultiPan
 
     protected void setTkpdContentView(int resID, int location) {
         inflateView(resID);
-        drawer.setDrawerPosition(location);
         initDetailPager();
     }
 

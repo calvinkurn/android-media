@@ -1,14 +1,16 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.Display;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
-import com.tokopedia.seller.gmstat.views.DataTransactionViewHelper;
-import com.tokopedia.seller.lib.williamchart.view.LineChartView;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,17 @@ import java.util.List;
 
 public final class GMStatisticUtil {
     private static final String TAG = "GMStatisticUtil";
+
+    public static List<Integer> subList(List<Integer> datas, int size) {
+        if (datas != null && !datas.isEmpty()) {
+            if (datas.size() <= size) {
+                return datas;
+            } else {
+                return datas.subList(0, 3);
+            }
+        }
+        return null;
+    }
 
     public static List<Integer> indexToDisplay(float[] values) {
         final List<Integer> indexToDisplay = new ArrayList<>();
@@ -32,25 +45,27 @@ public final class GMStatisticUtil {
     /**
      * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
      * https://github.com/diogobernardino/WilliamChart/issues/152
+     * <p>
+     * set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
+     * is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+     * layout Params of linechart .
      *
      * @param numChart
      */
-    public static void resizeChart(int numChart, LineChartView chartView, Activity activity) {
-        Log.d(TAG, "resizeChart " + numChart);
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) DataTransactionViewHelper.dpToPx(activity, 360); //displaymetrics.widthPixels;
-        /*
-            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
-            layout Params of linechart .
-        */
-        double newSizeRatio = ((double) numChart) / 7;
-        if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) DataTransactionViewHelper.dpToPx(activity, 680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
-        } else {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
+    public static void resizeChart(int numChart, LineChartView chartView) {
+        int maxNumberChart = 7;
+        int scrolledWidth = 680;
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = chartView.getLayoutParams().height;
+        double newSizeRatio = ((double) numChart) / maxNumberChart;
+        if (newSizeRatio > 1 && width < scrolledWidth) {
+            width = (int) CommonUtils.DptoPx(chartView.getContext(), scrolledWidth);
+        }
+        if (chartView.getParent() instanceof LinearLayout) {
+            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+        } else if (chartView.getParent() instanceof FrameLayout) {
+            chartView.setLayoutParams(new FrameLayout.LayoutParams(width, height));
         }
     }
 
@@ -111,5 +126,18 @@ public final class GMStatisticUtil {
             result.add(product + shop);
         }
         return result;
+    }
+
+    public static int findSelection(String[] values, String selection) {
+        int searchIndex = -1;
+
+        int count = 0;
+        for (String value : values) {
+            if (value.equals(selection)) {
+                return searchIndex = count;
+            }
+            count++;
+        }
+        return searchIndex;
     }
 }

@@ -58,7 +58,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
 
     @Override
     protected String doInBackground(byte[]... jpeg) {
-        Log.d(TAG, messageTAG + FileUtils.getPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath(), "image", "jpg"));
 //        File photo=new File(Environment.getExternalStorageDirectory(), "image.jpg");// old
         File photo = writeImageToTkpdPath(jpeg[0]);
 
@@ -73,7 +72,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
         int height = resolution.getModel2();
         PictureDB pictureDB = new PictureDB(path, width, height);
         pictureDB.save();
-        Log.d(TAG, messageTAG + " hasil save ke db : " + pictureDB.Id);
         //[END] save to db for images
 
         return photo.getAbsolutePath();
@@ -104,9 +102,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
 
             source.close();
             outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,7 +137,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
             inStream.close();
             outStream.close();
 
-            Log.d(TAG, "File is copied successful!");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,7 +162,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
             fos.write(buffer);
             fos.close();
         } catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
             return null;
         }
         return photo;

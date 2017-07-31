@@ -1,15 +1,12 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
@@ -22,14 +19,13 @@ import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDashboardProdu
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
-    public static final String GTM_KEYWORD = "GTM_KEYWORD";
+
     private LabelView groupSummaryLabelView;
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
 
     private int totalProductAd;
     private int totalGroupAd;
-    private boolean showKeyword;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -72,21 +68,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 onKeywordLabelClicked();
             }
         });
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) {
-            showKeyword = TrackingUtils.getBoolean(AppEventTracking.GTM.SELLER_TOP_ADS_SHOW_KEYWORD);
-        } else if (savedInstanceState.containsKey(GTM_KEYWORD)) {
-            showKeyword = savedInstanceState.getBoolean(GTM_KEYWORD);
-        }
-//        if (showKeyword) {
-            keywordLabelView.setVisibility(View.VISIBLE);
-//        } else {
-//            keywordLabelView.setVisibility(View.GONE);
-//        }
     }
 
     @Override
@@ -172,12 +153,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
                 loadData();
             }
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(GTM_KEYWORD, showKeyword);
     }
 
     @Override

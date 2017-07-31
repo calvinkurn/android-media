@@ -169,7 +169,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         List<TopAdsProductViewModel> topAdsProductViewModels = convertTo();
 
         int position = topAdsProductViewModels.indexOf(topAdsProductViewModel);
-        Log.d("MNORMANSYAH", " search this " + topAdsProductViewModel + " position " + position);
 
         if (position >= 0) {
             removedItem(position);
@@ -198,8 +197,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         ItemType itemType = datas.get(position);
         if (itemType != null && itemType instanceof TopAdsAddProductModel) {
             TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) itemType;
-            Log.d("MNORMANSYAH", "#4 before after selections : " + topAdsAddProductModel.isSelected()
-                    + " position " + position);
             topAdsAddProductModel.setSelected(false);
 
             datas.set(position, topAdsAddProductModel);

@@ -14,4 +14,8 @@
 
     <!-- tooltip statistic-->
     <color name="grey_title_topads_statistic">#a3a3a3</color>
+
+    <color name="colorSheetText">#DE000000</color>
+    <color name="colorSheetTitle">#8A000000</color>
+    <color name="colorSheetDivider">#3f717171</color>
 </resources>

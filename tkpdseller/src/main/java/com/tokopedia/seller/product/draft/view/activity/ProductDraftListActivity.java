@@ -1,9 +1,10 @@
 package com.tokopedia.seller.product.draft.view.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.var.TkpdState;
@@ -14,20 +15,99 @@ import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListActivity extends TkpdActivity implements HasComponent<AppComponent>{
+public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<AppComponent>{
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.DRAFT_PRODUCT);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ProductDraftListFragment.newInstance(),
                             ProductDraftListFragment.TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public void onErrorGetDeposit(String errorMessage) {
+        // no op
+    }
+
+    @Override
+    public void onErrorGetNotificationDrawer(String errorMessage) {
+        // no op
+    }
+
+    @Override
+    public void onErrorGetProfile(String errorMessage) {
+        // no op
+    }
+
+    @Override
+    public void onErrorGetTokoCash(String errorMessage) {
+        // no op
+    }
+
+    @Override
+    public void onErrorGetTopPoints(String errorMessage) {
+        // no op
+    }
+
+    @Override
+    public void onServerError() {
+        // no op
+    }
+
+    @Override
+    public void onTimezoneError() {
+        // no op
+    }
+
+    @Override
+    public void onHadesTimeout() {
+        // no op
+    }
+
+    @Override
+    protected int setDrawerPosition() {
+        return TkpdState.DrawerPosition.DRAFT_PRODUCT;
+    }
+
+    @Override
+    protected void setupURIPass(Uri data) {
+        // no op
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+        // no op
+    }
+
+    @Override
+    protected void initialPresenter() {
+        // no op
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
+    @Override
+    protected void setViewListener() {
+        // no op
+    }
+
+    @Override
+    protected void initVar() {
+        // no op
+    }
+
+    @Override
+    protected void setActionVar() {
+        // no op
     }
 
     @Override

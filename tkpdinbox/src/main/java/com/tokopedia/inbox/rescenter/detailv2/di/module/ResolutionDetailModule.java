@@ -10,10 +10,12 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
@@ -32,8 +34,11 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageV2Mapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
@@ -218,7 +223,9 @@ public class ResolutionDetailModule {
             ListProductMapper listProductMapper,
             ProductDetailMapper productDetailMapper,
             DiscussionResCenterMapper discussionResCenterMapper,
-            LoadMoreMapper loadMoreMapper) {
+            LoadMoreMapper loadMoreMapper,
+            ReplyResolutionMapper replyResolutionMapper,
+            ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -232,7 +239,9 @@ public class ResolutionDetailModule {
                 listProductMapper,
                 productDetailMapper,
                 discussionResCenterMapper,
-                loadMoreMapper
+                loadMoreMapper,
+                replyResolutionMapper,
+                replyResolutionSubmitMapper
         );
     }
 
@@ -256,7 +265,7 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
-    ResCenterActApi provideResCenterActService(@WsV4Qualifier Retrofit retrofit) {
+    ResCenterActApi provideResCenterActService(@UploadWsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ResCenterActApi.class);
     }
 
@@ -321,6 +330,8 @@ public class ResolutionDetailModule {
                                                              ResCenterActApi resCenterActApi,
                                                              GenerateHostMapper generateHostMapper,
                                                              UploadImageMapper uploadImageMapper,
+                                                             UploadImageV2Mapper uploadImageV2Mapper,
+                                                             UploadVideoMapper uploadVideoMapper,
                                                              CreatePictureMapper createPictureMapper,
                                                              SubmitImageMapper submitImageMapper) {
         return new UploadImageSourceFactory(
@@ -329,6 +340,8 @@ public class ResolutionDetailModule {
                 resCenterActApi,
                 generateHostMapper,
                 uploadImageMapper,
+                uploadImageV2Mapper,
+                uploadVideoMapper,
                 createPictureMapper,
                 submitImageMapper
         );
@@ -354,6 +367,18 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    UploadImageV2Mapper provideUploadImageV2Mapper() {
+        return new UploadImageV2Mapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadVideoMapper provideUploadVideoMapper() {
+        return new UploadVideoMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
     CreatePictureMapper provideCreatePictureMapper() {
         return new CreatePictureMapper();
     }
@@ -362,6 +387,18 @@ public class ResolutionDetailModule {
     @Provides
     SubmitImageMapper provideSubmitImageMapper() {
         return new SubmitImageMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyResolutionMapper provideReplyResolutionMapper() {
+        return new ReplyResolutionMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyResolutionSubmitMapper provideReplyResolutionSubmitMapper() {
+        return new ReplyResolutionSubmitMapper();
     }
 
 }

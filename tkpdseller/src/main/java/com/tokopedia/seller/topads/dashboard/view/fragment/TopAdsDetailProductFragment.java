@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.model.Ad;
 import com.tokopedia.seller.topads.dashboard.data.model.data.ProductAd;
@@ -60,8 +60,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof TopAdsDetailProductFragmentListener) {
             listener = (TopAdsDetailProductFragmentListener) context;
         }

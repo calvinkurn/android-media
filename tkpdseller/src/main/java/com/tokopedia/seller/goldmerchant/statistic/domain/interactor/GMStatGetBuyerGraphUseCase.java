@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetBuyerGraph;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class GMStatGetBuyerGraphUseCase extends CompositeUseCase<GetBuyerData> {
+public class GMStatGetBuyerGraphUseCase extends CompositeUseCase<GetBuyerGraph> {
     public static final String START_DATE = "sdt";
     public static final String END_DATE = "edt";
 
@@ -39,9 +39,9 @@ public class GMStatGetBuyerGraphUseCase extends CompositeUseCase<GetBuyerData> {
     }
 
     @Override
-    public Observable<GetBuyerData> createObservable(RequestParams requestParams) {
-        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
-        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
+    public Observable<GetBuyerGraph> createObservable(RequestParams requestParams) {
+        final long startDate = requestParams.getLong(START_DATE, -1);
+        final long endDate = requestParams.getLong(END_DATE, -1);
         return gmStatRepository.getBuyerGraph(startDate, endDate);
     }
 }

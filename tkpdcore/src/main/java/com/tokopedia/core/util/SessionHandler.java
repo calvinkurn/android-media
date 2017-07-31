@@ -24,6 +24,7 @@ import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
@@ -131,19 +132,22 @@ public class SessionHandler {
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
-        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, CACHE_PROMOTION_PRODUCT);
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
+        LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
+        LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
         TrackingUtils.eventMoEngageLogoutUser();
 
@@ -226,6 +230,13 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         domain = sharedPrefs.getString(SHOP_DOMAIN, "");
         return domain;
+    }
+
+    public void setShopId(String shopId) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, SHOP_ID, shopId);
+        editor.apply();
     }
 
     public static String getShopID(Context context) {

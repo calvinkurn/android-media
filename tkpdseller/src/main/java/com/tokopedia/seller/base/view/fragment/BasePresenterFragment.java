@@ -65,7 +65,7 @@ public abstract class BasePresenterFragment<P> extends BaseDaggerFragment {
     public final void onAttach(Activity activity) {
         super.onAttach(activity);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            initialListener(activity);
+            onAttachListener(activity);
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class BasePresenterFragment<P> extends BaseDaggerFragment {
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
-        initialListener(context);
+        onAttachListener(context);
     }
 
     protected void onFirstTimeLaunched() {
@@ -103,7 +103,7 @@ public abstract class BasePresenterFragment<P> extends BaseDaggerFragment {
      *
      * @param context si activity yang punya fragment
      */
-    protected void initialListener(Context context) {
+    protected void onAttachListener(Context context) {
     }
 
     /**

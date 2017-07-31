@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="label_empty_value">-</string>
+    <string name="label_back">Kembali</string>
+    <string name="title_date_setting">Atur Tanggal</string>
+
+    <string name="set_date">Atur Tanggal</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
+
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>
     <string name="label_date_period">Periode</string>
@@ -35,6 +44,8 @@
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
 
+    <string name="list_sold_product_text">Daftar Produk Terjual</string>
+
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
@@ -46,6 +57,8 @@
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
     <string name="best_deal">BEST DEAL!</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="try_again">COBA KEMBALI</string>
 
 
     <!-- SHOP SETTING-->
@@ -77,6 +90,7 @@
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
 
 
     <string name="product_no_have_product_name_yet">Belum ada nama produk</string>
@@ -86,12 +100,12 @@
     <string name="add_product_title_alert_dialog_dollar">Saat ini Anda belum menjadi Gold Merchant!</string>
     <string name="add_product_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
     <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
     <string name="product_draft_product_has_been_saved_as_draft">Produk berhasil disimpan dalam draft</string>
 
     <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
     <string name="product_draft_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="product_draft_add_product">Tambah Produk</string>
     <string name="product_draft_save_as_draft">Simpan Draft</string>
-    <string name="chart_tag">chart_tag</string>
-    <string name="statistic_tag">statistic_tag</string>
+
 </resources>

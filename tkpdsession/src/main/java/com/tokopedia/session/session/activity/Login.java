@@ -62,8 +62,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
-import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
@@ -191,6 +191,22 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         return callingIntent;
     }
 
+    public static Intent getRegisterIntent(Context context) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.REGISTER);
+        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        return callingIntent;
+    }
+
+    public static Intent getSellerRegisterIntent(Context context) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.REGISTER);
+        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        return callingIntent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Tokopedia3);
@@ -221,7 +237,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
-                    if(session.getWhichFragment() == 0) {
+                    if (fragment != null && session.getWhichFragment() == 0) {
                         session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
                     }
                     setToolbarTitle();
@@ -356,10 +372,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = null;
                     if (SessionHandler.isUserSeller(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                                .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     } else {
                         intent = moveToCreateShop(this);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_FEED);
                     startActivity(intent);
@@ -389,14 +407,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 toolbar.setTitle(getString(R.string.title_activity_login));
                 break;
             case TkpdState.DrawerPosition.REGISTER_THIRD:
-            case TkpdState.DrawerPosition.REGISTER:
                 toolbar.setTitle(getString(R.string.title_activity_register));
                 break;
             case TkpdState.DrawerPosition.SECURITY_QUESTION:
                 toolbar.setTitle(getString(R.string.bar_security_question));
                 break;
             case TkpdState.DrawerPosition.REGISTER_NEXT:
-            case TkpdState.DrawerPosition.REGISTER_INITIAL:
                 toolbar.setTitle(getString(R.string.title_activity_register));
                 break;
             case TkpdState.DrawerPosition.ACTIVATION_RESENT:
@@ -404,6 +420,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 break;
             case TkpdState.DrawerPosition.FORGOT_PASSWORD:
                 toolbar.setTitle(getString(R.string.title_activity_forgot_password));
+                break;
+            case TkpdState.DrawerPosition.REGISTER:
+            case TkpdState.DrawerPosition.REGISTER_INITIAL:
+                toolbar.setTitle("");
                 break;
         }
     }
@@ -1017,6 +1037,5 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         intent.putExtra(Intent.EXTRA_TEXT, getString(com.tokopedia.session.R.string.application_version_text) + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, getString(com.tokopedia.session.R.string.send_email)));
     }
-
 
 }

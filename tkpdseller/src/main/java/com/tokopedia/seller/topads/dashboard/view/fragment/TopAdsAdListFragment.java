@@ -22,7 +22,7 @@ import android.view.View;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.lib.widget.DateLabelView;
+import com.tokopedia.seller.common.widget.DateLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.listener.AdListMenuListener;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsAdListAdapter;
@@ -31,8 +31,8 @@ import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAdListPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 
 import java.util.List;
 
@@ -40,8 +40,10 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener, BaseListAdapter.Callback<U> {
+public abstract class TopAdsAdListFragment<T extends
+        TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
+        AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener,
+        BaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {
         void startShowCase();
@@ -300,8 +302,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter, U ex
     }
 
     @Override
-    public void initialListener(Context context) {
-        super.initialListener(context);
+    public void onAttachListener(Context context) {
+        super.onAttachListener(context);
         if (context instanceof OnAdListFragmentListener) {
             listener = (OnAdListFragmentListener) context;
         }

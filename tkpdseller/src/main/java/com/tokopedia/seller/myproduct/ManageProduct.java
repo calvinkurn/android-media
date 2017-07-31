@@ -54,8 +54,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -83,6 +81,7 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
@@ -91,13 +90,7 @@ import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
-import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,8 +98,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -278,7 +269,6 @@ public class ManageProduct extends TkpdActivity implements
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onCompletedAddReceiver,
                 new IntentFilter(ProductServiceConstant.ACTION_COMPLETED_ADD_PRODUCT));
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
 
@@ -592,10 +582,7 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-                Log.d(TAG, "totalItemCount " + totalItemCount + " firstVisibleItem " + firstVisibleItem + " visibleItemCount " + visibleItemCount
-                        + " = " + (totalItemCount - (firstVisibleItem + visibleItemCount)));
                 if (totalItemCount - (firstVisibleItem + visibleItemCount) < 2 && totalItemCount != 0) {
-                    Log.d(TAG, "isLoading " + loading + " and " + mPaging.CheckNextPage() + " and " + mPaging.getPage());
                     if (!loading && mPaging.CheckNextPage()) {
 //						CurrPage += 1;
                         mPaging.nextPage();
@@ -631,6 +618,11 @@ public class ManageProduct extends TkpdActivity implements
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
     }
 
     private OnConnectionTimeout onTimeout() {
@@ -761,13 +753,7 @@ public class ManageProduct extends TkpdActivity implements
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    if (hasFocus) {
-                        Log.d(TAG, "Images FOCUS");
-                    } else {
-                        Log.d(TAG, "Images FOCUS LOST");
-                    }
-                }
+
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -1871,11 +1857,7 @@ public class ManageProduct extends TkpdActivity implements
 
                 CheckCache();
 
-            } else {
-                Log.e(TAG, "Fetch Etalase Error");
             }
-        } else {
-            Log.e(TAG, "Fetch Etalase Error");
         }
     }
 

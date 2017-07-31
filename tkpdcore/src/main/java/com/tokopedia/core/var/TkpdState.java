@@ -46,6 +46,7 @@ public class TkpdState {
 		public static final int REGISTER = 19;
 		public static final int DEVELOPER_OPTIONS = 20;
 		public static final int MANAGE_ETALASE = 21;
+        public static final int MANAGE_DRAFT_PRODUCT = 22;
 
         public static final int PEOPLE_PAYMENT_STATUS = 201;
         public static final int PEOPLE_ORDER_STATUS = 202;
@@ -376,6 +377,8 @@ public class TkpdState {
         public static final int GCM_VERIFICATION = 1008;
         public static final int GCM_TOPADS_BELOW_20K = 1100;
         public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
+        public static final int GCM_RIDEHAILING = 1200;
+
     }
 
     public class RecyclerView {

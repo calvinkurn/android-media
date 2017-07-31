@@ -9,9 +9,9 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.LoadingViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 /**
  * @author by errysuprayogi on 4/13/17.

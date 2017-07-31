@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
@@ -30,7 +30,8 @@ import rx.Subscriber;
  * @author normansyahputa on 5/17/17.
  */
 
-public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<BaseListViewListener> implements TopAdsAdListPresenter<GroupAd> {
+public class TopAdsKeywordListPresenterImpl extends
+        TopAdsKeywordListPresenter<BaseListViewListener> implements TopAdsAdListPresenter<GroupAd> {
 
     public static final String KEYWORD_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "TopAdsKeywordListPresen";
@@ -59,7 +60,6 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<B
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
                 revealData(getKeywordAds(keywordDashboardDomain, baseKeywordParam.isPositive));
             }
         });

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,18 +10,18 @@ import android.view.View;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
+import com.tokopedia.seller.topads.dashboard.view.model.Ad;
+import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
-import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
-import com.tokopedia.seller.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 
 import javax.inject.Inject;
 
@@ -33,6 +34,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     private LabelView keywordLabelView;
     private LabelView promoGroupLabelView;
 
+    OnKeywordDetailListener onKeywordDetailListener;
+    public interface OnKeywordDetailListener{
+        void startShowCase();
+    }
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
@@ -100,6 +105,14 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
+    public void onAdLoaded(Ad ad) {
+        super.onAdLoaded(ad);
+        if (onKeywordDetailListener!= null) {
+            onKeywordDetailListener.startShowCase();
+        }
+    }
+
+    @Override
     protected void editAd() {
         startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
@@ -146,5 +159,18 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     public void onDestroy() {
         super.onDestroy();
         topadsKeywordDetailPresenter.unSubscribe();
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if (context instanceof OnKeywordDetailListener) {
+            onKeywordDetailListener = (OnKeywordDetailListener) context;
+        }
     }
 }

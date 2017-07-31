@@ -667,11 +667,20 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.AppCompatAlertDialogStyle);
         builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
-        builder.setMessage(message);
+        if(hasDataAdded() ){
+            builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(message)));
+        }else{
+            builder.setMessage(message);
+        }
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                UnifyTracking.eventClickYesGoldMerchantAddProduct();
+                if(hasDataAdded()){
+                    saveDraft(false);
+                }
                 goToGoldMerchantPage();
+                getActivity().finish();
             }
         });
         builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {

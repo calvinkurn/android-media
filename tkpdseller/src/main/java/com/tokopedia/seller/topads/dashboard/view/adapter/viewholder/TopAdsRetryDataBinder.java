@@ -10,6 +10,6 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 public class TopAdsRetryDataBinder extends BaseRetryDataBinder {
 
     public TopAdsRetryDataBinder(DataBindAdapter dataBindAdapter) {
-        super(dataBindAdapter, R.drawable.ic_empty_state);
+        super(dataBindAdapter, R.drawable.ic_empty_state_kaktus);
     }
 }

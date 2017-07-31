@@ -155,7 +155,6 @@ public class NewOrderImpl extends NewOrder {
             intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
             intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
             intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
-//        context.startActivity(intent);
             view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
         }
     }

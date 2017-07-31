@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepository;
+import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
+import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
 
 import javax.inject.Inject;
 
@@ -40,8 +40,8 @@ public class GMStatGetPopularProductUseCase extends CompositeUseCase<GetPopularP
 
     @Override
     public Observable<GetPopularProduct> createObservable(RequestParams requestParams) {
-        final long startDate = requestParams.getLong(START_DATE, Long.MIN_VALUE);
-        final long endDate = requestParams.getLong(END_DATE, Long.MAX_VALUE);
+        final long startDate = requestParams.getLong(START_DATE, -1);
+        final long endDate = requestParams.getLong(END_DATE, -1);
         return gmStatRepository.getPopularProduct(startDate, endDate);
     }
 }

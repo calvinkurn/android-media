@@ -15,13 +15,14 @@ import android.widget.EditText;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelSwitch;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.common.widget.LabelSwitch;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
@@ -80,6 +81,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             public void onClick(View v) {
                 if (CommonUtils.checkNotNull(listener)) {
                     if (!goldMerchant && GlobalConfig.isSellerApp()) {
+                        UnifyTracking.eventClickVideoAddProduct();
                         listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_video);
                     } else {
                         listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));

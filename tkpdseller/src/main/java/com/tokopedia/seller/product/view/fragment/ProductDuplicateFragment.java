@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-//import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -45,8 +44,8 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
-        super.onSuccessLoadProduct(model);
+    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
+        super.onSuccessLoadDraftProduct(model);
         productNameBeforeCopy = model.getProductName();
     }
 
