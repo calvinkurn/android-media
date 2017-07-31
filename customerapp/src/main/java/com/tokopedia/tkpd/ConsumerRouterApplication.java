@@ -27,6 +27,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -278,7 +279,7 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public Intent instanceIntentDigitalWeb(String url) {
-        return null;
+        return DigitalWebActivity.newInstance(this, url);
     }
 
     @Override
