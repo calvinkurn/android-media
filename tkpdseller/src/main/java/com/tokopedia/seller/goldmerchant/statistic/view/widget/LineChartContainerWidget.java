@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPreviousModel;
-import com.tokopedia.seller.lib.widget.GMDateRangeView;
+import com.tokopedia.seller.common.widget.GMDateRangeView;
 
 /**
  * Created by hendry on 7/10/2017.

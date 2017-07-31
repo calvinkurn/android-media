@@ -1,4 +1,4 @@
-package com.tokopedia.seller.lib.widget;
+package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
