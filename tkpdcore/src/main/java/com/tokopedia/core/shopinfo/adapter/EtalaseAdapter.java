@@ -20,17 +20,10 @@ import java.util.List;
 public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
 
     private List<EtalaseAdapterModel> list;
-    private LayoutInflater mInflater;
 
     public EtalaseAdapter(Context context, ArrayList<EtalaseAdapterModel> list) {
         super(context, 0, list);
-        init(context);
-        this.list = list;
         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    }
-
-    private void init(Context context) {
-        this.mInflater = LayoutInflater.from(context);
     }
 
     public void setList(List<EtalaseAdapterModel> list) {
@@ -42,7 +35,8 @@ public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder vh;
         if (convertView == null) {
-            convertView = mInflater.inflate(android.R.layout.simple_spinner_item, parent, false);
+            convertView = LayoutInflater.from(convertView.getContext())
+                    .inflate(android.R.layout.simple_spinner_item, parent, false);
             vh = new ViewHolder(convertView);
             convertView.setTag(vh);
         } else {
