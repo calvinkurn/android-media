@@ -99,7 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="8dp"
+                    app:subtitle="@string/gm_statistic_top_ads_amount_subtitle_text">
                     <com.tokopedia.seller.common.williamchart.view.LineChartView
                         android:id="@+id/gm_statistic_topads_graph"
                         android:layout_width="match_parent"
