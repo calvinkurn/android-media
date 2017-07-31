@@ -94,7 +94,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
                     Iterator<DigitalCategoryItemData> iter = digitalCategoryItemDataList.iterator();
                     while (iter.hasNext()) {
                         DigitalCategoryItemData digitalCategoryItemData = iter.next();
-                        if (digitalCategoryItemData.getName().equals("Uber")) {
+                        if (isUberOrTiketKeretaApi(digitalCategoryItemData.getName())) {
                             iter.remove();
                         }
                     }
@@ -131,4 +131,9 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             }
         };
     }
+
+    private boolean isUberOrTiketKeretaApi(String product) {
+        return product.equals("Uber") || product.equals("Tiket Kereta Api");
+    }
+
 }
