@@ -131,10 +131,13 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public int getItemCount() {
-        if (activityCardViewModel.getListProduct().size() > MAX_FEED_SIZE)
+        if (activityCardViewModel != null
+                && activityCardViewModel.getListProduct().size() > MAX_FEED_SIZE)
             return MAX_FEED_SIZE;
-        else
+        else if (activityCardViewModel != null)
             return activityCardViewModel.getListProduct().size();
+        else
+            return 0;
     }
 
     public void setData(ActivityCardViewModel activityCardViewModel) {

@@ -17,7 +17,10 @@ import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
+import com.tokopedia.ride.bookingride.domain.GetTimePriceEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
@@ -114,14 +117,83 @@ public class RideProductDependencyInjection {
         );
     }
 
+    private GetTimePriceEstimateUseCase provideGetTimePriceEstimate(String token, String userId) {
+        return new GetTimePriceEstimateUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GetUberProductsUseCase provideGetUberProductsUseCase(String token, String userId) {
+        return new GetUberProductsUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GetPriceEstimateUseCase provideGetPriceEstimateUseCase(String token, String userId) {
+        return new GetPriceEstimateUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        RetrofitFactory.createRetrofitDefaultConfig(RideUrl.BASE_URL)
+                                                .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
+                                                        OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                                                        provideChuckInterceptor(),
+                                                        new DebugInterceptor()
+                                                        )
+                                                )
+                                                .build()
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
 
     public static UberProductContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();
         RideProductDependencyInjection injection = new RideProductDependencyInjection();
-        GetProductAndEstimatedUseCase getUberProductsUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
-        GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
-        return new UberProductPresenter(getUberProductsUseCase, getFareEstimateUseCase);
+        GetProductAndEstimatedUseCase getProductAndEstimatedUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
+        GetPriceEstimateUseCase getPriceEstimateUseCase = injection.provideGetPriceEstimateUseCase(token, userId);
+        return new UberProductPresenter(getProductAndEstimatedUseCase, getPriceEstimateUseCase);
     }
 }

@@ -39,11 +39,25 @@ public interface ConfirmBookingContract {
         void hidePromoLayout();
 
         void showToastMessage(String message);
+
+        void renderInitialView();
+
+        void openInterruptConfirmationWebView(String tosUrl);
+
+        void showErrorTosConfirmation(String tosUrl);
+
+        void disableConfirmBtn();
+
+        void enableConfirmButton();
+
+        void showErrorTosConfirmationDialog(String message, String tosUrl, String key, String value);
+
+        void openInterruptConfirmationDialog(String tosUrl, String type, String id);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void actionGetFareAndEstimate(boolean showProgress);
+        void actionGetFareAndEstimate(RequestParams showProgress);
 
         void initialize();
     }

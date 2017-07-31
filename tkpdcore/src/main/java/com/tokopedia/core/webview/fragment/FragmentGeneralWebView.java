@@ -24,18 +24,12 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.fragment.FragmentBannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
 
@@ -125,6 +119,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            Log.d(TAG, "initial url = " + url);
             try {
                 getActivity().setProgressBarIndeterminateVisibility(true);
             } catch (Exception e) {
@@ -135,6 +130,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d(TAG, "redirect url = " + url);
             return overrideUrl(url);
         }
 

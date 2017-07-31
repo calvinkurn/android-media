@@ -1,8 +1,10 @@
 package com.tokopedia.digital.product.interactor;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -64,10 +66,10 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                     }
                                 }),*/
                         Observable.just(new ArrayList<BannerData>()),
-                        lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber)
+                        getObservableRecentNumberOrderList(paramQueryLastNumber)
                                 .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
                                 .onErrorReturn(getResumeFunctionOnErrorReturnRecentNumber()),
-                        lastOrderNumberRepository.getLastOrder(paramQueryLastOrder)
+                        getObservableLastOrder(paramQueryLastOrder)
                                 .map(getFunctionCheckCategoryIdMatcher(pathCategoryId))
                                 .onErrorReturn(
                                         getResumeFunctionOnErrorReturnLastOrder(pathCategoryId)
@@ -78,6 +80,26 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)
         );
+    }
+
+    private Observable<OrderClientNumber> getObservableLastOrder(
+            TKPDMapParam<String, String> paramQueryLastOrder
+    ) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            return lastOrderNumberRepository.getLastOrder(paramQueryLastOrder);
+        } else {
+            return Observable.just(new OrderClientNumber.Builder().build());
+        }
+    }
+
+    private Observable<List<OrderClientNumber>> getObservableRecentNumberOrderList
+            (TKPDMapParam<String, String> paramQueryLastNumber) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            return lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber);
+        } else {
+            List<OrderClientNumber> emptyList = new ArrayList<>();
+            return Observable.just(emptyList);
+        }
     }
 
     @NonNull
@@ -134,10 +156,14 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         return new Func1<OrderClientNumber, OrderClientNumber>() {
             @Override
             public OrderClientNumber call(OrderClientNumber orderClientNumber) {
-                if (orderClientNumber.getCategoryId().equalsIgnoreCase(pathCategoryId)) {
+                if (orderClientNumber != null
+                        && !TextUtils.isEmpty(orderClientNumber.getCategoryId())
+                        && orderClientNumber.getCategoryId().equalsIgnoreCase(pathCategoryId)) {
                     return orderClientNumber;
                 } else {
-                    throw new RuntimeException("last order not match with category id !!");
+                    throw new RuntimeException(
+                            "last order not match with category id or null cause user are not login!!"
+                    );
                 }
             }
         };

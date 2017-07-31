@@ -172,9 +172,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                push.processReceivedNotification(data);
+                if (Uri.parse(applinks).getPathSegments().size() == 1) {
+                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                } else {
+                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                    push.processReceivedNotification(data);
+                }
                 break;
 
             default:
