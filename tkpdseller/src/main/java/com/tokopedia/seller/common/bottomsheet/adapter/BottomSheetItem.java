@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 
-import android.support.annotation.DrawableRes;
-
-
-class BottomSheetDivider implements BottomSheetItem {
-
-    @DrawableRes
-    private int mBackgroundDrawable;
-
-    public BottomSheetDivider(@DrawableRes int background) {
-        mBackgroundDrawable = background;
-    }
-
-    @DrawableRes
-    public int getBackground() {
-        return mBackgroundDrawable;
-    }
-
-    @Override
-    public String getTitle() {
-        return "";
-    }
+public interface BottomSheetItem {
+    String getTitle();
 }

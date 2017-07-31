@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 
-public interface BottomSheetItem {
-    String getTitle();
+import android.view.MenuItem;
+
+public interface BottomSheetItemClickListener {
+    void onBottomSheetItemClick(MenuItem item);
 }

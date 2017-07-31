@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.util;
+package com.tokopedia.seller.common.bottomsheet.util;
 
 import android.os.Bundle;
 import android.os.Handler;

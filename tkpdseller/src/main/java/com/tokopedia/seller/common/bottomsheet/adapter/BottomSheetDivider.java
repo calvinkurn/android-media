@@ -14,11 +14,28 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 
-import android.view.MenuItem;
+import android.support.annotation.DrawableRes;
 
-public interface BottomSheetItemClickListener {
-    void onBottomSheetItemClick(MenuItem item);
+
+class BottomSheetDivider implements BottomSheetItem {
+
+    @DrawableRes
+    private int mBackgroundDrawable;
+
+    public BottomSheetDivider(@DrawableRes int background) {
+        mBackgroundDrawable = background;
+    }
+
+    @DrawableRes
+    public int getBackground() {
+        return mBackgroundDrawable;
+    }
+
+    @Override
+    public String getTitle() {
+        return "";
+    }
 }

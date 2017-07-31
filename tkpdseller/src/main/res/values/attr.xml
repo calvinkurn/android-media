@@ -132,4 +132,7 @@
     </declare-styleable>
 
 
+    <attr name="bottomSheetBuilderBackgroundColor" format="color" />
+    <attr name="bottomSheetBuilderItemTextColor" format="color" />
+    <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 </resources>

@@ -4,7 +4,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.view.MenuItem;
 
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetMenuItem;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetMenuItem;
 
 /**
  * @author normansyahputa on 7/17/17.

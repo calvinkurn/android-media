@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 import android.support.annotation.ColorInt;
 

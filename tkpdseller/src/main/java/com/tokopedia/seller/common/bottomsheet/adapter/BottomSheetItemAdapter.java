@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
@@ -24,8 +24,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.R;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+
 
 import java.util.List;
 

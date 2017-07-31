@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpdlib.bottomsheetbuilder.adapter;
+package com.tokopedia.seller.common.bottomsheet.adapter;
 
 
 import android.annotation.SuppressLint;
@@ -32,8 +32,8 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.R;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,8 +9,8 @@ import android.support.annotation.StyleRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetAdapterBuilder;
 
 /**
  * Created by normansyahputa on 7/17/17.

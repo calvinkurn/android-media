@@ -29,8 +29,8 @@ import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisti
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionTablePresenter;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.BottomSheetBuilder;
-import com.tokopedia.tkpdlib.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 
 import java.util.Date;
 
