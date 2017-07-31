@@ -23,7 +23,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        reactNetworkRepository = new ReactNetworkDependencies().createReactNetworkRepository();
+        reactNetworkRepository = new ReactNetworkDependencies(reactContext).createReactNetworkRepository();
     }
 
     @Override
@@ -58,8 +58,8 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     }
 
 
-    private TKPDMapParam<String, Object> convertStringRequestToHashMap(String request) {
-        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
+    public static TKPDMapParam<String, String> convertStringRequestToHashMap(String request) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
         try {
             JSONObject jsonObject = new JSONObject(request);
             Iterator<String> iter = jsonObject.keys();
@@ -67,7 +67,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                 String key = iter.next();
                 try {
                     Object value = jsonObject.get(key);
-                    params.put(key, value);
+                    params.put(key, value.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

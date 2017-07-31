@@ -13,5 +13,5 @@ import rx.Observable;
 public interface ReactNetworkRepository {
 
 
-    Observable<String> getResponse(String url, String method, TKPDMapParam<String, Object> params, Boolean isAuth) throws UnknownMethodException;
+    Observable<String> getResponse(String url, String method, TKPDMapParam<String, String> params, Boolean isAuth) throws UnknownMethodException;
 }

@@ -17,11 +17,15 @@ public class ReactNetworkDataSource {
         this.commonService = commonService;
     }
 
-    public Observable<String> get(String url, TKPDMapParam<String, Object> params) {
+    public Observable<String> get(String url, TKPDMapParam<String, String> params) {
         return commonService.get(url, params);
     }
 
-    public Observable<String> post(String url, TKPDMapParam<String, Object> params) {
+    public Observable<String> post(String url, TKPDMapParam<String, String> params) {
         return commonService.post(url, params);
+    }
+
+    public Observable<String> postNoParam(String url) {
+        return commonService.post(url);
     }
 }

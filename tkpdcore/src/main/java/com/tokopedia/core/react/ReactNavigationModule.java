@@ -34,6 +34,6 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     public void navigate(String appLinks, String extra) {
         Bundle bundle = new Bundle();
         ((TkpdCoreRouter) context.getApplicationContext())
-                .goToDeepLinkHandlerActivity(context, bundle, appLinks);
+                .actionAppLink(context, appLinks);
     }
 }

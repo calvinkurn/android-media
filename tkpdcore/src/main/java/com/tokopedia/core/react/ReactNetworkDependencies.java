@@ -1,12 +1,16 @@
 package com.tokopedia.core.react;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.common.service.CommonService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.react.data.ReactNetworkRepositoryImpl;
 import com.tokopedia.core.react.data.factory.ReactNetworkAuthFactory;
+import com.tokopedia.core.react.data.factory.ReactNetworkDefaultAuthFactory;
 import com.tokopedia.core.react.data.factory.ReactNetworkFactory;
 import com.tokopedia.core.react.domain.ReactNetworkRepository;
 
@@ -20,8 +24,15 @@ import retrofit2.Retrofit;
 
 public class ReactNetworkDependencies {
 
+    private Context context;
+
+    public ReactNetworkDependencies(Context context) {
+        this.context = context;
+    }
+
     public ReactNetworkRepository createReactNetworkRepository() {
-        return new ReactNetworkRepositoryImpl(provideReactNetworkAuthFactory(), provideReactNetworkFactory());
+        return new ReactNetworkRepositoryImpl(context, provideReactNetworkAuthFactory(),
+                provideReactNetworkFactory(), provideReactNetworkDefaultAuthFactory());
     }
 
     private ReactNetworkFactory provideReactNetworkFactory() {
@@ -32,6 +43,10 @@ public class ReactNetworkDependencies {
         return new ReactNetworkAuthFactory(provideRetrofitAuth().create(CommonService.class));
     }
 
+    private ReactNetworkDefaultAuthFactory provideReactNetworkDefaultAuthFactory() {
+        return new ReactNetworkDefaultAuthFactory(provideRetrofitDefaultAuth().create(CommonService.class));
+    }
+
     private Retrofit provideRetrofitNoAuth() {
         return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
                 .client(OkHttpFactory.create()
@@ -40,11 +55,19 @@ public class ReactNetworkDependencies {
                 .build();
     }
 
-    private Retrofit provideRetrofitAuth() {
+    private Retrofit provideRetrofitDefaultAuth() {
         return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientDefaultAuth())
+                .build();
+    }
+
+    private Retrofit provideRetrofitAuth() {
+        return RetrofitFactory.createBasicRetrofit(TkpdBaseURL.BASE_DOMAIN)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
+                        .buildClientDynamicAuth())
                 .build();
     }
 
