@@ -111,28 +111,22 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindNoData(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bindNoData(gmTopAdsAmountViewModel);
     }
 
     @Override
     public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bind(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bind(gmTopAdsAmountViewModel);
     }
 
     @Override
     public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindNoTopAdsCredit(setStaticText(gmTopAdsAmountViewModel));
+        gmTopAdsAmountViewHolder.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
     }
 
     @Override
     public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(setStaticText(gmTopAdsAmountViewModel));
-    }
-
-    private GMGraphViewModel setStaticText(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewModel.title = getString(R.string.gm_statistic_top_ads_amount_title_text);
-        gmTopAdsAmountViewModel.subtitle = getString(R.string.gm_statistic_top_ads_amount_subtitle_text);
-        return gmTopAdsAmountViewModel;
+        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
     }
 
     @Override
