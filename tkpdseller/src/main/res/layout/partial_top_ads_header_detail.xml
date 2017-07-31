@@ -11,7 +11,7 @@
 
     <include layout="@layout/partial_separator_horizontal"/>
 
-    <com.tokopedia.seller.lib.widget.LabelSwitch
+    <com.tokopedia.seller.common.widget.LabelSwitch
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

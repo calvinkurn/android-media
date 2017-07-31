@@ -24,7 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.lib.widget.LabelSwitch;
+import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;

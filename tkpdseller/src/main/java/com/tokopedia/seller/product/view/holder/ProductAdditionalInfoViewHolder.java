@@ -21,7 +21,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelSwitch;
+import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;

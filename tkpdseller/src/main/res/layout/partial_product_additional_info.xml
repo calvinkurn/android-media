@@ -57,7 +57,7 @@
 
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
-    <com.tokopedia.seller.lib.widget.LabelSwitch
+    <com.tokopedia.seller.common.widget.LabelSwitch
         android:id="@+id/label_switch_share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
