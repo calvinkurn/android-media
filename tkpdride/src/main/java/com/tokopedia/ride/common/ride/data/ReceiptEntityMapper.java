@@ -104,6 +104,7 @@ public class ReceiptEntityMapper {
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
                 result = format.format(number).replace(",", ".").replace("IDR", "Rp");
+                result  = formatDisplayPrice(result);
             } else {
                 result = format.format(number);
             }
