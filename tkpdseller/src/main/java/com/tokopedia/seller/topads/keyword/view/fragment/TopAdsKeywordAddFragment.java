@@ -3,7 +3,9 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,11 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
@@ -217,7 +221,16 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     @Override
     public void onFailedSaveKeyword(Throwable e) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), ViewUtils.getErrorMessage(getActivity(), e));
+        SnackbarManager.make(getActivity(),
+                ViewUtils.getErrorMessage(getActivity(), e),
+                Snackbar.LENGTH_LONG, 0)
+                .setAction(getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .show();
         if (e instanceof ResponseErrorException) {
             List<Error> errorList = ((ResponseErrorException) e).getErrorList();
             errorStringList = convertResponseErrorToErrorStringList(errorList);
