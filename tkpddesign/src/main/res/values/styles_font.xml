@@ -83,7 +83,9 @@
     <style name="TextView.Body1.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-
+    <style name="TextView.Body1.WhiteDisabled">
+        <item name="android:textColor">@color/font_white_disabled_38</item>
+    </style>
     <style name="TextView.Caption">
         <item name="android:textSize">@dimen/font_caption</item>
     </style>
