@@ -383,7 +383,4 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         adapter.addErrorData(new DigitalCategoryItemDataError.Builder().message(message).build());
     }
 
-//    public void setIsFromSeller(boolean isFromSeller) {
-//        this.isFromSeller = isFromSeller;
-//    }
 }

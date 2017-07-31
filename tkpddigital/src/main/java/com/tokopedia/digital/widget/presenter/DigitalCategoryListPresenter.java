@@ -60,13 +60,11 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
         return new Subscriber<List<DigitalCategoryItemData>>() {
             @Override
             public void onCompleted() {
-                Log.d("DigitalCategoryListPresenter", "onCompleted");
                 digitalCategoryListView.enableSwipeRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalCategoryListPresenter", "onError");
                 if (e instanceof RuntimeHttpErrorException) {
                     digitalCategoryListView.renderErrorHttpGetDigitalCategoryList(
                             e.getMessage()
@@ -80,7 +78,6 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
                     );
                 } else {
-                    Log.d("DigitalCategoryListPresenter", e.getMessage());
                     digitalCategoryListView.renderErrorGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT
                     );
@@ -89,7 +86,6 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
             @Override
             public void onNext(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
-                Log.d("DigitalCategoryListPresenter", "onNext");
                 if (isFromSeller) {
                     Iterator<DigitalCategoryItemData> iter = digitalCategoryItemDataList.iterator();
                     while (iter.hasNext()) {
