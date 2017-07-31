@@ -528,6 +528,7 @@ public interface AppEventTracking {
         String PAYMENT_TYPE = "payment_type";
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
+        String REVIEW_SCORE = "review_score";
     }
 
     interface EventMoEngage {
@@ -549,6 +550,7 @@ public interface AppEventTracking {
         String CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
         String SEARCH_ATTEMPT = "Search_Attempt";
         String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
+        String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";

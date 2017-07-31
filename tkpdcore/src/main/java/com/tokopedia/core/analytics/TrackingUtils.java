@@ -214,7 +214,7 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productData.getInfo().getProductName());
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPrice());
+        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
 
         builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_NAME, productData.getInfo().getProductCatalogName());
         builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_ID, productData.getInfo().getProductCatalogId());
@@ -395,6 +395,22 @@ public class TrackingUtils extends TrackingConfig {
                 builder.build(),
                 AppEventTracking.EventMoEngage.OPEN_THANKYOU_PAGE
         );
+    }
+
+    public static void sendMoEngagePurchaseReview(String reviewScore) {
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrDouble(
+                    AppEventTracking.MOENGAGE.REVIEW_SCORE,
+                    Double.parseDouble(reviewScore)
+            );
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.SUCCESS_PURCHASE_REVIEW
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void fragmentBasedAFEvent(String tag){
