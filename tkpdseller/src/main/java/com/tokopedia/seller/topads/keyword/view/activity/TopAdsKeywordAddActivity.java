@@ -133,6 +133,6 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
 
     @Override
     public AppComponent getComponent() {
-        return getComponent();
+        return getApplicationComponent();
     }
 }
