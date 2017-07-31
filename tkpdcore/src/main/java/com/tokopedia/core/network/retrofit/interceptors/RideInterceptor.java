@@ -7,7 +7,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
-import com.tokopedia.core.network.exception.model.UnprocessableEntityHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -54,16 +53,17 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         String bodyResponse = response.body().string();
         int code = response.code();
         switch (code) {
-            case 404:
-            case 422:
-            case 500:
-                response.body().close();
-                throw new UnProcessableHttpException(bodyResponse);
+            //case 404:
+            //case 422:
+            //case 500:
+            //response.body().close();
+            //throw new UnProcessableHttpException(bodyResponse);
             case 409:
                 response.body().close();
                 throw new InterruptConfirmationHttpException(bodyResponse);
             default:
                 try {
+                    response.body().close();
                     JSONObject jsonResponse = new JSONObject(bodyResponse);
                     String JSON_ERROR_KEY = "message_error";
                     if (jsonResponse.has(JSON_ERROR_KEY)) {
@@ -77,10 +77,10 @@ public class RideInterceptor extends TkpdAuthInterceptor {
                                 }
                                 message = message + messageErrorArray.getString(index);
                             }
-                            handleError(response, message);
+                            handleError(bodyResponse, message);
 
                         } else {
-                            handleError(response, jsonResponse.getString(JSON_ERROR_KEY));
+                            handleError(bodyResponse, jsonResponse.getString(JSON_ERROR_KEY));
                         }
                     }
                 } catch (JSONException e) {
@@ -89,14 +89,14 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         }
     }
 
-    private void handleError(Response response, String errorMessage) throws SessionExpiredException,
-            UnprocessableEntityHttpException {
+    private void handleError(String bodyResponse, String errorMessage) throws IOException {
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
-            response.body().close();
             Intent intent = new Intent();
             intent.setAction(BaseActivity.FORCE_LOGOUT);
             MainApplication.getAppContext().sendBroadcast(intent);
             throw new SessionExpiredException(errorMessage);
+        } else {
+            throw new UnProcessableHttpException(bodyResponse);
         }
     }
 
