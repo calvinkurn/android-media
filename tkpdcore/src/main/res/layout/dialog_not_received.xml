@@ -4,6 +4,7 @@
     android:padding="25dp"
     android:layout_height="wrap_content">
     <TextView
+        android:id="@+id/tvNotReceivedTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/string_notreceived_title"
@@ -12,6 +13,7 @@
         android:textColor="@color/color_complain_header"
         />
     <TextView
+        android:id="@+id/tvNotReceivedBody"
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

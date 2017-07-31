@@ -99,6 +99,14 @@ public class OrderButton implements Parcelable {
         this.buttonComplaintReceived = buttonComplaintReceived;
     }
 
+    public String getButtonComplaintNotReceived() {
+        return buttonComplaintNotReceived;
+    }
+
+    public void setButtonComplaintNotReceived(String buttonComplaintNotReceived) {
+        this.buttonComplaintNotReceived = buttonComplaintNotReceived;
+    }
+
     public String getButtonCancelRequest() {
         return buttonCancelRequest;
     }
@@ -134,6 +142,7 @@ public class OrderButton implements Parcelable {
         dest.writeString(buttonComplaintReceived);
         dest.writeString(buttonCancelRequest);
         dest.writeString(buttonCancelReplacement);
+        dest.writeString(buttonComplaintNotReceived);
     }
 
     protected OrderButton(Parcel in) {
@@ -146,6 +155,7 @@ public class OrderButton implements Parcelable {
         buttonComplaintReceived = in.readString();
         buttonCancelRequest = in.readString();
         buttonCancelReplacement = in.readString();
+        buttonComplaintNotReceived = in.readString();
     }
 
     public static final Creator<OrderButton> CREATOR = new Creator<OrderButton>() {

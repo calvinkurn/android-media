@@ -224,10 +224,11 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     case TkpdState.OrderStatusState.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_TRACKER_INVALID:
-//                        MenuID = item.getOrderButton().getButtonOpenDispute().equals("1")
-//                            ? R.menu.order_status_menu_confirm_track_dispute
-//                            : R.menu.order_status_menu_confirm_track;
-                        MenuID = R.menu.order_status_menu_confirm_track_complain;
+                        MenuID =  (item.getOrderButton().getButtonComplaintReceived().equals("1")
+                                || item.getOrderButton().getButtonComplaintNotReceived().equals("1"))
+                                ? R.menu.order_status_menu_confirm_track_complain
+                                : R.menu.order_status_menu_confirm_track_v2;
+//                        MenuID = R.menu.order_status_menu_confirm_track_complain;
                         break;
                     case TkpdState.OrderStatusState.ORDER_CONFLICTED:
                         MenuID = R.menu.order_status_menu_show_complain;

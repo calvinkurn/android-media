@@ -243,12 +243,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_complain);
-        TextView tvBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
         Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
         Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        String bodyContent = String.format(context.getResources().getString(R.string.string_complain_body), orderData.getOrderShop().getShopName());
-        tvBody.setText(bodyContent);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
+        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        tvComplainTitle.setText(orderData.getOrderDetail().getDetailComplaintPopupTitle());
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -293,6 +294,10 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         dialog.setContentView(R.layout.dialog_not_received);
         Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
+        TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
+        tvNotReceivedTitle.setText(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle());
+        tvNotReceivedBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -309,7 +314,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-//                processTrackOrder(context, orderData);
                 viewListener.navigateToActivityRequest(
                         InboxRouter.getCreateResCenterActivityIntent(
                                 context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
@@ -320,7 +324,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
         dialog.show();
     }
-
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())

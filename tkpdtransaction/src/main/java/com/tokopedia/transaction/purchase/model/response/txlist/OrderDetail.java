@@ -108,6 +108,30 @@ public class OrderDetail implements Parcelable {
     private String detailFreeReturnMsg;
 
 
+    @SerializedName("detail_complaint_popup_title")
+    @Expose
+    private String detailComplaintPopupTitle;
+    @SerializedName("detail_complaint_popup_msg")
+    @Expose
+    private String detailComplaintPopupMsg;
+
+
+    @SerializedName("detail_complaint_not_received_title")
+    @Expose
+    private String detailComplaintNotReceivedTitle;
+
+    @SerializedName("detail_complaint_not_received_msg")
+    @Expose
+    private String detailComplaintNotReceivedMsg;
+
+    @SerializedName("detail_finish_popup_title")
+    @Expose
+    private String detailFinishPopupTitle;
+    @SerializedName("detail_finish_popup_msg")
+    @Expose
+    private String detailFinishPopupMsg;
+
+
     public String getDetailOpenAmount() {
         return detailOpenAmount;
     }
@@ -356,6 +380,53 @@ public class OrderDetail implements Parcelable {
         this.detailFreeReturnMsg = detailFreeReturnMsg;
     }
 
+    public String getDetailComplaintPopupTitle() {
+        return detailComplaintPopupTitle;
+    }
+
+    public void setDetailComplaintPopupTitle(String detailComplaintPopupTitle) {
+        this.detailComplaintPopupTitle = detailComplaintPopupTitle;
+    }
+
+    public String getDetailComplaintPopupMsg() {
+        return detailComplaintPopupMsg;
+    }
+
+    public void setDetailComplaintPopupMsg(String detailComplaintPopupMsg) {
+        this.detailComplaintPopupMsg = detailComplaintPopupMsg;
+    }
+
+    public String getDetailComplaintNotReceivedTitle() {
+        return detailComplaintNotReceivedTitle;
+    }
+
+    public void setDetailComplaintNotReceivedTitle(String detailComplaintNotReceivedTitle) {
+        this.detailComplaintNotReceivedTitle = detailComplaintNotReceivedTitle;
+    }
+
+    public String getDetailComplaintNotReceivedMsg() {
+        return detailComplaintNotReceivedMsg;
+    }
+
+    public void setDetailComplaintNotReceivedMsg(String detailComplaintNotReceivedMsg) {
+        this.detailComplaintNotReceivedMsg = detailComplaintNotReceivedMsg;
+    }
+
+    public String getDetailFinishPopupTitle() {
+        return detailFinishPopupTitle;
+    }
+
+    public void setDetailFinishPopupTitle(String detailFinishPopupTitle) {
+        this.detailFinishPopupTitle = detailFinishPopupTitle;
+    }
+
+    public String getDetailFinishPopupMsg() {
+        return detailFinishPopupMsg;
+    }
+
+    public void setDetailFinishPopupMsg(String detailFinishPopupMsg) {
+        this.detailFinishPopupMsg = detailFinishPopupMsg;
+    }
 
     @Override
     public int describeContents() {
@@ -395,6 +466,12 @@ public class OrderDetail implements Parcelable {
         dest.writeString(this.detailOrderStatus);
         dest.writeInt(this.detailFreeReturn);
         dest.writeString(this.detailFreeReturnMsg);
+        dest.writeString(this.detailFinishPopupMsg);
+        dest.writeString(this.detailFinishPopupTitle);
+        dest.writeString(this.detailComplaintNotReceivedMsg);
+        dest.writeString(this.detailComplaintNotReceivedTitle);
+        dest.writeString(this.detailComplaintPopupMsg);
+        dest.writeString(this.detailComplaintPopupTitle);
     }
 
     public OrderDetail() {
@@ -432,6 +509,12 @@ public class OrderDetail implements Parcelable {
         this.detailOrderStatus = in.readString();
         this.detailFreeReturn = in.readInt();
         this.detailFreeReturnMsg = in.readString();
+        this.detailFinishPopupMsg = in.readString();
+        this.detailFinishPopupTitle = in.readString();
+        this.detailComplaintPopupMsg = in.readString();
+        this.detailComplaintPopupTitle = in.readString();
+        this.detailComplaintNotReceivedTitle = in.readString();
+        this.detailComplaintNotReceivedMsg = in.readString();
     }
 
     public static final Creator<OrderDetail> CREATOR = new Creator<OrderDetail>() {

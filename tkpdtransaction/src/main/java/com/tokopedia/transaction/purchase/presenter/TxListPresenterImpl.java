@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -410,13 +411,16 @@ public class TxListPresenterImpl implements TxListPresenter {
     private void showFinishDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_finish);
+        TextView tvFinishTitle = (TextView) dialog.findViewById(R.id.tvFinishTitle);
+        TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
         Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
         Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg()));
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                showComplainDialog(context, orderData);
             }
         });
 
@@ -433,12 +437,20 @@ public class TxListPresenterImpl implements TxListPresenter {
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_complain);
-        TextView tvBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
         Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
         Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        String bodyContent = String.format(context.getResources().getString(R.string.string_complain_body), orderData.getOrderShop().getShopName());
-        tvBody.setText(bodyContent);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
+        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        tvComplainTitle.setText(orderData.getOrderDetail().getDetailComplaintPopupTitle());
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
+        btnBack.setVisibility(View.GONE);
+        btnNotReceive.setVisibility(View.GONE);
+        if(orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
+            btnNotReceive.setVisibility(View.VISIBLE);
+        else
+            btnBack.setVisibility(View.VISIBLE);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -483,6 +495,10 @@ public class TxListPresenterImpl implements TxListPresenter {
         dialog.setContentView(R.layout.dialog_not_received);
         Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
+        TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
+        tvNotReceivedTitle.setText(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle());
+        tvNotReceivedBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -499,7 +515,6 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-//                processTrackOrder(context, orderData);
                 viewListener.navigateToActivityRequest(
                         InboxRouter.getCreateResCenterActivityIntent(
                                 context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
