@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,14 +11,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -31,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -96,9 +93,6 @@ import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
-import com.tokopedia.tkpd.home.banner.ConvenientBanner;
-import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
-import com.tokopedia.tkpd.home.banner.holder.BannerViewHolderCreator;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenterImpl;
@@ -120,7 +114,6 @@ import com.tokopedia.tkpd.home.tokocash.BottomSheetTokoCash;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -175,6 +168,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private DrawerTokoCash tokoCashData;
     private BannerPagerAdapter bannerPagerAdapter;
+    private int currentPosition;
+    private ArrayList<ImageView> indicatorItems = new ArrayList<>();
+
 
     @Override
     public void onTopUpTokoCashClicked() {
@@ -205,32 +201,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         bottomSheetDialogTokoCash.show();
     }
 
-    public ViewPager.OnPageChangeListener getOnBannerPageChangeListener() {
-        return new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position,
-                                       float positionOffset,
-                                       int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        };
-    }
-
     private class ViewHolder {
         private View MainView;
         private View banner;
         private RecyclerView bannerPager;
-        private CirclePageIndicator bannerIndicator;
+        private ViewGroup bannerIndicator;
         private RelativeLayout bannerContainer;
         private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
@@ -351,24 +326,44 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         };
     }
 
-    int currentPosition;
-
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
             bannerPagerAdapter = new BannerPagerAdapter(promoList);
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
             holder.bannerPager = (RecyclerView) holder.banner.findViewById(R.id.viewpager_banner_category);
+            holder.bannerIndicator = (ViewGroup) holder.banner.findViewById(R.id.indicator_banner_container);
+
             holder.bannerPager.setHasFixedSize(true);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             holder.bannerPager.setLayoutManager(layoutManager);
             holder.bannerPager.setAdapter(bannerPagerAdapter);
 
+            for (int count = 0; count < promoList.size(); count++) {
+                ImageView pointView = new ImageView(getContext());
+                pointView.setPadding(5, 0, 5, 0);
+                if (count == 0) {
+                    pointView.setImageResource(R.drawable.indicator_focus);
+                } else {
+                    pointView.setImageResource(R.drawable.indicator);
+                }
+                indicatorItems.add(pointView);
+                holder.bannerIndicator.addView(pointView);
+            }
+
             holder.bannerPager.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                    int firstCompleteVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                    currentPosition = firstCompleteVisibleItemPosition;
+                    for (int i = 0; i < indicatorItems.size(); i++) {
+                        if (firstCompleteVisibleItemPosition != i) {
+                            indicatorItems.get(i).setImageResource(R.drawable.indicator);
+                        } else {
+                            indicatorItems.get(i).setImageResource(R.drawable.indicator_focus);
+                        }
+                    }
                 }
             });
 
