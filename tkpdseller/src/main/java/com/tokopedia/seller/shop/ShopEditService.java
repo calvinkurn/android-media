@@ -268,7 +268,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 .subscribe(new rx.Subscriber<Map<String, Object>>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
+
                     }
 
                     @Override
@@ -287,8 +287,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                     @Override
                     public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
                         OpenShopSubmitData openShopSubmitData = (OpenShopSubmitData) shopCreateParams.get(OPEN_SHOP_SUBMIT_DATA);
                         Bundle result = new Bundle();
                         result.putInt(TYPE, type);
@@ -308,7 +306,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 .subscribe(new rx.Subscriber<Map<String, Object>>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
+
                     }
 
                     @Override
@@ -326,8 +324,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                     @Override
                     public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
                         OpenShopValidationData openShopValidationData = (OpenShopValidationData) shopCreateParams.get(OPEN_SHOP_VALIDATION_DATA);
                         Bundle result = new Bundle();
                         result.putInt(TYPE, type);

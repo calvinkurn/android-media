@@ -406,7 +406,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     public void fetchDataWithQuery(String newText) {
-        Log.d(TAG, "fetchDataWithQuery " + newText);
         if (newText != null && newText.isEmpty()) {
             topAdsAddProductListPresenter.setQuery(null);
         } else {

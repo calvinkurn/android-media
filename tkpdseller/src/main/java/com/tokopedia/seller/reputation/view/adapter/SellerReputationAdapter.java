@@ -119,7 +119,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             if (list.get(position) != null && list.get(position) instanceof ReputationReviewModel) {
                 ReputationReviewModel reputationReviewModel =
                         (ReputationReviewModel) list.get(position);
-                Log.d(TAG, String.format("bindDeposit %d %s", position, reputationReviewModel.getData().toString()));
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
                 String information = data.getInformation();

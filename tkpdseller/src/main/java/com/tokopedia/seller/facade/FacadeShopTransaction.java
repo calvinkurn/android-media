@@ -298,7 +298,6 @@ public class FacadeShopTransaction {
      * @param listener
      */
     public void getTxListV4(PagingHandler page, String search, String filter, String startDate, String endDate, final GetStatusListener listener){
-        Log.d(STUART, "getTxListV4 params "+getOrderListParam(page, search, filter, startDate, endDate).toString());
         compositeSubscription.add(new MyShopOrderService().getApi().getOrderList(
                 AuthUtil.generateParams(context, getOrderListParam(page, search, filter, startDate, endDate))
         )
@@ -309,7 +308,7 @@ public class FacadeShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.d(STUART, "onCompleted");
+
                             }
 
                             @Override
@@ -322,7 +321,6 @@ public class FacadeShopTransaction {
                             public void onNext(Response<TkpdResponse> responseData) {
                                 if(responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
-                                    Log.d(STUART, responseData.body().getStringData());
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
                                         return;

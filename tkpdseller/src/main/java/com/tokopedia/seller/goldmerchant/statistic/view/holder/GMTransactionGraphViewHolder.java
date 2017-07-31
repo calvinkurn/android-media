@@ -117,7 +117,6 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
-                        Log.d("Item click", item.getTitle() + " findSelection : " + gmStatGraphSelection);
                         resetSelection(gmStatGraphSelection);
                         GMTransactionGraphViewHolder.this.bind(gmTransactionGraphViewModel);
                     }

@@ -41,7 +41,6 @@ public class MarketViewHolder extends RecyclerView.ViewHolder {
         double total = list.get(0).getFrequency();
         double v = searchKeyword.getFrequency() / total;
         double percentage = Math.floor((v * 100) + 0.5);
-        Log.d(TAG, "total " + total + " percentage " + percentage + " frequency " + searchKeyword.getFrequency());
         marketInsightProgress.setProgress((float) percentage);
         marketInsightNumber.setText(String.format(NUMBER_TIMES_FORMAT, String.valueOf(searchKeyword.getFrequency())));
         marketInsightKeyword.setText(searchKeyword.getKeyword());

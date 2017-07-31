@@ -244,7 +244,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                         sortType = -1;
                         break;
                 }
-                Log.d("Item click", menuItem.getTitle() + " findSelection : " + sortType);
                 showingSimpleDialog = false;
                 if (previousSortType == sortType) {
                     return;

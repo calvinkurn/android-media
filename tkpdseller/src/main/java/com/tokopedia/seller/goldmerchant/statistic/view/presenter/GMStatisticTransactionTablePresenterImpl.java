@@ -51,7 +51,6 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
 
             @Override
             public void onNext(GetTransactionTableModel getTransactionTable) {
-                Log.d(TAG, getTransactionTable.toString());
                 revealData(getTransactionTable, sortBy);
             }
         });

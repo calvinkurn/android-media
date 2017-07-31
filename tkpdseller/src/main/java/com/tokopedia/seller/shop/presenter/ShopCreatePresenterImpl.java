@@ -104,7 +104,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
     @Override
     public void getRotationData(Bundle argument) {
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " getRotationData(Bundle argument) ");
         shopCreateParams = Parcels.unwrap(argument.getParcelable(DATA_VIEW));
     }
 
@@ -159,7 +158,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     @Override
     public void saveDataBeforeRotation(Bundle argument) {
         saveDescTag();
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " saveDataBeforeRotation(Bundle argument) ");
         argument.putParcelable(DATA_VIEW, Parcels.wrap(shopCreateParams));
     }
 

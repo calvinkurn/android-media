@@ -72,7 +72,6 @@ public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> i
 
         @Override
         public void onNext(List<GmProductDomainModel> gmProductDomainModels) {
-            Log.d(TAG, "Present the data");
             getView().dismissProgressDialog();
             getView().setVisibilitySelectButton(true);
             if (isViewAttached()) {

@@ -60,7 +60,6 @@ public class TopAdsKeywordListPresenterImpl extends
 
             @Override
             public void onNext(KeywordDashboardDomain keywordDashboardDomain) {
-                Log.d(TAG, "fetchKeyword " + keywordDashboardDomain);
                 revealData(getKeywordAds(keywordDashboardDomain, baseKeywordParam.isPositive));
             }
         });

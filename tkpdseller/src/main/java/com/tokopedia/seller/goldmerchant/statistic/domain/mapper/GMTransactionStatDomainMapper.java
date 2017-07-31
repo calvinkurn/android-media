@@ -49,9 +49,6 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         GMDateRangeDateViewModel gmDateRangeDateViewModel = getGmDateRangeDateViewModel2(dateGraph);
         GMDateRangeDateViewModel previousGmDateRangeDateViewModel = getGmDateRangeDateViewModel2(getTransactionGraph.getPDateGraph());
 
-        GoldMerchantDateUtils.dumpDate(gmDateRangeDateViewModel.getStartDate(), true);
-        GoldMerchantDateUtils.dumpDate(previousGmDateRangeDateViewModel.getStartDate(), true);
-
         GMTransactionGraphViewModel gmTransactionGraphViewModel
                 = new GMTransactionGraphViewModel();
 

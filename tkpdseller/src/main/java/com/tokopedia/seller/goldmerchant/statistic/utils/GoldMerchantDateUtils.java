@@ -27,8 +27,6 @@ public class GoldMerchantDateUtils {
         month = monthNames[Integer.parseInt(month) - 1];
 
         String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-//        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
-
         return day + " " + month + " " + year;
     }
 
@@ -39,7 +37,6 @@ public class GoldMerchantDateUtils {
         month = monthNames[Integer.parseInt(month) - 1];
 
         String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-//        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
 
         return day + " " + month;
     }
@@ -62,8 +59,6 @@ public class GoldMerchantDateUtils {
         month = monthNames[Integer.parseInt(month) - 1];
 
         String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-//        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
-
         return day + " " + month;
     }
 
@@ -72,10 +67,7 @@ public class GoldMerchantDateUtils {
         String year = dateRaw.get(2);
         String month = dateRaw.get(1);
         month = monthNames[Integer.parseInt(month) - 1];
-
         String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-//        Log.d(TAG, "bulan " + month + " tanggal " + day + " rawDate " + date);
-
         return day + " " + month + " " + year;
     }
 
@@ -83,8 +75,6 @@ public class GoldMerchantDateUtils {
         List<String> dateRaw = getDateRaw(date);
         String month = dateRaw.get(1);
         String day = dateRaw.get(0);
-//        Log.d(TAG, "bulan " + month + " tanggal " + day);
-
         return day + " " + month;
     }
 
@@ -98,7 +88,6 @@ public class GoldMerchantDateUtils {
         String year = s.substring(0, 4);
         String month = s.substring(4, 6);
         String day = s.substring(6);
-//        Log.d(TAG, "getDateRaw : " + s + " day " + day + " int " + s);
         result.add(day);
         result.add(month);
         result.add(year);
@@ -111,7 +100,6 @@ public class GoldMerchantDateUtils {
         String year = s.substring(0, 4);
         String month = s.substring(4, 6);
         String day = s.substring(6);
-//        Log.d(TAG, "getDateRaw : " + s + " day " + day + " int " + date);
         result.add(day);
         result.add(month);
         result.add(year);
@@ -150,7 +138,6 @@ public class GoldMerchantDateUtils {
             sCDate.add(Calendar.DATE, 1);
             result.add(Integer.parseInt(getDateFormatForInput(sCDate.getTimeInMillis())));
         }
-//        Log.d(TAG, "generateDateRanges ["+result+"]");
         return result;
     }
 
@@ -190,15 +177,6 @@ public class GoldMerchantDateUtils {
             }
 
             return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
-        }
-    }
-
-    public static void dumpDate(long date, boolean isWithYear) {
-        String[] months = MainApplication.getAppContext().getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        if (isWithYear) {
-            Log.d(TAG, getDateWithYear(getDateFormatForInput(date), months));
-        } else {
-            Log.d(TAG, getDateWithoutYear(getDateFormatForInput(date), months));
         }
     }
 }

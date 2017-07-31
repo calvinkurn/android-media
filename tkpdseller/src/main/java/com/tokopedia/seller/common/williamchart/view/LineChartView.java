@@ -99,7 +99,6 @@ public class LineChartView extends ChartView {
 
 //		float pointX = (prePoint.x + nextPointF.x) / 2;
 //		float pointY = (prePoint.y + nextPointF.y) / 2;
-//		Log.d("MNORMANSYAH", "x " + pointX + " y " + pointY);
 //
 //		float controlX = prePoint.x;
 //		float controlY = prePoint.y;
