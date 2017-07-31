@@ -115,7 +115,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(TAG, messageTAG + " fetchEtalase " + e.getLocalizedMessage());
                                 fetchEtalase.onFailureFetchEtalase(e);
                             }
 

@@ -182,7 +182,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Subscribe Error");
+
 
                     }
 
@@ -276,7 +276,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 //                        } else {
 //                            if(tkpdResponseResponse.body().getErrorMessages() != null && tkpdResponseResponse.body().getErrorMessages().size() > 0) {
 //                                view.setShopDomainResult(tkpdResponseResponse.body().getErrorMessages().get(0), false);
-//                                Log.e("ShopCreatePresenterImpl", tkpdResponseResponse.body().getErrorMessages().get(0));
 //                            }else{
 //                                view.setShopDomainResult(CommonUtils.generateMessageError(view.getMainContext(), null), false);
 //                            }

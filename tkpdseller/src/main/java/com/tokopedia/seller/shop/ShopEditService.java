@@ -274,8 +274,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                     @Override
                     public void onError(Throwable e) {
                         if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, type);
                             resultData.putString(MESSAGE_ERROR_FLAG, e.getLocalizedMessage());
@@ -312,8 +310,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                     @Override
                     public void onError(Throwable e) {
                         if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, type);
                             resultData.putString(MESSAGE_ERROR_FLAG, e.getLocalizedMessage());
@@ -357,10 +353,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, messageTAG + e.getLocalizedMessage());
-//            if(e.getLocalizedMessage().contains("Unable to resolve host")){
             listener.noConnection();
-//            }
         }
 
         @Override

@@ -65,7 +65,6 @@ public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> i
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "error here");
             getView().dismissProgressDialog();
             getView().errorGetProductList();
         }

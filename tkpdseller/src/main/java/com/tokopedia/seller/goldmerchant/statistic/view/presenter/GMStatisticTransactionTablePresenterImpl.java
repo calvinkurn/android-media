@@ -46,7 +46,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.getLocalizedMessage());
+
             }
 
             @Override

@@ -94,7 +94,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
                 fos.write(buffer);
                 fos.close();
             } catch (java.io.IOException e) {
-                Log.e("PictureDemo", "Exception in photoCallback", e);
                 return null;
             }
             return photo;

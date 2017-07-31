@@ -1857,11 +1857,7 @@ public class ManageProduct extends TkpdActivity implements
 
                 CheckCache();
 
-            } else {
-                Log.e(TAG, "Fetch Etalase Error");
             }
-        } else {
-            Log.e(TAG, "Fetch Etalase Error");
         }
     }
 
