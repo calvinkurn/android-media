@@ -20,6 +20,9 @@ import java.util.Locale;
 
 public class RideProductViewModelMapper {
     private static final int DEFAULT_TIME_ESTIMATE = 15;
+    private static final String IND_CURRENCY = "IDR";
+    private static final String IND_LOCAL_CURRENCY = "Rp";
+    private static final String DEFAULT_DOUBLE_DASH = "--";
 
     public RideProductViewModelMapper() {
     }
@@ -60,12 +63,20 @@ public class RideProductViewModelMapper {
      */
     private String getBaseFare(PriceDetail priceDetail) {
         //set base fare
-        String baseFare = "--";
+        String baseFare = DEFAULT_DOUBLE_DASH;
         if (priceDetail != null) {
-            baseFare = "Base Fare: " + " " + formatNumber(priceDetail.getBase(), priceDetail.getCurrencyCode());
+            if (isIndonesiaCurrency(priceDetail)) {
+                baseFare = "Base Fare: " + getStringIdrFormat(Integer.parseInt(priceDetail.getBase()));
+            } else {
+                baseFare = formatNumber(priceDetail.getBase(), priceDetail.getCurrencyCode());
+            }
         }
 
         return baseFare;
+    }
+
+    private boolean isIndonesiaCurrency(PriceDetail priceDetail) {
+        return priceDetail.getCurrencyCode().equalsIgnoreCase(IND_CURRENCY) || priceDetail.getCurrencyCode().equalsIgnoreCase(IND_LOCAL_CURRENCY);
     }
 
     /**
@@ -76,9 +87,13 @@ public class RideProductViewModelMapper {
      */
     private String getCancellationCharges(PriceDetail priceDetail) {
         //set base fare
-        String baseFare = "--";
+        String baseFare = DEFAULT_DOUBLE_DASH;
         if (priceDetail != null) {
-            baseFare = priceDetail.getCurrencyCode() + " " + priceDetail.getCancellationFee();
+            if (isIndonesiaCurrency(priceDetail)) {
+                baseFare = getStringIdrFormat(Integer.parseInt(priceDetail.getCancellationFee()));
+            } else {
+                baseFare = formatNumber(priceDetail.getCancellationFee(), priceDetail.getCurrencyCode());
+            }
         }
 
         return baseFare;
@@ -89,7 +104,11 @@ public class RideProductViewModelMapper {
         //set base fare
         String productPrice = "--";
         if (priceDetail != null) {
-            productPrice = formatNumber(priceDetail.getCostPerDistance(), priceDetail.getCurrencyCode()) + "/" + priceDetail.getDistanceUnit();
+            if (isIndonesiaCurrency(priceDetail)) {
+                productPrice = getStringIdrFormat(Integer.parseInt(priceDetail.getCostPerDistance())) + "/" + priceDetail.getDistanceUnit();
+            } else {
+                productPrice = formatNumber(priceDetail.getCostPerDistance(), priceDetail.getCurrencyCode()) + "/" + priceDetail.getDistanceUnit();
+            }
         }
 
         return productPrice;
@@ -97,16 +116,16 @@ public class RideProductViewModelMapper {
 
     private String formatNumber(String number, String currency) {
         try {
-            if (currency.equalsIgnoreCase("RP")) {
-                currency = "IDR";
+            if (currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
+                currency = IND_CURRENCY;
             }
 
             NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
             format.setCurrency(Currency.getInstance(currency));
             String result = "";
-            if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
+            if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
                 format.setMaximumFractionDigits(0);
-                result = format.format(Float.parseFloat(number)).replace(",", ".").replace("IDR", "Rp");
+                result = format.format(Float.parseFloat(number)).replace(",", ".").replace(IND_CURRENCY, IND_LOCAL_CURRENCY + " ");
             } else {
                 result = format.format(number);
             }
@@ -149,7 +168,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(false);
-            rideProductViewModel.setProductPriceFmt("--");
+            rideProductViewModel.setProductPriceFmt(DEFAULT_DOUBLE_DASH);
         }
         return rideProductViewModel;
     }
@@ -157,7 +176,7 @@ public class RideProductViewModelMapper {
     private RideProductViewModel transformWithPriceEstimate(RideProductViewModel product, PriceEstimate priceEstimate) {
         if (product != null && priceEstimate != null) {
             product.setEnabled(true);
-            if (priceEstimate.getCurrencyCode().equalsIgnoreCase("IDR"))
+            if (priceEstimate.getCurrencyCode().equalsIgnoreCase(IND_CURRENCY) || priceEstimate.getCurrencyCode().equalsIgnoreCase(IND_LOCAL_CURRENCY))
                 product.setProductPriceFmt(getStringIdrFormat(priceEstimate.getLowEstimate()) + " - " + getStringIdrFormat(priceEstimate.getHighEstimate()));
             else
                 product.setProductPriceFmt(priceEstimate.getEstimate());
@@ -170,7 +189,7 @@ public class RideProductViewModelMapper {
         kursIndonesia.setMaximumFractionDigits(0);
         DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
 
-        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setCurrencySymbol(IND_LOCAL_CURRENCY + " ");
         formatRp.setGroupingSeparator('.');
         formatRp.setMonetaryDecimalSeparator('.');
         formatRp.setDecimalSeparator('.');

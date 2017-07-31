@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/shop_topads_card"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/container"
@@ -53,7 +54,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="2"
                     android:textColor="@color/black_70"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/font_normal"
                     tools:text="town_fashion" />
 
                 <TextView
@@ -63,7 +64,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/black_38"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/font_small"
                     tools:text="kacamata kualitas premium / line @towns_fashion" />
             </LinearLayout>
 
@@ -93,7 +94,7 @@
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="@dimen/padding_small">
 
         <TextView
             android:id="@+id/fav_text"
@@ -101,6 +102,6 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_add_black_24dp"
             android:gravity="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
     </LinearLayout>
 </LinearLayout>

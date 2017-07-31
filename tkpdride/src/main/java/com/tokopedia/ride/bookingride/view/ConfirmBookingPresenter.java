@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.model.InterruptConfirmationHttpException;
+import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
@@ -51,23 +51,24 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_timeout));
-                    } else {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_default));
-                    }
-                    getView().goToProductList();
-                }
-                if (isViewAttached()) {
                     getView().hideProgress();
 
-
                     if (e instanceof InterruptConfirmationHttpException) {
-                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                         if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_CONFIRMATION_INTERRUPT)) {
+                            getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                             getView().showErrorTosConfirmation(((InterruptConfirmationHttpException) e).getTosUrl());
+                        } else if (((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
+                            getView().showErrorTosConfirmationDialog(
+                                    e.getMessage(),
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
+                            getView().openInterruptConfirmationDialog(
+                                    ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                    ((InterruptConfirmationHttpException) e).getKey(),
+                                    ((InterruptConfirmationHttpException) e).getId()
+                            );
                         } else {
                             String message = e.getMessage();
                             getView().showToastMessage(message);
@@ -110,7 +111,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     }
 
                     getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
-                    getView().setViewListener();
                 }
 
             }

@@ -40,8 +40,6 @@ public interface ConfirmBookingContract {
 
         void showToastMessage(String message);
 
-        void setViewListener();
-
         void renderInitialView();
 
         void openInterruptConfirmationWebView(String tosUrl);
@@ -51,6 +49,10 @@ public interface ConfirmBookingContract {
         void disableConfirmBtn();
 
         void enableConfirmButton();
+
+        void showErrorTosConfirmationDialog(String message, String tosUrl, String key, String value);
+
+        void openInterruptConfirmationDialog(String tosUrl, String type, String id);
     }
 
     interface Presenter extends CustomerPresenter<View> {

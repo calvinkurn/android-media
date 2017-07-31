@@ -272,7 +272,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                         copyText = false;
                     }
                     mUserQuery = s;
-                    queryListener.onQueryChanged(s.toString());
+                    if (queryListener != null) {
+                        queryListener.onQueryChanged(s.toString());
+                    }
                 }
             }
 

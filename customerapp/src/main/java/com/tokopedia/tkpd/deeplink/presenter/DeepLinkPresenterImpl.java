@@ -320,7 +320,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(encodedUri.toString(), allowingOverriding);
+        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString()), allowingOverriding);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
@@ -424,15 +424,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openCategory(List<String> linkSegment) {
         String departmentId = "0";
-        String iden = linkSegment.get(1);
+        StringBuilder iden = new StringBuilder(linkSegment.get(1));
+        for (int i = 2; i < linkSegment.size(); i++) {
+            iden.append("_").append(linkSegment.get(i));
+        }
         CategoryDB dep =
-                DbManagerImpl.getInstance().getCategoryDb(iden);
+                DbManagerImpl.getInstance().getCategoryDb(iden.toString());
         if (dep != null) {
             departmentId = dep.getDepartmentId() + "";
         }
+
+        String headerTitle = linkSegment.get(linkSegment.size() - 1);
         IntermediaryActivity.moveTo(
                 context,
-                departmentId
+                departmentId,
+                headerTitle
         );
         context.finish();
     }

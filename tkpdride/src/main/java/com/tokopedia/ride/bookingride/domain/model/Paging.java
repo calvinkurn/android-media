@@ -4,7 +4,7 @@ package com.tokopedia.ride.bookingride.domain.model;
  * Created by alvarisi on 4/6/17.
  */
 
-public class PeopleAddressPaging {
+public class Paging {
     private String nextUrl;
     private int page;
 
