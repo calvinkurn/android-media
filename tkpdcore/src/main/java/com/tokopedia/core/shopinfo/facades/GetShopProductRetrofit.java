@@ -64,11 +64,15 @@ public class GetShopProductRetrofit {
 
     public void getShopProduct(GetShopProductParam param) {
         if (param.isUseAce()) {
-            Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+            Observable<Response<TkpdResponse>> observable = shopService.getApi()
+                    .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
         } else {
-            Observable<Response<TkpdResponse>> observable = tomeService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+            Observable<Response<TkpdResponse>> observable = tomeService.getApi()
+                    .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+            onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
         }
     }
 

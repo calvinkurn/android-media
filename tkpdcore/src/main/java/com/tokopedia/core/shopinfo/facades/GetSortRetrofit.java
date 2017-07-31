@@ -31,6 +31,11 @@ public class GetSortRetrofit {
 
     public static final int CONNECTION_TYPE_ERROR = 1;
     public static final int WS_TYPE_ERROR = 2;
+    public static final String DEVICE = "device";
+    public static final String SOURCE = "source";
+    public static final String DEFAULT_DEVICE = "android";
+    public static final String SHOP_PRODUCT = "shop_product";
+
 
     public interface OnGetSortFilterListener {
         void onSuccess(List<Sort> sorts);
@@ -89,8 +94,8 @@ public class GetSortRetrofit {
 
     private Map<String, String> paramSortProduct() {
         Map<String, String> params = new ArrayMap<>();
-        params.put("device", "android");
-        params.put("source", "shop_product");
+        params.put(DEVICE, DEFAULT_DEVICE);
+        params.put(SOURCE, SHOP_PRODUCT);
         return params;
     }
 
