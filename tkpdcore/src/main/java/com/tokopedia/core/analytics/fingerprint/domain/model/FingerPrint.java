@@ -20,8 +20,8 @@ public class FingerPrint {
     private String carrier;
     private String ssid;
     private String screen_resolution;
-    private double location_latitude;
-    private double location_longitude;
+    private String location_latitude;
+    private String location_longitude;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -97,19 +97,19 @@ public class FingerPrint {
         this.is_tablet = is_tablet;
     }
 
-    public double getLocation_latitude() {
+    public String getLocation_latitude() {
         return location_latitude;
     }
 
-    public void setLocation_latitude(double location_latitude) {
+    public void setLocation_latitude(String location_latitude) {
         this.location_latitude = location_latitude;
     }
 
-    public void setLocation_longitude(double location_longitude) {
+    public void setLocation_longitude(String location_longitude) {
         this.location_longitude = location_longitude;
     }
 
-    public double getLocation_longitude() {
+    public String getLocation_longitude() {
         return location_longitude;
     }
 
@@ -179,8 +179,8 @@ public class FingerPrint {
         private String userAgent;
         private boolean isEmulator;
         private boolean istablet;
-        private double lat;
-        private double lng;
+        private String lat;
+        private String lng;
         private String screenResolution;
         private String language;
         private String ssid;
@@ -215,12 +215,12 @@ public class FingerPrint {
             return this;
         }
 
-        public FingerPrintBuilder deviceLng(double lng) {
+        public FingerPrintBuilder deviceLng(String lng) {
             this.lng = lng;
             return this;
         }
 
-        public FingerPrintBuilder deviceLat(double lat) {
+        public FingerPrintBuilder deviceLat(String lat) {
             this.lat = lat;
             return this;
         }
