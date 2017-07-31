@@ -188,11 +188,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
+    private String totalPaymentWithLoyaltyIdr;
+    private String voucherCode;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
 
+    private boolean hasPromotion;
     private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
@@ -409,12 +412,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderSuccessCheckVoucher(String descVoucher, int instantCheck) {
+    public void renderSuccessCheckVoucher(String descVoucher, int instantVoucher) {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
         tvVoucherDesc.setText(descVoucher);
-        if(instantCheck == 1) {
-            instantPromoPlaceHolder.setVisibility(View.GONE);
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+        if(instantVoucher == 1) {
+            etVoucherCode.setText(voucherCode);
+            cbUseVoucher.setChecked(true);
         }
     }
 
@@ -610,7 +615,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cbUseVoucher.setChecked(true);
+                CartFragment.this.voucherCode = voucherCode;
                 etVoucherCode.setText(voucherCode);
                 getButtonCheckVoucherClickListener();
                 presenter.processCheckVoucherCode(1);
@@ -707,6 +712,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderInstantPromo(CartPromo cartPromo) {
         if(cartPromo.isVisible() == 1) {
+            hasPromotion = true;
             instantPromoPlaceHolder.setVisibility(View.VISIBLE);
             instantInsertVoucherTextView
                     .setText(Html.fromHtml(cartPromo.getPromoText()));
@@ -989,6 +995,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     tilEtVoucherCode.setErrorEnabled(false);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
+                    if (hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
                 }
             }
         };
