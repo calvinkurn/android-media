@@ -113,14 +113,13 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
         TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddFragment.TAG);
         if (fragment!= null && fragment.isButtonSaveEnabled()) {
             AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.product_dialog_cancel_title))
-                    .setMessage(getString(R.string.product_dialog_cancel_message))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             TopAdsKeywordAddActivity.super.onBackPressed();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
 
                         }

@@ -10,7 +10,7 @@ public class GMStatisticTransactionTableModel implements ItemType {
     public static final int TYPE = 199349;
     public String productName;
     private int deliveredAmount;
-    private int deliveredSum;
+    private int transSum;
     private int orderSum;
     private int productId;
 
@@ -30,12 +30,12 @@ public class GMStatisticTransactionTableModel implements ItemType {
         this.deliveredAmount = deliveredAmount;
     }
 
-    public int getDeliveredSum() {
-        return deliveredSum;
+    public int getTransSum() {
+        return transSum;
     }
 
-    public void setDeliveredSum(int deliveredSum) {
-        this.deliveredSum = deliveredSum;
+    public void setTransSum(int transSum) {
+        this.transSum = transSum;
     }
 
     public int getOrderSum() {

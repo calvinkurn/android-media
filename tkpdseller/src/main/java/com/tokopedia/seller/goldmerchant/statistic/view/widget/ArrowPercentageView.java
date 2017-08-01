@@ -74,11 +74,9 @@ public class ArrowPercentageView extends FrameLayout {
 
     private void setUIPercentage(){
         if (percentage == GMStatConstant.NO_DATA_AVAILABLE) {
-            ivArrowIcon.setVisibility(View.GONE);
-            tvPercentage.setText(noDataRes);
-            tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+            setVisibility(View.INVISIBLE);
         } else {
-            ivArrowIcon.setVisibility(View.VISIBLE);
+            setVisibility(View.VISIBLE);
             if (percentage < 0) {
                 ivArrowIcon.setImageResource(downDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), redColor));
@@ -86,7 +84,7 @@ public class ArrowPercentageView extends FrameLayout {
                 ivArrowIcon.setImageResource(upDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
             } else if (percentage == 0) { // percentage is 0
-                ivArrowIcon.setImageResource(stagnantDrawableSrc);
+                ivArrowIcon.setImageResource(upDrawableSrc);
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
             }
             tvPercentage.setText(KMNumbers.formatToPercentString(getContext(),percentage).replace("-", ""));

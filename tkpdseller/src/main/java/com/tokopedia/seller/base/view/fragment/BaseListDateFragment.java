@@ -67,8 +67,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     }
 
     @Override
-    protected final void searchData() {
-        super.searchData();
+    protected final void searchForPage(int page) {
         reloadDataForDate();
     }
 

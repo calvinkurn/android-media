@@ -249,7 +249,12 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                     return;
                 }
                 resetSelectionSortType(sortTypeIndexSelection);
-                searchData();
+
+                if (savedSortByAfterChangeKeyFigure != 0) {
+                    savedSortByAfterChangeKeyFigure = 0;
+                }
+                // we load data, instead search data to reset the page to 1
+                loadData();
             }
         });
     }
