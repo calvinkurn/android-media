@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/product_name_text"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.GreyTitle"
                     android:text="@string/gm_statistic_product_name" />
 
                 <View

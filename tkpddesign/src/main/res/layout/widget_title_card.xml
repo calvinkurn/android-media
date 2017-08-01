@@ -18,10 +18,11 @@
             android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_top"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginTop="@dimen/margin_small" android:orientation="horizontal">
+            android:layout_marginTop="@dimen/margin_bottom"
+            android:orientation="horizontal">
             <ImageView
                 android:id="@+id/iv_icon" android:layout_width="24dp" android:layout_height="24dp"
                 android:layout_marginRight="8dp" android:visibility="gone"
