@@ -107,14 +107,29 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
     public void toggleSelectedChildbyId(String categoryId) {
         for (int i=0; i< getItemCount(); i++) {
-            Category category = (Category) getItemAt(i);
-            if (category.getId().equals(categoryId)) {
+            Category childLevel2 = (Category) getItemAt(i);
+            if (childLevel2.getId().equals(categoryId)) {
                 activePosition = i;
-                toggleSelectedChild();
-                break;
+                if (childLevel2.getChildren()!=null && childLevel2.getChildren().size()>0) {
+                    toggleSelectedChild();
+                    return;
+                } else {
+                    break; // search for the parent
+                }
             }
         }
-
+        for (int i=0; i< getItemCount(); i++) {
+            Category childLevel2 = (Category) getItemAt(i);
+            if (childLevel2.getChildren()!=null && childLevel2.getChildren().size()>0) {
+               for (Category childLevel3: (List<Category>) childLevel2.getChildren()) {
+                   if (childLevel3.getId().equals(categoryId)) {
+                       activePosition = i;
+                       toggleSelectedChild();
+                       break;
+                   }
+               }
+            }
+        }
     }
 
     public interface OnItemClickListener {

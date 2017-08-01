@@ -346,6 +346,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         bottomNavigation.removeAllItems();
         bottomNavigation.addItems(items);
         bottomNavigation.setForceTitlesDisplay(true);
+        //bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FEFEFE"));
         bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.tkpd_dark_green));
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override

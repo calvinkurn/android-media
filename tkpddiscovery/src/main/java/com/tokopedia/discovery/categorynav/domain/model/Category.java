@@ -41,6 +41,11 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
 
     }
 
+    @Override
+    public String toString() {
+        return id;
+    }
+
     public String getId() {
         return id;
     }
