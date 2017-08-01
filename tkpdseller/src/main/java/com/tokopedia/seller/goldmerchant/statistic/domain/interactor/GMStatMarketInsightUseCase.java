@@ -59,14 +59,14 @@ public class GMStatMarketInsightUseCase extends CompositeUseCase<KeywordModel> {
         KeywordModel keywordModel = new KeywordModel();
         keywordModel.setShopCategory(getShopCategory);
 
-        if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getShopCategory() == null
-                || keywordModel.getShopCategory().getShopCategory().isEmpty()) {
+        if (keywordModel.getShopCategory() == null || keywordModel.getShopCategory().getCategoryIdList() == null
+                || keywordModel.getShopCategory().getCategoryIdList().isEmpty()) {
             keywordModel.setResponseList(new ArrayList<Response<GetKeyword>>());
             keywordModel.setCategoryNames(new ArrayList<String>());
             return Observable.just(keywordModel);
         }
 
-        List<Integer> shopCategory = GMStatisticUtil.subList(getShopCategory.getShopCategory(), MAXIMUM_CATEGORY);
+        List<Integer> shopCategory = GMStatisticUtil.subList(getShopCategory.getCategoryIdList(), MAXIMUM_CATEGORY);
         Observable<List<String>> getCategories = Observable.from(shopCategory).flatMap(
                 new Func1<Integer, Observable<String>>() {
                     @Override

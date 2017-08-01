@@ -106,8 +106,15 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onNext(KeywordModel keywordModel) {
-                onSuccessGetShopCategory(keywordModel.getShopCategory(), keywordModel.isGoldMerchant());
-                onSuccessGetKeyword(keywordModel.getKeywords(), keywordModel.isGoldMerchant());
+                boolean goldMerchant = keywordModel.isGoldMerchant();
+                GetShopCategory getShopCategory = keywordModel.getShopCategory();
+                if (getShopCategory == null
+                        || getShopCategory.getCategoryIdList() == null
+                        || getShopCategory.getCategoryIdList().isEmpty()) {
+                    getView().onGetShopCategoryEmpty(goldMerchant);
+                } else {
+                    getView().onSuccessGetKeyword(keywordModel.getKeywords(), goldMerchant);
+                }
                 onSuccessGetCategory(keywordModel.getCategoryName());
             }
         });
@@ -161,18 +168,6 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
                 getView().onSuccessLoadPopularProduct(getPopularProduct);
             }
         });
-    }
-
-    private void onSuccessGetShopCategory(GetShopCategory getShopCategory, boolean isGoldMerchant) {
-        if (getShopCategory == null
-                || getShopCategory.getShopCategory() == null
-                || getShopCategory.getShopCategory().isEmpty()) {
-            getView().onGetShopCategoryEmpty(isGoldMerchant);
-        }
-    }
-
-    private void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
-        getView().onSuccessGetKeyword(getKeywords, isGoldMerchant);
     }
 
     private void onSuccessGetCategory(List<String> categoryNameList) {

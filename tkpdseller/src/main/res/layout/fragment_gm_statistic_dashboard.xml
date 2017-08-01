@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_sm"
-            app:tcv_empty_layout="@layout/partial_gm_statistic_popular_product_empty"
+            app:tcv_empty_layout="@layout/partial_gm_statistic_popular_product_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_icon="@drawable/icon_produk"
             app:tcv_loading_layout="@layout/partial_gm_statistic_popular_product_loading"

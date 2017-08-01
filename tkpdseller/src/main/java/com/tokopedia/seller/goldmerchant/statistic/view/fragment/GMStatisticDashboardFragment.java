@@ -190,13 +190,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onGetShopCategoryEmpty(boolean isGoldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindNoShopCategory(isGoldMerchant);
+    public void onGetShopCategoryEmpty(boolean goldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant);
     }
 
     @Override
-    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords, goldMerchant);
     }
 
     @Override
