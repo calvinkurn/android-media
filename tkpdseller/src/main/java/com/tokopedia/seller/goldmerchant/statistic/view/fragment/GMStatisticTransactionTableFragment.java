@@ -51,7 +51,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
     int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
-    private boolean showingSimpleDialog;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
     private int sortByIndexSelection = 2; // default to Pendapatan Bersih
@@ -59,8 +58,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
     private TextView tvSortBy;
-    private int savedSortTypeAfterChangeKeyFigure;
-    private int savedSortByAfterChangeKeyFigure;
 
     public static Fragment createInstance() {
         GMStatisticTransactionTableFragment fragment = new GMStatisticTransactionTableFragment();
@@ -81,10 +78,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     public void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page) {
-        // when we pulldown to refresh, we default the sorttype to default
-        if (savedSortByAfterChangeKeyFigure!= 0) {
-            reselectSortType();
-        }
         transactionTablePresenter.loadData(
                 new Date(datePickerViewModel.getStartDate()),
                 new Date(datePickerViewModel.getEndDate()),
@@ -194,7 +187,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                         break;
 
                 }
-                showingSimpleDialog = false;
                 if (previousSortBy == sortBy) {
                     return;
                 }
@@ -204,31 +196,12 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                 gmAdapter.setSortBy(sortBy);
                 gmAdapter.notifyDataSetChanged();
 
-                // save sort type after change key figure
-                if (savedSortByAfterChangeKeyFigure == 0) {
-                    savedSortTypeAfterChangeKeyFigure = sortType;
-                    savedSortByAfterChangeKeyFigure = previousSortBy;
-                    //reset it, but retrieve it again when doing sort
-                    sortType = -1;
-                    resetSelectionSortType(sortType);
-                }
-                // no need to search data
+                loadData();
             }
         });
     }
 
-    private void reselectSortType(){
-        sortType = savedSortTypeAfterChangeKeyFigure;
-        savedSortByAfterChangeKeyFigure = 0;
-        int sortTypeSelection = (sortType == GMTransactionTableSortType.DESCENDING)? 0 : 1;
-        resetSelectionSortType(sortTypeSelection);
-    }
-
     private void showSortType() {
-        // retrieve saved sort type
-        if (savedSortByAfterChangeKeyFigure!= 0 && savedSortByAfterChangeKeyFigure == sortBy) {
-            reselectSortType();
-        }
         showBottomSheetDialog(getString(R.string.gm_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
@@ -244,15 +217,11 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                         sortType = -1;
                         break;
                 }
-                showingSimpleDialog = false;
                 if (previousSortType == sortType) {
                     return;
                 }
                 resetSelectionSortType(sortTypeIndexSelection);
 
-                if (savedSortByAfterChangeKeyFigure != 0) {
-                    savedSortByAfterChangeKeyFigure = 0;
-                }
                 // we load data, instead search data to reset the page to 1
                 loadData();
             }
@@ -260,7 +229,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     private void showBottomSheetDialog(String bottomDialogTitle, final String[] text, final boolean[] selections, BottomSheetItemClickListener bottomSheetItemClickListener) {
-        showingSimpleDialog = true;
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(bottomDialogTitle);
@@ -276,12 +244,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(bottomSheetItemClickListener)
                 .createDialog();
-        bottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                showingSimpleDialog = false;
-            }
-        });
         bottomSheetDialog.show();
     }
 

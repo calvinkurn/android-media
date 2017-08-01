@@ -6,10 +6,14 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMStatMarketInsightMapper;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 7/25/17.
@@ -35,4 +39,6 @@ public class GMStatMarketInsightUseCase extends CompositeUseCase<KeywordModel> {
     public Observable<KeywordModel> createObservable(RequestParams requestParams) {
         return categoryUseCase.createObservable(requestParams).flatMap(marketInsightMapper);
     }
+
+
 }
