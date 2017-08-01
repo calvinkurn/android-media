@@ -41,7 +41,7 @@ public class BcaOneClickPresenterImpl implements BcaOneClickPresenter{
         bcaOneClickRegisterParam.put("tokopedia_user_id", SessionHandler.getLoginID(context));
         bcaOneClickRegisterParam.put("merchant_code", "tokopedia");
         bcaOneClickRegisterParam.put("token_id", data.getTokenId());
-        bcaOneClickRegisterParam.put("action", "edit");
+        bcaOneClickRegisterParam.put("action", "add");
         bcaOneClickRegisterParam.put("credential_type", data.getCredentialType());
         bcaOneClickRegisterParam.put("credential_no", data.getCredentialNumber());
         bcaOneClickRegisterParam.put("max_limit", data.getMaxLimit());
