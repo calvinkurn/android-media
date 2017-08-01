@@ -9,7 +9,8 @@ import {
   Platform,
   StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { icons } from '../../../../components/icons'
+
 
 const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
   _onClick = () => {
@@ -30,8 +31,8 @@ const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Icon name='ios-more' size={46} color='#42b549' />
-          <Text style={styles.text}>Brand Laiyna</Text>
+          <Image source={icons.ios_more_mid} style={{ width:30, height:30, marginTop:20 }} />
+          <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>
     </View>

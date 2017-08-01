@@ -4,9 +4,10 @@ import { fetchCampaigns, addToWishlist } from '../actions/actions'
 import CampaignList from '../components/campaignList'
 
 class CampaignContainer extends Component {
-  componentDidMount() {
+  componentWillMount() {
     const { dispatch } = this.props
-    dispatch(fetchCampaigns())
+    const User_ID = this.props.screenProps.User_ID
+    dispatch(fetchCampaigns(User_ID))
   }
 
   render() {
@@ -14,6 +15,7 @@ class CampaignContainer extends Component {
     return (
       this.props.campaigns.isFetching ? null :
         <CampaignList
+          User_ID={this.props.screenProps.User_ID}
           campaigns={campaigns} />
     )
   }

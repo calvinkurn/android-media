@@ -650,7 +650,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
                 openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);*/
                 getActivity().startActivity(ReactNativeActivity.createReactNativeActivity(getActivity(),
-                        ReactConst.Screen.OFFICIAL_STORE));
+                        ReactConst.Screen.OFFICIAL_STORE, SessionHandler.getLoginID(getActivity())));
             }
         };
     }

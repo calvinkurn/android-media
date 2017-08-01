@@ -5,32 +5,51 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
+  ActivityIndicator,
+  AppState,
   View
 } from 'react-native';
-import { NetworkModule } from 'NativeModules';
-import { NavigationModule } from 'NativeModules';
+import { NavigationModule, NetworkModule } from 'NativeModules';
 
-import { ContactUs_Stack, HotList_Stack, Favorite_Stack, OfficialStore } from './src/configs/router';
+import { ContactUs_Stack, Favorite_Stack, OfficialStore, HotList_ } from './src/configs/router';
 
 
 class Home extends Component { 
-  componentWillMount() {
-    console.log(this.props.Screen)
+  state = {
+    appState: AppState.currentState
   }
 
-  render(){ 
-    if (this.props.message == 'contactus'){
+  componentWillMount() { 
+    console.log(this.props)
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!')
+    }
+    this.setState({appState: nextAppState});
+  }
+
+  render(){
+    console.log(this.state.appState)
+    if (this.props.Screen == 'contactus'){
       return <ContactUs_Stack />  
-    } else if (this.props.message == 'hotlist'){
-      return <HotList_Stack /> 
-    } else if (this.props.message == 'favorite'){
+    } else if (this.props.Screen == 'favorite'){
       return <Favorite_Stack /> 
-    } else if (this.props.Screen == 'official-store') {
-      return <OfficialStore />ot
+    } else if (this.props.Screen == 'HotList'){
+      return <HotList_ />
+    } else if (this.props.Screen == 'official-store' && this.state.appState == 'active'){
+      return <OfficialStore screenProps={{ User_ID: this.props.User_ID, appState: 'active' }}  />
     } else {
       return(
         <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-          <Text>No Props!</Text>
+          <ActivityIndicator size="large" />
         </View>
       )
     }
