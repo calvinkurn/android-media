@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +31,7 @@ import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.reputationproduct.ReputationProductView;
+import com.tokopedia.core.reputationproduct.activity.ReputationProductActivity;
 import com.tokopedia.core.review.model.helpful_review.HelpfulReviewList;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 import com.tokopedia.core.review.presenter.ProductReviewPresenter;
@@ -266,7 +265,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ReputationProductView.class);
+                Intent intent = new Intent(context, ReputationProductActivity.class);
                 intent.putExtra("data_model", (Parcelable) review);
                 intent.putExtra("product_id", productId);
                 intent.putExtra("shop_id", review.getReviewShopId());
@@ -406,7 +405,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
 //            holder.container[i].setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
-//                    Intent intent = new Intent(context, ReputationProductView.class);
+//                    Intent intent = new Intent(context, ReputationProductActivity.class);
 //                    intent.putExtra("data_model", entity);
 //                    intent.putExtra("product_id", entity.getProductId());
 //                    intent.putExtra("shop_id", entity.getShopId());

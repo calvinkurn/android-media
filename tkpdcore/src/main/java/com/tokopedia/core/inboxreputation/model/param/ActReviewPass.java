@@ -3,6 +3,7 @@ package com.tokopedia.core.inboxreputation.model.param;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 
@@ -436,6 +437,23 @@ public class ActReviewPass implements Parcelable{
         params.put(PARAM_SHOP_ID, getShopId());
         return params;
     }
+    public RequestParams getLikeDislikeRequestParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_LIKE_STATUS, getLikeStatus());
+        requestParams.putString(PARAM_PRODUCT_ID, getProductId());
+        requestParams.putString(PARAM_REVIEW_ID, getReviewId());
+        requestParams.putString(PARAM_SHOP_ID, getShopId());
+        return requestParams;
+    }
+
+    public RequestParams getDeleteCommentParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_REPUTATION_ID, getReputationId());
+        requestParams.putString(PARAM_REVIEW_ID, getReviewId());
+        requestParams.putString(PARAM_SHOP_ID, getShopId());
+        return requestParams;
+    }
+
     @Override
     public int describeContents() {
         return 0;

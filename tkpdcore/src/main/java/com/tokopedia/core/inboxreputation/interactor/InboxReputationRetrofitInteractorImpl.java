@@ -13,11 +13,12 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.reputationproduct.model.LikeDislike;
+import com.tokopedia.core.reputationproduct.data.pojo.LikeDislike;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -387,6 +388,17 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
     @Override
     public void setRequesting(boolean isRequesting) {
         this.isRequesting = isRequesting;
+    }
+
+
+
+    //params section
+    @Override
+    public Map<String, String> getLikeDislikeParam(String shopId, String reviewId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("shop_id", shopId);
+        param.put("review_ids", String.valueOf(reviewId));
+        return param;
     }
 
 }

@@ -272,7 +272,7 @@
             android:label="@string/title_activity_shop_statistic_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.reputationproduct.ReputationProductView"
+            android:name="com.tokopedia.core.reputationproduct.activity.ReputationProductActivity"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
         <activity
