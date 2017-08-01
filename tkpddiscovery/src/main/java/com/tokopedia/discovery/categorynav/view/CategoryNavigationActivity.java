@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categorynav.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
@@ -27,7 +28,7 @@ import butterknife.BindView;
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     private FragmentManager fragmentManager;
-    private String departmentId = "";
+    private String departmentId = "0";
     private String rootDepartementId = "";
     private TextView topBarTitle;
 
@@ -50,7 +51,9 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        departmentId = extras.getString(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID);
+        if ( extras.getString(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID) !=null) {
+            departmentId = extras.getString(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID);
+        }
     }
 
     @Override
@@ -108,7 +111,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     public static void moveTo(FragmentActivity fragmentActivity, String departmentId) {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, CategoryNavigationActivity.class);
-            intent.putExtra(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID, departmentId);
+            intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivity(intent);
             fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
         }

@@ -100,6 +100,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             if (category.getChildren()!=null && category.getChildren().size()>0) {
                 rootCategoryId = category.getId();
                 rootCategory = category;
+                break;
             }
         }
         categoryParentAdapter = new CategoryParentAdapter(this,rootCategoryId);

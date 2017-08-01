@@ -17,6 +17,8 @@ import java.util.List;
 public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNavigationContract.View>
         implements CategoryNavigationContract.Presenter {
 
+    public static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
+
     private final GetCategoryParentUseCase getCategoryParentUseCase;
     private final GetCategoryChildrenUseCase getCategoryChildrenUseCase;
 
