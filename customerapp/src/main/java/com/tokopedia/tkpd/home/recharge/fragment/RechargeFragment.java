@@ -460,6 +460,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 );
                 spnNominal.setAdapter(adapter);
                 spnNominal.setOnItemSelectedListener(this);
+                spnNominal.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if(motionEvent.getAction()== MotionEvent.ACTION_UP)
+                        {
+                            UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(), "Product - "+selectedProduct.getAttributes().getPrice());
+                        }
+                        return false;
+                    }
+                });
                 setSpnNominalSelectionBasedStatus(productList);
 
                 setSpnNominalSelectionBasedLastOrder(productList);
@@ -1109,7 +1119,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+(TextUtils.isEmpty(selectedOperator.name) ? "" : selectedOperator.name));
+            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+(selectedOperator==null ? "" : selectedOperator.name));
             setParentToScroolToTop();
         }
     }
