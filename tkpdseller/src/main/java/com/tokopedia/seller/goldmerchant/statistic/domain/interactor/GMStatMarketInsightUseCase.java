@@ -50,12 +50,12 @@ public class GMStatMarketInsightUseCase extends CompositeUseCase<KeywordModel> {
         return categoryUseCase.createObservable(requestParams).flatMap(new Func1<GetShopCategory, Observable<KeywordModel>>() {
             @Override
             public Observable<KeywordModel> call(GetShopCategory getShopCategory) {
-                return call(getShopCategory);
+                return processShopCategory(getShopCategory);
             }
         });
     }
 
-    private Observable<KeywordModel> call(GetShopCategory getShopCategory) {
+    private Observable<KeywordModel> processShopCategory(GetShopCategory getShopCategory) {
         KeywordModel keywordModel = new KeywordModel();
         keywordModel.setShopCategory(getShopCategory);
 
