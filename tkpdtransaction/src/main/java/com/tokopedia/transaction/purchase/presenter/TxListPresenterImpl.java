@@ -442,8 +442,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
-        tvComplainTitle.setText(orderData.getOrderDetail().getDetailComplaintPopupTitle());
-        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
+        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
         btnBack.setVisibility(View.GONE);
         btnNotReceive.setVisibility(View.GONE);
         if(orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
@@ -497,8 +497,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
         TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
         TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
-        tvNotReceivedTitle.setText(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle());
-        tvNotReceivedBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsg());
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
