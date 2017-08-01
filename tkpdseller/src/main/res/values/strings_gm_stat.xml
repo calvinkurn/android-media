@@ -67,4 +67,5 @@
     <string name="gm_statistic_change_date"><![CDATA[Ubah tanggal >]]></string>
     <string name="gm_statistic_card_error_content">Terjadi kesalahan</string>
     <string name="gm_statistic_see_topads">Lihat TopAds</string>
+    <string name="gm_sort">Sort</string>
 </resources>

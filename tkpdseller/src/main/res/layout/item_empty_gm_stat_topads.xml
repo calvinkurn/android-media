@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextView.Body1.Bold"
+        style="@style/TextView.GreyTitle"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/tv_subtitle"
-        style="@style/TextView.Body1"
+        style="@style/TextView.GreyTitle"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_med"
@@ -48,8 +48,7 @@
         android:id="@+id/button_register_topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tkpd_main_orange"
-        android:paddingTop="8dp"
+        android:background="@drawable/bg_button_orange"
         android:text="@string/gm_statistic_empty_register_topads_now"
         android:textAllCaps="false"
         android:textColor="@color/white" />

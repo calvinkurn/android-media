@@ -19,9 +19,8 @@ import rx.Subscriber;
  */
 public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransactionTablePresenter {
     private static final String TAG = "GMStatisticTransactionT";
-    private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
-
     private static final int DEFAULT_PAGE_SIZE = 20;
+    private GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase;
 
     public GMStatisticTransactionTablePresenterImpl(GMStatGetTransactionTableUseCase gmStatGetTransactionTableUseCase) {
         this.gmStatGetTransactionTableUseCase = gmStatGetTransactionTableUseCase;
@@ -73,6 +72,7 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
             gmStatisticTransactionTableModel.setDeliveredAmount(data.getDeliveredAmt());
             gmStatisticTransactionTableModel.setTransSum(data.getTransSum());
             gmStatisticTransactionTableModel.setOrderSum(data.getOrderSum());
+            gmStatisticTransactionTableModel.setProductId(data.getProductProductId());
             gmStatisticTransactionTableModels.add(gmStatisticTransactionTableModel);
         }
         return gmStatisticTransactionTableModels;
