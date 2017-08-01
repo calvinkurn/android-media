@@ -53,4 +53,8 @@ public class KeywordModel {
     public void setIsGoldMerchant(boolean isGoldMerchant) {
         this.isGoldMerchant = isGoldMerchant;
     }
+
+    public boolean isGoldMerchant() {
+        return isGoldMerchant;
+    }
 }

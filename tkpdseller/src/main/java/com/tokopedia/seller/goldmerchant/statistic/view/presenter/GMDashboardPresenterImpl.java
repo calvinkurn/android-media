@@ -11,8 +11,9 @@ import com.tokopedia.seller.goldmerchant.statistic.domain.KeywordModel;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetBuyerGraphUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetPopularProductUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetProductGraphUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphShopInfoUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightUseCase;
+import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatMarketInsightShopInfoUseCase;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 
 import java.util.Calendar;
@@ -28,22 +29,22 @@ import rx.Subscriber;
 
 public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
-    private GMStatMarketInsightUseCase marketInsightUseCase;
+    private GMStatMarketInsightShopInfoUseCase marketInsightShopInfoUseCase;
     private GMStatGetBuyerGraphUseCase buyerGraphUseCase;
     private GMStatGetPopularProductUseCase popularProductUseCase;
-    private GMStatGetTransactionGraphUseCase transactionGraphUseCase;
+    private GMStatGetTransactionGraphShopInfoUseCase gmStatGetTransactionGraphShopInfoUseCase;
     private GMStatGetProductGraphUseCase productGraphUseCase;
 
     public GMDashboardPresenterImpl(
-            GMStatMarketInsightUseCase marketInsightUseCase,
+            GMStatMarketInsightShopInfoUseCase marketInsightShopInfoUseCase ,
             GMStatGetBuyerGraphUseCase buyerGraphUseCase,
             GMStatGetPopularProductUseCase popularProductUseCase,
-            GMStatGetTransactionGraphUseCase transactionGraphUseCase,
+            GMStatGetTransactionGraphShopInfoUseCase gmStatGetTransactionGraphShopInfoUseCase,
             GMStatGetProductGraphUseCase productGraphUseCase) {
-        this.marketInsightUseCase = marketInsightUseCase;
+        this.marketInsightShopInfoUseCase = marketInsightShopInfoUseCase;
         this.buyerGraphUseCase = buyerGraphUseCase;
         this.popularProductUseCase = popularProductUseCase;
-        this.transactionGraphUseCase = transactionGraphUseCase;
+        this.gmStatGetTransactionGraphShopInfoUseCase = gmStatGetTransactionGraphShopInfoUseCase;
         this.productGraphUseCase = productGraphUseCase;
     }
 
@@ -51,7 +52,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     public void fetchData(long starDate, long endDate) {
         getProductGraph(starDate, endDate);
         RequestParams transactionParam = GMStatGetTransactionGraphUseCase.createRequestParam(starDate, endDate);
-        transactionGraphUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
+        gmStatGetTransactionGraphShopInfoUseCase.execute(transactionParam, new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 
@@ -66,7 +67,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                getView().onSuccessLoadTransactionGraph(mergeModel);
+                getView().onSuccessLoadTransactionGraph(mergeModel, mergeModel.isGoldMerchant());
             }
         });
 
@@ -90,7 +91,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
             }
         });
 
-        marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
+        marketInsightShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
             @Override
             public void onCompleted() {
 
@@ -105,8 +106,8 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onNext(KeywordModel keywordModel) {
-                onSuccessGetShopCategory(keywordModel.getShopCategory());
-                onSuccessGetKeyword(keywordModel.getKeywords());
+                onSuccessGetShopCategory(keywordModel.getShopCategory(), keywordModel.isGoldMerchant());
+                onSuccessGetKeyword(keywordModel.getKeywords(), keywordModel.isGoldMerchant());
                 onSuccessGetCategory(keywordModel.getCategoryName());
             }
         });
@@ -162,16 +163,16 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
         });
     }
 
-    private void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
+    private void onSuccessGetShopCategory(GetShopCategory getShopCategory, boolean isGoldMerchant) {
         if (getShopCategory == null
                 || getShopCategory.getShopCategory() == null
                 || getShopCategory.getShopCategory().isEmpty()) {
-            getView().onGetShopCategoryEmpty();
+            getView().onGetShopCategoryEmpty(isGoldMerchant);
         }
     }
 
-    private void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        getView().onSuccessGetKeyword(getKeywords);
+    private void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
+        getView().onSuccessGetKeyword(getKeywords, isGoldMerchant);
     }
 
     private void onSuccessGetCategory(List<String> categoryNameList) {
@@ -186,9 +187,9 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
     public void detachView() {
         super.detachView();
         buyerGraphUseCase.unsubscribe();
-        transactionGraphUseCase.unsubscribe();
+        gmStatGetTransactionGraphShopInfoUseCase.unsubscribe();
         productGraphUseCase.unsubscribe();
         popularProductUseCase.unsubscribe();
-        marketInsightUseCase.unsubscribe();
+        marketInsightShopInfoUseCase.unsubscribe();
     }
 }
