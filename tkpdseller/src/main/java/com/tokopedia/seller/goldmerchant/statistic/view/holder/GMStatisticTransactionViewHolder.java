@@ -98,7 +98,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     }
 
     private void setEmptyViewNoGM() {
-        transactionDataCardView.setEmptyViewRes(R.layout.widget_transaction_data_empty_no_gm);
+        transactionDataCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_transaction_not_gm);
         transactionDataCardView.getEmptyView().findViewById(R.id.move_to_gmsubscribe)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
