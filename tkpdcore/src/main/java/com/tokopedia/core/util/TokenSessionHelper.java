@@ -11,6 +11,13 @@ import android.util.Log;
 
 public class TokenSessionHelper {
 
+    public static void saveRefreshToken(Context context, String email, String refreshToken) {
+        final Account account = new Account(email, AccountGeneral.ACCOUNT_TYPE);
+        AccountManager accountManager = AccountManager.get(context);
+        accountManager.addAccountExplicitly(account, refreshToken, null);
+        accountManager.setAuthToken(account, AccountGeneral.ACCOUNT_TYPE, refreshToken);
+    }
+
     public static String getExistingAccountAuthToken(Context context, String authTokenType) {
         AccountManager mAccountManager = AccountManager.get(context);
         Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
@@ -22,6 +29,12 @@ public class TokenSessionHelper {
         AccountManager mAccountManager = AccountManager.get(context);
         Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
         mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
-        Log.i("", "invalidateAccountManager: ");
+    }
+
+    public static void removeAccountManager(Context context) {
+        AccountManager mAccountManager = AccountManager.get(context);
+        Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+        mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
+        mAccountManager.removeAccount(availableAccounts[0],null,null);
     }
 }

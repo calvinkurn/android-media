@@ -59,6 +59,8 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.core.util.TokenSessionHelper.saveRefreshToken;
+
 public class LoginService extends IntentService implements DownloadServiceConstant {
 
     public static final String TAG = "LoginService";
@@ -629,14 +631,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     .sendScreen(Authenticated.KEY_CD_NAME);
         }
 
-    }
-
-    private void saveRefreshToken(Context context, String email, String refreshToken) {
-        final Account account = new Account(email, AccountGeneral.ACCOUNT_TYPE);
-        AccountManager accountManager = AccountManager.get(context);
-        accountManager.addAccountExplicitly(account, refreshToken, null);
-        accountManager.setAuthToken(account, AccountGeneral.ACCOUNT_TYPE, refreshToken);
-        Log.i(TAG, "saveRefreshToken: ");
     }
 
 }

@@ -42,7 +42,6 @@ public class AccessTokenRefresh {
         params.put("grant_type", "refresh_token");
         params.put("refresh_token", getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
 
-        AccountsService service = new AccountsService(new Bundle());
         Call<String> responseCall = getRetrofit().create(AccountsApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;

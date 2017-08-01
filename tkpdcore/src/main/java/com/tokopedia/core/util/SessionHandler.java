@@ -45,6 +45,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.Arrays;
 
 import static com.tokopedia.core.util.TokenSessionHelper.invalidateAccountManager;
+import static com.tokopedia.core.util.TokenSessionHelper.removeAccountManager;
 
 public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
@@ -153,7 +154,7 @@ public class SessionHandler {
         clearFeedCache();
 
         invalidateAccountManager(context);
-//        removeAccountManager(context);
+        removeAccountManager(context);
     }
 
 
