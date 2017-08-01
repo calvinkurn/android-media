@@ -110,7 +110,7 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
     public void onBackPressed() {
         // check if user already make a changes by adding or deleting
         // if so, when backpressed, show dialog if user really want to delete the change or save the changes
-        TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddFragment.TAG);
+        TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if (fragment!= null && fragment.isButtonSaveEnabled()) {
             AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
