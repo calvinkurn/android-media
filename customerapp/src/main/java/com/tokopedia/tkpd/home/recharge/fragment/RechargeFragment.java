@@ -404,6 +404,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 isChecked ? getResources().getString(R.string.title_button_pay)
                         : getResources().getString(R.string.title_buy)
         );
+
+        UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(), "Product - "+selectedOperator.name, isChecked);
     }
 
     @Override
