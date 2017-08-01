@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     private ValueAnimator slideAnimatorX;
     private ObjectAnimator goneAnimation;
     private View footer;
+    private View next;
+
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
                                                     int imageDrawable, int bgColor, int viewType, int position) {
@@ -78,6 +81,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((OnboardingActivity)(getActivity())).setNextResource();
+        animatorSet = new AnimatorSet();
     }
 
     @Nullable
@@ -97,8 +101,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final int position = getArguments().getInt(ARG_POSITION);
         view.setTag(position);
-//        stepper.getChildAt(position).setAlpha(1.00f);
-//        stepper.requestLayout();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -113,8 +115,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
 
     @Override
     protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = getDefaultView(inflater, container);
-//        stepper = (LinearLayout) v.findViewById(R.id.stepper);
         return super.inflateDefaultView(inflater, container, savedInstanceState);
     }
 
@@ -125,7 +125,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         ImageView i = (ImageView) v.findViewById(R.id.image);
         TextView d = (TextView) v.findViewById(R.id.description);
         main = v.findViewById(R.id.main);
-//        stepper = (LinearLayout) v.findViewById(R.id.stepper);
 
         t.setText(title);
         if (titleColor != 0) {
@@ -184,9 +183,11 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         final int viewType = getArguments().getInt(ARG_VIEW_TYPE);
 
         if(viewType == VIEW_ENDING){
-            login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
 
-            View next = getView().findViewById(R.id.dummy_next);
+            next = getView().findViewById(R.id.dummy_next);
+            next.setVisibility(View.VISIBLE);
+
+
             slideAnimatorX = slideToX(next, -1, mScreenWidth/2);
             goneAnimation = setVisibilityGone(next);
             expandAnimator = expandTextView(login, mScreenWidth);
@@ -196,7 +197,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             fadeAnimator2 = fadeText(skip, getActivity(), R.color.transparent, R.color.white);
             slideAnimator2 = slideToY(skip, DOWN_DIRECTION, footer);
 
-
+            login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.75));
             expandAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
             fadeAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
@@ -205,12 +206,28 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
             slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
 
-            animatorSet = new AnimatorSet();
             animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
+//            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator);
             animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
+            animatorSet.setupStartValues();
             animatorSet.start();
+            Log.i( "playAnimation: ", animatorSet.toString());
         }
         else {
+        }
+    }
+
+
+
+    public void clearAnimation() {
+        if(animatorSet.isRunning()){
+            animatorSet.cancel();
+        }
+    }
+
+    private void cancelAnimation(View view) {
+        if(view.getAnimation() != null){
+            view.getAnimation().cancel();
         }
     }
 

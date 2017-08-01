@@ -3,6 +3,7 @@
     android:id="@+id/stepper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="@dimen/padding_vs"
     android:layout_marginLeft="@dimen/margin_stepper_nob"
     android:layout_marginRight="@dimen/margin_stepper_nob"
     android:background="@color/transparent"

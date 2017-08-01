@@ -47,6 +47,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     private ImageButton nextView;
     private Integer[] listId;
     private boolean isFirst;
+    private Animator bounceAnimator;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -99,6 +100,9 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     }
 
     private void setStepper() {
+        BounceInterpolator interpolator = new BounceInterpolator(0.15, 10);
+        bounceAnimator = AnimatorInflater.loadAnimator(getBaseContext(), R.animator.bounce_animator);
+        bounceAnimator.setInterpolator(interpolator);
         main = (RelativeLayout) pager.getParent();
         main.setId(R.id.main);
         isFirst = true;
@@ -246,19 +250,19 @@ public class OnboardingActivity extends BaseOnboardingActivity {
             for (int i = 0; i < fragments.size(); i++) {
                 if(i != pager.getCurrentItem()){
                     Log.i("onSlideChanged: ", pager.getCurrentItem() + " " +i);
+                    findViewById(listId[i]).clearAnimation();
                     findViewById(listId[i]).setAlpha(0.65f);
                 }
             }
 
-            BounceInterpolator interpolator = new BounceInterpolator(0.15, 10);
-            Animator animator = AnimatorInflater.loadAnimator(getBaseContext(), R.animator.bounce_animator);
-            animator.setInterpolator(interpolator);
-            animator.setTarget(findViewById(listId[pager.getCurrentItem()]));
-            animator.start();
+            bounceAnimator.setTarget(findViewById(listId[pager.getCurrentItem()]));
+            bounceAnimator.start();
+
             Log.i("onSlideChanged: ", pager.getCurrentItem() + " animator");
         }
 
         if (fragments != null && fragments.size() > 0 && pager != null && pager.getCurrentItem() == fragments.size()-1) {
+            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).clearAnimation();
             ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).playAnimation();
         }
         if (pager.getCurrentItem() == fragments.size() - 1) {
@@ -288,11 +292,9 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     public void setNextResource() {
         nextView.setImageResource(R.drawable.next_ic);
         nextView.setMinimumWidth(0);
-        LayoutParams params1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
         float d = getResources().getDisplayMetrics().density;
         params1.rightMargin = (int) (20*d);
-
     }
-
 
 }
