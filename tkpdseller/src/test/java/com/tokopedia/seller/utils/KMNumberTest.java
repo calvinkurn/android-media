@@ -14,14 +14,17 @@ public class KMNumberTest {
 
     @Before
     public void overrideSuffix(){
-        KMNumbers.overrideSuffixes(1000L, "rb");
-        KMNumbers.overrideSuffixes(1000_000L, "jt");
+//        KMNumbers.overrideSuffixes(1000L, "rb");
+//        KMNumbers.overrideSuffixes(1000_000L, "jt");
     }
 
     @Test
     public void test12000(){
         String s = KMNumbers.formatNumbers(12_500L);
         Assert.assertTrue(s.equals("12,5rb"));
+
+        String s1 = KMNumbers.formatNumbers(12_500L);
+        Assert.assertTrue(s1.equals("12,5K"));
     }
 
     @Test
