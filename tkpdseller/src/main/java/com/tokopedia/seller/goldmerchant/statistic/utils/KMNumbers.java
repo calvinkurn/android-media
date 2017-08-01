@@ -23,6 +23,7 @@ public final class KMNumbers {
     public static final String COMMA = ",";
     public static final String DOT = ".";
     private static final Locale locale = new Locale("in", "ID");
+    public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
     static {
         suffixes.put(1000L, "K");
@@ -147,5 +148,33 @@ public final class KMNumbers {
 
     private static String formatString(Float number, Integer exp) {
         return String.format(locale, FORMAT, number / Math.pow(1000, exp), SUFFIXES.charAt(exp - 1));
+    }
+
+    /**
+     * used to formating value display of YAxis chart at topads fitur
+     *
+     * @param number
+     * @return
+     */
+    public static String formatNumbersTopAds(Long number) {
+        if (number >= 100000 || number < 0) {
+            return formatNumbersBiggerThanHundredThousand(number);
+        }
+
+        if (number < 10000) return formatStringTopAds(number);
+
+        int exp = (int) (Math.log(number) / Math.log(1000));
+        String result = formatString(number, exp);
+        return result;
+    }
+
+    /**
+     * used to formating number to currency format
+     *
+     * @param number
+     * @return
+     */
+    private static String formatStringTopAds(Long number) {
+        return numberFormat.format(number);
     }
 }

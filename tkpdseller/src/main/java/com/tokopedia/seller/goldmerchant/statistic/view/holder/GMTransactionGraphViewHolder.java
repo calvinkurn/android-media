@@ -2,13 +2,16 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
@@ -19,10 +22,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPre
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +35,23 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
-    private int gmStatGraphSelection;
-
+    private TitleCardView gmTitleCardView;
     private LineChartView gmStatisticIncomeGraph;
+    private LineChartContainerWidget gmLineChartContainer;
+    private int gmStatGraphSelection;
     private String[] monthNamesAbrev;
 
-    private TitleCardView gmTitleCardView;
-    private LineChartContainerWidget gmLineChartContainer;
-
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
+    private boolean compareDate;
 
     public GMTransactionGraphViewHolder(View view) {
         gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
         gmTitleCardView.setOnArrowDownClickListener(new TitleCardView.OnArrowDownClickListener() {
             @Override
             public void onArrowDownClicked() {
+                if (gmTransactionGraphViewModel == null) {
+                    return;
+                }
                 showGraphSelectionDialog();
             }
         });
@@ -63,16 +65,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
         monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
     }
 
-    OnTransactioNGraphViewHolderListener onTransactioNGraphViewHolderListener;
-    public interface OnTransactioNGraphViewHolderListener{
-        boolean isComparingDate();
-    }
-
-    public void setOnTransactioNGraphViewHolderListener(OnTransactioNGraphViewHolderListener onTransactioNGraphViewHolderListener) {
-        this.onTransactioNGraphViewHolderListener = onTransactioNGraphViewHolderListener;
-    }
-
-    public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel) {
+    public void bind(@Nullable GMTransactionGraphViewModel gmTransactionGraphViewModel, boolean compareDate) {
+        this.compareDate = compareDate;
         this.gmTransactionGraphViewModel = gmTransactionGraphViewModel;
         switch (selection()) {
             case GMTransactionGraphType.GROSS_REVENUE:
@@ -118,7 +112,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                     public void onBottomSheetItemClick(MenuItem item) {
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
                         resetSelection(gmStatGraphSelection);
-                        GMTransactionGraphViewHolder.this.bind(gmTransactionGraphViewModel);
+                        bind(gmTransactionGraphViewModel, compareDate);
                     }
                 })
                 .createDialog();
@@ -136,12 +130,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void bindForSelection(@Nullable GMGraphViewWithPreviousModel data) {
-        boolean isCompareGraph = false;
-        if (onTransactioNGraphViewHolderListener!= null) {
-            isCompareGraph = onTransactioNGraphViewHolderListener.isComparingDate();
-        }
         setHeaderValue(data);
-        if (isCompareGraph) {
+        if (compareDate) {
             gmLineChartContainer.setPercentage(data.percentage);
             gmLineChartContainer.setCompareDate(data);
             gmLineChartContainer.setMainDate(data);
@@ -189,8 +179,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
-        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
@@ -212,5 +202,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     @Override
     public void setViewState(int state) {
         gmTitleCardView.setViewState(state);
+        if (state == LoadingStateView.VIEW_ERROR) {
+            gmTransactionGraphViewModel = null;
+        }
     }
 }

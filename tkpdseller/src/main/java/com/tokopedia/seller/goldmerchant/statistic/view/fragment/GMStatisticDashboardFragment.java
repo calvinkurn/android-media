@@ -125,6 +125,11 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
+    @Override
+    public boolean isAllowToCompareDate() {
+        return false;
+    }
+
     private void resetToLoading() {
         gmStatisticSummaryViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
         gmStatisticGrossViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
@@ -224,10 +229,5 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public boolean allowCompareDate() {
-        return false;
     }
 }
