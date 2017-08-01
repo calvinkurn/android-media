@@ -51,7 +51,7 @@ import butterknife.Unbinder;
 public class ProfileCompletionFragment extends BaseDaggerFragment
         implements ProfileCompletionContract.View {
 
-    private static final String DEFAULT_EMPTY_BDAY = "01-01-0001";
+    private static final String DEFAULT_EMPTY_BDAY = "0001-01-01T00:00:00Z";
     ProgressBar progressBar;
     ViewPager viewPager;
     TextView percentText;
