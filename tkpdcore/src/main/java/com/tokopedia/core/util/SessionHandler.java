@@ -1,7 +1,5 @@
 package com.tokopedia.core.util;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -24,15 +22,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.common.dbManager.FeedDbManager;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
-import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
@@ -49,14 +40,11 @@ import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.RegisterNext;
 import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.Arrays;
 
-import static com.tokopedia.core.util.TokenSessionHelper.getExistingAccountAuthToken;
 import static com.tokopedia.core.util.TokenSessionHelper.invalidateAccountManager;
-import static com.tokopedia.core.util.TokenSessionHelper.removeAccountManager;
 
 public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
@@ -165,7 +153,7 @@ public class SessionHandler {
         clearFeedCache();
 
         invalidateAccountManager(context);
-        removeAccountManager(context);
+//        removeAccountManager(context);
     }
 
 

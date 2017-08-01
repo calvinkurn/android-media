@@ -32,7 +32,7 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
-    Call<Response<String>> getTokenSynchronous(@FieldMap Map<String, String> params);
+    Call<String> getTokenSynchronous(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Accounts.PATH_GET_INFO)
     Observable<Response<String>> getInfo(@QueryMap Map<String, String> params);

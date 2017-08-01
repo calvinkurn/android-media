@@ -43,21 +43,29 @@ public class AccessTokenRefresh {
         params.put("refresh_token", getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
 
         AccountsService service = new AccountsService(new Bundle());
-        Call<retrofit2.Response<String>> responseCall = service.getApi().getTokenSynchronous(params);
+        Call<String> responseCall = getRetrofit().create(AccountsApi.class).getTokenSynchronous(params);
 
-        retrofit2.Response<String> tokenResponse = null;
+        String tokenResponse = null;
         try {
-            tokenResponse = responseCall.execute().body();
+            tokenResponse = responseCall.clone().execute().body();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         TokenModel model = null;
         if (tokenResponse != null) {
-            model = new GsonBuilder().create().fromJson(tokenResponse.body(), TokenModel.class);
+            model = new GsonBuilder().create().fromJson(tokenResponse, TokenModel.class);
             sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
         }
 
         return model.getRefreshToken();
+    }
+
+    private Retrofit getRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
+                .addConverterFactory(new StringResponseConverter())
+                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false))
+                .build();
     }
 }

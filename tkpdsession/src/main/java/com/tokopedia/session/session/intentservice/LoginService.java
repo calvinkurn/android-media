@@ -59,8 +59,6 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.util.TokenSessionHelper.saveRefreshToken;
-
 public class LoginService extends IntentService implements DownloadServiceConstant {
 
     public static final String TAG = "LoginService";
@@ -336,6 +334,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                             sessionHandler.setToken(tokenModel.getAccessToken(),
                                     tokenModel.getTokenType()
                             );
+                            saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
                         }
                         return Observable.just(accountsParameter);
                     }
@@ -422,8 +421,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                                 sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
-                                saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
-
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
@@ -633,4 +630,13 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         }
 
     }
+
+    private void saveRefreshToken(Context context, String email, String refreshToken) {
+        final Account account = new Account(email, AccountGeneral.ACCOUNT_TYPE);
+        AccountManager accountManager = AccountManager.get(context);
+        accountManager.addAccountExplicitly(account, refreshToken, null);
+        accountManager.setAuthToken(account, AccountGeneral.ACCOUNT_TYPE, refreshToken);
+        Log.i(TAG, "saveRefreshToken: ");
+    }
+
 }

@@ -357,7 +357,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Request recreateRequestWithNewAccessToken(Chain chain) {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
-                .header("access_token", freshAccessToken)
+                .header("authorization", "Bearer " + freshAccessToken)
                 .build();
     }
 }
