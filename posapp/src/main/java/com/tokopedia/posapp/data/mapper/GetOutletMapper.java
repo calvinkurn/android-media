@@ -50,7 +50,7 @@ public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDoma
         for(AddressModel addressModel: outletResponse.getList()) {
             DataOutletDomain outlet = new DataOutletDomain();
             outlet.setOutletId(addressModel.getAddressId());
-            outlet.setOutletAddres(addressModel.getAddressFull());
+            outlet.setOutletAddres(addressModel.getAddressStreet());
             outlet.setOutletName(addressModel.getAddressName());
             outlet.setOutletPhone(addressModel.getReceiverPhone());
             outletDomain.getListOutlet().add(outlet);

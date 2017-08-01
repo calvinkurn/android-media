@@ -15,13 +15,13 @@ public interface Outlet {
     interface View extends CustomerView {
         void onOutletClicked(String outletId);
 
-        void onSuccessGetOutlet(List<OutletViewModel> outlets);
+        void onSuccessGetOutlet(OutletViewModel outlet);
 
         void onErrorGetOutlet(String errorMessage);
 
-        void showLoading();
+        void startLoading();
 
-        void hideLoading();
+        void finishLoading();
 
     }
 

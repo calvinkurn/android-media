@@ -208,14 +208,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         return callingIntent;
     }
 
-    public static Intent getPosLoginIntent(Context context) {
-        Intent callingIntent = new Intent(context, Login.class);
-        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-        callingIntent.putExtra(IS_PROVIDER_NEEDED, false);
-        return callingIntent;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Tokopedia3);

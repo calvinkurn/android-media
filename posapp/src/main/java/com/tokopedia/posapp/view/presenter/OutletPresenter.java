@@ -25,6 +25,7 @@ public class OutletPresenter extends BaseDaggerPresenter<Outlet.View>
 
     @Override
     public void getOutlet(RequestParams params) {
+        viewListener.startLoading();
         getOutletUseCase.execute(params, new GetOutletSubscriber(viewListener));
     }
 

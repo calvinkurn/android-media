@@ -1,51 +1,37 @@
 package com.tokopedia.posapp.view.viewmodel.outlet;
 
+import java.util.List;
+
 /**
  * Created by okasurya on 7/31/17.
  */
 
 public class OutletViewModel {
-    private String outletId;
-    private String outletName;
-    private String outletAddres;
-    private String outletPhone;
+    private List<OutletItemViewModel> outletList;
+    private String nextUri;
+    private String prevUri;
 
-    public OutletViewModel(String id, String name, String address, String phone) {
-        this.outletId = id;
-        this.outletName = name;
-        this.outletAddres = address;
-        this.outletPhone = phone;
+    public List<OutletItemViewModel> getOutletList() {
+        return outletList;
     }
 
-    public String getOutletId() {
-        return outletId;
+    public void setOutletList(List<OutletItemViewModel> outletList) {
+        this.outletList = outletList;
     }
 
-    public void setOutletId(String outletId) {
-        this.outletId = outletId;
+    public String getNextUri() {
+        return nextUri;
     }
 
-    public String getOutletName() {
-        return outletName;
+    public void setNextUri(String nextUri) {
+        this.nextUri = nextUri;
     }
 
-    public void setOutletName(String outletName) {
-        this.outletName = outletName;
+    public String getPrevUri() {
+        return prevUri;
     }
 
-    public String getOutletAddres() {
-        return outletAddres;
-    }
-
-    public void setOutletAddres(String outletAddres) {
-        this.outletAddres = outletAddres;
-    }
-
-    public String getOutletPhone() {
-        return outletPhone;
-    }
-
-    public void setOutletPhone(String outletPhone) {
-        this.outletPhone = outletPhone;
+    public void setPrevUri(String prevUri) {
+        this.prevUri = prevUri;
     }
 }
