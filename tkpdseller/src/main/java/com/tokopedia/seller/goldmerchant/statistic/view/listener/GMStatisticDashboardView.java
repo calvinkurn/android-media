@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface GMStatisticDashboardView extends CustomerView {
 
-    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, boolean isGoldMerchant);
+    void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph);
 
     void onErrorLoadTransactionGraph(Throwable t);
 
