@@ -493,6 +493,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     operators
             );
             spnOperator.setAdapter(adapterOperator);
+            spnOperator.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction()== MotionEvent.ACTION_UP)
+                    {
+                        CommonUtils.dumper("GAv4 PULSA spinner clicked");
+                    }
+                    return false;
+                }
+            });
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1099,6 +1109,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
+            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+selectedOperator.name);
             setParentToScroolToTop();
         }
     }
