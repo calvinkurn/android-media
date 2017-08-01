@@ -78,6 +78,8 @@ public interface Constants {
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
 
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
+
+        String SELLER_APP_HOME = "sellerapp://home";
     }
 
     interface Settings {
