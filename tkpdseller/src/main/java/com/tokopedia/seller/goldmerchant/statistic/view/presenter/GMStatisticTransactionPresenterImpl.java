@@ -37,16 +37,6 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     }
 
     @Override
-    public void startTransactionProductList() {
-        if (isViewAttached()) {
-            getView().startTransactionProductList(
-                    gmDateRangeDateViewModel.getStartDate(),
-                    gmDateRangeDateViewModel.getEndDate()
-            );
-        }
-    }
-
-    @Override
     public void loadDataWithDate(long startDate, long endDate) {
         gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
@@ -55,24 +45,21 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
             }
 
             @Override
-            public void onError(Throwable e) {
-
+            public void onError(Throwable throwable) {
+                if (isViewAttached()) {
+                    getView().onErrorLoadTransactionGraph(throwable);
+                    getView().onErrorLoadTopAdsGraph(throwable);
+                }
             }
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
                 fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
-                revealData(mergeModel);
+                // get necessary object, just take from transaction graph view
+                gmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.dateRangeModel;
+                getView().onSuccessLoadTransactionGraph(mergeModel);
             }
         });
-    }
-
-    private void revealData(GMTransactionGraphMergeModel mergeModel) {
-        if (isViewAttached()) {
-            // get necessary object, just take from transaction graph view
-            gmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.dateRangeModel;
-            getView().revealData(mergeModel);
-        }
     }
 
     private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
@@ -81,39 +68,21 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
         dashboardTopadsInteractor.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
             @Override
             public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {
-                if (isViewAttached()) {
-                    DataDeposit data = dataDepositDataResponse.getData();
-                    if (data.isAdUsage()) {
-                        if (isNoAdsData(gmTopAdsAmountViewModel)) {
-                            getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
-                        } else {
-                            getView().bindTopAds(gmTopAdsAmountViewModel);
-                        }
-                    } else {
-                        if (gmTopAdsAmountViewModel.amount == 0) {
-                            getView().bindNoTopAdsCredit(gmTopAdsAmountViewModel);
-                        } else {
-                            getView().bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
-                        }
-                    }
+                DataDeposit dataDeposit = dataDepositDataResponse.getData();
+                if (dataDeposit.isAdUsage()) {
+                    getView().bindTopAds(gmTopAdsAmountViewModel);
+                } else {
+                    getView().bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel, dataDeposit);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
                 if (isViewAttached()) {
-                    getView().bindTopAdsNoData(gmTopAdsAmountViewModel);
+                    getView().onErrorLoadTopAdsGraph(throwable);
                 }
             }
         });
-    }
-
-    private boolean isNoAdsData(GMGraphViewModel data) {
-        boolean isAllZero = true;
-        for (int i = 0; i < data.values.size(); i++) {
-            isAllZero = isAllZero && data.values.get(i) == 0;
-        }
-        return isAllZero;
     }
 
     @Override

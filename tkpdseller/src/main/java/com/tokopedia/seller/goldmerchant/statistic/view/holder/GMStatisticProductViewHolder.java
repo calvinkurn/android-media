@@ -70,7 +70,7 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
     private void setEmptyState() {
         popularProductCardView.setEmptyViewRes(R.layout.partial_gm_statistic_popular_product_empty);
         EmptyCardContentView emptyCardContentView = (EmptyCardContentView) popularProductCardView.getEmptyView().findViewById(R.id.empty_card_content_view);
-        emptyCardContentView.setOnClickListener(new View.OnClickListener() {
+        emptyCardContentView.setActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveToAddProduct();

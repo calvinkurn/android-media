@@ -26,6 +26,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import javax.inject.Inject;
@@ -34,7 +35,8 @@ import javax.inject.Inject;
  * @author normansyahputa on 7/6/17.
  */
 
-public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView, GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener, GMTransactionGraphViewHolder.OnTransactioNGraphViewHolderListener {
+public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticTransactionView,
+        GMTopAdsAmountViewHolder.OnTopAdsViewHolderListener {
     public static final String TAG = "GMStatisticTransactionF";
 
     @Inject
@@ -45,8 +47,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
     private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
     private GMTopAdsAmountViewHolder gmTopAdsAmountViewHolder;
-
-    private boolean isComparingDate = false;
 
     public static Fragment createInstance() {
         return new GMStatisticTransactionFragment();
@@ -69,31 +69,23 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmTopAdsAmountViewHolder = new GMTopAdsAmountViewHolder(view);
         gmTopAdsAmountViewHolder.setOnTopAdsViewHolderListener(this);
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
-        gmTransactionGraphViewHolder.setOnTransactioNGraphViewHolderListener(this);
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
 
         gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter != null) {
-                    presenter.startTransactionProductList();
-                }
+                Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
+                startActivity(intent);
             }
         });
         return view;
     }
 
     @Override
-    public void startTransactionProductList(long startDate, long endDate) {
-        Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
+        super.loadDataByDate(datePickerViewModel);
         loadingState(LoadingStateView.VIEW_LOADING);
-        isComparingDate = datePickerViewModel.isCompareDate();
         presenter.loadDataWithDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
     }
 
@@ -104,14 +96,15 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public void revealData(GMTransactionGraphMergeModel mergeModel) {
-        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel);
+    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel mergeModel) {
+        gmTransactionGraphViewHolder.bind(mergeModel.gmTransactionGraphViewModel, isCompareDate());
         finishedTransactionViewHolder.bind(mergeModel.unFinishedTransactionViewModel);
     }
 
     @Override
-    public void bindTopAdsNoData(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindNoData(gmTopAdsAmountViewModel);
+    public void onErrorLoadTransactionGraph(Throwable t) {
+        gmTransactionGraphViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
+        finishedTransactionViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
     }
 
     @Override
@@ -120,13 +113,13 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public void bindNoTopAdsCredit(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindNoTopAdsCredit(gmTopAdsAmountViewModel);
+    public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel, DataDeposit dataDeposit) {
+        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel, dataDeposit);
     }
 
     @Override
-    public void bindTopAdsCreditNotUsed(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bindTopAdsCreditNotUsed(gmTopAdsAmountViewModel);
+    public void onErrorLoadTopAdsGraph(Throwable t) {
+        gmTopAdsAmountViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
     }
 
     @Override
@@ -141,36 +134,13 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     }
 
     @Override
-    public void onChangeDateClicked() {
-        dateLabelView.performClick();
-    }
-
-    @Override
-    public void onViewTopAdsClicked() {
+    public void onManageTopAdsClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
         startActivity(intent);
     }
 
     @Override
-    public void onFindOutTopAdsClicked() {
-        Intent intent = new Intent(getActivity(), WebViewTopAdsActivity.class);
-        intent.putExtra(WebViewTopAdsFragment.SOURCE_EXTRA, TkpdUrl.INFO_TOPADS);
-        getActivity().startActivity(intent);
-    }
-
-    @Override
-    public void onRegisterTopAdsNowClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsDashboardActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean isComparingDate() {
-        return isComparingDate;
-    }
-
-    @Override
-    public boolean allowCompareDate() {
+    public boolean isAllowToCompareDate() {
         return true;
     }
 }

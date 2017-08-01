@@ -112,7 +112,7 @@ public class EmptyCardContentView extends BaseCustomView {
         }
     }
 
-    public void set(OnClickListener onClickListener) {
+    public void setActionClickListener(OnClickListener onClickListener) {
         actionTextView.setOnClickListener(onClickListener);
     }
 }
