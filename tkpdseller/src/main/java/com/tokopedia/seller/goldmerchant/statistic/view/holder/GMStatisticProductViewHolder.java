@@ -9,6 +9,7 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
@@ -67,24 +68,23 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
     }
 
     private void setEmptyState() {
-        popularProductCardView.setEmptyViewRes(R.layout.widget_popular_product_empty);
-        popularProductCardView.getEmptyView().findViewById(R.id.add_product_popular_product)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        moveToAddProduct();
-
-                        // analytic below : https://phab.tokopedia.com/T18496
-                        clickAddProductTracking();
-                    }
-                });
+        popularProductCardView.setEmptyViewRes(R.layout.partial_gm_statistic_popular_product_empty);
+        EmptyCardContentView emptyCardContentView = (EmptyCardContentView) popularProductCardView.getEmptyView().findViewById(R.id.empty_card_content_view);
+        emptyCardContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToAddProduct();
+                // analytic below : https://phab.tokopedia.com/T18496
+                clickAddProductTracking();
+            }
+        });
         setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     private void gotoProductDetail() {
-        if (getPopularProduct == null)
+        if (getPopularProduct == null) {
             return;
-
+        }
         popularProductCardView.getContext().startActivity(ProductDetailRouter
                 .createInstanceProductDetailInfoActivity(
                         popularProductCardView.getContext(),

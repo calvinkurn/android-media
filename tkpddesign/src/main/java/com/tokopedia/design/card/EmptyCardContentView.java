@@ -58,7 +58,7 @@ public class EmptyCardContentView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_empty_content_card, this);
+        View view = inflate(getContext(), R.layout.widget_empty_card_content, this);
         imageView = (ImageView) view.findViewById(R.id.image_view);
         titleTextView = (TextView) view.findViewById(R.id.text_view_title);
         contentTextView = (TextView) view.findViewById(R.id.text_view_content);
