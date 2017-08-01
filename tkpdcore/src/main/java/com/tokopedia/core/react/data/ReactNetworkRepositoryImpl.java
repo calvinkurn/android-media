@@ -49,13 +49,17 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
                 if (isAuth) {
                     if (isWSV4(url)) {
                         return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().post(url, AuthUtil.generateParamsNetwork(context, params));
-                    } else if (params.size() > 0) {
-                        return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
                     } else {
-                        return reactNetworkAuthFactory.createReactNetworkDataSource().postNoParam(url);
+                        return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
                     }
                 }
                 else return reactNetworkFactory.createReactNetworkDataSource().post(url, params);
+            case ReactConst.DELETE:
+                if (isAuth) {
+                    return reactNetworkAuthFactory.createReactNetworkDataSource().delete(url);
+                } else {
+                    return reactNetworkFactory.createReactNetworkDataSource().delete(url);
+                }
             default:
                 throw new UnknownMethodException();
         }

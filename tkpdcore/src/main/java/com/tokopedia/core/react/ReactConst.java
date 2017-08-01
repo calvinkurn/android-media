@@ -8,6 +8,7 @@ public interface ReactConst {
 
     String GET = "GET";
     String POST = "POST";
+    String DELETE = "DELETE";
     String MAIN_MODULE = "MAIN";
     String KEY_SCREEN = "Screen";
 

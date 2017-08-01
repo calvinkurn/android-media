@@ -18,14 +18,16 @@ public class ReactNetworkDataSource {
     }
 
     public Observable<String> get(String url, TKPDMapParam<String, String> params) {
+        if (params.size() > 0) return commonService.get(url);
         return commonService.get(url, params);
     }
 
     public Observable<String> post(String url, TKPDMapParam<String, String> params) {
+        if (params.size() > 0) return commonService.post(url)
         return commonService.post(url, params);
     }
 
-    public Observable<String> postNoParam(String url) {
-        return commonService.post(url);
+    public Observable<String> delete(String url) {
+        return commonService.delete(url);
     }
 }
