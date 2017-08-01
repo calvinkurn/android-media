@@ -1,11 +1,9 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,8 +39,10 @@ import javax.inject.Inject;
  */
 public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GMStatisticTransactionTableModel>
         implements GMStatisticTransactionTableView {
-    public static final String TAG = "GMStatisticTransactionT";
+
     public static final int START_PAGE = 0;
+
+    private TextView tvSortBy;
 
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
@@ -57,7 +57,6 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
-    private TextView tvSortBy;
 
     public static Fragment createInstance() {
         GMStatisticTransactionTableFragment fragment = new GMStatisticTransactionTableFragment();
@@ -71,54 +70,13 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        transactionTablePresenter.attachView(this);
-    }
-
-    @Override
-    public void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page) {
-        transactionTablePresenter.loadData(
-                new Date(datePickerViewModel.getStartDate()),
-                new Date(datePickerViewModel.getEndDate()),
-                sortType,
-                sortBy,
-                page);
-    }
-
-    @Override
-    public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
-        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
-    }
-
-    @Override
-    public DatePickerViewModel getDefaultDateViewModel() {
-        return GMStatisticDateUtils.getDefaultDatePickerViewModel();
-    }
-
-    @Override
     protected void initInjector() {
         DaggerGMTransactionComponent
                 .builder()
                 .goldMerchantComponent(getComponent(GoldMerchantComponent.class))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_sort) {
-            showSortType();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        transactionTablePresenter.attachView(this);
     }
 
     @Override
@@ -152,8 +110,43 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    public void onItemClicked(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
+    public void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page) {
+        transactionTablePresenter.loadData(
+                new Date(datePickerViewModel.getStartDate()),
+                new Date(datePickerViewModel.getEndDate()),
+                sortType,
+                sortBy,
+                page);
+    }
 
+    @Override
+    public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
+        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel);
+    }
+
+    @Override
+    public DatePickerViewModel getDefaultDateViewModel() {
+        return GMStatisticDateUtils.getDefaultDatePickerViewModel();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_sort) {
+            showSortType();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClicked(GMStatisticTransactionTableModel gmStatisticTransactionTableModel) {
+        // Do nothing
     }
 
     @Override
@@ -268,5 +261,4 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     protected int getStartPage() {
         return START_PAGE;
     }
-
 }

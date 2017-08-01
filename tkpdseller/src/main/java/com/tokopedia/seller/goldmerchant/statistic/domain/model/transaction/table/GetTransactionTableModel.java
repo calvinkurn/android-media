@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GetTransactionTableModel {
     private List<Cell> cells = null;
-    private long totalCellCount;
+    private int totalCellCount;
 
     public List<Cell> getCells() {
         return cells;
@@ -19,11 +19,11 @@ public class GetTransactionTableModel {
         this.cells = cells;
     }
 
-    public long getTotalCellCount() {
+    public int getTotalCellCount() {
         return totalCellCount;
     }
 
-    public void setTotalCellCount(long totalCellCount) {
+    public void setTotalCellCount(int totalCellCount) {
         this.totalCellCount = totalCellCount;
     }
 }

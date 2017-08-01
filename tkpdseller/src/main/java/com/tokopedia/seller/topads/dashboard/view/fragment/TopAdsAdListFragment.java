@@ -42,7 +42,7 @@ import java.util.List;
 
 public abstract class TopAdsAdListFragment<T extends
         TopAdsAdListPresenter, U extends ItemType> extends TopAdsBaseListFragment<T,U> implements
-        AdListMenuListener, BaseListViewListener, SearchView.OnQueryTextListener,
+        AdListMenuListener, BaseListViewListener<U>, SearchView.OnQueryTextListener,
         BaseListAdapter.Callback<U> {
 
     public interface OnAdListFragmentListener {

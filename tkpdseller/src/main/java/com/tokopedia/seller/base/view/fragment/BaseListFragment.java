@@ -32,7 +32,7 @@ import java.util.List;
  */
 
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
-        BaseListViewListener, BaseListAdapter.Callback<T> {
+        BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     protected static final int START_PAGE = 1;
 

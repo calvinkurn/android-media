@@ -63,7 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<ProductDraftListPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener {
+        implements TopAdsEmptyAdDataBinder.Callback, BaseListViewListener<ProductDraftViewModel> {
     public static final String TAG = ProductDraftListFragment.class.getSimpleName();
 
     private FabSpeedDial fabAdd;
