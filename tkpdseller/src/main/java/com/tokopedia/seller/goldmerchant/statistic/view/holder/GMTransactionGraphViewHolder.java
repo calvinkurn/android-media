@@ -2,13 +2,16 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
@@ -19,10 +22,7 @@ import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewWithPre
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +33,11 @@ import java.util.List;
 
 public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
+    private final String[] gmStatTransactionEntries;
+    private final boolean[] selections;
     private TitleCardView gmTitleCardView;
     private LineChartView gmStatisticIncomeGraph;
     private LineChartContainerWidget gmLineChartContainer;
-
-    private final String[] gmStatTransactionEntries;
-    private final boolean[] selections;
     private int gmStatGraphSelection;
     private String[] monthNamesAbrev;
 
@@ -180,8 +179,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0));
-        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }

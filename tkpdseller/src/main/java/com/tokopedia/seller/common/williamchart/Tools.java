@@ -16,7 +16,6 @@
 
 package com.tokopedia.seller.common.williamchart;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -30,17 +29,18 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
 import com.tokopedia.seller.common.williamchart.util.DefaultTooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
+import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
+import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
+import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 
 import java.util.List;
 
@@ -136,6 +136,11 @@ public class Tools {
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
                                                                      final BaseWilliamChartModel baseWilliamChartModel) {
+        return getCommonWilliamChartConfig(lineChartView, baseWilliamChartModel, new GrossGraphDataSetConfig());
+    }
+
+    public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
+                                                                     final BaseWilliamChartModel baseWilliamChartModel, DataSetConfiguration dataSetConfiguration) {
         lineChartView.dismissAllTooltips();
         // resize linechart according to data
         GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView);
@@ -146,7 +151,7 @@ public class Tools {
         BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
         baseWilliamChartConfig
                 .reset()
-                .addBaseWilliamChartModels(baseWilliamChartModel, new GrossGraphDataSetConfig())
+                .addBaseWilliamChartModels(baseWilliamChartModel, dataSetConfiguration)
                 .setDotDrawable(oval2Copy6)
                 .setBasicGraphConfiguration(new GrossGraphChartConfig())
                 .setTooltip(tooltip, new DefaultTooltipConfiguration())
