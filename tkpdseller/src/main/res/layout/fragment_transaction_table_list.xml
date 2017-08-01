@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/product_name_text"
-                    style="@style/TextView.GreyTitle"
+                    style="@style/TextView.Body1.BlackDisabled"
                     android:text="@string/gm_statistic_product_name" />
 
                 <View
@@ -62,7 +62,7 @@
                     <TextView
                         android:id="@+id/sort_by_text"
                         style="@style/TextView.Body1.Green"
-                        tools:text="@string/gm_statistic_total_transaction"/>
+                        tools:text="@string/gm_statistic_total_transaction" />
 
                     <android.support.v7.widget.AppCompatImageView
                         android:layout_width="10dp"

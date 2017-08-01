@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextView.GreyTitle"
+        style="@style/TextView.Body1.BlackDisabled"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/tv_subtitle"
-        style="@style/TextView.GreyTitle"
+        style="@style/TextView.Body1.BlackDisabled"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_med"
