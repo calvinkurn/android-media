@@ -22,7 +22,8 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
  */
 
 public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
-    private final TitleCardView popularProductCardView;
+
+    private TitleCardView popularProductCardView;
     private ImageView ivPopularProduct;
     private TextView tvPopularProductDescription;
     private TextView tvNoOfSelling;
@@ -55,30 +56,16 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
 
     public void bindData(GetPopularProduct getPopularProduct) {
         if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
-            setEmptyState();
+            setViewState(LoadingStateView.VIEW_EMPTY);
             return;
         }
-        setViewState(LoadingStateView.VIEW_CONTENT);
         this.getPopularProduct = getPopularProduct;
         new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
         tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = KMNumbers.getFormattedString(sold);
         tvNoOfSelling.setText(text);
-    }
-
-    private void setEmptyState() {
-        popularProductCardView.setEmptyViewRes(R.layout.partial_gm_statistic_popular_product_empty);
-        EmptyCardContentView emptyCardContentView = (EmptyCardContentView) popularProductCardView.getEmptyView().findViewById(R.id.empty_card_content_view);
-        emptyCardContentView.setActionClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToAddProduct();
-                // analytic below : https://phab.tokopedia.com/T18496
-                clickAddProductTracking();
-            }
-        });
-        setViewState(LoadingStateView.VIEW_EMPTY);
+        setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
     private void gotoProductDetail() {
@@ -92,11 +79,6 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
 
         // analytic below : https://phab.tokopedia.com/T18496
         clickGMStat();
-    }
-
-    private void moveToAddProduct() {
-        Intent intent = new Intent(popularProductCardView.getContext(), ProductAddActivity.class);
-        popularProductCardView.getContext().startActivity(intent);
     }
 
     @Override

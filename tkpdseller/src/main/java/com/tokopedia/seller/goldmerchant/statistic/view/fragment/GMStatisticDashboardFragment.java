@@ -41,7 +41,6 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
-    public static final String TAG = "GMStatisticDashboardFragment";
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;

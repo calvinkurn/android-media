@@ -29,7 +29,7 @@
     <string name="gm_statistic_buyer_data">Data Pembeli</string>
     <string name="gm_statistic_buyer_count">Jumlah Pembeli</string>
     <string name="gm_statistic_product_data">Data Produk</string>
-    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada data produk pada periode ini</string>
+    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada terjual dalam 30 hari terakhir</string>
     <string name="gm_statistic_x_sold">x Terjual</string>
     <string name="gm_statistic_most_popular_product">Produk terlaris</string>
 
