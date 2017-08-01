@@ -34,13 +34,12 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
 
     private TitleCardView transactionDataCardView;
     private TextView tvTransactionCount;
-    private boolean isGoldMerchant;
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
 
     private String[] monthNamesAbrev;
 
-    public GMStatisticTransactionViewHolder(View view, boolean isGoldMerchant) {
+    public GMStatisticTransactionViewHolder(View view) {
         transactionDataCardView = (TitleCardView) view.findViewById(R.id.transaction_data_card_view);
         transactionChart = (LineChartView) transactionDataCardView.findViewById(R.id.transaction_chart);
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
@@ -57,10 +56,9 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         });
         monthNamesAbrev = transactionDataCardView.getContext().getResources()
                 .getStringArray(R.array.lib_date_picker_month_entries);
-        this.isGoldMerchant = isGoldMerchant;
     }
 
-    public void bindData(GMGraphViewWithPreviousModel totalTransactionModel) {
+    public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {
         /* non gold merchant */
         if (!isGoldMerchant) {
             setEmptyViewNoGM();
@@ -98,7 +96,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     }
 
     private void setEmptyViewNoGM() {
-        transactionDataCardView.setEmptyViewRes(R.layout.widget_transaction_data_empty_no_gm);
+        transactionDataCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_transaction_not_gm);
         transactionDataCardView.getEmptyView().findViewById(R.id.move_to_gmsubscribe)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override

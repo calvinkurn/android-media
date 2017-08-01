@@ -30,6 +30,14 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
     public DatePickerPresenter datePickerPresenter;
     private DatePickerViewModel datePickerViewModel;
 
+    protected long getStartDate(){
+        return datePickerViewModel.getStartDate();
+    }
+
+    protected long getEndDate() {
+        return datePickerViewModel.getEndDate();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

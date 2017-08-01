@@ -26,7 +26,7 @@
             app:subtitleTextAppearance="@style/ToolbarSubtitleText"
             app:titleTextAppearance="@style/ToolbarText" />
 
-        <include layout="@layout/layout_tab_top_ads_indicator_main_fixed"/>
+        <include layout="@layout/partial_tab_top_ads_indicator_main_fixed"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

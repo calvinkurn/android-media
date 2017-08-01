@@ -62,7 +62,7 @@ public class TopAdsStatisticLabelView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.custom_view_topads_statistic, this);
+        View view = inflate(getContext(), R.layout.widget_top_ads_statistic, this);
         titleTextView = (TextView) view.findViewById(R.id.text_view_title);
         contentTextView = (TextView) view.findViewById(R.id.text_view_content);
     }

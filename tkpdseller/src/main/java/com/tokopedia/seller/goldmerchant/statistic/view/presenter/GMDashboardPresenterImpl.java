@@ -67,7 +67,7 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
 
             @Override
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
-                getView().onSuccessLoadTransactionGraph(mergeModel, mergeModel.isGoldMerchant());
+                getView().onSuccessLoadTransactionGraph(mergeModel);
             }
         });
 

@@ -181,7 +181,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.chips_top_ads_selection_fragment;
+        return R.layout.fragment_top_ads_chips_selection;
     }
 
     @Override

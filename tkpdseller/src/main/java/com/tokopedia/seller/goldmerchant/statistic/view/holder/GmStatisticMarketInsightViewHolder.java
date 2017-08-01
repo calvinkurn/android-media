@@ -32,10 +32,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     private TitleCardView titleCardView;
     private MarketInsightAdapter marketInsightAdapter;
 
-    private boolean goldMerchant;
-
-    public GmStatisticMarketInsightViewHolder(View view, boolean goldMerchant) {
-        this.goldMerchant = goldMerchant;
+    public GmStatisticMarketInsightViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
@@ -68,8 +65,8 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         }
     }
 
-    public void bindData(List<GetKeyword> getKeywords) {
-        if (!goldMerchant) {
+    public void bindData(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
+        if (!isGoldMerchant) {
             displayNonGoldMerchant();
             return;
         }
@@ -108,8 +105,8 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    public void bindNoShopCategory() {
-        if (goldMerchant)
+    public void bindNoShopCategory(boolean isGoldMerchant) {
+        if (isGoldMerchant)
             displayEmptyState();
         else {
             displayNonGoldMerchant();
@@ -117,7 +114,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     private void displayNonGoldMerchant() {
-        titleCardView.setEmptyViewRes(R.layout.widget_market_insight_empty_no_gm);
+        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_market_insight_not_gm);
         View emptyView = titleCardView.getEmptyView();
         emptyView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,9 +123,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
             }
 
             private void moveToGMSubscribe() {
-                if (!goldMerchant) {
-                    Router.goToGMSubscribe(titleCardView.getContext());
-                }
+                Router.goToGMSubscribe(titleCardView.getContext());
             }
         });
         // content will be overlayed behind the empty state
@@ -160,7 +155,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     private void displayEmptyState() {
-        titleCardView.setEmptyViewRes(R.layout.widget_market_insight_empty_no_data);
+        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_market_insight_no_data);
         titleCardView.getEmptyView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

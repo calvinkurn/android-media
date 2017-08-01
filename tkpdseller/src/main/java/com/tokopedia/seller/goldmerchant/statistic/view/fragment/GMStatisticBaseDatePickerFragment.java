@@ -15,9 +15,20 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
 public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFragment {
 
+    private boolean compareDate;
+
+    protected boolean isCompareDate() {
+        return compareDate;
+    }
+
+    @Override
+    public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
+        compareDate = datePickerViewModel.isCompareDate();
+    }
+
     @Override
     public Intent getDatePickerIntent(DatePickerViewModel datePickerViewModel) {
-        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel, allowCompareDate() );
+        return GMStatisticDateUtils.getDatePickerIntent(getActivity(), datePickerViewModel, isAllowToCompareDate() );
     }
 
     @Override
@@ -28,7 +39,7 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
     @Override
     protected void setDateLabelView(DatePickerViewModel datePickerViewModel) {
         super.setDateLabelView(datePickerViewModel);
-        if (allowCompareDate() && datePickerViewModel.isCompareDate()) {
+        if (isAllowToCompareDate() && datePickerViewModel.isCompareDate()) {
             PeriodRangeModel periodRangeModel = GMStatisticDateUtils.getComparedDate(
                     datePickerViewModel.getStartDate(),
                     datePickerViewModel.getEndDate());
@@ -48,5 +59,5 @@ public abstract class GMStatisticBaseDatePickerFragment extends BaseDatePickerFr
         return datePickerViewModel;
     }
 
-    public abstract boolean allowCompareDate();
+    public abstract boolean isAllowToCompareDate();
 }
