@@ -73,12 +73,13 @@
 
     <declare-styleable name="TitleCardView">
         <attr name="tcv_title" format="string" />
-        <attr name="tcv_title_size" format="dimension" />
+        <attr name="tcv_title_text_size" format="dimension" />
         <attr name="tcv_icon" format="reference" />
         <attr name="tcv_loading_layout" format="reference" />
         <attr name="tcv_empty_layout" format="reference" />
         <attr name="tcv_error_layout" format="reference" />
         <attr name="tcv_use_gradient_title" format="boolean" />
+        <attr name="tcv_title_height" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="LoadingStateView">

@@ -32,6 +32,7 @@ public class TitleCardView extends CardView {
     private OnArrowDownClickListener onArrowDownClickListener;
     private TextView tvTitle;
     private float titleTextSize;
+    private float titleHeight;
     private ImageView ivArrowDown;
     private ViewGroup vgTitle;
 
@@ -70,12 +71,13 @@ public class TitleCardView extends CardView {
     private void apply(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TitleCardView);
         titleString = a.getString(R.styleable.TitleCardView_tcv_title);
-        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_size, 0);
+        titleTextSize = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_text_size, 0);
         loadingLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, VIEW_NOT_AVAILABLE);
         errorLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_error_layout, VIEW_NOT_AVAILABLE);
         emptyLayoutRes = a.getResourceId(R.styleable.TitleCardView_tcv_empty_layout, VIEW_NOT_AVAILABLE);
         iconDrawable = a.getDrawable(R.styleable.TitleCardView_tcv_icon);
         useGradientTitleLoading = a.getBoolean(R.styleable.TitleCardView_tcv_use_gradient_title, true);
+        titleHeight = a.getDimensionPixelSize(R.styleable.TitleCardView_tcv_title_height, 0);
         a.recycle();
     }
 
@@ -84,6 +86,10 @@ public class TitleCardView extends CardView {
         vgTitle = (ViewGroup) view.findViewById(R.id.vg_title);
         vgTitleContent = (ViewGroup) vgTitle.findViewById(R.id.vg_title_content);
         tvTitle = (TextView) vgTitleContent.findViewById(R.id.tv_title);
+        if (titleHeight!= 0) {
+            ViewGroup.LayoutParams layoutParams = vgTitleContent.getLayoutParams();
+            layoutParams.height = (int) titleHeight;
+        }
         if (titleTextSize != 0) {
             tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         }

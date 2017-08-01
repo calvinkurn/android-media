@@ -18,11 +18,9 @@
         <LinearLayout
             android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_height="?attr/actionBarSize"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginTop="@dimen/margin_med"
             android:orientation="horizontal">
 
             <ImageView
@@ -32,6 +30,7 @@
                 android:layout_marginRight="8dp"
                 android:visibility="gone"
                 tools:src="@drawable/ic_empty_state"
+                android:layout_gravity="center_vertical"
                 tools:visibility="visible" />
 
             <TextView
@@ -41,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
+                android:maxLines="1"
                 tools:text="Title" />
 
             <android.support.v7.widget.AppCompatImageView

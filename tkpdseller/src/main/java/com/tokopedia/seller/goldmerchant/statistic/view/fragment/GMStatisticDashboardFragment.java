@@ -11,7 +11,6 @@ import android.view.ViewTreeObserver;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
@@ -46,9 +45,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
-
-    @Inject
-    SessionHandler sessionHandler;
 
     private NestedScrollView nestedScrollView;
 
@@ -92,8 +88,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         gmStatisticSummaryViewHolder = new GMStatisticSummaryViewHolder(view);
         gmStatisticGrossViewHolder = new GMStatisticGrossViewHolder(view);
         gmStatisticProductViewHolder = new GMStatisticProductViewHolder(view);
-        gmStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
-        gmStatisticMarketInsightViewHolder = new GmStatisticMarketInsightViewHolder(view, sessionHandler.isGoldMerchant(getActivity()));
+        gmStatisticTransactionViewHolder = new GMStatisticTransactionViewHolder(view);
+        gmStatisticMarketInsightViewHolder = new GmStatisticMarketInsightViewHolder(view);
         gmStatisticBuyerViewHolder = new GmStatisticBuyerViewHolder(view);
 
         // analytic below : https://phab.tokopedia.com/T18496
@@ -146,7 +142,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
-        gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel);
+        gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel,
+                getTransactionGraph.isGoldMerchant());
     }
 
     @Override
@@ -191,13 +188,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onGetShopCategoryEmpty() {
-        gmStatisticMarketInsightViewHolder.bindNoShopCategory();
+    public void onGetShopCategoryEmpty(boolean isGoldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindNoShopCategory(isGoldMerchant);
     }
 
     @Override
-    public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords);
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
     }
 
     @Override
