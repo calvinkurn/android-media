@@ -2,12 +2,13 @@ package com.tokopedia.seller.goldmerchant.statistic.view.widget.config;
 
 import android.graphics.Color;
 
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.Tools;
 import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
 import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.common.williamchart.util.AnimationGraphConfiguration;
+import com.tokopedia.seller.common.williamchart.util.TopAdsYAxisRenderer;
 import com.tokopedia.seller.common.williamchart.view.ChartView;
+import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 
 /**
  * Created by normansyahputa on 7/7/17.
@@ -67,7 +68,7 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public StringFormatRenderer yStringFormatRenderer() {
-        return new YAxisRenderer();
+        return new TopAdsYAxisRenderer();
     }
 
     @Override
