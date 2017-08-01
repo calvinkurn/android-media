@@ -251,6 +251,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
         tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
+        btnBack.setVisibility(View.GONE);
+        btnNotReceive.setVisibility(View.GONE);
+        if(orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
+            btnNotReceive.setVisibility(View.VISIBLE);
+        else
+            btnBack.setVisibility(View.VISIBLE);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
