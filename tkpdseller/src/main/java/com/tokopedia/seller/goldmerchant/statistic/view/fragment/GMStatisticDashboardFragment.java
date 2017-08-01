@@ -110,9 +110,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                resetToLoading();
                 hideSnackBarRetry();
-                reloadDataForDate();
+                loadDataByDate();
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
@@ -121,8 +120,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
+        loadDataByDate();
+    }
+
+    public void loadDataByDate() {
         resetToLoading();
-        gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        gmDashboardPresenter.fetchData(getStartDate(), getEndDate());
     }
 
     @Override
