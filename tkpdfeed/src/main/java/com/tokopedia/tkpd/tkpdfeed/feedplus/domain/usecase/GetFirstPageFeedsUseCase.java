@@ -31,11 +31,6 @@ public class GetFirstPageFeedsUseCase extends GetFeedsUseCase {
         return Observable.concat(
                 feedRepository.getFirstPageFeedsFromLocal(),
                 getFirstPageFeedsCloudUseCase.createObservable(requestParams))
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
-                    @Override
-                    public Observable<? extends FeedResult> call(Throwable throwable) {
-                        return feedRepository.getFirstPageFeedsFromCloud(requestParams);
-                    }
-                });
+                .onErrorResumeNext(getFirstPageFeedsCloudUseCase.createObservable(requestParams));
     }
 }

@@ -115,7 +115,7 @@ public interface FeedPlus{
 
         void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
 
-        void onSeeAllOfficialStoresFromCampaign();
+        void onSeeAllOfficialStoresFromCampaign(String redirectUrl);
 
         void onGoToCampaign(String redirectUrl, String title);
 

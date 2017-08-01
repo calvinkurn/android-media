@@ -753,9 +753,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSeeAllOfficialStoresFromCampaign() {
+    public void onSeeAllOfficialStoresFromCampaign(String redirectUrl) {
         UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
-        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
     }
 
     @Override

@@ -80,12 +80,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        seeAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onSeeAllOfficialStoresFromCampaign();
-            }
-        });
+
 
 
     }
@@ -102,6 +97,12 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
             public void onClick(View v) {
                 viewListener.onGoToCampaign(officialStoreViewModel.getRedirectUrl(),
                         officialStoreViewModel.getTitle());
+            }
+        });
+        seeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());
             }
         });
     }

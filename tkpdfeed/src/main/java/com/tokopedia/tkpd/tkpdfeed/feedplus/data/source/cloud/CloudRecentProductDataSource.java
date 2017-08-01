@@ -52,16 +52,16 @@ public class CloudRecentProductDataSource {
                 FeedDomain feedDomain = globalCacheManager.getConvertObjData(
                         LocalFeedDataSource.KEY_FEED_PLUS, FeedDomain.class);
 
-                if (feedDomain != null)
+                if (feedDomain != null) {
                     feedDomain.setRecentProduct(listRecentView);
 
-                globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
-                globalCacheManager.setValue(
-                        CacheUtil.convertModelToString(feedDomain,
-                                new TypeToken<FeedDomain>() {
-                                }.getType()));
-                globalCacheManager.store();
-
+                    globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
+                    globalCacheManager.setValue(
+                            CacheUtil.convertModelToString(feedDomain,
+                                    new TypeToken<FeedDomain>() {
+                                    }.getType()));
+                    globalCacheManager.store();
+                }
             }
         };
     }
