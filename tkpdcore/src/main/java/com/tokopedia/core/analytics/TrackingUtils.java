@@ -73,7 +73,7 @@ public class TrackingUtils extends TrackingConfig {
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
                     .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
-                    .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName(), " "))
+                    .setFirstName(getFirstName(profileData.getUserInfo().getUserName()))
                     .build();
 
             getMoEngine().setUserData(customerWrapper);
@@ -105,7 +105,7 @@ public class TrackingUtils extends TrackingConfig {
                     .setShopName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():"")
                     .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
                     .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
-                    .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""," "))
+                    .setFirstName(getFirstName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""))
                     .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
                     .setMethod(label)
                     .build();
@@ -131,6 +131,18 @@ public class TrackingUtils extends TrackingConfig {
         }
 
         return firstSegment;
+    }
+
+    private static String getFirstName(String name) {
+        String firstName = name;
+        if(!TextUtils.isEmpty(name)){
+            String token[] = name.split(" ");
+            if(token.length>1){
+                firstName = token[0];
+            }
+        }
+
+        return firstName;
     }
 
     private static String normalizePhoneNumber(String phoneNum){
