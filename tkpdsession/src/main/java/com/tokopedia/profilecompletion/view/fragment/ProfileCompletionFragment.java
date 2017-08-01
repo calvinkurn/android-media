@@ -51,6 +51,7 @@ import butterknife.Unbinder;
 public class ProfileCompletionFragment extends BaseDaggerFragment
         implements ProfileCompletionContract.View {
 
+    private static final String DEFAULT_EMPTY_BDAY = "01-01-0001";
     ProgressBar progressBar;
     ViewPager viewPager;
     TextView percentText;
@@ -104,7 +105,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private Drawable getDraw(){
+    private Drawable getDraw() {
         TextDrawable drawable = new TextDrawable(getActivity());
         drawable.setText(getResources().getString(R.string.skip_form));
         drawable.setTextColor(R.color.black_70b);
@@ -206,7 +207,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         progressBar.setProgressDrawable(shape);
     }
 
-    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData, Pair<Integer,Integer> pair) {
+    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData, Pair<Integer, Integer> pair) {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
@@ -234,7 +235,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     }
 
     private boolean checkingIsEmpty(String item) {
-        return item == null || item.length() == 0 || item.equals("0");
+        return item == null || item.length() == 0 || item.equals("0")
+                || item.equals(DEFAULT_EMPTY_BDAY);
     }
 
     public ProfileCompletionContract.Presenter getPresenter() {
@@ -273,13 +275,12 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         skip.setEnabled(false);
     }
 
-    public void canProceed(boolean can){
+    public void canProceed(boolean can) {
         proceed.setEnabled(can);
-        if(can){
+        if (can) {
             proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
             proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
-        }
-        else{
+        } else {
             proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
             proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         }
