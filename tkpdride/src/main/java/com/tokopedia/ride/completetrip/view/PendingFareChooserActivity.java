@@ -2,9 +2,8 @@ package com.tokopedia.ride.completetrip.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -54,7 +53,7 @@ public class PendingFareChooserActivity extends BaseActivity implements TokoCash
     public void onItemSelected(TokoCashProduct product) {
         Intent intent = getIntent();
         intent.putExtra(EXTRA_PRODUCT, product);
-        setResult(RESULT_OK);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

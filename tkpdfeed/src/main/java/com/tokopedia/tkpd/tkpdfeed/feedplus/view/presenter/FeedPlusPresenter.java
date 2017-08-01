@@ -130,7 +130,11 @@ public class FeedPlusPresenter
                     stringBuilder.append(viewListener.getString(R.string.msg_network_error));
                 }
                 viewListener.showSnackbar(stringBuilder.toString());
-                viewListener.updateFavorite(adapterPosition);
+
+                if (viewListener.hasFeed())
+                    viewListener.updateFavorite(adapterPosition);
+                else
+                    viewListener.updateFavoriteFromEmpty();
             }
         });
     }

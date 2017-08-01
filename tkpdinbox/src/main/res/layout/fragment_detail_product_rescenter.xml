@@ -95,7 +95,7 @@
             android:layout_marginBottom="@dimen/margin_vs"
             android:text="@string/label_buyer_complaint"
             android:textSize="@dimen/font_small"
-            android:textColor="@color/grey"
+            android:textColor="@color/label_text_color"
             />
 
         <TextView
@@ -113,7 +113,7 @@
             android:layout_marginBottom="@dimen/margin_vs"
             android:text="@string/label_reason_complaint"
             android:textSize="@dimen/font_small"
-            android:textColor="@color/grey"
+            android:textColor="@color/label_text_color"
             />
 
         <TextView
@@ -137,7 +137,7 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:text="@string/label_complaint_attachment"
                 android:textSize="@dimen/font_small"
-                android:textColor="@color/grey"
+                android:textColor="@color/label_text_color"
                 />
 
             <android.support.v7.widget.RecyclerView

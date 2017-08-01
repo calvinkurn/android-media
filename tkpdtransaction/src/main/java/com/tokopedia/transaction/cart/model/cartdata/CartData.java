@@ -54,6 +54,9 @@ public class CartData implements Parcelable {
     @SerializedName("token_kero")
     @Expose
     private String tokenKero;
+    @SerializedName("ut")
+    @Expose
+    private String ut;
     @SerializedName("credit_card")
     @Expose
     private CreditCard creditCard;
@@ -258,6 +261,14 @@ public class CartData implements Parcelable {
         this.tokenKero = tokenKero;
     }
 
+    public String getUt() {
+        return ut;
+    }
+
+    public void setUt(String ut) {
+        this.ut = ut;
+    }
+
     public CartDonation getDonation() {
         return donation;
     }
@@ -291,6 +302,7 @@ public class CartData implements Parcelable {
         dest.writeString(this.voucherCode);
         dest.writeString(this.token);
         dest.writeString(this.tokenKero);
+        dest.writeString(this.ut);
         dest.writeParcelable(this.creditCard, flags);
         dest.writeString(this.grandTotalIdr);
         dest.writeInt(this.cashback);
@@ -317,6 +329,7 @@ public class CartData implements Parcelable {
         this.voucherCode = in.readString();
         this.token = in.readString();
         this.tokenKero = in.readString();
+        this.ut= in.readString();
         this.creditCard = in.readParcelable(CreditCard.class.getClassLoader());
         this.grandTotalIdr = in.readString();
         this.cashback = in.readInt();

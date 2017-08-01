@@ -73,10 +73,14 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
 
     @Override
     public int getItemCount() {
-        if (list.size() > 6)
-            return 6;
-        else
-            return list.size();
+        if (list != null && !list.isEmpty()) {
+            if (list.size() > 6)
+                return 6;
+            else
+                return list.size();
+        } else {
+            return 0;
+        }
     }
 
     public void setList(ArrayList<InspirationProductViewModel> list) {

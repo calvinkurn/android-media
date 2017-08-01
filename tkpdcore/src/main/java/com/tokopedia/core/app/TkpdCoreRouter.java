@@ -3,7 +3,6 @@ package com.tokopedia.core.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -35,7 +34,7 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    void goToWallet(Context context, Bundle bundle);
+    void goToWallet(Context context, String url);
 
     void goToMerchantRedirect(Context context);
 
@@ -56,4 +55,8 @@ public interface TkpdCoreRouter {
     void goToCreateMerchantRedirect(Context context);
 
     void goToRegister(Context context);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getRegisterIntent(Context context);
 }
