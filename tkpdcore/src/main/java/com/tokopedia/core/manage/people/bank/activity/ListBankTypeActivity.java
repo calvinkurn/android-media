@@ -145,7 +145,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
                                     if ((getApplication() instanceof TransactionRouter)) {
                                         ((TransactionRouter) getApplication())
                                                 .goToBcaOneClick(ListBankTypeActivity.this, bundle);
-                                        presenter.onDestroyed();
+                                        finish();
                                     }
                                     progressDialog.dismiss();
                                 }
@@ -179,5 +179,10 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
     protected void onStop() {
         super.onStop();
         presenter.onDestroyed();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 }
