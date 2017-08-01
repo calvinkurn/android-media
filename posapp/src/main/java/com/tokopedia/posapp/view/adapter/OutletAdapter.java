@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.view.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,14 @@ import java.util.List;
 
 public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder {
+        public CardView cardOutlet;
         public TextView textName;
         public TextView textAddress;
         public TextView textPhone;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            cardOutlet = itemView.findViewById(R.id.card_outlet);
             textName = itemView.findViewById(R.id.text_name);
             textAddress = itemView.findViewById(R.id.text_address);
             textPhone = itemView.findViewById(R.id.text_phone);
@@ -51,10 +54,17 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.textName.setText(this.outletList.get(position).getOutletName());
         holder.textAddress.setText(this.outletList.get(position).getOutletAddres());
         holder.textPhone.setText(this.outletList.get(position).getOutletPhone());
+
+        holder.cardOutlet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onOutletClicked(outletList.get(position).getOutletId());
+            }
+        });
     }
 
     @Override
