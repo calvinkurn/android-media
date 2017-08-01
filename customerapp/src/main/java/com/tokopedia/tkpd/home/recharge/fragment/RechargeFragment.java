@@ -498,7 +498,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if(motionEvent.getAction()== MotionEvent.ACTION_UP)
                     {
-                        CommonUtils.dumper("GAv4 PULSA spinner clicked");
+                        UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(), "Product - "+selectedOperator.name);
                     }
                     return false;
                 }
@@ -1109,7 +1109,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+selectedOperator.name);
+            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+(TextUtils.isEmpty(selectedOperator.name) ? "" : selectedOperator.name));
             setParentToScroolToTop();
         }
     }
