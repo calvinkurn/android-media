@@ -257,7 +257,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             if (browseProductModel.result.products.length == 0) {
                                 view.displayEmptyResult();
                             } else {
-                                view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                                processHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                             }
                         } else if (browseProductModel != null
                                 && listPagingHandlerModelPair.getModel1() != null
@@ -313,6 +313,17 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
+    private void processHotlistData(final List<ProductItem> productItems,
+                                    final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+
+        enrichWithWishlistStatus(productItems, new WishlistStatusQueryCallback() {
+            @Override
+            public void onQueryComplete() {
+                view.setHotlistData(productItems, pagingHandlerModel);
+            }
+        });
+    }
+
     public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
@@ -320,79 +331,59 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             view.addCategoryHeader(browseProductModel.getCategoryData());
         }
 
-        if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
-            view.onCallProductServiceResult(productItems, pagingHandlerModel);
-            return;
-        }
-
-        Log.d(TAG, "getProduct2 startMojito");
-
-        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Map<String, Boolean>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
-                    }
-
-                    @Override
-                    public void onNext(Map<String, Boolean> checkResultMap) {
-                        Log.d(TAG, "getProduct2 finishMojito");
-                        for (ProductItem item : productItems) {
-                            if (checkResultMap.get(item.getId()) != null) {
-                                item.setProductAlreadyWishlist(true);
-                            } else {
-                                item.setProductAlreadyWishlist(false);
-                            }
-                        }
-                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
-                    }
-                });
+        enrichWithWishlistStatus(productItems, new WishlistStatusQueryCallback() {
+            @Override
+            public void onQueryComplete() {
+                view.onCallProductServiceResult(productItems, pagingHandlerModel);
+            }
+        });
     }
 
     public void processBrowseProductLoadMore(final List<ProductItem> productItems,
                                              final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        enrichWithWishlistStatus(productItems, new WishlistStatusQueryCallback() {
+            @Override
+            public void onQueryComplete() {
+                view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+            }
+        });
+    }
+
+    private void enrichWithWishlistStatus(final List<ProductItem> productItems,
+                                          final WishlistStatusQueryCallback callback) {
+
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
-            view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+            callback.onQueryComplete();
             return;
         }
 
-        Log.d(TAG, "getProduct2 startMojito");
+        Subscriber<Map<String, Boolean>> subscriber = new Subscriber<Map<String, Boolean>>() {
+            @Override
+            public void onCompleted() {
 
-        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Map<String, Boolean>>() {
-                    @Override
-                    public void onCompleted() {
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                callback.onQueryComplete();
+            }
+
+            @Override
+            public void onNext(Map<String, Boolean> checkResultMap) {
+                Log.d(TAG, "getProduct2 finishMojito");
+                for (ProductItem item : productItems) {
+                    if (checkResultMap.get(item.getId()) != null) {
+                        item.setProductAlreadyWishlist(true);
+                    } else {
+                        item.setProductAlreadyWishlist(false);
                     }
+                }
+                callback.onQueryComplete();
+            }
+        };
 
-                    @Override
-                    public void onError(Throwable e) {
-                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
-                    }
-
-                    @Override
-                    public void onNext(Map<String, Boolean> checkResultMap) {
-                        Log.d(TAG, "getProduct2 finishMojito");
-                        for (ProductItem item : productItems) {
-                            if (checkResultMap.get(item.getId()) != null) {
-                                item.setProductAlreadyWishlist(true);
-                            } else {
-                                item.setProductAlreadyWishlist(false);
-                            }
-                        }
-                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
-                    }
-                });
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems, subscriber);
     }
 
     @Override
@@ -485,4 +476,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         }
     }
 
+    private interface WishlistStatusQueryCallback {
+        void onQueryComplete();
+    }
 }
