@@ -7,9 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class NewOrderResult {
 
-    @SerializedName("config")
-    @Expose
-    private Object config;
     @SerializedName("data")
     @Expose
     private DataNewOrder dataNewOrder;
@@ -22,14 +19,6 @@ public class NewOrderResult {
     @SerializedName("error_message")
     @Expose
     private List<Object> errorMessage = null;
-
-    public Object getConfig() {
-        return config;
-    }
-
-    public void setConfig(Object config) {
-        this.config = config;
-    }
 
     public DataNewOrder getDataNewOrder() {
         return dataNewOrder;
