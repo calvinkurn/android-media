@@ -15,6 +15,7 @@ import BrandContainer from '../containers/brandContainer'
 import Infographic from '../components/infographic'
 import BackToTop from '../common/BackToTop/backToTop'
 import Seo from '../components/seo'
+import OfficialStoreIntro from '../components/OfficialStoreIntro'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState } from '../actions/actions'
 
 
@@ -62,6 +63,7 @@ class App extends Component {
               onRefresh={this._onRefresh.bind(this)}
               colors={['#42b549']} />
           }>
+          <OfficialStoreIntro />
           <BannerContainer screenProps={this.props.screenProps} />
           <CampaignContainer screenProps={this.props.screenProps} />
           <BrandContainer screenProps={this.props.screenProps} />

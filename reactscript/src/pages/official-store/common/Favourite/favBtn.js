@@ -32,8 +32,8 @@ class FavouriteButton extends Component {
         accessibilityComponentType="button"
         accessibilityLabel={isShopFav ? 'Favourited' : '+ Favourite'}
         onPress={() => this._onTap(isShopFav, shopId)}>
-        <View style={isShopFav ? styles.removeButton : styles.addButton}>
-          <Text style={isShopFav ? styles.removeText : styles.addText}>{isShopFav ? 'Favorit' : '+ Favoritkan'}</Text>
+        <View style={isShopFav ? [styles.buttonBasic ,styles.removeButton] : [styles.buttonBasic, styles.addButton]}>
+          <Text style={isShopFav ? [styles.textBasic, styles.removeText] : [styles.textBasic, styles.addText]}>{isShopFav ? '+ Favorit' : '+ Favoritkan'}</Text>
         </View>
       </Touchable>
     )
@@ -41,8 +41,20 @@ class FavouriteButton extends Component {
 }
 
 const styles = StyleSheet.create({
+   buttonBasic: {
+     width: 105,
+     borderWidth: 1,
+     borderRadius: 3,
+     padding: 5,
+     borderColor: '#E0E0E0',
+   },
+   textBasic: {
+     textAlign: 'center',
+     fontSize: 13,
+     fontWeight: '400',
+     padding: 8
+   },
   addButton: {
-    // elevation: 4,
     backgroundColor: '#42b549',
     borderRadius: 3,
     borderColor: '#42b549',
@@ -50,7 +62,6 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   removeButton: {
-    // elevation: 4,
     borderRadius: 3,
     borderColor: '#dedede',
     borderWidth: 1,
@@ -63,11 +74,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   addText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 13,
-    padding: 8,
-    fontWeight: '500',
+    color: '#FFF'
   }
 })
 export default connect()(FavouriteButton)
