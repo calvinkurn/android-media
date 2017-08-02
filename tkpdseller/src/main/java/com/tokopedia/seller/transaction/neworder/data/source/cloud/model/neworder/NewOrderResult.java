@@ -12,7 +12,7 @@ public class NewOrderResult {
     private Object config;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private DataNewOrder dataNewOrder;
     @SerializedName("server_process_time")
     @Expose
     private double serverProcessTime;
@@ -31,12 +31,12 @@ public class NewOrderResult {
         this.config = config;
     }
 
-    public Data getData() {
-        return data;
+    public DataNewOrder getDataNewOrder() {
+        return dataNewOrder;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setDataNewOrder(DataNewOrder dataNewOrder) {
+        this.dataNewOrder = dataNewOrder;
     }
 
     public double getServerProcessTime() {

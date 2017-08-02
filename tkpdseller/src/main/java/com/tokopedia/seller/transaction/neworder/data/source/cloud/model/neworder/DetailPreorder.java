@@ -11,13 +11,13 @@ public class DetailPreorder {
     private int preorderStatus;
     @SerializedName("preorder_process_time_type")
     @Expose
-    private Object preorderProcessTimeType;
+    private String preorderProcessTimeType;
     @SerializedName("preorder_process_time_type_string")
     @Expose
-    private Object preorderProcessTimeTypeString;
+    private String preorderProcessTimeTypeString;
     @SerializedName("preorder_process_time")
     @Expose
-    private Object preorderProcessTime;
+    private String preorderProcessTime;
 
     public int getPreorderStatus() {
         return preorderStatus;
@@ -27,27 +27,27 @@ public class DetailPreorder {
         this.preorderStatus = preorderStatus;
     }
 
-    public Object getPreorderProcessTimeType() {
+    public String getPreorderProcessTimeType() {
         return preorderProcessTimeType;
     }
 
-    public void setPreorderProcessTimeType(Object preorderProcessTimeType) {
+    public void setPreorderProcessTimeType(String preorderProcessTimeType) {
         this.preorderProcessTimeType = preorderProcessTimeType;
     }
 
-    public Object getPreorderProcessTimeTypeString() {
+    public String getPreorderProcessTimeTypeString() {
         return preorderProcessTimeTypeString;
     }
 
-    public void setPreorderProcessTimeTypeString(Object preorderProcessTimeTypeString) {
+    public void setPreorderProcessTimeTypeString(String preorderProcessTimeTypeString) {
         this.preorderProcessTimeTypeString = preorderProcessTimeTypeString;
     }
 
-    public Object getPreorderProcessTime() {
+    public String getPreorderProcessTime() {
         return preorderProcessTime;
     }
 
-    public void setPreorderProcessTime(Object preorderProcessTime) {
+    public void setPreorderProcessTime(String preorderProcessTime) {
         this.preorderProcessTime = preorderProcessTime;
     }
 

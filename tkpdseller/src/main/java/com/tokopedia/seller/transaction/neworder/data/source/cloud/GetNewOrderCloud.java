@@ -47,7 +47,7 @@ public class GetNewOrderCloud {
     private class GetListDataOrder implements Func1<NewOrderResult, List<DataOrder>> {
         @Override
         public List<DataOrder> call(NewOrderResult newOrderResult) {
-            return newOrderResult.getData().getDataOrder();
+            return newOrderResult.getDataNewOrder().getDataOrder();
         }
     }
 }

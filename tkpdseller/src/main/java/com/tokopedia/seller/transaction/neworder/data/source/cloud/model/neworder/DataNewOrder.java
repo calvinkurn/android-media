@@ -6,11 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Data {
+public class DataNewOrder {
 
-    @SerializedName("booking")
-    @Expose
-    private Object booking;
     @SerializedName("order")
     @Expose
     private Order order;
@@ -20,14 +17,6 @@ public class Data {
     @SerializedName("list")
     @Expose
     private List<DataOrder> dataOrders = null;
-
-    public Object getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Object booking) {
-        this.booking = booking;
-    }
 
     public Order getOrder() {
         return order;
