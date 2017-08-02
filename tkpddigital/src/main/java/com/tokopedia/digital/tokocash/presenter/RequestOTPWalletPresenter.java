@@ -4,12 +4,11 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.otp.data.RequestOtpModel;
-import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.digital.tokocash.errorhandle.ErrorHandleTokoCashUtil;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.RequestOTPWalletView;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
 import java.net.ConnectException;
@@ -46,8 +45,8 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
         activateTokoCashInteractor.activateTokoCash(otp, getSubscriberLinkWalletToTokoCash());
     }
 
-    private Subscriber<ValidateOtpModel> getSubscriberLinkWalletToTokoCash() {
-        return new Subscriber<ValidateOtpModel>() {
+    private Subscriber<ActivateTokoCashData> getSubscriberLinkWalletToTokoCash() {
+        return new Subscriber<ActivateTokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -60,14 +59,14 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             }
 
             @Override
-            public void onNext(ValidateOtpModel validateOtpModel) {
+            public void onNext(ActivateTokoCashData activateTokoCashData) {
                 view.onSuccessLinkWalletToTokoCash();
             }
         };
     }
 
-    private Subscriber<RequestOtpModel> getSubscriberRequestOTPWallet() {
-        return new Subscriber<RequestOtpModel>() {
+    private Subscriber<ActivateTokoCashData> getSubscriberRequestOTPWallet() {
+        return new Subscriber<ActivateTokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -80,7 +79,7 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             }
 
             @Override
-            public void onNext(RequestOtpModel requestOtpModel) {
+            public void onNext(ActivateTokoCashData activateTokoCashData) {
                 view.onSuccessRequestOtpWallet();
             }
         };

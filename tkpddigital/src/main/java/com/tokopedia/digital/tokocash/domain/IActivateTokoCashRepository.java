@@ -1,7 +1,6 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.core.otp.data.RequestOtpModel;
-import com.tokopedia.core.otp.data.ValidateOtpModel;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 
 import rx.Observable;
 
@@ -11,7 +10,7 @@ import rx.Observable;
 
 public interface IActivateTokoCashRepository {
 
-    Observable<RequestOtpModel> requestOTPWallet();
+    Observable<ActivateTokoCashData> requestOTPWallet();
 
-    Observable<ValidateOtpModel> linkedWalletToTokoCash(String otpCode);
+    Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode);
 }

@@ -1,10 +1,8 @@
 package com.tokopedia.digital.tokocash.domain;
 
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
-import com.tokopedia.core.otp.data.RequestOtpModel;
-import com.tokopedia.core.otp.data.ValidateOtpModel;
-import com.tokopedia.core.otp.data.mapper.RequestOtpMapper;
-import com.tokopedia.core.otp.data.mapper.ValidateOtpMapper;
+import com.tokopedia.digital.tokocash.mapper.ActivateTokoCashMapper;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,31 +15,28 @@ import rx.schedulers.Schedulers;
 public class ActivateTokoCashRepository implements IActivateTokoCashRepository {
 
     private final TokoCashService tokoCashService;
-    private final RequestOtpMapper requestOtpMapper;
-    private final ValidateOtpMapper validateOtpMapper;
+    private final ActivateTokoCashMapper activateTokoCashMapper;
 
     public ActivateTokoCashRepository(TokoCashService tokoCashService) {
         this.tokoCashService = tokoCashService;
-        this.requestOtpMapper = new RequestOtpMapper();
-        this.validateOtpMapper = new ValidateOtpMapper();
+        this.activateTokoCashMapper = new ActivateTokoCashMapper();
     }
 
-
     @Override
-    public Observable<RequestOtpModel> requestOTPWallet() {
+    public Observable<ActivateTokoCashData> requestOTPWallet() {
         return tokoCashService.getApi()
                 .requestOtpWallet()
-                .map(requestOtpMapper)
+                .map(activateTokoCashMapper)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<ValidateOtpModel> linkedWalletToTokoCash(String otpCode) {
+    public Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode) {
         return tokoCashService.getApi()
                 .linkedWalletToTokocash(otpCode)
-                .map(validateOtpMapper)
+                .map(activateTokoCashMapper)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());

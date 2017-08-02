@@ -1,7 +1,6 @@
 package com.tokopedia.digital.tokocash.interactor;
 
-import com.tokopedia.core.otp.data.RequestOtpModel;
-import com.tokopedia.core.otp.data.ValidateOtpModel;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 
 import rx.Subscriber;
 
@@ -11,9 +10,9 @@ import rx.Subscriber;
 
 public interface IActivateTokoCashInteractor {
 
-    void requestOTPWallet(Subscriber<RequestOtpModel> subscriber);
+    void requestOTPWallet(Subscriber<ActivateTokoCashData> subscriber);
 
-    void activateTokoCash(String otpCode, Subscriber<ValidateOtpModel> subscriber);
+    void activateTokoCash(String otpCode, Subscriber<ActivateTokoCashData> subscriber);
 
     void onDestroy();
 }
