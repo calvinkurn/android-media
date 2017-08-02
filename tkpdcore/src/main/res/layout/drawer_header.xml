@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_small"
-    android:background="@color/grey_100"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              android:background="@color/grey_100"
+              android:orientation="vertical">
 
     <ImageView
         android:id="@+id/cover_img"
@@ -13,7 +13,7 @@
         android:layout_height="@dimen/drawer_cover_height"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        tools:src="@drawable/drawer_header_bg" />
+        tools:src="@drawable/drawer_header_bg"/>
 
     <RelativeLayout
         android:id="@+id/drawer_header"
@@ -28,7 +28,7 @@
             android:layout_height="@dimen/drawer_avatar"
             android:layout_marginLeft="@dimen/margin_sm"
             android:background="@drawable/cards_ui_2"
-            tools:src="@drawable/ic_loading_toped" />
+            tools:src="@drawable/ic_loading_toped"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                 android:text="Loading.."
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_l_medium"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
             <TextView
                 android:id="@+id/verified"
@@ -60,22 +60,24 @@
                 android:text="@string/verified_account"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/text_size_small"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                tools:text="verified account"/>
 
             <ImageView
                 android:id="@+id/verified_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/verified_icon_size"
+                android:layout_height="@dimen/verified_icon_size"
                 android:layout_alignBottom="@+id/verified"
                 android:layout_alignTop="@+id/verified"
+                android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_toRightOf="@+id/verified"
-                android:src="@drawable/ic_verified" />
+                android:src="@drawable/ic_verified"/>
 
         </RelativeLayout>
     </RelativeLayout>
 
 
-   <LinearLayout
+    <LinearLayout
         android:id="@+id/layout_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -100,7 +102,7 @@
                 android:text="Kelengkapan profil: "
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/text_size_xsmall"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
             <TextView
                 android:id="@+id/percent_text"
@@ -113,7 +115,7 @@
                 android:text="50%"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_xsmall"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/complete_profile"
@@ -126,13 +128,13 @@
                 android:text="Lengkapi Sekarang"
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/text_size_xsmall"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
         </RelativeLayout>
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_small" />
+            android:layout_height="@dimen/margin_small"/>
 
         <ProgressBar
             android:id="@+id/ProgressBar"
@@ -145,7 +147,7 @@
             android:progress="0"
             android:progressDrawable="@drawable/horizontal_progressbar"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="273dp" />
+            tools:layout_editor_absoluteY="273dp"/>
 
     </LinearLayout>
 
@@ -154,5 +156,5 @@
         layout="@layout/drawer_saldo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/drawer_header" />
+        android:layout_below="@id/drawer_header"/>
 </LinearLayout>
