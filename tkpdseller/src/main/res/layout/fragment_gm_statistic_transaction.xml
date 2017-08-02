@@ -61,6 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="12dp"
                     app:donut_pl_amount_text_size="32sp"
                     app:donut_pl_title="@string/gm_statistic_total_trans_text"
                     app:donut_pl_title_text_size="14sp">
