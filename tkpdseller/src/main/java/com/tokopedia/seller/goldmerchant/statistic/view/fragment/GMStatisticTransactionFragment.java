@@ -44,8 +44,6 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Inject
     GMStatisticTransactionPresenter presenter;
 
-    private LabelView gmStatisticProductListText;
-
     private SnackbarRetry snackbarRetry;
 
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
@@ -75,7 +73,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmTransactionGraphViewHolder = new GMTransactionGraphViewHolder(view);
         finishedTransactionViewHolder = new UnFinishedTransactionViewHolder(view);
 
-        gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
+        LabelView gmStatisticProductListText = (LabelView) view.findViewById(R.id.gm_statistic_label_sold_product_list_view);
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +112,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
 
     @Override
     public void bindTopAds(GMGraphViewModel gmTopAdsAmountViewModel) {
-        gmTopAdsAmountViewHolder.bind(gmTopAdsAmountViewModel);
+        gmTopAdsAmountViewHolder.bind(gmTopAdsAmountViewModel, isCompareDate());
     }
 
     @Override
