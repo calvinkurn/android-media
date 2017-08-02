@@ -247,7 +247,10 @@
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
-
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantPickerActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"

@@ -13,8 +13,6 @@ public interface AddProductListInterface extends ActivityItemSelection {
 
     int RESULT_CODE = 9912;
 
-    ImageHandler imageHandler();
-
     void hideBottom();
 
     void showBottom();
@@ -27,17 +25,13 @@ public interface AddProductListInterface extends ActivityItemSelection {
 
     List<TopAdsProductViewModel> selections();
 
-    void disableNextButton();
-
-    void enableNextButton();
-
     boolean isHideEtalase();
 
     boolean isExistingGroup();
 
     boolean isSelectionViewShown();
 
-    void showNextButton();
+    void setSubmitButtonEnabled(boolean enabled);
 
-    void dismissNextButton();
+    void setSubmitButtonVisibility(int visibility);
 }

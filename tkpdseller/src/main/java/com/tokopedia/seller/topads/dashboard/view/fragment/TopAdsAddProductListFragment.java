@@ -268,7 +268,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 }
             }
         };
-        imageHandler = addProductListInterface.imageHandler();
+        imageHandler = new ImageHandler(getActivity());
         topAdsProductListAdapter.setImageHandler(imageHandler);
         topAdsProductListAdapter.setFragmentItemSelection(this);
         if(isFirstTime) {
@@ -287,7 +287,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     protected void loadMoreNetworkCall() {
         if (addProductListInterface != null) {
-            addProductListInterface.showNextButton();
+            addProductListInterface.setSubmitButtonVisibility(View.VISIBLE);
         }
         topAdsAddProductListPresenter.loadMore();
     }
@@ -534,11 +534,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                     if (topAdsProductListAdapter != null
                             && topAdsProductListAdapter.getDataSize() <= 0) {
                         if (addProductListInterface != null) {
-                            addProductListInterface.dismissNextButton();
+                            addProductListInterface.setSubmitButtonVisibility(View.GONE);
                         }
                     } else {
                         if (addProductListInterface != null) {
-                            addProductListInterface.showNextButton();
+                            addProductListInterface.setSubmitButtonVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -589,7 +589,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void showBottom() {
-        addProductListInterface.showNextButton();
+        addProductListInterface.setSubmitButtonVisibility(View.VISIBLE);
         addProductListInterface.showBottom();
     }
 }

@@ -19,7 +19,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     protected Toolbar toolbar;
 
-    protected abstract void setupFragment(Bundle savedinstancestate);
+    protected abstract void setupFragment(Bundle savedInstanceState);
 
     @LayoutRes
     protected abstract int getLayoutRes();

@@ -50,7 +50,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
             boolean mapEmpty = isMapEmpty();
             if (!isActivityInterfaceEmpty() && mapEmpty) {
-                addProductListInterface.disableNextButton();
+                addProductListInterface.setSubmitButtonEnabled(false);
                 addProductListInterface.hideBottom();
             }
         }
@@ -153,7 +153,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         adapter.remove(localLocation);
 
         if (!isActivityInterfaceEmpty() && isMapEmpty()) {
-            addProductListInterface.disableNextButton();
+            addProductListInterface.setSubmitButtonEnabled(false);
             addProductListInterface.hideBottom();
         }
     }
@@ -249,17 +249,4 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     public void showFooterViewHolder() {
         throw new RuntimeException("done use it in here !!");
     }
-
-    @Override
-    public void hideRecyclerView() {
-        recyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showRecyclerView() {
-        recyclerView.setVisibility(View.VISIBLE);
-    }
-    //unused methods
-
-
 }

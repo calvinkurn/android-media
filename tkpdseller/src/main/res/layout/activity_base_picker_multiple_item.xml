@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".topads.dashboard.view.activity.TopAdsAddProductListActivity">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,40 +20,90 @@
             android:theme="@style/AppBarTheme"
             app:elevation="4dp"
             app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-            app:titleTextAppearance="@style/ToolbarText"/>
-
+            app:titleTextAppearance="@style/ToolbarText" />
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        layout="@layout/activity_top_ads_add_product_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginTop="?attr/actionBarSize"/>
-
     <FrameLayout
-        android:id="@+id/layout_container_bottom_sheet"
+        android:id="@+id/layout_container_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/base_picker_multiple_item_footer_height"
+        android:layout_marginTop="?attr/actionBarSize" />
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_sheet_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/base_picker_multiple_item_footer_height"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="0dp"
+        app:behavior_peekHeight="@dimen/base_picker_multiple_item_bottom_sheet_header_height"
         app:elevation="16dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/partial_base_picker_multiple_item_cache"/>
-    </FrameLayout>
+        <View
+            android:id="@+id/view_shadow_gray"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/base_picker_multiple_item_bottom_sheet_header_shadow_height"
+            android:background="@drawable/cover_shader_gray" />
+
+        <LinearLayout
+            android:id="@+id/layout_bottom_sheet_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/base_picker_multiple_item_bottom_sheet_header_height"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_med"
+                android:layout_marginStart="@dimen/margin_med"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_view_bottom_sheet_content"
+                    style="@style/TextView.Body1"
+                    tools:text="@string/app_id" />
+
+                <TextView
+                    android:id="@+id/text_view_bottom_sheet_title"
+                    style="@style/TextView.Caption.BlackDisabled"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:textStyle="italic"
+                    android:visibility="gone"
+                    tools:text="@string/app_id" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_view_arrow"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginEnd="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_up" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_container_cache"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/top_ads_next"
+        android:id="@+id/layout_footer"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/base_picker_multiple_item_footer_height"
         android:layout_gravity="bottom"
         android:background="@android:color/white">
 
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="@string/next"/>
+            android:text="@string/next" />
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

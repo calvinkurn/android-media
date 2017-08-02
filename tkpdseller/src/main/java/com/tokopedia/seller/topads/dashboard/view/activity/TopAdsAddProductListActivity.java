@@ -129,7 +129,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
                 returnSelections();
             }
         });
-        disableNextButton();
+        setSubmitButtonEnabled(false);
 
         ViewTreeObserver vto = footerButtonView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -245,7 +245,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
             maxNumberSelection = extras.getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
 
             if (selections.size() > 0) {
-                enableNextButton();
+                setSubmitButtonEnabled(true);
             }
         }
     }
@@ -261,11 +261,6 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
      */
     public boolean isFragmentCreated(String tag) {
         return getFragmentManager().findFragmentByTag(tag) == null;
-    }
-
-    @Override
-    public ImageHandler imageHandler() {
-        return new ImageHandler(this);
     }
 
     @Override
@@ -303,7 +298,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
         numberOfChooseFooterHelper.setSelectionNumber(selections.size());
 
         if (selections.size() > 0) {
-            enableNextButton();
+            setSubmitButtonEnabled(true);
             showFooterViewHolder();
         }
     }
@@ -319,15 +314,8 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
     }
 
     @Override
-    public void disableNextButton() {
-        nextButton.setEnabled(false);
-        nextButton.setTextColor(thirtyEightPercentBlackColor);
-    }
-
-    @Override
-    public void enableNextButton() {
-        nextButton.setEnabled(true);
-        nextButton.setTextColor(whiteColor);
+    public void setSubmitButtonEnabled(boolean enabled) {
+        nextButton.setEnabled(enabled);
     }
 
     @Override
@@ -346,13 +334,8 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
     }
 
     @Override
-    public void showNextButton() {
-        nextButton.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void dismissNextButton() {
-        nextButton.setVisibility(View.GONE);
+    public void setSubmitButtonVisibility(int visibility) {
+        nextButton.setVisibility(visibility);
     }
 
     @Override
