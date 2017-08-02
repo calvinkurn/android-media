@@ -141,6 +141,10 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         return EXTRA_TYPE == TYPE_LOADING;
     }
 
+    public boolean isEmptyState() {
+        return EXTRA_TYPE == EMPTY_STATE;
+    }
+
     public boolean isRetry(){ return EXTRA_TYPE == TYPE_RETRY;}
 
     @Override

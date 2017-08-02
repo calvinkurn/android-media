@@ -624,7 +624,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     private boolean canLoadItem() {
-        return !adapter.isLoading() && productShopParam.getPage() > 0;
+        return !adapter.isEmptyState() && !adapter.isLoading() && productShopParam.getPage() > 0;
     }
 
     private void refreshProductList() {
