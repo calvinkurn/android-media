@@ -33,19 +33,6 @@ const BannerList = ({ banners, onBannerPress, onViewAllPress }) => {
           ))
         }
       </Swiper>
-      {/* <ViewPagerAndroid
-        initialPage={0}
-        style={styles.viewPager}>
-        {
-          banners.map((banner, index) => (
-            <View key={banner.banner_id}>
-              <TouchableWithoutFeedback onPress={(e) => onBannerPress(e, banner)}>
-                <Image source={{ uri: banner.image_url }} style={styles.pageStyle}></Image>
-              </TouchableWithoutFeedback>
-            </View> 
-          ))
-        }
-      </ViewPagerAndroid>  */}
       <Text
         style={styles.viewAll}
         onPress={onViewAllPress}> Lihat Semua Promo  >

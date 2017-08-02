@@ -25,6 +25,8 @@ class FavouriteButton extends Component {
     const isShopFav = this.props.isFav
     const shopId = this.props.shopId
     const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
+    // console.log(shopId + ' ' + isShopFav)
+
     return (
       <Touchable
         accessibilityComponentType="button"

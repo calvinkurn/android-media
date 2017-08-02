@@ -46,10 +46,3 @@ const styles = StyleSheet.create({
   }
 })
 export default LoadMore
-
-// <Button
-    //   title="Load More"
-    //   color="#841584"
-    //   accessibilityLabel="Load More Brands"
-    //   onPress={() => { props.canFetch && !props.isFetching ? props.onLoadMore(props.limit, props.offset): null}}
-    // />

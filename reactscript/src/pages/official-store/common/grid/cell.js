@@ -24,7 +24,10 @@ const Cell = ({ isLastRowCell, isLastCell, data, loadMore, limit, offset, onSlid
 const getCellContent = (data) => {
   if (data) {
     return (
-      <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(data.shop_apps_url, '')}>
+      <TouchableWithoutFeedback onPress={() => {
+        console.log('Brand shop: ', data.shop_apps_url)
+        NavigationModule.navigate(data.shop_apps_url, '')
+        }}>
       <View style={styles.cellWrapper}>
         <Image style={styles.img} source={{ uri: data.microsite_url }} />
       </View>

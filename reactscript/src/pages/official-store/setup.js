@@ -5,9 +5,9 @@ import App from './components/App'
 
 
 class Root extends Component {
-  componentDidMount(){
-    console.log('UserID in Official Store: ', this.props)    
-  }
+  // componentDidMount(){
+  //   console.log('UserID in Official Store: ', this.props)    
+  // }
 
   render() {
     return (

@@ -12,9 +12,9 @@ import {
 import unescape from 'lodash/unescape'
 import { NavigationModule, NetworkModule } from 'NativeModules';
 import WishListButton from '../common/Wishlist/WishlistButton';
+
+
 let ID_User;
-
-
 const CampaignList = ({ campaigns, User_ID }) => {
   ID_User = User_ID
 
@@ -62,7 +62,6 @@ this.renderCampaign = (c) => {
   const item = c.item;
   const products = c.item.Products || [];
   const productGrid = [];
-
 
   if (products.length > 0) {
     for (let i = 0; i < products.length; i += 2) {
@@ -154,6 +153,7 @@ this.renderCampaign = (c) => {
               </View>
             </TouchableWithoutFeedback>
             <WishListButton
+              User_ID={ID_User}
               isWishlist={dataProducts.is_wishlist || false}
               productId={dataProducts.id} />
           </View>
@@ -166,28 +166,31 @@ this.renderCampaign = (c) => {
       );
     }
   }
+
   return (
     <View style={{ marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#e0e0e0' }}>
       {
-        c.html_id === 6 ? null : <Text style={titleText}>{item.title}</Text>
+        item.html_id === 6 ? null : <Text style={titleText}>{item.title}</Text>
       }
       {
-        c.html_id === 6 ? (
-          <TouchableWithoutFeedback onPress={() => Linking.openURL(item.redirect_url_desktop)}>
-            <Image source={{ uri: item.image_url }} style={{ height: 110 }} />
+        item.html_id === 6 ? (
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('banner: ', item.redirect_url_app)
+            NavigationModule.navigate(item.redirect_url_desktop, item.redirect_url_mobile, "")}}>
+            <Image source={{ uri: item.image_url }} style={{ height: 80 }} />
           </TouchableWithoutFeedback>
         ) :
           (
             <TouchableWithoutFeedback onPress={() => {
               console.log('banner: ', item.redirect_url_app)
-              NavigationModule.navigate(item.redirect_url_app, "")}}>
+              NavigationModule.navigate(item.redirect_url_app, item.redirect_url_mobile, "")}}>
               <Image source={{ uri: item.mobile_url }} style={{ height: 110 }} />
             </TouchableWithoutFeedback>
           )
       }
       {productGrid}
       {
-        c.html_id === 6 ? null : (<View style={viewAll}>
+        item.html_id === 6 ? null : (<View style={viewAll}>
           <Text
             style={viewAllText}
             onPress={() => {

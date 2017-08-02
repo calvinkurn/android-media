@@ -12,11 +12,24 @@ import BrandList from '../components/brandList'
 class BrandContainer extends Component {
   componentDidMount() {
     const { offset, limit } = this.props.brands.pagination
-    this.props.loadMore(limit, offset)
+    this.props.loadMore(limit, offset, this.props.screenProps.User_ID)
   }
 
   render() {
-    const { offset, limit } = this.props.brands.pagination
+    let offset;
+    let limit ;
+
+    // console.log(this.props.brands)
+    
+    if (!this.props.brands.pagination){
+      offset = 10,
+      limit = 20
+    } else {
+      offset = this.props.brands.pagination.offset
+      limit = this.props.brands.pagination.limit
+    }
+
+    // const { offset, limit } = this.props.brands.pagination
     const totalBrands = this.props.brands.totalBrands
     const totalItemsCount = this.props.brands.items.length
     const isFetching = this.props.brands.isFetching
@@ -34,7 +47,7 @@ class BrandContainer extends Component {
       isFetching,
       loadMore: this.props.loadMore,
       slideMore: this.props.slideMore,
-      User_ID: this.props.User_ID
+      User_ID: this.props.screenProps.User_ID
     }
 
     return (

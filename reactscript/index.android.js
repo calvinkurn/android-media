@@ -37,12 +37,7 @@ class Home extends Component {
   }
 
   render(){
-    console.log(this.state.appState)
-    if (this.props.Screen == 'contactus'){
-      return <ContactUs_Stack />  
-    } else if (this.props.Screen == 'favorite'){
-      return <Favorite_Stack /> 
-    } else if (this.props.Screen == 'HotList'){
+    if (this.props.Screen == 'HotList'){
       return <HotList_ />
     } else if (this.props.Screen == 'official-store' && this.state.appState == 'active'){
       return <OfficialStore screenProps={{ User_ID: this.props.User_ID, appState: 'active' }}  />
