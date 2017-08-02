@@ -207,10 +207,10 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
     private int getMenuId(OrderData item) {
         int MenuID = 0;
-        switch (instanceType) {
-            case TransactionPurchaseRouter.INSTANCE_ALL:
+        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
+            MenuID = R.menu.order_status_menu_cancel_replacement;
 
-                break;
+        switch (instanceType) {
             case TxListFragment.INSTANCE_RECEIVE:
                 switch (Integer.parseInt(item.getOrderDetail().getDetailOrderStatus())) {
                     case TkpdState.OrderStatusState.ORDER_CONFLICTED:
@@ -237,13 +237,11 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     default:
                         if (item.getOrderButton().getButtonUploadProof().equals(HAS_BUTTON))
                             MenuID = R.menu.order_status_menu_upload;
-                        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
-                            MenuID = R.menu.order_status_menu_cancel_replacement;
                         break;
                 }
-
                 break;
         }
+
         return MenuID;
     }
 
