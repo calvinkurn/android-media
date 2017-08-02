@@ -73,7 +73,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
             productRating.setVisibility(View.INVISIBLE);
         }
 
-        if (!TextUtils.isEmpty(feedDetailViewModel.getCashback()))
+        if (TextUtils.isEmpty(feedDetailViewModel.getCashback()))
             cashback.setVisibility(View.GONE);
         else {
             cashback.setVisibility(View.VISIBLE);
