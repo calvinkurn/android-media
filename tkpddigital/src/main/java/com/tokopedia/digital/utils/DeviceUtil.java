@@ -1,11 +1,15 @@
 package com.tokopedia.digital.utils;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
@@ -88,5 +92,23 @@ public class DeviceUtil {
         requestBodyIdentifier.setUserId(SessionHandler.getLoginID(context));
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
+    }
+
+    public static String getMobileNumber(Activity context) {
+        String phoneNumber = null;
+        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            phoneNumber = tMgr.getLine1Number();
+        }
+        return phoneNumber;
+    }
+
+    public static String getOperatorName(Activity context) {
+        String operatorName = null;
+        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            operatorName = tMgr.getSimOperatorName();
+        }
+        return operatorName;
     }
 }

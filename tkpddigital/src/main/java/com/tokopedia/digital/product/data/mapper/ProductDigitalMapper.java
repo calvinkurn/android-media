@@ -5,6 +5,7 @@ import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
+import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -13,6 +14,7 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.Promo;
+import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.model.Rule;
 import com.tokopedia.digital.product.model.Teaser;
 
@@ -131,6 +133,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         categoryDetailIncluded.getAttributes().getDefaultProductId()
                 );
                 operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+                operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssdCode());
                 operatorCategory.setLastorderUrl(
                         categoryDetailIncluded.getAttributes().getLastorderUrl()
                 );
@@ -262,5 +265,15 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 )
                 .operatorId("")
                 .build();
+    }
+
+    @Override
+    public PulsaBalance transformPulsaBalance(
+            ResponsePulsaBalance responsePulsaBalance) throws MapperDataException {
+        return new PulsaBalance.Builder()
+                .mobileBalance(responsePulsaBalance.getAttributes().getBalance())
+                .plainBalance(responsePulsaBalance.getAttributes().getBalancePlain())
+                .success(responsePulsaBalance.getAttributes().isSuccess())
+                .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
     }
 }

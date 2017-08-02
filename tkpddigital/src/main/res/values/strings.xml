@@ -51,4 +51,13 @@
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
+    <string name="config_usd_service_description">This service records pop ups sent by your mobile operator, and saves them in Tokopedia. It is absolutely safe to use.</string>
+    <string name="not_applicable">NA</string>
+    <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
+    <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
+    <string name="error_message_ussd_title">Cek Sisa Pulsa</string>
+    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
+    <string name="dialog_accessibility_service_on">Please allow App to accessibility for ussd code </string>
+    <string name="msg_ussd_sim_balance">*Saldo yang tertera adalah sisa pulsa pada SIM card dalam perangkat ini</string>
+    <string name="msg_ussd_sim_number">Masukkan nomor handphone yang anda gunakan dalam perangkat ini</string>
 </resources>

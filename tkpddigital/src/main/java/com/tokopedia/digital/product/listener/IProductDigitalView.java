@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.listener;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ContentResolver;
 
@@ -9,6 +10,7 @@ import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
+import com.tokopedia.digital.product.model.PulsaBalance;
 
 import java.util.List;
 
@@ -34,6 +36,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderCategoryProductDataStyle4(CategoryData categoryData,
                                          HistoryClientNumber historyClientNumber);
+    void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance);
+
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 
@@ -70,4 +74,19 @@ public interface IProductDigitalView extends IBaseView {
     boolean isUserLoggedIn();
 
     void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData);
+
+    void showAccessibilityAlertDialog();
+
+    void registerUssdReciever();
+
+    void renderPulsaBalance(PulsaBalance pulsaBalance);
+
+    void showPulsaBalanceError(String message);
+
+    Activity getActivity();
+
+    void showVerifyUssdOperatorDialogFragment();
+
+    void showMessageAlert(String message,String title);
+
 }

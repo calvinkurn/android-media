@@ -1,10 +1,17 @@
 package com.tokopedia.digital.product.presenter;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -16,16 +23,23 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
+import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
+import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.product.service.USSDAccessibilityService;
+import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
 import java.net.ConnectException;
@@ -45,8 +59,28 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
 
-    public ProductDigitalPresenter(IProductDigitalView view,
-                                   IProductDigitalInteractor productDigitalInteractor) {
+    private String currentMobileNumber;
+    private final static String simSlotName[] = {
+            "extra_asus_dial_use_dualsim",
+            "com.android.phone.extra.slot",
+            "slot",
+            "simslot",
+            "sim_slot",
+            "subscription",
+            "Subscription",
+            "phone",
+            "com.android.phone.DialingMode",
+            "simSlot",
+            "slot_id",
+            "simId",
+            "simnum",
+            "phone_type",
+            "slotId",
+            "slotIdx"
+    };
+
+
+    public ProductDigitalPresenter(IProductDigitalView view, IProductDigitalInteractor productDigitalInteractor) {
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
     }
@@ -296,6 +330,226 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     )
             );
         }
+
+        if (view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA))
+            view.renderCheckPulsaBalanceData(null);
+
     }
 
+    @Override
+    public void processToCheckBalance(String ussdMobileNumber) {
+        currentMobileNumber = ussdMobileNumber;
+        if (checkAccessibilitySettingsOn(view.getActivity())) {
+            if (ussdMobileNumber != null) {
+                proccessUSSDCall();
+            } else {
+                String tempMobileNumber = getCurrentMobileNumber();
+                if (tempMobileNumber != null && !tempMobileNumber.trim().equalsIgnoreCase("") && !tempMobileNumber.trim().equalsIgnoreCase("0") && !tempMobileNumber.trim().equalsIgnoreCase("0UNKNOWN")) {
+                    proccessUSSDCall();
+                } else {
+                    view.showVerifyUssdOperatorDialogFragment();
+                }
+            }
+
+
+        } else {
+            view.showAccessibilityAlertDialog();
+        }
+    }
+
+    private void proccessUSSDCall() {
+
+        String ussd = getSelectedUssdOperator().getUssdCode();
+
+        Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() +"and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
+        if (ussd != null && !"".equalsIgnoreCase(ussd.trim())) {
+            view.registerUssdReciever();
+            dailUssdToCheckBalance(ussd);
+        } else {
+            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed)+ " and number is " +getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(),view.getActivity().getString(R.string.error_message_ussd_title));
+
+        }
+
+    }
+
+    private void dailUssdToCheckBalance(String code) {
+        String ussdCode = code.replace("#", Uri.encode("#"));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("com.android.phone.force.slot", true);
+        intent.putExtra("Cdma_Supp", true);
+        //Add all slots here, according to device.. (different device require different key so put all together)
+        for (String s : simSlotName)
+            intent.putExtra(s, 0); //0 or 1 according to sim.......
+
+//        //works only for API >= 21
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", " here You have to get phone account handle list by using telecom manger for both sims:- using this method getCallCapablePhoneAccounts()");
+//        }
+        if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
+            view.getActivity().startActivity(intent);
+        }
+    }
+
+    @Override
+    public void processPulsaBalanceUssdResponse(String result) {
+
+        productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(result), getSubscriberCheckPulsaBalance());
+    }
+
+    @NonNull
+    private Subscriber<PulsaBalance> getSubscriberCheckPulsaBalance() {
+        return new Subscriber<PulsaBalance>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            /* Ini kalau ga ada internet */
+                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+
+                } else if (e instanceof SocketTimeoutException) {
+            /* Ini kalau timeout */
+                    view.showPulsaBalanceError(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof ResponseErrorException) {
+             /* Ini kalau error dari API kasih message error */
+                    view.showPulsaBalanceError(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    view.showPulsaBalanceError(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+             code http errornya bisa diambil
+             e.getErrorCode */
+                    view.showPulsaBalanceError(e.getMessage());
+                } else if (e instanceof ServerErrorException) {
+                    ServerErrorHandlerUtil.handleError(e);
+                } else {
+                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(PulsaBalance pulsaBalance) {
+                view.renderPulsaBalance(pulsaBalance);
+            }
+        };
+    }
+
+    private boolean checkAccessibilitySettingsOn(Context context) {
+        int accessibilityEnabled = 0;
+        final String service = context.getPackageName() + "/" + USSDAccessibilityService.class.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    context.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+                    + e.getMessage());
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                    context.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+
+                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+                    if (accessibilityService.equalsIgnoreCase(service)) {
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
+        }
+
+        return false;
+    }
+
+    private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message) {
+        RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
+        requestBodyPulsaBalance.setType("balance");
+        Attributes attributes = new Attributes();
+        attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator().getOperatorId()));
+        attributes.setMessage(message);
+        attributes.setClientNumber(getCurrentMobileNumber());
+        attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
+        requestBodyPulsaBalance.setAttributes(attributes);
+
+        return requestBodyPulsaBalance;
+
+    }
+
+
+    @Override
+    public Operator getSelectedUssdOperator() {
+        String tempMobileNumber = getCurrentMobileNumber();
+        if (tempMobileNumber != null && !tempMobileNumber.trim().equalsIgnoreCase("") && !tempMobileNumber.trim().equalsIgnoreCase("0") && !tempMobileNumber.trim().equalsIgnoreCase("0UNKNOWN")) {
+            CategoryData categoryData = view.getCategoryDataState();
+            for (Operator operator : categoryData.getOperatorList()) {
+                for (String prefix : operator.getPrefixList()) {
+                    if (tempMobileNumber.startsWith(prefix)) {
+                        return operator;
+                    }
+                }
+
+            }
+        }
+//        else {
+//            ussdCode = "*111#";
+//        }
+//        if (ussdCode == null || "".equalsIgnoreCase(ussdCode)) {
+//            ussdCode = "*111#";
+//        }
+        return new Operator();
+    }
+
+    @Override
+    public String getCurrentMobileNumber() {
+        if (currentMobileNumber == null) {
+            currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity());
+        }
+
+        if (currentMobileNumber != null && currentMobileNumber.startsWith("+62")) {
+            currentMobileNumber = currentMobileNumber.replace("+62", "");
+        }
+
+        if (currentMobileNumber != null && currentMobileNumber.startsWith("62")) {
+            currentMobileNumber = currentMobileNumber.substring(2);
+        }
+
+        if (currentMobileNumber != null && !currentMobileNumber.startsWith("0")) {
+            currentMobileNumber = "0" + currentMobileNumber;
+        }
+        return currentMobileNumber;
+    }
+
+    private int parseStringToInt(String source) {
+        int result = 0;
+        if (source != null) {
+            try {
+                result = Integer.parseInt(source);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+
+    }
 }
+

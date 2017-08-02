@@ -23,6 +23,15 @@ public class Operator implements Parcelable {
     private List<String> prefixList = new ArrayList<>();
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Product> productList = new ArrayList<>();
+    private String ussdCode;
+
+    public String getUssdCode() {
+        return ussdCode;
+    }
+
+    public void setUssdCode(String ussdCode) {
+        this.ussdCode = ussdCode;
+    }
 
     public String getName() {
         return name;

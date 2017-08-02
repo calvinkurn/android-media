@@ -1,0 +1,174 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.digital.product.fragment.DigitalUssdFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_detail">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_vs"
+                    android:text="Saldo Anda"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/padding_vs"
+                    android:text="1232"
+                    android:textSize="@dimen/fonts" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_vs"
+                    android:text="No. Handphone"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_vs"
+                    android:text="85231232"
+                    android:textSize="@dimen/fonts" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_vs"
+                    android:text="Operator"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_operator_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/padding_vs"
+                    android:text="SIMPATHI"
+                    android:textSize="@dimen/fonts" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:padding="@dimen/padding_vs"
+                android:text="@string/msg_ussd_sim_balance"
+                android:textSize="@dimen/fonts" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/padding_detail">
+
+            <LinearLayout
+                android:id="@+id/holder_chooser_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/holder_price_info_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <CheckBox
+                android:id="@+id/cb_instant_checkout"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="start"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/digital_padding_16"
+                android:layout_weight="0.60"
+                android:text="@string/label_instant_payment_digital"
+                android:textColor="@color/checkbox_text"
+                android:textSize="@dimen/fontvs"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/btn_buy_digital"
+                style="@style/DigitalButtonBuy"
+                android:layout_marginBottom="@dimen/padding_med"
+                android:layout_marginTop="@dimen/digital_padding_28"
+                android:text="@string/label_btn_buy_digital" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
