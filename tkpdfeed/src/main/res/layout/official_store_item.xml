@@ -34,14 +34,15 @@
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
-            android:layout_marginBottom="@dimen/margin_vvs"
+            android:layout_marginBottom="@dimen/unified_margin_vvs"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
+            android:minLines="2"
             android:textColor="@color/black_70"
             android:textSize="@dimen/unify_font_normal"
             android:textStyle="normal"
-            tools:text="Nexus 5X 32 ,awawdawdasdas  pure white dan juga warna rose gold"/>
+            tools:text="Nexus 5X 32 ,awawdawdasde white dan juga warna rose gold"/>
 
         <TextView
             android:id="@+id/text_original_price"
@@ -53,7 +54,7 @@
             android:textColor="@color/black_38"
             android:textSize="@dimen/unify_font_small"
             android:textStyle="normal"
-            android:layout_marginBottom="@dimen/margin_vvs"
+            android:layout_marginBottom="@dimen/unified_margin_vvs"
             tools:text="Rp 2.700.000"
             />
 
