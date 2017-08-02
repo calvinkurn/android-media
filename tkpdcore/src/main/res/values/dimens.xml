@@ -212,7 +212,7 @@
     <!--NEW ONBOARDING-->
     <dimen name="line_spacing_6">6sp</dimen>
     <dimen name="line_spacing_8">8sp</dimen>
-    <dimen name="step_size_nob">34dp</dimen>
+    <dimen name="step_size_nob">30dp</dimen>
     <dimen name="padding_button_nob">16dp</dimen>
     <dimen name="margin_side_button_nob">40dp</dimen>
     <dimen name="margin_bottom_button_nob">8dp</dimen>

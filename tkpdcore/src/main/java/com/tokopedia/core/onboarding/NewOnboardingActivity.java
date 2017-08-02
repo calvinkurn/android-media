@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.animation.BounceInterpolator;
+import com.tokopedia.core.onboarding.animation.OnboardingAnimation;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
@@ -35,6 +36,7 @@ import com.tokopedia.core.util.SessionHandler;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
 
 /**
  * Created by steven on 7/25/2017.
@@ -50,6 +52,9 @@ public class NewOnboardingActivity extends OnboardingActivity {
     private Integer[] listId;
     private boolean isFirst;
     private Animator bounceAnimator;
+    private View ring;
+    private ValueAnimator ringAnimation;
+    private int ringDirection;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -65,6 +70,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         bottom = findViewById(R.id.bottom);
         nextView = (ImageButton) nextButton;
         skipView = (TextView) skipButton;
+        ringDirection = 1;
 
 
         decorView = getWindow().getDecorView();
@@ -210,6 +216,13 @@ public class NewOnboardingActivity extends OnboardingActivity {
 //
 //        }
 
+//        if(main != null) {
+//            ring = main.findViewById(R.id.selected_ring);
+//            ringAnimation = slideToX(ring, ringDirection, ring.getWidth());
+//            ringAnimation.setDuration(1000L);
+//            ringAnimation.start();
+//        }
+
         if (listId != null) {
             for (int i = 0; i < fragments.size(); i++) {
                 if(i != pager.getCurrentItem()){
@@ -233,10 +246,12 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(bottom, GONE);
             setButtonVisibility(skipButton, GONE);
             setButtonVisibility(indicator, GONE);
+            ringDirection = -1;
         } else {
             setButtonVisibility(bottom, VISIBLE);
             setButtonVisibility(skipButton, VISIBLE);
             setButtonVisibility(indicator, VISIBLE);
+            ringDirection = 1;
         }
     }
 

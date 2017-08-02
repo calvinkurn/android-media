@@ -74,7 +74,7 @@ public class OnboardingAnimation {
     public static ValueAnimator slideToX(final View view, int direction, int delta) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
-                    0, -delta + view.getWidth()/2);
+                    0, (direction * delta) + view.getWidth()/2);
             anim.reverse();
             return anim;
         }
