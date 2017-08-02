@@ -114,6 +114,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
             intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivity(intent);
             fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+            fragmentActivity.finish();
         }
     }
 

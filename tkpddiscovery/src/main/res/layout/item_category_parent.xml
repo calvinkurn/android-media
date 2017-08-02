@@ -22,7 +22,7 @@
         android:clickable="true"
         android:gravity="center"
         android:padding="10dp"
-        android:textSize="@dimen/fontvvs"
+        android:textSize="@dimen/fontvs"
         android:text="Title" />
 
     <View

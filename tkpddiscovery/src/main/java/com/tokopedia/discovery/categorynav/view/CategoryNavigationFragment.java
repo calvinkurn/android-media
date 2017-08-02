@@ -32,6 +32,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
         CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener{
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
+    private static final int DEFAULT_OFFSET = 170;
     private String categoryId = "";
     private String rootCategoryId = "";
     private CategoryNavDomainModel categoryNavDomainModel;
@@ -121,7 +122,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                 if (!rootCategoryId.equals(categoryId)) categoryChildAdapter.toggleSelectedChildbyId(categoryId);
             }
         }
-        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), 0);
+        linearLayoutManager.scrollToPositionWithOffset(categoryParentAdapter.getPositionById(rootCategoryId), DEFAULT_OFFSET);
     }
 
     @Override
@@ -169,7 +170,6 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
     public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent, int position) {
         rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
-        linearLayoutManager.scrollToPositionWithOffset(position, 0);
         for (Category category: categoryNavDomainModel.getCategories()) {
             if (category.getId() == rootCategoryId) {
                 if (category.getChildren()!=null && category.getChildren().size()>0) {
@@ -198,6 +198,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                     category.getId(),
                     category.getName()
             );
+            getActivity().finish();
         }
     }
 }
