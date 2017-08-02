@@ -11,6 +11,6 @@ import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 public class TopAdsYAxisRenderer implements StringFormatRenderer {
     @Override
     public String formatString(String rawString) {
-        return KMNumbers.formatNumbersTopAds(Long.valueOf(rawString));
+        return KMNumbers.formatNumbers(Long.valueOf(rawString));
     }
 }

@@ -13,28 +13,25 @@ import java.util.TreeMap;
 /**
  * Created by normansyahputa on 12/16/16.
  */
-public final class KMNumbers {
+public class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_DOUBLE = "%.1f";
     public static final String FORMAT_2_DOUBLE = "%.2f";
     public static final String FORMAT = "%.1f%s";
-    public static String[] SUFFIXES_ARRAY = {"K", "M", "G", "T", "P", "E"};
-    public static final String COMMA = ",";
-    public static final String DOT = ".";
     private static final Locale locale = new Locale("in", "ID");
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
     static {
-        suffixes.put(1000L, "K");
-        suffixes.put(1000000L, "M");
+        suffixes.put(1000L, "rb");
+        suffixes.put(1000000L, "jt");
+        suffixes.put(1000000000L, "M");
+        suffixes.put(1000000000000L, "T");
+        suffixes.put(1000000000000000L, "B");
     }
 
     public static void overrideSuffixes(long digit, String suffix) {
         suffixes.put(digit, suffix);
-
-        int exp = (int) (Math.log(digit) / Math.log(1000L));
-        SUFFIXES_ARRAY[exp-1] = suffix;
     }
 
     public static String getFormattedString(long value) {
@@ -47,72 +44,50 @@ public final class KMNumbers {
         return text;
     }
 
+    /*  format number test case:
+        -123L: -123
+        -1234L: -1.234
+        -12345L: -12,3rb
+        -123456L: -123,5rb
+        -1234567L: -1,2jt
+        -12345678L: -12,3jt
+        -123456789L: -123,5jt
+        -1234567890L: -1,2M
+        123L: 123
+        1234L: 1.234
+        12345L: 12,3rb
+        123456L: 123,5rb
+        1234567L: 1,2jt
+        12345678L: 12,3jt
+        123456789L: 123,5jt
+        1234567890L: 1,2M
+        */
     public static String formatNumbers(Long number) {
-        if (number >= 100000 || number < 0) {
-            return formatNumbersBiggerThanHundredThousand(number);
+        boolean isNegative = false;
+        if (number < 0) {
+            isNegative = true;
+            number = -1 * number;
         }
-
-        if (number < 10000) return number.toString();
-
+        if (number < 1000) {
+            return (isNegative?"-":"" ) + numberFormat.format(number);
+        }
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        //[START] dont delete this
-//        String comma = COMMA;
-//        String dot = DOT;
-//        if(result.contains(comma)){
-//            result = result.replaceAll(comma,dot);
-//        }
-        //[END] dont delete this
-        return result;
+        return (isNegative?"-":"" ) + result;
     }
 
     public static String formatNumbers(Float number) {
-        if (number >= 100000 || number < 0) {
-            return formatNumbersBiggerThanHundredThousand(number);
+        boolean isNegative = false;
+        if (number < 0) {
+            isNegative = true;
+            number = -1 * number;
         }
-
-        if (number < 10000) return number.toString();
-
+        if (number < 1000) {
+            return (isNegative?"-":"" ) + numberFormat.format(number);
+        }
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        //[START] dont delete this
-//        String comma = COMMA;
-//        String dot = DOT;
-//        if(result.contains(comma)){
-//            result = result.replaceAll(comma,dot);
-//        }
-        //[END] dont delete this
-        return result;
-    }
-
-    private static String formatNumbersBiggerThanHundredThousand(Long number) {
-        if (number == Long.MIN_VALUE)
-            return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
-        if (number < 0) return "-" + formatNumbersBiggerThanHundredThousand(-number);
-        if (number < 10000) return Long.toString(number);
-
-        Map.Entry<Long, String> e = suffixes.floorEntry(number);
-        Long divideBy = e.getKey();
-        String suffix = e.getValue();
-
-        long truncated = number / (divideBy / 10);
-        double v = truncated / 10d;
-        return formatString(v) + suffix;
-    }
-
-    private static String formatNumbersBiggerThanHundredThousand(Float number) {
-        if (number == Long.MIN_VALUE)
-            return formatNumbersBiggerThanHundredThousand(Long.MIN_VALUE + 1);
-        if (number < 0) return "-" + formatNumbersBiggerThanHundredThousand(-number);
-        if (number < 10000) return Float.toString(number);
-
-        Map.Entry<Long, String> e = suffixes.floorEntry((long) Math.round(number));
-        Long divideBy = e.getKey();
-        String suffix = e.getValue();
-
-        float truncated = number / (divideBy / 10);
-        double v = truncated / 10d;
-        return formatString(v) + suffix;
+        return (isNegative?"-":"" ) + result;
     }
 
     public static String formatRupiahString(Context context, long numberToFormat){
@@ -125,6 +100,18 @@ public final class KMNumbers {
         return context.getString(R.string.gm_statistic_percent_format_text, formatDouble2P(percent * 100));
     }
 
+    /* test case for formatDecimalString
+        -123L: -123
+        -1234L: -1.234
+        -12345L: -12.345
+        -123456L: -123.456
+        -1234567L: -1.234.567
+        123L: 123
+        1234L: 1.234
+        12345L: 12.345
+        123456L: 123.456
+        1234567L: 1.234.567
+     */
     public static String formatDecimalString (long numberToFormat){
         return formatDecimalString(numberToFormat, false);
     }
@@ -141,43 +128,16 @@ public final class KMNumbers {
         return String.format(locale, FORMAT_2_DOUBLE, number);
     }
 
-    public static String formatString(Double number) {
+    public static String formatDouble1P(Double number) {
         return String.format(locale, FORMAT_DOUBLE, number);
     }
 
     private static String formatString(Long number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), SUFFIXES_ARRAY[exp - 1]);
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long)Math.pow(1000, exp)));
     }
 
     private static String formatString(Float number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), SUFFIXES_ARRAY[exp - 1]);
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long)Math.pow(1000, exp)));
     }
 
-    /**
-     * used to formating value display of YAxis chart at topads fitur
-     *
-     * @param number
-     * @return
-     */
-    public static String formatNumbersTopAds(Long number) {
-        if (number >= 100000 || number < 0) {
-            return formatNumbersBiggerThanHundredThousand(number);
-        }
-
-        if (number < 10000) return formatStringTopAds(number);
-
-        int exp = (int) (Math.log(number) / Math.log(1000));
-        String result = formatString(number, exp);
-        return result;
-    }
-
-    /**
-     * used to formating number to currency format
-     *
-     * @param number
-     * @return
-     */
-    private static String formatStringTopAds(Long number) {
-        return numberFormat.format(number);
-    }
 }

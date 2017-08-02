@@ -221,16 +221,8 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     @Override
     public void onFailedSaveKeyword(Throwable e) {
         hideLoading();
-        SnackbarManager.make(getActivity(),
-                ViewUtils.getErrorMessage(getActivity(), e),
-                Snackbar.LENGTH_LONG, 0)
-                .setAction(getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                })
-                .show();
+        NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                ViewUtils.getErrorMessage(getActivity(), e));
         if (e instanceof ResponseErrorException) {
             List<Error> errorList = ((ResponseErrorException) e).getErrorList();
             errorStringList = convertResponseErrorToErrorStringList(errorList);

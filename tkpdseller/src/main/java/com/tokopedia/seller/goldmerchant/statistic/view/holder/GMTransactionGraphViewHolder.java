@@ -144,8 +144,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                     = GMStatisticUtil.joinDateAndGraph3(data.pDates, data.pValues, monthNamesAbrev);
 
             ArrayList<BaseWilliamChartModel> baseWilliamChartModels = new ArrayList<>();
-            baseWilliamChartModels.add(baseWilliamChartModel);
             baseWilliamChartModels.add(previousbaseWilliamChartModel);
+            baseWilliamChartModels.add(baseWilliamChartModel);
 
             showTransactionGraph(baseWilliamChartModels);
         } else {
