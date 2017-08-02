@@ -1,6 +1,7 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
@@ -109,7 +110,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                hideSnackBarRetry();
                 loadDataByDate();
             }
         });
@@ -211,15 +211,16 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     private void showSnackbarRetry() {
-        if (!snackbarRetry.isShown()) {
-            snackbarRetry.showRetrySnackbar();
-        }
-    }
-
-    private void hideSnackBarRetry() {
-        if (snackbarRetry.isShown()) {
-            snackbarRetry.hideRetrySnackbar();
-        }
+        //!important, the delay will help the snackbar re-show after it is being hidden.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded()) {
+                    snackbarRetry.showRetrySnackbar();
+                }
+            }
+        },700);
     }
 
     @Override
