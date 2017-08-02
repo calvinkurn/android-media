@@ -10,6 +10,8 @@ import com.tokopedia.seller.common.williamchart.util.TopAdsYAxisRenderer;
 import com.tokopedia.seller.common.williamchart.view.ChartView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 
+import static com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfig.WIDTH_TIP;
+
 /**
  * Created by normansyahputa on 7/7/17.
  */
@@ -63,7 +65,7 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public boolean xDataGrid() {
-        return false;
+        return true;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public int topMargin() {
-        return BaseWilliamChartConfig.DEFAULT;
+        return (int) Tools.fromDpToPx(WIDTH_TIP);
     }
 
     @Override
@@ -88,12 +90,14 @@ public class GrossGraphChartConfig implements AnimationGraphConfiguration {
 
     @Override
     public float xDistAxisToLabel() {
-        return Tools.fromDpToPx(12f);
+        return 0;
+//        return Tools.fromDpToPx(12f);
     }
 
     @Override
     public float yDistAxisToLabel() {
-        return Tools.fromDpToPx(6f);
+        return 0;
+//        return Tools.fromDpToPx(6f);
     }
 
     @Override
