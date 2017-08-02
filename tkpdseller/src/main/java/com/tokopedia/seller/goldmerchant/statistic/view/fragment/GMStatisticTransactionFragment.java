@@ -141,7 +141,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                snackbarRetry.showRetrySnackbar();
+                if (isAdded()) {
+                    snackbarRetry.showRetrySnackbar();
+                }
             }
         },700);
     }
