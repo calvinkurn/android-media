@@ -16,19 +16,18 @@ import com.tokopedia.tkpd.R;
  * Created by okasurya on 7/25/17.
  */
 public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
-    private static final String IS_APPLICATION_NEED_UPDATE = "is_application_need_update";
-    private static final String LATEST_APP_VERSION_CODE = "latest_app_version_code";
-    private static final String UPDATE_TITLE = "update_title";
-    private static final String UPDATE_MESSAGE = "update_message";
-    private static final String IS_FORCE_UPDATE = "is_force_update";
-    private static final String UPDATE_LINK = "update_link";
+    private static final String MAINAPP_IS_NEED_UPDATE = "mainapp_is_need_update";
+    private static final String MAINAPP_LATEST_VERSION_CODE = "mainapp_latest_version_code";
+    private static final String MAINAPP_IS_FORCE_UPDATE = "mainapp_is_force_update";
+    private static final String MAINAPP_UPDATE_TITLE = "mainapp_update_title";
+    private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_update_message";
+    private static final String MAINAPP_UPDATE_LINK = "mainapp_update_link";
 
     private Activity activity;
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
     public FirebaseRemoteAppUpdate(Activity activity) {
         this.activity = activity;
-
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
     }
 
@@ -58,12 +57,12 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
 
     private DetailUpdate getDetailUpdate() {
         DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setNeedUpdate(firebaseRemoteConfig.getBoolean(IS_APPLICATION_NEED_UPDATE));
-        detailUpdate.setLatestVersionCode(firebaseRemoteConfig.getLong(LATEST_APP_VERSION_CODE));
-        detailUpdate.setForceUpdate(firebaseRemoteConfig.getBoolean(IS_FORCE_UPDATE));
-        detailUpdate.setUpdateTitle(firebaseRemoteConfig.getString(UPDATE_TITLE));
-        detailUpdate.setUpdateMessage(firebaseRemoteConfig.getString(UPDATE_MESSAGE));
-        detailUpdate.setUpdateLink(firebaseRemoteConfig.getString(UPDATE_LINK));
+        detailUpdate.setNeedUpdate(firebaseRemoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
+        detailUpdate.setLatestVersionCode(firebaseRemoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
+        detailUpdate.setForceUpdate(firebaseRemoteConfig.getBoolean(MAINAPP_IS_FORCE_UPDATE));
+        detailUpdate.setUpdateTitle(firebaseRemoteConfig.getString(MAINAPP_UPDATE_TITLE));
+        detailUpdate.setUpdateMessage(firebaseRemoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
+        detailUpdate.setUpdateLink(firebaseRemoteConfig.getString(MAINAPP_UPDATE_LINK));
         return detailUpdate;
     }
 }
