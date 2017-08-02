@@ -66,6 +66,6 @@
     <string name="gm_statistic_empty_register_topads_now">Mulai Promo</string>
     <string name="gm_statistic_change_date"><![CDATA[Ubah tanggal >]]></string>
     <string name="gm_statistic_card_error_content">Data gagal ditampilkan</string>
-    <string name="gm_statistic_see_topads">Lihat TopAds</string>
+    <string name="gm_statistic_manage_topads">Atur TopAds</string>
     <string name="gm_sort">Sort</string>
 </resources>

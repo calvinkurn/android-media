@@ -3,6 +3,7 @@ package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -49,6 +50,7 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
             @Override
             public void onClick(View view) {
                 if (onTopAdsViewHolderListener != null) {
+                    UnifyTracking.eventClickGMStatManageTopAds();
                     onTopAdsViewHolderListener.onManageTopAdsClicked();
                 }
             }
@@ -62,7 +64,7 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
         } else {
             gmTopAdsLineChartWidget.hidePercentageView();
         }
-        gmTopAdsLineChartWidget.setAmount(KMNumbers.formatRupiahString(titleCardView.getContext(), gmGraphViewModel.amount));
+        gmTopAdsLineChartWidget.setAmount(KMNumbers.formatRupiahString(gmGraphViewModel.amount));
     }
 
     public void bind(@Nullable GMGraphViewModel data, boolean isCompareDate) {

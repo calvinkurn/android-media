@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
@@ -178,18 +179,21 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
                     case 2:
                         sortBy = GMTransactionTableSortBy.DELIVERED_AMT;
                         break;
-
                 }
                 if (previousSortBy == sortBy) {
                     return;
                 }
+                String itemTitle = item.getTitle().toString();
+
                 resetSelectionSortBy(sortByIndexSelection);
-                tvSortBy.setText(item.getTitle());
+                tvSortBy.setText(itemTitle);
                 GMStatisticTransactionTableAdapter gmAdapter = (GMStatisticTransactionTableAdapter)adapter;
                 gmAdapter.setSortBy(sortBy);
                 gmAdapter.notifyDataSetChanged();
 
                 loadData();
+
+                UnifyTracking.eventClickGMStatFilterTypeProductSold(itemTitle);
             }
         });
     }

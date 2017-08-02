@@ -18,7 +18,9 @@ public class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_2_DOUBLE = "%.2f";
-    public static final String FORMAT = "%s%s";
+    public static final String SUFFIX_FORMAT = "%s%s";
+    public static final String RUPIAH_FORMAT = "Rp %s";
+    public static final String PERCENT_FORMAT = "%s%%";
     private static final Locale locale = new Locale("in", "ID");
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
     public static DecimalFormat amountDf = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -99,16 +101,15 @@ public class KMNumbers {
         return (isNegative ? "-" : "") + result;
     }
 
-    public static String formatRupiahString(Context context, long numberToFormat) {
-        return context.getString(R.string.gm_statistic_rupiah_format_text,
-                KMNumbers.formatDecimalString(numberToFormat));
+    public static String formatRupiahString(long numberToFormat) {
+        return String.format(RUPIAH_FORMAT, KMNumbers.formatDecimalString(numberToFormat));
     }
 
     // convert (double) 1.12345 to "123,35%" (string) rounded
     // (double) 0.12 to 12% (without 00)
     // double 0.0 to 0%
     // double 0.001 to 0.00%
-    public static String formatToPercentString(Context context, double percent) {
+    public static String formatToPercentString(double percent) {
         // check if integer
         double percentTimes100 = percent * 100;
         String percentString;
@@ -118,7 +119,7 @@ public class KMNumbers {
         } else {
             percentString = formatDouble2P(percentTimes100);
         }
-        return context.getString(R.string.gm_statistic_percent_format_text, percentString);
+        return String.format(PERCENT_FORMAT, percentString);
     }
 
     /* test case for formatDecimalString
@@ -161,7 +162,7 @@ public class KMNumbers {
         } else {
             numberString = amountDf.format(mainNumber);
         }
-        return String.format(locale, FORMAT,
+        return String.format(locale, SUFFIX_FORMAT,
                 numberString,
                 suffixes.get((long) Math.pow(1000, exp)));
     }
