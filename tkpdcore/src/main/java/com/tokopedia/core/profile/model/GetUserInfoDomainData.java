@@ -23,6 +23,7 @@ public class GetUserInfoDomainData {
     private String lang;
     private boolean createdPassword;
     private boolean phoneVerified;
+
     private List<Integer> roles = null;
     private String profilePicture;
     private String clientId;

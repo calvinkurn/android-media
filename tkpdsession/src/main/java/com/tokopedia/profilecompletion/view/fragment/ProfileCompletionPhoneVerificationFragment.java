@@ -30,13 +30,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -47,9 +47,11 @@ import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragme
 import com.tokopedia.profilecompletion.di.DaggerPhoneVerifComponent;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationPresenter;
+import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
@@ -78,15 +80,13 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     private static final String TOKOCASH = "TokoCash";
     public static final String TAG = "verif";
     private Unbinder unbinder;
-    private GetUserInfoDomainData data;
-    private ProfileCompletionFragment parentView;
+    private ProfileCompletionViewModel data;
+    private ProfileCompletionContract.View parentView;
     private ProfileCompletionContract.Presenter parentPresenter;
     private View instruction;
 
     @Inject
     ProfileCompletionPhoneVerificationPresenter presenter;
-    private ProfileCompletionPhoneVerificationFragment view;
-
 
     @Override
     protected String getScreenName() {
@@ -128,10 +128,14 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected TkpdProgressDialog progressDialog;
     protected LocalCacheHandler cacheHandler;
 
-    public static ProfileCompletionPhoneVerificationFragment createInstance(ProfileCompletionFragment view) {
-        ProfileCompletionPhoneVerificationFragment fragment = new ProfileCompletionPhoneVerificationFragment();
-        fragment.parentView = view;
-        return fragment;
+    public static ProfileCompletionPhoneVerificationFragment createInstance
+            (ProfileCompletionContract.View view) {
+        return new
+                ProfileCompletionPhoneVerificationFragment(view);
+    }
+
+    public ProfileCompletionPhoneVerificationFragment(ProfileCompletionContract.View view) {
+        this.parentView = view;
     }
 
     @Nullable
@@ -148,8 +152,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     }
 
     public ProfileCompletionPhoneVerificationFragment() {
-        this.smsReceiver = new IncomingSmsReceiver();
-        this.smsReceiver.setListener(this);
+
     }
 
     protected void findView(View view) {
@@ -170,6 +173,8 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     @Override
     public void onResume() {
         super.onResume();
+        if (smsReceiver == null)
+            initSMSReceiver();
         smsReceiver.registerSmsReceiver(getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showCheckSMSPermission();
@@ -179,35 +184,35 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     @RequiresApi(api = Build.VERSION_CODES.M)
     @TargetApi(Build.VERSION_CODES.M)
     private void showCheckSMSPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-            new android.support.v7.app.AlertDialog.Builder(getActivity())
-                    .setMessage(
-                            RequestPermissionUtil
-                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
-                    )
-                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                    && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                new android.support.v7.app.AlertDialog.Builder(getActivity())
+                        .setMessage(
+                                RequestPermissionUtil
+                                        .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                        )
+                        .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
 
-                        }
-                    })
-                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            RequestPermissionUtil.onPermissionDenied(getActivity(),
-                                    Manifest.permission.READ_SMS);
-                        }
-                    })
-                    .show();
-        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-            ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
-                    .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
-        }
+                            }
+                        })
+                        .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                RequestPermissionUtil.onPermissionDenied(MainApplication.getAppContext(),
+                                        Manifest.permission.READ_SMS);
+                            }
+                        })
+                        .show();
+            } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
+                        .checkSmsPermissionWithCheck(ProfileCompletionPhoneVerificationFragment.this);
+            }
     }
 
     @Override
@@ -216,7 +221,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         if (smsReceiver != null)
             getActivity().unregisterReceiver(smsReceiver);
     }
-
 
     protected void onFirstTimeLaunched() {
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
@@ -229,6 +233,9 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     }
 
     protected void initView(View view) {
+        if (parentView == null && getActivity() instanceof ProfileCompletionActivity)
+            parentView = ((ProfileCompletionActivity) getActivity())
+                    .getProfileCompletionContractView();
         findView(view);
         data = parentView.getData();
         verifyButton = (TextView) parentView.getView().findViewById(R.id.proceed);
@@ -355,8 +362,14 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     }
 
     protected void initialVar() {
+        initSMSReceiver();
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
         parentPresenter = parentView.getPresenter();
+    }
+
+    private void initSMSReceiver() {
+        this.smsReceiver = new IncomingSmsReceiver();
+        this.smsReceiver.setListener(this);
     }
 
     @Override
@@ -437,9 +450,9 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         requestOtpCallButton.setEnabled(isEnabled);
         if (inputOtpView.getVisibility() == View.VISIBLE)
             verifyButton.setEnabled(isEnabled);
-        if (inputOtpView.getVisibility() == View.VISIBLE){
+        if (inputOtpView.getVisibility() == View.VISIBLE) {
             verifyButton.setText(getResources().getString(R.string.title_confirm_otp));
-        }else {
+        } else {
             verifyButton.setText(getResources().getString(R.string.continue_form));
         }
         skipButton.setEnabled(isEnabled);
@@ -453,9 +466,9 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         }
 
         runAnimation();
-        if (inputOtpView.getVisibility() == View.VISIBLE){
+        if (inputOtpView.getVisibility() == View.VISIBLE) {
             verifyButton.setText(getResources().getString(R.string.title_confirm_otp));
-        }else {
+        } else {
             verifyButton.setText(getResources().getString(R.string.continue_form));
         }
         otpEditText.requestFocus();

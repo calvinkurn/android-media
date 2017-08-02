@@ -32,19 +32,19 @@ public class ProfileCompletionModule {
             @ActivityContext Context context,
             AccountsService accountsService,
             GetUserInfoMapper getUserInfoMapper,
-            EditUserInfoMapper editUserInfoMapper){
+            EditUserInfoMapper editUserInfoMapper) {
         return new ProfileSourceFactory(context, accountsService, getUserInfoMapper, editUserInfoMapper);
     }
 
     @ProfileCompletionScope
     @Provides
-    GetUserInfoMapper provideGetUserInfoMapper(){
+    GetUserInfoMapper provideGetUserInfoMapper() {
         return new GetUserInfoMapper();
     }
 
     @ProfileCompletionScope
     @Provides
-    EditUserInfoMapper provideEdittUserInfoMapper(){
+    EditUserInfoMapper provideEdittUserInfoMapper() {
         return new EditUserInfoMapper();
     }
 
@@ -58,7 +58,7 @@ public class ProfileCompletionModule {
     @Provides
     EditUserProfileUseCase provideEditUserProfileUseCase(ThreadExecutor threadExecutor,
                                                          PostExecutionThread postExecutor,
-                                                         ProfileRepository profileRepository){
+                                                         ProfileRepository profileRepository) {
 
         return new EditUserProfileUseCase(threadExecutor, postExecutor, profileRepository);
     }
@@ -66,8 +66,8 @@ public class ProfileCompletionModule {
     @ProfileCompletionScope
     @Provides
     GetUserInfoUseCase provideGetUserProfileUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutor,
-                                                     ProfileRepository profileRepository){
+                                                    PostExecutionThread postExecutor,
+                                                    ProfileRepository profileRepository) {
 
         return new GetUserInfoUseCase(threadExecutor, postExecutor, profileRepository);
     }

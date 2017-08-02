@@ -22,13 +22,16 @@ public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompl
         implements ProfileCompletionContract.Presenter {
 
     private final EditUserProfileUseCase editUserProfileUseCase;
+    private final SessionHandler sessionHandler;
     private GetUserInfoUseCase getUserInfoUseCase;
 
     @Inject
     ProfileCompletionPresenter(GetUserInfoUseCase getUserInfoUseCase,
-                               EditUserProfileUseCase editUserProfileUseCase){
+                               EditUserProfileUseCase editUserProfileUseCase,
+                               SessionHandler sessionHandler){
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.editUserProfileUseCase = editUserProfileUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -78,5 +81,9 @@ public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompl
     @Override
     public void skipView(String tag) {
         getView().skipView(tag);
+    }
+
+    public void setMsisdnVerifiedToCache(boolean isVerified) {
+        sessionHandler.setIsMSISDNVerified(isVerified);
     }
 }

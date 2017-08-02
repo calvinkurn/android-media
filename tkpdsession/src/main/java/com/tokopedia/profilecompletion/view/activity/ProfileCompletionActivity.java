@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
@@ -14,6 +15,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 /**
@@ -21,6 +23,9 @@ import com.tokopedia.session.R;
  */
 
 public class ProfileCompletionActivity extends BasePresenterActivity {
+
+    private static final String ERROR_IMPLEMENT_LISTENER = "Error not implementing " +
+            "ProfileCompletionContract.View";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +69,11 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
-        ProfileCompletionFragment fragment = ProfileCompletionFragment.createInstance();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragment == null)
+            fragment = ProfileCompletionFragment.createInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
 
@@ -92,5 +97,13 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
+
+    public ProfileCompletionContract.View getProfileCompletionContractView() {
+        if (getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                ProfileCompletionContract.View)
+            return (ProfileCompletionFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        else
+            throw new RuntimeException(ERROR_IMPLEMENT_LISTENER);
     }
 }

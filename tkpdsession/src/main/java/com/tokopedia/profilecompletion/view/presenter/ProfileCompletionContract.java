@@ -1,10 +1,8 @@
 package com.tokopedia.profilecompletion.view.presenter;
 
-import android.view.View;
-
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 
 /**
  * Created by stevenfredian on 6/22/17.
@@ -16,7 +14,7 @@ public interface ProfileCompletionContract extends CustomerView {
 
         void skipView(String tag);
 
-        void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData);
+        void onGetUserInfo(ProfileCompletionViewModel profileCompletionViewModel);
 
         void onErrorGetUserInfo(String string);
 
@@ -27,6 +25,14 @@ public interface ProfileCompletionContract extends CustomerView {
         String getString(int id);
 
         void disableView();
+
+        ProfileCompletionViewModel getData();
+
+        void canProceed(boolean canProceed);
+
+        Presenter getPresenter();
+
+        android.view.View getView();
     }
 
     interface Presenter extends CustomerPresenter<View>{

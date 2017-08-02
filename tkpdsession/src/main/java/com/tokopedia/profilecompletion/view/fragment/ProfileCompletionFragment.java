@@ -28,15 +28,15 @@ import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
-import com.tokopedia.profilecompletion.view.util.TextDrawable;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
+import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
+import com.tokopedia.profilecompletion.view.util.TextDrawable;
+import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
 
 import javax.inject.Inject;
@@ -52,12 +52,13 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         implements ProfileCompletionContract.View {
 
     private static final String DEFAULT_EMPTY_BDAY = "0001-01-01T00:00:00Z";
+    private static final String ARGS_DATA = "ARGS_DATA";
     ProgressBar progressBar;
     ViewPager viewPager;
     TextView percentText;
     TextView proceed;
     private ProgressBarAnimation animation;
-    private GetUserInfoDomainData data;
+    private ProfileCompletionViewModel data;
     private String filled;
     private View skip;
     View progress;
@@ -69,6 +70,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     @Inject
     ProfileCompletionPresenter presenter;
+
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
     private NetworkErrorHelper.RetryClickedListener retryAction;
@@ -81,6 +83,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.getParcelable(ARGS_DATA) != null)
+            data = savedInstanceState.getParcelable(ARGS_DATA);
     }
 
     @Nullable
@@ -143,11 +147,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+        outState.putParcelable(ARGS_DATA, data);
     }
 
     protected void initialVar() {
@@ -161,16 +161,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
                 presenter.getUserInfo();
             }
         };
-    }
-
-    @Override
-    public void onGetUserInfo(GetUserInfoDomainData getUserInfoDomainData) {
-        main.setVisibility(View.VISIBLE);
-        this.data = getUserInfoDomainData;
-//        testDummyData();
-        updateProgressBar(0, data.getCompletion());
-        loading.setVisibility(View.GONE);
-        loadFragment(getUserInfoDomainData, new Pair<>(0, 0));
     }
 
     @Override
@@ -207,27 +197,27 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         progressBar.setProgressDrawable(shape);
     }
 
-    private void loadFragment(GetUserInfoDomainData getUserInfoDomainData, Pair<Integer, Integer> pair) {
+    private void loadFragment(ProfileCompletionViewModel profileCompletionViewModel, Pair<Integer, Integer> pair) {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = getChildFragmentManager().beginTransaction();
         }
         transaction.setCustomAnimations(pair.first, pair.second);
-        chooseFragment(getUserInfoDomainData);
+        chooseFragment(profileCompletionViewModel);
     }
 
-    private void chooseFragment(GetUserInfoDomainData getUserInfoDomainData) {
+    private void chooseFragment(ProfileCompletionViewModel profileCompletionViewModel) {
 
-        if (checkingIsEmpty(String.valueOf(getUserInfoDomainData.getGender()))) {
+        if (checkingIsEmpty(String.valueOf(profileCompletionViewModel.getGender()))) {
             ProfileCompletionGenderFragment genderFragment = ProfileCompletionGenderFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG).commit();
-        } else if (checkingIsEmpty(getUserInfoDomainData.getBday())) {
+        } else if (checkingIsEmpty(profileCompletionViewModel.getBday())) {
             ProfileCompletionDateFragment dateFragment = ProfileCompletionDateFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG).commit();
-        } else if (!getUserInfoDomainData.isPhoneVerified()) {
+        } else if (!profileCompletionViewModel.isPhoneVerified()) {
             ProfileCompletionPhoneVerificationFragment verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this);
             transaction.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG).commit();
-        } else if (getUserInfoDomainData.getCompletion() == 100) {
+        } else if (profileCompletionViewModel.getCompletion() == 100) {
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
         } else {
             getActivity().finish();
@@ -253,6 +243,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             updateProgressBar(data.getCompletion(), data.getCompletion() + 10);
         } else if (edit == EditUserProfileUseCase.EDIT_VERIF) {
             data.setPhoneVerified(true);
+            presenter.setMsisdnVerifiedToCache(true);
             updateProgressBar(data.getCompletion(), data.getCompletion() + 30);
         }
         setViewEnabled();
@@ -319,7 +310,17 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         }
     }
 
-    public GetUserInfoDomainData getData() {
+    @Override
+    public void onGetUserInfo(ProfileCompletionViewModel profileCompletionViewModel) {
+        main.setVisibility(View.VISIBLE);
+        this.data = profileCompletionViewModel;
+//        testDummyData();
+        updateProgressBar(0, data.getCompletion());
+        loading.setVisibility(View.GONE);
+        loadFragment(profileCompletionViewModel, new Pair<>(0, 0));
+    }
+
+    public ProfileCompletionViewModel getData() {
         return data;
     }
 

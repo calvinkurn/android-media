@@ -4,9 +4,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
+import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
 
 import java.io.IOException;
@@ -88,6 +90,15 @@ public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
     @Override
     public void onNext(GetUserInfoDomainModel getUserInfoDomainModel) {
         CommonUtils.dumper("NISNIS sukses");
-        listener.onGetUserInfo(getUserInfoDomainModel.getGetUserInfoDomainData());
+        listener.onGetUserInfo(mappingToViewModel(getUserInfoDomainModel.getGetUserInfoDomainData()));
+    }
+
+    private ProfileCompletionViewModel mappingToViewModel(GetUserInfoDomainData getUserInfoDomainData) {
+        return new ProfileCompletionViewModel(
+                getUserInfoDomainData.getGender(),
+                getUserInfoDomainData.getPhone(),
+                getUserInfoDomainData.getBday(),
+                getUserInfoDomainData.getCompletion(),
+                getUserInfoDomainData.isPhoneVerified());
     }
 }
