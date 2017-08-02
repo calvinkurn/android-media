@@ -182,6 +182,9 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
             case TxListFragment.INSTANCE_RECEIVE:
                 holder.btnOverflow.setVisibility(View.VISIBLE);
                 break;
+            default:
+                holder.btnOverflow.setVisibility(View.GONE);
+                break;
         }
 
         if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
