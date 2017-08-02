@@ -4,6 +4,7 @@ package com.tokopedia.core.onboarding.fragment;
  * Created by hafizh HERDI on 3/21/2016.
  */
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.util.MethodChecker;
+
+import java.util.ArrayList;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DOWN_DIRECTION;
@@ -184,8 +187,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
 
         if(viewType == VIEW_ENDING){
 
-            next = getView().findViewById(R.id.dummy_next);
-            next.setVisibility(View.VISIBLE);
+            resetAnimation();
 
 
             slideAnimatorX = slideToX(next, -1, mScreenWidth/2);
@@ -207,7 +209,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
 
             animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
-//            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator);
+//            animatorSet.playTogether(expandAnimator);
             animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
             animatorSet.setupStartValues();
             animatorSet.start();
@@ -217,6 +219,12 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         }
     }
 
+    private void resetAnimation() {
+        next = getView().findViewById(R.id.dummy_next);
+        next.setVisibility(View.VISIBLE);
+        login.setWidth(0);
+        login.setY(0);
+    }
 
 
     public void clearAnimation() {

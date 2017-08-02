@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -92,7 +93,6 @@ public class OnboardingActivity extends BaseOnboardingActivity {
                 getString(R.string.nonb_4_desc), R.drawable.ic_yuk_belanja,
                 ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
                 OnBoardingFragment.VIEW_DEFAULT, 3));
-
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
                 getString(R.string.nonb_5_desc), R.drawable.ic_yuk_belanja,
                 ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
@@ -129,14 +129,20 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     }
 
     private void setStepperLayout() {
-        LayoutParams params1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+        LinearLayout stepper = (LinearLayout) View.inflate(this, R.layout.step_list, null);
+        stepper.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
         float d = getResources().getDisplayMetrics().density;
+
+        LayoutParams params1 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (stepper.getMeasuredHeight()+(10*d)));
+
         params1.setMargins((int) (70 * d), (int) (65 * d), (int) (70 * d), 0);
         params1.addRule(ALIGN_PARENT_TOP);
 
-        LinearLayout stepper = (LinearLayout) View.inflate(this, R.layout.step_list, null);
         stepper.setId(R.id.stepper);
-        main.addView(stepper, params1);
+        stepper.setLayoutParams(params1);
+        main.addView(stepper);
 
     }
 

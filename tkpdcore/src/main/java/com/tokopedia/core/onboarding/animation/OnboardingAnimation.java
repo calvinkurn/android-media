@@ -1,5 +1,6 @@
 package com.tokopedia.core.onboarding.animation;
 
+import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -28,7 +29,7 @@ public class OnboardingAnimation {
 
     public static ValueAnimator expandTextView(final TextView v, float mScreenWidth) {
         if (v != null) {
-            ValueAnimator anim = ValueAnimator.ofInt(0, (int) mScreenWidth);
+            final ValueAnimator anim = ValueAnimator.ofInt(0, (int) mScreenWidth);
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -39,6 +40,7 @@ public class OnboardingAnimation {
                     v.requestLayout();
                 }
             });
+            anim.reverse();
             return anim;
         }
         return null;
@@ -51,6 +53,7 @@ public class OnboardingAnimation {
                     new ArgbEvaluator(),
                     MethodChecker.getColor(context, colorFrom),
                     MethodChecker.getColor(context, colorTo));
+            anim.reverse();
             return anim;
         }
         return null;
@@ -58,27 +61,37 @@ public class OnboardingAnimation {
 
     public static ObjectAnimator slideToY(final View view, int direction, View footer) {
         if (view != null) {
+            final int height;
+            if(view.getHeight() == 0){
+                view.measure(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                height = view.getMeasuredHeight();
+            }else {
+                height = view.getHeight();
+            }
 
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY",
-                    0, view.getHeight() * direction);
-            return objectAnimator;
+
+            ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationY", 0, height * direction);
+            anim.reverse();
+            return anim;
         }
         return null;
     }
 
     public static ValueAnimator slideToX(final View view, int direction, int delta) {
         if (view != null) {
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX",
+            ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
                     0, -delta + view.getWidth()/2);
-            return objectAnimator;
+            anim.reverse();
+            return anim;
         }
         return null;
     }
 
     public static ObjectAnimator setVisibilityGone(final View view) {
         if (view != null) {
-            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
-            return objectAnimator;
+            ObjectAnimator anim = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
+            anim.reverse();
+            return anim;
         }
         return null;
     }
