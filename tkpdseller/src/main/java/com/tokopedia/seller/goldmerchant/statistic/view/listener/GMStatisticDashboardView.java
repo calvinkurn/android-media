@@ -38,4 +38,8 @@ public interface GMStatisticDashboardView extends CustomerView {
     void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant);
 
     void onErrorLoadMarketInsight(Throwable t);
+
+    void onErrorLoadShopInfo(Throwable t);
+
+    void onSuccessLoadShopInfo(boolean isGoldMerchant);
 }
