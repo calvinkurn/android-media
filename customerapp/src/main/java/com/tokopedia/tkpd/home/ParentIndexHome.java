@@ -211,7 +211,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (SessionHandler.isFirstTimeUser(ParentIndexHome.this)) {
 
                     //  Launch app intro
-                    Intent i = new Intent(ParentIndexHome.this, OnboardingActivity.class);
+                    Intent i = new Intent(ParentIndexHome.this, NewOnboardingActivity.class);
                     startActivityForResult(i, ONBOARDING_REQUEST);
 
                 }

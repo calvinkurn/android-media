@@ -8,6 +8,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -22,8 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
@@ -83,7 +89,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((OnboardingActivity)(getActivity())).setNextResource();
+        ((NewOnboardingActivity)(getActivity())).setNextResource();
         animatorSet = new AnimatorSet();
     }
 
@@ -143,13 +149,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SessionHandler.setFirstTimeUser(getActivity(), false);
-//                Intent intent = new Intent();
-//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-//                getActivity().setResult(Activity.RESULT_OK, intent);
-//                getActivity().finish();
-                Toast.makeText(v.getContext(), "login", Toast.LENGTH_LONG).show();
+                SessionHandler.setFirstTimeUser(getActivity(), false);
+                Intent intent = new Intent();
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+//                Toast.makeText(v.getContext(), "login", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -157,13 +163,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SessionHandler.setFirstTimeUser(getActivity(), false);
-//                Intent intent = new Intent();
-//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-//                getActivity().setResult(Activity.RESULT_OK, intent);
-//                getActivity().finish();
-                Toast.makeText(v.getContext(), "skip", Toast.LENGTH_LONG).show();
+                SessionHandler.setFirstTimeUser(getActivity(), false);
+                Intent intent = new Intent();
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+//                Toast.makeText(v.getContext(), "skip", Toast.LENGTH_LONG).show();
             }
         });
 
