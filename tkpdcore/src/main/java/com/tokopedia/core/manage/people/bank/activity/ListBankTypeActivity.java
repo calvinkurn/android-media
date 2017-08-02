@@ -15,8 +15,12 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.manage.people.bank.adapter.BcaOneClickRecyclerAdapter;
+import com.tokopedia.core.manage.people.bank.dialog.BcaOneClickDeleteDialog;
+import com.tokopedia.core.manage.people.bank.listener.BcaOneClickDeleteListener;
 import com.tokopedia.core.manage.people.bank.listener.ListBankTypeActivityView;
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
+import com.tokopedia.core.manage.people.bank.model.PaymentListModel;
 import com.tokopedia.core.manage.people.bank.presenter.ListBankTypePresenter;
 import com.tokopedia.core.manage.people.bank.presenter.ListBankTypePresenterImpl;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -28,13 +32,22 @@ import rx.Subscriber;
  */
 
 public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePresenter>
-        implements ListBankTypeActivityView {
+        implements ListBankTypeActivityView, BcaOneClickDeleteListener {
 
-    private RecyclerView mainRecyclerView;
+    private static final int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
+    public static final int EDIT_BCA_ONE_CLICK_REQUEST_CODE = 2;
 
-    private BankListRecyclerAdapter adapter;
+    private RecyclerView bcaOneClickRecyclerView;
+
+    private BcaOneClickRecyclerAdapter bcaOneClickRecyclerAdapter;
+
+    private LinearLayout bcaOneClickRegisterLayout;
+
+    private TextView bcaOneClickRegistrationButton;
 
     private TkpdProgressDialog progressDialog;
+
+    private PaymentListModel paymentModels;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -53,18 +66,50 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
 
     @Override
     protected int getLayoutId() {
-        return R.layout.recycler_view_layout;
+        return R.layout.payment_list_layout;
     }
 
     @Override
     protected void initView() {
-        adapter = new BankListRecyclerAdapter();
-        mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
-        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mainRecyclerView.setAdapter(adapter);
+        bcaOneClickRecyclerView = (RecyclerView) findViewById(R.id.bca_one_click_recycler_view);
+        bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
+        bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
+        bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        bcaOneClickRecyclerView.setAdapter(bcaOneClickRecyclerAdapter);
         progressDialog = new TkpdProgressDialog(ListBankTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
-        adapter.notifyDataSetChanged();
+        presenter.onGetPaymentList(paymentListModelSubscriber());
+        bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.showDialog();
+                presenter.onOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNext(BcaOneClickData bcaOneClickData) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("access_token",
+                                bcaOneClickData.getToken().getAccessToken());
+                        if ((getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getApplication())
+                                    .goToBcaOneClick(ListBankTypeActivity.this, bundle,
+                                            REGISTER_BCA_ONE_CLICK_REQUEST_CODE);
+                            finish();
+                        }
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -83,7 +128,7 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
     }
 
     @Override
-    public void onClickBcaGetAccessToken(String accessToken) {
+    public void onGetPaymentListData(PaymentListModel paymentListModel) {
 
     }
 
@@ -92,97 +137,76 @@ public class ListBankTypeActivity extends BasePresenterActivity<ListBankTypePres
         return this;
     }
 
-    private class BankListRecyclerAdapter extends RecyclerView.Adapter<BankListViewHolder> {
-
-        BankListRecyclerAdapter() {
-
-        }
-
-        @Override
-        public BankListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.plain_adapter_layout, parent, false);
-            return new BankListViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(BankListViewHolder holder, int position) {
-            switch (position) {
-                case 0:
-                    holder.titleText.setText("Akun Bank");
-                    holder.mainView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(ListBankTypeActivity.this,
-                                    ManagePeopleBankActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    break;
-                case 1:
-                    holder.titleText.setText("BCA One Click");
-                    holder.mainView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            progressDialog.showDialog();
-                            presenter.onOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
-                                @Override
-                                public void onCompleted() {
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    progressDialog.dismiss();
-                                }
-
-                                @Override
-                                public void onNext(BcaOneClickData bcaOneClickData) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("access_token",
-                                            bcaOneClickData.getAccessToken());
-                                    if ((getApplication() instanceof TransactionRouter)) {
-                                        ((TransactionRouter) getApplication())
-                                                .goToBcaOneClick(ListBankTypeActivity.this, bundle);
-                                        finish();
-                                    }
-                                    progressDialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                    break;
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return 2;
-        }
-    }
-
-    private class BankListViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView titleText;
-
-        private LinearLayout mainView;
-
-        BankListViewHolder(View itemView) {
-            super(itemView);
-            mainView = (LinearLayout) itemView.findViewById(R.id.plain_adapter_main_view);
-            titleText = (TextView) itemView.findViewById(R.id.plain_adapter_text_view);
-        }
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
         presenter.onDestroyed();
     }
 
+    private Subscriber<PaymentListModel> paymentListModelSubscriber() {
+        return new Subscriber<PaymentListModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(PaymentListModel paymentListModel) {
+                paymentModels = paymentListModel;
+                bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
+                        paymentListModel.getBcaOneClickUserModels(),
+                        actionListener()
+                );
+                bcaOneClickRecyclerView.setAdapter(bcaOneClickRecyclerAdapter);
+                bcaOneClickRecyclerAdapter.notifyDataSetChanged();
+                if(paymentListModel.getBcaOneClickUserModels().size() < 3) {
+                    bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
+                } else bcaOneClickRegisterLayout.setVisibility(View.GONE);
+            }
+        };
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REGISTER_BCA_ONE_CLICK_REQUEST_CODE:
+                presenter.onGetPaymentList(paymentListModelSubscriber());
+                break;
+            case EDIT_BCA_ONE_CLICK_REQUEST_CODE:
+                presenter.onGetPaymentList(paymentListModelSubscriber());
+                break;
+        }
+    }
+
+    private BcaOneClickRecyclerAdapter.ActionListener actionListener() {
+        return new BcaOneClickRecyclerAdapter.ActionListener() {
+            @Override
+            public void onDelete(String name, String credentialNumber) {
+                BcaOneClickDeleteDialog bcaOneClickDeleteDialog =
+                        BcaOneClickDeleteDialog.createDialog(name, credentialNumber);
+                bcaOneClickDeleteDialog.show(getFragmentManager(), "delete_dialog");
+            }
+
+            @Override
+            public void onEdit() {
+
+            }
+        };
+    }
+
+    @Override
+    public void onDelete(String tokenId) {
+        presenter.onDeletePaymentList(paymentListModelSubscriber(), tokenId);
     }
 }

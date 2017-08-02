@@ -1,9 +1,9 @@
 package com.tokopedia.core.manage.people.bank.presenter;
 
-import com.tokopedia.core.manage.people.bank.activity.ListBankTypeActivity;
 import com.tokopedia.core.manage.people.bank.domain.BcaOneClickRepository;
 import com.tokopedia.core.manage.people.bank.listener.ListBankTypeActivityView;
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
+import com.tokopedia.core.manage.people.bank.model.PaymentListModel;
 import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -52,6 +52,33 @@ public class ListBankTypePresenterImpl implements ListBankTypePresenter {
         bcaOneClickParam.put("profile_code", "TKPD_DEFAULT");
         compositeSubscription.add(bcaOneClickRepository.getBcaOneClickAccessToken(AuthUtil
                 .generateParamsNetwork(mainView.getContext() ,bcaOneClickParam))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void onGetPaymentList(Subscriber<PaymentListModel> subscriber) {
+        TKPDMapParam<String, String> paymentListParam = new TKPDMapParam<>();
+        paymentListParam.put("tokopedia_user_id", SessionHandler.getLoginID(mainView.getContext()));
+        paymentListParam.put("merchant_code", "tokopedia");
+        paymentListParam.put("action", "get");
+        compositeSubscription.add(bcaOneClickRepository.getPaymentListUserData(AuthUtil
+                .generateParamsNetwork(mainView.getContext(), paymentListParam)).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void onDeletePaymentList(Subscriber<PaymentListModel> subscriber, String tokenId) {
+        TKPDMapParam<String, String> paymentListParam = new TKPDMapParam<>();
+        paymentListParam.put("tokopedia_user_id", SessionHandler.getLoginID(mainView.getContext()));
+        paymentListParam.put("merchant_code", "tokopedia");
+        paymentListParam.put("action", "delete");
+        compositeSubscription.add(bcaOneClickRepository.deleteUserData(AuthUtil
+                .generateParamsNetwork(mainView.getContext(), paymentListParam))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

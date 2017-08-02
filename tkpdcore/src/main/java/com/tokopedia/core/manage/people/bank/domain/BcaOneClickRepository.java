@@ -1,6 +1,7 @@
 package com.tokopedia.core.manage.people.bank.domain;
 
 import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
+import com.tokopedia.core.manage.people.bank.model.PaymentListModel;
 import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -32,5 +33,27 @@ public class BcaOneClickRepository implements IBcaOneClickRepository {
                 return response.body().convertDataObj(BcaOneClickData.class);
             }
         });
+    }
+
+    @Override
+    public Observable<PaymentListModel> getPaymentListUserData(TKPDMapParam<String, String> oneClickListParam) {
+        return bcaOneClickService.getApi().getBcaOneClickUserData(oneClickListParam)
+                .map(new Func1<Response<TkpdResponse>, PaymentListModel>() {
+                    @Override
+                    public PaymentListModel call(Response<TkpdResponse> response) {
+                        return response.body().convertDataObj(PaymentListModel.class);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<PaymentListModel> deleteUserData(TKPDMapParam<String, String> oneClickListParam) {
+        return bcaOneClickService.getApi().deleteBcaOneClickUserData(oneClickListParam)
+                .map(new Func1<Response<TkpdResponse>, PaymentListModel>() {
+                    @Override
+                    public PaymentListModel call(Response<TkpdResponse> response) {
+                        return response.body().convertDataObj(PaymentListModel.class);
+                    }
+                });
     }
 }

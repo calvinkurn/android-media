@@ -30,14 +30,6 @@ public class BcaOneClickService extends AuthService<BcaOneClickApi>{
         return api;
     }
 
-    /*@Override
-    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
-        return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
-                .client(OkHttpFactory.create()
-                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientBcaOneClickAuth()).build();
-    }*/
-
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)

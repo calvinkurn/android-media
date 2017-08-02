@@ -22,8 +22,8 @@ public interface BcaOneClickApi {
     accessBcaOneClick(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_GET_USER_DATA)
-    Observable<Response<String>>
+    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK)
+    Observable<Response<TkpdResponse>>
     getBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
@@ -37,8 +37,8 @@ public interface BcaOneClickApi {
     editBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_DELETE_USER_DATA)
-    Observable<Response<String>>
+    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK)
+    Observable<Response<TkpdResponse>>
     deleteBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
 }

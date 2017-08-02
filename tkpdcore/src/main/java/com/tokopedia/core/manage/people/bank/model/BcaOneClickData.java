@@ -8,25 +8,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class BcaOneClickData {
 
-    @SerializedName("access_token")
-    private String accessToken;
+    @SerializedName("token")
+    private BcaOneClickToken token;
 
-    @SerializedName("message")
-    private String message;
-
-    public String getAccessToken() {
-        return accessToken;
+    public BcaOneClickToken getToken() {
+        return token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setToken(BcaOneClickToken token) {
+        this.token = token;
     }
 }

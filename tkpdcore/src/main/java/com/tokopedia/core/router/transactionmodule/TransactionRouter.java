@@ -9,6 +9,6 @@ import android.os.Bundle;
 
 public interface TransactionRouter {
 
-    void goToBcaOneClick(Activity activity, Bundle bundle);
+    void goToBcaOneClick(Activity activity, Bundle bundle, int requestCode);
 
 }
