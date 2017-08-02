@@ -22,6 +22,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private static final String MAINAPP_UPDATE_TITLE = "mainapp_update_title";
     private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_update_message";
     private static final String MAINAPP_UPDATE_LINK = "mainapp_update_link";
+    private static final int CONFIG_CACHE_EXPIRATION = 1000;
 
     private Activity activity;
     private FirebaseRemoteConfig firebaseRemoteConfig;
@@ -34,7 +35,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
         firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-        firebaseRemoteConfig.fetch(1000)
+        firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
                 .addOnCompleteListener(this.activity, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
