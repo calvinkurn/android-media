@@ -25,9 +25,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:divider="@drawable/line_separator"
                 android:orientation="vertical"
-                android:showDividers="middle"
-                android:divider="@drawable/line_separator">
+                android:showDividers="middle">
 
                 <include layout="@layout/partial_gm_statistic_dashboard_summary_view_holder" />
 
@@ -37,12 +37,12 @@
 
         </android.support.v7.widget.CardView>
 
-
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/popular_product_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_sm"
+            app:tcv_empty_layout="@layout/partial_gm_statistic_popular_product_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_icon="@drawable/icon_produk"
             app:tcv_loading_layout="@layout/partial_gm_statistic_popular_product_loading"

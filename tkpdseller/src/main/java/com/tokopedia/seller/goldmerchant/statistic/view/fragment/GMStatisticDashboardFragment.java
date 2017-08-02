@@ -41,7 +41,6 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
-    public static final String TAG = "GMStatisticDashboardFragment";
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -110,9 +109,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                resetToLoading();
                 hideSnackBarRetry();
-                reloadDataForDate();
+                loadDataByDate();
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
@@ -121,8 +119,12 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void loadDataByDate(DatePickerViewModel datePickerViewModel) {
+        loadDataByDate();
+    }
+
+    public void loadDataByDate() {
         resetToLoading();
-        gmDashboardPresenter.fetchData(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+        gmDashboardPresenter.fetchData(getStartDate(), getEndDate());
     }
 
     @Override
@@ -188,13 +190,13 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onGetShopCategoryEmpty(boolean isGoldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindNoShopCategory(isGoldMerchant);
+    public void onGetShopCategoryEmpty(boolean goldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindNoShopCategory(goldMerchant);
     }
 
     @Override
-    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords, goldMerchant);
     }
 
     @Override

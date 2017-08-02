@@ -43,7 +43,9 @@ public class GMStatisticTransactionTablePresenterImpl extends GMStatisticTransac
 
             @Override
             public void onError(Throwable e) {
-
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
             }
 
             @Override

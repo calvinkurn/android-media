@@ -31,11 +31,11 @@ public interface GMStatisticDashboardView extends CustomerView {
 
     void onErrorLoadBuyerGraph(Throwable t);
 
-    void onGetShopCategoryEmpty(boolean isGoldMerchant);
+    void onGetShopCategoryEmpty(boolean goldMerchant);
 
     void onSuccessGetCategory(String categoryName);
 
-    void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant);
+    void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant);
 
     void onErrorLoadMarketInsight(Throwable t);
 }

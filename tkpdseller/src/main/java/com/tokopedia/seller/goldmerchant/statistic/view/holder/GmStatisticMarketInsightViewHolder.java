@@ -1,13 +1,11 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -15,7 +13,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.MarketInsightAdapter;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +38,6 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
                 titleCardView.getContext(), LinearLayoutManager.VERTICAL, false));
         marketInsightAdapter = new MarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(marketInsightAdapter);
-    }
-
-    private void addProductMarketInsight() {
-        Intent intent = new Intent(titleCardView.getContext(), ProductAddActivity.class);
-        titleCardView.getContext().startActivity(intent);
-
-        // analytic below : https://phab.tokopedia.com/T18496
-        UnifyTracking.eventClickGMStatMarketInsight();
     }
 
     /**
@@ -105,8 +94,8 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         setViewState(LoadingStateView.VIEW_CONTENT);
     }
 
-    public void bindNoShopCategory(boolean isGoldMerchant) {
-        if (isGoldMerchant)
+    public void bindNoShopCategory(boolean goldMerchant) {
+        if (goldMerchant)
             displayEmptyState();
         else {
             displayNonGoldMerchant();
@@ -114,7 +103,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     private void displayNonGoldMerchant() {
-        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_market_insight_not_gm);
+        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_market_insight_empty_state_not_gm);
         View emptyView = titleCardView.getEmptyView();
         emptyView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,13 +144,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     private void displayEmptyState() {
-        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_empty_state_market_insight_no_data);
-        titleCardView.getEmptyView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addProductMarketInsight();
-            }
-        });
+        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_market_insight_empty_state);
         titleCardView.setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
