@@ -42,15 +42,15 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
                 break;
         }
 
-        final Context applicationContext = itemView.getContext().getApplicationContext();
+        final Context context = itemView.getContext();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProductPass productPass = ProductPass.Builder.aProductPass()
                         .setProductId(productId)
                         .build();
-                if (applicationContext != null && applicationContext instanceof PdpRouter) {
-                    ((PdpRouter) applicationContext).goToProductDetail(applicationContext, productPass);
+                if (context != null && context instanceof PdpRouter) {
+                    ((PdpRouter) context).goToProductDetail(context, productPass);
                 }
 
             }
