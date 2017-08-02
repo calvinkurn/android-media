@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.seller.R;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.NavigableMap;
@@ -15,11 +17,11 @@ import java.util.TreeMap;
 public class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
-    public static final String FORMAT_DOUBLE = "%.1f";
     public static final String FORMAT_2_DOUBLE = "%.2f";
-    public static final String FORMAT = "%.1f%s";
+    public static final String FORMAT = "%s%s";
     private static final Locale locale = new Locale("in", "ID");
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
+    public static DecimalFormat amountDf = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 
     public static final String SUFFIX_RB = "rb";
     public static final String SUFFIX_JT = "jt";
@@ -33,6 +35,8 @@ public class KMNumbers {
         suffixes.put(1000000000L, SUFFIX_M);
         suffixes.put(1000000000000L, SUFFIX_T);
         suffixes.put(1000000000000000L, SUFFIX_B);
+        amountDf.applyPattern(".0");
+        amountDf.setRoundingMode(RoundingMode.DOWN);
     }
 
     public static void overrideSuffixes(long digit, String suffix) {
@@ -41,9 +45,9 @@ public class KMNumbers {
 
     public static String getFormattedString(long value) {
         String text = "";
-        if (value < 1_000_000) {
+        if (Math.abs(value) < 1_000_000) {
             text = KMNumbers.formatDecimalString(value);
-        } else if (value >= 1_000_000) {
+        } else {
             text = KMNumbers.formatNumbers(value);
         }
         return text;
@@ -51,7 +55,7 @@ public class KMNumbers {
 
     /*  format number test case:
         -123L: -123
-        -1234L: -1.234
+        -1234L: -1,2rb
         -12345L: -12,3rb
         -123456L: -123,5rb
         -1234567L: -1,2jt
@@ -59,7 +63,7 @@ public class KMNumbers {
         -123456789L: -123,5jt
         -1234567890L: -1,2M
         123L: 123
-        1234L: 1.234
+        1234L: 1,2rb
         12345L: 12,3rb
         123456L: 123,5rb
         1234567L: 1,2jt
@@ -100,9 +104,21 @@ public class KMNumbers {
                 KMNumbers.formatDecimalString(numberToFormat));
     }
 
-    // convert (double) 1.12345 to "123,34%" (string)
+    // convert (double) 1.12345 to "123,35%" (string) rounded
+    // (double) 0.12 to 12% (without 00)
+    // double 0.0 to 0%
+    // double 0.001 to 0.00%
     public static String formatToPercentString(Context context, double percent) {
-        return context.getString(R.string.gm_statistic_percent_format_text, formatDouble2P(percent * 100));
+        // check if integer
+        double percentTimes100 = percent * 100;
+        String percentString;
+        // if the difference between rounded and not rounded is 0
+        if (percentTimes100 - Math.floor(percentTimes100) == 0) {
+            percentString = String.valueOf(Math.round(percentTimes100));
+        } else {
+            percentString = formatDouble2P(percentTimes100);
+        }
+        return context.getString(R.string.gm_statistic_percent_format_text, percentString);
     }
 
     /* test case for formatDecimalString
@@ -133,16 +149,21 @@ public class KMNumbers {
         return String.format(locale, FORMAT_2_DOUBLE, number);
     }
 
-    public static String formatDouble1P(Double number) {
-        return String.format(locale, FORMAT_DOUBLE, number);
-    }
-
-    private static String formatString(Long number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long) Math.pow(1000, exp)));
-    }
-
-    private static String formatString(Float number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long) Math.pow(1000, exp)));
+    // 12345 to 12,3rb
+    // 12999 to 12,9rb
+    // 12001 to 12rb
+    // 12000 to 12rb
+    private static String formatString(Number number, Integer exp) {
+        double mainNumber = number.doubleValue() / Math.pow(1000, exp);
+        String numberString;
+        if ( Math.floor( mainNumber*10) % 10 == 0 ) { // the last decimal is 0?
+            numberString = String.valueOf(Math.round(mainNumber));
+        } else {
+            numberString = amountDf.format(mainNumber);
+        }
+        return String.format(locale, FORMAT,
+                numberString,
+                suffixes.get((long) Math.pow(1000, exp)));
     }
 
 }
