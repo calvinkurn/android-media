@@ -1121,7 +1121,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            UnifyTracking.eventSelectOperator(category.getAttributes().getName(), "Product - "+(selectedOperator==null ? "" : selectedOperator.name));
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(), "Product - "+(selectedOperator==null ? "" : selectedOperator.name));
             setParentToScroolToTop();
         }
     }
