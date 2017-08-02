@@ -44,6 +44,7 @@ import java.net.URLDecoder;
 public class TopPayActivity extends Activity implements ITopPayView {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
+    private static final String FORMAT_UTF_8 = "UTF-8";
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
 
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
@@ -274,7 +275,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "redirect url = " + url);
+            Log.d(TAG, "redirect url = " + url);
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
                     url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -294,22 +295,34 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                if (paymentModuleRouter != null && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
+                if (paymentModuleRouter != null
+                        && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
                         && paymentModuleRouter.getSchemeAppLinkCancelPayment().equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (paymentModuleRouter != null && paymentModuleRouter.isSupportedDelegateDeepLink(url)
+                } else if (paymentModuleRouter != null
+                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
                         && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
                     Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
                     intent.setData(Uri.parse(url));
                     navigateToActivity(intent);
+                    return true;
+                } else if (paymentModuleRouter != null) {
+                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                    if (urlFinal == null)
+                        return super.shouldOverrideUrlLoading(view, url);
+                    view.loadUrl(
+                            urlFinal,
+                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                    );
                     return true;
                 } else {
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             }
         }
+
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -338,8 +351,14 @@ public class TopPayActivity extends Activity implements ITopPayView {
         }
 
         @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return super.shouldInterceptRequest(view, url);
+        }
+
+
+        @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "start url = " + url);
+            Log.d(TAG, "start url = " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
