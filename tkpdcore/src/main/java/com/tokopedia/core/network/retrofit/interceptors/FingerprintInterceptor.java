@@ -1,6 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.util.Base64;
+
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
@@ -14,6 +17,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -52,6 +56,16 @@ public class FingerprintInterceptor implements Interceptor {
                     @Override
                     public String call(String s) {
                         return s;
+                    }
+                }).map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        try {
+                            return Utilities.toBase64(s, Base64.NO_WRAP);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return "UnsupportedEncoding";
+                        }
                     }
                 }).toSingle().toBlocking().value();
 

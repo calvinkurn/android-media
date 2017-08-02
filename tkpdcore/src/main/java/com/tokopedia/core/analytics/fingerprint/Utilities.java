@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -17,8 +18,10 @@ import com.tokopedia.core.R;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -147,5 +150,10 @@ public class Utilities {
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset();
         return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+    }
+
+    public static String toBase64(String text, int mode) throws UnsupportedEncodingException {
+        byte[] data = text.getBytes("UTF-8");
+        return Base64.encodeToString(data, mode);
     }
 }
