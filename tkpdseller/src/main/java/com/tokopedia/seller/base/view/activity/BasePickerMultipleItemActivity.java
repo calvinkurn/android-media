@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.dashboard.view.activity;
+package com.tokopedia.seller.base.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -8,9 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,10 +16,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.seller.topads.dashboard.view.fragment.ChipsTopAdsSelectionFragment;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.dashboard.view.helper.BottomSheetHelper;
@@ -34,7 +29,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class TopAdsAddProductListActivity extends BaseActivity implements AddProductListInterface {
+/**
+ * Created by nathan on 8/2/17.
+ */
+
+public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity implements AddProductListInterface {
+
+    private Button submitButton;
+    private View bottomSheetContainerLayout;
 
     private BottomSheetHelper bottomSheetHelper;
     private View.OnClickListener expandedOnClick = new View.OnClickListener() {
@@ -54,11 +56,8 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
     private View bottomSheetSelection;
     private NumberOfChooseFooterHelper numberOfChooseFooterHelper;
     private View footerButtonView;
-    private Button nextButton;
     private int nextButtonRealHeight;
     private HashSet<TopAdsProductViewModel> selections;
-    private View statusBarSeparation;
-    private View bottomSheetContainer;
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback =
             new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
@@ -85,36 +84,20 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
                     numberOfChooseFooterHelper.rotate(v * 180);
                 }
             };
-    private boolean isFirstTime;
     private boolean isExistingGroup;
     private boolean isHideEtalase;
     private int maxNumberSelection;
-    private int thirtyEightPercentBlackColor;
-    private int whiteColor;
     private View viewShadowGray;
 
     private void removePaddingBottom() {
-        bottomSheetContainer.setPadding(0, 0, 0, 0);
+        bottomSheetContainerLayout.setPadding(0, 0, 0, 0);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ViewUtils.setTranslucentStatusBar(getWindow());
-        inject();
-        setContentView(R.layout.activity_top_ads_add_product_list_container);
-
-        setAsActionBar();
-
-        thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.font_black_disabled_38);
-        whiteColor = ContextCompat.getColor(this, R.color.white);
-        nextButton = (Button) findViewById(R.id.top_ads_btn_next_);
-
-        bottomSheetContainer = findViewById(R.id.bottom_sheet_container);
-
-        statusBarSeparation = findViewById(R.id.status_bar_separation);
-        statusBarSeparation.getLayoutParams().height = getStatusBarHeight();
-        statusBarSeparation.requestLayout();
+    protected void setupLayout() {
+        super.setupLayout();
+        submitButton = (Button) findViewById(R.id.button_submit);
+        bottomSheetContainerLayout = findViewById(R.id.layout_container_bottom_sheet);
 
         bottomSheetSelection = findViewById(R.id.bottom_sheet_selection);
         numberOfChooseFooterHelper = new NumberOfChooseFooterHelper(bottomSheetSelection);
@@ -123,7 +106,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
         viewShadowGray = findViewById(R.id.view_shadow_gray);
 
         footerButtonView = findViewById(R.id.top_ads_next);
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 returnSelections();
@@ -143,7 +126,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
                 if (bottomSheetHelper != null) {
                     bottomSheetHelper.setHeight(nextButtonRealHeight);
                 }
-                if (isFirstTime && selections.size() > 0) {
+                if (selections.size() > 0) {
                     bottomSheetHelper.showBottomSheet();
                 }
 
@@ -155,28 +138,20 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
             }
 
         });
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         selections = new HashSet<>();
-
-        isFirstTime = savedInstanceState == null;
-        if (isFirstTime) {
-            fetchIntent(getIntent().getExtras());
-        } else {
-            fetchSaveInstanceState(savedInstanceState);
-        }
     }
 
-    protected void setAsActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+    @Override
+    protected void setupFragment(Bundle savedinstancestate) {
+
     }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_base_picker_multiple_item;
+    }
+
+
 
     @Override
     protected void onResume() {
@@ -202,10 +177,6 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
             // do nothing
         }
 
-
-    }
-
-    private void inject() {
 
     }
 
@@ -320,14 +291,12 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
 
     @Override
     public void disableNextButton() {
-        nextButton.setEnabled(false);
-        nextButton.setTextColor(thirtyEightPercentBlackColor);
+        submitButton.setEnabled(false);
     }
 
     @Override
     public void enableNextButton() {
-        nextButton.setEnabled(true);
-        nextButton.setTextColor(whiteColor);
+        submitButton.setEnabled(true);
     }
 
     @Override
@@ -347,12 +316,12 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
 
     @Override
     public void showNextButton() {
-        nextButton.setVisibility(View.VISIBLE);
+        submitButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void dismissNextButton() {
-        nextButton.setVisibility(View.GONE);
+        submitButton.setVisibility(View.GONE);
     }
 
     @Override

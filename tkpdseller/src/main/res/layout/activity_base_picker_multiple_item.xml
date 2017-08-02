@@ -34,7 +34,7 @@
         android:layout_marginTop="?attr/actionBarSize"/>
 
     <FrameLayout
-        android:id="@+id/bottom_sheet_container"
+        android:id="@+id/layout_container_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="?attr/actionBarSize"
@@ -43,7 +43,7 @@
         app:elevation="16dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/partial_top_ads_bottom_sheet_content"/>
+        <include layout="@layout/partial_base_picker_multiple_item_cache"/>
     </FrameLayout>
 
     <FrameLayout
@@ -54,10 +54,8 @@
         android:background="@android:color/white">
 
         <Button
-            android:id="@+id/top_ads_btn_next_"
+            android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:text="@string/next"/>
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

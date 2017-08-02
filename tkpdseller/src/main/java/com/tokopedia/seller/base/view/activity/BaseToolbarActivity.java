@@ -21,7 +21,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     protected abstract void setupFragment(Bundle savedinstancestate);
 
-    protected abstract @LayoutRes int getLayoutRes();
+    @LayoutRes
+    protected abstract int getLayoutRes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         setTheme(R.style.Theme_Tokopedia3);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
         }
         setupLayout();
         setupFragment(savedInstanceState);

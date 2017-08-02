@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Nathaniel on 1/20/2017.
  */
-
+@Deprecated
 public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<T> {
 
     protected Date startDate;
