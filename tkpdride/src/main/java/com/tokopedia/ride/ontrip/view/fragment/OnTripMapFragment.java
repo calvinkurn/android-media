@@ -65,6 +65,7 @@ import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Location;
@@ -111,7 +112,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
-    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
@@ -123,6 +123,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private Marker mDriverMarker;
     private String requestId;
     private RideRequest rideRequest;
+    private boolean isOpenInterruptWebviewDialog;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -168,6 +169,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private boolean isRouteAlreadyDrawed;
     private int markerId;
     private ProgressDialog mProgressDialog;
+    private MapConfiguration mapConfiguration;
 
     public static OnTripMapFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
         Bundle bundle = new Bundle();
@@ -207,6 +209,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mapConfiguration = new MapConfiguration(getActivity());
+
         if (getArguments() != null) {
             confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
             rideRequest = getArguments().getParcelable(EXTRA_RIDE_REQUEST);
@@ -370,7 +374,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude()), DEFAUL_MAP_ZOOM));
     }
 
     @Override
@@ -460,15 +464,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
     }
 
     @Override
@@ -485,6 +492,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_INTERRUPT_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
                     String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
@@ -499,6 +507,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 }
                 break;
             case REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
                     String key = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
@@ -1371,14 +1380,24 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationDialog(String tosUrl, String key, String value) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+    }
+
+    @Override
+    public void saveDefaultLocation(double latitude, double longitude) {
+        if (mapConfiguration != null) {
+            mapConfiguration.setDefaultLocation(latitude, longitude);
+        }
     }
 }

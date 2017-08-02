@@ -133,7 +133,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 }
                             };
                         }
-                    }).debounce(150, TimeUnit.MILLISECONDS)
+                    }).debounce(250, TimeUnit.MILLISECONDS)
                             .subscribeOn(Schedulers.from(new JobExecutor()))
                             .observeOn(new UIThread().getScheduler())
                             .subscribe(new AutoCompletePlaceTextChanged())

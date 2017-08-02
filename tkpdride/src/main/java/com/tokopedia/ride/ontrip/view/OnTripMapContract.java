@@ -197,6 +197,8 @@ public interface OnTripMapContract {
         void zoomMapFitByDriverAndCustomer(List<LatLng> latLngs);
 
         void openInterruptConfirmationDialog(String tosUrl, String key, String value);
+
+        void saveDefaultLocation(double latitude, double longitude);
     }
 
     interface Presenter extends CustomerPresenter<View> {
