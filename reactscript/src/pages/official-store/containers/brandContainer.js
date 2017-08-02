@@ -16,22 +16,10 @@ class BrandContainer extends Component {
   }
 
   render() {
-    let offset;
-    let limit ;
-
-    // console.log(this.props.brands)
-    
-    if (!this.props.brands.pagination){
-      offset = 10,
-      limit = 20
-    } else {
-      offset = this.props.brands.pagination.offset
-      limit = this.props.brands.pagination.limit
-    }
-
-    // const { offset, limit } = this.props.brands.pagination
+    const { offset, limit } = this.props.brands.pagination
     const totalBrands = this.props.brands.totalBrands
     const totalItemsCount = this.props.brands.items.length
+    const totalItems = this.props.brands.items
     const isFetching = this.props.brands.isFetching
     let canFetch = true
     if ((totalBrands != 0) && (totalBrands == totalItemsCount)) {
@@ -39,7 +27,7 @@ class BrandContainer extends Component {
     }
 
     const bannerListProps = {
-      brands: this.props.brands.items,
+      brands: totalItemsCount === 10 ? totalItems : totalItems.slice(0, 10),
       gridData: this.props.brands.grid.data,
       offset,
       limit,

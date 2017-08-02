@@ -25,10 +25,8 @@ const campaigns = (state = {
             })
         case `${FETCH_CAMPAIGNS}_${FULFILLED}`:
             const campaignData = action.payload.data
-                // console.log(campaignData)
-                // console.log(...state.items)
             return {
-                items: state.items.length === 0 ? [...state.items, ...campaignData] : [campaignData],
+                items: state.items.length === 0 ? [...state.items, ...campaignData] : [...campaignData],
                 isFetching: false,
             }
             return state
@@ -258,9 +256,6 @@ const brands = (state = {
         case `${ADD_TO_WISHLIST}_${PENDING}`:
             return state
         case `${ADD_TO_WISHLIST}_${FULFILLED}`:
-            // console.log(action.payload)
-            // console.log(state)
-            // console.log(state.items)
             return {
                 ...state,
                 items: state.items.map(b => {
