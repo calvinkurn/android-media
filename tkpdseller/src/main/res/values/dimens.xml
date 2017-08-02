@@ -99,6 +99,7 @@
     <dimen name="bottomsheet_title_size">16sp</dimen>
     <dimen name="bottomsheet_item_textsize">16sp</dimen>
     <dimen name="bottomsheet_width">500dp</dimen>
+    <dimen name="gm_unfinished_margin_top">12dp</dimen>
 
     <bool name="landscape">false</bool>
     <bool name="tablet_landscape">false</bool>
