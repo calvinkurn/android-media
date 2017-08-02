@@ -1,6 +1,7 @@
 package com.tokopedia.posapp;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.util.GlobalConfig;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -9,8 +10,16 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 public class PosApplication extends PosRouterApplication {
     @Override
     public void onCreate() {
+        setGlobalConfiguration();
         generatePosAppBaseUrl();
         super.onCreate();
+    }
+
+    private void setGlobalConfiguration() {
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.POS_APPLICATION;
+        GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_POS_APP;
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
     }
 
     private void generatePosAppBaseUrl() {

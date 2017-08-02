@@ -117,7 +117,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public static final String DEFAULT = "not";
     private static final int AUTOMATIC_LOGIN = 1;
     private static final int UNIQUE_CODE_LOGIN = 2;
-    public static final String IS_PROVIDER_NEEDED = "IS_PROVIDER_NEEDED";
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -448,8 +447,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToLogin() {
-        Fragment loginFragment = LoginFragment.newInstance("", false, "", "", "",
-                getIntent().getBooleanExtra(IS_PROVIDER_NEEDED, true));
+        Fragment loginFragment = LoginFragment.newInstance("", false, "", "", "");
         moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
@@ -501,7 +499,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     }
 
                     Fragment loginFragment = LoginFragment.newInstance(mEmail, GoToIndex, login,
-                            name, url, intent.getBooleanExtra(IS_PROVIDER_NEEDED, true));
+                            name, url);
                     moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
                 } else {
                     Log.d(TAG, messageTAG + LoginFragment.class.getSimpleName() + " is not created !!!");

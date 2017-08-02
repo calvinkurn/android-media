@@ -2,7 +2,6 @@ package com.tokopedia.posapp.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import com.tokopedia.core.session.presenter.Session;
@@ -19,7 +18,6 @@ public class LoginActivity extends Login {
         Intent callingIntent = new Intent(context, LoginActivity.class);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-        callingIntent.putExtra(IS_PROVIDER_NEEDED, false);
         return callingIntent;
     }
 

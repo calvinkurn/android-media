@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
+
+def allowDistribution() {
+    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
@@ -16,8 +24,13 @@ android {
 
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+        }
         release {
             minifyEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

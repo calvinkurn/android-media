@@ -34,6 +34,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.EncoderDecoder;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
@@ -91,19 +92,9 @@ public class LoginImpl implements Login {
     LocalCacheHandler cacheInfo;
     private int successLoginVia;
 
-    private boolean isProviderNeeded;
-
-    public static LoginImpl createLoginWithoutProvider(LoginView view) {
-        LoginImpl loginImpl = new LoginImpl(view);
-        loginImpl.isProviderNeeded = false;
-
-        return loginImpl;
-    }
-
     public LoginImpl(LoginView view) {
         loginView = view;
         facade = LoginInteractorImpl.createInstance(this);
-        this.isProviderNeeded = true;
     }
 
     @Override
@@ -156,7 +147,9 @@ public class LoginImpl implements Login {
     }
 
     public void getProvider() {
-        if(isProviderNeeded) {
+        if(GlobalConfig.isPosApp()) {
+            loginView.hideProvider();
+        } else {
             if (loginView.checkHasNoProvider()) {
                 loginView.addProgressbar();
                 List<LoginProviderModel.ProvidersBean> providerList = loadProvider();
@@ -167,8 +160,6 @@ public class LoginImpl implements Login {
                     loginView.showProvider(providerList);
                 }
             }
-        } else {
-            loginView.hideProvider();
         }
     }
 

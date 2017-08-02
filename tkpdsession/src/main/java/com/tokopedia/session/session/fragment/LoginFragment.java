@@ -61,6 +61,7 @@ import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
@@ -97,7 +98,6 @@ public class
 LoginFragment extends Fragment implements LoginView {
 
     private static final String REGISTER = "Daftar";
-    public static final String IS_PROVIDER_NEEDED = "IS_PROVIDER_NEEDED";
 
     // demo only
     int anTestInt = 0;
@@ -139,16 +139,13 @@ LoginFragment extends Fragment implements LoginView {
     private Unbinder unbinder;
     private CallbackManager callbackManager;
 
-    private boolean isProviderNeeded;
-
-    public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url, boolean isProviderNeeded) {
+    public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url) {
         Bundle extras = new Bundle();
         extras.putString("mEmail", mEmail);
         extras.putBoolean("goToIndex", goToIndex);
         extras.putString("login", login);
         extras.putString("name", name);
         extras.putString("url", url);
-        extras.putBoolean(IS_PROVIDER_NEEDED, isProviderNeeded);
         LoginFragment loginFragment = new LoginFragment();
         loginFragment.setArguments(extras);
         return loginFragment;
@@ -168,12 +165,7 @@ LoginFragment extends Fragment implements LoginView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isProviderNeeded = getArguments().getBoolean(IS_PROVIDER_NEEDED);
-        if(isProviderNeeded) {
-            login = new LoginImpl(this);
-        } else {
-            login = LoginImpl.createLoginWithoutProvider(this);
-        }
+        login = new LoginImpl(this);
 
         login.initLoginInstance(mContext);
         login.fetchDataAfterRotate(savedInstanceState);
@@ -193,6 +185,7 @@ LoginFragment extends Fragment implements LoginView {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_login_reborn, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        if(GlobalConfig.isPosApp()) forgotPass.setVisibility(View.GONE);
         forgotPass.setPaintFlags(forgotPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setListener();
 //        setRememberAccountState();
@@ -464,25 +457,33 @@ LoginFragment extends Fragment implements LoginView {
                         }
                     });
 
-            registerButton.setVisibility(View.VISIBLE);
-            registerButton.animate().setDuration(shortAnimTime)
+            if(GlobalConfig.isPosApp()) registerButton.setVisibility(View.GONE);
+            else {
+                registerButton.setVisibility(View.VISIBLE);
+                registerButton.animate().setDuration(shortAnimTime)
                     .alpha(isShow ? 0 : 1)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             //[END] save progress for rotation
                             if (registerButton != null)
-                                registerButton.setVisibility(isShow ? View.GONE
-                                        : View.VISIBLE);
+                                registerButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
                         }
                     });
+            }
+
 
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mLoginStatusView.setVisibility(isShow ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(isShow ? View.GONE : View.VISIBLE);
-            registerButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
+
+            if(GlobalConfig.isPosApp()) {
+                registerButton.setVisibility(View.GONE);
+            } else {
+                registerButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
+            }
         }
     }
 
