@@ -6,7 +6,6 @@ import com.tokopedia.seller.R;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -22,12 +21,18 @@ public class KMNumbers {
     private static final Locale locale = new Locale("in", "ID");
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
+    public static final String SUFFIX_RB = "rb";
+    public static final String SUFFIX_JT = "jt";
+    public static final String SUFFIX_M = "M";
+    public static final String SUFFIX_T = "T";
+    public static final String SUFFIX_B = "B";
+
     static {
-        suffixes.put(1000L, "rb");
-        suffixes.put(1000000L, "jt");
-        suffixes.put(1000000000L, "M");
-        suffixes.put(1000000000000L, "T");
-        suffixes.put(1000000000000000L, "B");
+        suffixes.put(1000L, SUFFIX_RB);
+        suffixes.put(1000000L, SUFFIX_JT);
+        suffixes.put(1000000000L, SUFFIX_M);
+        suffixes.put(1000000000000L, SUFFIX_T);
+        suffixes.put(1000000000000000L, SUFFIX_B);
     }
 
     public static void overrideSuffixes(long digit, String suffix) {
@@ -69,11 +74,11 @@ public class KMNumbers {
             number = -1 * number;
         }
         if (number < 1000) {
-            return (isNegative?"-":"" ) + numberFormat.format(number);
+            return (isNegative ? "-" : "") + numberFormat.format(number);
         }
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        return (isNegative?"-":"" ) + result;
+        return (isNegative ? "-" : "") + result;
     }
 
     public static String formatNumbers(Float number) {
@@ -83,14 +88,14 @@ public class KMNumbers {
             number = -1 * number;
         }
         if (number < 1000) {
-            return (isNegative?"-":"" ) + numberFormat.format(number);
+            return (isNegative ? "-" : "") + numberFormat.format(number);
         }
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        return (isNegative?"-":"" ) + result;
+        return (isNegative ? "-" : "") + result;
     }
 
-    public static String formatRupiahString(Context context, long numberToFormat){
+    public static String formatRupiahString(Context context, long numberToFormat) {
         return context.getString(R.string.gm_statistic_rupiah_format_text,
                 KMNumbers.formatDecimalString(numberToFormat));
     }
@@ -112,11 +117,11 @@ public class KMNumbers {
         123456L: 123.456
         1234567L: 1.234.567
      */
-    public static String formatDecimalString (long numberToFormat){
+    public static String formatDecimalString(long numberToFormat) {
         return formatDecimalString(numberToFormat, false);
     }
 
-    public static String formatDecimalString (long numberToFormat, boolean useCommaAsThousand){
+    public static String formatDecimalString(long numberToFormat, boolean useCommaAsThousand) {
         if (useCommaAsThousand) {
             return NumberFormat.getNumberInstance(Locale.US).format(numberToFormat);
         } else {
@@ -133,11 +138,11 @@ public class KMNumbers {
     }
 
     private static String formatString(Long number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long)Math.pow(1000, exp)));
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long) Math.pow(1000, exp)));
     }
 
     private static String formatString(Float number, Integer exp) {
-        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long)Math.pow(1000, exp)));
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), suffixes.get((long) Math.pow(1000, exp)));
     }
 
 }

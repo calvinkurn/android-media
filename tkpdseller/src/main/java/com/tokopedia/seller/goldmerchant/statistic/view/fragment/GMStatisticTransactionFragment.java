@@ -2,15 +2,17 @@ package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.topads.WebViewTopAdsActivity;
-import com.tokopedia.core.topads.WebViewTopAdsFragment;
-import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
@@ -43,6 +45,8 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     GMStatisticTransactionPresenter presenter;
 
     private LabelView gmStatisticProductListText;
+
+    private SnackbarRetry snackbarRetry;
 
     private GMTransactionGraphViewHolder gmTransactionGraphViewHolder;
     private UnFinishedTransactionViewHolder finishedTransactionViewHolder;
@@ -105,6 +109,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     public void onErrorLoadTransactionGraph(Throwable t) {
         gmTransactionGraphViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
         finishedTransactionViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
+        showRetrySnackBar();
     }
 
     @Override
@@ -120,6 +125,38 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
     @Override
     public void onErrorLoadTopAdsGraph(Throwable t) {
         gmTopAdsAmountViewHolder.setViewState(LoadingStateView.VIEW_ERROR);
+        showRetrySnackBar();
+    }
+
+    private void showRetrySnackBar() {
+        if (snackbarRetry == null) {
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    loadDataByDate();
+                }
+            });
+            snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        }
+        //!important, the delay will help the snackbar re-show after it is being hidden.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                snackbarRetry.showRetrySnackbar();
+            }
+        },700);
+    }
+
+    public void loadDataByDate() {
+        resetToLoading();
+        presenter.loadDataWithDate(getStartDate(), getEndDate());
+    }
+
+    private void resetToLoading(){
+        gmTopAdsAmountViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        finishedTransactionViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
+        gmTransactionGraphViewHolder.setViewState(LoadingStateView.VIEW_LOADING);
     }
 
     @Override
