@@ -55,14 +55,18 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
         });
     }
 
-    private void setTopAdsCardView(GMGraphViewModel gmGraphViewModel) {
+    private void setTopAdsCardView(GMGraphViewModel gmGraphViewModel, boolean isCompareDate) {
         gmTopAdsLineChartWidget.setSubtitle(gmTopAdsLineChartWidget.getContext().getString(R.string.gm_statistic_top_ads_amount_subtitle_text));
-        gmTopAdsLineChartWidget.setPercentage(gmGraphViewModel.percentage);
+        if (isCompareDate) {
+            gmTopAdsLineChartWidget.setPercentage(gmGraphViewModel.percentage);
+        } else {
+            gmTopAdsLineChartWidget.hidePercentageView();
+        }
         gmTopAdsLineChartWidget.setAmount(KMNumbers.formatRupiahString(titleCardView.getContext(), gmGraphViewModel.amount));
     }
 
-    public void bind(@Nullable GMGraphViewModel data) {
-        setTopAdsCardView(data);
+    public void bind(@Nullable GMGraphViewModel data, boolean isCompareDate) {
+        setTopAdsCardView(data, isCompareDate);
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(data.dates, data.values, monthNamesAbrev);
         // create model for chart
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticTopAdsGraph, baseWilliamChartModel);
