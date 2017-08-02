@@ -34,6 +34,7 @@
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vvs"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
@@ -48,11 +49,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvs"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_38"
             android:textSize="@dimen/unify_font_small"
             android:textStyle="normal"
+            android:layout_marginBottom="@dimen/margin_vvs"
             tools:text="Rp 2.700.000"
             />
 
@@ -62,7 +63,6 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvs"
             android:orientation="horizontal">
 
             <TextView
