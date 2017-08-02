@@ -55,7 +55,9 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
     }
 
     public void bindData(GetPopularProduct getPopularProduct) {
-        if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
+        if (getPopularProduct == null ||
+                getPopularProduct.getProductId() == 0 ||
+                getPopularProduct.getSold() == 0) {
             setViewState(LoadingStateView.VIEW_EMPTY);
             return;
         }

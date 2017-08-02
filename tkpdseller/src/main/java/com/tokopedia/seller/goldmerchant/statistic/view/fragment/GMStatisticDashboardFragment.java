@@ -107,13 +107,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 }
             }
         });
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                loadDataByDate();
-            }
-        });
-        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         return view;
     }
 
@@ -211,6 +204,15 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     private void showSnackbarRetry() {
+        if (snackbarRetry == null) {
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    loadDataByDate();
+                }
+            });
+            snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        }
         //!important, the delay will help the snackbar re-show after it is being hidden.
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
