@@ -9,7 +9,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -26,7 +25,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -44,7 +42,6 @@ import java.net.URLDecoder;
 public class TopPayActivity extends Activity implements ITopPayView {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
-    private static final String FORMAT_UTF_8 = "UTF-8";
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
 
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
@@ -275,7 +272,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d(TAG, "redirect url = " + url);
+            //  Log.d(TAG, "redirect url = " + url);
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
                     url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -358,7 +355,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            Log.d(TAG, "start url = " + url);
+//            Log.d(TAG, "start url = " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -424,13 +421,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+//            Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+//            Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
             return true;
         }
     }
