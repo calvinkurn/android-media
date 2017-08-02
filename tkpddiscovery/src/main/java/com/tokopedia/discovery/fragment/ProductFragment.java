@@ -310,7 +310,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
-        productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
+        if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+            productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
+        }
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
     }

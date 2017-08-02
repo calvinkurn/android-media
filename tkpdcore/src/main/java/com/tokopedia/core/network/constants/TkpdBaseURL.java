@@ -53,7 +53,6 @@ public class TkpdBaseURL {
     public static final String FLAG_APP = "?flag_app=1";
     public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
 
-
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;

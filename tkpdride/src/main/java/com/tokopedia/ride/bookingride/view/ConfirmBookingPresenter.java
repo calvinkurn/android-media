@@ -51,16 +51,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_timeout));
-                    } else {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_default));
-                    }
-                    getView().goToProductList();
-                }
-                if (isViewAttached()) {
                     getView().hideProgress();
 
                     if (e instanceof InterruptConfirmationHttpException) {
