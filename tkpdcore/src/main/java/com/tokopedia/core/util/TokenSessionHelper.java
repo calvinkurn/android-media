@@ -11,6 +11,8 @@ import android.util.Log;
 
 public class TokenSessionHelper {
 
+    public static String EMPTY_AUTH_TOKEN  = "";
+
     public static void saveRefreshToken(Context context, String email, String refreshToken) {
         final Account account = new Account(email, AccountGeneral.ACCOUNT_TYPE);
         AccountManager accountManager = AccountManager.get(context);
@@ -18,23 +20,35 @@ public class TokenSessionHelper {
         accountManager.setAuthToken(account, AccountGeneral.ACCOUNT_TYPE, refreshToken);
     }
 
-    public static String getExistingAccountAuthToken(Context context, String authTokenType) {
+    static Account[] getExistingAccount(Context context){
         AccountManager mAccountManager = AccountManager.get(context);
-        Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-        String authToken = mAccountManager.peekAuthToken(availableAccounts[0], AccountGeneral.ACCOUNT_TYPE);
-        return authToken;
+        return mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+    }
+
+    static String getExistingAccountAuthToken(Context context, String authTokenType) {
+        AccountManager mAccountManager = AccountManager.get(context);
+        Account availableAccounts[] = getExistingAccount(context);
+        if(availableAccounts.length > 0) {
+            String authToken = mAccountManager.peekAuthToken(availableAccounts[0], AccountGeneral.ACCOUNT_TYPE);
+            return authToken;
+        }
+        return EMPTY_AUTH_TOKEN;
     }
 
     public static void invalidateAccountManager(Context context) {
         AccountManager mAccountManager = AccountManager.get(context);
-        Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-        mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
+        Account availableAccounts[] = getExistingAccount(context);
+        if(availableAccounts.length > 0) {
+            mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
+        }
     }
 
     public static void removeAccountManager(Context context) {
         AccountManager mAccountManager = AccountManager.get(context);
-        Account availableAccounts[] = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-        mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
-        mAccountManager.removeAccount(availableAccounts[0],null,null);
+        Account availableAccounts[] = getExistingAccount(context);
+        if(availableAccounts.length > 0) {
+            mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
+            mAccountManager.removeAccount(availableAccounts[0], null, null);
+        }
     }
 }

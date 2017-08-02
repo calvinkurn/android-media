@@ -62,7 +62,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        if(isUnauthorized(response)){
+        if(isUnauthorized(finalRequest, response)){
             if(lock.tryLock()){
                 try {
                     refreshToken();
@@ -325,11 +325,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected boolean isUnauthorized(Response response) {
+    protected boolean isUnauthorized(Request request, Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
-            return responseString.contains("\"error\": \"invalid_request\"");
+            return responseString.contains("\"error\": \"invalid_request\"") && request.header("authorization").contains("Bearer");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
