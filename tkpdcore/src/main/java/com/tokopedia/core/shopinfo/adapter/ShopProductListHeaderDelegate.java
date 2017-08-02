@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.widget.ScrollThroughRecyclerView;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -45,7 +46,7 @@ public class ShopProductListHeaderDelegate {
         public ImageView toggle;
         public Spinner etalase;
         public View filterClick;
-        public RecyclerView featuredProductList;
+        public ScrollThroughRecyclerView featuredProductList;
         public TextView featuredProductTitle;
         public TextView productSectionTitle;
 
@@ -54,7 +55,7 @@ public class ShopProductListHeaderDelegate {
             toggle = (ImageView) itemView.findViewById(R.id.toggle_view);
             filterClick = itemView.findViewById(R.id.btn_filter_sort);
             etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
-            featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
+            featuredProductList = (ScrollThroughRecyclerView) itemView.findViewById(R.id.featured_product_list);
             featuredProductTitle = (TextView) itemView.findViewById(R.id.featured_product_title);
             productSectionTitle = (TextView) itemView.findViewById(R.id.product_section_title);
         }
