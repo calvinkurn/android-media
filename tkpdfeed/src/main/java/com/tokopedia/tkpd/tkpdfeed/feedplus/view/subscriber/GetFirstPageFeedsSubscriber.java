@@ -267,8 +267,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private boolean isFreeReturn(List<BadgeDomain> badges) {
-        for(BadgeDomain domain : badges){
-            if(domain.getTitle().equals(FREE_RETURN))
+        for (BadgeDomain domain : badges) {
+            if (domain.getTitle().equals(FREE_RETURN))
                 return true;
         }
         return false;
@@ -301,11 +301,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private OfficialStoreViewModel convertToOfficialStore(OfficialStoreDomain officialStoreDomain) {
         return new OfficialStoreViewModel(
-                officialStoreDomain.getShop_id() != null ? officialStoreDomain.getShop_id() : 0,
+                officialStoreDomain.getShop_id(),
                 officialStoreDomain.getShop_apps_url(),
                 officialStoreDomain.getShop_name(),
                 officialStoreDomain.getLogo_url(),
-                officialStoreDomain.getIs_new() != null ? officialStoreDomain.getIs_new() : false
+                officialStoreDomain.getIs_new()
         );
     }
 
