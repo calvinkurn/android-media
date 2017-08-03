@@ -713,6 +713,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onNeedUpdate(DetailUpdate detail) {
                 new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
                         .getAlertDialog().show();
+                UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
             }
 
             @Override

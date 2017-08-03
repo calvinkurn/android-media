@@ -123,6 +123,9 @@ public interface AppEventTracking {
         String R3 = "r3";
         String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
         String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+
+        String IMPRESSION_APP_UPDATE = "impressionAppUpdate";
+        String CLICK_APP_UPDATE = "clickAppUpdate";
     }
 
     interface Category {
@@ -194,6 +197,8 @@ public interface AppEventTracking {
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
         String R3USER = "r3User";
+
+        String APP_UPDATE = "Application Update";
     }
 
     interface Action {
@@ -424,6 +429,9 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
         String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
         String BUY_GM = "Buy GM";
+
+        String OPTIONAL_APP_UPDATE = "Application Update - Optional";
+        String FORCE_APP_UPDATE = "Application Update - Force";
     }
 
     interface SOCIAL_MEDIA {

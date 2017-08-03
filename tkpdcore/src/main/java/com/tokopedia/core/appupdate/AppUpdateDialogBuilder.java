@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 
 /**
@@ -47,6 +48,7 @@ public class AppUpdateDialogBuilder {
                         activity.startActivity(
                                 new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
                         );
+                        UnifyTracking.eventClickAppUpdate(detail.isForceUpdate());
 
                         if(!detail.isForceUpdate()) dialog.dismiss();
                     }
