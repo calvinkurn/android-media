@@ -1286,12 +1286,8 @@ public class UnifyTracking extends TrackingUtils {
         getMoEngine().sendRegistrationStartEvent(medium);
     }
 
-    public static void eventMoRegister(CustomerWrapper customerWrapper) {
-        getMoEngine().sendRegisterEvent(
-                customerWrapper.getFullName(),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH)
-        );
+    public static void eventMoRegister(String name, String mobileNo) {
+        getMoEngine().sendRegisterEvent(name,mobileNo);
     }
 
     public static void eventOTPSuccess(){
@@ -1805,5 +1801,34 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.BUY_GM
         ).getEvent());
+    }
+
+    public static void eventWidgetInstalled(){
+        eventWidget(AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventWidgetRemoved(){
+        eventWidget(AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventAccessAppViewWidget(){
+        eventWidget(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
+    }
+
+    public static void eventWidget(String action, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SELLER_WIDGET,
+                AppEventTracking.Category.SELLER_APP_WIDGET,
+                action,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventDrawerTopads(){
+        eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
+    }
+
+    public static void eventDrawerSellerHome(){
+        eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
 }

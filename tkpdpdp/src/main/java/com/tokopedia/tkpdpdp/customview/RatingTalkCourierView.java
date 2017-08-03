@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.CourierActivity;
@@ -139,6 +140,9 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("is_owner", String.valueOf(data.getShopInfo().getShopIsOwner()));
             bundle.putString("product_image", data.getProductImages().get(0).getImageSrc300());
             listener.onProductTalkClicked(bundle);
+            if(data != null) {
+                TrackingUtils.sendMoEngageClickDiskusi(data);
+            }
         }
     }
 
@@ -156,6 +160,9 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
             bundle.putString("prod_name", data.getInfo().getProductName());
             listener.onProductReviewClicked(bundle);
+            if(data != null) {
+                TrackingUtils.sendMoEngageClickUlasan(data);
+            }
         }
     }
 }

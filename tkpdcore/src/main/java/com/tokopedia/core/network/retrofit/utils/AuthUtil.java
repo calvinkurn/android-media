@@ -55,7 +55,14 @@ public class AuthUtil {
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
 
+    public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
+    public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
+    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
+    public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
 
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
+    public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     /**
      * default key is KEY_WSV$
@@ -179,6 +186,7 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
                                                                      String contentType, String authKey, String dateFormat) {
 

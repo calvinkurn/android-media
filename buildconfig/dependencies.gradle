@@ -19,6 +19,8 @@ ext {
     tkpdPaymentVersion = '1.+'
     tkpdPdpVersion = '1.+'
     tkpdDesignVersion = '1.+'
+    tkpdFeedVersion = '1.+'
+    tkpdRideVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 16
     targetSdkVersion = 24
@@ -169,7 +171,9 @@ ext {
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
             payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.design:design:${tkpdDesignVersion}"
+            design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
+            ride     : "com.tokopedia.ride:ride:${tkpdRideVersion}"
     ]
 
     tkpdLibDependencies = [
