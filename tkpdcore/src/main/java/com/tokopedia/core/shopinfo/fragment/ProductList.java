@@ -125,13 +125,20 @@ public class ProductList extends V2BaseFragment {
         initInitialData();
     }
 
+    @Override
+    public void onPause() {
+        facadeFeaturedProduct.unsubscribeGetFeaturedProduct();
+        facadeShopProd.unsubscribeGetShopProduct();
+        super.onPause();
+    }
+
     private void initInitialData() {
         if (etalaseModel == null) {
             getEtalase();
         }
         if (productShopParam.getPage() == 1) {
             getProductNextPage();
-            facadeFeaturedProduct.getFeaturedProduct();
+            getFeaturedProduct();
         }
     }
 
@@ -681,6 +688,11 @@ public class ProductList extends V2BaseFragment {
     private void getProductNextPage() {
         facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);
+    }
+
+    private void getFeaturedProduct() {
+        facadeFeaturedProduct.unsubscribeGetFeaturedProduct();
+        facadeFeaturedProduct.getFeaturedProduct();
     }
 
     private void setLoading() {

@@ -57,7 +57,7 @@ public class GetFeaturedProductRetrofit {
     }
 
     public void getFeaturedProduct() {
-        goldMerchantService.getApi().getShopFeaturedProducts(shopId)
+        onGetFeaturedProductSubs = goldMerchantService.getApi().getShopFeaturedProducts(shopId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onGetFeaturedProduct());
@@ -85,5 +85,11 @@ public class GetFeaturedProductRetrofit {
                 }
             }
         };
+    }
+
+    public void unsubscribeGetFeaturedProduct() {
+        if (onGetFeaturedProductSubs != null) {
+            onGetFeaturedProductSubs.unsubscribe();
+        }
     }
 }
