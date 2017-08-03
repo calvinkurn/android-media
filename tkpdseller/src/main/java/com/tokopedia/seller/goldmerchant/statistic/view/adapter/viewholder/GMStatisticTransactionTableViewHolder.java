@@ -50,7 +50,7 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
                         .setProductId(productId)
                         .build();
                 if (applicationContext != null && applicationContext instanceof PdpRouter) {
-                    ((PdpRouter) applicationContext).goToProductDetail(applicationContext, productPass);
+                    ((PdpRouter) applicationContext).goToProductDetail(itemView.getContext(), productPass);
                 }
 
             }
