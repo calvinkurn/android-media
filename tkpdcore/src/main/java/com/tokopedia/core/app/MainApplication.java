@@ -12,6 +12,8 @@ import android.content.res.Configuration;
 import android.os.Build;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -29,6 +31,7 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
+import com.tokopedia.core.react.ReactSingleton;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 
@@ -41,7 +44,7 @@ import io.fabric.sdk.android.Fabric;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication {
+public class MainApplication extends TkpdMultiDexApplication implements ReactApplication{
 
 
 	public static final int DATABASE_VERSION = 7;
@@ -59,6 +62,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
+    private final ReactNativeHost reactNativeHost = ReactSingleton.init(this);
 
     private DaggerAppComponent.Builder daggerBuilder;
 
@@ -345,5 +349,10 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return reactNativeHost;
     }
 }

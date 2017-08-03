@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import codePush from "react-native-code-push";
 import {
   AppRegistry,
   StyleSheet,
@@ -13,8 +14,9 @@ import { NavigationModule, NetworkModule } from 'NativeModules';
 
 import { ContactUs_Stack, Favorite_Stack, OfficialStore, HotList_ } from './src/configs/router';
 
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
-class Home extends Component { 
+class Home extends Component {
   state = {
     appState: AppState.currentState
   }
@@ -62,7 +64,7 @@ var styles = StyleSheet.create({
   },
 });
 
-
+Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 

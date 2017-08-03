@@ -66,7 +66,7 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
         super.onCreate(savedInstanceState);
         reactRootView = new ReactRootView(this);
         Bundle initialProps = getIntent().getExtras();
-        reactInstanceManager = ReactSingleton.getReactInstanceManager();
+        reactInstanceManager = MainApplication.getInstance().getReactNativeHost().getReactInstanceManager();
         reactRootView.startReactApplication(reactInstanceManager, ReactConst.MAIN_MODULE, initialProps);
         setContentView(reactRootView);
     }

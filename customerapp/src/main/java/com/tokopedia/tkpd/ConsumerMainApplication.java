@@ -4,6 +4,8 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
@@ -37,7 +39,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
 
-        ReactSingleton.init(this);
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -71,5 +72,4 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
     }
-
 }
