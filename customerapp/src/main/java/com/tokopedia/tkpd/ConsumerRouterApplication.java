@@ -254,13 +254,6 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToBcaOneClick(Activity activity, Bundle bundle, int requestCode) {
-        Intent intent = new Intent(activity, BcaOneClickActivity.class);
-        intent.putExtras(bundle);
-        activity.startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);

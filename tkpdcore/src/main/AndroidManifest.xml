@@ -343,10 +343,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.tokopedia.core.manage.people.bank.activity.ListBankTypeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
             android:label="@string/title_msisdn"
