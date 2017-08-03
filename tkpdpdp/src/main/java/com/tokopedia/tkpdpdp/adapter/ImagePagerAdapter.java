@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +12,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
@@ -55,7 +58,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         if (!TextUtils.isEmpty(urlTemporary) && position==0) {
             Glide.with(context).load(urlTemporary)
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -65,34 +68,27 @@ public class ImagePagerAdapter extends PagerAdapter {
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model,
                                                        Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            Glide.with(context)
+                            Glide.with(context.getApplicationContext())
                                     .load(urlImage)
+                                    .asBitmap()
                                     .dontAnimate()
+                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .fitCenter()
-                                    .listener(new RequestListener<String, GlideDrawable>() {
+                                    .into(new SimpleTarget<Bitmap>() {
                                         @Override
-                                        public boolean onException(Exception e, String model,
-                                                                   Target<GlideDrawable> target, boolean isFirstResource) {
-                                            return false;
+                                        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                                            imageView.invalidate();
+                                            imageView.setImageBitmap( bitmap );
                                         }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                                            notifyDataSetChanged();
-                                            return false;
-                                        }
-                                    })
-                                    .into(imageView);
+                                    });
                             return false;
                         }
                     })
                     .into(imageView);
+
         } else {
             ImageHandler.loadImageFit2(context, imageView, urlImage);
         }
-
-
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
         return imageView;
