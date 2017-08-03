@@ -22,7 +22,7 @@
     <string name="gm_statistic_these_keywords_are_based_on_category_x">Kata kunci ini berdasarkan kategori dari \"<![CDATA[<b><i>%1$s</i></b>]]>\"</string>
     <string name="gm_statistic_total_transaction">Total Transaksi</string>
 
-    <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko anda</string>
+    <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko Anda</string>
     <string name="gm_statistic_plus_add_product">+ Tambah Produk</string>
     <string name="gm_statistic_get_access_to_see_gm_stat">Dapatkan akses untuk melihat data lengkap statistik produk</string>
     <string name="gm_statistic_upgrade_to_gold_merchant">Upgrade ke Gold Merchant</string>

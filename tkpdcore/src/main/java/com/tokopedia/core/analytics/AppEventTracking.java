@@ -175,7 +175,6 @@ public interface AppEventTracking {
         String CATALOG = "Katalog";
         String FULLY_LOAD = "Fully Loaded";
         String GM_STAT = "GM Stat";
-        String GM_STATISTIC = "GM Statistic";
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String GM_STATISTIC_DATE_PICKER = "GM Statistic - Date Picker";

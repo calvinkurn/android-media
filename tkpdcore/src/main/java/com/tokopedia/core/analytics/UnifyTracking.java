@@ -1253,7 +1253,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventClickGMStatBuyGMDetailTransaction(){
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC,
+        eventClickGMStat(AppEventTracking.Category.GM_STAT,
                 AppEventTracking.EventLabel.BUY_GM);
     }
 
