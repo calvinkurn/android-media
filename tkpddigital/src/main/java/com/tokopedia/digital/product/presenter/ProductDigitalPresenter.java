@@ -361,12 +361,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
         String ussd = getSelectedUssdOperator().getUssdCode();
 
-        Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() +"and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.getActivity(), getSelectedUssdOperator().getName() + "and mobile number is " + getCurrentMobileNumber(), Toast.LENGTH_SHORT).show();
         if (ussd != null && !"".equalsIgnoreCase(ussd.trim())) {
             view.registerUssdReciever();
             dailUssdToCheckBalance(ussd);
         } else {
-            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed)+ " and number is " +getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(),view.getActivity().getString(R.string.error_message_ussd_title));
+            view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed) + " and number is " + getCurrentMobileNumber() + " and Operator is " + getSelectedUssdOperator().getName(), view.getActivity().getString(R.string.error_message_ussd_title));
 
         }
 
@@ -392,9 +392,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public void processPulsaBalanceUssdResponse(String result) {
+    public void processPulsaBalanceUssdResponse(String message) {
 
-        productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(result), getSubscriberCheckPulsaBalance());
+        productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message), getSubscriberCheckPulsaBalance());
     }
 
     @NonNull

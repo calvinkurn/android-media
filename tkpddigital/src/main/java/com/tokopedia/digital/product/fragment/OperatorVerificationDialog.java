@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -21,10 +22,12 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.Validation;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -40,19 +43,24 @@ public class OperatorVerificationDialog extends DialogFragment {
     private TextView btnCancel;
     private TextView btnOk;
     private TextView tvErrorNumber;
+    private String selectedOperatorName;
     private ImageView imgOperator;
     private List<Operator> operatorList;
+    private List<Validation> validationList;
     private static final String ARG_PARAM_EXTRA_OPERATOR_LIST_DATA =
             "ARG_PARAM_EXTRA_OPERATOR_LIST_DATA";
+    private static final String ARG_PARAM_EXTRA_VALIDATION_LIST_DATA =
+            "ARG_PARAM_EXTRA_VALIDATION_LIST_DATA";
     public static final String ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY =
             "ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY";
     public static final int REQUEST_CODE = 222;
-    private String mobileNumber = null;
 
-    public static OperatorVerificationDialog newInstance(List<Operator> operatorListData) {
+    public static OperatorVerificationDialog newInstance(List<Operator> operatorListData, List<Validation> validationListData) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) operatorListData);
+        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA,
+                (ArrayList<? extends Parcelable>) validationListData);
         OperatorVerificationDialog fragment = new OperatorVerificationDialog();
         fragment.setArguments(bundle);
         return fragment;
@@ -62,6 +70,8 @@ public class OperatorVerificationDialog extends DialogFragment {
     public void onSaveInstanceState(Bundle state) {
         state.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) operatorList);
+        state.putParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA,
+                (ArrayList<? extends Parcelable>) validationList);
     }
 
 
@@ -75,6 +85,7 @@ public class OperatorVerificationDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             operatorList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
+            validationList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA);
         }
     }
 
@@ -97,7 +108,7 @@ public class OperatorVerificationDialog extends DialogFragment {
         imgOperator = (ImageView) view.findViewById(R.id.iv_pic_operator);
         btnCancel = (TextView) view.findViewById(R.id.btn_cancel);
         btnOk = (TextView) view.findViewById(R.id.btn_ok);
-        tvErrorNumber=(TextView) view.findViewById(R.id.tv_error_number);
+        tvErrorNumber = (TextView) view.findViewById(R.id.tv_error_number);
         final TextWatcher textWatcher = getTextWatcherInput();
         autoCompleteTextView.removeTextChangedListener(textWatcher);
         autoCompleteTextView.addTextChangedListener(textWatcher);
@@ -134,34 +145,49 @@ public class OperatorVerificationDialog extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                selectedOperatorName = null;
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
-                if(tempInput.length()<4){
+                if (tempInput.length() < 4) {
                     imgOperator.setVisibility(GONE);
                 }
-                String tempInputTrim=tempInput;
-                if ( tempInput.startsWith("+62")) {
+                String tempInputTrim = tempInput;
+                if (tempInput.startsWith("+62")) {
                     tempInputTrim = tempInput.replace("+62", "0");
-                }else if ( tempInput.startsWith("62")) {
+                } else if (tempInput.startsWith("62")) {
                     tempInputTrim = tempInput.replace("62", "0");
                 }
                 if (tempInput.isEmpty()) {
 
+                    tvErrorNumber.setText("");
+                    tvErrorNumber.setVisibility(GONE);
                 } else {
-                    outerLoop:
-                    for (Operator operator : operatorList) {
-                        for (String prefix : operator.getPrefixList()) {
-                            if (tempInputTrim.startsWith(prefix)) {
-                                enableImageOperator(operator.getImage());
-                                if (verifyOperator(operator.getName())) {
-                                    mobileNumber = tempInput;
-                                }
-                                break outerLoop;
-                            }
+                    String errorString = null;
+                    for (Validation validation : validationList) {
+                        if (!Pattern.matches(validation.getRegex(), tempInput)) {
+                            errorString = validation.getError();
+                            break;
+                        } else {
+                            errorString = null;
                         }
                     }
 
+                    if (errorString == null) {
+                        tvErrorNumber.setText("");
+                        tvErrorNumber.setVisibility(GONE);
+                        matchOperator(tempInputTrim);
+                        setOkButtonEnable(true);
+                    } else {
+                        if (tempInput.isEmpty()) {
+                            tvErrorNumber.setText("");
+                            tvErrorNumber.setVisibility(GONE);
 
+                        } else {
+                            tvErrorNumber.setText(errorString);
+                            tvErrorNumber.setVisibility(VISIBLE);
+                        }
+                        setOkButtonEnable(false);
+                    }
                 }
             }
 
@@ -172,11 +198,24 @@ public class OperatorVerificationDialog extends DialogFragment {
         };
     }
 
+    private void matchOperator(String tempInputTrim) {
+        outerLoop:
+        for (Operator operator : operatorList) {
+            for (String prefix : operator.getPrefixList()) {
+                if (tempInputTrim.startsWith(prefix)) {
+                    enableImageOperator(operator.getImage());
+                    selectedOperatorName = operator.getName();
+                    break outerLoop;
+                }
+            }
+        }
+    }
+
     private void prefilledClientMobileNumber() {
         if (SessionHandler.isV4Login(getActivity())) {
-            if(SessionHandler.getPhoneNumber()!=null && !"".equalsIgnoreCase(SessionHandler.getPhoneNumber())) {
+            if (SessionHandler.getPhoneNumber() != null && !"".equalsIgnoreCase(SessionHandler.getPhoneNumber())) {
                 autoCompleteTextView.setText(SessionHandler.getPhoneNumber());
-            }else{
+            } else {
                 autoCompleteTextView.setText(SessionHandler.getTempPhoneNumber(getActivity()));
             }
         }
@@ -218,21 +257,40 @@ public class OperatorVerificationDialog extends DialogFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendResult(mobileNumber);
+                if (verifyOperator()) {
+                    sendResult(autoCompleteTextView.getText().toString());
+                } else {
+                    sendResult(null);
+                }
+
                 dismiss();
             }
         };
     }
 
+    private void setOkButtonEnable(boolean enable){
+        btnOk.setEnabled(enable);
+        if(enable){
+            btnOk.setTextColor(ContextCompat.getColor(getActivity() , R.color.green_btn));
+        }else{
+            btnOk.setTextColor(ContextCompat.getColor(getActivity() ,R.color.grey));
+        }
+    }
 
-    private boolean verifyOperator(String selectedOperatorName) {
+
+    private boolean verifyOperator() {
         String operatorName = DeviceUtil.getOperatorName(getActivity());
         if (operatorName != null && !"".equalsIgnoreCase(operatorName.trim())) {
             operatorName = operatorName.split(" ")[0];
+        } else {
+            return false;
         }
         if (selectedOperatorName != null && !"".equalsIgnoreCase(selectedOperatorName.trim())) {
             selectedOperatorName = selectedOperatorName.split(" ")[0];
+        } else {
+            return false;
         }
+
         if (operatorName.equalsIgnoreCase(selectedOperatorName)) {
             return true;
         } else {

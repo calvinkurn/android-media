@@ -766,11 +766,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
                 break;
             case OperatorVerificationDialog.REQUEST_CODE:
-                String ussdMobile = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
-                if (ussdMobile != null) {
-                    presenter.processToCheckBalance(ussdMobile);
+                String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
+                if (ussdMobileNumber != null) {
+                    presenter.processToCheckBalance(ussdMobileNumber);
                 } else {
-                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched),getActivity().getString(R.string.error_message_ussd_title));
+                    showMessageAlert(getActivity().getString(R.string.error_message_ussd_operator_not_matched), getActivity().getString(R.string.error_message_ussd_title));
                 }
                 break;
         }
@@ -956,7 +956,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             pulsaBalance.setMobileNumber(presenter.getCurrentMobileNumber());
             navigateToActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(), categoryId, categoryDataState.getName()));
         } else {
-            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed),getActivity().getString(R.string.error_message_ussd_title));
+            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.error_message_ussd_title));
         }
     }
 
@@ -965,12 +965,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void showPulsaBalanceError(String message) {
         checkPulsaBalanceView.hideProgressbar();
         //showToastMessage(message);
-        showMessageAlert(message,getActivity().getString(R.string.error_message_ussd_title));
+        showMessageAlert(message, getActivity().getString(R.string.error_message_ussd_title));
     }
 
     @Override
     public void showVerifyUssdOperatorDialogFragment() {
-        OperatorVerificationDialog dialog = OperatorVerificationDialog.newInstance(categoryDataState.getOperatorList());
+        OperatorVerificationDialog dialog = OperatorVerificationDialog.newInstance(categoryDataState.getOperatorList(), categoryDataState.getClientNumberList().get(0).getValidation());
         dialog.setTargetFragment(this, OperatorVerificationDialog.REQUEST_CODE);
         dialog.show(getFragmentManager(), "operator");
     }
@@ -982,7 +982,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onUssdDataError(String errorMessage) {
-        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+
     }
 
 
