@@ -129,6 +129,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
+
+    @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
 
     }
@@ -174,6 +179,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         fragmentTransaction.replace(R.id.main_view, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
 
     @Override
@@ -198,9 +204,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-            this.startActivity(intent);
-            this.finish();
+            if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                this.startActivity(intent);
+                this.finish();
+            }
         }
     }
 
@@ -209,20 +219,23 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
                 uriData = Uri.parse(bundle.getString(APPLINK_URL));
-            }
-            presenter.checkUriLogin(uriData);
-            if (presenter.isLandingPageWebView(uriData)) {
-                CommonUtils.dumper("GAv4 Escape HADES webview");
-                presenter.processDeepLinkAction(uriData);
+                presenter.actionGotUrlFromApplink(uriData);
             } else {
-                if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                    CommonUtils.dumper("GAv4 Entering HADES");
-                    showProgressService();
-                } else {
-                    CommonUtils.dumper("GAv4 Escape HADES non webview");
+                presenter.checkUriLogin(uriData);
+                if (presenter.isLandingPageWebView(uriData)) {
+                    CommonUtils.dumper("GAv4 Escape HADES webview");
                     presenter.processDeepLinkAction(uriData);
+                } else {
+                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                        CommonUtils.dumper("GAv4 Entering HADES");
+                        showProgressService();
+                    } else {
+                        CommonUtils.dumper("GAv4 Escape HADES non webview");
+                        presenter.processDeepLinkAction(uriData);
+                    }
                 }
             }
+
         } else {
             if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
                 CommonUtils.dumper("GAv4 Entering HADES null Uri");

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 /**
  * @author anggaprasetiyo on 2/27/17.
@@ -41,6 +42,8 @@ public interface IBaseView {
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     );
+
+    RequestBodyIdentifier getDigitalIdentifierParam();
 
     void closeView();
 

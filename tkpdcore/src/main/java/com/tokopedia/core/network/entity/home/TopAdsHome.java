@@ -21,11 +21,14 @@ public class TopAdsHome {
         @SerializedName("cover")
         public String cover;
 
+        @SerializedName("cover_ecs")
+        public String coverEcs;
+
         // This is very small size of photo profile.
-        @SerializedName("xs_url")
+        @SerializedName("xs_ecs")
         public String xsUrl;
 
-        @SerializedName("s_url")
+        @SerializedName("s_ecs")
         public String sUrl;
     }
 

@@ -14,6 +14,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
@@ -27,13 +28,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -43,12 +48,12 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
@@ -58,10 +63,8 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
-import com.tokopedia.tkpdpdp.customview.ErrorShopView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
-import com.tokopedia.tkpdpdp.customview.ManageView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -110,16 +113,19 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
     private DetailInfoView detailInfoView;
     private PictureView pictureView;
-    private ShopInfoViewV2 shopInfoView;
-    private OtherProductsView otherProductsView;
     private RatingTalkCourierView ratingTalkCourierView;
-    private ErrorShopView errorShopView;
+    private PriceSimulationView priceSimulationView;
+    private ShopInfoViewV2 shopInfoView;
+    private TransactionDetailView transactionDetailView;
+    private VideoDescriptionLayout videoDescriptionLayout;
+    private OtherProductsView otherProductsView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
@@ -128,17 +134,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    TransactionDetailView transactionDetailView;
-    PriceSimulationView priceSimulationView;
     FloatingActionButton fabWishlist;
 
     private TextView tvTickerGTM;
-    private VideoDescriptionLayout videoDescriptionLayout;
 
     private ProductPass productPass;
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
     private VideoData videoData;
+    private ProductCampaign productCampaign;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -206,8 +210,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-
-        errorShopView = (ErrorShopView) view.findViewById(R.id.view_error_shop);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -236,7 +238,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void setViewListener() {
-        errorShopView.setListener(this);
         headerInfoView.setListener(this);
         pictureView.setListener(this);
         buttonBuyView.setListener(this);
@@ -357,6 +358,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, CourierActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -364,6 +366,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -371,6 +374,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -378,6 +382,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(0,0);
     }
 
     @Override
@@ -415,7 +420,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
         this.productData = successResult;
-        this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
@@ -495,10 +499,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
             fabWishlist.setOnClickListener(new EditClick(productData));
         } else if (status == 1) {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_faved));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
+        fabWishlist.setVisibility(View.VISIBLE);
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
@@ -521,14 +526,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductDetailRetry() {
-        if(productPass !=null && !productPass.getProductName().isEmpty()){
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    initializationErrorListener()).showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getActivity().findViewById(R.id.root_view),
-                    initializationErrorListener());
-        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                initializationErrorListener()).showRetrySnackbar();
 
     }
 
@@ -614,8 +613,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
-        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                message.replace("\n"," "),
+                Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        TextView tv = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setMaxLines(7);
+        snackbar.show();
     }
 
     @Override
@@ -682,6 +686,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
+        presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
     }
 
     @Override
@@ -710,10 +715,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             return true;
         } else if (item.getItemId() == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivity(intent);
+                intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
+                navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
@@ -764,6 +769,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (productData != null) {
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
+            refreshMenu();
         }
     }
 
@@ -863,6 +869,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 .show();
     }
 
+    @Override
+    public void showProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
+        headerInfoView.renderProductCampaign(this.productCampaign);
+    }
+
     private void destroyVideoLayout() {
         if (videoDescriptionLayout != null && videoDescriptionLayout.isShown()) {
             videoDescriptionLayout.destroyVideoLayoutProcess();
@@ -871,7 +883,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
             int scrollRange = -1;
 
             @Override
@@ -882,13 +893,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange + verticalOffset == 0) {
                     initStatusBarLight();
                     initToolbarLight();
-                    fabWishlist.setVisibility(View.GONE);
-                    isShow = true;
-                } else if (isShow) {
+                    fabWishlist.hide();
+                } else {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    fabWishlist.setVisibility(View.VISIBLE);
-                    isShow = false;
+                    fabWishlist.show();
                 }
             }
         };
@@ -901,8 +910,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_black));
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
+            LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+            if (CartCache > 0) {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+            } else {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+            }
         }
         toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
 
@@ -914,8 +929,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_white));
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
+            LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+            if (CartCache > 0) {
+                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+            } else {
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+            }
             toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
         }
     }

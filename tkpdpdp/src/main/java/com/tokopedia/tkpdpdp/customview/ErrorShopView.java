@@ -30,8 +30,8 @@ public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
-        tvTitle = (TextView) findViewById(R.id.tv_title);
-        tvSubTitle = (TextView) findViewById(R.id.tv_sub_title);
+        tvTitle = (TextView) findViewById(R.id.tv_error_tilte_product);
+        tvSubTitle = (TextView) findViewById(R.id.tv_error_subtilte_product);
     }
 
     @Override

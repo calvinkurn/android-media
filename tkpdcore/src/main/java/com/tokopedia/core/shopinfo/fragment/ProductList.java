@@ -37,6 +37,7 @@ import com.tokopedia.core.shopinfo.adapter.FeaturedProductAdapter;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetFeaturedProductRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.facades.GetShopProductCampaignRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
@@ -60,7 +61,6 @@ public class ProductList extends V2BaseFragment {
         SearchView searchView;
     }
 
-
     public static String ETALASE_NAME = "etalase_name";
     public static String ETALASE_ID = "etalase_id";
 
@@ -77,9 +77,10 @@ public class ProductList extends V2BaseFragment {
     private String shopDomain;
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
+    private GetShopProductCampaignRetrofit facadeShopProdCampaign;
     private GetFeaturedProductRetrofit facadeFeaturedProduct;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
-
+    private boolean isConnectionErrorShow = false;
     private ProductListCallback callback;
 
     public static ProductList newInstance() {
@@ -125,13 +126,6 @@ public class ProductList extends V2BaseFragment {
         initInitialData();
     }
 
-    @Override
-    public void onPause() {
-        facadeFeaturedProduct.unsubscribeGetFeaturedProduct();
-        facadeShopProd.unsubscribeGetShopProduct();
-        super.onPause();
-    }
-
     private void initInitialData() {
         if (etalaseModel == null) {
             getEtalase();
@@ -140,6 +134,17 @@ public class ProductList extends V2BaseFragment {
             getProductNextPage();
             getFeaturedProduct();
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (facadeShopProd != null) {
+            facadeShopProd.unsubscribeGetShopProduct();
+        }
+        if (facadeFeaturedProduct != null) {
+            facadeFeaturedProduct.unsubscribeGetFeaturedProduct();
+        }
+        super.onStop();
     }
 
     @Override
@@ -212,9 +217,7 @@ public class ProductList extends V2BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ProductListCallback) {
-            this.callback = (ProductListCallback) context;
-        }
+        attachListener(context);
     }
 
     /**
@@ -224,15 +227,21 @@ public class ProductList extends V2BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity instanceof ProductListCallback) {
-            this.callback = (ProductListCallback) activity;
-        }
+        attachListener(activity);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         this.callback = null;
+    }
+
+    private void attachListener(Context context) {
+        if(context instanceof ProductListCallback) {
+            this.callback = (ProductListCallback) context;
+        } else {
+            throw new RuntimeException("Please implement ProductListCallback in the Activity");
+        }
     }
 
     private void configSearchView() {
@@ -383,7 +392,10 @@ public class ProductList extends V2BaseFragment {
                 etalaseIdList.add(etalaseModel.list.get(i).etalaseId);
             }
         } else {
-            etalaseNameList.add(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+            etalaseNameList.add(removeDash(
+                    getActivity().getIntent().getExtras().getString(
+                            ETALASE_NAME, getString(R.string.title_all_etalase))
+            ));
             etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
         }
     }
@@ -393,7 +405,7 @@ public class ProductList extends V2BaseFragment {
         holder.list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (isAtBottom() && canLoadItem()) {
+                if (isAtBottom() && canLoadItem() && !isConnectionErrorShow) {
                     setLoading();
                     getProductNextPage();
                 }
@@ -485,6 +497,8 @@ public class ProductList extends V2BaseFragment {
         facadeShopInfo.setOnGetShopEtalase(onGetEtalaseListener());
         facadeShopProd = new GetShopProductRetrofit(getActivity(), shopId, shopDomain);
         facadeShopProd.setOnGetShopProductListener(onGetShopProductListener());
+        facadeShopProdCampaign = new GetShopProductCampaignRetrofit(getActivity());
+        facadeShopProdCampaign.setProductsCampaignListener(onGetProductCampaign());
         facadeFeaturedProduct = new GetFeaturedProductRetrofit(getActivity(), shopId);
         facadeFeaturedProduct.setOnGetFeaturedProductListener(onGetFeaturedProductListener());
     }
@@ -493,17 +507,10 @@ public class ProductList extends V2BaseFragment {
         return new GetShopProductRetrofit.OnGetShopProductListener() {
             @Override
             public void onSuccess(ProductModel model) {
-                removeLoading();
-                productModel.list.addAll(model.list);
-                adapter.notifyDataSetChanged();
-                if (!model.list.isEmpty())
-                    productShopParam.setPage(productShopParam.getPage() + 1);
-                else
-                    productShopParam.setPage(-1);
-
-                if(productShopParam.getPage() == 2
-                        && productShopParam.getEtalaseId().equalsIgnoreCase("etalase")) {
-                    saveToCache(model);
+                if(callback.isOfficialStore() && !model.list.isEmpty()) {
+                    getProductCampaign(model);
+                } else {
+                    renderProductList(model);
                 }
             }
 
@@ -513,21 +520,24 @@ public class ProductList extends V2BaseFragment {
                 switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
                         if (productShopParam.getPage() == 1 && productModel.list.size() == 0) {
-
+                            isConnectionErrorShow = true;
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
                                     adapter.removeEmptyState();
+                                    isConnectionErrorShow = false;
                                     refreshProductList();
                                 }
                             });
                         } else {
-                            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    refreshProductList();
-                                }
-                            }).showRetrySnackbar();
+                            if (getActivity() != null && isAdded()) {
+                                NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        refreshProductList();
+                                    }
+                                }).showRetrySnackbar();
+                            }
                         }
                         break;
                     case GetShopProductRetrofit.WS_TYPE_ERROR:
@@ -589,9 +599,7 @@ public class ProductList extends V2BaseFragment {
                 } else if(getActivity().getIntent().getExtras().getString(ETALASE_NAME) != null) {
                     for(int i = 0; i < etalaseNameList.size(); i++) {
                         if(etalaseNameList.get(i).equalsIgnoreCase(
-                                getActivity().getIntent().getExtras().getString(
-                                        ETALASE_NAME, getString(R.string.title_all_etalase)
-                                )
+                                removeDash(getActivity().getIntent().getExtras().getString(ETALASE_NAME))
                         )) {
                             index = i;
                             break;
@@ -606,6 +614,76 @@ public class ProductList extends V2BaseFragment {
             public void onFailure() {
             }
         };
+    }
+
+    private String removeDash(String param) {
+        return param.replace("-", " ");
+    }
+
+    private GetShopProductCampaignRetrofit.ProductsCampaignListener onGetProductCampaign() {
+        return new GetShopProductCampaignRetrofit.ProductsCampaignListener() {
+            @Override
+            public void onSuccess(ProductModel model) {
+                renderProductList(model);
+            }
+
+            @Override
+            public void onFailure(int connectionTypeError, String message) {
+                removeLoading();
+                switch (connectionTypeError) {
+                    case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
+                        if (productShopParam.getPage() == 1 && productModel.list != null
+                                && productModel.list.isEmpty()) {
+
+                            adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    adapter.removeEmptyState();
+                                    refreshProductList();
+                                }
+                            });
+                        } else {
+                            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    refreshProductList();
+                                }
+                            }).showRetrySnackbar();
+                        }
+                        break;
+                    case GetShopProductRetrofit.WS_TYPE_ERROR:
+                        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                refreshProductList();
+                            }
+                        }).showRetrySnackbar();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    private void getProductCampaign(ProductModel model) {
+        facadeShopProdCampaign.unsubscribeGetProductsCampaign();
+        facadeShopProdCampaign.getProductsCampaign(model);
+    }
+
+    private void renderProductList(ProductModel model) {
+        removeLoading();
+        productModel.list.addAll(model.list);
+        adapter.notifyDataSetChanged();
+        if (!model.list.isEmpty())
+            productShopParam.setPage(productShopParam.getPage() + 1);
+        else
+            productShopParam.setPage(-1);
+
+        if(productShopParam.getPage() == 2
+                && productShopParam.getEtalaseId().equalsIgnoreCase("etalase")) {
+            saveToCache(model);
+        }
     }
 
     private View.OnClickListener onRetryClick() {
@@ -723,5 +801,6 @@ public class ProductList extends V2BaseFragment {
 
     public interface ProductListCallback {
         void onProductListCompleted();
+        boolean isOfficialStore();
     }
 }

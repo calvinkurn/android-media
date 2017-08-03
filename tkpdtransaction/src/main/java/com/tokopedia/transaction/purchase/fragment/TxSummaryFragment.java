@@ -143,21 +143,21 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected void initialVar() {
-
+        refreshHandler.startRefresh();
     }
 
     @Override
     protected void setActionVar() {
-        presenter.getNotificationFromNetwork(context);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (presenter == null) {
+        if (presenter == null && getActivity()!= null) {
             initialPresenter();
         }
-        if (isVisibleToUser && getActivity() != null)
+        if (isVisibleToUser && getActivity() != null) {
             presenter.getNotificationPurcase(getActivity());
+        }
         super.setUserVisibleHint(isVisibleToUser);
     }
 

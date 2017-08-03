@@ -97,6 +97,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private interface QueryListener {
         void onQueryChanged(String query);
     }
+
     private String lastQuery;
 
     public DiscoverySearchView(Context context) {
@@ -265,12 +266,16 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (copyText) {
-                    s = s.subSequence(0, s.length() - 1);
-                    copyText = false;
+                if (s != null) {
+                    if (copyText) {
+                        s = s.subSequence(0, s.length() - 1);
+                        copyText = false;
+                    }
+                    mUserQuery = s;
+                    if (queryListener != null) {
+                        queryListener.onQueryChanged(s.toString());
+                    }
                 }
-                mUserQuery = s;
-                queryListener.onQueryChanged(s.toString());
             }
 
             @Override

@@ -93,6 +93,13 @@ public class ProductFeedAdapter {
                 .from(parent.getContext()).inflate(R.layout.empty_state_product_feed, parent, false);
         return new ViewHolderEmptyFeed(viewLayout);
     }
+
+    public static RecyclerView.ViewHolder createRetryFeed(ViewGroup parent) {
+        View viewLayout = LayoutInflater
+                .from(parent.getContext()).inflate(R.layout.design_retry_footer, parent, false);
+        return new ViewHolderRetryFeed(viewLayout);
+    }
+
     public static ViewHolderHistoryProduct
                 createViewHistoryProduct(ViewGroup parent,
                                          HistoryProductListItem historyProductListItem) {

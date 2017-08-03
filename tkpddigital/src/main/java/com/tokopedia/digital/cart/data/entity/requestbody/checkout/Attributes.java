@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.data.entity.requestbody.checkout;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 /**
  * @author anggaprasetiyo on 3/9/17.
@@ -21,6 +22,16 @@ public class Attributes {
     @SerializedName("user_agent")
     @Expose
     private String userAgent;
+    @SerializedName("identifier")
+    @Expose
+    private RequestBodyIdentifier identifier;
+    @SerializedName("client_id")
+    @Expose
+    private String clientId;
+
+    public void setIdentifier(RequestBodyIdentifier identifier) {
+        this.identifier = identifier;
+    }
 
     public void setVoucherCode(String voucherCode) {
         this.voucherCode = voucherCode;
@@ -38,4 +49,7 @@ public class Attributes {
         this.userAgent = userAgent;
     }
 
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 }

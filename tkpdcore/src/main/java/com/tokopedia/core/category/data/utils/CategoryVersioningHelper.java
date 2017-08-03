@@ -13,6 +13,7 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -69,9 +70,11 @@ public class CategoryVersioningHelper {
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
         TkpdAuthInterceptor authInterceptor = new TkpdAuthInterceptor();
         clientBuilder.interceptors().add(authInterceptor);
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        clientBuilder.interceptors().add(logInterceptor);
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            clientBuilder.interceptors().add(logInterceptor);
+        }
         OkHttpClient client = clientBuilder.build();
 
         Gson gson = new Gson();

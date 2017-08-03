@@ -36,6 +36,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.feed.view.viewModel.EmptyFeedModel;
+import com.tokopedia.tkpd.home.feed.view.viewModel.RetryFeedModel;
 
 import org.parceler.Parcels;
 
@@ -44,6 +45,7 @@ import java.util.List;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createEmtpyFeed;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createRetryFeed;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createViewHistoryProduct;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createViewProductFeed;
 import static com.tokopedia.core.home.model.HistoryProductListItem.HISTORY_PRODUCT_LIST_ITEM;
@@ -58,9 +60,12 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
     public static final String MODEL_FLAG = "MODEL_FLAG";
     private ParentIndexHome.ChangeTabListener hotListListener;
     private HistoryProductRecyclerViewAdapter historyAdapter;
+    private OnRetryListener retryListener;
+    private RetryFeedModel retryModel;
 
     public DataFeedAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
+        retryModel = new RetryFeedModel();
     }
 
     @Override
@@ -72,12 +77,12 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
                 return createViewHistoryProduct(parent, (HistoryProductListItem) data.get(0), historyAdapter);
             case EmptyFeedModel.EMPTY_FEED:
                 return createEmtpyFeed(parent);
+            case RetryFeedModel.RETRY_FEED:
+                return createRetryFeed(parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
-
-
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -90,6 +95,9 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
                 break;
             case EmptyFeedModel.EMPTY_FEED:
                 bindEmptyFeedModel((ViewHolderEmptyFeed) holder, position);
+                break;
+            case RetryFeedModel.RETRY_FEED:
+                bindRetryFeedModel((ViewHolderRetryFeed) holder, position);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -118,6 +126,7 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
             case PRODUCT_ITEM_TYPE:
             case HISTORY_PRODUCT_LIST_ITEM:
             case EmptyFeedModel.EMPTY_FEED:
+            case RetryFeedModel.RETRY_FEED:
                 return recyclerViewItem.getType();
             default:
                 return -1;
@@ -132,6 +141,17 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
         holder.checkFavoriteShopButton.setOnClickListener(onFindFavoriteClicked());
         holder.officialStoreLinkContainer.setOnClickListener(onOfficialStoreLinkClicked());
         holder.generateTopAds();
+    }
+
+    private void bindRetryFeedModel(ViewHolderRetryFeed holder, int position) {
+        holder.mainRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(retryListener!=null){
+                    retryListener.onRetryCliked();
+                }
+            }
+        });
     }
 
     private void bindProductFeedViewHolder(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
@@ -316,6 +336,12 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
                 != null && data.get(position) instanceof EmptyFeedModel;
     }
 
+    public boolean isRetry(int position) {
+        boolean isInRange = position >= 0 && position < data.size();
+        return isInRange && data.get(position)
+                != null && data.get(position) instanceof RetryFeedModel;
+    }
+
     private ProductPass productPass(ProductItem productItem) {
         return ProductPass.Builder.aProductPass()
                 .setProductPrice(productItem.getPrice())
@@ -342,4 +368,19 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
         notifyItemInserted(1);
     }
 
+    public void setRetryFeed(){
+        int posStart = getItemCount();
+        data.add(retryModel);
+        notifyItemRangeInserted(posStart, 1);
+    }
+
+    public void setOnRetryListener(OnRetryListener onRetryListener) {
+        this.retryListener = onRetryListener;
+    }
+
+    public void removeRetry() {
+        int index = this.data.indexOf(retryModel);
+        this.data.remove(retryModel);
+        notifyItemRemoved(index);
+    }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -51,7 +52,7 @@ public class OpportunityDetailStatusView extends BaseView<OpportunityItemViewMod
     protected void initView(Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(getLayoutView(),this, true);
+        View view = inflater.inflate(getLayoutView(), this, true);
         cashback = (TextView) view.findViewById(R.id.value_cashback);
         deadline = (TextView) view.findViewById(R.id.value_response_time);
         destinationCity = (TextView) view.findViewById(R.id.value_destination);
@@ -66,6 +67,10 @@ public class OpportunityDetailStatusView extends BaseView<OpportunityItemViewMod
 
     @Override
     public void renderData(@NonNull OpportunityItemViewModel data) {
+        String color = data.getOrderDeadline().getDeadlineColor();
+        if (color != null && !color.equals("")) {
+            deadline.setBackgroundColor(Color.parseColor(color));
+        }
         cashback.setText(data.getOrderCashbackIdr());
         deadline.setText(data.getOrderDeadline().getDeadlineProcess());
         destinationCity.setText(data.getOrderDestination().getAddressCity());

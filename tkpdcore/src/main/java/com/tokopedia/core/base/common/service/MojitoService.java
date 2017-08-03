@@ -2,6 +2,7 @@ package com.tokopedia.core.base.common.service;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.HashMap;
 

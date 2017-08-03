@@ -213,8 +213,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onProductItemClicked(Product product) {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    product.getId());
+            ProductItem data = new ProductItem();
+            data.setId(product.getId());
+            data.setName(product.getName());
+            data.setPrice(product.getPriceFormat());
+            data.setImgUri(product.getImage().getM_url());
+            Bundle bundle = new Bundle();
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
 
@@ -227,7 +234,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(Data data) {
+        public void onAddFavorite(int position, Data data) {
 
         }
     }
@@ -296,7 +303,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
         if (product.getIsWishlist()) {
             viewHolder.wishlistContent.setVisibility(View.VISIBLE);
-            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId()));
+            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId(), position));
 
             if (product.getIsAvailable()) {
                 setBuyButtonAvailable(viewHolder.buyWishlistBut);
@@ -436,12 +443,12 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         return (position + 1) % 2 == 0;
     }
 
-    private View.OnClickListener onDeleteWishlistClicked(final String productId) {
+    private View.OnClickListener onDeleteWishlistClicked(final String productId, final int position) {
         return new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId);
+                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId, position);
             }
         };
     }

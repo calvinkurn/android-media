@@ -258,8 +258,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void showTabLayout(boolean show) {
-        if(show){
+    public void showTabLayout() {
+        if(browserSectionsPagerAdapter != null && browserSectionsPagerAdapter.getCount()>1){
             tabLayout.setVisibility(View.VISIBLE);
         } else {
             tabLayout.setVisibility(View.GONE);
@@ -375,6 +375,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
+            ((ProductFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
                 source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }
