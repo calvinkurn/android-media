@@ -689,9 +689,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint() && presenter != null) {
-            checkNewFeed();
-        }
+//        if (getUserVisibleHint() && presenter != null) {
+//            checkNewFeed();
+//        }
     }
 
     private void checkNewFeed() {
@@ -712,9 +712,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && presenter != null) {
-            checkNewFeed();
-        }
+//        if (isVisibleToUser && presenter != null) {
+//            checkNewFeed();
+//        }
     }
 
     @Override
