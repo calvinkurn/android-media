@@ -102,33 +102,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         return bannerList.size();
     }
 
-    /*@Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.layout_slider_banner_category, container, false);
-
-        ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
-        if (bannerList.get(position).imgUrl!=null &&
-                bannerList.get(position).promoUrl.length()>0) {
-            bannerImage.setOnClickListener(
-                    getBannerImageOnClickListener(bannerList.get(position).promoUrl)
-            );
-        }
-
-        CardView cardView = (CardView) view.findViewById(R.id.card_view);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
-        int margin = (int) context.getResources().getDimension(R.dimen.slider_margin);
-        params.setMargins(margin, 0, margin, 0);
-        cardView.setLayoutParams(params);
-
-        ImageHandler.LoadImage(
-                bannerImage,
-                bannerList.get(position).imgUrl
-        );
-        container.addView(view);
-        return view;
-    }*/
-
     private View.OnClickListener getBannerImageOnClickListener(final String url) {
         return new View.OnClickListener() {
             @Override
@@ -156,21 +129,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             }
         };
     }
-
-    /*@Override
-    public int getCount() {
-        return bannerList.size();
-    }
-
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view.equals(object);
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        if (object != null && object instanceof View) container.removeView((View) object);
-    }*/
 
     private boolean isBaseHost(String host) {
         return (host.contains(TkpdBaseURL.BASE_DOMAIN) || host.contains(TkpdBaseURL.MOBILE_DOMAIN));
