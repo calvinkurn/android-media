@@ -109,7 +109,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 else onInstantCheckoutUnChecked();
 
                 if(data instanceof CategoryData)
-                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), "Product - "+((CategoryData) data).getName(), isChecked);
+                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
 
             }
         };

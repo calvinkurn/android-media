@@ -336,7 +336,7 @@ public class CategoryProductStyle3View extends
             @Override
             public void onClick(View v) {
                 CommonUtils.dumper("GAv4 Product Style 3");
-                UnifyTracking.eventClickBeli(data.getName(), "Product - "+data.getName());
+                UnifyTracking.eventClickBeli(data.getName(), data.getName());
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };

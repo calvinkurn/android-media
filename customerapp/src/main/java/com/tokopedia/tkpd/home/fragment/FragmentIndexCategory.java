@@ -570,7 +570,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
 
-        UnifyTracking.eventClickCategoriesIcon("Product - "+itemModel.getName());
+        UnifyTracking.eventClickCategoriesIcon(itemModel.getName());
 
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getLink() != 1) {

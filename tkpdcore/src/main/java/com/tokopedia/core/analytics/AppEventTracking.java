@@ -368,6 +368,7 @@ public interface AppEventTracking {
         String SIGN_OUT = "Sign Out";
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
+        String PRODUCT = "Product - ";
 
         String REGISTER = "Register";
         String CTA = "CTA";

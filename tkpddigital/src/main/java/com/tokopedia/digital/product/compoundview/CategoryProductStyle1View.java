@@ -227,9 +227,9 @@ public class CategoryProductStyle1View extends
             @Override
             public void onClick(View v) {
                 if(cbInstantCheckout.isChecked())
-                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), "Product - "+data.getName());
+                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
                 else
-                    UnifyTracking.eventClickBeli(data.getName(), "Product - "+data.getName());
+                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
 
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }

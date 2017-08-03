@@ -591,7 +591,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
 
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), "Product - "+categoryDataState.getName());
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
@@ -604,7 +604,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
 
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), "Product - "+categoryDataState.getName());
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
@@ -617,7 +617,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
 
-        UnifyTracking.eventSelectOperator(categoryDataState.getName(), "Product - "+categoryDataState.getName());
+        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
@@ -630,7 +630,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
 
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), "Product - "+categoryDataState.getName());
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(

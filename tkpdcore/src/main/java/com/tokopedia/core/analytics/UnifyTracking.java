@@ -1567,7 +1567,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1576,7 +1576,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.SELECT_PRODUCT_FROM_WIDGET,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1585,7 +1585,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.SELECT_OPERATOR_FROM_WIDGET,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1594,7 +1594,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.SELECT_PRODUCT,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1603,7 +1603,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.SELECT_OPERATOR,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1612,7 +1612,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.CLICK_BELI,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1621,7 +1621,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.CLICK_SEARCH_BAR,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1630,7 +1630,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 toggle ? AppEventTracking.Action.CHECK_INSTANT_SALDO_WIDGET : AppEventTracking.Action.UNCHECK_INSTANT_SALDO_WIDGET,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1639,7 +1639,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 toggle ? AppEventTracking.Action.CHECK_INSTANT_SALDO : AppEventTracking.Action.UNCHECK_INSTANT_SALDO,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
@@ -1648,7 +1648,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE+ec,
                 AppEventTracking.Action.CLICK_BELI_INSTANT_SALDO,
-                el
+                AppEventTracking.EventLabel.PRODUCT+el
         ).getEvent());
     }
 
