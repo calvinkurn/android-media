@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/small_dp">
+    android:paddingTop="@dimen/small_dp"
+    android:paddingBottom="@dimen/small_dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_small"
-            android:textColor="@color/label_color"
+            android:textColor="@color/grey_500"
             android:text="@string/payment_method" />
 
         <TextView
@@ -60,9 +61,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Nama Pemilik Rekening"
+                    android:text="@string/title_account_owner"
                     android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/label_color"/>
+                    android:textColor="@color/grey_500"/>
 
                 <TextView
                     android:layout_marginTop="@dimen/margin_vs"
@@ -89,9 +90,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/label_color"
+                    android:textColor="@color/grey_500"
                     android:textSize="@dimen/text_size_small"
-                    tools:text="Limit Harian" />
+                    android:text="@string/title_daily_limit" />
 
                 <TextView
                     android:id="@+id/daily_limit"
@@ -112,9 +113,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/label_color"
+                    android:textColor="@color/grey_500"
                     android:textSize="@dimen/text_size_small"
-                    tools:text="Nomor Rekening" />
+                    android:text="@string/title_account_number" />
 
                 <TextView
                     android:id="@+id/account_number"

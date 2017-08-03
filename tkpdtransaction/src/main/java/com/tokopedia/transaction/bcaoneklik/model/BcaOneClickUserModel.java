@@ -22,6 +22,9 @@ public class BcaOneClickUserModel implements Parcelable {
     @SerializedName("max_limit")
     String maxLimit;
 
+    public BcaOneClickUserModel() {
+    }
+
     protected BcaOneClickUserModel(Parcel in) {
         tokenId = in.readString();
         credentialType = in.readString();

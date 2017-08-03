@@ -2,39 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/small_dp">
+    android:layout_margin="@dimen/small_dp">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/quick_payment"
-                android:textStyle="bold"/>
-
-            <View
-                android:layout_width="30dp"
-                android:layout_height="3dp"
-                android:background="@color/red_300"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/bca_one_click_recycler_view"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:padding="@dimen/small_dp"
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,60 +14,93 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/add_bca_one_click_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/small_dp"
-                android:orientation="vertical"
-                android:background="@drawable/btn_plain">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/label_color"
-                    android:text="@string/payment_method"/>
+                    android:text="@string/quick_payment"
+                    android:textStyle="bold"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bca_one_click"/>
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="3dp"
+                    android:background="@color/red_300"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"/>
 
             </LinearLayout>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/bca_one_click_recycler_view"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <LinearLayout
-                android:id="@+id/bca_one_click_register_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/small_dp"
-                android:gravity="center_vertical"
-                android:background="@drawable/btn_plain">
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:id="@+id/add_bca_one_click_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:padding="@dimen/small_dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/btn_plain">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/facebook_square" />
+                        android:textColor="@color/label_color"
+                        android:text="@string/payment_method"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bca_one_click"/>
+
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/bca_one_click_register_button"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/btn_height"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="@drawable/btn_green_3dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:text="@string/title_register"/>
+                <LinearLayout
+                    android:id="@+id/bca_one_click_register_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/btn_plain">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/facebook_square" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/bca_one_click_register_button"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/btn_height"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:background="@drawable/btn_green_3dp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="@string/title_register"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

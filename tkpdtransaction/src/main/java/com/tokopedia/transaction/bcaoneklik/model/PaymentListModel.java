@@ -16,6 +16,9 @@ public class PaymentListModel implements Parcelable {
     @SerializedName("bca_oneklik_data")
     private List<BcaOneClickUserModel> bcaOneClickUserModels;
 
+    public PaymentListModel() {
+    }
+
     protected PaymentListModel(Parcel in) {
         bcaOneClickUserModels = in.createTypedArrayList(BcaOneClickUserModel.CREATOR);
     }
