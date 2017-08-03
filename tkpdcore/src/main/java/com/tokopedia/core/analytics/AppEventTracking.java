@@ -175,8 +175,10 @@ public interface AppEventTracking {
         String CATALOG = "Katalog";
         String FULLY_LOAD = "Fully Loaded";
         String GM_STAT = "GM Stat";
+        String GM_STATISTIC = "GM Statistic";
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
+        String GM_STATISTIC_DATE_PICKER = "GM Statistic - Date Picker";
         String MANAGE_PRODUCT = "Manage Product";
         String DRAFT_PRODUCT = "Draft Product";
         String CATEGORY_PAGE = "Category Page";
@@ -194,6 +196,10 @@ public interface AppEventTracking {
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
         String R3USER = "r3User";
+        String GMSTAT_TRANSACTION = "GM Statistic - Transaction";
+        String GM_STATISTIC_TOP_ADS = "GM Statistic - TopAds";
+        String GM_STATISTIC_TRANSACTION_DETAIL = "GM Statistic - Transaction Detail";
+        String GM_STATISTIC_PRODUCT_SOLD = "GM Statistic - Products Sold";
     }
 
     interface Action {
@@ -255,6 +261,7 @@ public interface AppEventTracking {
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
+        String FILTER = "Filter";
     }
 
     interface EventLabel {
@@ -424,6 +431,12 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
         String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
         String BUY_GM = "Buy GM";
+        String SEE_DETAIL = "See Detail";
+        String CHANGE_DATE = "Change Date";
+        String CHANGE_DATE_COMPARE = "Change Date - Compare";
+        String MANAGE_TOPADS = "Manage TopAds";
+        String PRODUCT_SOLD = "Products Sold";
+        String GRAPH_X = "Graph - ";
     }
 
     interface SOCIAL_MEDIA {

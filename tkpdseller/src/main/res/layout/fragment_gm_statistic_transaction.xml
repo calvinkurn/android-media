@@ -123,7 +123,7 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:padding="@dimen/gm_unfinished_margin_top"
-                    android:text="@string/gm_statistic_see_topads"
+                    android:text="@string/gm_statistic_manage_topads"
                     android:textSize="@dimen/font_button"
                     android:textStyle="bold" />
             </LinearLayout>

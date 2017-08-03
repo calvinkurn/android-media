@@ -29,7 +29,7 @@
     <string name="gm_statistic_buyer_data">Data Pembeli</string>
     <string name="gm_statistic_buyer_count">Jumlah Pembeli</string>
     <string name="gm_statistic_product_data">Data Produk</string>
-    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada terjual dalam 30 hari terakhir</string>
+    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada produk terjual dalam 30 hari terakhir</string>
     <string name="gm_statistic_x_sold">x Terjual</string>
     <string name="gm_statistic_most_popular_product">Produk terlaris</string>
 
@@ -66,6 +66,6 @@
     <string name="gm_statistic_empty_register_topads_now">Mulai Promo</string>
     <string name="gm_statistic_change_date"><![CDATA[Ubah tanggal >]]></string>
     <string name="gm_statistic_card_error_content">Data gagal ditampilkan</string>
-    <string name="gm_statistic_see_topads">Lihat TopAds</string>
+    <string name="gm_statistic_manage_topads">Atur TopAds</string>
     <string name="gm_sort">Sort</string>
 </resources>

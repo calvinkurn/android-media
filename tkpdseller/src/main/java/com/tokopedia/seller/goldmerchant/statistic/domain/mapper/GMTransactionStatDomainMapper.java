@@ -184,7 +184,7 @@ public class GMTransactionStatDomainMapper implements Func1<GetTransactionGraph,
         gmTopAdsAmountViewModel.amount = getTransactionGraph.getCpcProduct() + getTransactionGraph.getCpcShop();
         long previousAmount = getTransactionGraph.getpCpcProduct() + getTransactionGraph.getpCpcShop();
         try {
-            gmTopAdsAmountViewModel.percentage = gmTopAdsAmountViewModel.amount - previousAmount / gmTopAdsAmountViewModel.amount;
+            gmTopAdsAmountViewModel.percentage = ( gmTopAdsAmountViewModel.amount - previousAmount) / previousAmount;
         } catch (Exception e) {
             gmTopAdsAmountViewModel.percentage = GMStatConstant.NO_DATA_AVAILABLE;
         }
