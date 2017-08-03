@@ -187,8 +187,15 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 break;
         }
 
-        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
+        if (hasCancelReplacementButton(item))
             holder.btnOverflow.setVisibility(View.VISIBLE);
+    }
+
+    private boolean hasCancelReplacementButton(OrderData item) {
+        return item != null &&
+                item.getOrderButton() != null &&
+                item.getOrderButton().getButtonCancelReplacement() != null &&
+                item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON);
     }
 
     private void showPopup(View v, final OrderData item) {
@@ -202,7 +209,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     }
 
     private void addCancelReplacementMenu(OrderData item, PopupMenu popup) {
-        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON)) {
+        if (hasCancelReplacementButton(item)) {
             popup.getMenu().add(Menu.NONE, R.id.action_cancel_replacement, Menu.NONE, getContext()
                     .getString(R.string.cancel_replacement));
         }
@@ -210,7 +217,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
     private int getMenuId(OrderData item) {
         int MenuID = 0;
-        if (item.getOrderButton().getButtonCancelReplacement().equals(HAS_BUTTON))
+        if (hasCancelReplacementButton(item))
             MenuID = R.menu.order_status_menu_cancel_replacement;
 
         switch (instanceType) {
