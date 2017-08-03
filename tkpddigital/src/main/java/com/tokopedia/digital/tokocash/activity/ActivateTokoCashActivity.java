@@ -74,6 +74,7 @@ public class ActivateTokoCashActivity extends BasePresenterActivity
     @Override
     public void directToSuccessActivateTokoCashPage() {
         startActivity(SuccessActivateTokoCashActivity.newInstance(getApplicationContext()));
+        setResult(RESULT_OK);
         finish();
     }
 

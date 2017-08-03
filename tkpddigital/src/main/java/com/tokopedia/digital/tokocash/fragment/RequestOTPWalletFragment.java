@@ -346,19 +346,15 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (incomingSmsReceiver != null)
-            getActivity().unregisterReceiver(incomingSmsReceiver);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+        if (incomingSmsReceiver != null)
+            getActivity().unregisterReceiver(incomingSmsReceiver);
+
         presenter.onDestroyView();
         cacheHandler = null;
     }
