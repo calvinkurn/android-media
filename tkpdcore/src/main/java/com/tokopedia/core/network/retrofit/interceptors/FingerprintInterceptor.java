@@ -81,7 +81,6 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
 
-        CommonUtils.dumper("theresult returned request "+json);
         return newRequest;
     }
 }
