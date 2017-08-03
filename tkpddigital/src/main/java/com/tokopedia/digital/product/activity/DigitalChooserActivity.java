@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;

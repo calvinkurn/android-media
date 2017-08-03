@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;

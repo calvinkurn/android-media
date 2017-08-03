@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -324,7 +323,6 @@ public class CategoryProductStyle2View extends
         return new OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommonUtils.dumper("GAv4 Product Style 2");
                 UnifyTracking.eventClickBeli(data.getName(), data.getName());
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }

@@ -32,7 +32,6 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -1157,8 +1156,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void sendGTMClickBeli() {
-        CommonUtils.dumper("GAv4 category clicked " + category.getId());
-        CommonUtils.dumper("GAv4 clicked beli Pulsa");
         String labelBeli;
         switch (category.getId()) {
             case 1:
