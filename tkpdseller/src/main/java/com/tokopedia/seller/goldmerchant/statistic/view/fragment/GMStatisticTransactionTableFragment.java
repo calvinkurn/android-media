@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
@@ -26,6 +27,7 @@ import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GMStatisticTransactionTableAdapter;
+import com.tokopedia.seller.goldmerchant.statistic.view.adapter.GmStatisticEmptyTransactionDataBinder;
 import com.tokopedia.seller.goldmerchant.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.builder.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.goldmerchant.statistic.view.listener.GMStatisticTransactionTableView;
@@ -158,6 +160,24 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        emptyTransactionDataBinder.setEmptyTitleText(null);
+        emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
+        emptyTransactionDataBinder.setEmptyContentItemText(null);
+        return emptyTransactionDataBinder;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         transactionTablePresenter.detachView();
@@ -199,7 +219,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     private void showSortType() {
-        showBottomSheetDialog(getString(R.string.gm_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
+        showBottomSheetDialog(getString(R.string.gm_statistic_sort), gmStatSortType, sortTypeSelections, new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem menuItem) {
                 int previousSortType = sortType;

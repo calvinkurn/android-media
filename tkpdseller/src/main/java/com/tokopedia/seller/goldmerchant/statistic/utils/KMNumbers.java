@@ -16,6 +16,9 @@ import java.util.TreeMap;
  */
 public class KMNumbers {
 
+    public static final long DIGIT_THOUSAND = 1000L;
+    public static final long DIGIT_MILLION = 1000000L;
+
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_2_DOUBLE = "%.2f";
     public static final String SUFFIX_FORMAT = "%s%s";
