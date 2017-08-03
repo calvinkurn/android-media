@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="300dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Hapus BCA OneKlik?"
+        android:text="@string/title_delete_bca_one_click"
         android:textStyle="bold"
         android:textSize="@dimen/text_size_large"
         android:layout_marginTop="@dimen/med_dp"/>
@@ -46,7 +46,7 @@
             android:layout_marginRight="@dimen/small_dp"
             android:layout_marginEnd="@dimen/small_dp"
             android:background="@drawable/btn_plain"
-            android:text="Batal"/>
+            android:text="@string/title_cancel"/>
 
         <TextView
             android:id="@+id/delete_button"
@@ -58,7 +58,7 @@
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
             android:textColor="@color/white"
-            android:text="Hapus"/>
+            android:text="@string/title_delete"/>
 
     </LinearLayout>
 

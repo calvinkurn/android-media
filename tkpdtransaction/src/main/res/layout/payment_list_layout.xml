@@ -17,7 +17,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pembayaran Cepat"
+                android:text="@string/quick_payment"
                 android:textStyle="bold"/>
 
             <View
@@ -53,12 +53,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/label_color"
-                    android:text="Metode Pembayaran"/>
+                    android:text="@string/payment_method"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="BCA OneKlik"/>
+                    android:text="@string/bca_one_click"/>
 
             </LinearLayout>
 
@@ -78,7 +78,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/facebook_square"/>
+                        android:src="@drawable/facebook_square" />
                 </LinearLayout>
 
                 <TextView
@@ -90,7 +90,7 @@
                     android:background="@drawable/btn_green_3dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:text="Daftar"/>
+                    android:text="@string/title_register"/>
 
             </LinearLayout>
 
