@@ -23,7 +23,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
@@ -67,12 +66,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datePickerPresenter.clearDatePickerSetting();
-        initNumberFormatter();
-    }
-
-    private void initNumberFormatter() {
-        KMNumbers.overrideSuffixes(1000L, "rb");
-        KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
     @Override

@@ -32,7 +32,7 @@ public class MarketInsightAdapter extends RecyclerView.Adapter<MarketViewHolder>
     @Override
     public MarketViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.partial_gm_statistic_dashboard_market_insight, parent, false);
+                R.layout.item_gm_statistic_dashboard_market_insight, parent, false);
         return new MarketViewHolder(inflate);
     }
 
