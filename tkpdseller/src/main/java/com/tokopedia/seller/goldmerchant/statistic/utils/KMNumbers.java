@@ -1,9 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
-import android.content.Context;
-
-import com.tokopedia.seller.R;
-
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -48,12 +44,12 @@ public class KMNumbers {
         suffixes.put(digit, suffix);
     }
 
-    public static String getFormattedString(long value) {
+    public static String getSummaryString(long value) {
         String text = "";
         if (Math.abs(value) < 10_000) {
             text = KMNumbers.formatDecimalString(value);
         } else {
-            text = KMNumbers.formatNumbers(value);
+            text = KMNumbers.formatSuffixNumbers(value);
         }
         return text;
     }
@@ -76,7 +72,7 @@ public class KMNumbers {
         123456789L: 123,5jt
         1234567890L: 1,2M
         */
-    public static String formatNumbers(Long number) {
+    public static String formatSuffixNumbers(Long number) {
         boolean isNegative = false;
         if (number < 0) {
             isNegative = true;
@@ -90,7 +86,7 @@ public class KMNumbers {
         return (isNegative ? "-" : "") + result;
     }
 
-    public static String formatNumbers(Float number) {
+    public static String formatSuffixNumbers(Float number) {
         boolean isNegative = false;
         if (number < 0) {
             isNegative = true;
@@ -104,6 +100,13 @@ public class KMNumbers {
         return (isNegative ? "-" : "") + result;
     }
 
+    /*
+        123L: Rp123
+        1234L: Rp1.234
+        12345L: Rp12.345
+        123456L: Rp123.456
+        1234567L: Rp1.234.567
+     */
     public static String formatRupiahString(long numberToFormat) {
         return String.format(RUPIAH_FORMAT, KMNumbers.formatDecimalString(numberToFormat));
     }

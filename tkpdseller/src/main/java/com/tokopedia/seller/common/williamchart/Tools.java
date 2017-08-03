@@ -177,7 +177,7 @@ public class Tools {
                 new StringFormatRenderer() {
                     @Override
                     public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
+                        return KMNumbers.formatSuffixNumbers(Float.valueOf(s));
                     }
                 });
     }
