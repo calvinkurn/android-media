@@ -228,7 +228,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                                 || item.getOrderButton().getButtonComplaintNotReceived().equals("1"))
                                 ? R.menu.order_status_menu_confirm_track_complain
                                 : R.menu.order_status_menu_confirm_track_v2;
-//                        MenuID = R.menu.order_status_menu_confirm_track_complain;
                         break;
                     case TkpdState.OrderStatusState.ORDER_CONFLICTED:
                         MenuID = R.menu.order_status_menu_show_complain;

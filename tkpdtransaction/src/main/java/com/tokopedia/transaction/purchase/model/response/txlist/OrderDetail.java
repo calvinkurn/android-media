@@ -107,14 +107,12 @@ public class OrderDetail implements Parcelable {
     @Expose
     private String detailFreeReturnMsg;
 
-
     @SerializedName("detail_complaint_popup_title")
     @Expose
     private String detailComplaintPopupTitle;
     @SerializedName("detail_complaint_popup_msg")
     @Expose
     private String detailComplaintPopupMsg;
-
 
     @SerializedName("detail_complaint_not_received_title")
     @Expose
@@ -130,7 +128,6 @@ public class OrderDetail implements Parcelable {
     @SerializedName("detail_finish_popup_msg")
     @Expose
     private String detailFinishPopupMsg;
-
 
     public String getDetailOpenAmount() {
         return detailOpenAmount;

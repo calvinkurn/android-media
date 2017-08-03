@@ -14,7 +14,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -228,7 +227,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
         btnRejectOrder.setVisibility(View.GONE);
 
-        Log.v("orderData", orderData.toString());
         btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
                 || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
                 ? View.VISIBLE : View.GONE);
