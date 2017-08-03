@@ -1,6 +1,5 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,13 +8,11 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 /**
  * Created by normansyahputa on 11/9/16.
@@ -65,7 +62,7 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
         new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
         tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
-        String text = KMNumbers.getFormattedString(sold);
+        String text = KMNumbers.getSummaryString(sold);
         tvNoOfSelling.setText(text);
         setViewState(LoadingStateView.VIEW_CONTENT);
     }

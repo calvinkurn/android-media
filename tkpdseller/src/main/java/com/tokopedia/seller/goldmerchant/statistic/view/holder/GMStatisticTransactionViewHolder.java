@@ -89,7 +89,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         seeDetailView.setVisibility(View.VISIBLE);
 
         /* non empty state */
-        tvTransactionCount.setText(KMNumbers.getFormattedString(totalTransactionModel.amount));
+        tvTransactionCount.setText(KMNumbers.getSummaryString(totalTransactionModel.amount));
 
         Double diffSuccessTrans = totalTransactionModel.percentage;
         arrowPercentageView.setPercentage(diffSuccessTrans);
