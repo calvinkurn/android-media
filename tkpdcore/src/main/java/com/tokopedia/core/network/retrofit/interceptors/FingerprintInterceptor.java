@@ -36,6 +36,7 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_ACC_AUTH    = "Accounts-Authorization";
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
+    private static final String BEARER = "Bearer ";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -71,10 +72,10 @@ public class FingerprintInterceptor implements Interceptor {
 
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
-        if (session.isV4Login()) {
-            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
-            newRequest.addHeader(KEY_ACC_AUTH,SessionHandler.getAccessToken());
-        }
+
+        newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+        newRequest.addHeader(KEY_ACC_AUTH,BEARER+session.getAccessToken(MainApplication.getAppContext()));
+
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
 
