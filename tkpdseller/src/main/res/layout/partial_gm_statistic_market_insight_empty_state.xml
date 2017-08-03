@@ -7,4 +7,4 @@
     android:background="@android:color/white"
     android:padding="@dimen/margin_sm"
     app:eccv_content_text="@string/gm_statistic_no_market_insight_in_this_period"
-    app:eccv_icon="@drawable/icon_g_m_seller_app_pasar_empty_05" />
+    app:eccv_icon="@drawable/icon_gm_seller_app_pasar_empty_05" />
