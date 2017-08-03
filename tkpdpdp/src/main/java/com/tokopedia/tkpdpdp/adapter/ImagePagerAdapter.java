@@ -56,34 +56,19 @@ public class ImagePagerAdapter extends PagerAdapter {
         final String urlImage = productImages.get(position).getImageSrc();
         
         if (!TextUtils.isEmpty(urlTemporary) && position==0) {
-            Glide.with(context).load(urlTemporary)
+            Glide.with(context.getApplicationContext())
+                    .load(urlImage)
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontTransform()
                     .fitCenter()
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(
                             Glide.with(context.getApplicationContext())
-                                    .load(urlImage)
-                                    .asBitmap()
+                                    .load(urlTemporary)
                                     .dontAnimate()
-                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontTransform()
                                     .fitCenter()
-                                    .into(new SimpleTarget<Bitmap>() {
-                                        @Override
-                                        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-                                            imageView.invalidate();
-                                            imageView.setImageBitmap( bitmap );
-                                        }
-                                    });
-                            return false;
-                        }
-                    })
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL))
                     .into(imageView);
 
         } else {
