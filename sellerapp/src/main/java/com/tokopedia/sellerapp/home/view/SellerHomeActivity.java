@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.home.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -920,6 +921,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private void updateDrawerData() {
         drawerDataManager.getDeposit();
         drawerDataManager.getProfile();
+        drawerDataManager.getProfileCompletion();
     }
 
     @Override

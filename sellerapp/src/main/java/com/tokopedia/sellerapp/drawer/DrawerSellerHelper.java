@@ -30,6 +30,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -384,6 +385,12 @@ public class DrawerSellerHelper extends DrawerHelper
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToShop() {
