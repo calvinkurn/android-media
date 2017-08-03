@@ -77,7 +77,6 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
     }
 
     public void bindTopAdsCreditNotUsed(@Nullable GMGraphViewModel data, DataDeposit dataDeposit) {
-        titleCardView.setEmptyViewRes(R.layout.item_empty_gm_stat_topads);
         EmptyCardContentView emptyCardContentView = (EmptyCardContentView) titleCardView.getEmptyView().findViewById(R.id.empty_card_content_view);
         if (data.amount > 0) {
             emptyCardContentView.setContentText(emptyCardContentView.getContext().getString(R.string.gm_statistic_top_ads_empty_desc_credit_not_used, dataDeposit.getAmountFmt()));
