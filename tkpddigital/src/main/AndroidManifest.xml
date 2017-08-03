@@ -27,6 +27,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.activity.DigitalWebActivity"
+            android:theme="@style/Theme.Tokopedia3"
             android:screenOrientation="portrait" />
         <activity
             android:name=".widget.activity.DigitalCategoryListActivity"
