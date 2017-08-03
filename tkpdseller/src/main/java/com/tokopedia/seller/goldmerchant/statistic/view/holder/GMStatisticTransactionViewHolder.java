@@ -10,6 +10,7 @@ import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
+import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
 import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
@@ -20,7 +21,6 @@ import com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageVi
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.DataTransactionDataSetConfig;
 import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.EmptyDataTransactionDataSetConfig;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
             setEmptyStatePercentage();
 
             displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
-            seeDetailView.setVisibility(View.INVISIBLE);
+            seeDetailView.setVisibility(View.GONE);
             setViewState(LoadingStateView.VIEW_CONTENT);
             return;
         }

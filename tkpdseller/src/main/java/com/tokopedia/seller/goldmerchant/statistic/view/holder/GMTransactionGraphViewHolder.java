@@ -1,9 +1,12 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.holder;
 
+import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
@@ -12,6 +15,10 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.common.williamchart.model.TooltipModel;
+import com.tokopedia.seller.common.williamchart.renderer.TooltipFormatRenderer;
+import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
@@ -44,6 +51,8 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     private GMTransactionGraphViewModel gmTransactionGraphViewModel;
     private boolean compareDate;
+
+    private ArrayList<TooltipModel> tooltipModels;
 
     public GMTransactionGraphViewHolder(View view) {
         gmTitleCardView = (TitleCardView) view.findViewById(R.id.gold_merchant_statistic_card_view);
@@ -184,10 +193,65 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     }
 
     private void showTransactionGraph(List<BaseWilliamChartModel> baseWilliamChartModels) {
-        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1), new EmptyDataTransactionDataSetConfig());
+        tooltipModels = joinTooltipData(baseWilliamChartModels.get(0).getValues(), baseWilliamChartModels.get(1).getValues());
+        gmStatisticIncomeGraph.addDataDisplayDots(tooltipModels);
+        BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(1),
+                new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration());
         baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(0), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    private TooltipConfiguration getTooltipConfiguration() {
+        return new TooltipConfiguration() {
+            @Override
+            public int width() {
+                return (int) Tools.fromDpToPx(100);
+            }
+
+            @Override
+            public int height() {
+                return (int) Tools.fromDpToPx(50);
+            }
+        };
+    }
+
+    private ArrayList<TooltipModel> joinTooltipData(float[] values, float[] values1) {
+        ArrayList<TooltipModel> tooltipModels = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            tooltipModels.add(new TooltipModel("", String.format("%d,%d", (int) values[i], (int) values1[1])));
+        }
+        return tooltipModels;
+    }
+
+    private Tooltip getTooltip(Context context, @LayoutRes int layoutRes) {
+        return new Tooltip(context,
+                layoutRes,
+                R.id.gm_stat_tooltip_textview,
+                new TooltipFormatRenderer() {
+                    @Override
+                    public String formatString(String s) {
+                        return KMNumbers.formatNumbers(Float.valueOf(s));
+                    }
+
+                    @Override
+                    public void formatValue(List<TextView> textViews, TooltipModel tooltipModel) {
+                        String[] value = tooltipModels.get(tooltipModel.getPosition()).getValue().split(",");
+                        textViews.get(0).setText(value[0]);
+                        textViews.get(1).setText(value[1]);
+                    }
+                }, true);
+    }
+
+
+    @LayoutRes
+    private int getTooltipResLayout() {
+        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_compare_lollipop;
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentApiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            layoutTooltip = R.layout.gm_stat_tooltip_compare;
+        }
+        return layoutTooltip;
     }
 
     /**
