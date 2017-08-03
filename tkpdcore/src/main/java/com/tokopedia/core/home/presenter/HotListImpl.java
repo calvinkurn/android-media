@@ -2,6 +2,7 @@ package com.tokopedia.core.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
@@ -13,6 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.network.apiservices.search.HotListService;
@@ -340,7 +342,8 @@ public class HotListImpl implements HotList {
         if (temp == null) {
             throw new RuntimeException("invalid passing data !!! at " + HotListImpl.class.getSimpleName());
         }
-        urlParser = new URLParser(temp.getHotListProductUrl());
+        String url = temp.getHotListProductUrl();
+        urlParser = new URLParser(url);
         Log.d(TAG, "urlParser type " + urlParser.getType());
         switch (urlParser.getType()) {
             case HOT_KEY:
@@ -352,6 +355,11 @@ public class HotListImpl implements HotList {
             case CATALOG_KEY:
                 hotListView.moveToOtherActivity(
                         DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
+                break;
+            case TOPPICKS_KEY:
+                if (!TextUtils.isEmpty(url)) {
+                    hotListView.moveToOtherActivity(TopPicksWebView.newInstance(mContext, url));
+                }
                 break;
             default:
                 bundle = new Bundle();
