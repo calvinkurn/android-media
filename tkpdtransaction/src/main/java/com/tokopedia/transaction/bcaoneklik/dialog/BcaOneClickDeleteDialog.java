@@ -56,6 +56,8 @@ public class BcaOneClickDeleteDialog extends DialogFragment{
         cardHolderName = (TextView) view.findViewById(R.id.card_holder_name);
         cardNumber = (TextView) view.findViewById(R.id.card_number);
 
+        cardHolderName.setText(getArguments().getString(CARD_HOLDER));
+        cardNumber.setText(getArguments().getString(CARD_NUMBER));
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

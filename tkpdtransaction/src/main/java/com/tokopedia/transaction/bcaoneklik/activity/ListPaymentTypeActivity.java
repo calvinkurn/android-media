@@ -166,6 +166,25 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         };
     }
 
+    private Subscriber<PaymentListModel> deleteUserModelSubsriber() {
+        return new Subscriber<PaymentListModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(PaymentListModel paymentListModel) {
+                presenter.onGetPaymentList(paymentListModelSubscriber());
+            }
+        };
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -227,6 +246,6 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     @Override
     public void onDelete(String tokenId) {
         progressDialog.showDialog();
-        presenter.onDeletePaymentList(paymentListModelSubscriber(), tokenId);
+        presenter.onDeletePaymentList(deleteUserModelSubsriber(), tokenId);
     }
 }

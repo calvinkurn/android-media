@@ -47,8 +47,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
-                    android:src="@drawable/facebook_square" />
+                    android:src="@drawable/facebook_square_blue" />
             </LinearLayout>
 
             <LinearLayout
@@ -124,34 +123,6 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/text_size_small"
-                    tools:text="Sub Limit Harian" />
-
-                <TextView
-                    android:id="@+id/sub_daily_limit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
-                    tools:text="Rp 500.000" />
-
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
