@@ -79,8 +79,11 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
     @Override
     protected void initialPresenter() {
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        presenter = new ActivateTokoCashPresenter(new ActivateTokoCashInteractor
-                (new ActivateTokoCashRepository(new TokoCashService(sessionHandler.getAccessToken(MainApplication.getAppContext())))), this);
+        String acessToken = sessionHandler.getAccessToken(MainApplication.getAppContext());
+        TokoCashService tokoCashService = new TokoCashService(acessToken);
+        ActivateTokoCashInteractor interactor = new ActivateTokoCashInteractor
+                (new ActivateTokoCashRepository(tokoCashService));
+        presenter = new ActivateTokoCashPresenter(interactor, this);
     }
 
     @Override

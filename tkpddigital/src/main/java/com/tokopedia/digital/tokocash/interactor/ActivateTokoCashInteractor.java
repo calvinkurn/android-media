@@ -46,6 +46,7 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
 
     @Override
     public void onDestroy() {
-        compositeSubscription.unsubscribe();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
     }
 }
