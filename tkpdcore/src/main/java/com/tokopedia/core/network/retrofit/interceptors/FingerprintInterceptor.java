@@ -2,7 +2,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Base64;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
@@ -17,12 +16,10 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import rx.Subscriber;
 import rx.functions.Func1;
 
 /**
@@ -74,12 +71,13 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
         if (session.isV4Login()) {
             newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
         } else {
             newRequest.addHeader(KEY_USER_ID, "0");
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+"0"));
         }
         newRequest.addHeader(KEY_ACC_AUTH,BEARER+session.getAccessToken(MainApplication.getAppContext()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
 
         return newRequest;
     }
