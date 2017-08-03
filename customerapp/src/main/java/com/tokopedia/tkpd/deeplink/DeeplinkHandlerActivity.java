@@ -12,6 +12,8 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
+import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
+import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
@@ -32,7 +34,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
-        RideDeeplinkModule.class
+        RideDeeplinkModule.class,
+        DiscoveryApplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -45,7 +48,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
-                new RideDeeplinkModuleLoader()
+                new RideDeeplinkModuleLoader(),
+                new DiscoveryApplinkModuleLoader()
         );
     }
 
