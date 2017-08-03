@@ -16,6 +16,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -284,10 +285,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     );
                     break;
             }
-            view.renderBannerListData(
-                    "Promo " + categoryData.getName(),
-                    bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
-            );
+            if (!GlobalConfig.isSellerApp()) {
+                view.renderBannerListData(
+                        "Promo " + categoryData.getName(),
+                        bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
+                );
+            }
         } else {
             view.renderErrorStyleNotSupportedProductDigitalData(
                     view.getStringFromResource(
