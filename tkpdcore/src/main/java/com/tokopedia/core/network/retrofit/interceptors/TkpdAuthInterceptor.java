@@ -67,7 +67,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 try {
                     refreshToken();
                     Request newest = recreateRequestWithNewAccessToken(chain);
-                    return chain.proceed(newest);
+                    Response response1 = chain.proceed(newest);
+                    if(isUnauthorized(newest, response1)){
+                        showForceLogoutDialog();
+                        sendForceLogoutAnalytics(response1);
+                    }
+                    return response1;
                 }catch (Exception e){
                     Log.d(TAG, "intercept: ");
                 } finally {
@@ -82,6 +87,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
+
+        return createNewResponse(response, bodyResponse);
+    }
+
+    private void checkResponse(String string, Response response) {
+        String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
@@ -94,9 +106,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
-
-        return createNewResponse(response, bodyResponse);
     }
+
 
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         /* this can override for throw error */
