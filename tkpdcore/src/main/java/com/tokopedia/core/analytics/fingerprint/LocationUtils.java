@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -17,7 +16,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 
@@ -38,7 +36,6 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     public LocationUtils(Context ctx) {
 
         context = ctx;
-        CommonUtils.dumper("theresult initiated");
     }
 
     public void initLocationBackground() {
@@ -64,7 +61,6 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        CommonUtils.dumper("theresult save location get location changed");
         LocationCache.saveLocation(location);
         removeLocationUpdates();
     }
@@ -72,19 +68,22 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         isConnected = true;
-        CommonUtils.dumper("theresult save location connected");
         getLastLocation();
         requestLocationUpdates();
     }
 
     private void getLastLocation() {
         if (isLocationServiceConnected()) {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            CommonUtils.dumper("theresult save location getLastLocation");
-            if (location != null) {
-                LocationCache.saveLocation(location);
-            } else {
-                CommonUtils.dumper("theresult location null");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                    if (location != null) {
+                        LocationCache.saveLocation(location);
+                    } else {
+                        CommonUtils.dumper("location permission not granted");
+                    }
+                }
             }
         }
     }
