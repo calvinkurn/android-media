@@ -7,12 +7,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.app.MainApplication;
 
 /**
@@ -29,7 +31,7 @@ public class ShopProductListHeaderDelegate {
 
     private ProductHeaderListListener listener;
     private SpinnerInteractionListener spinnerInteractionListener;
-    private SimpleSpinnerAdapter etalaseAdapter;
+    private ArrayAdapter<EtalaseAdapterModel> etalaseAdapter;
     private FeaturedProductAdapter featuredProductAdapter;
     private int spinnerLastPos = 0;
     // if selection == -1, no selection request
@@ -60,7 +62,7 @@ public class ShopProductListHeaderDelegate {
         }
     }
 
-    public void setEtalaseAdapter(SimpleSpinnerAdapter etalaseAdapter){
+    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter){
         this.etalaseAdapter = etalaseAdapter;
     }
 

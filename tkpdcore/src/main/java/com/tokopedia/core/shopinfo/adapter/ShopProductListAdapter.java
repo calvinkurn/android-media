@@ -5,10 +5,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
 /**
@@ -71,7 +74,7 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         this.productModel = productModel;
     }
 
-    public void setEtalaseAdapter(SimpleSpinnerAdapter etalaseAdapter) {
+    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter) {
         header.setEtalaseAdapter(etalaseAdapter);
     }
 
@@ -81,7 +84,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     public void setSelectedEtalasePos(int pos) {
         header.setSelectedEtalase(pos);
-        notifyDataSetChanged();
     }
 
     public GridLayoutManager getLayoutManager(Context context) {
