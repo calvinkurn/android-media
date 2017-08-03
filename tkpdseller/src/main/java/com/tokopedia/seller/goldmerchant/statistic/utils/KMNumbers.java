@@ -50,7 +50,7 @@ public class KMNumbers {
 
     public static String getFormattedString(long value) {
         String text = "";
-        if (Math.abs(value) < 1_000_000) {
+        if (Math.abs(value) < 10_000) {
             text = KMNumbers.formatDecimalString(value);
         } else {
             text = KMNumbers.formatNumbers(value);
