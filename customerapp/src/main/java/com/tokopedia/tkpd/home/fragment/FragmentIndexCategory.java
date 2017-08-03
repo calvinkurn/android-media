@@ -209,6 +209,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private RecyclerView bannerPager;
         private ViewGroup bannerIndicator;
         private RelativeLayout bannerContainer;
+        public View bannerSeeAll;
         private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
@@ -334,6 +335,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
             holder.bannerPager = (RecyclerView) holder.banner.findViewById(R.id.viewpager_banner_category);
             holder.bannerIndicator = (ViewGroup) holder.banner.findViewById(R.id.indicator_banner_container);
+            holder.bannerSeeAll = holder.banner.findViewById(R.id.promo_link);
+            holder.bannerSeeAll.setOnClickListener(onPromoLinkClicked());
 
             holder.bannerPager.setHasFixedSize(true);
 
