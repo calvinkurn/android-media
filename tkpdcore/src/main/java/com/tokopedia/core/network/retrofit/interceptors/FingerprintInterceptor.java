@@ -72,10 +72,12 @@ public class FingerprintInterceptor implements Interceptor {
 
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
-
-        newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+        if (session.isV4Login()) {
+            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
+        } else {
+            newRequest.addHeader(KEY_USER_ID, "0");
+        }
         newRequest.addHeader(KEY_ACC_AUTH,BEARER+session.getAccessToken(MainApplication.getAppContext()));
-
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json+"+"+session.getLoginID()));
 
