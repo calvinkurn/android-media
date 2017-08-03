@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm.notification.dedicated;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.AppWidgetUtil;
 
 /**
  * Created by alvarisi on 1/16/17.
@@ -31,5 +34,6 @@ public class NewOrderNotification extends BaseNotification {
         );
         mNotificationPass.ticker = mContext.getString(R.string.msg_new_order);
         mNotificationPass.description = mContext.getString(R.string.msg_new_order);
+        AppWidgetUtil.sendBroadcastToAppWidget(mContext);
     }
 }
