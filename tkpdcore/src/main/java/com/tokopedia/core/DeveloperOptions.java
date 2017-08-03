@@ -21,7 +21,6 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
@@ -98,15 +97,12 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void onClick(View v) {
 
-//                SessionHandler.setFirstTimeUser(DeveloperOptions.this, true);
-//                Toast.makeText(DeveloperOptions.this, "OnBoarding Resetted", Toast.LENGTH_SHORT).show();
-//                LocalCacheHandler.clearCache(DeveloperOptions.this,
-//                        ConstantOnBoarding.CACHE_FREE_RETURN);
+                SessionHandler.setFirstTimeUser(DeveloperOptions.this, true);
+                Toast.makeText(DeveloperOptions.this, "OnBoarding Resetted", Toast.LENGTH_SHORT).show();
+                LocalCacheHandler.clearCache(DeveloperOptions.this,
+                        ConstantOnBoarding.CACHE_FREE_RETURN);
 
 
-                if(getApplication() instanceof TkpdCoreRouter){
-                    ((TkpdCoreRouter) getApplication()).goToProfileCompletion(DeveloperOptions.this);
-                }
 
             }
         });
