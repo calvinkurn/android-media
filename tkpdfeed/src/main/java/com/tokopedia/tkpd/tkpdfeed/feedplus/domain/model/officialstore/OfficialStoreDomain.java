@@ -12,7 +12,7 @@ public class OfficialStoreDomain {
 
     private final
     @Nullable
-    Integer shop_id;
+    int shop_id;
 
     private final
     @Nullable
@@ -36,7 +36,7 @@ public class OfficialStoreDomain {
 
     private final
     @Nullable
-    Boolean is_owner;
+    boolean is_owner;
 
     private final
     @Nullable
@@ -44,7 +44,7 @@ public class OfficialStoreDomain {
 
     private final
     @Nullable
-    Boolean is_new;
+    boolean is_new;
 
     private final
     @Nullable
@@ -67,9 +67,9 @@ public class OfficialStoreDomain {
     List<OfficialStoreProductDomain> products;
 
 
-    public OfficialStoreDomain(Integer shop_id, String shop_apps_url, String shop_name,
+    public OfficialStoreDomain(int shop_id, String shop_apps_url, String shop_name,
                                String logo_url, String microsite_url, String brand_img_url,
-                               Boolean is_owner, String shop_tagline, Boolean is_new,
+                               boolean is_owner, String shop_tagline, boolean is_new,
                                String title, String mobile_img_url, String feed_hexa_color,
                                String redirect_url_app, List<OfficialStoreProductDomain> products) {
         this.shop_id = shop_id;
@@ -89,7 +89,7 @@ public class OfficialStoreDomain {
     }
 
     @Nullable
-    public Integer getShop_id() {
+    public int getShop_id() {
         return shop_id;
     }
 
@@ -119,7 +119,7 @@ public class OfficialStoreDomain {
     }
 
     @Nullable
-    public Boolean getIs_owner() {
+    public boolean getIs_owner() {
         return is_owner;
     }
 
@@ -129,7 +129,7 @@ public class OfficialStoreDomain {
     }
 
     @Nullable
-    public Boolean getIs_new() {
+    public boolean getIs_new() {
         return is_new;
     }
 

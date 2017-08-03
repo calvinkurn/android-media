@@ -22,6 +22,7 @@ import rx.Observable;
 
 public class CloudFeedDataSource {
 
+    private static final int FEED_LIMIT = 3;
     private ApolloClient apolloClient;
     private FeedListMapper feedListMapper;
     protected GlobalCacheManager globalCacheManager;
@@ -47,7 +48,7 @@ public class CloudFeedDataSource {
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
                 .page(requestParams.getInt(GetFeedsUseCase.PARAM_PAGE, 0))
-                .limit(3)
+                .limit(FEED_LIMIT)
                 .cursor(cursor)
                 .build()).watcher();
 
