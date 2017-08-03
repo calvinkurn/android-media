@@ -107,7 +107,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 
     @Override
     public void onTerminate() {
-        CommonUtils.dumper("theresult app terminated");
         super.onTerminate();
         locationUtils.deInitLocationBackground();
     }
