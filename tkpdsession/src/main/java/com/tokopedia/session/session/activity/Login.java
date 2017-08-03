@@ -1,6 +1,7 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -55,6 +56,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -362,6 +364,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
+                    AppWidgetUtil.sendBroadcastToAppWidget(this);
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
