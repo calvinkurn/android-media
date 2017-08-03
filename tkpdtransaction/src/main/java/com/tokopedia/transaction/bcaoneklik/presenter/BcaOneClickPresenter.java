@@ -16,4 +16,6 @@ public interface BcaOneClickPresenter {
     void addUserDataBca(Context context, BcaOneClickRegisterData data,
                         Subscriber<BcaOneClickSuccessRegisterData> subscriber);
 
+    void onDestroy();
+
 }

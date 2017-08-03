@@ -6,10 +6,11 @@ import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transaction.bcaoneklik.BcaOneClickEditView;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickView;
 import com.tokopedia.transaction.bcaoneklik.domain.BcaOneClickFormRepository;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,35 +18,34 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by kris on 7/25/17. Tokopedia
+ * Created by kris on 8/2/17. Tokopedia
  */
 
-public class BcaOneClickPresenterImpl implements BcaOneClickPresenter{
+public class BcaOneClickEditPresenterImpl implements BcaOneClickEditPresenter{
 
     private BcaOneClickView mainView;
     private CompositeSubscription compositeSubscription;
     private BcaOneClickFormRepository bcaOneClickFormRepository;
 
-    public BcaOneClickPresenterImpl(BcaOneClickView view) {
-        mainView = view;
+    public BcaOneClickEditPresenterImpl(BcaOneClickEditView mainView) {
         BcaOneClickService bcaOneClickService = new BcaOneClickService();
         compositeSubscription = new CompositeSubscription();
         bcaOneClickFormRepository = new BcaOneClickFormRepository(bcaOneClickService);
     }
 
     @Override
-    public void addUserDataBca(Context context,
-                               BcaOneClickRegisterData data,
-                               Subscriber<BcaOneClickSuccessRegisterData>subscriber) {
+    public void editUserDataBca(Context context,
+                                BcaOneClickRegisterData data,
+                                Subscriber<PaymentListModel> subscriber) {
         TKPDMapParam<String, String> bcaOneClickRegisterParam = new TKPDMapParam<>();
         bcaOneClickRegisterParam.put("tokopedia_user_id", SessionHandler.getLoginID(context));
         bcaOneClickRegisterParam.put("merchant_code", "tokopedia");
         bcaOneClickRegisterParam.put("token_id", data.getTokenId());
-        bcaOneClickRegisterParam.put("action", "add");
+        bcaOneClickRegisterParam.put("action", "edit");
         bcaOneClickRegisterParam.put("credential_type", data.getCredentialType());
         bcaOneClickRegisterParam.put("credential_no", data.getCredentialNumber());
         bcaOneClickRegisterParam.put("max_limit", data.getMaxLimit());
-        compositeSubscription.add(bcaOneClickFormRepository.registerBcaOneClickData(AuthUtil
+        compositeSubscription.add(bcaOneClickFormRepository.editBcaOneClickData(AuthUtil
                 .generateParamsNetwork(context, bcaOneClickRegisterParam))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

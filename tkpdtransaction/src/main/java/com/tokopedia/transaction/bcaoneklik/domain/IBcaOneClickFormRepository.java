@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.bcaoneklik.domain;
 
-import com.tokopedia.core.manage.people.bank.model.BcaOneClickData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 
 import rx.Observable;
 
@@ -17,7 +17,19 @@ public interface IBcaOneClickFormRepository {
             TKPDMapParam<String, String> bcaOneClickParam
     );
 
+    Observable<PaymentListModel> getPaymentListUserData(
+            TKPDMapParam<String, String> oneClickListParam
+    );
+
+    Observable<PaymentListModel> deleteUserData(
+            TKPDMapParam<String, String> oneClickListParam
+    );
+
     Observable<BcaOneClickSuccessRegisterData> registerBcaOneClickData(
+            TKPDMapParam<String, String> bcaOneClickRegisterParam
+    );
+
+    Observable<PaymentListModel> editBcaOneClickData(
             TKPDMapParam<String, String> bcaOneClickRegisterParam
     );
 

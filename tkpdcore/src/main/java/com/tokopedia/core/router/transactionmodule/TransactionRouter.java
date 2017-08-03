@@ -11,4 +11,5 @@ public interface TransactionRouter {
 
     void goToBcaOneClick(Activity activity, Bundle bundle, int requestCode);
 
+    void goToUserPaymentList(Activity activity);
 }

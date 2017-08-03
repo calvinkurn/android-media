@@ -23,6 +23,7 @@ import com.tokopedia.core.manage.people.notification.activity.ManageNotification
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 
 import java.util.ArrayList;
 
@@ -89,8 +90,10 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         startActivity(intent);
                         break;
                     case 3:
-                        intent = new Intent(getActivity(), ListBankTypeActivity.class);
-                        startActivity(intent);
+                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getActivity().getApplication())
+                                    .goToUserPaymentList(getActivity());
+                        }
                         break;
                     case 4:
                         intent = new Intent(getActivity(), ManageNotificationActivity.class);

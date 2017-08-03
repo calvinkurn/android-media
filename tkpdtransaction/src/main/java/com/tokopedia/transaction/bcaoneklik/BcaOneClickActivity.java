@@ -10,6 +10,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
 import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
 import com.tokopedia.transaction.bcaoneklik.presenter.BcaOneClickPresenter;
@@ -58,6 +59,7 @@ public class BcaOneClickActivity extends TActivity implements BcaOneClickView{
                     public void onNext(BcaOneClickSuccessRegisterData bcaOneClickSuccessRegisterData) {
                         if(bcaOneClickSuccessRegisterData.isSuccess()) {
                             //TODO set onSuccess case
+                            setResult(ListPaymentTypeActivity.REGISTER_BCA_ONE_CLICK_REQUEST_CODE);
                             finish();
                         }
                     }
@@ -92,5 +94,11 @@ public class BcaOneClickActivity extends TActivity implements BcaOneClickView{
     @Override
     public void onSuccessRegister() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

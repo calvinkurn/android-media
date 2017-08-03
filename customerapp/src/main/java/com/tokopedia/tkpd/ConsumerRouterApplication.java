@@ -47,6 +47,7 @@ import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
+import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -257,5 +258,11 @@ public class ConsumerRouterApplication extends MainApplication implements
         Intent intent = new Intent(activity, BcaOneClickActivity.class);
         intent.putExtras(bundle);
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void goToUserPaymentList(Activity activity) {
+        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        activity.startActivity(intent);
     }
 }

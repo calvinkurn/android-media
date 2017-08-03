@@ -32,8 +32,8 @@ public interface BcaOneClickApi {
     registerBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK_EDIT_USER_DATA)
-    Observable<Response<String>>
+    @POST(TkpdBaseURL.Payment.PATH_ONE_CLICK)
+    Observable<Response<TkpdResponse>>
     editBcaOneClickUserData(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
