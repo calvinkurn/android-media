@@ -211,6 +211,7 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void actionAppLink(Context context, String linkUrl) {
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(linkUrl));
         context.startActivity(intent);
     }
