@@ -14,7 +14,7 @@
         />
     <TextView
         android:id="@+id/tvNotReceivedBody"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/margin_med"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/color_complain_body"
@@ -23,7 +23,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/margin_med"
         android:orientation="horizontal">
 
         <Button

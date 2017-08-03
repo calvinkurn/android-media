@@ -243,6 +243,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_complain);
         Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
         Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
@@ -299,6 +300,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
     private void showNotReceiveDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_not_received);
         Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);

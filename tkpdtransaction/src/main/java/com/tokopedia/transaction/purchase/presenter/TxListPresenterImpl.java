@@ -15,7 +15,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -410,6 +409,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     private void showFinishDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_finish);
         TextView tvFinishTitle = (TextView) dialog.findViewById(R.id.tvFinishTitle);
         TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
@@ -436,6 +436,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_complain);
         Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
         Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
@@ -492,6 +493,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     private void showNotReceiveDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_not_received);
         Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
