@@ -6,6 +6,8 @@ package com.tokopedia.seller.base.view.adapter;
 
 public interface ItemPickerType extends ItemType {
 
+    String getId();
+
     String getTitle();
 
     String getImageUrl();

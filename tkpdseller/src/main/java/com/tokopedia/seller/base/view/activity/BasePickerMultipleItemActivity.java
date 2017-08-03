@@ -1,11 +1,13 @@
 package com.tokopedia.seller.base.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +16,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
+import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
+import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.dashboard.view.fragment.ChipsTopAdsSelectionFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddProductListFragment;
-import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
-import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.
  */
 
-public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity implements AddProductListInterface {
+public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity implements BasePickerMultipleItem {
 
     private static final int ARROW_DEGREE = 180;
 
@@ -44,13 +45,16 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     private View footerView;
     private Button submitButton;
 
-    private HashSet<TopAdsProductViewModel> selections;
-    private boolean isExistingGroup;
-    private boolean isHideEtalase;
-    private int maxNumberSelection;
+    private HashSet<ItemPickerType> itemPickerTypeList;
 
+    private BasePickerItemSearchList basePickerItemSearchList;
+    private BasePickerItemCacheList basePickerItemCacheList;
 
     private BottomSheetBehavior bottomSheetBehavior;
+
+    public abstract Fragment getSearchListFragment();
+
+    public abstract Fragment getCacheListFragment();
 
     @Override
     protected void setupLayout() {
@@ -104,22 +108,25 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(selections));
-                setResult(RESULT_CODE, intent);
+                intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(itemPickerTypeList));
+                setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         });
-        setSubmitButtonEnabled(false);
-        selections = new HashSet<>();
+        itemPickerTypeList = new HashSet<>();
     }
 
     @Override
     protected void setupFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             //TODO Need to change to v4 fragment
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.layout_container_list, TopAdsAddProductListFragment.newInstance(maxNumberSelection), CONTAINER_SEARCH_LIST_TAG);
-            fragmentTransaction.replace(R.id.layout_container_cache, ChipsTopAdsSelectionFragment.newInstance(), CONTAINER_CACHE_LIST_TAG);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            Fragment searchListFragment = getSearchListFragment();
+            basePickerItemSearchList = (BasePickerItemSearchList) searchListFragment;
+            fragmentTransaction.replace(R.id.layout_container_list, searchListFragment, CONTAINER_SEARCH_LIST_TAG);
+            Fragment cacheListFragment = getCacheListFragment();
+            basePickerItemCacheList = (BasePickerItemCacheList) cacheListFragment;
+            fragmentTransaction.replace(R.id.layout_container_cache, cacheListFragment, CONTAINER_CACHE_LIST_TAG);
             fragmentTransaction.commit();
         }
     }
@@ -135,131 +142,31 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     }
 
     @Override
-    public void hideBottom() {
-//        bottomSheetHelper.dismissBottomSheet();
-//        bottomSheetHelper.collapse();
-        hideFooterViewHolder();
+    public void addItem(ItemPickerType itemPickerType, String fromFragmentTag) {
+        itemPickerTypeList.add(itemPickerType);
+        notifyFragmentFrom(fromFragmentTag);
     }
 
     @Override
-    public void showBottom() {
-//        bottomSheetHelper.showBottomSheet();
-//        bottomSheetHelper.collapse();
-        showFooterViewHolder();
+    public void removeItem(ItemPickerType itemPickerType, String fromFragmentTag) {
+        itemPickerTypeList.remove(itemPickerType);
+        notifyFragmentFrom(fromFragmentTag);
     }
 
-    @Override
-    public boolean isSelected(TopAdsProductViewModel data) {
-        if (selections == null) {
-            return false;
+    private void notifyFragmentFrom(String fromFragmentTag) {
+        if (TextUtils.isEmpty(fromFragmentTag)) {
+            return;
         }
-        return selections.contains(data);
-    }
-
-    @Override
-    public void removeSelection(TopAdsProductViewModel data) {
-        selections.remove(data);
-    }
-
-    @Override
-    public void addSelection(TopAdsProductViewModel data) {
-        selections.add(data);
-        if (selections.size() > 0) {
-            setSubmitButtonEnabled(true);
-            showFooterViewHolder();
+        if (fromFragmentTag.equalsIgnoreCase(CONTAINER_SEARCH_LIST_TAG)) {
+            basePickerItemSearchList.notifyChange();
+        } else if (fromFragmentTag.equalsIgnoreCase(CONTAINER_CACHE_LIST_TAG)) {
+            basePickerItemCacheList.notifyChange();
         }
     }
 
     @Override
-    public int sizeSelection() {
-        return selections.size();
-    }
-
-    @Override
-    public List<TopAdsProductViewModel> selections() {
-        return new ArrayList<>(selections);
-    }
-
-    @Override
-    public void setSubmitButtonEnabled(boolean enabled) {
-        submitButton.setEnabled(enabled);
-    }
-
-    @Override
-    public boolean isHideEtalase() {
-        return isHideEtalase;
-    }
-
-    @Override
-    public boolean isExistingGroup() {
-        return isExistingGroup;
-    }
-
-    @Override
-    public boolean isSelectionViewShown() {
-        return false;
-//        return bottomSheetHelper.isShown();
-    }
-
-    @Override
-    public void setSubmitButtonVisibility(int visibility) {
-        submitButton.setVisibility(visibility);
-    }
-
-    @Override
-    public void hideFooterViewHolder() {
-        TopAdsAddProductListFragment topAdsAddProductListFragment = getTopAdsAddProductListFragment();
-        if (topAdsAddProductListFragment != null) {
-            topAdsAddProductListFragment.hideFooterViewHolder();
-        }
-    }
-
-    @Override
-    public void showFooterViewHolder() {
-        TopAdsAddProductListFragment topAdsAddProductListFragment = getTopAdsAddProductListFragment();
-        if (topAdsAddProductListFragment != null) {
-            topAdsAddProductListFragment.showFooterViewHolder();
-        }
-    }
-
-    @Override
-    public void notifyUnchecked(TopAdsProductViewModel data) {
-        TopAdsAddProductListFragment topAdsAddProductListFragment = getTopAdsAddProductListFragment();
-        if (topAdsAddProductListFragment != null) {
-            topAdsAddProductListFragment.notifyUnchecked(data);
-        }
-    }
-
-    @Override
-    public void onChecked(int position, TopAdsProductViewModel data) {
-        ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment = getChipsTopAdsSelectionFragment();
-        if (chipsTopAdsSelectionFragment != null) {
-            chipsTopAdsSelectionFragment.onChecked(position, data);
-        }
-//        bottomSheetBehavior.showBottomSheet();
-    }
-
-    @Override
-    public void onUnChecked(int position, TopAdsProductViewModel data) {
-        ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment = getChipsTopAdsSelectionFragment();
-        if (chipsTopAdsSelectionFragment != null)
-            chipsTopAdsSelectionFragment.onUnChecked(position, data);
-    }
-
-    private TopAdsAddProductListFragment getTopAdsAddProductListFragment() {
-        Fragment fragmentByTag = getFragmentManager().findFragmentByTag(TopAdsAddProductListFragment.TAG);
-        if (fragmentByTag != null && fragmentByTag instanceof TopAdsAddProductListFragment) {
-            return (TopAdsAddProductListFragment) fragmentByTag;
-        }
-        return null;
-    }
-
-    private ChipsTopAdsSelectionFragment getChipsTopAdsSelectionFragment() {
-        Fragment fragmentByTag = getFragmentManager().findFragmentByTag(ChipsTopAdsSelectionFragment.TAG);
-        if (fragmentByTag != null && fragmentByTag instanceof ChipsTopAdsSelectionFragment) {
-            return (ChipsTopAdsSelectionFragment) fragmentByTag;
-        }
-        return null;
+    public HashSet<ItemPickerType> getItemPickerTypeSet() {
+        return itemPickerTypeList;
     }
 
     @Override

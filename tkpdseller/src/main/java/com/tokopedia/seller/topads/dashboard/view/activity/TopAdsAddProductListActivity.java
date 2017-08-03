@@ -1,16 +1,15 @@
 package com.tokopedia.seller.topads.dashboard.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
@@ -218,7 +216,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
     }
 
     private void inflateNewFragment(@IdRes int containerId, Fragment fragment, String TAG) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment, TAG);
         fragmentTransaction.commit();
     }
@@ -419,7 +417,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
 
     private TopAdsAddProductListFragment getTopAdsAddProductListFragment() {
         Fragment fragmentByTag
-                = getFragmentManager().findFragmentByTag(TopAdsAddProductListFragment.TAG);
+                = getSupportFragmentManager().findFragmentByTag(TopAdsAddProductListFragment.TAG);
         if (fragmentByTag != null
                 && fragmentByTag instanceof TopAdsAddProductListFragment) {
             return (TopAdsAddProductListFragment) fragmentByTag;
@@ -430,7 +428,7 @@ public class TopAdsAddProductListActivity extends BaseActivity implements AddPro
 
     private ChipsTopAdsSelectionFragment getChipsTopAdsSelectionFragment() {
         Fragment fragmentByTag
-                = getFragmentManager().findFragmentByTag(ChipsTopAdsSelectionFragment.TAG);
+                = getSupportFragmentManager().findFragmentByTag(ChipsTopAdsSelectionFragment.TAG);
         if (fragmentByTag != null
                 && fragmentByTag instanceof ChipsTopAdsSelectionFragment) {
             return (ChipsTopAdsSelectionFragment) fragmentByTag;

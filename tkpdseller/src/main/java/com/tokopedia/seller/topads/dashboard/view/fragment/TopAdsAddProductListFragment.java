@@ -1,14 +1,13 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
@@ -26,6 +24,8 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
@@ -52,7 +52,7 @@ import java.util.List;
  * @author normansyahputa on 2/13/17.
  */
 public class TopAdsAddProductListFragment extends BasePresenterFragment
-        implements FragmentItemSelection, SearchView.OnQueryTextListener, TopAdsSearchProductView,
+        implements BasePickerItemSearchList, FragmentItemSelection, SearchView.OnQueryTextListener, TopAdsSearchProductView,
         DefaultErrorSubscriber.ErrorNetworkListener {
     public static final String TAG = "TAAddPrductListFragment";
     public static final int FILTER_REQ_CODE = 100;
@@ -95,6 +95,12 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initialListener(getActivity());
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         inject();
@@ -131,35 +137,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
-
-    @Override
     protected void initialPresenter() {
         topAdsAddProductListPresenter = new TopAdsAddProductListPresenter();
         topAdsAddProductListPresenter.attachView(this);
     }
 
-    @Override
     protected void initialListener(Activity activity) {
         if (activity != null && activity instanceof AddProductListInterface) {
             addProductListInterface = (AddProductListInterface) activity;
@@ -298,7 +280,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity()));
         sessionHandler = new SessionHandler(getActivity());
         searchProductMapper = new SearchProductEOFMapper();
         cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
@@ -591,5 +573,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     public void showBottom() {
         addProductListInterface.setSubmitButtonVisibility(View.VISIBLE);
         addProductListInterface.showBottom();
+    }
+
+    @Override
+    public void notifyChange() {
+
     }
 }

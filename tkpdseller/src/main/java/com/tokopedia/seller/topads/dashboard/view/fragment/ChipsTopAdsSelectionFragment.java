@@ -1,17 +1,18 @@
 package com.tokopedia.seller.topads.dashboard.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.topads.dashboard.view.adapter.ChipsAdapter;
 import com.tokopedia.seller.topads.dashboard.view.adapter.OnRemoveListener;
 import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 
 public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
-        implements ChipsTopAdsSelectionListener {
+        implements BasePickerItemCacheList, ChipsTopAdsSelectionListener {
     public static final String TAG = "ChipsTopAdsSelectionFragment";
     private static final String EXTRA_DATAS = "SAVED_DATAS";
 
@@ -60,7 +61,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         return new ChipsTopAdsSelectionFragment();
     }
 
-    @Override
     protected void initialListener(Activity activity) {
         if (activity != null && activity instanceof AddProductListInterface) {
             addProductListInterface = (AddProductListInterface) activity;
@@ -78,7 +78,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        initialListener(getActivity());
         createAdapter(savedInstanceState);
     }
 
@@ -175,11 +175,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_chips_selection;
     }
@@ -192,39 +187,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     //unused methods
     @Override
     protected void onFirstTimeLaunched() {
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-    }
-
-    @Override
-    protected void setViewListener() {
-    }
-
-    @Override
-    protected void initialVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
     }
 
     @Override
@@ -248,5 +210,10 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     @Override
     public void showFooterViewHolder() {
         throw new RuntimeException("done use it in here !!");
+    }
+
+    @Override
+    public void notifyChange() {
+
     }
 }
