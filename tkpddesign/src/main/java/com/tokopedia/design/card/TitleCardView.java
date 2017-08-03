@@ -196,17 +196,6 @@ public class TitleCardView extends CardView {
         loadingStateView.setEmptyView(emptyView);
     }
 
-    // showing that the content to loading state
-    private void setLoadingState(boolean isLoading) {
-        if (isLoading && loadingStateView.getLoadingView() != null) {
-            if (useGradientTitleLoading) {
-                setLoadingTitleState(true);
-            }
-        } else {
-            setLoadingTitleState(false);
-        }
-    }
-
     // will animate the title to gradient, showing that the title is loading
     private void setLoadingTitleState(boolean isLoading) {
         if (loadingTitleView == null) {
@@ -228,14 +217,16 @@ public class TitleCardView extends CardView {
     }
 
     public void setViewState(int state) {
+        loadingStateView.setViewState(state);
         switch (state) {
             case LoadingStateView.VIEW_LOADING:
-                setLoadingState(true);
+                if (useGradientTitleLoading) {
+                    setLoadingTitleState(true);
+                }
                 break;
             default:
-                setLoadingState(false);
+                setLoadingTitleState(false);
         }
-        loadingStateView.setViewState(state);
     }
 
     public void setDefaultLoadingTitleView() {
