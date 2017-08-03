@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="80dp"
     android:layout_height="45dp"
-    android:background="@drawable/ic_tooltip"
+    android:background="@drawable/tooltip"
     android:paddingBottom="10dp"
-    android:paddingLeft="5dp"
+    android:paddingLeft="10dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp"
-    android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
@@ -28,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="100.000"
+            android:layout_marginLeft="4dp"
             android:textSize="11sp"
             android:layout_gravity="center_vertical"
             android:textColor="@color/white_fifty_percent"/>
@@ -50,7 +50,8 @@
             android:id="@+id/tv_text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="100.000"
+            tools:text="8.000"
+            android:layout_marginLeft="4dp"
             android:textSize="11sp"
             android:layout_gravity="center_vertical"
             android:textColor="@color/white_fifty_percent"/>
