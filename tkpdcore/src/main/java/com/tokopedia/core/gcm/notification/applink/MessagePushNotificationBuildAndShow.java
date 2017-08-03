@@ -11,6 +11,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
+import com.tokopedia.core.review.var.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);
             Bundle bundle = new Bundle();
+            bundle.putBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, true);
             bundle.putString(Constants.EXTRA_APPLINK_CATEGORY, Constants.ARG_NOTIFICATION_APPLINK_MESSAGE);
             handlerIntent.putExtras(bundle);
 

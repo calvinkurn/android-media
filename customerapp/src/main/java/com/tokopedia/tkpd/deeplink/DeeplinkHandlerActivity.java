@@ -62,7 +62,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)){
+                    UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                }
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
