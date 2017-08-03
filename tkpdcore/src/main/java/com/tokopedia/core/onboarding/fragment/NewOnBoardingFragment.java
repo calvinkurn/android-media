@@ -4,12 +4,12 @@ package com.tokopedia.core.onboarding.fragment;
  * Created by hafizh HERDI on 3/21/2016.
  */
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -21,17 +21,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
-import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-
-import java.util.ArrayList;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DOWN_DIRECTION;
@@ -59,6 +56,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     private ObjectAnimator goneAnimation;
     private View footer;
     private View next;
+    private LottieAnimationView view;
 
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
@@ -124,7 +122,32 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
 
     @Override
     protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.inflateDefaultView(inflater, container, savedInstanceState);
+        View v = getDefaultView(inflater,container);
+        main = v.findViewById(R.id.main);
+        view = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        view.setAnimation("onboarding.json", LottieAnimationView.CacheStrategy.Strong);
+        view.playAnimation();
+
+        TextView t = (TextView) v.findViewById(R.id.title);
+        TextView d = (TextView) v.findViewById(R.id.description);
+        ImageView i = (ImageView) v.findViewById(R.id.image);
+        main = v.findViewById(R.id.main);
+
+
+        t.setText(title);
+        if (titleColor != 0) {
+            t.setTextColor(titleColor);
+        }
+
+        d.setText(description);
+
+        i.setBackgroundResource(drawable);
+        if (i.getBackground() instanceof AnimationDrawable) {
+            AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
+            notifAnimation.start();
+        }
+        main.setBackgroundColor(bgColor);
+        return v;
     }
 
     @Override
@@ -134,6 +157,9 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         ImageView i = (ImageView) v.findViewById(R.id.image);
         TextView d = (TextView) v.findViewById(R.id.description);
         main = v.findViewById(R.id.main);
+        view = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        view.setAnimation("empty_cactus.json", LottieAnimationView.CacheStrategy.Strong);
+        view.playAnimation();
 
         t.setText(title);
         if (titleColor != 0) {
@@ -193,8 +219,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
 
         if(viewType == VIEW_ENDING){
 
-            resetAnimation();
-
+            next = getView().findViewById(R.id.dummy_next);
 
             slideAnimatorX = slideToX(next, -1, mScreenWidth/2);
             goneAnimation = setVisibilityGone(next);
@@ -215,8 +240,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
 
             animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
-//            animatorSet.playTogether(expandAnimator);
-            animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
+            if
             animatorSet.setupStartValues();
             animatorSet.start();
             Log.i( "playAnimation: ", animatorSet.toString());
@@ -226,7 +250,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     }
 
     private void resetAnimation() {
-        next = getView().findViewById(R.id.dummy_next);
+
         next.setVisibility(View.VISIBLE);
         login.setWidth(0);
         login.setY(0);

@@ -6,10 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -24,11 +22,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.animation.BounceInterpolator;
-import com.tokopedia.core.onboarding.animation.OnboardingAnimation;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -36,7 +31,6 @@ import com.tokopedia.core.util.SessionHandler;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
 
 /**
  * Created by steven on 7/25/2017.
@@ -116,7 +110,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         setStepperLayout();
         setSelectedStepper();
         setStepperClickAnimation();
-
+        pager.setOffscreenPageLimit(1);
     }
 
     private void setStepperClickAnimation() {
@@ -209,20 +203,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onSlideChanged() {
-//        if (pager.getCurrentItem() == 5) {
-//            this.setProgressButtonEnabled(false);
-//        } else {
-//            this.setProgressButtonEnabled(true);
-//
-//        }
-
-//        if(main != null) {
-//            ring = main.findViewById(R.id.selected_ring);
-//            ringAnimation = slideToX(ring, ringDirection, ring.getWidth());
-//            ringAnimation.setDuration(1000L);
-//            ringAnimation.start();
-//        }
-
         if (listId != null) {
             for (int i = 0; i < fragments.size(); i++) {
                 if(i != pager.getCurrentItem()){
