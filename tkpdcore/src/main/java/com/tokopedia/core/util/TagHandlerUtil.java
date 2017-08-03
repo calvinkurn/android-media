@@ -32,7 +32,7 @@ public class TagHandlerUtil implements Html.TagHandler {
                 if(first) {
                     output.append("\n\t•");
                     first = false;
-                }else{
+                } else {
                     first = true;
                 }
             } else {
