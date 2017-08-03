@@ -118,6 +118,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -170,6 +171,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private BannerPagerAdapter bannerPagerAdapter;
     private int currentPosition;
     private ArrayList<ImageView> indicatorItems = new ArrayList<>();
+    private Subscription subscription;
 
 
     @Override
@@ -365,26 +367,46 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         }
                     }
                 }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.isInTouchMode()) {
+                        if (subscription != null && !subscription.isUnsubscribed()) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                }
+
             });
 
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(holder.bannerPager);
 
-            Observable.interval(3000L, TimeUnit.MILLISECONDS)
+            startAutoScrollBanner();
+        } else {
+            ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
+        }
+    }
+
+    private void startAutoScrollBanner() {
+
+        if (subscription == null || subscription.isUnsubscribed()) {
+            subscription = Observable.interval(5000L, TimeUnit.MILLISECONDS)
                     .timeInterval()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<TimeInterval<Long>>() {
                         @Override
                         public void call(TimeInterval<Long> longTimeInterval) {
-                            if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
-                                currentPosition = -1;
+                            if (holder.bannerPager != null) {
+                                if (currentPosition == holder.bannerPager.getAdapter().getItemCount() - 1) {
+                                    currentPosition = -1;
+                                }
+                                holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
                             }
-                            holder.bannerPager.smoothScrollToPosition(currentPosition + 1);
                         }
                     });
-        } else {
-            ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
     }
 
@@ -860,6 +882,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
+            startAutoScrollBanner();
         } else {
             if (messageSnackbar != null) {
                 messageSnackbar.pauseRetrySnackbar();
@@ -879,6 +902,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         category.unSubscribe();
+        subscription.unsubscribe();
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
