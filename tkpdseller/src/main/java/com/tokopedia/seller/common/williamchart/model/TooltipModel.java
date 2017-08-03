@@ -5,6 +5,7 @@ package com.tokopedia.seller.common.williamchart.model;
  */
 
 public class TooltipModel {
+    private int position;
     private String title;
     private String value;
 
@@ -15,6 +16,14 @@ public class TooltipModel {
 
     public TooltipModel() {
 
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public String getTitle() {

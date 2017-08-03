@@ -34,6 +34,7 @@ import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
 import com.tokopedia.seller.common.williamchart.util.DefaultTooltipConfiguration;
+import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
 import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
@@ -136,25 +137,28 @@ public class Tools {
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
                                                                      final BaseWilliamChartModel baseWilliamChartModel) {
-        return getCommonWilliamChartConfig(lineChartView, baseWilliamChartModel, new GrossGraphDataSetConfig());
+        return getCommonWilliamChartConfig(lineChartView, baseWilliamChartModel,
+                new GrossGraphDataSetConfig(), getTooltip(lineChartView.getContext(), getTooltipResLayout()), new DefaultTooltipConfiguration());
     }
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
-                                                                     final BaseWilliamChartModel baseWilliamChartModel, DataSetConfiguration dataSetConfiguration) {
+                                                                     final BaseWilliamChartModel baseWilliamChartModel,
+                                                                     DataSetConfiguration dataSetConfiguration,
+                                                                     Tooltip tooltip,
+                                                                     TooltipConfiguration tooltipConfiguration) {
         lineChartView.dismissAllTooltips();
         // resize linechart according to data
         GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView);
         // get index to display
         final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
         Drawable oval2Copy6 = ResourcesCompat.getDrawable(lineChartView.getResources(), R.drawable.oval_2_copy_6, null);
-        Tooltip tooltip = getTooltip(lineChartView.getContext(), getTooltipResLayout());
         BaseWilliamChartConfig baseWilliamChartConfig = new BaseWilliamChartConfig();
         baseWilliamChartConfig
                 .reset()
                 .addBaseWilliamChartModels(baseWilliamChartModel, dataSetConfiguration)
                 .setDotDrawable(oval2Copy6)
                 .setBasicGraphConfiguration(new GrossGraphChartConfig())
-                .setTooltip(tooltip, new DefaultTooltipConfiguration())
+                .setTooltip(tooltip, tooltipConfiguration)
                 .setxRendererListener(new XRenderer.XRendererListener() {
                     @Override
                     public boolean filterX(@IntRange(from = 0L) int i) {
