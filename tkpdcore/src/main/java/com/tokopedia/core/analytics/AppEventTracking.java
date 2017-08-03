@@ -123,6 +123,7 @@ public interface AppEventTracking {
         String R3 = "r3";
         String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
         String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+        String SELLER_WIDGET = "sellerWidget";
     }
 
     interface Category {
@@ -194,6 +195,7 @@ public interface AppEventTracking {
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
         String R3USER = "r3User";
+        String SELLER_APP_WIDGET = "Seller App Widget";
     }
 
     interface Action {
@@ -255,6 +257,8 @@ public interface AppEventTracking {
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
+        String INSTALL = "Install";
+        String REMOVE = "Remove";
     }
 
     interface EventLabel {
@@ -424,6 +428,10 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
         String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
         String BUY_GM = "Buy GM";
+        String WIDGET_ORDER = "Widget - Order";
+        String TO_APP_ORDER = "To App - Order";
+        String TOPADS = "TopAds";
+        String SELLER_HOME = "Home - SellerApp";
     }
 
     interface SOCIAL_MEDIA {
