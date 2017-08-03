@@ -8,11 +8,42 @@ const TOME_HOSTNAME = 'https://tome.tokopedia.com'
 const endpoints = {
     campaign: `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/campaigns?device=:device&full_domain=:domain&image_size=:imageSize&image_square=:imageSquare`,
     banners: `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/banners?device=2`,
-    checkWishlist: `${MOJITO_HOSTNAME}/v1/users/`,
-    add_to_wishlist: `${MOJITO_HOSTNAME}/users/`,
+    checkWishlist: `${MOJITO_HOSTNAME}/v1/users/:id/wishlist/check/:list_id`,
 }
 
 
+// ========================= Check Product in Wishlist ========================= //
+const checkProductInWishlist = (userId, pIds) => {
+    if (userId == 0) {
+        return Promise.resolve({
+            data: {
+                data: {
+                    ids: []
+                }
+            }
+        })
+    }
+
+    const url = endpoints.checkWishlist
+        .replace(':id', userId)
+        .replace(':list_id', pIds)
+
+    const headers = {
+        'X-Device': 'lite-0.0'
+    }
+
+    const config = {
+        headers: headers,
+        url: url,
+        method: 'GET'
+    }
+
+    return axios(config)
+}
+
+
+
+// ========================= Fetch Campaigns ========================= //
 export const FETCH_CAMPAIGNS = 'FETCH_CAMPAIGNS'
 export const fetchCampaigns = (User_ID) => {
     const device = 'lite'
@@ -33,7 +64,10 @@ export const fetchCampaigns = (User_ID) => {
     const getCampaigns = () => {
             return axios.get(url)
                 .then(response => {
+                    console.log(url)
                     const campaigns = response.data.data.campaigns
+                    console.log(response)
+                    console.log(campaigns)
                     return getBanners()
                         .then(res => {
                             const banners = res.data.data.banners
@@ -54,10 +88,11 @@ export const fetchCampaigns = (User_ID) => {
 
                             let wishlistProd = []
                             let URL = `${MOJITO_HOSTNAME}/v1/users/` + User_ID + `/wishlist/check/` + pIds.toString();
-                            // console.log(URL)
+                            console.log(URL)
                             return NetworkModule.getResponse(URL, "GET", '', true)
                                 .then(response => {
                                     let jsonResponse = JSON.parse(response)
+                                        // console.log(jsonResponse)
                                     wishlistProd = jsonResponse.data.ids.map(id => +id)
                                     return {
                                         data: campaigns.map(c => {
@@ -120,6 +155,9 @@ export const fetchCampaigns = (User_ID) => {
     }
 }
 
+
+
+// ========================= Fetch Banners ========================= //
 export const FETCH_BANNERS = 'FETCH_BANNERS'
 export const fetchBanners = () => ({
     type: FETCH_BANNERS,
@@ -127,23 +165,27 @@ export const fetchBanners = () => ({
         .then(response => {
             let jsonResponse = JSON.parse(response);
             const banners = jsonResponse.data.banners || []
-            return {
-                data: banners
-            }
+            return { data: banners }
         })
         .catch(error => {
             console.log('[FETCH BANNERS] Error: ', error)
-            return {
-                data: []
-            }
+            return { data: [] }
         })
 })
 
+
+
+// ========================= Fetch Brands ========================= //
 export const FETCH_BRANDS = 'FETCH_BRANDS'
-export const fetchBrands = (limit, offset) => ({
+export const fetchBrands = (limit, offset, User_ID) => ({
     type: FETCH_BRANDS,
-    payload: axios.get(`${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=0&limit=${limit}&offset=${offset}`)
+    payload: getBrands(limit, offset, User_ID)
+})
+
+function getBrands(limit, offset, User_ID) {
+    return axios.get(`${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`)
         .then(response => {
+            console.log(response)
             const brands = response.data.data
             const total_brands = response.data.total_brands
             let shopList = brands.map(shop => ({
@@ -160,47 +202,73 @@ export const fetchBrands = (limit, offset) => ({
             let shopIds = brands.map(shop => shop.shop_id)
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
-
             const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
             console.log(url)
+
+            let ids = []
+            let wishlistProd = []
             return axios.get(`${url}`)
                 .then(response => response.data.data.brands)
                 .then(brandsProducts => {
-                    // console.log(brandsProducts)
                     shopList = shopList.map(shop => {
                         const shopProduct = find(brandsProducts, product => {
                             return product.brand_id === shop.id
                         })
 
                         if (shopProduct && shopProduct.data) {
+                            shopProduct.data.map(product => {
+                                ids.push(product.id)
+                            })
+
                             shop.products = shopProduct.data.map(product => ({
                                 id: product.id,
                                 name: product.name,
                                 price: product.price,
                                 image_url: product.image_url,
-                                is_wishlist: false,
-                                url: product.url,
+                                is_wishlist: true,
                                 url_app: product.url_app,
+                                url: product.url,
                                 shop_name: product.shop.name,
                                 labels: product.labels,
                                 badges: product.badges,
                                 discount_percentage: product.discount_percentage,
                                 original_price: product.original_price,
                             }))
+
                             return shop
                         } else {
                             shop.products = []
                             return shop
                         }
                     })
-                    return {
-                        data: shopList,
-                        total_brands,
-                    }
+
+                    return checkProductInWishlist(User_ID, ids.toString())
+                        .then(res => {
+                            wishlistProd = res.data.data.ids.map(id => +id)
+
+                            return {
+                                data: shopList.map(s => {
+                                    return {
+                                        ...s,
+                                        products: s.products.map(p => {
+                                            return {
+                                                ...p,
+                                                is_wishlist: wishlistProd.indexOf(p.id) > -1 ? true : false
+                                            }
+                                        })
+                                    }
+                                }),
+                                total_brands,
+                            }
+                        })
+
                 })
         })
-})
+}
 
+
+
+// ========================= Slide Brands ========================= //
 export const SLIDE_BRANDS = 'SLIDE_BRANDS'
 export const slideBrands = () => ({
     type: SLIDE_BRANDS
@@ -220,54 +288,80 @@ function getProductIdList(products) {
     return pIds
 }
 
+
+
+// ========================= Add to Wishlist ========================= //
 export const ADD_TO_WISHLIST = 'ADD_TO_WISHLIST'
-export const addToWishlist = (productId, User_ID) => ({
-    type: ADD_TO_WISHLIST,
-    // hostname/v1/products/:productid/wishlist
-    payload: NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "POST", "", true)
-        .then(response => {
-            console.log(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
+export const addToWishlist = (productId, User_ID) => {
+    const device = 'lite'
+    const imageSize = 200
+    const imageSquare = true
+    const domain = 'm.tokopedia.com'
 
+    const url = endpoints.campaign.replace(':device', device)
+        .replace(':domain', domain)
+        .replace(':imageSize', imageSize)
+        .replace(':imageSquare', imageSquare)
+
+    const fetchDatas = () => {
+        return axios.get(url)
+            .then(response => {
+                // console.log(url)
+                const campaigns = response.data.data.campaigns
+                    // console.log(response)
+                    // console.log(campaigns)
+                    // console.log(User_ID + ' ' + productId)
+                NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "POST", "{}", true)
+                    .then(response => { console.log(response) })
+                    .catch(error => { console.log(error) })
+                return { campaigns, productId }
+            })
+            .catch(error => {
+                console.log('[Campaigns] Error: ', error)
+                return { data: [] }
+            })
+    };
+
+    return {
+        type: ADD_TO_WISHLIST,
+        payload: fetchDatas()
+    }
+}
+
+
+
+// ========================= Remove from Wishlist ========================= //
 export const REMOVE_FROM_WISHLIST = 'REMOVE_FROM_WISHLIST'
-export const removeFromWishlist = (productId, User_ID) => ({
-    type: REMOVE_FROM_WISHLIST,
-    // payload: productId
-    payload: NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "DELETE", "", true)
-        .then(response => {
-            console.log(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
+export const removeFromWishlist = (productId, User_ID) => {
+    // console.log(productId + ' ' + User_ID)
+    const removeData = () => {
+        NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "DELETE", "{}", true)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        return productId
+    }
 
-export const REMOVE_FROM_FAVOURITE = 'REMOVE_FROM_FAVOURITE'
-export const removeFromFavourite = (shopId, User_ID) => ({
-    type: REMOVE_FROM_FAVOURITE,
-    // payload: shopId,
-    payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
-        .then(response => {
-            console.log(User_ID)
-            console.log(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
-})
+    return {
+        type: REMOVE_FROM_WISHLIST,
+        payload: removeData()
+    }
+}
 
+
+
+// ========================= Add to Favorite ========================= //
 export const ADD_TO_FAVOURITE = 'ADD_TO_FAVOURITE'
 export const addToFavourite = (shopId, User_ID) => ({
     type: ADD_TO_FAVOURITE,
-    // payload: shopId,
     payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
         .then(response => {
-            console.log(User_ID)
-            console.log(response)
+            let jsonResponse = JSON.parse(response)
+            console.log(jsonResponse)
+            return shopId
         })
         .catch(error => {
             console.log(error)
@@ -275,36 +369,25 @@ export const addToFavourite = (shopId, User_ID) => ({
 })
 
 
-/*
-export const addToFavourite = (userId, shopId, sessionId) => {
-  const sidCookie = `_SID_Tokopedia_Coba_=${sessionId}`
-  const config = {
-    url: `${TOME_HOSTNAME}/shop/favorite-shop`,
-    method: 'POST',
-    headers: {
-      origin: `https://m.tokopedia.com`,
-      referer: `https://m.tokopedia.com`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Cookie: sidCookie,
-      Authorization: undefined,
-    },
-    data: {
-      user_id: userId,
-      s_id: shopID,
-      ad_key: null,
-      action: 'fav_shop',
-      act: 'POST'
-    }
-  }
-  return {
-    type: ADD_TO_FAVOURITE,
-    payload: axios(config)
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-}
-*/
+// ========================= Remove From Favorite ========================= //
+export const REMOVE_FROM_FAVOURITE = 'REMOVE_FROM_FAVOURITE'
+export const removeFromFavourite = (shopId, User_ID) => ({
+    type: REMOVE_FROM_FAVOURITE,
+    payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
+        .then(response => {
+            let jsonResponse = JSON.parse(response)
+            console.log(User_ID)
+            console.log(jsonResponse)
+            return shopId
+        })
+        .catch(error => {
+            console.log(error)
+        })
+})
+
+
+// ========================= Refresh State ========================= //
+export const REFRESH_STATE = 'REFRESH_STATE'
+export const refreshState = () => ({
+    type: REFRESH_STATE
+})

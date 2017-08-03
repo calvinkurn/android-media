@@ -11,6 +11,9 @@ import {
     REMOVE_FROM_WISHLIST,
 } from '../actions/actions'
 
+
+
+// ========================================================= Campaigns ========================================================= //
 const campaigns = (state = {
     items: [],
     isFetching: false,
@@ -23,7 +26,7 @@ const campaigns = (state = {
         case `${FETCH_CAMPAIGNS}_${FULFILLED}`:
             const campaignData = action.payload.data
             return {
-                items: state.items.length === 0 ? [...state.items, ...campaignData] : [...state.items],
+                items: state.items.length === 0 ? [...state.items, ...campaignData] : [...campaignData],
                 isFetching: false,
             }
             return state
@@ -33,7 +36,32 @@ const campaigns = (state = {
         case `${ADD_TO_WISHLIST}_${PENDING}`:
             return state
         case `${ADD_TO_WISHLIST}_${FULFILLED}`:
-            return state
+            // return state
+            console.log(action.payload)
+            console.log(state)
+            console.log(state.items)
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        Products: b.Products.map(p => {
+                            if (action.payload.productId === p.data.id) {
+                                return {
+                                    ...p,
+                                    data: {
+                                        ...p.data,
+                                        is_wishlist: true
+                                    }
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
         case `${ADD_TO_WISHLIST}_${REJECTED}`:
             return state
         case ADD_TO_WISHLIST:
@@ -59,7 +87,36 @@ const campaigns = (state = {
 
                 })
             }
+
+        case `${REMOVE_FROM_WISHLIST}_${FULFILLED}`:
+            console.log(state)
+            console.log(action)
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        Products: b.Products.map(p => {
+                            if (action.payload === p.data.id) {
+                                return {
+                                    ...p,
+                                    data: {
+                                        ...p.data,
+                                        is_wishlist: false
+                                    }
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
+
         case REMOVE_FROM_WISHLIST:
+            console.log(state)
+            console.log(action)
             return {
                 ...state,
                 items: state.items.map(b => {
@@ -88,6 +145,10 @@ const campaigns = (state = {
     }
 }
 
+
+
+// ========================================================= Banners ========================================================= //
+
 const banners = (state = {
     items: [],
     isFetching: false,
@@ -111,6 +172,9 @@ const banners = (state = {
     }
 }
 
+
+
+// ========================================================= Brands ========================================================= //
 const brands = (state = {
     items: [],
     isFetching: false,
@@ -192,7 +256,25 @@ const brands = (state = {
         case `${ADD_TO_WISHLIST}_${PENDING}`:
             return state
         case `${ADD_TO_WISHLIST}_${FULFILLED}`:
-            return state
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    return {
+                        ...b,
+                        products: b.products.map(p => {
+                            if (action.payload.productId === p.id) {
+                                return {
+                                    ...p,
+                                    is_wishlist: true
+                                }
+                            } else {
+                                return p
+                            }
+                        })
+                    }
+
+                })
+            }
         case `${ADD_TO_WISHLIST}_${REJECTED}`:
             return state
         case ADD_TO_WISHLIST:
@@ -235,6 +317,7 @@ const brands = (state = {
 
                 })
             }
+
         case ADD_TO_FAVOURITE:
             return {
                 ...state,
@@ -242,6 +325,32 @@ const brands = (state = {
                     if (action.payload === b.id) {
                         return Object.assign({}, b, {
                             isFav: true
+                        })
+                    } else {
+                        return b
+                    }
+                })
+            }
+        case `${ADD_TO_FAVOURITE}_${FULFILLED}`:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    if (action.payload === b.id) {
+                        return Object.assign({}, b, {
+                            isFav: true
+                        })
+                    } else {
+                        return b
+                    }
+                })
+            }
+        case `${REMOVE_FROM_FAVOURITE}_${FULFILLED}`:
+            return {
+                ...state,
+                items: state.items.map(b => {
+                    if (action.payload === b.id) {
+                        return Object.assign({}, b, {
+                            isFav: false
                         })
                     } else {
                         return b

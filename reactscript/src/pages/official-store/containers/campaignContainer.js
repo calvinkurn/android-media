@@ -10,14 +10,26 @@ class CampaignContainer extends Component {
     dispatch(fetchCampaigns(User_ID))
   }
 
-  render() {
-    const campaigns = this.props.campaigns.items
+
+  renderCampaign = (campaigns) => {
     return (
       this.props.campaigns.isFetching ? null :
         <CampaignList
           User_ID={this.props.screenProps.User_ID}
           campaigns={campaigns} />
     )
+  }
+
+  render() {
+    const campaigns = this.props.campaigns.items
+    // console.log(campaigns.length)
+    // console.log(campaigns)
+    // console.log(campaigns[0])
+    if (campaigns.length == 1){
+      return this.renderCampaign(campaigns[0])
+    } else {
+      return this.renderCampaign(campaigns)
+    }
   }
 }
 

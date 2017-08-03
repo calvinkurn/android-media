@@ -46,7 +46,7 @@ const BrandList = (props) => {
                 </TouchableWithoutFeedback>
               </View>
               <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(b.shop_apps_url, '')}>
-                <View>
+                <View style={styles.shopNameBox}>
                   <Text
                     style={styles.shopName}
                     ellipsizeMode='tail'
@@ -55,7 +55,7 @@ const BrandList = (props) => {
                   </Text>
                 </View>
               </TouchableWithoutFeedback>
-              <View style={{ marginLeft: 'auto' }}>
+              <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center' }}>
                 <FavouriteBtn
                   User_ID={props.User_ID}
                   shopId={b.id}
@@ -70,7 +70,9 @@ const BrandList = (props) => {
                 {
                   b.products.map(p => (
                     <View style={styles.thumb} key={p.id}>
-                      <TouchableWithoutFeedback onPress={() => NavigationModule.navigate(p.url_app, '')}>
+                      <TouchableWithoutFeedback onPress={() => {
+                        console.log("[brandList] Product: ", p)
+                        NavigationModule.navigate(p.url_app, '')}}>
                         <View>
                           <Image style={styles.productImage} source={{ uri: p.image_url }} />
                           <Text style={styles.productName}
@@ -212,13 +214,17 @@ const styles = StyleSheet.create({
   },
   productName: {
     width: 135,
-    paddingTop: 4,
-    paddingBottom: 4,
+    height: 40,
+    marginTop: 5
   },
   label: {
     flex: 1,
     flexDirection: 'row',
     marginTop: 5,
+  },
+  shopNameBox: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   productLabel: {
     padding: 3,
