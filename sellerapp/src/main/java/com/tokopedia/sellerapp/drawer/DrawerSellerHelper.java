@@ -24,10 +24,9 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
@@ -380,7 +379,7 @@ public class DrawerSellerHelper extends DrawerHelper
     @Override
     public void onGoToProfile() {
         context.startActivity(
-                PeopleInfoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
+                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
