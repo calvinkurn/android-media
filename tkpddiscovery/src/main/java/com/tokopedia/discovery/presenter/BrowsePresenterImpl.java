@@ -79,7 +79,7 @@ import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
 
 public class BrowsePresenterImpl implements BrowsePresenter {
 
-    private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
+    public static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
     private static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     private static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
@@ -128,6 +128,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent(intent);
             deleteFilterAndSortCache();
+            if (intent.hasExtra(EXTRA_BROWSE_MODEL) && intent.getParcelableExtra(EXTRA_BROWSE_MODEL) != null){
+                BrowseProductActivityModel temporary = intent.getParcelableExtra(EXTRA_BROWSE_MODEL);
+                if (temporary.getFilterOptions() != null && temporary.getFilterOptions().size() > 0) {
+                    browseModel.setFilterOptions(temporary.getFilterOptions());
+                    browseModel.setSource(temporary.getSource());
+                }
+            }
         } else {
             isBottomBarFirstTimeChange = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);

@@ -76,6 +76,11 @@ public interface Constants {
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
         String PROMO = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+        String DISCOVERY_CATEGORY = "tokopedia://category";
+        String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
+        String DISCOVERY_SEARCH = "tokopedia://search";
+        String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
+        String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
 
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     }
