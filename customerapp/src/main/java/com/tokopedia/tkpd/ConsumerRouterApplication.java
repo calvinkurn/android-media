@@ -67,10 +67,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FR
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>1bda0cb42da6d3159508a648c5f9fe5eae9bd0d0
-
 /**
  * @author normansyahputa on 12/15/16.
  */
@@ -351,7 +347,7 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
         return DigitalProductActivity.newInstance(this, passData);
-    }
+    }gi
 
     @Override
     public Intent instanceIntentDigitalCategoryList() {

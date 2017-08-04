@@ -15,19 +15,12 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
-<<<<<<< HEAD
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-=======
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
->>>>>>> 1bda0cb42da6d3159508a648c5f9fe5eae9bd0d0
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -38,8 +31,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
-import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
