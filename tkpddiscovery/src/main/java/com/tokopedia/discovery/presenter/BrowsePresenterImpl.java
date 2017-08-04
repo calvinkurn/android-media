@@ -47,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,12 +64,12 @@ import rx.subscriptions.CompositeSubscription;
 import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_TITLE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_2;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_3;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 import static com.tokopedia.discovery.activity.BrowseProductActivity.REQUEST_SORT;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.FILTER;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
@@ -128,6 +129,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent(intent);
             deleteFilterAndSortCache();
+            setFilterOptionsFromIntent(intent);
         } else {
             isBottomBarFirstTimeChange = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
@@ -202,6 +204,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     browseView.showSearchPage();
                     break;
             }
+        }
+    }
+
+    private void setFilterOptionsFromIntent(Intent intent) {
+        Serializable filterOptions = intent.getSerializableExtra(BrowseProductRouter.EXTRA_FILTER);
+        if (filterOptions != null) {
+            browseModel.setFilterOptions((HashMap<String, String>) filterOptions);
         }
     }
 
