@@ -113,12 +113,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         super.onActivityResult(requestCode, resultCode, intent);
         if (intent != null && requestCode == REQUEST_CODE_AD_EDIT &&
                 intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
-            if (startDate == null || endDate == null) {
-                return;
-            }
             setResultAdDetailChanged();
             if (intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)) {
                 adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+            }
+            if (startDate == null || endDate == null) {
+                return;
             }
             refreshAd();
         }
@@ -334,6 +334,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        outState.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
     }
 
     @Override
@@ -343,6 +344,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             return;
         }
         adId = savedInstanceState.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        ad = savedInstanceState.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adFromIntent = null;
     }
 }

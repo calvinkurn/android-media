@@ -37,8 +37,7 @@ public class GMStatisticGrossViewHolder implements GMStatisticViewHolder {
 
     public void setData(GMTransactionGraphMergeModel getTransactionGraph) {
         grossLineChartContainer.setAmount(
-                KMNumbers.formatRupiahString(grossLineChartContainer.getContext(),
-                        getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
+                KMNumbers.formatRupiahString(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel.amount));
         grossLineChartContainer.setMainDate(getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel);
         GMGraphViewWithPreviousModel gmGraphViewWithPreviousModel = getTransactionGraph.gmTransactionGraphViewModel.grossRevenueModel;
         showTransactionGraph(gmGraphViewWithPreviousModel.values, gmGraphViewWithPreviousModel.dates);

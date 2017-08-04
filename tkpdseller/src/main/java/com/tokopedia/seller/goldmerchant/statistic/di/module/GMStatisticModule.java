@@ -40,6 +40,7 @@ import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 
@@ -111,8 +112,10 @@ public class GMStatisticModule {
                                                            GMStatGetBuyerGraphUseCase buyerGraphUseCase,
                                                            GMStatGetPopularProductUseCase popularProductUseCase,
                                                            GMStatGetTransactionGraphShopInfoUseCase getTransactionGraphShopInfoUseCase,
-                                                           GMStatGetProductGraphUseCase productGraphUseCase) {
-        return new GMDashboardPresenterImpl(marketInsightShopInfoUseCase, buyerGraphUseCase, popularProductUseCase, getTransactionGraphShopInfoUseCase, productGraphUseCase);
+                                                           GMStatGetProductGraphUseCase productGraphUseCase,
+                                                           AddProductShopInfoUseCase shopInfoUseCase) {
+        return new GMDashboardPresenterImpl(marketInsightShopInfoUseCase, buyerGraphUseCase, popularProductUseCase,
+                getTransactionGraphShopInfoUseCase, productGraphUseCase, shopInfoUseCase);
     }
 
     @GMStatisticScope

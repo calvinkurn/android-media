@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -112,6 +113,7 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
             }
 
             private void moveToGMSubscribe() {
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
                 Router.goToGMSubscribe(titleCardView.getContext());
             }
         });

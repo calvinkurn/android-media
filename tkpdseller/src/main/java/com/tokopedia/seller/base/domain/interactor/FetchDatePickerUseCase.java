@@ -31,8 +31,7 @@ public class FetchDatePickerUseCase extends CompositeUseCase<DatePickerDomainMod
     }
 
     public static RequestParams createRequestParams(){
-        RequestParams requestParams = RequestParams.create();
-        return requestParams;
+        return RequestParams.EMPTY;
     }
 
 }
