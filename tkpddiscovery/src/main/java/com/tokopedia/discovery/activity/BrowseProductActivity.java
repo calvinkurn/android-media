@@ -36,6 +36,7 @@ import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -133,7 +134,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, BrowseProductActivity.class);
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString("q", bundle.getString("keyword", "")));
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
         bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
         BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
