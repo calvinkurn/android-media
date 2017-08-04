@@ -37,20 +37,6 @@ public class TopPicksWebView extends TActivity implements
     private static final String ARGS_TOPPICK_ID = "toppick_id";
     private FragmentTopPicksWebView fragment;
 
-    @DeepLink({Constants.Applinks.TOPPICKS})
-    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString(ARGS_TOPPICKS_ID, "");
-        String result = TkpdBaseURL.URL_TOPPICKS;
-        if (!TextUtils.isEmpty(promoId)) {
-            result += promoId;
-        }
-        result += TkpdBaseURL.FLAG_APP;
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, BannerWebView.class)
-                .setData(uri.build())
-                .putExtra(BannerWebView.EXTRA_URL, result);
-    }
-
     public static Intent newInstance(Context context, String url) {
         Intent intent = new Intent(context, TopPicksWebView.class);
         intent.putExtra(URL, url);
