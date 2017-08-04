@@ -412,7 +412,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tilEtVoucherCode.setErrorEnabled(false);
         tvVoucherDesc.setText(descVoucher);
         instantPromoPlaceHolder.setVisibility(View.GONE);
-        if(instantVoucher == 1) {
+        if (instantVoucher == 1) {
             etVoucherCode.setText(voucherCode);
             cbUseVoucher.setChecked(true);
         }
@@ -427,10 +427,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorFromInstantVoucher(int instantVoucher) {
-        if (instantVoucher == 1) {
+        if (instantVoucher == 1)
             cbUseVoucher.setChecked(true);
-            hideProgressLoading();
-        }
     }
 
     @Override
@@ -714,7 +712,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderInstantPromo(CartPromo cartPromo) {
-        if(cartPromo.isVisible() == 1) {
+        if (cartPromo.isVisible() == 1) {
             hasPromotion = true;
             instantPromoPlaceHolder.setVisibility(View.VISIBLE);
             instantInsertVoucherTextView

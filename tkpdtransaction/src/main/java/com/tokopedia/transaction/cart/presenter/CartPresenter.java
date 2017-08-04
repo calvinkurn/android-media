@@ -405,6 +405,7 @@ public class CartPresenter implements ICartPresenter {
                         if (e.getCause() instanceof ResponseErrorException) {
                             view.renderErrorCheckVoucher(e.getCause().getMessage());
                             view.renderErrorFromInstantVoucher(instantCheckVoucher);
+                            view.hideProgressLoading();
                         } else {
                             handleThrowableVoucherCode(e);
                         }
