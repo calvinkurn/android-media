@@ -185,7 +185,7 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private DrawerItem getPaymentAndTopupMenu() {
         DrawerGroup sellerMenu = new DrawerGroup("Pembayaran dan Top Up",
-                R.drawable.ic_manage_produk,
+                R.drawable.pembayaran_topup,
                 TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
                 0);
