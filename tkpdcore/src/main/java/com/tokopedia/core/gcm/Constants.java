@@ -84,6 +84,7 @@ public interface Constants {
         String RECENT_VIEW = "tokopedia://recentlyviewed";
         String TOPPICKS = "tokopedia://toppicks";
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
+        String SELLER_APP_HOME = "sellerapp://home";
     }
 
     interface Settings {
