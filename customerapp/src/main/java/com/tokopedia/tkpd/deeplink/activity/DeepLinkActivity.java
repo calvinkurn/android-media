@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -67,14 +66,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
 
-    @DeepLink(Constants.Applinks.WEBVIEW)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, DeepLinkActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_APP_WEB_VIEW, true)
-                .putExtras(extras);
-    }
 
     @Override
     public String getScreenName() {

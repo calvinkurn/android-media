@@ -30,6 +30,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -304,6 +305,7 @@ public class DrawerSellerHelper extends DrawerHelper
             Intent intent;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
+                    UnifyTracking.eventDrawerSellerHome();
                     context.startActivity(SellerHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
@@ -355,6 +357,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickGMStat();
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                    UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
@@ -384,6 +387,12 @@ public class DrawerSellerHelper extends DrawerHelper
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToShop() {

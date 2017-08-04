@@ -10,7 +10,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -55,10 +54,10 @@ public class TkpdWebView extends WebView {
 
     private String generateUri(String uri) {
         String url = String.valueOf(uri);
-        String flag_app = "flag_app=1";
-        String device = "device=android";
-        String utm_source = "utm_source=android";
-        String app_version = "app_version=" + GlobalConfig.VERSION_CODE;
+        String flag_app = AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP + "=1";
+        String device = AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE + "=android";
+        String utm_source = AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE + "=android";
+        String app_version = AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION + "=" + GlobalConfig.VERSION_CODE;
         String flags = flag_app
                 + "&" + device
                 + "&" + utm_source
