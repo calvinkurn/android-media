@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;

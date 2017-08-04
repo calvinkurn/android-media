@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
@@ -109,6 +110,20 @@ public interface FeedPlus{
         void updateFavoriteFromEmpty();
 
         void showTopAds(boolean isTopAdsShown);
+
+        void onEmptyOfficialStoreClicked();
+
+        void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
+
+        void onSeeAllOfficialStoresFromCampaign(String redirectUrl);
+
+        void onGoToCampaign(String redirectUrl, String title);
+
+        void onSeeAllOfficialStoresFromBrands();
+
+        void onGoToProductDetailFromCampaign(String productId);
+
+        void onGoToShopDetailFromCampaign(String shopUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

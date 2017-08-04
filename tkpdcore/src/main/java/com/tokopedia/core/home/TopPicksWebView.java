@@ -49,7 +49,7 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
         String toppickId = bundle.getString(ARGS_TOPPICK_ID, "");
         String result = TkpdBaseURL.WEB_DOMAIN + TOPPICK_SEGMENT;
         if (!TextUtils.isEmpty(toppickId)) {
-            result += toppickId;
+            result += "/" + toppickId;
         }
         result += FLAG_APP;
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
