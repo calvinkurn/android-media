@@ -84,19 +84,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("FCM clicked standard zzzsss "+extras);
         return handleClick(screenName,extras,deepLinkUri);
     }
 
     @Override
     public void onInAppShown(InAppMessage message) {
-        CommonUtils.dumper("FCM on in app messaging shown "+message.content);
         InAppTracker.getInstance(this).trackInAppClicked(message);
     }
 
     @Override
     public boolean showInAppMessage(InAppMessage message) {
-        CommonUtils.dumper("FCM showing in app messaging "+message.content);
         InAppTracker.getInstance(this).trackInAppClicked(message);
         return true;
     }
@@ -108,7 +105,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("FCM clicked in app messaging "+extras + " URI "+ deepLinkUri.toString());
         return handleClick(deepLinkUri);
     }
 
