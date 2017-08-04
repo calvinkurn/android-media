@@ -167,7 +167,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
     @Override
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter);
+        GmStatisticEmptyTransactionDataBinder emptyTransactionDataBinder = new GmStatisticEmptyTransactionDataBinder(adapter, R.drawable.ic_transaction_table_empty);
         emptyTransactionDataBinder.setEmptyTitleText(null);
         emptyTransactionDataBinder.setEmptyContentText(getString(R.string.gm_statistic_transaction_table_no_data));
         emptyTransactionDataBinder.setEmptyContentItemText(null);
