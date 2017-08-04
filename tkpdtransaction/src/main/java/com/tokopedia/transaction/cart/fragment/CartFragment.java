@@ -170,12 +170,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView donasiTitle;
     @BindView(R2.id.donasi_info)
     ImageView donasiInfo;
-    @BindView(R2.id.layout_cart_fragment)
-    RelativeLayout layoutCartFragment;
     @BindView(R2.id.total_payment_loading)
     ProgressBar totalPaymentLoading;
-    @BindView(R2.id.instant_insert_voucher_layout)
-    LinearLayout instantInsertVoucherLayout;
     @BindView(R2.id.instant_insert_voucher_text_view)
     TextView instantInsertVoucherTextView;
     @BindView(R2.id.instant_insert_voucher_button)
@@ -188,7 +184,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
-    private String totalPaymentWithLoyaltyIdr;
     private String voucherCode;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
