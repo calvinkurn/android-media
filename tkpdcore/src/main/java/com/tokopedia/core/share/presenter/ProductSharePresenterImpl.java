@@ -39,7 +39,6 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.BBM);
         } else {
             UnifyTracking.eventShare(
-                    data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.BBM
             );
         }
@@ -53,7 +52,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.FACEBOOK
             );
         }
@@ -77,7 +76,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.TWITTER);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.TWITTER
             );
         }
@@ -99,7 +98,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.WHATSHAPP
             );
         }
@@ -114,7 +113,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.LINE);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.LINE
             );
         }
@@ -129,7 +128,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.PINTEREST
             );
         }
@@ -149,7 +148,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.OTHER);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.OTHER
             );
         }
@@ -168,7 +167,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.INSTAGRAM
             );
         }
@@ -188,7 +187,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
             shareCategory(data,AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(
                     AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS
             );
         }
