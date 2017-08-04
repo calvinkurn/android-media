@@ -1,4 +1,3 @@
-import axios from 'axios'
 import find from 'lodash/find'
 import { NetworkModule, NavigationModule } from 'NativeModules'
 
@@ -38,7 +37,18 @@ const checkProductInWishlist = (userId, pIds) => {
         method: 'GET'
     }
 
-    return axios(config)
+    console.log(url)
+
+    return NetworkModule.getResponse(url, "GET", "", true)
+        .then(response => {
+            const jsonResponse = JSON.parse(response)
+            return jsonResponse
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+
 }
 
 
@@ -58,19 +68,18 @@ export const fetchCampaigns = (User_ID) => {
 
     const getBanners = () => {
         const url = endpoints.banners
-        return axios.get(url)
+        return NetworkModule.getResponse(url, "GET", "", true)
     }
 
     const getCampaigns = () => {
-            return axios.get(url)
+            return NetworkModule.getResponse(url, "GET", "", true)
                 .then(response => {
-                    console.log(url)
-                    const campaigns = response.data.data.campaigns
-                    console.log(response)
-                    console.log(campaigns)
+                    const jsonResponseCampaigns = JSON.parse(response)
+                    const campaigns = jsonResponseCampaigns.data.campaigns
                     return getBanners()
                         .then(res => {
-                            const banners = res.data.data.banners
+                            const jsonResponseBanners = JSON.parse(res)
+                            const banners = jsonResponseBanners.data.banners
                             const promoBanner = find(banners, { html_id: 6 })
                             if (promoBanner) {
                                 promoBanner.Products = []
@@ -182,12 +191,12 @@ export const fetchBrands = (limit, offset, User_ID) => ({
     payload: getBrands(limit, offset, User_ID)
 })
 
-function getBrands(limit, offset, User_ID) {
-    return axios.get(`${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`)
+getBrands = (limit, offset, User_ID) => {
+    return NetworkModule.getResponse(`${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${User_ID}&limit=${limit}&offset=${offset}`, "GET", "", false)
         .then(response => {
-            console.log(response)
-            const brands = response.data.data
-            const total_brands = response.data.total_brands
+            const jsonResponse = JSON.parse(response)
+            const brands = jsonResponse.data
+            const total_brands = jsonResponse.total_brands
             let shopList = brands.map(shop => ({
                 id: shop.shop_id,
                 name: shop.shop_name,
@@ -207,19 +216,18 @@ function getBrands(limit, offset, User_ID) {
 
             let ids = []
             let wishlistProd = []
-            return axios.get(`${url}`)
-                .then(response => response.data.data.brands)
+            return NetworkModule.getResponse(`${url}`, "GET", "", false)
                 .then(brandsProducts => {
+                    const jsonResponse = JSON.parse(brandsProducts)
+                    const brands = jsonResponse.data.brands
                     shopList = shopList.map(shop => {
-                        const shopProduct = find(brandsProducts, product => {
+                        const shopProduct = find(brands, product => {
                             return product.brand_id === shop.id
                         })
-
                         if (shopProduct && shopProduct.data) {
                             shopProduct.data.map(product => {
                                 ids.push(product.id)
                             })
-
                             shop.products = shopProduct.data.map(product => ({
                                 id: product.id,
                                 name: product.name,
@@ -244,7 +252,7 @@ function getBrands(limit, offset, User_ID) {
 
                     return checkProductInWishlist(User_ID, ids.toString())
                         .then(res => {
-                            wishlistProd = res.data.data.ids.map(id => +id)
+                            wishlistProd = res.data.ids.map(id => +id)
 
                             return {
                                 data: shopList.map(s => {
@@ -304,16 +312,13 @@ export const addToWishlist = (productId, User_ID) => {
         .replace(':imageSquare', imageSquare)
 
     const fetchDatas = () => {
-        return axios.get(url)
+        return NetworkModule.getResponse(url, "GET", "", true)
             .then(response => {
-                // console.log(url)
-                const campaigns = response.data.data.campaigns
-                    // console.log(response)
-                    // console.log(campaigns)
-                    // console.log(User_ID + ' ' + productId)
+                const jsonResponse = JSON.parse(response)
+                const campaigns = jsonResponse.data.campaigns
                 NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "POST", "{}", true)
-                    .then(response => { console.log(response) })
-                    .catch(error => { console.log(error) })
+                    .then(responseWishlist => console.log("Success AddToWishlist"))
+                    .catch(err => console.log(err))
                 return { campaigns, productId }
             })
             .catch(error => {
@@ -333,15 +338,10 @@ export const addToWishlist = (productId, User_ID) => {
 // ========================= Remove from Wishlist ========================= //
 export const REMOVE_FROM_WISHLIST = 'REMOVE_FROM_WISHLIST'
 export const removeFromWishlist = (productId, User_ID) => {
-    // console.log(productId + ' ' + User_ID)
     const removeData = () => {
         NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "DELETE", "{}", true)
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+            .then(response => console.log(response))
+            .catch(error => console.log(error))
         return productId
     }
 
