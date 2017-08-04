@@ -36,9 +36,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/base_picker_multiple_item_footer_height"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="@dimen/base_picker_multiple_item_bottom_sheet_header_height"
         app:elevation="16dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 

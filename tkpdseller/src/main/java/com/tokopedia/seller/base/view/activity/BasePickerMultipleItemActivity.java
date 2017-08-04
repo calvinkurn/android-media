@@ -3,7 +3,9 @@ package com.tokopedia.seller.base.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -33,8 +35,8 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
 
     private static final int ARROW_DEGREE = 180;
 
-    private static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
-    private static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
+    public static final String CONTAINER_SEARCH_LIST_TAG = "CONTAINER_SEARCH_LIST_TAG";
+    public static final String CONTAINER_CACHE_LIST_TAG = "CONTAINER_CACHE_LIST_TAG";
 
     private View bottomSheetContainerView;
     private View shadowView;
@@ -45,16 +47,20 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
     private View footerView;
     private Button submitButton;
 
-    private HashSet<ItemPickerType> itemPickerTypeList;
-
-    private BasePickerItemSearchList basePickerItemSearchList;
-    private BasePickerItemCacheList basePickerItemCacheList;
+    protected HashSet<ItemPickerType> itemPickerTypeList;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
     public abstract Fragment getSearchListFragment();
 
     public abstract Fragment getCacheListFragment();
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        itemPickerTypeList = new HashSet<>();
+    }
 
     @Override
     protected void setupLayout() {
@@ -113,19 +119,15 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
                 finish();
             }
         });
-        itemPickerTypeList = new HashSet<>();
     }
 
     @Override
     protected void setupFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            //TODO Need to change to v4 fragment
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             Fragment searchListFragment = getSearchListFragment();
-            basePickerItemSearchList = (BasePickerItemSearchList) searchListFragment;
             fragmentTransaction.replace(R.id.layout_container_list, searchListFragment, CONTAINER_SEARCH_LIST_TAG);
             Fragment cacheListFragment = getCacheListFragment();
-            basePickerItemCacheList = (BasePickerItemCacheList) cacheListFragment;
             fragmentTransaction.replace(R.id.layout_container_cache, cacheListFragment, CONTAINER_CACHE_LIST_TAG);
             fragmentTransaction.commit();
         }
@@ -158,9 +160,11 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
             return;
         }
         if (fromFragmentTag.equalsIgnoreCase(CONTAINER_SEARCH_LIST_TAG)) {
-            basePickerItemSearchList.notifyChange();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+            ((BasePickerItemCacheList) fragment).notifyChange();
         } else if (fromFragmentTag.equalsIgnoreCase(CONTAINER_CACHE_LIST_TAG)) {
-            basePickerItemCacheList.notifyChange();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+            ((BasePickerItemSearchList) fragment).notifyChange();
         }
     }
 
