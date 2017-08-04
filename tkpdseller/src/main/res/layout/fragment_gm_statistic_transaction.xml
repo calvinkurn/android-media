@@ -89,6 +89,7 @@
             android:id="@+id/topads_statistic_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tcv_empty_layout="@layout/partial_gm_statistic_transaction_top_ads_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_title="@string/gm_statistic_top_ads_amount_title_text">
 
@@ -123,7 +124,7 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:padding="@dimen/gm_unfinished_margin_top"
-                    android:text="@string/gm_statistic_see_topads"
+                    android:text="@string/gm_statistic_manage_topads"
                     android:textSize="@dimen/font_button"
                     android:textStyle="bold" />
             </LinearLayout>

@@ -1,6 +1,8 @@
 package com.tokopedia.seller.goldmerchant.statistic.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph
 import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.seller.goldmerchant.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.seller.goldmerchant.statistic.di.module.GMStatisticModule;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticGrossViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.seller.goldmerchant.statistic.view.holder.GMStatisticSummaryViewHolder;
@@ -40,7 +41,8 @@ import javax.inject.Inject;
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment implements GMStatisticDashboardView {
+public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
+        implements GMStatisticDashboardView {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -55,6 +57,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GmStatisticMarketInsightViewHolder gmStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
+    private SnackbarRetry snackbarShopInfoRetry;
 
     public GMStatisticDashboardFragment() {
     }
@@ -63,12 +66,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         datePickerPresenter.clearDatePickerSetting();
-        initNumberFormatter();
-    }
-
-    private void initNumberFormatter() {
-        KMNumbers.overrideSuffixes(1000L, "rb");
-        KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
     @Override
@@ -106,15 +103,14 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                 }
             }
         });
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                hideSnackBarRetry();
-                loadDataByDate();
-            }
-        });
-        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        disableDateLabelView();
+        gmDashboardPresenter.fetchShopInfoData();
     }
 
     @Override
@@ -210,16 +206,62 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         showSnackbarRetry();
     }
 
-    private void showSnackbarRetry() {
-        if (!snackbarRetry.isShown()) {
-            snackbarRetry.showRetrySnackbar();
+    @Override
+    public void onErrorLoadShopInfo(Throwable t) {
+        showSnackBarShopInfoRetry();
+    }
+
+    private void showSnackBarShopInfoRetry() {
+        if (snackbarShopInfoRetry == null) {
+            snackbarShopInfoRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    gmDashboardPresenter.fetchShopInfoData();
+                }
+            });
+            snackbarShopInfoRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        }
+        //!important, the delay will help the snackbar re-show after it is being hidden.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded()) {
+                    snackbarShopInfoRetry.showRetrySnackbar();
+                }
+            }
+        },700);
+    }
+
+    @Override
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant) {
+        if (isGoldMerchant) {
+            enableDateLabelView();
+        } else {
+            disableDateLabelView();
         }
     }
 
-    private void hideSnackBarRetry() {
-        if (snackbarRetry.isShown()) {
-            snackbarRetry.hideRetrySnackbar();
+    private void showSnackbarRetry() {
+        if (snackbarRetry == null) {
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    loadDataByDate();
+                }
+            });
+            snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
+        //!important, the delay will help the snackbar re-show after it is being hidden.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded()) {
+                    snackbarRetry.showRetrySnackbar();
+                }
+            }
+        },700);
     }
 
     @Override

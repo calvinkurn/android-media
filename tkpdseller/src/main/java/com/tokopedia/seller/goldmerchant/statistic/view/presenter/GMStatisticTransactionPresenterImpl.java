@@ -2,9 +2,9 @@ package com.tokopedia.seller.goldmerchant.statistic.view.presenter;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.goldmerchant.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
-import com.tokopedia.seller.goldmerchant.statistic.view.model.GMDateRangeDateViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.seller.goldmerchant.statistic.view.model.GMTransactionGraphMergeModel;
+import com.tokopedia.seller.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.dashboard.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.dashboard.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.dashboard.domain.interactor.DashboardTopadsInteractor;
@@ -23,8 +23,6 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
     private GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase;
     private DashboardTopadsInteractor dashboardTopadsInteractor;
     private SessionHandler sessionHandler;
-
-    private GMDateRangeDateViewModel gmDateRangeDateViewModel;
 
     public GMStatisticTransactionPresenterImpl(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
@@ -56,7 +54,6 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
             public void onNext(GMTransactionGraphMergeModel mergeModel) {
                 fetchTopAdsDeposit(mergeModel.gmTopAdsAmountViewModel);
                 // get necessary object, just take from transaction graph view
-                gmDateRangeDateViewModel = mergeModel.gmTransactionGraphViewModel.grossRevenueModel.dateRangeModel;
                 getView().onSuccessLoadTransactionGraph(mergeModel);
             }
         });
@@ -64,7 +61,7 @@ public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionP
 
     private void fetchTopAdsDeposit(final GMGraphViewModel gmTopAdsAmountViewModel) {
         HashMap<String, String> param = new HashMap<>();
-        param.put("shop_id", sessionHandler.getShopID());
+        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, sessionHandler.getShopID());
         dashboardTopadsInteractor.getDashboardResponse(param, new ListenerInteractor<DataResponse<DataDeposit>>() {
             @Override
             public void onSuccess(DataResponse<DataDeposit> dataDepositDataResponse) {

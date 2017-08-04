@@ -1,9 +1,13 @@
 package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -21,6 +25,10 @@ public class DateLabelView extends BaseCustomView {
     private TextView dateTextView;
     private TextView comparedDateTextView;
     private String content;
+    private ImageView ivArrow;
+    private ColorStateList defaultTextColor;
+    private ColorStateList defaultCompareTextColor;
+    private int grayColor;
 
     public DateLabelView(Context context) {
         super(context);
@@ -51,6 +59,10 @@ public class DateLabelView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_date_label_view, this);
         dateTextView = (TextView) view.findViewById(R.id.text_view_date);
         comparedDateTextView = (TextView) view.findViewById(R.id.text_view_compared_date);
+        ivArrow = (ImageView) view.findViewById(R.id.arrow_left);
+        defaultTextColor = dateTextView.getTextColors();
+        defaultCompareTextColor = comparedDateTextView.getTextColors();
+        grayColor = ContextCompat.getColor(getContext(), R.color.grey_400);
     }
 
     @Override
@@ -79,5 +91,19 @@ public class DateLabelView extends BaseCustomView {
 
     public void setComparedDateVisibility(int visibility) {
         comparedDateTextView.setVisibility(visibility);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (enabled) {
+            dateTextView.setTextColor(defaultTextColor);
+            comparedDateTextView.setTextColor(defaultCompareTextColor);
+            ivArrow.clearColorFilter();
+        } else {
+            dateTextView.setTextColor(grayColor);
+            comparedDateTextView.setTextColor(grayColor);
+            ivArrow.setColorFilter(grayColor, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 }

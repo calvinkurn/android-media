@@ -17,6 +17,10 @@ public class ShopService extends AuthService<ShopApi> {
         super();
     }
 
+    public ShopService(String overrideUrl) {
+        super(overrideUrl);
+    }
+
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(ShopApi.class);

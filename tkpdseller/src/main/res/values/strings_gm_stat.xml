@@ -22,14 +22,14 @@
     <string name="gm_statistic_these_keywords_are_based_on_category_x">Kata kunci ini berdasarkan kategori dari \"<![CDATA[<b><i>%1$s</i></b>]]>\"</string>
     <string name="gm_statistic_total_transaction">Total Transaksi</string>
 
-    <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko anda</string>
+    <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko Anda</string>
     <string name="gm_statistic_plus_add_product">+ Tambah Produk</string>
     <string name="gm_statistic_get_access_to_see_gm_stat">Dapatkan akses untuk melihat data lengkap statistik produk</string>
     <string name="gm_statistic_upgrade_to_gold_merchant">Upgrade ke Gold Merchant</string>
     <string name="gm_statistic_buyer_data">Data Pembeli</string>
     <string name="gm_statistic_buyer_count">Jumlah Pembeli</string>
     <string name="gm_statistic_product_data">Data Produk</string>
-    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada terjual dalam 30 hari terakhir</string>
+    <string name="gm_statistic_no_product_data_in_this_period">Tidak ada produk terjual dalam 30 hari terakhir</string>
     <string name="gm_statistic_x_sold">x Terjual</string>
     <string name="gm_statistic_most_popular_product">Produk terlaris</string>
 
@@ -57,7 +57,6 @@
     <string name="gm_statistic_rupiah_format_text">Rp %s</string>
     <string name="gm_statistic_percent_format_text">%1$s%%</string>
     <string name="gm_statistic_top_ads_empty_title_no_topads_credit">Maksimalkan Penjualan dengan Fitur Top Ads!</string>
-    <string name="gm_statistic_top_ads_empty_desc_no_topads_credit">Promosi Produk lebih efisien dan tepat sasaran</string>
     <string name="gm_statistic_top_ads_empty_title_no_data">Tidak Ada Data</string>
     <string name="gm_statistic_top_ads_empty_desc_no_data">Anda belum mengaktifkan fitur TopAds pada periode ini</string>
     <string name="gm_statistic_top_ads_empty_title_credit_not_used"><![CDATA[Promosikan Toko & Produkmu dengan fitur TopAds!]]></string>
@@ -66,6 +65,8 @@
     <string name="gm_statistic_empty_register_topads_now">Mulai Promo</string>
     <string name="gm_statistic_change_date"><![CDATA[Ubah tanggal >]]></string>
     <string name="gm_statistic_card_error_content">Data gagal ditampilkan</string>
+    <string name="gm_statistic_manage_topads">Atur TopAds</string>
     <string name="gm_statistic_see_topads">Lihat TopAds</string>
-    <string name="gm_sort">Sort</string>
+    <string name="gm_statistic_transaction_table_no_data">Tidak ada data produk terjual pada periode ini</string>
+    <string name="gm_statistic_sort">Sort</string>
 </resources>

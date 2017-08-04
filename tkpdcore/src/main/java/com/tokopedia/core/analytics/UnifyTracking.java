@@ -1247,11 +1247,59 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.STATISTIC);
     }
 
+    public static void eventClickGMStatSeeDetailTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GMSTAT_TRANSACTION,
+                AppEventTracking.EventLabel.SEE_DETAIL);
+    }
+
+    public static void eventClickGMStatBuyGMDetailTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STAT,
+                AppEventTracking.EventLabel.BUY_GM);
+    }
+
+    public static void eventClickGMStatDatePickerWOCompareTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+                AppEventTracking.EventLabel.CHANGE_DATE);
+    }
+
+    public static void eventClickGMStatDatePickerWCompareTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+                AppEventTracking.EventLabel.CHANGE_DATE_COMPARE);
+    }
+
+    public static void eventClickGMStatManageTopAds(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TOP_ADS,
+                AppEventTracking.EventLabel.MANAGE_TOPADS);
+    }
+
+    public static void eventClickGMStatProductSoldTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+                AppEventTracking.EventLabel.PRODUCT_SOLD);
+    }
+
+    public static void eventClickGMStatFilterNameTransaction(String filterName){
+        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+                AppEventTracking.EventLabel.GRAPH_X + filterName);
+    }
+
+    public static void eventClickGMStatFilterTypeProductSold(String filterType){
+        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_SOLD, filterType);
+    }
+
     private static void eventClickGMStat(String eventCategory, String eventLabel){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_GM_STAT,
                 eventCategory,
                 AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    private static void eventClickFilterGMStat(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GM_STAT,
+                eventCategory,
+                AppEventTracking.Action.FILTER,
                 eventLabel
         ).getEvent());
     }
@@ -1286,12 +1334,8 @@ public class UnifyTracking extends TrackingUtils {
         getMoEngine().sendRegistrationStartEvent(medium);
     }
 
-    public static void eventMoRegister(CustomerWrapper customerWrapper) {
-        getMoEngine().sendRegisterEvent(
-                customerWrapper.getFullName(),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH)
-        );
+    public static void eventMoRegister(String name, String mobileNo) {
+        getMoEngine().sendRegisterEvent(name,mobileNo);
     }
 
     public static void eventOTPSuccess(){
@@ -1733,5 +1777,34 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.BUY_GM
         ).getEvent());
+    }
+
+    public static void eventWidgetInstalled(){
+        eventWidget(AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventWidgetRemoved(){
+        eventWidget(AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventAccessAppViewWidget(){
+        eventWidget(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
+    }
+
+    public static void eventWidget(String action, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SELLER_WIDGET,
+                AppEventTracking.Category.SELLER_APP_WIDGET,
+                action,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventDrawerTopads(){
+        eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
+    }
+
+    public static void eventDrawerSellerHome(){
+        eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
 }

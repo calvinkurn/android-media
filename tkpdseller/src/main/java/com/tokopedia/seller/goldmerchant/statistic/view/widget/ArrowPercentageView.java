@@ -85,9 +85,9 @@ public class ArrowPercentageView extends FrameLayout {
                 tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
             } else if (percentage == 0) { // percentage is 0
                 ivArrowIcon.setImageResource(upDrawableSrc);
-                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greyColor));
+                tvPercentage.setTextColor(ContextCompat.getColor(getContext(), greenColor));
             }
-            tvPercentage.setText(KMNumbers.formatToPercentString(getContext(),percentage).replace("-", ""));
+            tvPercentage.setText(KMNumbers.formatToPercentString(percentage).replace("-", ""));
         }
     }
 

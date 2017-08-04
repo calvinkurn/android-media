@@ -63,6 +63,18 @@ public abstract class BaseDatePickerFragment extends BaseDaggerFragment implemen
         reloadDataForDate();
     }
 
+    protected void disableDateLabelView(){
+        if (dateLabelView!= null) {
+            dateLabelView.setEnabled(false);
+        }
+    }
+
+    protected void enableDateLabelView(){
+        if (dateLabelView!= null) {
+            dateLabelView.setEnabled(true);
+        }
+    }
+
     @Override
     public void reloadDataForDate() {
         // important to reattach here, or the presenter will attach to the previous fragment when onResume

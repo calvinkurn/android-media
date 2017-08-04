@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
@@ -119,7 +120,11 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                 .setItemClickListener(new BottomSheetItemClickListener() {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
-                        gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, item.getTitle().toString());
+                        String itemTitle = item.getTitle().toString();
+
+                        UnifyTracking.eventClickGMStatFilterNameTransaction(itemTitle);
+
+                        gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, itemTitle);
                         resetSelection(gmStatGraphSelection);
                         bind(gmTransactionGraphViewModel, compareDate);
                     }
@@ -177,7 +182,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
             case GMTransactionGraphType.NET_REVENUE:
             case GMTransactionGraphType.REJECTED_AMOUNT:
             case GMTransactionGraphType.SHIPPING_COST:
-                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(gmTitleCardView.getContext(), data.amount));
+                gmLineChartContainer.setAmount(KMNumbers.formatRupiahString(data.amount));
                 break;
             case GMTransactionGraphType.REJECT_TRANS:
             case GMTransactionGraphType.SUCCESS_TRANS:
