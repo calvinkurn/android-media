@@ -12,10 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -24,6 +30,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
@@ -31,6 +38,11 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -49,6 +61,8 @@ import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+
+import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -160,6 +174,37 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
+        return Uri.parse(originUrl).buildUpon()
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                )
+                .build().toString();
+    }
+
+    @Override
+    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
+        String urlQuery = Uri.parse(originUrl).getQuery();
+        return AuthUtil.generateHeaders(
+                Uri.parse(originUrl).getPath(),
+                urlQuery != null ? urlQuery : "",
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
     public DrawerHelper getDrawer(AppCompatActivity activity,
                                   SessionHandler sessionHandler,
                                   LocalCacheHandler drawerCache,
@@ -233,6 +278,33 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(this);
+        String authKey = sessionHandler.getAccessToken(this);
+        authKey = sessionHandler.getTokenType(this) + " " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+
+        AccountsService accountsService = new AccountsService(bundle);
+
+        ProfileSourceFactory profileSourceFactory =
+                new ProfileSourceFactory(
+                        this,
+                        accountsService,
+                        new GetUserInfoMapper(),
+                        null
+                );
+
+        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                new ProfileRepositoryImpl(profileSourceFactory)
+        );
+
+        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
+    }
+
+    @Override
     public void actionAppLink(Activity activity, String linkUrl) {
         Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
         intent.setData(Uri.parse(linkUrl));
@@ -260,6 +332,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     public Intent getRegisterIntent(Context context) {
         Intent intent = Login.getRegisterIntent(context);
         return intent;
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override

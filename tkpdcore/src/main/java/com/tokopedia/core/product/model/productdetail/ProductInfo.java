@@ -110,6 +110,10 @@ public class ProductInfo implements Parcelable {
     @Expose
     private String installmentMinPrice;
 
+    @SerializedName("product_price_unfmt")
+    @Expose
+    private Integer productPriceUnformatted;
+
 
     public ProductInfo() {
     }
@@ -346,6 +350,14 @@ public class ProductInfo implements Parcelable {
         this.installmentMinPrice = installmentMinPrice;
     }
 
+    public Integer getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(Integer productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -379,6 +391,7 @@ public class ProductInfo implements Parcelable {
         wholeSaleMinQuantity = in.readString();
         installmentMinPercentage = in.readString();
         installmentMinPrice = in.readString();
+        productPriceUnformatted = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -435,6 +448,12 @@ public class ProductInfo implements Parcelable {
         dest.writeString(wholeSaleMinQuantity);
         dest.writeString(installmentMinPercentage);
         dest.writeString(installmentMinPrice);
+        if (productPriceUnformatted == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(productPriceUnformatted);
+        }
     }
 
     @SuppressWarnings("unused")
