@@ -47,7 +47,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
         seeDetailView = transactionDataCardView.findViewById(R.id.see_detail_container);
-        separator = transactionDataCardView.findViewById(R.id.separator4);
+        separator = view.findViewById(R.id.separator4);
         seeDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
