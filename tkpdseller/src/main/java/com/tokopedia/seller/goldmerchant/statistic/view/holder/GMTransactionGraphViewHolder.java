@@ -221,7 +221,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
     private ArrayList<TooltipModel> joinTooltipData(float[] values, float[] values1) {
         ArrayList<TooltipModel> tooltipModels = new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
-            tooltipModels.add(new TooltipModel("", String.format("%d,%d", (int) values[i], (int) values1[1])));
+            tooltipModels.add(new TooltipModel("", String.format("%d,%d", (int) values[i], (int) values1[0])));
         }
         return tooltipModels;
     }
