@@ -72,11 +72,17 @@ public class GetFeaturedProductRetrofit {
 
             @Override
             public void onError(Throwable e) {
-                onGetFeaturedProductListener.onFailure(CONNECTION_TYPE_ERROR, context.getString(R.string.error_connection_problem));
+                if (onGetFeaturedProductListener != null) {
+                    onGetFeaturedProductListener.onFailure(CONNECTION_TYPE_ERROR, context.getString(R.string.error_connection_problem));
+                }
             }
 
             @Override
             public void onNext(Response<FeaturedProductServiceModel> serviceResponse) {
+                if (onGetFeaturedProductListener == null) {
+                    return;
+                }
+
                 if (serviceResponse.isSuccessful()) {
                     List<FeaturedProductItem> featuredProductItemList = serviceResponse.body().getItemList();
                     onGetFeaturedProductListener.onSuccess(featuredProductItemList);

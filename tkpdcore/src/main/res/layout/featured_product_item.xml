@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_product_list">
 
     <LinearLayout
@@ -42,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
-                android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
+                tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
                 android:textColor="@color/black_70"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -52,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Rp 3.121.500"
+                tools:text="Rp 3.121.500"
                 android:textColor="@color/orange_red"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -61,7 +62,7 @@
                 android:id="@+id/rating_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/feature_product_item_component_spacing"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
@@ -85,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/feature_product_item_component_spacing"
                 android:orientation="horizontal">
 
                 <com.tokopedia.core.customwidget.FlowLayout

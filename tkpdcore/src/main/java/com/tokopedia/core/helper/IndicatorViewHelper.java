@@ -24,6 +24,9 @@ import java.util.List;
  */
 
 public class IndicatorViewHelper {
+
+    private static final String WHITE_COLOR = "#ffffff";
+
     public static void renderBadgesView(Context context,
                                         LinearLayout badgesContainer,
                                         List<Badge> badgeList) {
@@ -46,7 +49,7 @@ public class IndicatorViewHelper {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                if (!label.getColor().toLowerCase().equals(WHITE_COLOR)) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
