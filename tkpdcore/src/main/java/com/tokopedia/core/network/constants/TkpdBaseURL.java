@@ -52,6 +52,7 @@ public class TkpdBaseURL {
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
+    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -762,6 +763,8 @@ public class TkpdBaseURL {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
         public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
+        public static final String PATH_CATEGORIES_LAYOUT_ROOT = "/v1/category_layout/{catId}?type=root";
+        public static final String PATH_CATEGORIES_LAYOUT = "/v1/category_layout/{catId}";
         public static final String FETCH_CATEGORIES = "/v1/categories?filter=type==tree";
     }
 

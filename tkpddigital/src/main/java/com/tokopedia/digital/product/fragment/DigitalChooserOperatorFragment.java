@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -36,6 +37,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
             "EXTRA_STATE_OPERATOR_LIST_DATA";
     private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
+    private static final String EXTRA_STATE_CATEGORY = "EXTRA_STATE_CATEGORY";
 
     @BindView(R2.id.rv_list_chooser)
     RecyclerView rvOperatorList;
@@ -44,14 +46,16 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     private List<Operator> operatorListData;
     private String operatorStyleView;
+    private String categoryState;
     private ActionListener actionListener;
     private OperatorChooserAdapter operatorChooserAdapter;
 
-    public static Fragment newInstance(List<Operator> operatorListData, String operatorStyleView) {
+    public static Fragment newInstance(List<Operator> operatorListData, String operatorStyleView, String categoryState) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) operatorListData);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW, operatorStyleView);
+        bundle.putString(EXTRA_STATE_CATEGORY, categoryState);
         Fragment fragment = new DigitalChooserOperatorFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -99,6 +103,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     protected void setupArguments(Bundle arguments) {
         this.operatorListData = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
         this.operatorStyleView = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW);
+        categoryState = arguments.getString(EXTRA_STATE_CATEGORY);
     }
 
     @Override
@@ -110,6 +115,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (operatorListData.size() > 10) {
+            fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
             fieldSearch.addTextChangedListener(onSearchTextChange());
             fieldSearch.clearFocus();
             rvOperatorList.requestFocus();
@@ -154,6 +160,17 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     private void checkEmptyQuery(String query) {
         if (query.isEmpty())
             operatorChooserAdapter.setSearchResultData(operatorListData);
+    }
+
+    private View.OnFocusChangeListener onAnalyticsFocusChangedListener(){
+        return new View.OnFocusChangeListener(){
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){
+                    UnifyTracking.eventClickSearchBar(categoryState,categoryState);
+                }
+            }
+        };
     }
 
     private TextWatcher onSearchTextChange() {

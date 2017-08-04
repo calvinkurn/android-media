@@ -33,6 +33,7 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -40,6 +41,8 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
@@ -111,6 +114,8 @@ public class DrawerBuyerHelper extends DrawerHelper
     private void createDataGuest(ArrayList<DrawerItem> data) {
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home), TkpdState
                 .DrawerPosition.INDEX_HOME, true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_login), TkpdState
                 .DrawerPosition.LOGIN, true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_register), TkpdState
@@ -127,6 +132,10 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.INDEX_HOME,
+                true));
+        data.add(new DrawerItem(context.getString(R.string.title_category),
+                R.drawable.ic_category_black_bold,
+                TkpdState.DrawerPosition.CATEGORY_NAVIGATION,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_wishlist),
                 R.drawable.icon_wishlist,
@@ -386,6 +395,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent = HomeRouter.getHomeActivity(context);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
+                    context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
                     break;
                 case TkpdState.DrawerPosition.WISHLIST:
                     Intent wishList = SimpleHomeRouter
