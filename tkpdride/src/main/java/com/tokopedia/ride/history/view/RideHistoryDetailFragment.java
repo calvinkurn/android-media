@@ -88,7 +88,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @BindView(R2.id.tv_cashback)
     TextView cashbackValueTextView;
     @BindView(R2.id.tv_total_charged)
-    TextView totalChargedTexView;
+    TextView tokocashChargedTexView;
     @BindView(R2.id.rl_payment_details)
     RelativeLayout paymentDetailsLayout;
     @BindView(R2.id.layout_rate)
@@ -237,8 +237,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         }
 
-        totalChargedTexView.setText(rideHistory.getFare());
-        rideFareTextView.setText(rideHistory.getFare());
+        tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
+        rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {

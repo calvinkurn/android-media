@@ -26,11 +26,6 @@ def allowDistribution() {
     return "false";
 }
 
-def getTopAdsSdk() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
-}
-
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -74,8 +69,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2080109;
-        defaultVersionName = "2.8.1.9";
+        defaultVersionCode = 212001301;
+        defaultVersionName = "2.12";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -208,22 +203,31 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    /*compile (rootProject.ext.tkpdDependencies.inbox) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.discovery) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.transaction) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.seller) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.session) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.core)*/
+//    compile (rootProject.ext.tkpdDependencies.inbox) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.discovery) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.transaction) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.seller) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.session) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.tkpdpdp) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.feed) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.ride) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.core)
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
@@ -233,14 +237,6 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
-    compile getTopAdsSdk()
-
-//    compile rootProject.ext.tkpdDependencies.discovery
-//    compile rootProject.ext.tkpdDependencies.transaction
-//    compile rootProject.ext.tkpdDependencies.seller
-//    compile rootProject.ext.tkpdDependencies.session
-//    compile rootProject.ext.tkpdDependencies.inbox
-
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -258,6 +254,7 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.remoteConfig
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

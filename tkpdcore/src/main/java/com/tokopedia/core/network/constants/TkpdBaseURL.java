@@ -5,6 +5,7 @@ package com.tokopedia.core.network.constants;
  */
 public class TkpdBaseURL {
 
+    public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
@@ -46,11 +47,11 @@ public class TkpdBaseURL {
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
-
     public static final String URL_TOKOCASH = "https://tokocash.com/";
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
+    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -283,6 +284,7 @@ public class TkpdBaseURL {
         public static final String PATH_SHOP = "v4/shop/";
         public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
         public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
+        public static final String URL_ACTION_SHOP_ORDER = "v4/myshop-order/";
 
         public static final String PATH_CHECK_DOMAIN = "check_domain.pl";
         public static final String PATH_CHECK_SHOP_NAME = "check_shop_name.pl";
@@ -580,7 +582,7 @@ public class TkpdBaseURL {
         public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
-        public static final String API_HOME_CATEGORY_MENU = "/api/v1.2/layout/category";
+        public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
@@ -662,6 +664,7 @@ public class TkpdBaseURL {
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
         public static final String ACTIVATE_UNICODE = "/token";
         public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
+        public static final String PATH_EDIT_PROFILE = "/api/v1/user/profile-edit";
 
 
         public class OTP {
