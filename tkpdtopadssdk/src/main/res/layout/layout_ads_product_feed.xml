@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="0dp"
-        android:layout_marginTop="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginTop="@dimen/margin_3"
+        android:layout_marginLeft="@dimen/margin_3"
+        android:layout_marginRight="@dimen/margin_3"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.topads.sdk.view.SquareImageView
@@ -32,16 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_card"
-        android:ellipsize="end"
-        android:maxLines="2"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
-        android:minHeight="@dimen/product_title_min_height"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:textSize="@dimen/text_size_s_medium"
-        android:lineSpacingExtra="5sp"
         android:textStyle="normal"
+        android:maxLines="2"
         tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/black_70"/>
 
@@ -58,8 +55,8 @@
         android:paddingTop="@dimen/padding_vs"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textSize="@dimen/text_size_s_medium"
         android:textColor="@color/orange_red"
+        android:textSize="12sp"
         tools:text="Rp 3.121.500" />
 
 </RelativeLayout>

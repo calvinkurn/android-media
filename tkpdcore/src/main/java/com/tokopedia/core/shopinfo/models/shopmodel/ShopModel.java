@@ -38,5 +38,8 @@ public class ShopModel {
     @SerializedName("address")
     @Expose
     public List<Address> address = new ArrayList<Address>();
+    @SerializedName("use_ace")
+    @Expose
+    public int useAce;
 
 }

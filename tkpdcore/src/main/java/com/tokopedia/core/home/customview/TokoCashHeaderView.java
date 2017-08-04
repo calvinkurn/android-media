@@ -3,7 +3,6 @@ package com.tokopedia.core.home.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -14,7 +13,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 
 /**
@@ -53,14 +53,17 @@ public class TokoCashHeaderView extends RelativeLayout {
         initView(context);
     }
 
-    public void renderData(final TopCashItem tokoCashData) {
-        String tokoCashRedirectUrl = tokoCashData.getData().getRedirectUrl();
-        final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData);
-        if (tokoCashData.getData().getLink().equals(1)) {
+    public void renderData(final DrawerTokoCash tokoCashData) {
+        String tokoCashRedirectUrl = tokoCashData.getRedirectUrl();
+        final String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData
+                .getDrawerTokoCashAction());
+        if (tokoCashData.getLink() == 1) {
             setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
-            tokoCashAmount.setText(tokoCashData.getData().getBalance());
+            tokoCashAmount.setText(tokoCashData.getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
             tokoCashButton.setOnClickListener(getTopUpClickedListenerHarcodedToNative(tokoCashActionRedirectUrl));
+            pendingLayout.setVisibility(GONE);
+            normalLayout.setVisibility(VISIBLE);
         } else {
             actionListener.onRequestPendingCashBack();
             tokoCashButton.setOnClickListener(onActivationClickedListener(
@@ -98,9 +101,9 @@ public class TokoCashHeaderView extends RelativeLayout {
         };
     }
 
-    private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
-        if (tokoCashData.getData().getAction() == null) return "";
-        else return tokoCashData.getData().getAction().getRedirectUrl();
+    private String getTokoCashActionRedirectUrl(DrawerTokoCashAction drawerTokoCashAction) {
+        if (drawerTokoCashAction == null) return "";
+        else return drawerTokoCashAction.getRedirectUrl();
     }
 
     private OnClickListener onActivationClickedListener(final String redirectUrl) {
@@ -138,12 +141,10 @@ public class TokoCashHeaderView extends RelativeLayout {
     }
 
     private void openTokoCashWebView(String redirectURL) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TOKO_CASH_URL, redirectURL);
         if (getContext() instanceof Activity) {
             if (((Activity) getContext()).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) ((Activity) getContext()).getApplication())
-                        .goToWallet(getContext(), bundle);
+                        .goToWallet(getContext(), redirectURL);
             }
         }
     }

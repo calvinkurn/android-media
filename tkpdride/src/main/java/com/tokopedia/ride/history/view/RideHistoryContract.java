@@ -4,6 +4,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.Paging;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,18 @@ public interface RideHistoryContract {
         void showMainLayout();
 
         void hideMainLayout();
+
+        void setPaging(Paging paging);
+
+        void showRetryLoadMoreLayout();
+
+        void renderHistoryLoadMoreLists(ArrayList<Visitable> histories);
+
+        void showLoadMoreLoading();
+
+        void hideLoadMoreLoading();
+
+        RequestParams getHistoriesLoadMoreParam();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -50,5 +63,7 @@ public interface RideHistoryContract {
         void initialize();
 
         void actionRefreshHistoriesData();
+
+        void actionLoadMore();
     }
 }

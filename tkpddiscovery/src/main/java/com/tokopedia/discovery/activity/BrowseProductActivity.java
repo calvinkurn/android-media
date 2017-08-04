@@ -70,6 +70,7 @@ import butterknife.ButterKnife;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_TITLE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
@@ -79,7 +80,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener, ProductFragment.ProductFragmentListener {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
-    public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".LAYOUT";
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
     public static final int REQUEST_SORT = 121;

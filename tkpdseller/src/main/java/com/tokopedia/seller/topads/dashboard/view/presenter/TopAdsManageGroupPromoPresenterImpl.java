@@ -108,6 +108,9 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()){
+                    return;
+                }
                 getView().onGetGroupAdListError();
             }
 
@@ -127,6 +130,9 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()){
+                    return;
+                }
                 getView().dismissLoading();
                 getView().onCheckGroupExistError();
             }
@@ -175,6 +181,7 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
             @Override
             public void onError(Throwable e) {
+
             }
 
             @Override
@@ -194,6 +201,9 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()){
+                    return;
+                }
                 getView().dismissLoading();
                 getView().onCheckGroupExistError();
             }
