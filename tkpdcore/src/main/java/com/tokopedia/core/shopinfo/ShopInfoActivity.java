@@ -566,7 +566,7 @@ public class ShopInfoActivity extends BaseActivity
         if (shopModel.info.shopIsOfficial == 1) {
             adapter.initOfficialShop(shopModel);
         } else {
-            adapter.initRegularShop();
+            adapter.initRegularShop(shopModel);
         }
         for (String title : ShopTabPagerAdapter.TITLES)
             holder.indicator.addTab(holder.indicator.newTab().setText(title));

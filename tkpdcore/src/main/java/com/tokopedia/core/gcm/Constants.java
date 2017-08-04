@@ -44,6 +44,8 @@ public interface Constants {
 
     interface Applinks {
         String HOME = "tokopedia://home";
+        String HOME_FEED = "tokopedia://home/feed";
+        String HOME_CATEGORY = "tokopedia://home/category";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
@@ -74,11 +76,14 @@ public interface Constants {
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
-        String PROMO = "tokopedia://promo/{promo_id}";
+        String PROMO = "tokopedia://promo";
+        String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
-
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
-        String TOPPICKS = "tokopedia://toppicks/{toppicks_id}";
+        String WISHLIST = "tokopedia://wishlist";
+        String RECENT_VIEW = "tokopedia://recentlyviewed";
+        String TOPPICKS = "tokopedia://toppicks";
+        String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     }
 
     interface Settings {

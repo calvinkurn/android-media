@@ -22,6 +22,8 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
+import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
+
 /**
  * Created by Alifa on 1/10/2017.
  */
@@ -31,7 +33,8 @@ public class TopPicksWebView extends TActivity implements
 
     private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
-    private static final java.lang.String ARGS_TOPPICKS_ID = "toppicks_id";
+    private static final String TOPPICK_SEGMENT = "toppicks";
+    private static final String ARGS_TOPPICK_ID = "toppick_id";
     private FragmentTopPicksWebView fragment;
 
     @DeepLink({Constants.Applinks.TOPPICKS})
@@ -52,6 +55,20 @@ public class TopPicksWebView extends TActivity implements
         Intent intent = new Intent(context, TopPicksWebView.class);
         intent.putExtra(URL, url);
         return intent;
+    }
+
+    @DeepLink({Constants.Applinks.TOPPICKS, Constants.Applinks.TOPPICK_DETAIL})
+    public static Intent getFeedApplinkCallingIntent(Context context, Bundle bundle) {
+        String toppickId = bundle.getString(ARGS_TOPPICK_ID, "");
+        String result = TkpdBaseURL.WEB_DOMAIN + TOPPICK_SEGMENT;
+        if (!TextUtils.isEmpty(toppickId)) {
+            result += toppickId;
+        }
+        result += FLAG_APP;
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        return newInstance(context, result)
+                .setData(uri.build())
+                .putExtras(bundle);
     }
 
     @Override

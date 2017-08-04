@@ -28,6 +28,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -478,4 +479,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         ShopEditorActivity.startOpenShopEditShippingActivity((AppCompatActivity) getActivity());
     }
 
+    @Override
+    public void sendBroadcastToAppWidget() {
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+    }
 }
