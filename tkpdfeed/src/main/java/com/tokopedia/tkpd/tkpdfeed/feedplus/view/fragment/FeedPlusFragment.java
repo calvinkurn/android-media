@@ -463,7 +463,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         topAdsRecyclerAdapter.setEndlessScrollListener();
-        topAdsRecyclerAdapter.showLoading();
     }
 
     @Override

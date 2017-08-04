@@ -194,19 +194,20 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         if (official_stores != null) {
             for (Feeds.Data.Official_store officialStore : official_stores) {
                 listStores.add(new OfficialStoreDomain(
-                        officialStore.shop_id(),
-                        officialStore.shop_apps_url(),
-                        officialStore.shop_name(),
-                        officialStore.logo_url(),
-                        officialStore.microsite_url(),
-                        officialStore.brand_img_url(),
-                        officialStore.is_owner(),
-                        officialStore.shop_tagline(),
-                        officialStore.is_new(),
-                        officialStore.title(),
-                        officialStore.mobile_img_url(),
-                        officialStore.feed_hexa_color(),
-                        officialStore.redirect_url_app(),
+                        officialStore.shop_id() != null ? officialStore.shop_id() : 0,
+                        officialStore.shop_apps_url() != null ? officialStore.shop_apps_url() : "",
+                        officialStore.shop_name() != null ? officialStore.shop_name() : "",
+                        officialStore.logo_url() != null ? officialStore.logo_url() : "",
+                        officialStore.microsite_url() != null ? officialStore.microsite_url() : "",
+                        officialStore.brand_img_url() != null ? officialStore.brand_img_url() : "",
+                        officialStore.is_owner() != null ? officialStore.is_owner() : false,
+                        officialStore.shop_tagline() != null ? officialStore.shop_tagline() : "",
+                        officialStore.is_new() != null ? officialStore.is_new() : false,
+                        officialStore.title() != null ? officialStore.title() : "",
+                        officialStore.mobile_img_url() != null ? officialStore.mobile_img_url() : "",
+                        officialStore.feed_hexa_color() != null ? officialStore.feed_hexa_color() : "",
+                        officialStore.redirect_url_app() != null ? officialStore
+                                .redirect_url_app() : "",
                         convertToOfficialStoreProducts(officialStore.products())
                 ));
             }
