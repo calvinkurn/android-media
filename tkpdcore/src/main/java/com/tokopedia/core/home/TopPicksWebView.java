@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentTopPicksWebView;
@@ -28,7 +29,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
  * Created by Alifa on 1/10/2017.
  */
 
-public class TopPicksWebView extends TActivity implements
+public class TopPicksWebView extends TkpdCoreWebViewActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
     private static final int IS_WEBVIEW = 1;
@@ -48,7 +49,7 @@ public class TopPicksWebView extends TActivity implements
         String toppickId = bundle.getString(ARGS_TOPPICK_ID, "");
         String result = TkpdBaseURL.WEB_DOMAIN + TOPPICK_SEGMENT;
         if (!TextUtils.isEmpty(toppickId)) {
-            result += toppickId;
+            result += "/" + toppickId;
         }
         result += FLAG_APP;
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
@@ -113,15 +114,5 @@ public class TopPicksWebView extends TActivity implements
         } catch (Exception e) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

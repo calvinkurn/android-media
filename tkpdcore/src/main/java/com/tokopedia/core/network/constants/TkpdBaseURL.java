@@ -51,6 +51,7 @@ public class TkpdBaseURL {
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
+    public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";

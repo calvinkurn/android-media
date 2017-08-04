@@ -255,6 +255,15 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
+        String SELECT_PRODUCT_FROM_WIDGET = "Select Product from Widget";
+        String SELECT_OPERATOR_FROM_WIDGET = "Select Operator from Widget";
+        String SELECT_PRODUCT = "Select Product";
+        String SELECT_OPERATOR = "Select Operator";
+        String CLICK_SEARCH_BAR = "Click Search Bar";
+        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
+        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
+        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
+        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
@@ -369,6 +378,7 @@ public interface AppEventTracking {
         String SIGN_OUT = "Sign Out";
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
+        String PRODUCT = "Product - ";
 
         String REGISTER = "Register";
         String CTA = "CTA";
