@@ -62,6 +62,10 @@
         <item name="android:textSize">@dimen/font_body2</item>
     </style>
 
+    <style name="TextView.Body2.WhitePrimary">
+        <item name="android:textColor">@color/font_white_primary_70</item>
+    </style>
+
     <style name="TextView.Body1">
         <item name="android:textSize">@dimen/font_body1</item>
     </style>
@@ -95,5 +99,7 @@
     <style name="TextView.Caption.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
-
+    <style name="TextView.Caption.WhitePrimary">
+        <item name="android:textColor">@color/font_white_primary_70</item>
+    </style>
 </resources>

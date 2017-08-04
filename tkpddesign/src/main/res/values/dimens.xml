@@ -10,7 +10,8 @@
     <dimen name="font_subheading">16sp</dimen>
     <dimen name="font_body2">14sp</dimen>
     <dimen name="font_body1">14sp</dimen>
-    <dimen name="font_caption">12sp</dimen>
+    <dimen name="font_caption2">12sp</dimen>
+    <dimen name="font_caption1">11sp</dimen>
     <dimen name="font_button">14sp</dimen>
 
     <dimen name="font_loading_height_display4">112dp</dimen>

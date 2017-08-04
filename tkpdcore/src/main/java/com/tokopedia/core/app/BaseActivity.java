@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -41,6 +42,7 @@ import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -242,6 +244,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            AppWidgetUtil.sendBroadcastToAppWidget(this);
         }
     }
 
