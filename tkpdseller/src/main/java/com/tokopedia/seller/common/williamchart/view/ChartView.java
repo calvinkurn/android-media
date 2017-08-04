@@ -1641,6 +1641,7 @@ public abstract class ChartView extends RelativeLayout {
                                 mEntryListener.onClick(i, j, getEntryRect(mRegions.get(i).get(j)));
                             if (mTooltip != null) {  // Toggle tooltip
                                 if (dataDisplayTooltip != null && dataDisplayTooltip.get(i) != null) {
+                                    dataDisplayTooltip.get(j).setPosition(j);
                                     toggleTooltip(getEntryRect(mRegions.get(i).get(j)), dataDisplayTooltip.get(j));
                                 } else {
                                     TooltipModel tooltipModel = new TooltipModel("", String.valueOf(data.get(i).getValue(j)));
