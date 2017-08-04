@@ -537,14 +537,6 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-//        if (topCashUrl != null && !topCashUrl.equals("")) {
-//            String seamlessURL;
-//            seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-//            if (context.getApplication() instanceof TkpdCoreRouter) {
-//                ((TkpdCoreRouter) context.getApplication())
-//                        .goToWallet(context, seamlessURL);
-//            }
-//        }
         if (context.getApplication() instanceof IDigitalModuleRouter) {
             IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
             context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
