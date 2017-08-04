@@ -402,7 +402,12 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        handleThrowableVoucherCode(e);
+                        if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                            view.renderErrorFromInstantVoucher(instantCheckVoucher);
+                        } else {
+                            handleThrowableVoucherCode(e);
+                        }
                     }
 
                     @Override
@@ -726,8 +731,6 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof UnknownHostException) {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-        } else if (e.getCause() instanceof ResponseErrorException) {
-            view.renderErrorCheckVoucher(e.getCause().getMessage());
         } else if (e.getCause() instanceof HttpErrorException) {
             view.showToastMessage(e.getCause().getMessage());
         } else {

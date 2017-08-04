@@ -426,6 +426,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderErrorFromInstantVoucher(int instantVoucher) {
+        if (instantVoucher == 1) {
+            cbUseVoucher.setChecked(true);
+            hideProgressLoading();
+        }
+    }
+
+    @Override
     public void renderErrorEmptyCart() {
         tvTickerGTM.setVisibility(View.GONE);
         nsvContainer.setVisibility(View.GONE);
