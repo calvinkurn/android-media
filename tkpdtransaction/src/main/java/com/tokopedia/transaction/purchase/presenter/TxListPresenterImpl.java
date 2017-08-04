@@ -392,7 +392,14 @@ public class TxListPresenterImpl implements TxListPresenter {
                                 viewListener.showProgressLoading();
                                 doCancelReplacement(orderData);
                             }
+                        })
+                .setNegativeButton(context.getString(R.string.title_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
                         });
+
         Dialog alertDialog = builder.create();
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         viewListener.showDialog(builder.create());

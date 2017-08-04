@@ -119,7 +119,10 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (list != null && !list.isEmpty())
+            return list.size();
+        else
+            return 0;
     }
 
     public void setList(ArrayList<PromoViewModel> list) {
