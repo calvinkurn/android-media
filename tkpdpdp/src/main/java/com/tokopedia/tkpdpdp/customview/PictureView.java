@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -109,7 +110,8 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             }
             listener.onProductStatusError();
         } else if (data.getInfo().getProductStatus().equals("3") &
-                data.getShopInfo().getShopStatus() == 1 && data.getInfo().getProductStatusTitle().length()>1) {
+                data.getShopInfo().getShopStatus() == 1 &&
+                !TextUtils.isEmpty(data.getInfo().getProductStatusTitle())) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getInfo().getProductStatusTitle());
             errorProductSubitle.setText(data.getInfo().getProductStatusMessage());

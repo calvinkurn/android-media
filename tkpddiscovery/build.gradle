@@ -100,7 +100,6 @@ dependencies {
 
     compile getTkpdCore()
     compile getTopAdsSdk()
-
     compile getTkpdPdp()
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife

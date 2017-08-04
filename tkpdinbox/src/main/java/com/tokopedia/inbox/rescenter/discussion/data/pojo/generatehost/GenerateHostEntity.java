@@ -20,5 +20,4 @@ public class GenerateHostEntity {
     public void setGeneratedHost(GeneratedHost generatedHost) {
         this.generatedHost = generatedHost;
     }
-
 }

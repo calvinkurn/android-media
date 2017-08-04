@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Subheading"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         tools:text="@string/app_name"/>

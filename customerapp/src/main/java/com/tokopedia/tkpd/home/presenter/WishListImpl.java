@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -239,7 +240,7 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void deleteWishlist(final Context context, String productId) {
+    public void deleteWishlist(final Context context, final String productId, final int position) {
         wishListView.showProgressDialog();
         Observable<Response<Void>> observable = mojitoAuthService.getApi()
                 .deleteWishlist(productId, SessionHandler.getLoginID(context));
@@ -258,7 +259,8 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(Response<Void> voidResponse) {
-                onFinishedDeleteWishlist();
+                sendMoEngageTracker(productId);
+                onFinishedDeleteWishlist(position);
             }
         };
 
@@ -394,6 +396,18 @@ public class WishListImpl implements WishList {
 //        }, 50);// 1_000
     }
 
+    private void sendMoEngageTracker(String productId) {
+        if(productId != null) {
+            for (int i = 0; i < dataWishlist.size(); i++) {
+                if (dataWishlist.get(i) != null) {
+                    if (productId.equals(dataWishlist.get(i).getId())) {
+                        TrackingUtils.sendMoEngageRemoveWishlist(dataWishlist.get(i));
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     public Boolean isNextPage(Pagination pagination) {
         return pagination != null;
@@ -425,12 +439,14 @@ public class WishListImpl implements WishList {
         return products;
     }
 
-    private void onFinishedDeleteWishlist() {
+    private void onFinishedDeleteWishlist(final int position) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 wishListView.dismissProgressDialog();
-                wishListView.onSuccessDeleteWishlist(params.getString(SearchWishlistUsecase.KEY_QUERY, ""));
+                data.remove(position);
+                wishListView.onSuccessDeleteWishlist(
+                        params.getString(SearchWishlistUsecase.KEY_QUERY, ""), position);
             }
         }, CacheDuration.onSecond(5));
     }

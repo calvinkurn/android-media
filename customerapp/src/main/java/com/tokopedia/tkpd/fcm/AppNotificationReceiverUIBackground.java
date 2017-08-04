@@ -23,10 +23,10 @@ import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -53,6 +53,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
+
 /**
  * Created by alvarisi on 1/17/17.
  */
@@ -73,14 +74,11 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     //TODO this function for divide the new and old flow(that still supported)
                     // next if complete new plz to delete
                     if (isSupportedApplinkNotification(bundle)) {
-                        CommonUtils.dumper("FCM go to supported");
                         handleApplinkNotification(bundle);
                     } else {
                         if (isDedicatedNotification(bundle)) {
-                            CommonUtils.dumper("FCM go to dedicated");
                             handleDedicatedNotification(bundle);
                         } else {
-                            CommonUtils.dumper("FCM go to promo");
                             prepareAndExecutePromoNotification(bundle);
                         }
                     }
@@ -175,13 +173,22 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         new SavePushNotificationCallback()
                 );
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                if (Uri.parse(applinks).getPathSegments().size() == 1) {
+                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                } else {
+                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                    push.processReceivedNotification(data);
+                }
+                break;
+
             default:
                 ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                 applinkBuildAndShowNotification.showApplinkNotification(data);
                 break;
         }
-
-
     }
 
 

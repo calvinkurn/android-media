@@ -77,6 +77,9 @@
     <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
 
 
     <string name="product_no_have_product_name_yet">Belum ada nama produk</string>
@@ -93,4 +96,9 @@
     <string name="product_draft_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="product_draft_add_product">Tambah Produk</string>
     <string name="product_draft_save_as_draft">Simpan Draft</string>
+    <string name="app_widget_title_new_order">Order</string>
+    <string name="app_widget_new_order_wording_empty">Belum ada data</string>
+    <string name="app_widget_label_today">Hari ini</string>
+    <string name="app_widget_label_tomorrow">Besok</string>
+    <string name="app_widget_label_left_day">%d Hari Lagi</string>
 </resources>

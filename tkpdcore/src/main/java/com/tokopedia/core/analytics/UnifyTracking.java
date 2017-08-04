@@ -541,6 +541,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventFeedView(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label
+        ).getEvent());
+    }
+
     public static void eventFeedViewAll(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,
@@ -1262,42 +1271,23 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventChangeCurrencyProductList() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST);
     }
 
     public static void eventChangeCurrencyDropDown() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN);
     }
 
     public static void eventCopyProduct() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.COPY_PRODUCT
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.COPY_PRODUCT);
     }
 
     public static void eventMoRegistrationStart(String medium) {
         getMoEngine().sendRegistrationStartEvent(medium);
     }
 
-    public static void eventMoRegister(CustomerWrapper customerWrapper) {
-        getMoEngine().sendRegisterEvent(
-                customerWrapper.getFullName(),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM),
-                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH)
-        );
+    public static void eventMoRegister(String name, String mobileNo) {
+        getMoEngine().sendRegisterEvent(name,mobileNo);
     }
 
     public static void eventOTPSuccess(){
@@ -1310,75 +1300,35 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventChangeCategoryProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR);
     }
 
     public static void eventChangeCategoryProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU);
     }
 
     public static void eventChangeEtalaseProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR);
     }
 
     public static void eventChangeEtalaseProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU);
     }
 
     public static void eventChangeInsuranceProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR);
     }
 
     public static void eventChangeInsuranceProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU);
     }
 
     public static void eventDeleteProductGear(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR);
     }
 
     public static void eventDeleteProductTopMenu(){
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU
-        ).getEvent());
+        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU);
     }
 
     public static void eventClickPopularSearch(String label){
@@ -1589,6 +1539,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventManageProductClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDraftProductClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
     public static void eventClickBeli(String ec, String el){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -1708,5 +1676,87 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.DOWNLOAD_APP
         ).getEvent());
+    }
+
+    public static void eventFeedClick(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventR3(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.R3,
+                AppEventTracking.Category.R3USER,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventFeedClick(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSwitchRpToDollarAddProduct(){
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
+    }
+
+    public static void eventClickVideoAddProduct(){
+        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
+    }
+
+    public static void eventClickYesGoldMerchantAddProduct(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+                AppEventTracking.Category.GOLD_MERCHANT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT
+        ).getEvent());
+    }
+
+    public static void eventClickGoldMerchantViaDrawer(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM
+        ).getEvent());
+    }
+
+    public static void eventWidgetInstalled(){
+        eventWidget(AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventWidgetRemoved(){
+        eventWidget(AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
+    }
+
+    public static void eventAccessAppViewWidget(){
+        eventWidget(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
+    }
+
+    public static void eventWidget(String action, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SELLER_WIDGET,
+                AppEventTracking.Category.SELLER_APP_WIDGET,
+                action,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventDrawerTopads(){
+        eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
+    }
+
+    public static void eventDrawerSellerHome(){
+        eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
     }
 }

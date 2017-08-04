@@ -116,8 +116,6 @@ public class ShopInfoActivity extends BaseActivity
         View message;
         View setting;
         View progressBar;
-        View retryButton;
-        View retryMessage;
         View progressView;
         View more;
         View shareBut;
@@ -393,7 +391,6 @@ public class ShopInfoActivity extends BaseActivity
             public void onFailure() {
                 if (!checkIsShowingInitialData()) {
                     showRetry();
-                    holder.retryButton.setOnClickListener(onRetryClick());
                 } else
                     SnackbarManager
                             .make(
@@ -426,14 +423,18 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void showRetry() {
-        holder.retryButton.setVisibility(View.VISIBLE);
-        holder.retryMessage.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(this, holder.progressView, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showProgress();
+                facadeGetRetrofit.getShopInfo();
+            }
+        });
         holder.progressBar.setVisibility(View.GONE);
     }
 
     private void showProgress() {
-        holder.retryButton.setVisibility(View.GONE);
-        holder.retryMessage.setVisibility(View.GONE);
+        NetworkErrorHelper.removeEmptyState(holder.progressView);
         holder.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -492,8 +493,6 @@ public class ShopInfoActivity extends BaseActivity
         holder.appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         holder.progressBar = findViewById(R.id.progress_bar);
         holder.progressView = findViewById(R.id.progress_view);
-        holder.retryButton = findViewById(R.id.retry_button);
-        holder.retryMessage = findViewById(R.id.retry_message);
         holder.infoShop = findViewById(R.id.info_shop);
         holder.more = findViewById(R.id.more);
         holder.shareBut = findViewById(R.id.share_but);
@@ -560,7 +559,7 @@ public class ShopInfoActivity extends BaseActivity
         if (shopModel.info.shopIsOfficial == 1) {
             adapter.initOfficialShop(shopModel);
         } else {
-            adapter.initRegularShop();
+            adapter.initRegularShop(shopModel);
         }
         for (String title : ShopTabPagerAdapter.TITLES)
             holder.indicator.addTab(holder.indicator.newTab().setText(title));

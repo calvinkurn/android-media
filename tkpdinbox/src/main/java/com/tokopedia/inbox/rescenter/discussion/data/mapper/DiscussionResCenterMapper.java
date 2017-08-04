@@ -68,6 +68,7 @@ public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, 
             Attachment attachment = new Attachment();
             attachment.setUrl(item.getUrl());
             attachment.setImageThumb(item.getImageThumb());
+            attachment.setIsVideo(item.getIsVideo());
             list.add(attachment);
         }
         return list;

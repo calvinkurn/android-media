@@ -109,6 +109,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CLICK_DRAFT_PRODUCT = "clickDraftProduct";
         String CATEGORY_PAGE = "clickKategori";
         String INTERMEDIARY_PAGE = "clickIntermediary";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
@@ -119,6 +120,10 @@ public interface AppEventTracking {
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
         String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
+        String R3 = "r3";
+        String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
+        String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+        String SELLER_WIDGET = "sellerWidget";
     }
 
     interface Category {
@@ -174,6 +179,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String DRAFT_PRODUCT = "Draft Product";
         String CATEGORY_PAGE = "Category Page";
         String INTERMEDIAR_PAGE = "IntermediaryPage";
         String CATEGORY_PRODUCT = "Kategori";
@@ -188,6 +194,8 @@ public interface AppEventTracking {
         String TOPADS_SWITCHER = "TopAds Switcher";
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
+        String R3USER = "r3User";
+        String SELLER_APP_WIDGET = "Seller App Widget";
     }
 
     interface Action {
@@ -248,6 +256,9 @@ public interface AppEventTracking {
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
         String IMPRESSION = "Impression";
+        String COPY_CODE = "Copy Code";
+        String INSTALL = "Install";
+        String REMOVE = "Remove";
     }
 
     interface EventLabel {
@@ -376,6 +387,10 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String ADD_PRODUCT_PLUS = "Add Product - Plus";
         String ADD_PRODUCT_TOP = "Add Product - Top";
+        String DRAFT_PRODUCT = "Draft Product";
+        String SAVE_DRAFT = "Save Draft";
+        String DELETE_DRAFT = "Delete Draft";
+        String EDIT_DRAFT = "Edit Draft";
         String INSTOPED = "Instoped";
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
@@ -408,6 +423,15 @@ public interface AppEventTracking {
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
         String OPPORTUNIT_LIST = "Peluang";
+
+        String GOLD_MERCHANT_CURRENCY = "Gold Merchant - Currency";
+        String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
+        String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
+        String BUY_GM = "Buy GM";
+        String WIDGET_ORDER = "Widget - Order";
+        String TO_APP_ORDER = "To App - Order";
+        String TOPADS = "TopAds";
+        String SELLER_HOME = "Home - SellerApp";
     }
 
     interface SOCIAL_MEDIA {
@@ -469,6 +493,8 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
         String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
         String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+
+        String RESOLUTION_CENTER_UPLOAD_VIDEO   = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {
@@ -490,6 +516,7 @@ public interface AppEventTracking {
         String SUBCATEGORY = "subcategory_name";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
+        String CATEGORY_ID = "category_id";
         String PRODUCT_ID = "product_id";
         String PRODUCT_NAME = "product_name";
         String PRODUCT_URL = "product_url";
@@ -498,27 +525,45 @@ public interface AppEventTracking {
         String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
+        String DIGITAL_CAT_ID = "digital_category_id";
+        String HOTLIST_NAME = "hotlist_name";
+        String PRODUCT_IMAGE_URL = "product_image_url";
+        String IS_OFFICIAL_STORE = "is_official_store";
+        String IS_FEED_EMPTY = "is_feed_empty";
+        String IS_FAVORITE_EMPTY = "is_favorite_empty";
+        String KEYWORD = "keyword";
+        String IS_RESULT_FOUND = "IS_RESULT_FOUND";
+        String PAYMENT_TYPE = "payment_type";
+        String PURCHASE_SITE = "purchase_site";
+        String TOTAL_PRICE = "purchase_site";
+        String REVIEW_SCORE = "review_score";
+    }
 
-        String EVENT_LOGIN = "Login";
-        String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
-        String EVENT_OPEN_FEED = "Feed_Screen_Launched";
-        String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
-        String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-
+    interface EventMoEngage {
+        String LOGIN = "Login";
+        String OPEN_BERANDA = "Beranda_Screen_Launched";
+        String OPEN_FEED = "Feed_Screen_Launched";
+        String OPEN_FAVORITE = "Favorite_Screen_Launched";
+        String OPEN_HOTLIST = "Hotlist_Screen_Launched";
+        String OPEN_PRODUCTPAGE = "Product_Page_Opened";
+        String CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
+        String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String CAT_SCREEN_OPEN = "Category_Screen_Launched";
+        String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
+        String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
+        String PRODUCT_REMOVED_FROM_WISHLIST = "Product_Removed_From_Wishlist_Marketplace";
+        String CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
+        String CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
+        String SEARCH_ATTEMPT = "Search_Attempt";
+        String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
+        String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
-        String ADDR_ADD = "Address_Added";
-
-        String EVENT_REG_START = "Registration_Start";
-        String EVENT_REG_COMPL = "Registration_Completed";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
-
     }
 
 

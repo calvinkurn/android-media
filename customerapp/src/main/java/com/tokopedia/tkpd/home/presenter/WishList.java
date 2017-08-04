@@ -79,7 +79,7 @@ public interface WishList {
 
     void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData);
 
-    void deleteWishlist(Context context, String productId);
+    void deleteWishlist(Context context, String productId, int position);
 
     void addToCart(Context context, String productId);
 

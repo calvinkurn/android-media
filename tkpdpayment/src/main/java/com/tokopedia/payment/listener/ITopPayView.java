@@ -1,5 +1,7 @@
 package com.tokopedia.payment.listener;
 
+import android.content.Intent;
+
 import com.tokopedia.payment.model.PaymentPassData;
 
 /**
@@ -32,4 +34,6 @@ public interface ITopPayView {
     String getStringFromResource(int resId);
 
     PaymentPassData getPaymentPassData();
+
+    void navigateToActivity(Intent intentCart);
 }
