@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><!-- change the height 230dp, we also have to change height of market_insight_card_view -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
+    android:layout_height="match_parent"
     android:background="@color/bg_card_not_gm"
     android:clickable="true"
     android:gravity="center"
@@ -10,7 +10,8 @@
     android:paddingLeft="@dimen/margin_vl"
     android:paddingRight="@dimen/margin_vl"
     android:paddingTop="@dimen/margin_med"
-    android:visibility="visible">
+    android:visibility="gone"
+    android:id="@+id/vg_market_insight_not_gm">
 
     <LinearLayout
         android:layout_width="wrap_content"

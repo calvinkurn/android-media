@@ -29,9 +29,23 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     private TextView tvMarketInsightFooter;
     private TitleCardView titleCardView;
     private MarketInsightAdapter marketInsightAdapter;
+    private final View notGMView;
 
     public GmStatisticMarketInsightViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.market_insight_card_view);
+        notGMView = titleCardView.getContentView().findViewById(R.id.vg_market_insight_not_gm);
+
+        notGMView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToGMSubscribe();
+            }
+
+            private void moveToGMSubscribe() {
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                Router.goToGMSubscribe(titleCardView.getContext());
+            }
+        });
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         tvMarketInsightFooter = (TextView) view.findViewById(R.id.market_insight_footer);
 
@@ -58,9 +72,10 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     public void bindData(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
         if (!isGoldMerchant) {
             displayNonGoldMerchant();
-            return;
+        } else {
+            notGMView.setVisibility(View.GONE);
         }
-
+        
         if (getKeywords == null || getKeywords.size() <= 0) {
             displayEmptyState();
             return;
@@ -104,24 +119,9 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     }
 
     private void displayNonGoldMerchant() {
-        titleCardView.setEmptyViewRes(R.layout.partial_gm_statistic_market_insight_empty_state_not_gm);
-        View emptyView = titleCardView.getEmptyView();
-        emptyView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToGMSubscribe();
-            }
-
-            private void moveToGMSubscribe() {
-                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
-                Router.goToGMSubscribe(titleCardView.getContext());
-            }
-        });
-        // content will be overlayed behind the empty state
-        titleCardView.getContentView().setVisibility(View.VISIBLE);
-
+        titleCardView.setViewState(LoadingStateView.VIEW_CONTENT);
+        notGMView.setVisibility(View.VISIBLE);
         displayDummyContentKeyword();
-        setViewState(LoadingStateView.VIEW_EMPTY);
     }
 
     private void displayDummyContentKeyword() {
