@@ -1,22 +1,14 @@
 package com.tokopedia.core.util;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
 import android.content.Context;
-import android.os.Bundle;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.Login;
-import com.tokopedia.core.session.presenter.Session;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,7 +20,7 @@ import retrofit2.Retrofit;
 import static com.tokopedia.core.util.TokenSessionHelper.getExistingAccountAuthToken;
 
 /**
- * @author ricoharisin .
+ * @author steven .
  */
 
 public class AccessTokenRefresh {

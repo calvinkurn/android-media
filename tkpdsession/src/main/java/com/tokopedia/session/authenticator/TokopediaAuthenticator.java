@@ -3,21 +3,11 @@ package com.tokopedia.session.authenticator;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.util.Log;
-
-import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static com.tokopedia.core.util.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
-import static com.tokopedia.core.util.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
-import static com.tokopedia.core.util.AccountGeneral.AUTHTOKEN_TYPE_READ_ONLY;
-import static com.tokopedia.core.util.AccountGeneral.AUTHTOKEN_TYPE_READ_ONLY_LABEL;
 
 /**
  * Created by stevenfredian on 7/25/17.
