@@ -39,8 +39,7 @@ public class BcaOneClickRecyclerAdapter extends RecyclerView.Adapter<BcaOneClick
         final String name = bcaOneClickUserModels.get(position).getTokenId();
         final String tokenId = bcaOneClickUserModels.get(position).getTokenId();
         final String credentialNumber = bcaOneClickUserModels.get(position).getCredentialNo();
-        //TODO Namenya blm ada dari ws
-        holder.accountHolderName.setText("aaaa");
+        holder.accountHolderName.setText(listener.getUserLoginAccountName());
         holder.dailyLimit.setText(bcaOneClickUserModels.get(position).getMaxLimit());
         holder.accountNumber.setText(bcaOneClickUserModels.get(position).getCredentialNo());
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -89,5 +88,7 @@ public class BcaOneClickRecyclerAdapter extends RecyclerView.Adapter<BcaOneClick
         void onDelete(String tokenId, String name, String credentialNumber);
 
         void onEdit(String token);
+
+        String getUserLoginAccountName();
     }
 }

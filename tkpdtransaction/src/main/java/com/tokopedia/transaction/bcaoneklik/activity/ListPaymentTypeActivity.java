@@ -14,6 +14,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickEditActivity;
@@ -239,6 +240,11 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                         progressDialog.dismiss();
                     }
                 });
+            }
+
+            @Override
+            public String getUserLoginAccountName() {
+                return new SessionHandler(ListPaymentTypeActivity.this).getLoginName();
             }
         };
     }
