@@ -24,6 +24,7 @@ public class DigitalCheckoutPassData implements Parcelable {
     public static final String UTM_SOURCE_ANDROID = "android";
     public static final String UTM_MEDIUM_WIDGET = "widget";
 
+
     private String action;
     private String categoryId;
     private String clientNumber;

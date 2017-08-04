@@ -112,6 +112,24 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 .putExtras(extras);
     }
 
+    @DeepLink(Constants.Applinks.HOME_FEED)
+    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.HOME_CATEGORY)
+    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
     public ViewPager getViewPager() {
         return mViewPager;
     }
@@ -599,13 +617,30 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 && data != null && data.getExtras() != null) {
             if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
                     .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.LOGIN) {
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                Intent intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
                 intent.putExtras(data.getExtras());
-                startActivity(intent);
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                        (this);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
                 finish();
             } else if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
                     .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.REGISTER) {
-                ((TkpdCoreRouter) getApplication()).goToRegister(this);
+                Intent intent = ((TkpdCoreRouter) getApplication()).getRegisterIntent
+                        (this);
+                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                        (this);
+                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivities(new Intent[]
+                        {
+                                intentHome,
+                                intent
+                        });
+                finish();
             }
         }
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {

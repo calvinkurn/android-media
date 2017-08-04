@@ -52,14 +52,21 @@ public class OkHttpFactory {
     }
 
     private TkpdOkHttpBuilder getDefaultClientConfig(OkHttpClient.Builder builder) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(getHttpLoggingInterceptor());
+        return new TkpdOkHttpBuilder(builder);
     }
 
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
+    private Interceptor getHeaderHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.HEADERS;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
@@ -81,7 +88,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -91,7 +97,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -101,7 +106,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TkpdBaseInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -112,7 +116,6 @@ public class OkHttpFactory {
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -122,10 +125,9 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC, isUsingBothAuthorization))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
+                .addInterceptor(getHeaderHttpLoggingInterceptor())
                 .build();
     }
 
@@ -133,7 +135,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new StandardizedInterceptor(authorizationString))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -142,7 +143,6 @@ public class OkHttpFactory {
     public OkHttpClient buildClientBearerWithClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new TkpdBearerWithAuthTypeJsonUtInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -151,7 +151,6 @@ public class OkHttpFactory {
     public OkHttpClient buildClientDigitalAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -166,7 +165,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(globalTkpdAuthInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -185,7 +183,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -204,7 +201,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(standardizedInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -225,7 +221,6 @@ public class OkHttpFactory {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -244,7 +239,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -261,7 +255,6 @@ public class OkHttpFactory {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -277,7 +270,6 @@ public class OkHttpFactory {
                                                            DebugInterceptor debugInterceptor) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(rideInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
@@ -294,7 +286,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
                 .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -315,7 +306,6 @@ public class OkHttpFactory {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

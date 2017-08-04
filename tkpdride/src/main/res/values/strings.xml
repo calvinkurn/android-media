@@ -24,7 +24,7 @@
     <string name="accepted_push_message">%1$s (%2$s stars) will pick you up in %3$s minutes.</string>
     <string name="accepted_push_title">Ride Accepted</string>
     <string name="share_ride_title">Follow my Uber trip</string>
-    <string name="share_ride_description">Follow my Uber trip by vising below link</string>
+    <string name="share_ride_description">Follow my Uber trip by visiting below link</string>
     <string name="toolbar_title_booking">Booking Ride</string>
     <string name="booking_ride_menu_your_trips">Your Trips</string>
     <string name="popup_cancel_ride_title">Are you sure you want to cancel ?</string>
@@ -80,7 +80,7 @@
     <string name="ride_push_toolbar_driver_not_found">No Driver Found</string>
     <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
     <string name="ride_push_driver_cancel">Driver canceled your booking</string>
-    <string name="ride_push_book_request_again">Book another Uber</string>
+    <string name="ride_push_book_request_again">Please Book another Uber</string>
     <string name="ride_push_driver_arriving_now">Your Uber is arriving now</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
     <string name="complete_trip_tokocash_charged">TokoCash Charged</string>
@@ -133,7 +133,7 @@
     <string name="error_timeout">Connection timeout, Please try again in a few moments</string>
     <string name="error_default">Error occurred, try again in a few moments</string>
     <string name="error_cannot_cancel">Sorry! cancel booking is not allowed after trip start.</string>
-    <string name="uber_product_header_all_cabs">All Cabs</string>
+    <string name="uber_product_header_all_cabs">All Options</string>
     <string name="uber_product_header_time">Time</string>
     <string name="uber_product_header_fare">Fare</string>
     <string name="ontrip_cancellation_fee">Cancellation Fee:</string>
@@ -148,4 +148,7 @@
     <string name="please_wait_message">Please wait...</string>
     <string name="uber_product_confirm_tos">You must confirm your information to take ride</string>
     <string name="uber_product_confirm_btn_text">OK</string>
+    <string name="error_please_try_again_later">Sorry, Please try again later</string>
+    <string name="interrupt_tos_cancel">Cancel</string>
+    <string name="interrupt_tos_accept">Accept</string>
 </resources>

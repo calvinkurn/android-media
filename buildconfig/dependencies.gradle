@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '24.2.1'
+    supportLibraryVersion = '25.3.1'
     playServiceVersion = '9.6.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -19,8 +19,10 @@ ext {
     tkpdPaymentVersion = '1.+'
     tkpdPdpVersion = '1.+'
     tkpdDesignVersion = '1.+'
+    tkpdFeedVersion = '1.+'
+    tkpdRideVersion = '1.+'
     compileSdkVersion = 24
-    minSdkVersion = 15
+    minSdkVersion = 16
     targetSdkVersion = 24
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
@@ -155,7 +157,8 @@ ext {
             stetho      : "com.facebook.stetho:stetho:1.4.2",
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
             chuck       : "com.readystatesoftware.chuck:library:1.0.3",
-            chcukNoOp   : "com.readystatesoftware.chuck:library-no-op:1.0.3"
+            chcukNoOp   : "com.readystatesoftware.chuck:library-no-op:1.0.3",
+            toolargetool: "com.gu.android:toolargetool:0.1.3@aar"
     ]
 
     tkpdDependencies = [
@@ -169,7 +172,9 @@ ext {
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
             payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.design:design:${tkpdDesignVersion}"
+            design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
+            ride     : "com.tokopedia.ride:ride:${tkpdRideVersion}"
     ]
 
     tkpdLibDependencies = [

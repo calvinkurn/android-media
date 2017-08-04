@@ -12,9 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -25,11 +32,18 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -38,8 +52,9 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -49,6 +64,8 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+
+import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -60,7 +77,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, TransactionRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -135,6 +152,62 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLinks);
+    }
+
+    @Override
+    public Intent getIntentDeepLinkHandlerActivity() {
+        return new Intent(this, DeeplinkHandlerActivity.class);
+    }
+
+    @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public String getBaseUrlDomainPayment() {
+        return ConsumerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
+    @Override
+    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
+        return Uri.parse(originUrl).buildUpon()
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                )
+                .build().toString();
+    }
+
+    @Override
+    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
+        String urlQuery = Uri.parse(originUrl).getQuery();
+        return AuthUtil.generateHeaders(
+                Uri.parse(originUrl).getPath(),
+                urlQuery != null ? urlQuery : "",
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
     public DrawerHelper getDrawer(AppCompatActivity activity,
                                   SessionHandler sessionHandler,
                                   LocalCacheHandler drawerCache,
@@ -187,7 +260,9 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToWallet(Context context, Bundle bundle) {
+    public void goToWallet(Context context, String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletActivity.EXTRA_URL, url);
         Intent intent = new Intent(context, WalletActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
@@ -203,6 +278,33 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(this);
+        String authKey = sessionHandler.getAccessToken(this);
+        authKey = sessionHandler.getTokenType(this) + " " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+
+        AccountsService accountsService = new AccountsService(bundle);
+
+        ProfileSourceFactory profileSourceFactory =
+                new ProfileSourceFactory(
+                        this,
+                        accountsService,
+                        new GetUserInfoMapper(),
+                        null
+                );
+
+        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                new ProfileRepositoryImpl(profileSourceFactory)
+        );
+
+        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
     }
 
     @Override
@@ -224,6 +326,24 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getLoginIntent(Context context) {
+        Intent intent = Login.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getRegisterIntent(Context context) {
+        Intent intent = Login.getRegisterIntent(context);
+        return intent;
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -231,6 +351,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
         return DigitalProductActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent instanceIntentDigitalCategoryList() {
+        return DigitalCategoryListActivity.newInstance(this);
     }
 
     @Override
@@ -242,6 +367,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
+
+    @Override
+    public String getSchemeAppLinkCancelPayment() {
+        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
+    }
+
 
     @Override
     public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {

@@ -113,7 +113,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             );
 
             textDiscount.setText(String.format(
-                    getContext().getString(R.string.label_discount),
+                    getContext().getString(R.string.label_discount_percentage),
                     data.getPercentageAmount()
             ));
 

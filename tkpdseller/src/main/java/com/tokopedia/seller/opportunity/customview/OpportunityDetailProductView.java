@@ -2,6 +2,7 @@ package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 
 public class OpportunityDetailProductView extends BaseView<OpportunityItemViewModel, OpportunityView> {
 
+    private static final String DEFAULT_EMPTY = "0";
     View actionSeeProduct;
     ImageView productImage;
     TextView productName;
@@ -74,8 +76,8 @@ public class OpportunityDetailProductView extends BaseView<OpportunityItemViewMo
         productName.setText(data.getOrderProducts().get(0).getProductName());
         String quantity = data.getOrderProducts().get(0).getProductQuantity() + " " + getContext().getString(R.string.item);
         productQuantity.setText(quantity);
-        if (data.getOrderProducts().get(0).getProductNotes().equals("")
-                && data.getOrderProducts().get(0).getProductNotes().equals("0"))
+        if (!TextUtils.isEmpty(data.getOrderProducts().get(0).getProductNotes())
+                && !data.getOrderProducts().get(0).getProductNotes().equals(DEFAULT_EMPTY))
             productDescription.setText(data.getOrderProducts().get(0).getProductNotes());
         else
             productDescription.setText("-");
