@@ -28,11 +28,8 @@ public interface DiscoveryListener {
     String BROWSESHOP = "BROWSE_SHOPS";
     String BROWSECATALOG = "BROWSE_CATALOGS";
     String HOTLISTBANNER = "HOTLISTBANNER";
-    String CATEGORYHEADER = "CATEGORYHEADER";
-    String TOPADS_STRING = "TOPADS";
     String DYNAMICATTRIBUTE = "DYNAMICATTRIBUTE";
     String OSBANNER = "OSBANNER";
-    String CATEGORYNAVIGATIONROOT = "CATEGORYNAVIGATIONROOT";
 
     void onComplete(int type, Pair<String, ? extends ObjContainer> data);
     void onFailed(int type, Pair<String, ? extends ObjContainer> data);

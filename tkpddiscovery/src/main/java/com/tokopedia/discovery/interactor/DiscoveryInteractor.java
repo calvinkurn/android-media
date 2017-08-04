@@ -33,11 +33,9 @@ public interface DiscoveryInteractor {
 
     void storeCacheCategoryHeader(int level, Data categoriesHadesModel);
 
-    Data getCategoryHeaderCache(int level);
 
     void checkProductsInWishlist(String userId, List<ProductItem> productItemList, Subscriber<Map<String, Boolean>> subscriber);
 
     void getOSBanner(String keyword);
 
-    void getRootCategory(String departementId);
 }

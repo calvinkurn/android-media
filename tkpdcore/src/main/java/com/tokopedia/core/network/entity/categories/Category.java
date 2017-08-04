@@ -13,7 +13,7 @@ public class Category implements Parcelable {
 
     @SerializedName("child")
     @Expose
-    private List<Child> child = null;
+    private List<Child> child = new ArrayList<>();
     @SerializedName("id")
     @Expose
     private String id;
