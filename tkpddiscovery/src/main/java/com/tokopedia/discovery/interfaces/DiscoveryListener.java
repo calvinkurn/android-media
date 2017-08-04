@@ -17,6 +17,7 @@ public interface DiscoveryListener {
     int SEARCH_SUGGESTION = -112;
     int DELETE_SUGGESTION = -113;
     int OS_BANNER = -116;
+    int CATEGORY_NAVIGATION_ROOT = -117;
 
     int SHOW_SEARCH = -113;
     int SHOW_CATEGORY = -114;
@@ -27,8 +28,6 @@ public interface DiscoveryListener {
     String BROWSESHOP = "BROWSE_SHOPS";
     String BROWSECATALOG = "BROWSE_CATALOGS";
     String HOTLISTBANNER = "HOTLISTBANNER";
-    String CATEGORYHEADER = "CATEGORYHEADER";
-    String TOPADS_STRING = "TOPADS";
     String DYNAMICATTRIBUTE = "DYNAMICATTRIBUTE";
     String OSBANNER = "OSBANNER";
 

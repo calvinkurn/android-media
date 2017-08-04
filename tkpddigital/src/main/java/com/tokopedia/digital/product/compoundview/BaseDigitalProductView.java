@@ -8,6 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 
@@ -105,6 +107,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) onInstantCheckoutChecked();
                 else onInstantCheckoutUnChecked();
+
+                if(data instanceof CategoryData)
+                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
+
             }
         };
     }

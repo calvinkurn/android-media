@@ -132,10 +132,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    protected void initView() {
-    }
-
-    @Override
     protected void setViewListener() {
         presenter.initialFragment(this, uriData, bundleData);
     }

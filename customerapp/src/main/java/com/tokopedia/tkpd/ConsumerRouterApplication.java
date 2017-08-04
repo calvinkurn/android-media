@@ -304,10 +304,10 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
-        Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+    public void actionAppLink(Context context, String linkUrl) {
+        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         intent.setData(Uri.parse(linkUrl));
-        activity.startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override

@@ -548,7 +548,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
+        BrowseProductActivity.moveToFromIntermediary(
                 getActivity(),
                 child.getCategoryId(),
                 TopAdsApi.SRC_DIRECTORY,

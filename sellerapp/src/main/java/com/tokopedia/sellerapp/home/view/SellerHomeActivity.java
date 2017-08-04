@@ -922,7 +922,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private void updateDrawerData() {
         drawerDataManager.getDeposit();
         drawerDataManager.getProfile();
-        drawerDataManager.getProfileCompletion();
+//        drawerDataManager.getProfileCompletion();
     }
 
     @Override
