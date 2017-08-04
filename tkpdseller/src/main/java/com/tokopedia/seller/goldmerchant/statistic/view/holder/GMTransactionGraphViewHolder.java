@@ -41,6 +41,8 @@ import java.util.List;
 
 public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
+    public static final int WIDTH_TOOLTIP_COMPARE = 80;
+    public static final int HEIGHT_TOOLTIP_COMPARE = 45;
     private final String[] gmStatTransactionEntries;
     private final boolean[] selections;
     private TitleCardView gmTitleCardView;
@@ -206,12 +208,12 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
         return new TooltipConfiguration() {
             @Override
             public int width() {
-                return (int) Tools.fromDpToPx(100);
+                return (int) Tools.fromDpToPx(WIDTH_TOOLTIP_COMPARE);
             }
 
             @Override
             public int height() {
-                return (int) Tools.fromDpToPx(50);
+                return (int) Tools.fromDpToPx(HEIGHT_TOOLTIP_COMPARE);
             }
         };
     }
@@ -231,7 +233,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                 new TooltipFormatRenderer() {
                     @Override
                     public String formatString(String s) {
-                        return KMNumbers.formatNumbers(Float.valueOf(s));
+                        return KMNumbers.formatSuffixNumbers(Float.valueOf(s));
                     }
 
                     @Override
@@ -246,12 +248,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
 
     @LayoutRes
     private int getTooltipResLayout() {
-        @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_compare_lollipop;
-        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentApiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutTooltip = R.layout.gm_stat_tooltip_compare;
-        }
-        return layoutTooltip;
+        return R.layout.gm_stat_tooltip_compare;
     }
 
     /**
