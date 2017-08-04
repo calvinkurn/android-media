@@ -134,7 +134,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.INDEX_HOME,
                 true));
         data.add(new DrawerItem(context.getString(R.string.title_category),
-                R.drawable.ic_category_black,
+                R.drawable.ic_category_black_bold,
                 TkpdState.DrawerPosition.CATEGORY_NAVIGATION,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_wishlist),
