@@ -718,11 +718,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public boolean isLaunchedWithLocation() {
-        if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-            return true;
-        }
+        return getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false);
 
-        return false;
     }
 
     public void setMarkerText(String timeEst) {

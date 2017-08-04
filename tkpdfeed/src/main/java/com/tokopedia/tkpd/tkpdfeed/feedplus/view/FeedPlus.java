@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface FeedPlus{
 
-    public interface View extends CustomerView {
+    interface View extends CustomerView {
         void onShareButtonClicked( String shareUrl,
                                    String title,
                                    String imgUrl,
@@ -111,7 +111,7 @@ public interface FeedPlus{
         void showTopAds(boolean isTopAdsShown);
     }
 
-    public interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View>{
 
         void fetchFirstPage();
 
