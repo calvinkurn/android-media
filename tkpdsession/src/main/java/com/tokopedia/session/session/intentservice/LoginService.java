@@ -1,5 +1,7 @@
 package com.tokopedia.session.session.intentservice;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +32,7 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.core.util.AccountGeneral;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -54,6 +57,8 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.core.util.TokenSessionHelper.saveRefreshToken;
+
 public class LoginService extends IntentService implements DownloadServiceConstant {
 
     public static final String TAG = "LoginService";
@@ -73,6 +78,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
     static int loginType;
 
     public int typeAccess;
+    String PACKAGE_NAME;
 
     public LoginService() {
         super("LoginService");
@@ -135,6 +141,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        PACKAGE_NAME = getApplicationContext().getPackageName();
         receiver = intent.getParcelableExtra(RECEIVER);
         int type = intent.getIntExtra(TYPE, INVALID_TYPE);
         if (intent.getIntExtra(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0) != 0) {
@@ -323,6 +330,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                             sessionHandler.setToken(tokenModel.getAccessToken(),
                                     tokenModel.getTokenType()
                             );
+                            saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
                         }
                         return Observable.just(accountsParameter);
                     }
@@ -405,7 +413,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                                 sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
-
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
@@ -614,4 +621,5 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         }
 
     }
+
 }

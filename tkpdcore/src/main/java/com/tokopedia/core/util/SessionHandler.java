@@ -40,10 +40,12 @@ import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.RegisterNext;
 import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.Arrays;
+
+import static com.tokopedia.core.util.TokenSessionHelper.invalidateAccountManager;
+import static com.tokopedia.core.util.TokenSessionHelper.removeAccountManager;
 
 public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
@@ -153,7 +155,11 @@ public class SessionHandler {
 
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
+
+        invalidateAccountManager(context);
+        removeAccountManager(context);
     }
+
 
     private static void logoutInstagram(Context context) {
         if (isV4Login(context) && context instanceof AppCompatActivity) {
@@ -435,11 +441,11 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
-
-    public static String getRefreshToken(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
-    }
+//
+//    public static String getRefreshToken(Context context) {
+//        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+//        return sharedPrefs.getString(REFRESH_TOKEN, "");
+//    }
 
     public static boolean isFirstTimeAskedPermissionStorage(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
@@ -575,6 +581,7 @@ public class SessionHandler {
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
         saveToSharedPref(editor, TOKEN_TYPE, tokenType);
+//        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
