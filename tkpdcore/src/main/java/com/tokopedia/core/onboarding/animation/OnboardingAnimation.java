@@ -17,13 +17,13 @@ import com.tokopedia.core.util.MethodChecker;
 
 public class OnboardingAnimation {
 
-    public static final long DEFAULT_ANIMATION_DURATION = 750L;
+    public static final long DEFAULT_ANIMATION_DURATION = 1000L;
     public static final int UP_DIRECTION = -1;
     public static final int DOWN_DIRECTION = 1;
 
     public static ValueAnimator expandTextView(final TextView v, float mScreenWidth) {
         if (v != null) {
-            final ValueAnimator anim = ValueAnimator.ofInt(0, (int) mScreenWidth);
+            ValueAnimator anim = ValueAnimator.ofInt(0, (int) mScreenWidth);
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -64,7 +64,7 @@ public class OnboardingAnimation {
             }
 
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationY", 0, height * direction);
-            anim.reverse();
+            anim.setRepeatMode(ValueAnimator.REVERSE);
             return anim;
         }
         return null;

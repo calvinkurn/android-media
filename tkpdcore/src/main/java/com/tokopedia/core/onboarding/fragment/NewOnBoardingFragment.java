@@ -233,13 +233,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             slideAnimator2 = slideToY(skip, DOWN_DIRECTION, footer);
 
 
-            goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.75));
-            expandAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
-            fadeAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
+            goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.25));
+            expandAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.5));
+            fadeAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.5));
 
-            slideAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION*2);
-            fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
-            slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
+            slideAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.5));
+            fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 0.75));
+            slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 0.75));
 
 //            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
             animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
