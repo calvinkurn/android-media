@@ -8,13 +8,4 @@ public class GMTransactionGraphMergeModel {
     public GMTransactionGraphViewModel gmTransactionGraphViewModel;
     public UnFinishedTransactionViewModel unFinishedTransactionViewModel;
     public GMGraphViewModel gmTopAdsAmountViewModel;
-    private boolean isGoldMerchant;
-
-    public void setIsGoldMerchant(boolean isGoldMerchant) {
-        this.isGoldMerchant = isGoldMerchant;
-    }
-
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
 }

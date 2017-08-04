@@ -22,7 +22,8 @@
         <com.tokopedia.seller.common.williamchart.view.LineChartView
             android:id="@+id/line_chart_gross"
             android:layout_width="wrap_content"
-            android:layout_height="240dp" />
+            android:layout_height="240dp"
+            app:chart_axisBorderSpacing="20dp" />
     </com.tokopedia.seller.goldmerchant.statistic.view.widget.LineChartContainerWidget>
 
 </com.tokopedia.design.loading.LoadingStateView>

@@ -57,7 +57,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GmStatisticMarketInsightViewHolder gmStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
-    private SnackbarRetry snackbarShopInfoRetry;
 
     public GMStatisticDashboardFragment() {
     }
@@ -110,7 +109,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         disableDateLabelView();
-        gmDashboardPresenter.fetchShopInfoData();
     }
 
     @Override
@@ -118,7 +116,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         loadDataByDate();
     }
 
-    public void loadDataByDate() {
+    private void loadDataByDate(){
         resetToLoading();
         gmDashboardPresenter.fetchData(getStartDate(), getEndDate());
     }
@@ -138,10 +136,10 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph) {
+    public void onSuccessLoadTransactionGraph(GMTransactionGraphMergeModel getTransactionGraph, boolean isGoldMerchant) {
         gmStatisticGrossViewHolder.setData(getTransactionGraph);
         gmStatisticTransactionViewHolder.bindData(getTransactionGraph.gmTransactionGraphViewModel.totalTransactionModel,
-                getTransactionGraph.isGoldMerchant());
+                isGoldMerchant);
     }
 
     @Override
@@ -191,8 +189,8 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     }
 
     @Override
-    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean goldMerchant) {
-        gmStatisticMarketInsightViewHolder.bindData(getKeywords, goldMerchant);
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
+        gmStatisticMarketInsightViewHolder.bindData(getKeywords, isGoldMerchant);
     }
 
     @Override
@@ -208,29 +206,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onErrorLoadShopInfo(Throwable t) {
-        showSnackBarShopInfoRetry();
-    }
-
-    private void showSnackBarShopInfoRetry() {
-        if (snackbarShopInfoRetry == null) {
-            snackbarShopInfoRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    gmDashboardPresenter.fetchShopInfoData();
-                }
-            });
-            snackbarShopInfoRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-        }
-        //!important, the delay will help the snackbar re-show after it is being hidden.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (isAdded()) {
-                    snackbarShopInfoRetry.showRetrySnackbar();
-                }
-            }
-        },700);
+        showSnackbarRetry();
     }
 
     @Override
