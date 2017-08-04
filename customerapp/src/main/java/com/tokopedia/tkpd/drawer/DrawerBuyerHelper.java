@@ -40,6 +40,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 
@@ -540,6 +541,12 @@ public class DrawerBuyerHelper extends DrawerHelper
             ((TkpdCoreRouter) context.getApplication())
                     .goToWallet(context, topCashUrl);
         }
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToCreateShop() {

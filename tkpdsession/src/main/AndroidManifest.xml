@@ -69,6 +69,12 @@
             android:label="@string/tokocash"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/profile_completion_title"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />
