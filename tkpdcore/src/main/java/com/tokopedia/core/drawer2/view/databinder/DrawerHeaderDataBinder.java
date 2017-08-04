@@ -1,12 +1,14 @@
 package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
@@ -42,9 +45,18 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onGoToTopCash(String topCashUrl);
 
         void onGoToTopCashWithOtp(String topCashUrl);
+
+        void onGoToProfileCompletion();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView percentText;
+        private final TextView completeProfile;
+        private final TextView verifiedText;
+        private final View verifiedIcon;
+        private final View layoutProgress;
+        private final ProgressBar progressBar;
 
         @BindView(R2.id.user_avatar)
         ImageView avatar;
@@ -99,6 +111,13 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            percentText = (TextView) itemView.findViewById(R.id.percent_text);
+            completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
+            layoutProgress = itemView.findViewById(R.id.layout_progress);
+            verifiedText = (TextView) itemView.findViewById(R.id.verified);
+            verifiedIcon = itemView.findViewById(R.id.verified_icon);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.ProgressBar);
+
         }
     }
 
@@ -152,6 +171,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     protected void bindDrawerHeaderGuest(ViewHolder holder) {
         holder.coverImg.setVisibility(View.VISIBLE);
         holder.drawerPointsLayout.setVisibility(View.GONE);
+        holder.percentText.setVisibility(View.GONE);
+        holder.layoutProgress.setVisibility(View.GONE);
+        holder.verifiedIcon.setVisibility(View.GONE);
+        holder.verifiedText.setVisibility(View.GONE);
         holder.drawerHeader.setVisibility(View.GONE);
         ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
     }
@@ -161,11 +184,26 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.coverImg.setVisibility(View.GONE);
 
+        holder.name.setVisibility(View.VISIBLE);
+        holder.avatar.setVisibility(View.VISIBLE);
+        holder.percentText.setVisibility(View.VISIBLE);
+
 
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
         holder.name.setText(data.getDrawerProfile().getUserName());
+        holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
+        if(data.getProfileCompletion() == 100) {
+            holder.layoutProgress.setVisibility(View.GONE);
+            holder.verifiedIcon.setVisibility(View.VISIBLE);
+            holder.verifiedText.setVisibility(View.VISIBLE);
+        }else {
+            holder.progressBar.setProgress(data.getProfileCompletion());
+            holder.layoutProgress.setVisibility(View.VISIBLE);
+            holder.verifiedIcon.setVisibility(View.GONE);
+            holder.verifiedText.setVisibility(View.GONE);
+        }
 
         setDeposit(holder);
         setTopPoints(holder);
@@ -215,6 +253,13 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
             public void onClick(View v) {
                 listener.onGoToProfile();
+            }
+        });
+
+        holder.completeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onGoToProfileCompletion();
             }
         });
     }
