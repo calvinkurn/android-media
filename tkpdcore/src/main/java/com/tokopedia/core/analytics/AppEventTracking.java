@@ -123,14 +123,12 @@ public interface AppEventTracking {
         String R3 = "r3";
         String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
         String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
-<<<<<<< HEAD
 
         String IMPRESSION_APP_UPDATE = "impressionAppUpdate";
         String CLICK_APP_UPDATE = "clickAppUpdate";
         String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
-=======
+
         String SELLER_WIDGET = "sellerWidget";
->>>>>>> release
     }
 
     interface Category {
@@ -202,12 +200,8 @@ public interface AppEventTracking {
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
         String R3USER = "r3User";
-<<<<<<< HEAD
-
         String APP_UPDATE = "Application Update";
-=======
         String SELLER_APP_WIDGET = "Seller App Widget";
->>>>>>> release
     }
 
     interface Action {
