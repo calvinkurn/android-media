@@ -10,6 +10,7 @@ import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -50,6 +51,7 @@ import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
@@ -75,7 +77,6 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
@@ -412,7 +413,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void changeBottomBar(String source) {
         browsePresenter.onBottomBarChanged(source);
-
     }
 
     private void setupBottomBar(List<AHBottomNavigationItem> items, final String source) {
@@ -465,6 +465,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 parentDepartment, source, departmentId);
     }
 
+    @Override
+    public void openCategoryNavigation(
+                           String departmentId) {
+        CategoryNavigationActivity.moveTo(BrowseProductActivity.this, departmentId);
+
+    }
+
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
@@ -477,7 +484,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        if (!browsePresenter.isFromCategory()) {
+            items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
+        } else {
+            items.add(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_category_black));
+        }
         return items;
     }
 
@@ -504,6 +515,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     }
                     break;
             }
+        } else if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
+            setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
+            finish();
         }
     }
 
@@ -531,6 +545,23 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    public static void moveToFromIntermediary(FragmentActivity activity, String depId, String ad_src, String source, String title) {
+        if (activity == null)
+            return;
+
+        Intent intent = new Intent(activity, BrowseProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        bundle.putString(EXTRA_SOURCE, source);
+        if (title != null) {
+            bundle.putString(EXTRA_TITLE, title);
+        }
+        intent.putExtras(bundle);
+        activity.startActivityForResult(intent,CategoryNavigationActivity.DESTROY_INTERMEDIARY);
     }
 
     public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
@@ -759,6 +790,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         getIntent().putExtra(EXTRA_TITLE, child.getName());
         renderNewCategoryLevel(child.getId(), child.getName(), false);
     }
+
 
     @Override
     public void onBackPressed() {

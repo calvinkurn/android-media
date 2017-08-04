@@ -36,6 +36,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
     private final DynamicFilterView dynamicFilterView;
 
     public DynamicCategoryAdapter(DynamicFilterView dynamicFilterView, View.OnClickListener mListener) {
+        super();
         this.dynamicFilterView = dynamicFilterView;
         this.mListener = mListener;
         this.listIds = new ArrayList<>();
