@@ -54,7 +54,6 @@ public class DigitalWebActivity extends BasePresenterActivity
 
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView))
             getFragmentManager().beginTransaction().replace(R.id.container,
-<<<<<<< f_rizky_add_access_to_digital_product_for_seller_app
                     fragmentGeneralWebView).commit();
     }
 
