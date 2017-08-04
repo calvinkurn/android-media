@@ -16,7 +16,7 @@ public class AccountGeneral {
     /**
      * Account name
      */
-    public static final String ACCOUNT_NAME = "Udinic";
+    public static final String ACCOUNT_NAME = "Tokopedia";
 
     /**
      * Auth token types

@@ -3,5 +3,4 @@
                        android:accountType="com.tokopedia.tkpd.auth"
                        android:icon="@drawable/ic_new_logo"
                        android:smallIcon="@drawable/ic_new_logo"
-                       android:label="@string/app_name"
-                       android:accountPreferences="@xml/prefs"/>
+                       android:label="@string/app_name" />
