@@ -87,6 +87,8 @@ public class TkpdState {
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;
+
+        public static final int CATEGORY_NAVIGATION = 54;
     }
 
     public class Application {

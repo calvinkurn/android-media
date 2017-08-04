@@ -84,7 +84,6 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
             DigitalCategoryListFragment digitalCategoryListFragment
                     = DigitalCategoryListFragment.newInstance();
-//            digitalCategoryListFragment.setIsFromSeller(isFromSeller);
             getFragmentManager().beginTransaction().replace(R.id.container,
                     digitalCategoryListFragment).commit();
         }
