@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
@@ -201,6 +202,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(dataFavorite.size());
     }
 
     @Override

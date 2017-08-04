@@ -123,6 +123,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private Marker mDriverMarker;
     private String requestId;
     private RideRequest rideRequest;
+    private boolean isOpenInterruptWebviewDialog;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -463,15 +464,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
     }
 
     @Override
@@ -488,6 +492,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_INTERRUPT_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
                     String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
@@ -502,6 +507,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 }
                 break;
             case REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG:
+                isOpenInterruptWebviewDialog = false;
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(InterruptDialogFragment.EXTRA_VALUE);
                     String key = data.getStringExtra(InterruptDialogFragment.EXTRA_KEY);
@@ -1374,15 +1380,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openInterruptConfirmationDialog(String tosUrl, String key, String value) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
+        if (!isOpenInterruptWebviewDialog) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            if (previousDialog != null) {
+                fragmentTransaction.remove(previousDialog);
+            }
+            fragmentTransaction.addToBackStack(null);
+            DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
+            dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
+            dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
+            isOpenInterruptWebviewDialog = true;
         }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = InterruptDialogFragment.newInstance(key, value, tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
     }
 
     @Override

@@ -384,8 +384,9 @@
         <service
             android:name=".shop.ShopEditService"
             android:exported="false" />
+
         <service
-            android:name=".product.view.service.UploadProductService"
+            android:name="com.tokopedia.seller.product.view.service.UploadProductService"
             android:exported="false" />
     </application>
 

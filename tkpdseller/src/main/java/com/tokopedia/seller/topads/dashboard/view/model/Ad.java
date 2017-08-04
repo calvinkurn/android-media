@@ -1,12 +1,15 @@
 package com.tokopedia.seller.topads.dashboard.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by Nathaniel on 12/28/2016.
  */
 
-public interface Ad extends ItemType {
+public interface Ad extends ItemType, Parcelable {
 
     String getId();
 
@@ -51,4 +54,13 @@ public interface Ad extends ItemType {
     String getLabelOf();
 
     String getName();
+
+    @Override
+    int describeContents();
+
+    @Override
+    void writeToParcel(Parcel parcel, int i);
+
+    @Override
+    int getType();
 }

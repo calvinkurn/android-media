@@ -119,6 +119,24 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 .putExtras(extras);
     }
 
+    @DeepLink(Constants.Applinks.HOME_FEED)
+    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.HOME_CATEGORY)
+    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
     public ViewPager getViewPager() {
         return mViewPager;
     }

@@ -126,6 +126,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
 
     @Override
     public void onDestroy() {
+        detachView();
         getCurrentRideRequestUseCase.unsubscribe();
     }
 
