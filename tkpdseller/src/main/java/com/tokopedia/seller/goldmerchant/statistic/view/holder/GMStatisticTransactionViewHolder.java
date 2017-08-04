@@ -77,6 +77,8 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
 
             setEmptyStatePercentage();
 
+            tvTransactionCount.setText(KMNumbers.getSummaryString(0));
+
             displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
             seeDetailView.setVisibility(View.GONE);
             setViewState(LoadingStateView.VIEW_CONTENT);
