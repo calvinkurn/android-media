@@ -141,7 +141,7 @@ const BrandList = (props) => {
         ))
       }
       {
-        props.canFetch && (
+        !props.isFetching && (
           <LoadMore
             onLoadMore={props.loadMore}
             offset={props.offset}
