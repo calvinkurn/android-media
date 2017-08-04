@@ -74,8 +74,6 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         if (!isGoldMerchant) {
             setViewNoGM();
             setEmptyStatePercentage();
-            // to make the content overlay
-            transactionDataCardView.getContentView().setVisibility(View.VISIBLE);
             seeDetailView.setClickable(false);
             return;
         }

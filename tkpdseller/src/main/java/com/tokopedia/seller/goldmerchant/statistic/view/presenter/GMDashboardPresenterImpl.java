@@ -97,32 +97,36 @@ public class GMDashboardPresenterImpl extends GMDashboardPresenter {
             }
         });
 
-        marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
-            @Override
-            public void onCompleted() {
+        if (isGoldMerchant) {
+            marketInsightUseCase.execute(RequestParams.EMPTY, new Subscriber<KeywordModel>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorLoadMarketInsight(e);
                 }
-            }
 
-            @Override
-            public void onNext(KeywordModel keywordModel) {
-                GetShopCategory getShopCategory = keywordModel.getShopCategory();
-                if (getShopCategory == null
-                        || getShopCategory.getCategoryIdList() == null
-                        || getShopCategory.getCategoryIdList().isEmpty()) {
-                    getView().onGetShopCategoryEmpty(isGoldMerchant);
-                } else {
-                    getView().onSuccessGetKeyword(keywordModel.getKeywords(), isGoldMerchant);
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        getView().onErrorLoadMarketInsight(e);
+                    }
                 }
-                onSuccessGetCategory(keywordModel.getCategoryName());
-            }
-        });
+
+                @Override
+                public void onNext(KeywordModel keywordModel) {
+                    GetShopCategory getShopCategory = keywordModel.getShopCategory();
+                    if (getShopCategory == null
+                            || getShopCategory.getCategoryIdList() == null
+                            || getShopCategory.getCategoryIdList().isEmpty()) {
+                        getView().onGetShopCategoryEmpty(isGoldMerchant);
+                    } else {
+                        getView().onSuccessGetKeyword(keywordModel.getKeywords(), isGoldMerchant);
+                    }
+                    onSuccessGetCategory(keywordModel.getCategoryName());
+                }
+            });
+        } else {
+            getView().onGetShopCategoryEmpty(isGoldMerchant);
+        }
 
         getPopularProduct();
     }

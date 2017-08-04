@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/padding_ms">
+        android:paddingTop="@dimen/padding_ms"
+        android:showDividers="middle"
+        android:divider="@drawable/line_separator_medium">
 
         <LinearLayout
             android:id="@+id/transaction_data_container_gold_merchant"
@@ -61,8 +63,6 @@
                 android:paddingStart="10dp"
                 android:layout_marginBottom="10dp"/>
         </LinearLayout>
-
-        <include layout="@layout/partial_separator_horizontal" />
 
         <LinearLayout
             android:id="@+id/see_detail_container"
