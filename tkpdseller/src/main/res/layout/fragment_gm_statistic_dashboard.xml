@@ -62,7 +62,7 @@
             app:tcv_title="@string/gm_statistic_sales_data"
             app:tcv_title_text_size="@dimen/font_body1">
 
-            <include layout="@layout/partial_gm_statistic_transaction_data_content" />
+            <include layout="@layout/partial_gm_statistic_transaction_content" />
 
         </com.tokopedia.design.card.TitleCardView>
 
