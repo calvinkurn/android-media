@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.hades.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.categories.Data;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 
 import java.util.Map;
@@ -32,4 +33,9 @@ public interface HadesApi {
     @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
     Observable<Response<CategoryHadesModel>> getCategories(@Header(DEVICE_PARAM) String device, @Path(CATEGORY_ID_PARAM) String categoryId);
 
+    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES_LAYOUT)
+    Observable<Response<Data>> getNavigationCategories(@Path(CATEGORY_ID_PARAM) String categoryId);
+
+    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES_LAYOUT_ROOT)
+    Observable<Response<Data>> getNavigationCategoriesRoot(@Path(CATEGORY_ID_PARAM) String categoryId);
 }

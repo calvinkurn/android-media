@@ -123,6 +123,11 @@ public interface AppEventTracking {
         String R3 = "r3";
         String CLICK_GOLD_MERCHANT = "clickGoldMerchant";
         String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+
+        String IMPRESSION_APP_UPDATE = "impressionAppUpdate";
+        String CLICK_APP_UPDATE = "clickAppUpdate";
+        String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
+
         String SELLER_WIDGET = "sellerWidget";
     }
 
@@ -195,6 +200,7 @@ public interface AppEventTracking {
         String OPENSHOP_SWITCHER = "Open Shop Switcher";
         String SWITCHER = "Switcher";
         String R3USER = "r3User";
+        String APP_UPDATE = "Application Update";
         String SELLER_APP_WIDGET = "Seller App Widget";
     }
 
@@ -249,6 +255,15 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
+        String SELECT_PRODUCT_FROM_WIDGET = "Select Product from Widget";
+        String SELECT_OPERATOR_FROM_WIDGET = "Select Operator from Widget";
+        String SELECT_PRODUCT = "Select Product";
+        String SELECT_OPERATOR = "Select Operator";
+        String CLICK_SEARCH_BAR = "Click Search Bar";
+        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
+        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
+        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
+        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
@@ -363,6 +378,7 @@ public interface AppEventTracking {
         String SIGN_OUT = "Sign Out";
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
+        String PRODUCT = "Product - ";
 
         String REGISTER = "Register";
         String CTA = "CTA";
@@ -428,6 +444,12 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
         String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
         String BUY_GM = "Buy GM";
+
+        String OPTIONAL_APP_UPDATE = "Clicked Update - Optional";
+        String FORCE_APP_UPDATE = "Clicked Update - Force";
+        String OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
+        String FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
+
         String WIDGET_ORDER = "Widget - Order";
         String TO_APP_ORDER = "To App - Order";
         String TOPADS = "TopAds";

@@ -3,8 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist.AddWishlistDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
 
 import rx.Subscriber;
 

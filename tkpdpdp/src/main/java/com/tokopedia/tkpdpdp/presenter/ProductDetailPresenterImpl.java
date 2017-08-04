@@ -537,8 +537,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     }
                 }
-                report.setVisible(true);
-                report.setEnabled(true);
+
+                if (productData.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
+                    report.setVisible(false);
+                    report.setEnabled(false);
+                } else {
+                    report.setVisible(true);
+                    report.setEnabled(true);
+                }
+
                 warehouse.setVisible(false);
                 warehouse.setEnabled(false);
                 etalase.setVisible(false);

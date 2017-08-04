@@ -32,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -590,6 +591,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -600,6 +604,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -610,9 +617,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
+
+        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser
+                        getActivity(), operatorListData, titleChooser,categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -620,6 +630,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
+
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser

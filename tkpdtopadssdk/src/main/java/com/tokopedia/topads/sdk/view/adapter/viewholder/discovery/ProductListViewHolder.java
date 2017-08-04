@@ -46,7 +46,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
 
     public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
         super(itemView);
-        itemView.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         context = itemView.getContext();
@@ -59,6 +58,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         shopLocation = (TextView) itemView.findViewById(R.id.location);
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
+        ((LinearLayout) itemView.findViewById(R.id.container)).setOnClickListener(this);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
 
     @Override
     public void onClick(View v) {
-        if (itemClickListener != null) {
+        if (itemClickListener != null && v.getId() == R.id.container) {
             itemClickListener.onProductItemClicked(getAdapterPosition(), data);
         }
     }
