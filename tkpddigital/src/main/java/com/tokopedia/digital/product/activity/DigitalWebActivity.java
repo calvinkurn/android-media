@@ -17,7 +17,6 @@ public class DigitalWebActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private static final String EXTRA_URL = "EXTRA_URL";
-
     private String url;
 
     public static Intent newInstance(Context context, String url) {
@@ -50,7 +49,7 @@ public class DigitalWebActivity extends BasePresenterActivity
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    FragmentGeneralWebView.createInstance(url)).commit();
+                    FragmentGeneralWebView.createInstance(url, false)).commit();
 
     }
 
