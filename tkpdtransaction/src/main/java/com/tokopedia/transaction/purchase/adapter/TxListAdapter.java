@@ -231,7 +231,10 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                         MenuID = R.menu.order_status_menu_show_complain;
                         break;
                     default:
-                        MenuID = R.menu.order_status_menu_confirm_reject;
+                        MenuID = (item.getOrderButton().getButtonComplaintReceived().equals(HAS_BUTTON)
+                                || item.getOrderButton().getButtonComplaintNotReceived().equals(HAS_BUTTON))
+                                ? R.menu.order_status_menu_confirm_complain
+                                : R.menu.order_status_menu_confirm_reject;
                         break;
                 }
                 break;
@@ -241,7 +244,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     case TkpdState.OrderStatusState.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_REF_NUM_EDITED:
                     case TkpdState.OrderStatusState.ORDER_SHIPPING_TRACKER_INVALID:
-                        MenuID =  (item.getOrderButton().getButtonComplaintReceived().equals(HAS_BUTTON)
+                        MenuID = (item.getOrderButton().getButtonComplaintReceived().equals(HAS_BUTTON)
                                 || item.getOrderButton().getButtonComplaintNotReceived().equals(HAS_BUTTON))
                                 ? R.menu.order_status_menu_confirm_track_complain
                                 : R.menu.order_status_menu_confirm_track_v2;
@@ -249,6 +252,8 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                     case TkpdState.OrderStatusState.ORDER_CONFLICTED:
                         MenuID = R.menu.order_status_menu_show_complain;
                         break;
+
+
                     default:
                         if (item.getOrderButton().getButtonUploadProof().equals(HAS_BUTTON))
                             MenuID = R.menu.order_status_menu_upload;
