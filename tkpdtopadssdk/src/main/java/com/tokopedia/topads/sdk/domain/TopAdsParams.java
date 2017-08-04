@@ -15,7 +15,7 @@ public class TopAdsParams {
     public static final String KEY_SRC = "src";
     public static final String KEY_PAGE = "page";
     public static final String KEY_DEPARTEMENT_ID = "dep_id";
-    public static final String KEY_HOTLIST_ID = "h";
+    public static final String KEY_HOTLIST_ID = "hc";
     public static final String KEY_QUERY = "q";
     public static final String KEY_PMIN = "pmin";
     public static final String KEY_PMAX = "pmax";
