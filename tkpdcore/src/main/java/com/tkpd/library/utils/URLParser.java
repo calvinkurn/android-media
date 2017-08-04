@@ -9,7 +9,9 @@ import com.tokopedia.core.database.model.CategoryDB;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -89,4 +91,12 @@ public class URLParser {
 			return "";
 	}
 
+	public HashMap<String, String> getParamKeyValueMap() {
+		HashMap<String, String> map = new HashMap<>();
+		ArrayList<String> keylist = getSetQueryKey();
+		for (int i = 0; i < keylist.size(); i++) {
+			map.put(keylist.get(i), uri.getQueryParameter(keylist.get(i)));
+		}
+		return map;
+	}
 }

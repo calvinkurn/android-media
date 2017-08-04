@@ -12,9 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -26,6 +30,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -33,6 +38,11 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -46,9 +56,13 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;Nisie
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+
+import java.util.Map;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -132,6 +146,33 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(this);
+        String authKey = sessionHandler.getAccessToken(this);
+        authKey = sessionHandler.getTokenType(this) + " " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+
+        AccountsService accountsService = new AccountsService(bundle);
+
+        ProfileSourceFactory profileSourceFactory =
+                new ProfileSourceFactory(
+                        this,
+                        accountsService,
+                        new GetUserInfoMapper(),
+                        null
+                );
+
+        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                new ProfileRepositoryImpl(profileSourceFactory)
+        );
+
+        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         if (SessionHandler.isV4Login(context)) {
             return new Intent(context, SellerHomeActivity.class);
@@ -178,6 +219,12 @@ public class SellerRouterApplication extends MainApplication
     public Intent getRegisterIntent(Context context) {
         Intent intent = Login.getSellerRegisterIntent(context);
         return intent;
+    }
+
+    @Override
+    public void goToProfileCompletion(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -311,6 +358,37 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public String getBaseUrlDomainPayment() {
         return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
+    @Override
+    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
+        return Uri.parse(originUrl).buildUpon()
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                )
+                .build().toString();
+    }
+
+    @Override
+    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
+        String urlQuery = Uri.parse(originUrl).getQuery();
+        return AuthUtil.generateHeaders(
+                Uri.parse(originUrl).getPath(),
+                urlQuery != null ? urlQuery : "",
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
     }
 
 }

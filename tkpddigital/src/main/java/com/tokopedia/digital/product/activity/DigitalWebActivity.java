@@ -17,7 +17,6 @@ public class DigitalWebActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private static final String EXTRA_URL = "EXTRA_URL";
-
     private String url;
 
     private FragmentGeneralWebView fragmentGeneralWebView;
