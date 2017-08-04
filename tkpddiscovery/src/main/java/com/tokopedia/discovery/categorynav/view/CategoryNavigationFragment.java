@@ -198,6 +198,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
                     category.getId(),
                     category.getName()
             );
+            getActivity().setResult(CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
             getActivity().finish();
         }
     }

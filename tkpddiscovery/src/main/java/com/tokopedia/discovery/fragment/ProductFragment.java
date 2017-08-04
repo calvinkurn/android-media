@@ -616,8 +616,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                                 this, browseModel.getTotalDataCategory(), this));
             }
         }
-        Log.d(TAG, "addCategoryHeader");
-        ((BrowseProductActivity) getActivity()).setUpBottomNavCategory();
     }
 
     private int calcColumnSize(int orientation) {

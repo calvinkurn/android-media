@@ -27,6 +27,8 @@ import butterknife.BindView;
 
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
+    public static final int DESTROY_BROWSE_PARENT = 99;
+
     private FragmentManager fragmentManager;
     private String departmentId = "0";
     private String rootDepartementId = "";
@@ -112,9 +114,8 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, CategoryNavigationActivity.class);
             intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
-            fragmentActivity.startActivity(intent);
+            fragmentActivity.startActivityForResult(intent,DESTROY_BROWSE_PARENT);
             fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
-            fragmentActivity.finish();
         }
     }
 

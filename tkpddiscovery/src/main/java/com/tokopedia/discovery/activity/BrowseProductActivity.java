@@ -440,6 +440,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     }
                     break;
             }
+        } else if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
+            finish();
         }
     }
 
@@ -696,12 +698,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         renderNewCategoryLevel(child.getId(), child.getName(), false);
     }
 
-    public void setUpBottomNavCategory() {
-//        if (bottomNavigation.getChildCount()>3) {
-//            bottomNavigation.removeItemAtIndex(3);
-//            bottomNavigation.addItem(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_share_black));
-//        }
-    }
 
     @Override
     public void onBackPressed() {
