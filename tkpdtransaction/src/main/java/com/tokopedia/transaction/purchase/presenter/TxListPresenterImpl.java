@@ -508,7 +508,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
         TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
         tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle(), null, new TagHandlerUtil()));
-        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg(), null,
+                new TagHandlerUtil()));
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

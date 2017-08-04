@@ -48,6 +48,7 @@
             android:layout_weight="1"
             android:background="@color/transparent"
             android:text="@string/string_finish"
+            android:textStyle="bold"
             android:textAllCaps="false"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/text_size_medium" />
