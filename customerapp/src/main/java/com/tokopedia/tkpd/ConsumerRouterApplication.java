@@ -347,7 +347,7 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
         return DigitalProductActivity.newInstance(this, passData);
-    }gi
+    }
 
     @Override
     public Intent instanceIntentDigitalCategoryList() {
