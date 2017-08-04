@@ -1803,6 +1803,39 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventImpressionAppUpdate(boolean isForceUpdate) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_APP_UPDATE,
+                AppEventTracking.Category.APP_UPDATE,
+                AppEventTracking.Action.IMPRESSION,
+                isForceUpdate ?
+                        AppEventTracking.EventLabel.FORCE_APP_UPDATE :
+                        AppEventTracking.EventLabel.OPTIONAL_APP_UPDATE
+        ).getEvent());
+    }
+
+    public static void eventClickAppUpdate(boolean isForceUpdate) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_UPDATE,
+                AppEventTracking.Category.APP_UPDATE,
+                AppEventTracking.Action.CLICK,
+                isForceUpdate ?
+                        AppEventTracking.EventLabel.FORCE_APP_UPDATE :
+                        AppEventTracking.EventLabel.OPTIONAL_APP_UPDATE
+        ).getEvent());
+    }
+
+    public static void eventClickCancelAppUpdate(boolean isForceUpdate) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_CANCEL_APP_UPDATE,
+                AppEventTracking.Category.APP_UPDATE,
+                AppEventTracking.Action.CLICK,
+                isForceUpdate ?
+                        AppEventTracking.EventLabel.FORCE_CANCEL_APP_UPDATE :
+                        AppEventTracking.EventLabel.OPTIONAL_CANCEL_APP_UPDATE
+        ).getEvent());
+    }
+
     public static void eventWidgetInstalled(){
         eventWidget(AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
     }
