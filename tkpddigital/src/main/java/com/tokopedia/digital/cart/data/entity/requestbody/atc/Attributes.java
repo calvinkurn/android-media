@@ -36,7 +36,7 @@ public class Attributes {
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
-    @SerializedName("isReseller")
+    @SerializedName("is_reseller")
     @Expose
     private boolean isReseller;
 
