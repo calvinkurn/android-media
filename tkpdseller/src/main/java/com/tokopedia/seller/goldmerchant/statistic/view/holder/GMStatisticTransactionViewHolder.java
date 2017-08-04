@@ -37,6 +37,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
     private TextView tvTransactionCount;
     private ArrowPercentageView arrowPercentageView;
     private View seeDetailView;
+    private View separator;
 
     private String[] monthNamesAbrev;
 
@@ -46,6 +47,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         tvTransactionCount = (TextView) transactionDataCardView.findViewById(R.id.tv_transaction_count);
         arrowPercentageView = (ArrowPercentageView) transactionDataCardView.findViewById(R.id.view_arrow_percentage);
         seeDetailView = transactionDataCardView.findViewById(R.id.see_detail_container);
+        separator = transactionDataCardView.findViewById(R.id.separator4);
         seeDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +81,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
 
             displayGraphic(totalTransactionModel.values, totalTransactionModel.dates, true);
             seeDetailView.setVisibility(View.GONE);
+            separator.setVisibility(View.INVISIBLE);
             setViewState(LoadingStateView.VIEW_CONTENT);
             return;
         }
@@ -86,6 +89,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         setViewState(LoadingStateView.VIEW_CONTENT);
 
         seeDetailView.setClickable(true);
+        separator.setVisibility(View.VISIBLE);
         seeDetailView.setVisibility(View.VISIBLE);
 
         /* non empty state */
