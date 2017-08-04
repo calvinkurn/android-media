@@ -42,7 +42,7 @@
         android:layout_weight="1"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="-75dp"
-        app:lottie_loop="true" />
+        app:lottie_loop="false" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"

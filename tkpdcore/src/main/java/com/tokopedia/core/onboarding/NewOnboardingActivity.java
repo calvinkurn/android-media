@@ -109,12 +109,11 @@ public class NewOnboardingActivity extends OnboardingActivity {
         isFirst = true;
         setStepperLayout();
         setSelectedStepper();
-        setStepperClickAnimation();
+//        setStepperClickAnimation();
         pager.setOffscreenPageLimit(1);
     }
 
     private void setStepperClickAnimation() {
-        listId = new Integer[]{R.id.step_1, R.id.step_2, R.id.step_3, R.id.step_4, R.id.step_5};
         for (int i = 0; i < listId.length; i++) {
             findViewById(listId[i]).setOnClickListener(goToSlide(i));
         }
@@ -131,6 +130,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     private void setStepperLayout() {
 
+        listId = new Integer[]{R.id.step_1, R.id.step_2, R.id.step_3, R.id.step_4, R.id.step_5};
         LinearLayout stepper = (LinearLayout) View.inflate(this, R.layout.step_list, null);
         stepper.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 

@@ -56,7 +56,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     private ObjectAnimator goneAnimation;
     private View footer;
     private View next;
-    private LottieAnimationView view;
+    private LottieAnimationView lottieAnimationView;
 
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
@@ -108,6 +108,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final int position = getArguments().getInt(ARG_POSITION);
         view.setTag(position);
+        lottieAnimationView.playAnimation();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -124,9 +125,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
     protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = getDefaultView(inflater,container);
         main = v.findViewById(R.id.main);
-        view = (LottieAnimationView) v.findViewById(R.id.animation_view);
-        view.setAnimation("onboarding.json", LottieAnimationView.CacheStrategy.Strong);
-        view.playAnimation();
+        lottieAnimationView = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        lottieAnimationView.setAnimation("onboarding.json", LottieAnimationView.CacheStrategy.Strong);
 
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView d = (TextView) v.findViewById(R.id.description);
@@ -157,9 +157,9 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         ImageView i = (ImageView) v.findViewById(R.id.image);
         TextView d = (TextView) v.findViewById(R.id.description);
         main = v.findViewById(R.id.main);
-        view = (LottieAnimationView) v.findViewById(R.id.animation_view);
-        view.setAnimation("empty_cactus.json", LottieAnimationView.CacheStrategy.Strong);
-        view.playAnimation();
+        lottieAnimationView = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        lottieAnimationView.setAnimation("empty_cactus.json", LottieAnimationView.CacheStrategy.Strong);
+        lottieAnimationView.playAnimation();
 
         t.setText(title);
         if (titleColor != 0) {
@@ -220,6 +220,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
         if(viewType == VIEW_ENDING){
 
             next = getView().findViewById(R.id.dummy_next);
+            resetAnimation();
+
 
             slideAnimatorX = slideToX(next, -1, mScreenWidth/2);
             goneAnimation = setVisibilityGone(next);
@@ -230,7 +232,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             fadeAnimator2 = fadeText(skip, getActivity(), R.color.transparent, R.color.white);
             slideAnimator2 = slideToY(skip, DOWN_DIRECTION, footer);
 
-            login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION*0.75));
             expandAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
             fadeAnimator.setStartDelay(DEFAULT_ANIMATION_DURATION);
@@ -239,21 +241,21 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             fadeAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
             slideAnimator2.setStartDelay((long)(DEFAULT_ANIMATION_DURATION * 2.5));
 
+//            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
             animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
-            if
-            animatorSet.setupStartValues();
             animatorSet.start();
-            Log.i( "playAnimation: ", animatorSet.toString());
         }
         else {
         }
     }
 
     private void resetAnimation() {
-
         next.setVisibility(View.VISIBLE);
-        login.setWidth(0);
-        login.setY(0);
+        ViewGroup.LayoutParams layoutParams = login.getLayoutParams();
+        layoutParams.width = 0;
+        login.setLayoutParams(layoutParams);
+        login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+        skip.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
     }
 
 

@@ -34,7 +34,7 @@ public class OnboardingAnimation {
                     v.requestLayout();
                 }
             });
-            anim.reverse();
+//            anim.reverse();
             return anim;
         }
         return null;
@@ -47,7 +47,7 @@ public class OnboardingAnimation {
                     new ArgbEvaluator(),
                     MethodChecker.getColor(context, colorFrom),
                     MethodChecker.getColor(context, colorTo));
-            anim.reverse();
+            //anim.reverse();
             return anim;
         }
         return null;
@@ -63,7 +63,6 @@ public class OnboardingAnimation {
                 height = view.getHeight();
             }
 
-
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationY", 0, height * direction);
             anim.reverse();
             return anim;
@@ -75,7 +74,8 @@ public class OnboardingAnimation {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
                     0, (direction * delta) + view.getWidth()/2);
-            anim.reverse();
+//            anim.reverse();
+            anim.setRepeatMode(ValueAnimator.REVERSE);
             return anim;
         }
         return null;
@@ -84,7 +84,7 @@ public class OnboardingAnimation {
     public static ObjectAnimator setVisibilityGone(final View view) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofInt(view, "visibility", View.VISIBLE, View.GONE);
-            anim.reverse();
+//            anim.reverse();
             return anim;
         }
         return null;
