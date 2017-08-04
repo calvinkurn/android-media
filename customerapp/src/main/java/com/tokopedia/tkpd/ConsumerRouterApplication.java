@@ -21,6 +21,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -29,6 +30,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
@@ -59,9 +61,15 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
+import java.util.Map;
+
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
+
+<<<<<<<HEAD
+        =======
+        >>>>>>>1bda0cb42da6d3159508a648c5f9fe5eae9bd0d0
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -166,6 +174,37 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public String getBaseUrlDomainPayment() {
         return ConsumerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
+    }
+
+    @Override
+    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
+        return Uri.parse(originUrl).buildUpon()
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                )
+                .appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                )
+                .build().toString();
+    }
+
+    @Override
+    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
+        String urlQuery = Uri.parse(originUrl).getQuery();
+        return AuthUtil.generateHeaders(
+                Uri.parse(originUrl).getPath(),
+                urlQuery != null ? urlQuery : "",
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
     }
 
     @Override

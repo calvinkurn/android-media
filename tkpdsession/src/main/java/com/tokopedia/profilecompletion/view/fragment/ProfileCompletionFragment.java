@@ -169,13 +169,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         main.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), string, retryAction);
     }
-//
-//    private void testDummyData() {
-//        data.setCompletion(50);
-//        data.setPhoneVerified(false);
-//        data.setGender(0);
-//        data.setBday("0");
-//    }
 
     private void updateProgressBar(int oldValue, int newValue) {
         data.setCompletion(newValue);

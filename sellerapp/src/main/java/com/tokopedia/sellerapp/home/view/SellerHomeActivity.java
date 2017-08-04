@@ -43,6 +43,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
@@ -733,6 +734,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
+        AppWidgetUtil.sendBroadcastToAppWidget(this);
     }
 
     @Override

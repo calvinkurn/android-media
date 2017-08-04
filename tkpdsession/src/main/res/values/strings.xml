@@ -79,4 +79,7 @@
     <string name="profile_completion_date">Tanggal</string>
     <string name="profile_completion_month">Bulan</string>
     <string name="profile_completion_year">Tahun</string>
+    <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
+    <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
+    <string name="see_your_profile">Lihat Profil Anda</string>
 </resources>

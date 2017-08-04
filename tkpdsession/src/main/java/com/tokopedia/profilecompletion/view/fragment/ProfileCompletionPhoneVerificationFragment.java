@@ -225,11 +225,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected void onFirstTimeLaunched() {
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
                 SessionHandler.getPhoneNumber()));
-//        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
-//            inputOtpView.setVisibility(View.VISIBLE);
-//            changePhoneNumberButton.setVisibility(View.GONE);
-//            startTimer();
-//        }
     }
 
     protected void initView(View view) {
@@ -508,9 +503,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         tokocashText.setVisibility(GONE);
         countdownText.setVisibility(GONE);
         requestOtpButton.setVisibility(View.VISIBLE);
-//        MethodChecker.setBackground(requestOtpButton,
-//                MethodChecker.getDrawable(getActivity(),
-//                        com.tokopedia.core.R.drawable.cards_ui));
         requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         requestOtpButton.setText(R.string.title_resend_otp_sms);
         requestOtpCallButton.setVisibility(View.VISIBLE);

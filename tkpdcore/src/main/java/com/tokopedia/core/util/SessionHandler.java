@@ -152,7 +152,7 @@ public class SessionHandler {
         TrackingUtils.eventMoEngageLogoutUser();
 
         clearFeedCache();
-
+        AppWidgetUtil.sendBroadcastToAppWidget(context);
     }
 
     private static void logoutInstagram(Context context) {
