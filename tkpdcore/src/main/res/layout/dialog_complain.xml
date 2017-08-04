@@ -61,6 +61,7 @@
             android:background="@color/transparent"
             android:text="@string/string_complain_button_receive"
             android:textAllCaps="false"
+            android:textStyle="bold"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/text_size_medium" />
     </LinearLayout>
