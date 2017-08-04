@@ -17,8 +17,7 @@ public class GetFingerprintUseCase extends UseCase<String>{
 
     private final FingerprintRepository fingerprintRepository;
 
-    public GetFingerprintUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, FingerprintRepository fpRepository){
-        super(threadExecutor, postExecutionThread);
+    public GetFingerprintUseCase(FingerprintRepository fpRepository){
         fingerprintRepository = fpRepository;
     }
 

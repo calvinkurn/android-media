@@ -2,15 +2,12 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Base64;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -45,11 +42,9 @@ public class FingerprintInterceptor implements Interceptor {
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
         GetFingerprintUseCase getFingerprintUseCase;
-        ThreadExecutor threadExecutor = new JobExecutor();
-        PostExecutionThread postExecutionThread = new UIThread();
         FingerprintRepository fpRepo = new FingerprintDataRepository();
-        getFingerprintUseCase = new GetFingerprintUseCase(threadExecutor, postExecutionThread, fpRepo);
-        String json = getFingerprintUseCase.createObservable(null)
+        getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
+        String json = getFingerprintUseCase.execute(null)
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
