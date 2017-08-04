@@ -35,6 +35,7 @@ public class DigitalWebActivity extends BasePresenterActivity
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
+        setTheme(R.style.WebViewActivity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -43,7 +44,6 @@ public class DigitalWebActivity extends BasePresenterActivity
                 window.setStatusBarColor(getResources().getColor(R.color.white, null));
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    //noinspection deprecation
                     window.setStatusBarColor(getResources().getColor(R.color.white));
                 }
             }
