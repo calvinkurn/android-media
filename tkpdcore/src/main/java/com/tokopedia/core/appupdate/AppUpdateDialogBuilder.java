@@ -57,6 +57,8 @@ public class AppUpdateDialogBuilder {
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        UnifyTracking.eventClickCancelAppUpdate(detail.isForceUpdate());
+
                         dialog.dismiss();
                         if(detail.isForceUpdate()) activity.finish();
                     }

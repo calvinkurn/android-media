@@ -126,6 +126,7 @@ public interface AppEventTracking {
 
         String IMPRESSION_APP_UPDATE = "impressionAppUpdate";
         String CLICK_APP_UPDATE = "clickAppUpdate";
+        String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
     }
 
     interface Category {
@@ -430,8 +431,11 @@ public interface AppEventTracking {
         String BUY_GM_ADD_PRODUCT = "Buy GM - Add Product";
         String BUY_GM = "Buy GM";
 
-        String OPTIONAL_APP_UPDATE = "Application Update - Optional";
-        String FORCE_APP_UPDATE = "Application Update - Force";
+        String OPTIONAL_APP_UPDATE = "Clicked Update - Optional";
+        String FORCE_APP_UPDATE = "Clicked Update - Force";
+
+        String OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti - Optional";
+        String FORCE_CANCEL_APP_UPDATE = "Clicked Nanti - Force";
     }
 
     interface SOCIAL_MEDIA {
