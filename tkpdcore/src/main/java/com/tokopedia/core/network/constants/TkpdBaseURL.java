@@ -663,6 +663,7 @@ public class TkpdBaseURL {
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
         public static final String ACTIVATE_UNICODE = "/token";
         public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
+        public static final String PATH_EDIT_PROFILE = "/api/v1/user/profile-edit";
 
 
         public class OTP {
