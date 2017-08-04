@@ -63,7 +63,7 @@ public class SessionHandler {
     private static final String LOGIN_SESSION = "LOGIN_SESSION";
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
-    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
+    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME_USER";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
