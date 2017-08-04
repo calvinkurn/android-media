@@ -72,15 +72,15 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     public void bindData(List<GetKeyword> getKeywords, boolean isGoldMerchant) {
         if (!isGoldMerchant) {
             displayNonGoldMerchant();
-        } else {
-            notGMView.setVisibility(View.GONE);
+            return;
         }
-        
+
         if (getKeywords == null || getKeywords.size() <= 0) {
             displayEmptyState();
             return;
         }
 
+        notGMView.setVisibility(View.GONE);
         //[START] check whether all is empty
         int isNotEmpty = 0;
         for (GetKeyword getKeyword : getKeywords) {
@@ -121,6 +121,28 @@ public class GmStatisticMarketInsightViewHolder implements GMStatisticViewHolder
     private void displayNonGoldMerchant() {
         titleCardView.setViewState(LoadingStateView.VIEW_CONTENT);
         notGMView.setVisibility(View.VISIBLE);
+        displayDummyContentKeyword();
+    }
+
+    private void displayDummyContentKeyword() {
+        // create dummy data as replacement for non gold merchant user.
+        List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
+            searchKeyword1.setFrequency(1000);
+            searchKeyword1.setKeyword(
+                    String.format(
+                            titleCardView.getContext().getString(R.string.market_insight_item_non_gm_text),
+                            Integer.toString(i)
+                    )
+            );
+            searchKeyword.add(searchKeyword1);
+        }
+
+        bindCategory(DEFAULT_CATEGORY);
+
+        marketInsightAdapter.setSearchKeywords(searchKeyword);
+        marketInsightAdapter.notifyDataSetChanged();
     }
 
     private void displayEmptyState() {
