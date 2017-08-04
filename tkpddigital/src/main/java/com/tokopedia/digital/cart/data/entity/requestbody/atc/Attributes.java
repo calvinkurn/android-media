@@ -36,9 +36,9 @@ public class Attributes {
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
-    @SerializedName("is_reseller")
+    @SerializedName("isReseller")
     @Expose
-    private boolean is_reseller;
+    private boolean isReseller;
 
     public void setIdentifier(RequestBodyIdentifier identifier) {
         this.identifier = identifier;
@@ -72,7 +72,7 @@ public class Attributes {
         this.fields = fields;
     }
 
-    public void setIs_reseller(boolean is_reseller) {
-        this.is_reseller = is_reseller;
+    public void setReseller(boolean reseller) {
+        this.isReseller = reseller;
     }
 }

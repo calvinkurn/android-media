@@ -22,8 +22,6 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
 
-//    private static boolean isFromSeller;
-
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -53,7 +51,6 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     public static Intent newInstance(Context context, boolean isFromSeller) {
         Intent intent = new Intent(context, DigitalCategoryListActivity.class);
-//        intent.putExtra(Constants.EXTRA_IS_FROM_SELLER, isFromSeller);
         return intent;
     }
 
@@ -64,7 +61,6 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-//        isFromSeller = extras.getBoolean(Constants.EXTRA_IS_FROM_SELLER);
     }
 
     @Override

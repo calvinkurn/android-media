@@ -46,6 +46,8 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
 
+    private final String PARAM_IS_RESELLER = "is_reseller";
+
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
         this.view = view;
@@ -56,7 +58,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        paramQueryCategory.put("is_reseller", "1");
+        paramQueryCategory.put(PARAM_IS_RESELLER, "1");
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
         view.showInitialProgressLoading();

@@ -31,6 +31,9 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
     private final IDigitalCategoryListView digitalCategoryListView;
 
+    private final String UBER = "Uber";
+    private final String TIKET_KERETA_API = "Tiket Kereta Api";
+
     private boolean isFromSeller;
 
     public DigitalCategoryListPresenter(
@@ -129,7 +132,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     }
 
     private boolean isUberOrTiketKeretaApi(String product) {
-        return product.equals("Uber") || product.equals("Tiket Kereta Api");
+        return product.equals(UBER) || product.equals(TIKET_KERETA_API);
     }
 
 }
