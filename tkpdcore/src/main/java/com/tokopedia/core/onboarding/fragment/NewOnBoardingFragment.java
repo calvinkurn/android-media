@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -190,12 +191,9 @@ public class NewOnBoardingFragment extends OnBoardingFragment {
             @Override
             public void onClick(View v) {
                 SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
+                startActivity(intent);
                 getActivity().finish();
-//                Toast.makeText(v.getContext(), "skip", Toast.LENGTH_LONG).show();
             }
         });
 
