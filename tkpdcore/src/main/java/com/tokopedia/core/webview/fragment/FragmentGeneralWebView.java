@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
@@ -141,12 +142,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             progressBar.setVisibility(View.GONE);
         }
 
-
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
+    }
 
+    public WebView getWebview() {
+        return WebViewGeneral;
     }
 
     private boolean overrideUrl(String url) {
@@ -219,6 +222,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (WebViewGeneral.canGoBack()) {
+                        WebViewGeneral.goBack();
+                        return true;
+                    }
+                    break;
+            }
+        }
         return false;
     }
 
@@ -252,11 +265,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     public interface OnFragmentInteractionListener {
-
         void onWebViewSuccessLoad();
 
         void onWebViewErrorLoad();
 
         void onWebViewProgressLoad();
     }
+
 }
