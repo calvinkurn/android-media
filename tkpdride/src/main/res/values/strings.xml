@@ -24,7 +24,7 @@
     <string name="accepted_push_message">%1$s (%2$s stars) will pick you up in %3$s minutes.</string>
     <string name="accepted_push_title">Ride Accepted</string>
     <string name="share_ride_title">Follow my Uber trip</string>
-    <string name="share_ride_description">Follow my Uber trip by vising below link</string>
+    <string name="share_ride_description">Follow my Uber trip by visiting below link</string>
     <string name="toolbar_title_booking">Booking Ride</string>
     <string name="booking_ride_menu_your_trips">Your Trips</string>
     <string name="popup_cancel_ride_title">Are you sure you want to cancel ?</string>

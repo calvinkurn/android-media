@@ -284,6 +284,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_prod_list">Daftar Produk</string>
     <string name="title_inbox">Kotak Masuk</string>
     <string name="title_customer_care">Layanan Pengguna</string>
+    <string name="verified_account">Verified Account</string>
+
     <!-- Strings related Navigation Drawer -->
 
 
@@ -1957,7 +1959,7 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_negative_button">Batal</string>
     <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
 
-    <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_title_text">Sudah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
     <string name="title_opportunity_list">Peluang</string>
@@ -2008,10 +2010,12 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_loading">Loading..</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="appupdate_update">Update</string>
+    <string name="appupdate_later">Nanti</string>
+    <string name="appupdate_close">Tutup</string>
     <string name="webview_home_navigation_text">Beranda</string>
     <string name="webview_help_menu_text">Bantuan</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
-
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
 </resources>

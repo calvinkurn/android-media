@@ -18,5 +18,8 @@ public class List {
     @SerializedName("etalase_total_product")
     @Expose
     public int etalaseTotalProduct;
+    @SerializedName("use_ace")
+    @Expose
+    public int useAce;
 
 }
