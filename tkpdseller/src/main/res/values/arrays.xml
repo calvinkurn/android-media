@@ -33,7 +33,6 @@
     </string-array>
 
     <string-array name="gm_stat_sort_by">
-        <item>Total Transaksi</item>
         <item>Transaksi Sukses</item>
         <item>Pendapatan Bersih</item>
     </string-array>

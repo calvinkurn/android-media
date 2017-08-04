@@ -44,19 +44,16 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
         implements GMStatisticTransactionTableView {
 
     public static final int START_PAGE = 0;
-
-    private TextView tvSortBy;
-
     @Inject
     GMStatisticTransactionTablePresenter transactionTablePresenter;
-
     @GMTransactionTableSortBy
     int sortBy = GMTransactionTableSortBy.DELIVERED_AMT; // default to Pendapatan Bersih
     @GMTransactionTableSortType
     int sortType = GMTransactionTableSortType.DESCENDING; // this is for DESCENDING default
+    private TextView tvSortBy;
     private String[] gmStatSortBy;
     private boolean[] sortBySelections;
-    private int sortByIndexSelection = 2; // default to Pendapatan Bersih
+    private int sortByIndexSelection = 1; // default to Pendapatan Bersih
     private String[] gmStatSortType;
     private boolean[] sortTypeSelections;
     private int sortTypeIndexSelection = 0; // this is for DESCENDING default
