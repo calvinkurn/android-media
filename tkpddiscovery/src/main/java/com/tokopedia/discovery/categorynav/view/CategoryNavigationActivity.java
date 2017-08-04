@@ -28,6 +28,7 @@ import butterknife.BindView;
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     public static final int DESTROY_BROWSE_PARENT = 99;
+    public static final int DESTROY_INTERMEDIARY = 98;
 
     private FragmentManager fragmentManager;
     private String departmentId = "0";

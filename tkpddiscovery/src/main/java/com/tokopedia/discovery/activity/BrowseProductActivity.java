@@ -9,6 +9,7 @@ import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -441,6 +442,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     break;
             }
         } else if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
+            setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
     }
@@ -469,6 +471,23 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    public static void moveToFromIntermediary(FragmentActivity activity, String depId, String ad_src, String source, String title) {
+        if (activity == null)
+            return;
+
+        Intent intent = new Intent(activity, BrowseProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        bundle.putString(EXTRA_SOURCE, source);
+        if (title != null) {
+            bundle.putString(EXTRA_TITLE, title);
+        }
+        intent.putExtras(bundle);
+        activity.startActivityForResult(intent,CategoryNavigationActivity.DESTROY_INTERMEDIARY);
     }
 
     public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
