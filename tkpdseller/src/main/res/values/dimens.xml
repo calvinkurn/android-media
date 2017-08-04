@@ -104,4 +104,10 @@
     <bool name="landscape">false</bool>
     <bool name="tablet_landscape">false</bool>
     <integer name="bottomsheet_grid_columns">3</integer>
+
+    <dimen name="gm_tooltip_compare_width">80dp</dimen>
+    <dimen name="gm_tooltip_compare_height">45dp</dimen>
+    <dimen name="gm_tooltip_dot_image">8dp</dimen>
+    <dimen name="gm_tooltip_text_compare_margin">4dp</dimen>
+    <dimen name="gm_tooltip_text_compare_size">11sp</dimen>
 </resources>
