@@ -22,8 +22,9 @@ public class RideHistoryViewModelMapper {
                 rideHistory.getVehicle().getLicensePlate())
         );
         viewModel.setStatus(rideHistory.getStatus());
-        viewModel.setFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTokoCashCharged(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmount(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(

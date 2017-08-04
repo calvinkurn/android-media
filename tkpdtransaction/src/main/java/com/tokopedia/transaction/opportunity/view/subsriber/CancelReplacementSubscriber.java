@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.opportunity.view.subsriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.model.CancelReplacementModel;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
 
@@ -30,9 +31,10 @@ public class CancelReplacementSubscriber extends Subscriber<CancelReplacementMod
 
     @Override
     public void onNext(CancelReplacementModel cancelReplacementModel) {
-        if(cancelReplacementModel.isSuccess())
-        viewListener.onSuccessCancelReplacement();
+        if (cancelReplacementModel.isSuccess())
+            viewListener.onSuccessCancelReplacement();
         else
-            viewListener.onErrorCancelReplacement(cancelReplacementModel.getErrorMessage());
+            viewListener.onErrorCancelReplacement(
+                    viewListener.getStringFromResource(R.string.default_request_error_unknown));
     }
 }

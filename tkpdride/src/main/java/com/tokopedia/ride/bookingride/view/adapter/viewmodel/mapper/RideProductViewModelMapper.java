@@ -177,7 +177,7 @@ public class RideProductViewModelMapper {
         if (product != null && priceEstimate != null) {
             product.setEnabled(true);
             if (priceEstimate.getCurrencyCode().equalsIgnoreCase(IND_CURRENCY) || priceEstimate.getCurrencyCode().equalsIgnoreCase(IND_LOCAL_CURRENCY))
-                product.setProductPriceFmt(getStringIdrFormat(priceEstimate.getLowEstimate()) + " - " + getStringIdrFormat(priceEstimate.getHighEstimate()));
+                product.setProductPriceFmt(getStringIdrPriceEstimate(priceEstimate.getLowEstimate(), priceEstimate.getHighEstimate(), priceEstimate.getEstimate()));
             else
                 product.setProductPriceFmt(priceEstimate.getEstimate());
         }
@@ -196,5 +196,20 @@ public class RideProductViewModelMapper {
         kursIndonesia.setDecimalFormatSymbols(formatRp);
 
         return kursIndonesia.format(value);
+    }
+
+    private static String getStringIdrPriceEstimate(int lowEstimate, int highEstimate, String formattedPrice) {
+        try {
+            lowEstimate = lowEstimate > 0 ? (lowEstimate / 100) * 100 : 0;
+            highEstimate = highEstimate > 0 ? (highEstimate / 100) * 100 : 0;
+
+            String lowFormattedPrice = getStringIdrFormat(lowEstimate);
+            String higFormattedPrice = getStringIdrFormat(highEstimate).replace(IND_LOCAL_CURRENCY + " ", "");
+
+            formattedPrice = lowFormattedPrice + " - " + higFormattedPrice;
+        } catch (Exception ex) {
+        }
+
+        return formattedPrice;
     }
 }
