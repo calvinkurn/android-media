@@ -434,8 +434,8 @@ public interface AppEventTracking {
         String OPTIONAL_APP_UPDATE = "Clicked Update - Optional";
         String FORCE_APP_UPDATE = "Clicked Update - Force";
 
-        String OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti - Optional";
-        String FORCE_CANCEL_APP_UPDATE = "Clicked Nanti - Force";
+        String OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
+        String FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
     }
 
     interface SOCIAL_MEDIA {
