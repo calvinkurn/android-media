@@ -21,6 +21,7 @@ import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shop.ShopEditService;
 import com.tokopedia.seller.shop.ShopEditorActivity;
@@ -546,7 +547,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         openShopValidationData.getData().getShopUrl());
                 saveCache(openShopValidationData.getData().getShopId().toString());
                 ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
-
+                view.sendBroadcastToAppWidget();
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";
                 view.onMessageError(0, unknownError);
@@ -568,6 +569,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         openShopSubmitData.getData().getShopUrl());
                 saveCache(openShopSubmitData.getData().getShopId().toString());
                 ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
+                view.sendBroadcastToAppWidget();
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";

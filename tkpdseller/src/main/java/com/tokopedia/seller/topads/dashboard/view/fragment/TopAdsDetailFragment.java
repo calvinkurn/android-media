@@ -334,6 +334,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        outState.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
     }
 
     @Override
@@ -343,6 +344,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             return;
         }
         adId = savedInstanceState.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        ad = savedInstanceState.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adFromIntent = null;
     }
 }

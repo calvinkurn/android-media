@@ -119,12 +119,13 @@
                     android:id="@+id/tv_see_topads"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rect_stroke_gray"
+                    android:background="@drawable/rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:padding="@dimen/gm_unfinished_margin_top"
                     android:text="@string/gm_statistic_manage_topads"
+                    android:textColor="@color/wholesale_color"
                     android:textSize="@dimen/font_button"
                     android:textStyle="bold" />
             </LinearLayout>
