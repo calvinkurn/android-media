@@ -76,7 +76,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private TokoCashData tokoCashData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
-//    private boolean isFromSeller;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
