@@ -59,6 +59,8 @@ public class CartPresenter implements ICartPresenter {
 
     private static final int MUST_INSURANCE_MODE = 3;
     public static final int OPTIONAL_INSURANCE_MODE = 2;
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String IS_SUGGESTED = "is_suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -391,8 +393,8 @@ public class CartPresenter implements ICartPresenter {
     public void processCheckVoucherCode(final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", view.getVoucherCodeCheckoutData());
-        params.put("is_suggested", String.valueOf(instantCheckVoucher));
+        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
@@ -792,7 +794,6 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
-        //TODO uncomment if ws done
         view.renderInstantPromo(data.getCartPromo());
     }
 
