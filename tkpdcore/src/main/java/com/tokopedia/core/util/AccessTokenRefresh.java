@@ -9,6 +9,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.core.session.presenter.Session;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class AccessTokenRefresh {
         Map<String, String> params = new HashMap<>();
 
         params.put("grant_type", "refresh_token");
-        params.put("refresh_token", getExistingAccountAuthToken(context, AccountGeneral.ACCOUNT_TYPE));
+        params.put("refresh_token", EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context),"tokopedia1234567"));
 
         Call<String> responseCall = getRetrofit().create(AccountsApi.class).getTokenSynchronous(params);
 

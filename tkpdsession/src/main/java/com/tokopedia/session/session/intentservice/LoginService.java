@@ -33,6 +33,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.AccountGeneral;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -328,9 +329,9 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getErrorModel() == null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType()
+                                    tokenModel.getTokenType(), EncoderDecoder.Encrypt(tokenModel.getRefreshToken(), "tokopedia1234567")
                             );
-                            saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
+//                            saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
                         }
                         return Observable.just(accountsParameter);
                     }
