@@ -9,7 +9,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.Session;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.core.util.TokenSessionHelper.getExistingAccountAuthToken;
 
 /**
  * @author steven .
@@ -33,7 +30,7 @@ public class AccessTokenRefresh {
         Map<String, String> params = new HashMap<>();
 
         params.put("grant_type", "refresh_token");
-        params.put("refresh_token", EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context),"tokopedia1234567"));
+        params.put("refresh_token", EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context)));
 
         Call<String> responseCall = getRetrofit().create(AccountsApi.class).getTokenSynchronous(params);
 
