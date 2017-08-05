@@ -331,7 +331,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                             sessionHandler.setToken(tokenModel.getAccessToken(),
                                     tokenModel.getTokenType(), EncoderDecoder.Encrypt(tokenModel.getRefreshToken(), "tokopedia1234567")
                             );
-//                            saveRefreshToken(getBaseContext(),accountsParameter.getEmail(), accountsParameter.getTokenModel().getRefreshToken());
                         }
                         return Observable.just(accountsParameter);
                     }
