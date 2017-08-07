@@ -32,8 +32,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigate(String appLinks, String extra) {
-        Bundle bundle = new Bundle();
         ((TkpdCoreRouter) context.getApplicationContext())
-                .actionAppLink(context, appLinks);
+                .delegateAppLink(this.getCurrentActivity(), appLinks);
     }
 }

@@ -4,14 +4,11 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.react.ReactSingleton;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;

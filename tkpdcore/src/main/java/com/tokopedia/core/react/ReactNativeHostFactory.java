@@ -22,7 +22,6 @@ import java.util.List;
 
 public class ReactSingleton {
 
-    private static ReactInstanceManager reactInstanceManager;
 
     public static ReactNativeHost init(Application application) {
         /*reactInstanceManager = ReactInstanceManager.builder()
@@ -35,12 +34,8 @@ public class ReactSingleton {
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
 
-        return createReactNativeHost(application);
+        return createReactNativeHostDev(application);
 
-    }
-
-    public static ReactInstanceManager getReactInstanceManager() {
-        return reactInstanceManager;
     }
 
     private static ReactNativeHost createReactNativeHost(final Application application) {
@@ -58,6 +53,30 @@ public class ReactSingleton {
             @Override
             protected String getJSBundleFile() {
                 return CodePush.getJSBundleFile();
+            }
+        };
+    }
+
+    private static ReactNativeHost createReactNativeHostDev(final Application application) {
+        return new ReactNativeHost(application) {
+            @Override
+            public boolean getUseDeveloperSupport() {
+                return true;
+            }
+
+            @Override
+            protected List<ReactPackage> getPackages() {
+                return getListPackages(application);
+            }
+
+            @Override
+            protected String getJSBundleFile() {
+                return "index.android.bundle";
+            }
+
+            @Override
+            protected String getJSMainModuleName() {
+                return "reactscript/index.android";
             }
         };
     }

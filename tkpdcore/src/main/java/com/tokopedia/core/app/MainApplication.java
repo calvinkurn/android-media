@@ -31,7 +31,7 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.network.di.module.NetModule;
-import com.tokopedia.core.react.ReactSingleton;
+import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 
@@ -62,7 +62,7 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private final ReactNativeHost reactNativeHost = ReactSingleton.init(this);
+    private final ReactNativeHost reactNativeHost = ReactNativeHostFactory.init(this);
 
     private DaggerAppComponent.Builder daggerBuilder;
 

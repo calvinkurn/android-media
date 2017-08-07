@@ -37,6 +37,7 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
@@ -214,6 +215,12 @@ public class ConsumerRouterApplication extends MainApplication implements
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(linkUrl));
         context.startActivity(intent);
+    }
+
+    @Override
+    public void delegateAppLink(Activity activity, String linkUrl) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        deepLinkDelegate.dispatchFrom(activity);
     }
 
     @Override
