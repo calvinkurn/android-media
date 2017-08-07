@@ -39,6 +39,7 @@ import retrofit2.Retrofit;
  */
 @Module
 public class RideModule {
+    private static final int CACHE_SIZE = 10485760;
     public RideModule() {
     }
 
@@ -140,8 +141,7 @@ public class RideModule {
     @GoogleMapQualifier
     @Provides
     Cache provideHttpCacheCache(@ApplicationContext Context context) {
-        int cacheSize = 10 * 1024 * 1024;
-        return new Cache(context.getCacheDir(), cacheSize);
+        return new Cache(context.getCacheDir(), CACHE_SIZE);
     }
 
     @RideScope

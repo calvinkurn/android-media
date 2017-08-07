@@ -28,7 +28,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void initInjector();
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
