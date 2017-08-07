@@ -13,7 +13,7 @@ public enum DisplayMode {
 
     private int value;
 
-    private DisplayMode(int value) {
+    DisplayMode(int value) {
         this.value = value;
     }
 

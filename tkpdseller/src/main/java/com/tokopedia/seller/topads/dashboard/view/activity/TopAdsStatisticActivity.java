@@ -26,8 +26,8 @@ import com.tokopedia.seller.topads.dashboard.data.source.local.TopAdsDbDataSourc
 import com.tokopedia.seller.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.seller.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;

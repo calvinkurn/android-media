@@ -622,10 +622,7 @@ public class SellingService extends IntentService implements SellingServiceConst
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, messageTAG + e.getLocalizedMessage());
-//            if(e.getLocalizedMessage().contains("Unable to resolve host")){
             listener.noConnection();
-//            }
         }
 
         @Override

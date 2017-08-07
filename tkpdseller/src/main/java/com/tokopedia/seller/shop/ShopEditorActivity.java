@@ -173,7 +173,7 @@ public class ShopEditorActivity extends TActivity implements
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         activity.startActivity(intent);
         if (activity instanceof AppCompatActivity) {
-            ((AppCompatActivity) activity).finish();
+            activity.finish();
         }
         TrackingUtils.eventLoca("event : open store");
     }

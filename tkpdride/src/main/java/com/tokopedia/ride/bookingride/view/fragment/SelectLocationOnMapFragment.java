@@ -99,6 +99,11 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setViewListener();

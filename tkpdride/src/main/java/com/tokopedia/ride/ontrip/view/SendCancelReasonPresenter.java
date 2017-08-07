@@ -8,6 +8,8 @@ import com.tokopedia.ride.ontrip.domain.GetCancelReasonsUseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -18,6 +20,7 @@ public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelRea
     private GetCancelReasonsUseCase getCancelReasonsUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
 
+    @Inject
     public SendCancelReasonPresenter(GetCancelReasonsUseCase getCancelReasonsUseCase,
                                      CancelRideRequestUseCase cancelRideRequestUseCase) {
         this.getCancelReasonsUseCase = getCancelReasonsUseCase;
@@ -62,7 +65,7 @@ public class SendCancelReasonPresenter extends BaseDaggerPresenter<SendCancelRea
 
     @Override
     public void submitReasons() {
-        if (TextUtils.isEmpty(getView().getSelectedReason())){
+        if (TextUtils.isEmpty(getView().getSelectedReason())) {
             getView().showReasonEmptyError();
             return;
         }

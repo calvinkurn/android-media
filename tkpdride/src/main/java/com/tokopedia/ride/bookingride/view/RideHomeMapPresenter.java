@@ -43,6 +43,8 @@ import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,6 +69,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private boolean mSourceIsCurrentLocation;
     private MapConfiguration mapConfiguration;
 
+    @Inject
     public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }

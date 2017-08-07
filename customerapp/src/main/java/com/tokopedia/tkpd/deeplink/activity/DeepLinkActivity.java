@@ -268,6 +268,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        CommonUtils.dumper("FCM onNewIntent "+intent.getData());
+        if(intent.getData()!=null)
+        {
+            uriData = intent.getData();
+        }
         sendNotifLocalyticsCallback(intent);
     }
 

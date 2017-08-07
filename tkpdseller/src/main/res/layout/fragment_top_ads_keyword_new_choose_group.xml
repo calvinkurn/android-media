@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/include_topads_search_group" />
+            <include layout="@layout/partial_top_ads_search_group" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/spinner_keyword_type"
@@ -32,7 +32,7 @@
                 app:spinner_values="@array/top_ads_keyword_type_values"
                 app:spinner_text_size="@dimen/font_medium"/>
 
-            <include layout="@layout/include_topads_keyword_info" />
+            <include layout="@layout/partial_top_ads_keyword_info" />
 
         </android.support.v7.widget.LinearLayoutCompat>
 

@@ -80,8 +80,6 @@ public interface PlaceAutoCompleteContract {
 
         void actionGetUserAddressesFromCache();
 
-        void actionGetPeopleAddresses(boolean isLoadMore);
-
         void actionGetUserAddresses(boolean isLoadMore);
 
         boolean isLocationPermissionGranted();

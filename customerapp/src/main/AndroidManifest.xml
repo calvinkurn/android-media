@@ -157,7 +157,14 @@
 
         <activity
             android:name=".deeplink.DeeplinkHandlerActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tokopedia" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".truecaller.TruecallerActivity"
@@ -174,8 +181,7 @@
         <activity
             android:name=".redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            />
+            android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name=".applink.AppLinkWebsiteActivity"

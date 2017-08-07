@@ -106,8 +106,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     }
 
     @Override
-    protected void searchData() {
-        super.searchData();
+    protected void searchForPage(int page) {
         BaseKeywordParam baseKeywordParam = topAdsKeywordListPresenter.generateParam(keyword, page,
                 isPositive(), startDate.getTime(), endDate.getTime());
         if (groupAd != null) {
@@ -137,7 +136,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
             filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
             selectedPosition = intent.getIntExtra(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, 0);
-            searchData(START_PAGE);
+            setAndSearchForPage(START_PAGE);
         }
 
         if (requestCode == TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS) {

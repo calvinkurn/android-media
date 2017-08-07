@@ -46,7 +46,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
