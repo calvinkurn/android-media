@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -14,6 +15,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -155,5 +157,9 @@ public class Utilities {
     public static String toBase64(String text, int mode) throws UnsupportedEncodingException {
         byte[] data = text.getBytes("UTF-8");
         return Base64.encodeToString(data, mode);
+    }
+
+    public static String getAndroidID(){
+        return Settings.Secure.getString(MainApplication.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }
