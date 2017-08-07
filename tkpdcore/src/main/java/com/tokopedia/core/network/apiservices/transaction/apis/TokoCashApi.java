@@ -8,6 +8,7 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -22,4 +23,10 @@ public interface TokoCashApi {
 
     @GET(TkpdBaseURL.TopCash.PATH_CASH_BACK_DOMAIN)
     Observable<Response<TkpdDigitalResponse>> getTokoCashPending(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.TopCash.PATH_REQUEST_OTP_WALLET)
+    Observable<Response<TkpdResponse>> requestOtpWallet();
+
+    @GET(TkpdBaseURL.TopCash.PATH_LINK_WALLET_TO_TOKOCASH)
+    Observable<Response<TkpdResponse>> linkedWalletToTokocash(@Query("otp") String otp);
 }
