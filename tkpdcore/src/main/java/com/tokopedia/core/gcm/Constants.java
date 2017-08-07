@@ -33,6 +33,7 @@ public interface Constants {
     String EXTRA_FROM_PUSH = "from_notif";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
+    String EXTRA_PUSH_PERSONALIZATION = "EXTRA_PUSH_PERSONALIZATION";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
     String EXTRA_APPLINK_FROM_INTERNAL = "EXTRA_APPLINK_FROM_INTERNAL";
