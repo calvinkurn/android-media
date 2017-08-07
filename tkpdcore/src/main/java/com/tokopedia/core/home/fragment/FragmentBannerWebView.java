@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.service.DownloadService;
@@ -120,6 +121,12 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
+        if (((IDigitalModuleRouter) getActivity().getApplication())
+                .isSupportedDelegateDeepLink(url)) {
+            ((IDigitalModuleRouter) getActivity().getApplication())
+                    .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            return true;
+        }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 

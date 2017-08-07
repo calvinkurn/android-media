@@ -254,7 +254,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
      */
     private void showTransactionGraph(List<Integer> data, List<Integer> dateGraph) {
         BaseWilliamChartModel baseWilliamChartModel = GMStatisticUtil.joinDateAndGraph3(dateGraph, data, monthNamesAbrev);
-
+        gmStatisticIncomeGraph.clearDataDisplayDots();
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModel);
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);
