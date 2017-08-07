@@ -35,7 +35,8 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
 
 
-public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
+public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,
+        View.OnKeyListener {
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
 
     public static final String EXTRA_URL = "url";
@@ -50,12 +51,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private ProgressBar progressBar;
     private String url;
 
+    /**
+     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean)} ()} instead.
+     */
+    @Deprecated
     public static FragmentGeneralWebView createInstance(String url) {
-        FragmentGeneralWebView fragment = new FragmentGeneralWebView();
-        Bundle args = new Bundle();
-        args.putString(EXTRA_URL, url);
-        fragment.setArguments(args);
-        return fragment;
+        return createInstance(url, false);
     }
 
     public static FragmentGeneralWebView createInstance(String url, boolean allowOverride) {
@@ -84,17 +85,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         CommonUtils.dumper("Load URL: " + url);
-        View fragmentView = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
+        View fragmentView = inflater.inflate(
+                R.layout.fragment_fragment_general_web_view, container, false
+        );
         CookieManager.getInstance().setAcceptCookie(true);
         WebViewGeneral = (TkpdWebView) fragmentView.findViewById(R.id.webview);
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
-        if (!url.contains(SEAMLESS))
-            WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(url, getActivity()));
-        else {
-            WebViewGeneral.loadAuthUrl(url);
-        }
+        WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
+                ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
         WebViewGeneral.getSettings().setJavaScriptEnabled(true);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
@@ -118,6 +118,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             super.onPageStarted(view, url, favicon);
             Log.d(TAG, "initial url = " + url);
             try {
+                //noinspection deprecation
                 getActivity().setProgressBarIndeterminateVisibility(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -125,6 +126,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             progressBar.setVisibility(View.VISIBLE);
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
@@ -144,7 +146,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             progressBar.setVisibility(View.GONE);
         }
 
-
+        @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
@@ -183,6 +185,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -239,15 +242,24 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     @Override
+    public void onWebTitlePageCompleted(String title) {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
-                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
+                historyUrl = mWebBackForwardList.getItemAtIndex(
+                        mWebBackForwardList.getCurrentIndex() - 1
+                ).getUrl();
             if (!historyUrl.contains(SEAMLESS))
-                WebViewGeneral.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
+                WebViewGeneral.loadAuthUrl(
+                        URLGenerator.generateURLSessionLogin(historyUrl, getActivity())
+                );
             else {
                 WebViewGeneral.loadAuthUrl(historyUrl);
             }

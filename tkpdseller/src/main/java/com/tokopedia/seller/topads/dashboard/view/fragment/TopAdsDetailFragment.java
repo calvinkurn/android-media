@@ -21,11 +21,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.seller.lib.widget.LabelSwitch;
-import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.seller.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.seller.common.widget.LabelSwitch;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.view.listener.TopAdsDetailViewListener;
@@ -38,7 +38,7 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  * A simple {@link Fragment} subclass.
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends
-        BaseDatePickerFragment<T> implements TopAdsDetailViewListener,
+        TopAdsBaseDatePickerFragment<T> implements TopAdsDetailViewListener,
         CompoundButton.OnCheckedChangeListener {
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
@@ -113,12 +113,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         super.onActivityResult(requestCode, resultCode, intent);
         if (intent != null && requestCode == REQUEST_CODE_AD_EDIT &&
                 intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false)) {
-            if (startDate == null || endDate == null) {
-                return;
-            }
             setResultAdDetailChanged();
             if (intent.hasExtra(TopAdsExtraConstant.EXTRA_AD_ID)) {
                 adId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+            }
+            if (startDate == null || endDate == null) {
+                return;
             }
             refreshAd();
         }
@@ -334,6 +334,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        outState.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
     }
 
     @Override
@@ -343,6 +344,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             return;
         }
         adId = savedInstanceState.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        ad = savedInstanceState.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adFromIntent = null;
     }
 }

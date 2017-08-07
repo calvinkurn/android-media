@@ -252,12 +252,10 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                         context.getString(R.string.error_connection_problem),
                                         Snackbar.LENGTH_LONG);
                                 snackbarError.show();
-                                Log.e(STUART, SHOP_EDITOR + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, SHOP_EDITOR + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 progressdialog.dismiss();

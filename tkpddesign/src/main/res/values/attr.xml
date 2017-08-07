@@ -26,6 +26,7 @@
         <attr name="decimal_input_text" format="string"/>
         <attr name="decimal_input_enabled" format="boolean" />
     </declare-styleable>
+
     <declare-styleable name="CounterInputView">
         <attr name="counter_max_length" format="integer"/>
         <attr name="counter_hint" format="string"/>
@@ -34,6 +35,7 @@
         <attr name="counter_show_counter_button" format="boolean"/>
         <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
+
     <declare-styleable name="SpinnerTextView">
         <attr name="spinner_hint" format="string"/>
         <attr name="spinner_selection_index" format="integer"/>
@@ -44,9 +46,11 @@
         <attr name="spinner_hint_text_color" format="color"/>
         <attr name="spinner_hint_appearence" format="integer"/>
     </declare-styleable>
+
     <declare-styleable name="DefaultValueSpinnerTextView">
         <attr name="default_value" format="string"/>
     </declare-styleable>
+
     <declare-styleable name="SpinnerCounterInputView">
         <attr name="spinner_decimal_max_length" format="integer"/>
         <attr name="spinner_decimal_entries" format="reference"/>
@@ -59,10 +63,36 @@
         <attr name="spinner_decimal_enabled" format="boolean"/>
         <attr name="spinner_decimal_spinner_width" format="dimension"/>
     </declare-styleable>
+
     <declare-styleable name="TkpdTextInputLayout">
         <attr name="success_focus_color" format="color" />
         <attr name="success_leave_color" format="color" />
         <attr name="success_text_appearance" format="reference" />
         <attr name="prefix_string" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleCardView">
+        <attr name="tcv_title" format="string" />
+        <attr name="tcv_title_text_size" format="dimension" />
+        <attr name="tcv_icon" format="reference" />
+        <attr name="tcv_loading_layout" format="reference" />
+        <attr name="tcv_empty_layout" format="reference" />
+        <attr name="tcv_error_layout" format="reference" />
+        <attr name="tcv_use_gradient_title" format="boolean" />
+        <attr name="tcv_title_height" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="LoadingStateView">
+        <attr name="lsv_loading_layout" format="reference" />
+        <attr name="lsv_empty_layout" format="reference" />
+        <attr name="lsv_error_layout" format="reference" />
+        <attr name="lsv_state" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="EmptyCardContentView">
+        <attr name="eccv_icon" format="reference" />
+        <attr name="eccv_title_text" format="string" />
+        <attr name="eccv_content_text" format="string" />
+        <attr name="eccv_action_text" format="string" />
     </declare-styleable>
 </resources>

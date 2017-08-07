@@ -49,7 +49,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
             }
 
             boolean mapEmpty = isMapEmpty();
-            Log.d("MNORMANSYAH", "map empty " + mapEmpty);
             if (!isActivityInterfaceEmpty() && mapEmpty) {
                 addProductListInterface.disableNextButton();
                 addProductListInterface.hideBottom();
@@ -122,7 +121,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         ChipsEntity.Builder<TopAdsProductViewModel> builder = convertToRecyclerViewModel(datas.size(), data);
         datas.add(builder.build());
         int localLocation = datas.size() - 1;
-        Log.d("MNORMANSYAH", "position " + position + " localLocation " + localLocation);
         adapter.notifyItemInserted(localLocation);
     }
 
@@ -183,7 +181,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.chips_top_ads_selection_fragment;
+        return R.layout.fragment_top_ads_chips_selection;
     }
 
     @Override

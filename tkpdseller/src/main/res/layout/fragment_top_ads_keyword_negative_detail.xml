@@ -15,13 +15,13 @@
             android:orientation="vertical">
 
             <include
-                layout="@layout/include_topads_keyword_header_detail"
+                layout="@layout/partial_top_ads_keyword_header_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <include
                 android:layout_marginTop="@dimen/topads_detail_padding_item"
-                layout="@layout/include_layout_grup_labelview"
+                layout="@layout/partial_top_ads_grup_labelview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"/>
         </LinearLayout>

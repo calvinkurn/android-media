@@ -65,12 +65,11 @@ public class ManageShopAddress extends TActivity {
     private ArrayList<String> LocationDistrictId = new ArrayList<String>();
     private ArrayList<String> LocationAddress = new ArrayList<String>();
 
-    private View mainView;
     private LazyListView LocationListView;
     private ListViewManageShopLocation LocationAdapter;
     private NoResultHandler noResult;
     private TkpdProgressDialog MainProgress;
-    private View MainView;
+    private View mainView;
     private String IsAllowShop = "1";
     private int mState = SHOW_MENU;
     private SessionHandler session = new SessionHandler(this);
@@ -89,18 +88,17 @@ public class ManageShopAddress extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
-        mainView = findViewById(R.id.mainView);
-        noResult = new NoResultHandler(getWindow().getDecorView().getRootView());
         MainProgress = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         MainProgress.setLoadingViewId(R.id.include_loading);
-        MainView = findViewById(R.id.main_view);
+        mainView = findViewById(R.id.main_view);
+        noResult = new NoResultHandler(mainView);
         LocationListView = (LazyListView) findViewById(R.id.listview_shop_location);
         LocationListView.AddLoadingView();
         LocationAdapter = new ListViewManageShopLocation(ManageShopAddress.this, LocationNameList, LocationAddressList, LocationPhoneList, LocationFaxList, LocationEmailList, IsAllowShop);
         LocationListView.setAdapter(LocationAdapter);
         LocationListView.RemoveLoadingView();
         MainProgress.showDialog();
-        MainView.setVisibility(View.GONE);
+        mainView.setVisibility(View.GONE);
         CheckCache();
     }
 
@@ -294,7 +292,7 @@ public class ManageShopAddress extends TActivity {
             e.printStackTrace();
         }
         MainProgress.dismiss();
-        MainView.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.VISIBLE);
         LocationAdapter.notifyDataSetChanged();
     }
 
@@ -347,7 +345,7 @@ public class ManageShopAddress extends TActivity {
             noResult.showMessage();
         }
         MainProgress.dismiss();
-        MainView.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.VISIBLE);
         LocationAdapter.notifyDataSetChanged();
     }
 
@@ -374,7 +372,6 @@ public class ManageShopAddress extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(getClass().getSimpleName(), e.getLocalizedMessage());
                                 MainProgress.dismiss();
                                 mState = HIDE_MENU;
                                 invalidateOptionsMenu();
