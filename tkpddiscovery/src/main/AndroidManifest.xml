@@ -33,8 +33,10 @@
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".categorynav.view.CategoryNavigationActivity"></activity>
     </application>
 
 </manifest>
