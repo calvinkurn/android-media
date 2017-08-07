@@ -128,8 +128,8 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         adapter = getNewAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewDefaultBinder());
-        RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
-        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+        RetryDataBinder retryDataBinder = getRetryViewDataBinder(adapter);
+        retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
                 hideLoading();
@@ -138,7 +138,11 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
                 setAndSearchForPage(getStartPage());
             }
         });
-        adapter.setRetryView(topAdsRetryDataBinder);
+        adapter.setRetryView(retryDataBinder);
+    }
+
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter){
+        return new TopAdsRetryDataBinder(adapter);
     }
 
     @Override
