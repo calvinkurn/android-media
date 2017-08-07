@@ -84,6 +84,6 @@ public class ProfileCompletionPresenter extends BaseDaggerPresenter<ProfileCompl
     }
 
     public void setMsisdnVerifiedToCache(boolean isVerified) {
-        sessionHandler.setIsMSISDNVerified(isVerified);
+        SessionHandler.setIsMSISDNVerified(isVerified);
     }
 }

@@ -49,6 +49,12 @@ public class InboxRouter {
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
     public static final String PARAM_URL = "PARAM_URL";
 
+    //Trouble ID
+
+    //Solution ID
+    public static final int SOLUTION_REFUND = 1;
+    public static final int SOLUTION_CHECK_COURIER = 6;
+
 
     /////////// INTENT
 

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 
 import java.lang.reflect.Type;

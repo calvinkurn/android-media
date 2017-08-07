@@ -8,6 +8,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,10 +108,12 @@ public class FragmentBannerWebView extends Fragment {
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        args.putString(EXTRA_URL, url);
-        Uri uri = Uri.parse(url);
-        if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
-            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+        if(!TextUtils.isEmpty(url)){
+            args.putString(EXTRA_URL, url);
+            Uri uri = Uri.parse(url);
+            if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
+                args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+            }
         }
         fragment.setArguments(args);
         return fragment;

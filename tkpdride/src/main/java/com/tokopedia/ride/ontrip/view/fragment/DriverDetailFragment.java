@@ -100,6 +100,11 @@ public class DriverDetailFragment extends BaseFragment {
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_driver_detail;
     }
