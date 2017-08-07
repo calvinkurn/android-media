@@ -2,15 +2,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/gm_tooltip_compare_width"
-    android:layout_height="@dimen/gm_tooltip_compare_height"
-    android:background="@drawable/tooltip">
+    android:layout_height="@dimen/gm_tooltip_compare_height">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|left"
+        android:layout_gravity="center"
+        android:background="@drawable/tooltip"
         android:orientation="vertical"
         android:paddingBottom="@dimen/gm_tooltip_margin_top"
+        android:paddingEnd="@dimen/gm_tooltip_text_compare_margin"
         android:paddingLeft="@dimen/gm_tooltip_text_compare_margin"
+        android:paddingRight="@dimen/gm_tooltip_text_compare_margin"
         android:paddingStart="@dimen/gm_tooltip_text_compare_margin"
         android:paddingTop="@dimen/gm_tooltip_margin_bottom">
 
@@ -36,7 +39,7 @@
                 android:layout_marginStart="@dimen/gm_tooltip_text_compare_margin"
                 android:textColor="@color/white_fifty_percent"
                 android:textSize="@dimen/gm_tooltip_text_compare_size"
-                tools:text="100.000" />
+                tools:text="1" />
 
         </LinearLayout>
 
@@ -62,7 +65,7 @@
                 android:layout_marginStart="@dimen/gm_tooltip_text_compare_margin"
                 android:textColor="@color/white_fifty_percent"
                 android:textSize="@dimen/gm_tooltip_text_compare_size"
-                tools:text="8.000" />
+                tools:text="800000" />
 
         </LinearLayout>
 
