@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  ScrollView,
   Linking,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -20,13 +21,15 @@ const CampaignList = ({ campaigns, User_ID }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        User_ID={ID_User}
-        data={campaigns}
-        keyExtractor={item => item.banner_id}
-        renderItem={this.renderCampaign}
-        initialNumToRender={1}
-      />
+      <ScrollView>
+        <FlatList
+          User_ID={ID_User}
+          data={campaigns}
+          keyExtractor={item => item.banner_id}
+          renderItem={this.renderCampaign}
+          initialNumToRender={1}
+        />
+      </ScrollView>
     </View>
   );
 };

@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
+import { View, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { fetchCampaigns, addToWishlist } from '../actions/actions'
 import CampaignList from '../components/campaignList'
+
+
 
 class CampaignContainer extends Component {
   componentWillMount() {
@@ -10,10 +13,12 @@ class CampaignContainer extends Component {
     dispatch(fetchCampaigns(User_ID))
   }
 
-
   renderCampaign = (campaigns) => {
     return (
-      this.props.campaigns.isFetching ? null :
+      this.props.campaigns.isFetching ? 
+        <View style={{ marginTop:20, justifyContent:'center', alignItems:'center', flex:1}}>
+          <ActivityIndicator size="large" />
+        </View> :
         <CampaignList
           User_ID={this.props.screenProps.User_ID}
           campaigns={campaigns} />

@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, StyleSheet, Image, Text, Dimensions } from 'react-native'
+import { connect } from 'react-redux'
 import OriginalImage from './img/icon-original.png'
 import ServiceImage from './img/icon-service.png'
 import PromotionImage from './img/icon-promotion.png'
@@ -7,10 +8,7 @@ import QualityImage from './img/icon-free-installment.png'
 
 const { height, width, fontScale } = Dimensions.get('window');
 const scale = width / 375
-
-const infographic = () => {
-
-  let infoContent = [
+const infoContent = [
     {
       name: 'Produk dari Brand Resmi',
       desc: 'Semua produk di Official Store Tokopedia merupakan produk langsung dari brand-brand pilihan.',
@@ -32,29 +30,50 @@ const infographic = () => {
       img: QualityImage
     }]
 
-  return (
-    <View style={styles.osInfographic}>
-      {infoContent.map((info, idx) => (
-        <View style={styles.osInfoContent} key={idx}>
-          <View style={styles.osInfoImgWrap}>
-            <Image source={info.img} style={styles.osInfoImg} />
-          </View>
-          <View style={styles.osInfoContentText}>
-            <View>
-              <Text style={styles.osInfoHeading}>{info.name}</Text>
+
+class infographic extends Component {
+  renderInfographic = () => {
+    return (
+      <View style={styles.osInfographic}>
+        {infoContent.map((info, idx) => (
+          <View style={styles.osInfoContent} key={idx}>
+            <View style={styles.osInfoImgWrap}>
+              <Image source={info.img} style={styles.osInfoImg} />
             </View>
-            <View style={styles.osInfoContentPara}>
-              <Text
-                ellipsizeMode='tail'
-                numberOfLines={3}
-                style={styles.osInfoContentParaText}>{info.desc}</Text>
+            <View style={styles.osInfoContentText}>
+              <View>
+                <Text style={styles.osInfoHeading}>{info.name}</Text>
+              </View>
+              <View style={styles.osInfoContentPara}>
+                <Text
+                  ellipsizeMode='tail'
+                  numberOfLines={3}
+                  style={styles.osInfoContentParaText}>{info.desc}</Text>
+              </View>
             </View>
           </View>
-        </View>
-      ))}
-    </View>
-  )
+        ))}
+      </View>
+    )
+  }
+
+  render() {
+    return(
+      <View>
+        {!this.props.campaigns.isFetching && this.renderInfographic()}
+      </View>
+    )
+  }
+} 
+
+const mapStateToProps = state => {
+  const { campaigns, brands } = state
+  return {
+    campaigns,
+    brands
+  }
 }
+
 
 const styles = StyleSheet.create({
   osInfographic: {
@@ -104,4 +123,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default infographic
+export default connect(mapStateToProps)(infographic)

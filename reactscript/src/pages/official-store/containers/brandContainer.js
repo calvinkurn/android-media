@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { View, ActivityIndicator } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import LoadMore from '../components/LoadMore'
@@ -8,6 +9,7 @@ import {
   addToFavourite
 } from '../actions/actions'
 import BrandList from '../components/brandList'
+
 
 class BrandContainer extends Component {
   componentDidMount() {
@@ -38,9 +40,17 @@ class BrandContainer extends Component {
       User_ID: this.props.screenProps.User_ID
     }
 
-    return (
-      <BrandList {...bannerListProps} />
-    )
+    if (bannerListProps.isFetching){
+      return (
+        <View style={{ marginTop:20, justifyContent:'center', alignItems:'center', flex:1 }}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    } else {
+      return (
+        <BrandList {...bannerListProps} />
+      )
+    }
   }
 }
 

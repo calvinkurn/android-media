@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { NavigationModule, NetworkModule } from 'NativeModules';
 
-import { ContactUs_Stack, Favorite_Stack, OfficialStore, HotList_ } from './src/configs/router';
+import { OfficialStore, HotList_ } from './src/configs/router';
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
