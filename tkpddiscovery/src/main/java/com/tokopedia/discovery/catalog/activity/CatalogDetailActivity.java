@@ -8,16 +8,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
+import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
+
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
  * @author anggaprasetiyo on 10/17/16.
@@ -30,6 +41,14 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     String catalogId;
     private ShareData shareData;
+
+
+    @DeepLink(Constants.Applinks.DISCOVERY_CATALOG)
+    public static Intent getCallingApplinkCatalogIntent(Context context, Bundle bundle) {
+        Intent intent = createIntent(context, bundle.getString(EXTRA_CATALOG_ID));
+        return intent
+                .putExtras(bundle);
+    }
 
     public static Intent createIntent(Context context, String catalogId) {
         Intent intent = new Intent(context, CatalogDetailActivity.class);
@@ -68,7 +87,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     @Override
     protected void setViewListener() {
-        if(getFragmentManager().findFragmentByTag(TAG_FRAGMENT_CATALOG_DETAIL) == null) {
+        if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT_CATALOG_DETAIL) == null) {
             getFragmentManager().beginTransaction().add(R.id.activity_container,
                     CatalogDetailFragment.newInstance(catalogId), TAG_FRAGMENT_CATALOG_DETAIL)
                     .commit();

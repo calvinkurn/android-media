@@ -157,8 +157,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isLastItemPosition(int position) {
-        if (position == data.size()) return true;
-        else return false;
+        return position == data.size();
     }
 
     @Override

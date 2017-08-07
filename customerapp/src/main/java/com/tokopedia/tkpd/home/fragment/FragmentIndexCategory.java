@@ -418,6 +418,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra(BannerWebView.EXTRA_TITLE, getString(R.string.title_activity_promo));
                 intent.putExtra(BannerWebView.EXTRA_URL, TkpdBaseURL.URL_PROMO +
                         TkpdBaseURL.FLAG_APP);
                 startActivity(intent);
@@ -617,12 +618,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
                     Uri.encode(redirectUrl), MainApplication.getAppContext());
 
-            navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
+            navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue(), categoryItemModel.getName());
         }
     }
 
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
+
+        UnifyTracking.eventClickCategoriesIcon(itemModel.getName());
+
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
                 && tokoCashData.getLink() != 1) {
             String urlActivation = getTokoCashActionRedirectUrl(tokoCashData
@@ -663,10 +667,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
 
-    private void navigateToGimmicWebview(String url, String label) {
+    private void navigateToGimmicWebview(String url, String label, String title) {
         if (!url.equals("")) {
             Intent intent = new Intent(getActivity(), BannerWebView.class);
             intent.putExtra("url", url);
+            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
 
             UnifyTracking.eventHomeGimmick(label);

@@ -82,7 +82,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.category_picker_fragment_layout, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_category_picker, container, false);
         setupRecyclerView(view);
         presenter.attachView(this);
         initVar();

@@ -372,7 +372,6 @@ public class ManageShopAddress extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(getClass().getSimpleName(), e.getLocalizedMessage());
                                 MainProgress.dismiss();
                                 mState = HIDE_MENU;
                                 invalidateOptionsMenu();

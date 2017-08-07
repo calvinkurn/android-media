@@ -43,7 +43,7 @@ public class RidePushDependencyInjection {
     }
 
     private RideInterceptor provideRideInterceptor(String token, String userId) {
-        return new RideInterceptor(token, userId);
+        return new RideInterceptor(token);
     }
 
     private ChuckInterceptor provideChuckInterceptor() {
@@ -62,7 +62,7 @@ public class RidePushDependencyInjection {
 
     private BookingRideRepository provideBookingRideRepository(BookingRideDataStoreFactory factory,
                                                                ProductEntityMapper mapper, TimeEstimateEntityMapper estimateEntityMapper) {
-        return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
+        return new BookingRideRepositoryData(factory);
     }
 
     public GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {

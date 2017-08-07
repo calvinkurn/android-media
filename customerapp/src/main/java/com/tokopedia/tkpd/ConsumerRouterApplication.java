@@ -30,10 +30,13 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -45,7 +48,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.logout.TkpdSellerLogout;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -59,6 +62,8 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
+import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.Map;
@@ -73,7 +78,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -304,10 +309,10 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
-        Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+    public void actionAppLink(Context context, String linkUrl) {
+        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         intent.setData(Uri.parse(linkUrl));
-        activity.startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -355,6 +360,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent instanceIntentDigitalWeb(String url) {
+        return DigitalWebActivity.newInstance(this, url);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
     }
@@ -378,5 +388,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public Intent getRidePhoneNumberActivityIntent(Activity activity) {
         return RidePhoneNumberVerificationActivity.getCallingIntent(activity);
+    }
+
+    @Override
+    public void goToUserPaymentList(Activity activity) {
+        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        activity.startActivity(intent);
     }
 }

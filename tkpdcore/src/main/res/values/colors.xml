@@ -94,4 +94,11 @@
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
     <color name="grey_hint">#e0e0e0</color>
+
+    <color name="color_complain_header">#c0000000</color>
+    <color name="color_complain_body">#8a000000</color>
+
+
+    <color name="color_free_return_stroke">#bce8f1</color>
+    <color name="color_free_return">#d5f9ff</color>
 </resources>

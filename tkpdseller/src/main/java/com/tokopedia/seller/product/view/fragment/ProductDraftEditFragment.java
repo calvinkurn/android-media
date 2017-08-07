@@ -56,7 +56,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
         hideLoading();
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
@@ -65,7 +65,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         if (model.getProductNameEditable() == 0) {
             productInfoViewHolder.setNameEnabled(false);
         }
-        super.onSuccessLoadProduct(model);
+        super.onSuccessLoadDraftProduct(model);
     }
 
     @Override

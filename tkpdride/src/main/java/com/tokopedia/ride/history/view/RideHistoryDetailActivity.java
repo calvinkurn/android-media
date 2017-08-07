@@ -9,13 +9,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryDetailActivity extends BaseActivity implements RideHistoryDetailFragment.OnFragmentInteractionListener, FragmentGeneralWebView.OnFragmentInteractionListener {
+public class RideHistoryDetailActivity extends BaseActivity implements RideHistoryDetailFragment.OnFragmentInteractionListener,
+        FragmentGeneralWebView.OnFragmentInteractionListener, HasComponent<RideComponent> {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private RideHistoryViewModel rideHistory;
+    private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity, RideHistoryViewModel rideHistory) {
         Intent intent = new Intent(activity, RideHistoryDetailActivity.class);
@@ -84,5 +89,17 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     @Override
     public void onWebViewProgressLoad() {
 
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 }

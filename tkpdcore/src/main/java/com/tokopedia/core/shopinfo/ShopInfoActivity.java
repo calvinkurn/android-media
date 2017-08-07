@@ -186,6 +186,13 @@ public class ShopInfoActivity extends BaseActivity
         return bundle;
     }
 
+    public static Intent getCallingIntent(Context context, String shopId) {
+        Bundle bundle = ShopInfoActivity.createBundle(shopId, "");
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @DeepLink(Constants.Applinks.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -311,7 +318,7 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public boolean isOfficialStore() {
-        if(shopModel != null && shopModel.info != null) {
+        if (shopModel != null && shopModel.info != null) {
             return shopModel.info.shopIsOfficial == 1;
         }
 
@@ -406,10 +413,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean checkIsShowingInitialData() {
-        if (holder.shopName.getText().length() > 0)
-            return true;
-        else
-            return false;
+        return holder.shopName.getText().length() > 0;
     }
 
     private View.OnClickListener onRetryClick() {
@@ -514,13 +518,10 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean isShopValid() {
-        if (shopModel != null &&
+        return shopModel != null &&
                 shopModel.info != null &&
                 shopModel.info.shopName != null &&
-                !TextUtils.isEmpty(shopModel.info.shopName)) {
-            return true;
-        }
-        return false;
+                !TextUtils.isEmpty(shopModel.info.shopName);
     }
 
     private void initInitialData() {
@@ -598,24 +599,24 @@ public class ShopInfoActivity extends BaseActivity
             actionFirstLaunched(intent.getExtras());
         }
 
-        if(shopModel.info.shopIsOfficial==1){
-            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
         // switch to product tab if ETALASE_NAME not empty
-        if(intent.getStringExtra(ETALASE_NAME) != null) {
+        if (intent.getStringExtra(ETALASE_NAME) != null) {
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(intent.getStringExtra(KEYWORD) != null) {
+        if (intent.getStringExtra(KEYWORD) != null) {
             ProductList productListFragment = (ProductList) adapter.getItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0);
             productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
 
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(shopModel.info.shopIsOfficial==1){
-            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
     }
 

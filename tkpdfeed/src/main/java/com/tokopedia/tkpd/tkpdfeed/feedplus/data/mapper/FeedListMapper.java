@@ -12,6 +12,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.WholesaleDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationPaginationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.DataDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.ShopDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,11 +108,14 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     private ContentFeedDomain
     createContentFeedDomain(Feeds.Data.Content content,
                             List<ProductFeedDomain> productFeedDomains,
-                            List<PromotionFeedDomain> promotionFeedDomains) {
+                            List<PromotionFeedDomain> promotionFeedDomains,
+                            List<OfficialStoreDomain> officialStoreDomains) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
-                content.total_product() != null ? content.total_product() : 0, productFeedDomains,
+                content.total_product() != null ? content.total_product() : 0,
+                productFeedDomains,
                 promotionFeedDomains,
+                officialStoreDomains,
                 content.status_activity());
     }
 
@@ -179,6 +188,95 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                 recommendation);
     }
 
+    private List<OfficialStoreDomain> convertToOfficialStoresFeedDomain(
+            List<Feeds.Data.Official_store> official_stores) {
+        List<OfficialStoreDomain> listStores = new ArrayList<>();
+        if (official_stores != null) {
+            for (Feeds.Data.Official_store officialStore : official_stores) {
+                listStores.add(new OfficialStoreDomain(
+                        officialStore.shop_id() != null ? officialStore.shop_id() : 0,
+                        officialStore.shop_apps_url() != null ? officialStore.shop_apps_url() : "",
+                        officialStore.shop_name() != null ? officialStore.shop_name() : "",
+                        officialStore.logo_url() != null ? officialStore.logo_url() : "",
+                        officialStore.microsite_url() != null ? officialStore.microsite_url() : "",
+                        officialStore.brand_img_url() != null ? officialStore.brand_img_url() : "",
+                        officialStore.is_owner() != null ? officialStore.is_owner() : false,
+                        officialStore.shop_tagline() != null ? officialStore.shop_tagline() : "",
+                        officialStore.is_new() != null ? officialStore.is_new() : false,
+                        officialStore.title() != null ? officialStore.title() : "",
+                        officialStore.mobile_img_url() != null ? officialStore.mobile_img_url() : "",
+                        officialStore.feed_hexa_color() != null ? officialStore.feed_hexa_color() : "",
+                        officialStore.redirect_url_app() != null ? officialStore
+                                .redirect_url_app() : "",
+                        convertToOfficialStoreProducts(officialStore.products())
+                ));
+            }
+        }
+        return listStores;
+    }
+
+    private List<OfficialStoreProductDomain> convertToOfficialStoreProducts(
+            List<Feeds.Data.Product1> products) {
+        List<OfficialStoreProductDomain> listProduct = new ArrayList<>();
+        if (products != null) {
+            for (Feeds.Data.Product1 product : products) {
+                listProduct.add(new OfficialStoreProductDomain(
+                        product.brand_id(),
+                        product.brand_logo(),
+                        convertToOfficialStoreProductData(product.data())
+                ));
+            }
+        }
+        return listProduct;
+    }
+
+    private DataDomain convertToOfficialStoreProductData(Feeds.Data.Data1 data) {
+        return new DataDomain(data.id(),
+                data.name(),
+                data.url_app(),
+                data.image_url(),
+                data.image_url_700(),
+                data.price(),
+                convertToOfficialStoreProductShopDomain(data.shop()),
+                data.original_price(),
+                data.discount_percentage(),
+                data.discount_expired(),
+                convertToOfficialStoreProductBadge(data.badges()),
+                convertToOfficialStoreProductLabel(data.labels()));
+    }
+
+    private List<LabelDomain> convertToOfficialStoreProductLabel(List<Feeds.Data.Label> labels) {
+        List<LabelDomain> listLabel = new ArrayList<>();
+        if (labels != null) {
+            for (Feeds.Data.Label label : labels) {
+                listLabel.add(new LabelDomain(
+                        label.title(),
+                        label.color()
+                ));
+            }
+        }
+        return listLabel;
+    }
+
+    private List<BadgeDomain> convertToOfficialStoreProductBadge(List<Feeds.Data.Badge> badges) {
+        List<BadgeDomain> listBadge = new ArrayList<>();
+        if (badges != null) {
+            for (Feeds.Data.Badge badge : badges) {
+                listBadge.add(new BadgeDomain(
+                        badge.title(),
+                        (String) badge.image_url()));
+            }
+        }
+        return listBadge;
+    }
+
+    private ShopDomain convertToOfficialStoreProductShopDomain(Feeds.Data.Shop1 shop) {
+        return new ShopDomain(shop.name(),
+                shop.url(),
+                shop.url_app(), shop.location());
+    }
+
+
     private List<DataFeedDomain> convertToFeedDomain(Feeds.Data data) {
         List<Feeds.Data.Datum> datumList = data.feed().data();
         List<DataFeedDomain> dataFeedDomains = new ArrayList<>();
@@ -190,9 +288,14 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                         .content().products());
                 List<PromotionFeedDomain> promotionFeedDomains =
                         convertToPromotionFeedDomain(datum.content().promotions());
+                List<OfficialStoreDomain> officialStoreDomains =
+                        convertToOfficialStoresFeedDomain(datum.content().official_store());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
-                ContentFeedDomain contentFeedDomain = createContentFeedDomain(datum.content(),
-                        productFeedDomains, promotionFeedDomains);
+                ContentFeedDomain contentFeedDomain = createContentFeedDomain(
+                        datum.content(),
+                        productFeedDomains,
+                        promotionFeedDomains,
+                        officialStoreDomains);
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
 

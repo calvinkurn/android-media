@@ -103,7 +103,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void getNotification() {
         notificationUseCase.execute(
-                notificationUseCase.getRequestParam(
+                NotificationUseCase.getRequestParam(
                         GlobalConfig.isSellerApp()),
                 new NotificationSubscriber(viewListener));
     }

@@ -24,15 +24,6 @@
             android:name=".completetrip.view.CompleteTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
 
-        <service
-            android:name=".ontrip.service.GetCurrentRideRequestService"
-            android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
-            <intent-filter>
-                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
-            </intent-filter>
-        </service>
-
         <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity" />
         <activity
             android:name=".history.view.RideHistoryActivity"
