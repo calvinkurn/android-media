@@ -582,10 +582,7 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-                Log.d(TAG, "totalItemCount " + totalItemCount + " firstVisibleItem " + firstVisibleItem + " visibleItemCount " + visibleItemCount
-                        + " = " + (totalItemCount - (firstVisibleItem + visibleItemCount)));
                 if (totalItemCount - (firstVisibleItem + visibleItemCount) < 2 && totalItemCount != 0) {
-                    Log.d(TAG, "isLoading " + loading + " and " + mPaging.CheckNextPage() + " and " + mPaging.getPage());
                     if (!loading && mPaging.CheckNextPage()) {
 //						CurrPage += 1;
                         mPaging.nextPage();
@@ -756,13 +753,7 @@ public class ManageProduct extends TkpdActivity implements
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    if (hasFocus) {
-                        Log.d(TAG, "Images FOCUS");
-                    } else {
-                        Log.d(TAG, "Images FOCUS LOST");
-                    }
-                }
+
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -1866,11 +1857,7 @@ public class ManageProduct extends TkpdActivity implements
 
                 CheckCache();
 
-            } else {
-                Log.e(TAG, "Fetch Etalase Error");
             }
-        } else {
-            Log.e(TAG, "Fetch Etalase Error");
         }
     }
 

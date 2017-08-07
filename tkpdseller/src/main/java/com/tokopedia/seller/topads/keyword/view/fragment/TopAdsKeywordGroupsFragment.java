@@ -240,8 +240,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
     }
 
     @Override
-    protected void searchData() {
-        super.searchData();
+    protected void searchForPage(int page) {
         topAdsKeywordNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
     }
 

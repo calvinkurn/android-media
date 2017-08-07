@@ -211,7 +211,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        Log.d(TAG, "ariseRetry type " + type);
+
     }
 
     @Override

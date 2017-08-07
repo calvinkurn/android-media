@@ -186,7 +186,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
-                Log.d("Seller Page", "URL Clicked" + span);
                 if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {

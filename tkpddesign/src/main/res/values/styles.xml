@@ -5,7 +5,7 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.VerySmall">
-        <item name="android:textSize">@dimen/font_caption2</item>
+        <item name="android:textSize">@dimen/font_caption</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.Small">
@@ -35,12 +35,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/font_subheading</item>
         <item name="android:padding">12dp</item>`
-    </style>
-
-    <style name="TopAdsRadioButton" parent="@style/RadioButton">
         <item name="android:button">@drawable/bg_radio_button</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
-        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Button" parent="Widget.AppCompat.Button.Borderless">
@@ -90,8 +86,8 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
+        <item name="android:layout_marginLeft">@dimen/text_input_margin_offset</item>
+        <item name="android:layout_marginRight">@dimen/text_input_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
 

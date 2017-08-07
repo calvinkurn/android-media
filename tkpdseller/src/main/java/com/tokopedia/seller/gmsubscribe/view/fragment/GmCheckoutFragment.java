@@ -143,7 +143,6 @@ public class GmCheckoutFragment
 
     @Override
     protected void setActionVar() {
-        Log.d(TAG, "looking for product with id " + selectedProduct);
         presenter.getCurrentSelectedProduct(selectedProduct);
     }
 

@@ -43,6 +43,10 @@ public class CategoryDataSource {
             .map(new StoreDataToDatabase());
     }
 
+    public Observable<String> getCategoryName(long categoryId) {
+        return categoryDataManager.getCategoryName(categoryId);
+    }
+
     private class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, Boolean> {
         @Override
         public Boolean call(List<CategoryDataBase> categoryDataBases) {

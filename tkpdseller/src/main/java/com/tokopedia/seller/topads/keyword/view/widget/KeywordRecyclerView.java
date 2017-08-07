@@ -55,7 +55,7 @@ public class KeywordRecyclerView extends FrameLayout {
                 .build();
         recyclerView.setLayoutManager(chipsLayoutManager);
 
-        adapter = new KeywordAdapter(new ArrayList<String>());
+        adapter = new KeywordAdapter(getContext(), new ArrayList<String>());
 
         // disable animation
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -68,6 +68,10 @@ public class KeywordRecyclerView extends FrameLayout {
 
     public void setOnKeywordAdapterListener(KeywordAdapter.OnKeywordAdapterListener onKeywordAdapterListener) {
         adapter.setOnKeywordAdapterListener(onKeywordAdapterListener);
+    }
+
+    public void setErrorKeywordList(ArrayList<String> errorKeywordList){
+        adapter.setErrorKeywordList(errorKeywordList);
     }
 
     public void setKeywordList(ArrayList<String> keywordList) {

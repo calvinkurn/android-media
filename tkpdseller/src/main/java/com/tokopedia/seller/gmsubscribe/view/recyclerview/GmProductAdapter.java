@@ -31,7 +31,7 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GM_PRODUCT:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_gmsubscribe_product, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_gm_subscribe_product, parent, false);
                 return new GmProductViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
