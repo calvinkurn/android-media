@@ -515,6 +515,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
         confirmBookingViewModel.setSource(source);
         confirmBookingViewModel.setDestination(destination);
+        confirmBookingPassData.setSource(source);
+        confirmBookingPassData.setDestination(destination);
         presenter.actionGetFareAndEstimate(getParam());
     }
 
