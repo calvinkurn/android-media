@@ -1,12 +1,12 @@
 package com.tokopedia.seller.goldmerchant.statistic.utils;
 
-import android.content.res.Resources;
+import android.app.Activity;
 import android.util.DisplayMetrics;
-import android.widget.FrameLayout;
+import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.seller.common.williamchart.Tools;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -50,19 +50,28 @@ public final class GMStatisticUtil {
      * @param numChart
      */
     public static void resizeChart(int numChart, LineChartView chartView) {
-        int maxNumberChart = 7;
-        int scrolledWidth = 680;
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = chartView.getLayoutParams().height;
-        double newSizeRatio = ((double) numChart) / maxNumberChart;
-        if (newSizeRatio > 1 && width < scrolledWidth) {
-            width = (int) CommonUtils.DptoPx(chartView.getContext(), scrolledWidth);
+        Log.d(TAG, "resizeChart " + numChart);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        Activity activity = null;
+        if (chartView.getContext() instanceof Activity) {
+            activity = ((Activity) chartView.getContext());
         }
-        if (chartView.getParent() instanceof LinearLayout) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, height));
-        } else if (chartView.getParent() instanceof FrameLayout) {
-            chartView.setLayoutParams(new FrameLayout.LayoutParams(width, height));
+        if (activity == null)
+            return;
+
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int width = (int) Tools.fromDpToPx(360); //displaymetrics.widthPixels;
+        /*
+            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
+            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+            layout Params of linechart .
+        */
+        double newSizeRatio = ((double) numChart) / 7;
+        if (newSizeRatio > 1) {
+            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) Tools.fromDpToPx(680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+        } else {
+            chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
         }
     }
 

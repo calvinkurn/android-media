@@ -1381,7 +1381,7 @@ public abstract class ChartView extends RelativeLayout {
      * @return {@link ChartView} self-reference.
      */
     public ChartView setYAxisLabelSpacing(float spacing) {
-        xRndr.setAxisLabelsSpacing(spacing);
+        yRndr.setAxisLabelsSpacing(spacing);
         return this;
     }
 
