@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
@@ -46,6 +48,9 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("val_max")
     @Expose
     String valMax;
+    @SerializedName("child")
+    @Expose
+    List<LevelTwoCategory> levelTwoCategoryList;
 
     /**
      * @return The name
@@ -159,6 +164,14 @@ public class Option implements Serializable, Parcelable {
         this.valMax = valMax;
     }
 
+    public List<LevelTwoCategory> getLevelTwoCategoryList() {
+        return levelTwoCategoryList;
+    }
+
+    public void setLevelTwoCategoryList(List<LevelTwoCategory> levelTwoCategoryList) {
+        this.levelTwoCategoryList = levelTwoCategoryList;
+    }
+
     protected Option(Parcel in) {
         name = in.readString();
         key = in.readString();
@@ -171,6 +184,12 @@ public class Option implements Serializable, Parcelable {
         keyMax = in.readString();
         valMin = in.readString();
         valMax = in.readString();
+        if (in.readByte() == 0x01) {
+            levelTwoCategoryList = new ArrayList<>();
+            in.readList(levelTwoCategoryList, LevelTwoCategory.class.getClassLoader());
+        } else {
+            levelTwoCategoryList = null;
+        }
     }
 
     @Override
@@ -191,6 +210,12 @@ public class Option implements Serializable, Parcelable {
         dest.writeString(keyMax);
         dest.writeString(valMin);
         dest.writeString(valMax);
+        if (levelTwoCategoryList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(levelTwoCategoryList);
+        }
     }
 
     @SuppressWarnings("unused")
