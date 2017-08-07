@@ -26,8 +26,12 @@ import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenter;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
+import com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants;
 
 import rx.Subscriber;
+
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_TOKEN_EXTRAS;
+import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_XCOID_EXTRAS;
 
 /**
  * Created by kris on 8/2/17. Tokopedia
@@ -99,7 +103,7 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                     @Override
                     public void onNext(BcaOneClickData bcaOneClickData) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("access_token",
+                        bundle.putString(ACCESS_TOKEN_EXTRAS,
                                 bcaOneClickData.getToken().getAccessToken());
                         Intent intent = new Intent(ListPaymentTypeActivity.this, BcaOneClickActivity.class);
                         intent.putExtras(bundle);
@@ -230,9 +234,9 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
                     @Override
                     public void onNext(BcaOneClickData bcaOneClickData) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("access_token",
+                        bundle.putString(ACCESS_TOKEN_EXTRAS,
                                 bcaOneClickData.getToken().getAccessToken());
-                        bundle.putString("XCOID", tokenId);
+                        bundle.putString(ACCESS_XCOID_EXTRAS, tokenId);
                         Intent intent = new Intent(ListPaymentTypeActivity.this,
                                 BcaOneClickEditActivity.class);
                         intent.putExtras(bundle);

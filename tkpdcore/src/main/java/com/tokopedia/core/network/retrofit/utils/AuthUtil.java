@@ -74,10 +74,6 @@ public class AuthUtil {
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
     }
 
-    /*public static String dynamicHmac(String key) {
-
-    }*/
-
     public static Map<String, String> generateHeadersWithXUserId(
             String path, String strParam, String method, String authKey, String contentType
     ) {

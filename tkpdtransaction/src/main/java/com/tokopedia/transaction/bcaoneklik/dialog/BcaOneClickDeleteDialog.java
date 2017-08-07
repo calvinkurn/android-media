@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.bcaoneklik.dialog;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -44,6 +45,12 @@ public class BcaOneClickDeleteDialog extends DialogFragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = ((BcaOneClickDeleteListener) context);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = ((BcaOneClickDeleteListener) activity);
     }
 
     @Nullable
