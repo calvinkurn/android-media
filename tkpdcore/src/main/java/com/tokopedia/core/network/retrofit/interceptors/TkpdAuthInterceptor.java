@@ -63,27 +63,14 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         if(isUnauthorized(finalRequest, response)){
-            if(lock.tryLock()){
-                try {
-                    refreshToken();
-                    Request newest = recreateRequestWithNewAccessToken(chain);
-                    Response response1 = chain.proceed(newest);
-                    if(isUnauthorized(newest, response1)){
-                        showForceLogoutDialog();
-                        sendForceLogoutAnalytics(response1);
-                    }
-                    return response1;
-                }catch (Exception e){
-                    Log.d(TAG, "intercept: ");
-                } finally {
-                    lock.unlock();
-                }
-            }else{
-                lock.lock();
-                lock.unlock();
-                Request newest = recreateRequestWithNewAccessToken(chain);
-                return chain.proceed(newest);
+            refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            Response response1 = chain.proceed(newest);
+            if(isUnauthorized(newest, response1)){
+                showForceLogoutDialog();
+                sendForceLogoutAnalytics(response1);
             }
+            return response1;
         }
 
         String bodyResponse = response.body().string();
