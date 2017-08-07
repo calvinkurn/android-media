@@ -10,6 +10,7 @@ import {
   StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { icons } from '../../../../components/icons'
+import iconLoadMore from '../img/load-more.png'
 
 
 const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
@@ -31,7 +32,7 @@ const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Image source={icons.ios_more_mid} style={{ width:30, height:30, marginTop:20 }} />
+          <Image source={iconLoadMore} style={{ height:13, width:'35%', marginTop:30 }} />
           <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>

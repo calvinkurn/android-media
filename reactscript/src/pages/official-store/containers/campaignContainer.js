@@ -16,7 +16,7 @@ class CampaignContainer extends Component {
   renderCampaign = (campaigns) => {
     return (
       this.props.campaigns.isFetching ? 
-        <View style={{ marginTop:20, justifyContent:'center', alignItems:'center', flex:1}}>
+        <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
           <ActivityIndicator size="large" />
         </View> :
         <CampaignList
