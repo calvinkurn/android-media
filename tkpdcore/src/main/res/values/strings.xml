@@ -2026,6 +2026,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_finish">Selesai</string>
 
     <!--complain dialog string-->
+    <string name="title_complain_button">Komplain</string>
     <string name="string_complain_body">Apakah pesanan dari toko %s berkendala?\n\n\n1. Pilih \"Sudah Sampai\" bila barang sudah diterima\n\n2. Pilih \"Belum Sampai\" bila barang belum diterima </string>
     <string name="string_complain_button_receive">Sudah Sampai</string>
     <string name="string_complain_button_not_receive">Belum Sampai</string>
@@ -2034,6 +2035,6 @@ di Tokopedia Sekarang!</string>
     <!--complain not received dialog string-->
     <string name="string_notreceived_title">Barang Belum Sampai</string>
     <string name="string_notreceived_body">1. Pilih \"Refund\" untuk meminta uang kembali\n\n2. Pilih \"Cek Kurir\" untuk meminta penjual cek kurir </string>
-    <string name="string_notreceived_refund">Refund</string>
-    <string name="string_notreceived_check_courier">Cek Kurir</string>
+    <string name="string_notreceived_refund">Kembalikan Dana</string>
+    <string name="string_notreceived_check_courier">Tanya Kurir</string>
 </resources>
