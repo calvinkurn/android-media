@@ -11,7 +11,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
-import com.tokopedia.core.review.var.Const;
 
 import java.util.ArrayList;
 import java.util.List;
