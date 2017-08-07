@@ -1381,7 +1381,7 @@ public abstract class ChartView extends RelativeLayout {
      * @return {@link ChartView} self-reference.
      */
     public ChartView setYAxisLabelSpacing(float spacing) {
-        xRndr.setAxisLabelsSpacing(spacing);
+        yRndr.setAxisLabelsSpacing(spacing);
         return this;
     }
 
@@ -1640,7 +1640,7 @@ public abstract class ChartView extends RelativeLayout {
                             if (mEntryListener != null)  // Trigger entry callback
                                 mEntryListener.onClick(i, j, getEntryRect(mRegions.get(i).get(j)));
                             if (mTooltip != null) {  // Toggle tooltip
-                                if (dataDisplayTooltip != null && dataDisplayTooltip.get(i) != null) {
+                                if (dataDisplayTooltip != null && dataDisplayTooltip.get(j) != null) {
                                     dataDisplayTooltip.get(j).setPosition(j);
                                     toggleTooltip(getEntryRect(mRegions.get(i).get(j)), dataDisplayTooltip.get(j));
                                 } else {
