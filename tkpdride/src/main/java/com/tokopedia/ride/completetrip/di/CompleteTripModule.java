@@ -15,9 +15,6 @@ import dagger.Provides;
  */
 @Module
 public class CompleteTripModule {
-    public CompleteTripModule() {
-    }
-
     @Provides
     @CompleteTripScope
     GetReceiptUseCase provideGetReceiptUseCase(ThreadExecutor threadExecutor,
