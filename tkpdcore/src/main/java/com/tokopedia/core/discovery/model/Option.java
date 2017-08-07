@@ -25,7 +25,27 @@ public class Option implements Serializable, Parcelable {
     @SerializedName("input_type")
     @Expose
     String inputType;
-
+    @SerializedName("hex_color")
+    @Expose
+    String hexColor;
+    @SerializedName("metric")
+    @Expose
+    String metric;
+    @SerializedName("total_data")
+    @Expose
+    String totalData;
+    @SerializedName("key_min")
+    @Expose
+    String keyMin;
+    @SerializedName("key_max")
+    @Expose
+    String keyMax;
+    @SerializedName("val_min")
+    @Expose
+    String valMin;
+    @SerializedName("val_max")
+    @Expose
+    String valMax;
 
     /**
      * @return The name
@@ -83,12 +103,74 @@ public class Option implements Serializable, Parcelable {
         this.inputType = inputType;
     }
 
+    public String getHexColor() {
+        return hexColor;
+    }
+
+    public void setHexColor(String hexColor) {
+        this.hexColor = hexColor;
+    }
+
+    public String getMetric() {
+        return metric;
+    }
+
+    public void setMetric(String metric) {
+        this.metric = metric;
+    }
+
+    public String getTotalData() {
+        return totalData;
+    }
+
+    public void setTotalData(String totalData) {
+        this.totalData = totalData;
+    }
+
+    public String getKeyMin() {
+        return keyMin;
+    }
+
+    public void setKeyMin(String keyMin) {
+        this.keyMin = keyMin;
+    }
+
+    public String getKeyMax() {
+        return keyMax;
+    }
+
+    public void setKeyMax(String keyMax) {
+        this.keyMax = keyMax;
+    }
+
+    public String getValMin() {
+        return valMin;
+    }
+
+    public void setValMin(String valMin) {
+        this.valMin = valMin;
+    }
+
+    public String getValMax() {
+        return valMax;
+    }
+
+    public void setValMax(String valMax) {
+        this.valMax = valMax;
+    }
 
     protected Option(Parcel in) {
         name = in.readString();
         key = in.readString();
         value = in.readString();
         inputType = in.readString();
+        hexColor = in.readString();
+        metric = in.readString();
+        totalData = in.readString();
+        keyMin = in.readString();
+        keyMax = in.readString();
+        valMin = in.readString();
+        valMax = in.readString();
     }
 
     @Override
@@ -102,6 +184,13 @@ public class Option implements Serializable, Parcelable {
         dest.writeString(key);
         dest.writeString(value);
         dest.writeString(inputType);
+        dest.writeString(hexColor);
+        dest.writeString(metric);
+        dest.writeString(totalData);
+        dest.writeString(keyMin);
+        dest.writeString(keyMax);
+        dest.writeString(valMin);
+        dest.writeString(valMax);
     }
 
     @SuppressWarnings("unused")

@@ -16,11 +16,14 @@ import java.util.List;
  */
 public class Filter implements Serializable, Parcelable {
     public static final String TITLE_CATEGORY = "Kategori";
-
+    public static final String TEMPLATE_NAME_CATEGORY = "template_category";
 
     @SerializedName("title")
     @Expose
     String title;
+    @SerializedName("template_name")
+    @Expose
+    String templateName;
     @SerializedName("search")
     @Expose
     Search search;
@@ -43,6 +46,14 @@ public class Filter implements Serializable, Parcelable {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     /**
@@ -81,6 +92,7 @@ public class Filter implements Serializable, Parcelable {
     public static Filter createCategory() {
         Filter filter = new Filter();
         filter.setTitle(TITLE_CATEGORY);
+        filter.setTemplateName(TEMPLATE_NAME_CATEGORY);
         filter.setOptions(new ArrayList<Option>());
         Search search = new Search();
         search.setPlaceholder("");
@@ -91,6 +103,7 @@ public class Filter implements Serializable, Parcelable {
 
     protected Filter(Parcel in) {
         title = in.readString();
+        templateName = in.readString();
         search = (Search) in.readValue(Search.class.getClassLoader());
         if (in.readByte() == 0x01) {
             options = new ArrayList<Option>();
@@ -109,6 +122,7 @@ public class Filter implements Serializable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
+        dest.writeString(templateName);
         dest.writeValue(search);
         if (options == null) {
             dest.writeByte((byte) (0x00));

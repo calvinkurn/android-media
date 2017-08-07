@@ -21,7 +21,7 @@ public interface DynamicFilter {
     String DEVICE = "device";
     String SOURCE = "source";
     String USER_ID = "user_id";
-    String V1_DYNAMIC_ATTRIBUTES = "v1/dynamic_attributes";
+    String V1_DYNAMIC_ATTRIBUTES = "v2/dynamic_attributes";
     String DYNAMIC_FILTER_URL = TkpdBaseURL.ACE_DOMAIN;
     String fullUrl = DYNAMIC_FILTER_URL + V1_DYNAMIC_ATTRIBUTES;
     String SC = "sc";
