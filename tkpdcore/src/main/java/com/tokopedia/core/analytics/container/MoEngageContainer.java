@@ -62,7 +62,7 @@ public class MoEngageContainer implements IMoengageContainer {
             @Override
             public void call(SingleSubscriber<? super Void> singleSubscriber) {
                 MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
-                MoEHelper.getInstance(context).setLogLevel(Logger.DEBUG);
+                MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
             }
         });
 

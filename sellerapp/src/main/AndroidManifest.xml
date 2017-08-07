@@ -150,8 +150,8 @@
         </receiver>
 
         <provider
-            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:exported="true"/>
 
         <activity android:name=".deeplink.DeepLinkHandlerActivity"/>

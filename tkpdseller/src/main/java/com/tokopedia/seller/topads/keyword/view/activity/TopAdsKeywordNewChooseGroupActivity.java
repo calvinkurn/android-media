@@ -48,7 +48,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     }
 
     @Override
-    protected String getTagFragment() {
-        return TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }
