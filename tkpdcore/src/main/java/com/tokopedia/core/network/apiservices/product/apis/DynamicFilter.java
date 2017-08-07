@@ -20,6 +20,7 @@ public interface DynamicFilter {
     String HASH = "hash";
     String DEVICE = "device";
     String SOURCE = "source";
+    String QUERY = "query";
     String USER_ID = "user_id";
     String V1_DYNAMIC_ATTRIBUTES = "v2/dynamic_attributes";
     String DYNAMIC_FILTER_URL = TkpdBaseURL.ACE_DOMAIN;

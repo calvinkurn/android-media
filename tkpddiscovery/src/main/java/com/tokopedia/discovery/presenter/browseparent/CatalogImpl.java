@@ -158,7 +158,10 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void fetchDynamicAttribut() {
         if (browseView.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseView.getBrowseProductActivityModel().getDepartmentId());
+            discoveryInteractor.getDynamicAttribute(
+                    view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG,
+                    browseView.getBrowseProductActivityModel().getDepartmentId(),
+                    browseView.getBrowseProductActivityModel().getQ());
         }
     }
 }

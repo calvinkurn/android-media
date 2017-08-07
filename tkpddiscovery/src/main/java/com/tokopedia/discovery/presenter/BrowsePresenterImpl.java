@@ -428,7 +428,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
         }
 
-        discoveryInteractor.getDynamicAttribute(context, sourceKey, browseModel.getDepartmentId());
+        discoveryInteractor.getDynamicAttribute(context, sourceKey,
+                browseModel.getDepartmentId(), browseModel.getQ());
     }
 
     @Override
