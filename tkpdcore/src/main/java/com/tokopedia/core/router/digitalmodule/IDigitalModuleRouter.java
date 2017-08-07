@@ -42,4 +42,6 @@ public interface IDigitalModuleRouter {
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
+    Intent instanceIntentTokoCashActivation();
+
 }
