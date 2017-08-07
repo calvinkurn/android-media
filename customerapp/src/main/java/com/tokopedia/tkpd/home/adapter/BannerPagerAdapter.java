@@ -36,6 +36,7 @@ import java.util.Locale;
 
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
+    private static final String TAG = BannerPagerAdapter.class.getSimpleName();
     private List<FacadePromo.PromoItem> bannerList;
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
@@ -73,16 +74,12 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         }
 
         float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
-        int padding_8dp = (int) (8 * scale + 0.5f);
+        int padding_8dp = (int) (4 * scale + 0.5f);
+        holder.itemView.setPadding(padding_8dp, padding_8dp, padding_8dp, padding_8dp);
 
-        if (position == getItemCount() - 1) {
-            holder.itemView.setPadding(padding_8dp, 0, padding_8dp, 0);
-        } else {
-            holder.itemView.setPadding(padding_8dp, 0, 0, 0);
-        }
+        int width320dp = (int) holder.itemView.getContext().getResources().getDimension(R.dimen.item_banner_width_category);
+        int height160dp = (int) holder.itemView.getContext().getResources().getDimension(R.dimen.item_banner_height_category);
 
-        int width320dp = (int) (320 * scale + 0.5f);
-        int height160dp = (int) (160 * scale + 0.5f);
         ViewGroup.LayoutParams layoutParams = holder.bannerImage.getLayoutParams();
         layoutParams.height = height160dp;
         layoutParams.width = width320dp;
@@ -94,7 +91,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 bannerList.get(position).imgUrl
         );
 
-        Log.d("hangnadi", String.format(Locale.US, "onBindViewHolder: %s", bannerList.get(position).imgUrl));
     }
 
     @Override
