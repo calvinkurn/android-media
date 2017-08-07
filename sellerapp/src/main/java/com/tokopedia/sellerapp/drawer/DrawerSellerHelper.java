@@ -59,7 +59,6 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
                               LocalCacheHandler drawerCache) {
@@ -185,20 +184,17 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.pembayaran_dan_topup),
+        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.produk_digital),
                 R.drawable.pembayaran_topup,
                 TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
                 0);
 
-        sellerMenu.add(new DrawerItem("Daftar Produk Digital",
+        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.pembayaran_dan_topup),
                 TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL,
                 true));
         sellerMenu.add(new DrawerItem("Daftar Transaksi Digital",
                 TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
-                true));
-        sellerMenu.add(new DrawerItem("Daftar Harga Produk Digital",
-                TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL,
                 true));
 
         return sellerMenu;
@@ -368,11 +364,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRICE_PRODUCT_DIGITAL:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
