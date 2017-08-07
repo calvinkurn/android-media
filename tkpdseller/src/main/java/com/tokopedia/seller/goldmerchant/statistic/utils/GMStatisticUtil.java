@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.seller.common.williamchart.Tools;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import java.util.List;
  */
 
 public final class GMStatisticUtil {
+    public static final int DATA_SET_NUMBER_DIVIDER = 7;
+    public static final int MINIMUM_RATIO = 1;
     private static final String TAG = "GMStatisticUtil";
 
     public static List<Integer> subList(List<Integer> datas, int size) {
@@ -43,8 +45,8 @@ public final class GMStatisticUtil {
      * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
      * https://github.com/diogobernardino/WilliamChart/issues/152
      * <p>
-     * set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-     * is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+     * set only {@value DATA_SET_NUMBER_DIVIDER} values in  Window width rest are on sroll or dynamically change the width of linechart
+     * is  window width/{@value DATA_SET_NUMBER_DIVIDER} * total values returns you the total width of linechart with scrolling and set it in
      * layout Params of linechart .
      *
      * @param numChart
@@ -61,15 +63,16 @@ public final class GMStatisticUtil {
             return;
 
         activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int width = (int) Tools.fromDpToPx(360); //displaymetrics.widthPixels;
+        int width = (int) activity.getResources().getDimension(R.dimen.gm_linechart_default_width); //displaymetrics.widthPixels;
+        int overScrollWidth = (int) activity.getResources().getDimension(R.dimen.gm_linechart_more_width);
         /*
-            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+            set only {@value DATA_SET_NUMBER_DIVIDER} values in  Window width rest are on sroll or dynamically change the width of linechart
+            is  window width/{@value DATA_SET_NUMBER_DIVIDER} * total values returns you the total width of linechart with scrolling and set it in
             layout Params of linechart .
         */
-        double newSizeRatio = ((double) numChart) / 7;
-        if (newSizeRatio > 1) {
-            chartView.setLayoutParams(new LinearLayout.LayoutParams((int) Tools.fromDpToPx(680), chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+        double newSizeRatio = ((double) numChart) / DATA_SET_NUMBER_DIVIDER;
+        if (newSizeRatio > MINIMUM_RATIO) {
+            chartView.setLayoutParams(new LinearLayout.LayoutParams(overScrollWidth, chartView.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         } else {
             chartView.setLayoutParams(new LinearLayout.LayoutParams(width, chartView.getLayoutParams().height));
         }
