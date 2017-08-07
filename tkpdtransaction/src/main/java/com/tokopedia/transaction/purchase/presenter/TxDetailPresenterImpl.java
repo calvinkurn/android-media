@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -241,6 +242,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         viewListener.showDialog(builder.create());
     }
 
+
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -248,17 +250,25 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
         Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
         Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle(), null, new TagHandlerUtil()));
         tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+
+        llFreeReturn.setVisibility(View.GONE);
         btnBack.setVisibility(View.GONE);
         btnNotReceive.setVisibility(View.GONE);
-        if(orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
+        if (orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
             btnNotReceive.setVisibility(View.VISIBLE);
         else
             btnBack.setVisibility(View.VISIBLE);
 
+        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
+            llFreeReturn.setVisibility(View.VISIBLE);
+            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+        }
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
