@@ -17,7 +17,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
+import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
@@ -462,7 +462,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void showSnackBarError(String errorMessage) {
         if (!TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
         }

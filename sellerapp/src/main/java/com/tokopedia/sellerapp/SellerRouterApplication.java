@@ -14,6 +14,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -37,10 +38,13 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.common.di.component.DaggerGoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
+import com.tokopedia.seller.goldmerchant.common.di.module.GoldMerchantModule;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -67,6 +71,27 @@ public class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
+
+    private DaggerGoldMerchantComponent.Builder daggerGoldMerchantBuilder;
+    private GoldMerchantComponent goldMerchantComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initializeDagger();
+    }
+
+    private void initializeDagger() {
+        daggerGoldMerchantBuilder = DaggerGoldMerchantComponent.builder()
+                .goldMerchantModule(new GoldMerchantModule());
+    }
+
+    public GoldMerchantComponent getGoldMerchantComponent(ActivityModule activityModule) {
+        if (goldMerchantComponent == null) {
+            goldMerchantComponent = daggerGoldMerchantBuilder.appComponent(getApplicationComponent(activityModule)).build();
+        }
+        return goldMerchantComponent;
+    }
 
     @Override
     public void startInstopedActivity(Context context) {
@@ -346,5 +371,4 @@ public class SellerRouterApplication extends MainApplication
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
     }
-
 }

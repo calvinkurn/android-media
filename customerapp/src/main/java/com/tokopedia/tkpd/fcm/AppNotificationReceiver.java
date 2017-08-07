@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
@@ -40,23 +42,14 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-        CommonUtils.dumper("FCM messaging moengage " + message.getData().toString());
-        if(message.getData().containsKey(Constants.ARG_NOTIFICATION_APPLINK)){
-            Map<String, String> appLinkData = message.getData();
-            appLinkData.put(Constants.KEY_ORIGIN,Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
-            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(GCMUtils.convertMap(appLinkData)));
-        }else {
             PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
-        }
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
-        CommonUtils.dumper("FCM messaging " + bundle.toString());
         if(bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
             bundle.putString(Constants.KEY_ORIGIN,Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
         mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(bundle));
     }
-
 }

@@ -793,12 +793,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShare(String source, String label){
+    public static void eventShare(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SHARE_TO + label + "-" + source
+                AppEventTracking.EventLabel.SHARE_TO + label
         ).getEvent());
     }
 
@@ -1247,11 +1247,59 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.STATISTIC);
     }
 
+    public static void eventClickGMStatSeeDetailTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GMSTAT_TRANSACTION,
+                AppEventTracking.EventLabel.SEE_DETAIL);
+    }
+
+    public static void eventClickGMStatBuyGMDetailTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STAT,
+                AppEventTracking.EventLabel.BUY_GM);
+    }
+
+    public static void eventClickGMStatDatePickerWOCompareTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+                AppEventTracking.EventLabel.CHANGE_DATE);
+    }
+
+    public static void eventClickGMStatDatePickerWCompareTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+                AppEventTracking.EventLabel.CHANGE_DATE_COMPARE);
+    }
+
+    public static void eventClickGMStatManageTopAds(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TOP_ADS,
+                AppEventTracking.EventLabel.MANAGE_TOPADS);
+    }
+
+    public static void eventClickGMStatProductSoldTransaction(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+                AppEventTracking.EventLabel.PRODUCT_SOLD);
+    }
+
+    public static void eventClickGMStatFilterNameTransaction(String filterName){
+        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+                AppEventTracking.EventLabel.GRAPH_X + filterName);
+    }
+
+    public static void eventClickGMStatFilterTypeProductSold(String filterType){
+        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_SOLD, filterType);
+    }
+
     private static void eventClickGMStat(String eventCategory, String eventLabel){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_GM_STAT,
                 eventCategory,
                 AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    private static void eventClickFilterGMStat(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GM_STAT,
+                eventCategory,
+                AppEventTracking.Action.FILTER,
                 eventLabel
         ).getEvent());
     }

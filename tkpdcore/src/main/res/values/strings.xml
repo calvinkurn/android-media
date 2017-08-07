@@ -2019,7 +2019,6 @@ di Tokopedia Sekarang!</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
 
-
     <!-- finish dialog string-->
     <string name="string_finish_title">Selesaikan Pemesanan</string>
     <string name="string_finish_body">1. Pilih \"Selesai\" untuk menyelesaikan pemesanan\n\n2. Pilih \"Komplain\" apabila ada kendala pada pemesanan</string>
@@ -2037,4 +2036,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_notreceived_body">1. Pilih \"Refund\" untuk meminta uang kembali\n\n2. Pilih \"Cek Kurir\" untuk meminta penjual cek kurir </string>
     <string name="string_notreceived_refund">Kembalikan Dana</string>
     <string name="string_notreceived_check_courier">Tanya Kurir</string>
+    <string name="shop_product_list_header_product_title">Produk</string>
+    <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+
 </resources>

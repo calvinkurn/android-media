@@ -74,13 +74,6 @@ public class ProfileCompletionModule {
 
     @ProfileCompletionScope
     @Provides
-    SessionHandler provideSessionHandler(@ActivityContext Context context) {
-
-        return new SessionHandler(context);
-    }
-
-    @ProfileCompletionScope
-    @Provides
     Bundle provideAccountsBundle(@ActivityContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
