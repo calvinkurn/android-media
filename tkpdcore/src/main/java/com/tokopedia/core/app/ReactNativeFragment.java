@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
-import com.tokopedia.core.react.ReactSingleton;
 
 /**
  * @author ricoharisin .
@@ -58,7 +57,7 @@ public abstract class ReactNativeFragment extends TkpdBaseV4Fragment implements 
     public void onAttach(Context context) {
         super.onAttach(context);
         reactRootView = new ReactRootView(context);
-        reactInstanceManager = ReactSingleton.getReactInstanceManager();
+        reactInstanceManager = MainApplication.getInstance().getReactNativeHost().getReactInstanceManager();
     }
 
     @Override

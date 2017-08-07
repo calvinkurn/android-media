@@ -43,6 +43,8 @@ public interface TkpdCoreRouter {
 
     void actionAppLink(Context context, String linkUrl);
 
+    void delegateAppLink(Activity activity, String linkUrl);
+
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;

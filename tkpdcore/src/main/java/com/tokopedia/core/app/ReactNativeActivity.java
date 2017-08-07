@@ -8,7 +8,6 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.tokopedia.core.react.ReactConst;
-import com.tokopedia.core.react.ReactSingleton;
 
 /**
  * @author ricoharisin .
@@ -32,7 +31,6 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
     @Override
     public void onPause() {
         super.onPause();
-
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostPause(this);
         }
@@ -41,7 +39,6 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
     @Override
     public void onResume() {
         super.onResume();
-
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostResume(this, this);
         }
@@ -50,7 +47,6 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostDestroy(this);
         }

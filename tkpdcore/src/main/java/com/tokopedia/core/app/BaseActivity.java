@@ -33,7 +33,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
-import com.tokopedia.core.react.ReactSingleton;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -304,7 +303,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
-        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+        //if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
     @Override
@@ -394,8 +393,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (GlobalConfig.isAllowDebuggingTools()
                 && keyCode == KeyEvent.KEYCODE_MENU
-                && ReactSingleton.getReactInstanceManager() != null) {
-            ReactSingleton.getReactInstanceManager().showDevOptionsDialog();
+                && MainApplication.getInstance().getReactNativeHost().getReactInstanceManager() != null) {
+            MainApplication.getInstance().getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
             return true;
         }
         return super.onKeyUp(keyCode, event);

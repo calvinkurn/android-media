@@ -20,7 +20,7 @@ import java.util.List;
  * @author ricoharisin .
  */
 
-public class ReactSingleton {
+public class ReactNativeHostFactory {
 
 
     public static ReactNativeHost init(Application application) {
