@@ -5,12 +5,10 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
-import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAddCreditFragment;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -36,7 +34,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         productVariantViewModel.setId(UUID.randomUUID().toString());
         productVariantViewModel.setTitle(UUID.randomUUID().toString());
         productVariantViewModel.setImageUrl("https://image.flaticon.com/teams/slug/freepik.jpg");
-        addItem(productVariantViewModel, CONTAINER_SEARCH_LIST_TAG);
+        addItemFromSearch(productVariantViewModel);
     }
 
     @Override

@@ -12,7 +12,9 @@ public interface BasePickerMultipleItem {
 
     HashSet<ItemPickerType> getItemPickerTypeSet();
 
-    void addItem(ItemPickerType itemPickerType, String fromFragmentTag);
+    void addItemFromSearch(ItemPickerType itemPickerType);
 
-    void removeItem(ItemPickerType itemPickerType, String fromFragmentTag);
+    void removeItemFromSearch(ItemPickerType itemPickerType);
+
+    void removeItemFromCache(ItemPickerType itemPickerType);
 }
