@@ -199,11 +199,11 @@ public class ShopEditorActivity extends TActivity implements
             public void onSuccess(String path, int position) {
                 File file = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
                 Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
+                if (fragment != null && file != null) {
                     ((ShopCreateView) fragment).setShopAvatar(file.getPath());
                 }
                 fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
+                if (fragment != null && file != null) {
                     ((ShopEditorView) fragment).uploadImage(file.getPath());
                 }
             }

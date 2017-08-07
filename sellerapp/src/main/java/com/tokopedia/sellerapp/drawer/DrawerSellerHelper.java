@@ -30,12 +30,13 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.goldmerchant.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.util.ArrayList;
@@ -304,6 +305,7 @@ public class DrawerSellerHelper extends DrawerHelper
             Intent intent;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
+                    UnifyTracking.eventDrawerSellerHome();
                     context.startActivity(SellerHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
@@ -348,13 +350,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
-                    intent = new Intent(context, GMStatActivity.class);
-                    intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
-                    intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                    intent = new Intent(context, GMStatisticDashboardActivity.class);
                     context.startActivity(intent);
                     UnifyTracking.eventClickGMStat();
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                    UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
@@ -384,6 +385,12 @@ public class DrawerSellerHelper extends DrawerHelper
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
+    }
+
+    @Override
+    public void onGoToProfileCompletion() {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        context.startActivity(intent);
     }
 
     private void onGoToShop() {

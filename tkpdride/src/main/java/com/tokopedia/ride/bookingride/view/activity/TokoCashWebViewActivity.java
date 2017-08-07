@@ -148,4 +148,9 @@ public class TokoCashWebViewActivity extends BasePresenterActivity implements Ba
     public boolean onOverrideUrl(String url) {
         return false;
     }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
+    }
 }

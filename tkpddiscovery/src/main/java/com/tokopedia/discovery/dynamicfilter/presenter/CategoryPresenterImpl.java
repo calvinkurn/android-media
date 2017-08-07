@@ -193,7 +193,7 @@ public class CategoryPresenterImpl extends CategoryPresenter {
     }
 
     /**
-     * Convert Breadcrumb object to Category
+     * Convert Breadcrumb object to Data
      *
      * @param breadcrumb
      * @return

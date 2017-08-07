@@ -39,7 +39,7 @@ public class ProductDraftDataManager {
                         .where(ProductDraftDataBase_Table.id.is(productId))
                         .querySingle();
         if (productDraftDatabase == null){
-            throw new RuntimeException("Product draft not found in database");
+            return Observable.error(new RuntimeException("Product draft not found in database"));
         }
         return Observable.just(productDraftDatabase.getData());
     }

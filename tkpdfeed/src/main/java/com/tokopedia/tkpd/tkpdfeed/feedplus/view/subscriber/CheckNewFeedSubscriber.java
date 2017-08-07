@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 
 import rx.Subscriber;
 

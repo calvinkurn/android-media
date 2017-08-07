@@ -8,6 +8,7 @@
 package com.tokopedia.core.discovery.dynamicfilter.facade;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 
 import retrofit2.Response;
@@ -28,7 +29,7 @@ public class HadesNetwork {
     public static final int BREADCRUMB_LEVEL = -1;
 
     public static final HadesApi createHadesNetwork() {
-        HadesApi hadesApi = RetrofitUtils.createRetrofit("https://hades.tokopedia.com").create(HadesApi.class);
+        HadesApi hadesApi = RetrofitUtils.createRetrofit(TkpdBaseURL.HADES_DOMAIN).create(HadesApi.class);
         return hadesApi;
     }
 

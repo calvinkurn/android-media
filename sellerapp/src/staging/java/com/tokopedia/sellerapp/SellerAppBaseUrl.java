@@ -4,6 +4,7 @@ package com.tokopedia.sellerapp;
  * Created by hangnadi on 1/24/17.
  */
 public class SellerAppBaseUrl {
+    public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
     public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";

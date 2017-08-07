@@ -29,7 +29,6 @@ public class FeedFactory {
     private FeedResultMapper feedResultMapperCloud;
     private GlobalCacheManager globalCacheManager;
     private FeedDetailListMapper feedDetailListMapper;
-    private RecentProductDbManager recentProductDbManager;
     private final MojitoService mojitoService;
     private RecentProductMapper recentProductMapper;
 
@@ -40,7 +39,6 @@ public class FeedFactory {
                        FeedResultMapper feedResultMapperLocal,
                        GlobalCacheManager globalCacheManager,
                        FeedDetailListMapper feedDetailListMapper,
-                       RecentProductDbManager recentProductDbManager,
                        MojitoService mojitoService,
                        RecentProductMapper recentProductMapper) {
 
@@ -51,13 +49,13 @@ public class FeedFactory {
         this.feedResultMapperCloud = feedResultMapperCloud;
         this.feedResultMapperLocal = feedResultMapperLocal;
         this.globalCacheManager = globalCacheManager;
-        this.recentProductDbManager = recentProductDbManager;
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(context, apolloClient, feedListMapper, feedResultMapperCloud, globalCacheManager);
+        return new CloudFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+                globalCacheManager);
     }
 
     public LocalFeedDataSource createLocalFeedDataSource() {
@@ -69,12 +67,12 @@ public class FeedFactory {
     }
 
     public CloudFirstFeedDataSource createCloudFirstFeedDataSource() {
-        return new CloudFirstFeedDataSource(context, apolloClient,
-                feedListMapper, feedResultMapperCloud, globalCacheManager,
-                recentProductDbManager, mojitoService, recentProductMapper);
+        return new CloudFirstFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+                globalCacheManager);
     }
 
     public CloudRecentProductDataSource createCloudRecentViewedProductSource() {
-        return new CloudRecentProductDataSource(context, recentProductDbManager, mojitoService, recentProductMapper);
+        return new CloudRecentProductDataSource(globalCacheManager, mojitoService,
+                recentProductMapper);
     }
 }

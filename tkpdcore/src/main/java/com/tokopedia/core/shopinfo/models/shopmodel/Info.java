@@ -109,8 +109,13 @@ public class Info {
     @Expose
     public List<Badge> badges = new ArrayList<>();
 
+    /**
+     *
+     * @return
+     */
     public boolean isFreeReturns(){
-        if(StringUtils.isNotBlank(shopIsFreeReturns) && Double.parseDouble( shopIsFreeReturns) > 0){
+        if(StringUtils.isNotBlank(shopIsFreeReturns) && Double.parseDouble(
+                StringUtils.omitPunctuationAndDoubleSpace( shopIsFreeReturns)) > 0){
             return true;
         }
         return false;
