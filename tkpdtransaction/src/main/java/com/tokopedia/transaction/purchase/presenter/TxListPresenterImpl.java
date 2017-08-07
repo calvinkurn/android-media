@@ -407,7 +407,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                 CancelReplacementUseCase.getParameters(
                         Integer.parseInt(orderData.getOrderDetail().getDetailOrderId()),
                         sessionHandler.getLoginID(),
-                        sessionHandler.getAccessToken()
+                        SessionHandler.getAccessToken()
                 ),
                 new CancelReplacementSubscriber(viewListener));
     }

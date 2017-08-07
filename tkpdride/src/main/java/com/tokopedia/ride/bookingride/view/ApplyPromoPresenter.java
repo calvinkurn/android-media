@@ -61,7 +61,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 } else if (e instanceof SocketTimeoutException) {
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                 } else if (e instanceof UnProcessableHttpException) {
-                    message = ((UnProcessableHttpException) e).getMessage();
+                    message = e.getMessage();
                 }
 
                 getView().onFailedApplyPromo(message);
