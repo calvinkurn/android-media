@@ -29,7 +29,6 @@ import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -184,16 +183,16 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.produk_digital),
-                R.drawable.pembayaran_topup,
+        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.digital_product),
+                R.drawable.payment_and_topup,
                 TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
                 0);
 
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.pembayaran_dan_topup),
+        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
                 TkpdState.DrawerPosition.MANAGE_PRODUCT_DIGITAL,
                 true));
-        sellerMenu.add(new DrawerItem("Daftar Transaksi Digital",
+        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
                 TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
                 true));
 
