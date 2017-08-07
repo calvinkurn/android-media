@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.data.factory;
 
-import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.posapp.data.source.cloud.api.OutletApi;
 import com.tokopedia.posapp.data.mapper.GetOutletMapper;
 import com.tokopedia.posapp.data.source.cloud.OutletCloudSource;
 
@@ -9,15 +9,15 @@ import com.tokopedia.posapp.data.source.cloud.OutletCloudSource;
  */
 
 public class OutletFactory {
-    private PeopleService peopleService;
+    private OutletApi peopleApi;
     private GetOutletMapper getOutletMapper;
 
-    public OutletFactory(PeopleService peopleService, GetOutletMapper getOutletMapper) {
-        this.peopleService = peopleService;
+    public OutletFactory(OutletApi peopleApi, GetOutletMapper getOutletMapper) {
+        this.peopleApi = peopleApi;
         this.getOutletMapper = getOutletMapper;
     }
 
     public OutletCloudSource getOutletFromCloud() {
-        return new OutletCloudSource(peopleService, getOutletMapper);
+        return new OutletCloudSource(peopleApi, getOutletMapper);
     }
 }

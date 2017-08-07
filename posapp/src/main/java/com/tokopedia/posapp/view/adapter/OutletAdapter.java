@@ -77,10 +77,13 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder
         return 0;
     }
 
-    public void setData(OutletViewModel outletViewModel) {
+    public void clearData() {
         this.outletList.clear();
-        this.outletList.addAll(outletViewModel.getOutletList());
         notifyDataSetChanged();
     }
 
+    public void setData(OutletViewModel outletViewModel) {
+        this.outletList.addAll(outletViewModel.getOutletList());
+        notifyDataSetChanged();
+    }
 }

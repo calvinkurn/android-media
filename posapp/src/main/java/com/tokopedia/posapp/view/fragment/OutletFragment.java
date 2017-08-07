@@ -4,20 +4,25 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
+import com.tokopedia.posapp.view.Shop;
 import com.tokopedia.posapp.view.adapter.OutletAdapter;
-import com.tokopedia.posapp.view.di.DaggerOutletComponent;
+import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.view.presenter.OutletPresenter;
+import com.tokopedia.posapp.view.presenter.ShopPresenter;
 import com.tokopedia.posapp.view.viewmodel.outlet.OutletViewModel;
+import com.tokopedia.posapp.view.viewmodel.shop.ShopViewModel;
 
 import javax.inject.Inject;
 
@@ -25,16 +30,17 @@ import javax.inject.Inject;
  * Created by okasurya on 7/31/17.
  */
 
-public class OutletFragment extends BaseDaggerFragment implements Outlet.View {
-    private static final String PARAM_ORDER_BY = "order_by";
-    private static final String PARAM_PAGE = "page";
-    private static final String PARAM_QUERY = "query";
-
+public class OutletFragment extends BaseDaggerFragment implements Outlet.View, Shop.View {
     RecyclerView recyclerOutlet;
+    TextView textShopName;
+    EditText editSearchOutlet;
     OutletAdapter adapter;
 
     @Inject
-    OutletPresenter presenter;
+    OutletPresenter outletPresenter;
+
+    @Inject
+    ShopPresenter shopPresenter;
 
     public static OutletFragment createInstance(Bundle bundle) {
         OutletFragment fragment = new OutletFragment();
@@ -46,9 +52,8 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_outlet, container, false);
-        recyclerOutlet = parentView.findViewById(R.id.recycler_outlet);
-        presenter.attachView(this);
-        prepareView();
+        preparePresenter();
+        prepareView(parentView);
         return parentView;
     }
 
@@ -75,6 +80,11 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View {
     }
 
     @Override
+    public void clearOutletData() {
+        adapter.clearData();
+    }
+
+    @Override
     public void onOutletClicked(String outletId) {
 
     }
@@ -82,10 +92,23 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View {
     @Override
     public void onSuccessGetOutlet(OutletViewModel outlet) {
         adapter.setData(outlet);
+        outletPresenter.setHasNextPage(outlet.getNextUri());
     }
 
     @Override
     public void onErrorGetOutlet(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessGetShop(ShopViewModel shop) {
+        if(shop != null && shop.getShopInfo() != null && shop.getShopInfo().getShopName() != null) {
+            textShopName.setText(shop.getShopInfo().getShopName());
+        }
+    }
+
+    @Override
+    public void onErrorGetShop(String errorMessage) {
 
     }
 
@@ -100,16 +123,36 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View {
     }
 
     private void fetchData() {
-        RequestParams params = AuthUtil.generateRequestParamsNetwork(getContext());
-        params.putString(PARAM_ORDER_BY, "1");
-        params.putString(PARAM_PAGE, "1");
-        params.putString(PARAM_QUERY, "");
-        presenter.getOutlet(params);
+        outletPresenter.getOutlet("");
+        shopPresenter.getUserShop();
     }
 
-    private void prepareView() {
+    private void preparePresenter() {
+        outletPresenter.attachView(this);
+        shopPresenter.attachView(this);
+    }
+
+    private void prepareView(View parentView) {
+        recyclerOutlet = parentView.findViewById(R.id.recycler_outlet);
+        textShopName = parentView.findViewById(R.id.text_shop_name);
+        editSearchOutlet = parentView.findViewById(R.id.edit_search_outlet);
+
         adapter = new OutletAdapter(getContext(), this);
         recyclerOutlet.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerOutlet.setAdapter(adapter);
+
+        editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                submitQuery(editSearchOutlet.getText());
+                return true;
+            }
+        });
+    }
+
+    private void submitQuery(CharSequence query) {
+        if (query != null && TextUtils.getTrimmedLength(query) > 0) {
+            outletPresenter.getOutlet(query.toString());
+        }
     }
 }

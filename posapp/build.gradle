@@ -48,6 +48,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':tkpdcore')
     compile project(':tkpdsession')
+    compile project(':tkpddiscovery')
+    compile project(':tkpdseller')
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

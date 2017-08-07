@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">posapp</string>
+    <string name="outlet_search_hint">Cari outlet</string>
 </resources>

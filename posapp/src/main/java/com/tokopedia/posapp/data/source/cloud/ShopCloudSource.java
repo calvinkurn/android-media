@@ -1,0 +1,26 @@
+package com.tokopedia.posapp.data.source.cloud;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.posapp.data.mapper.GetShopMapper;
+import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
+import com.tokopedia.posapp.domain.model.shop.ShopDomain;
+
+import rx.Observable;
+
+/**
+ * Created by okasurya on 8/3/17.
+ */
+
+public class ShopCloudSource {
+    ShopApi shopApi;
+    GetShopMapper mapper;
+
+    public ShopCloudSource(ShopApi shopApi, GetShopMapper getShopMapper) {
+        this.shopApi = shopApi;
+        this.mapper = getShopMapper;
+    }
+
+    public Observable<ShopDomain> getShop(RequestParams params) {
+        return shopApi.getInfo(params.getParamsAllValueInString()).map(mapper);
+    }
+}

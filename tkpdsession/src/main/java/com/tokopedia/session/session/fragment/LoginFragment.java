@@ -185,7 +185,6 @@ LoginFragment extends Fragment implements LoginView {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_login_reborn, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        if(GlobalConfig.isPosApp()) forgotPass.setVisibility(View.GONE);
         forgotPass.setPaintFlags(forgotPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setListener();
 //        setRememberAccountState();
@@ -360,7 +359,12 @@ LoginFragment extends Fragment implements LoginView {
             @Override
             public void onClick(View v) {
                 getActivity().finish();
-                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                if(GlobalConfig.isPosApp()) {
+                    startActivity(ForgotPasswordActivity.getCallingIntentWithoutFooter(getActivity(), mEmailView.getText().toString()));
+                } else {
+                    startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                }
+
             }
         });
 

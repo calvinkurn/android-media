@@ -1,17 +1,20 @@
-package com.tokopedia.posapp.view.di;
+package com.tokopedia.posapp.di.module;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.posapp.data.source.cloud.api.OutletApi;
 import com.tokopedia.posapp.data.factory.OutletFactory;
 import com.tokopedia.posapp.data.mapper.GetOutletMapper;
 import com.tokopedia.posapp.data.repository.OutletRepository;
 import com.tokopedia.posapp.data.repository.OutletRepositoryImpl;
 import com.tokopedia.posapp.domain.usecase.GetOutletUseCase;
+import com.tokopedia.posapp.di.scope.OutletScope;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by okasurya on 7/31/17.
@@ -19,11 +22,10 @@ import dagger.Provides;
 
 @Module
 public class OutletModule {
-
     @OutletScope
     @Provides
-    PeopleService providePeopleService() {
-        return new PeopleService();
+    OutletApi provideOutletApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
+        return retrofit.create(OutletApi.class);
     }
 
     @OutletScope
@@ -34,8 +36,8 @@ public class OutletModule {
 
     @OutletScope
     @Provides
-    OutletFactory provideOutletFactory(PeopleService peopleService, GetOutletMapper getOutletMapper) {
-        return new OutletFactory(peopleService, getOutletMapper);
+    OutletFactory provideOutletFactory(OutletApi OutletApi, GetOutletMapper getOutletMapper) {
+        return new OutletFactory(OutletApi, getOutletMapper);
     }
 
     @OutletScope
