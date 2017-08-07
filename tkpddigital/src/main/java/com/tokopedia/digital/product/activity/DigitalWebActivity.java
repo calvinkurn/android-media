@@ -27,6 +27,8 @@ public class DigitalWebActivity extends BasePresenterActivity
     private static final String EXTRA_URL = "EXTRA_URL";
     private String url;
 
+    private FragmentGeneralWebView fragmentGeneralWebView;
+
     public static Intent newInstance(Context context, String url) {
         return new Intent(context, DigitalWebActivity.class)
                 .putExtra(EXTRA_URL, url);
@@ -78,10 +80,12 @@ public class DigitalWebActivity extends BasePresenterActivity
     @Override
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+
+        fragmentGeneralWebView = FragmentGeneralWebView.createInstance(url);
+
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    FragmentGeneralWebView.createInstance(url, false)).commit();
-
+                    fragmentGeneralWebView).commit();
     }
 
     @Override
@@ -102,6 +106,20 @@ public class DigitalWebActivity extends BasePresenterActivity
     @Override
     public void onWebViewSuccessLoad() {
 
+    }
+
+    @Override
+    public boolean onHomeOptionSelected() {
+        try {
+            if (fragmentGeneralWebView.getWebview().canGoBack()) {
+                fragmentGeneralWebView.getWebview().goBack();
+            } else {
+                super.onBackPressed();
+            }
+        } catch (Exception e) {
+            super.onBackPressed();
+        }
+        return true;
     }
 
     @Override
@@ -130,4 +148,5 @@ public class DigitalWebActivity extends BasePresenterActivity
         }
         return super.onOptionsItemSelected(item);
     }
+    
 }
