@@ -8,6 +8,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.service.DownloadService;
@@ -107,16 +109,24 @@ public class FragmentBannerWebView extends Fragment {
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        args.putString(EXTRA_URL, url);
-        Uri uri = Uri.parse(url);
-        if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
-            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+        if(!TextUtils.isEmpty(url)){
+            args.putString(EXTRA_URL, url);
+            Uri uri = Uri.parse(url);
+            if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
+                args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+            }
         }
         fragment.setArguments(args);
         return fragment;
     }
 
     private boolean overrideUrl(String url) {
+        if (((IDigitalModuleRouter) getActivity().getApplication())
+                .isSupportedDelegateDeepLink(url)) {
+            ((IDigitalModuleRouter) getActivity().getApplication())
+                    .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            return true;
+        }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
 

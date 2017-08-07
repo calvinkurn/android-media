@@ -1,7 +1,9 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -9,13 +11,16 @@ import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.home.model.HotListModel;
+import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -69,7 +74,7 @@ public class TrackingUtils extends TrackingConfig {
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
                     .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
-                    .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName(), " "))
+                    .setFirstName(getFirstName(profileData.getUserInfo().getUserName()))
                     .build();
 
             getMoEngine().setUserData(customerWrapper);
@@ -97,11 +102,11 @@ public class TrackingUtils extends TrackingConfig {
                                     com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                     )
                     .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getPhone():""))
-                    .setGoldMerchant(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopIsGold() == 1:false)
+                    .setGoldMerchant(accountsParameter.getAccountsModel() != null && accountsParameter.getAccountsModel().getShopIsGold() == 1)
                     .setShopName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():"")
                     .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
                     .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
-                    .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""," "))
+                    .setFirstName(getFirstName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""))
                     .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
                     .setMethod(label)
                     .build();
@@ -129,6 +134,18 @@ public class TrackingUtils extends TrackingConfig {
         return firstSegment;
     }
 
+    private static String getFirstName(String name) {
+        String firstName = name;
+        if(!TextUtils.isEmpty(name)){
+            String token[] = name.split(" ");
+            if(token.length>1){
+                firstName = token[0];
+            }
+        }
+
+        return firstName;
+    }
+
     private static String normalizePhoneNumber(String phoneNum){
         return phoneNum.replaceFirst("^0(?!$)", "62");
     }
@@ -138,49 +155,72 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, customerWrapper.getCustomerId());
         builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, customerWrapper.getMethod());
         builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, customerWrapper.getEmailAddress());
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_LOGIN);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.LOGIN);
     }
 
     public static void sendMoEngageOpenHomeEvent(){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_BERANDA);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
     public static void sendMoEngageOpenFeedEvent(int feedSize){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCTS_NUMBER, feedSize);
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FEED);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, feedSize == 0);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FEED);
     }
 
-    public static void sendMoEngageOpenFavoriteEvent(int feedSize){
+    public static void sendMoEngageOpenFavoriteEvent(int favoriteSize){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCTS_NUMBER, feedSize);
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FAVORITE);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FAVORITE_EMPTY, favoriteSize == 0);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FAVORITE);
     }
 
     public static void sendMoEngageOpenProductEvent(ProductDetailData productData){
         PayloadBuilder builder = new PayloadBuilder();
-        if(productData.getBreadcrumb().size()>1)
+        if(productData.getBreadcrumb().size()>1) {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-        else if(productData.getBreadcrumb().size() != 0)
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
+        } else if(productData.getBreadcrumb().size() != 0) {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_PRODUCTPAGE);
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+        }
+
+        if(productData.getInfo() != null) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productData.getInfo().getProductName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, productData.getInfo().getProductId()+"");
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
+
+            if(productData.getProductImages() != null
+                    && productData.getProductImages().size() > 0
+                    && productData.getProductImages().get(0) != null) {
+                builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, productData.getProductImages().get(0).getImageSrc());
+            }
+            builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
+        }
+
+        if(productData.getShopInfo() != null) {
+            builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productData.getShopInfo().getShopIsOfficial() == 1);
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, productData.getShopInfo().getShopId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, productData.getShopInfo().getShopName());
+        }
+
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_PRODUCTPAGE);
     }
 
     public static void sendMoEngageClickHotListEvent(HotListModel hotListModel){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, hotListModel.getHotListName());
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_CLICK_HOTLIST);
+        builder.putAttrString(AppEventTracking.MOENGAGE.HOTLIST_NAME, hotListModel.getHotListName());
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICK_HOTLIST);
     }
 
     public static void sendMoEngageOpenHotListEvent(){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_HOTLIST);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_HOTLIST);
     }
 
     public static void sendMoEngageAddWishlistEvent(ProductDetailData productData){
@@ -188,7 +228,7 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productData.getInfo().getProductName());
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPrice());
+        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
 
         builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_NAME, productData.getInfo().getProductCatalogName());
         builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_ID, productData.getInfo().getProductCatalogId());
@@ -203,13 +243,203 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
         }
 
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_ADD_WISHLIST);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.ADD_WISHLIST);
     }
 
     public static void sendMoEngageClickMainCategoryIcon(String categoryName){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_CLICK_MAIN_CATEGORY_ICON);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
+    }
+
+    public static void sendMoEngageOpenDigitalCatScreen(String categoryName, String id) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.DIGITAL_CAT_ID, id);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.DIGITAL_CAT_SCREEN_OPEN
+        );
+    }
+
+    public static void sendMoEngageOpenCatScreen(String categoryName, String id) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, id);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN
+        );
+    }
+
+    public static void sendMoEngageAddToCart(@NonNull Product product) {
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, product.getCategoryName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, product.getCategoryId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
+
+            builder.putAttrInt(
+                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
+                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
+            );
+
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.PRODUCT_ADDED_TO_CART
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendMoEngageRemoveProductFromCart(@NonNull Product product) {
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, product.getUrl());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, product.getImageUrl());
+            builder.putAttrInt(
+                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
+                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
+            );
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, product.getShopId());
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_CART
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {
+        PayloadBuilder builder = new PayloadBuilder();
+        if(data.getBreadcrumb().size()>1) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, data.getBreadcrumb().get(1).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, data.getBreadcrumb().get(1).getDepartmentId());
+        } else if(data.getBreadcrumb().size() != 0) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, data.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, data.getBreadcrumb().get(0).getDepartmentId());
+        }
+
+        if (data.getInfo() != null) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, data.getInfo().getProductName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, data.getInfo().getProductId() + "");
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, data.getInfo().getProductUrl());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRICE, data.getInfo().getProductPrice());
+        }
+
+        if (data.getShopInfo() != null) {
+            builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, data.getShopInfo().getShopIsOfficial() == 1);
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, data.getShopInfo().getShopId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, data.getShopInfo().getShopName());
+        }
+
+        if (data.getProductImages() != null
+                && data.getProductImages().size() > 0
+                && data.getProductImages().get(0) != null) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getProductImages().get(0).getImageSrc());
+        }
+
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.CLICKED_DISKUSI_PDP
+        );
+    }
+
+    public static void sendMoEngageClickUlasan(@NonNull ProductDetailData data) {
+        PayloadBuilder builder = new PayloadBuilder();
+        if(data.getBreadcrumb().size()>1) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, data.getBreadcrumb().get(1).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, data.getBreadcrumb().get(1).getDepartmentId());
+        } else if(data.getBreadcrumb().size() != 0) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, data.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, data.getBreadcrumb().get(0).getDepartmentId());
+        }
+
+        if (data.getInfo() != null) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, data.getInfo().getProductName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, data.getInfo().getProductId() + "");
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, data.getInfo().getProductUrl());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRICE, data.getInfo().getProductPrice());
+        }
+
+        if (data.getShopInfo() != null) {
+            builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, data.getShopInfo().getShopIsOfficial() == 1);
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, data.getShopInfo().getShopId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, data.getShopInfo().getShopName());
+        }
+
+        if (data.getProductImages() != null
+                && data.getProductImages().size() > 0
+                && data.getProductImages().get(0) != null) {
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getProductImages().get(0).getImageSrc());
+        }
+
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.CLICKED_ULASAN_PDP
+        );
+    }
+
+    public static void sendMoEngageRemoveWishlist(Wishlist data) {
+        if(data != null) {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, data.getName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, data.getId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, data.getUrl());
+            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getImageUrl());
+            builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, data.getPrice());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, data.getShop().getId());
+            if(data.getShop() != null) {
+                builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, data.getShop().getId());
+            }
+
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_WISHLIST
+            );
+        }
+    }
+
+    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.KEYWORD, keyword);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SEARCH_ATTEMPT
+        );
+    }
+
+    public static void sendMoEngageOpenThankYouPage(String paymentType, String purchaseSite, double totalPrice) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.PAYMENT_TYPE, paymentType);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PURCHASE_SITE, purchaseSite);
+        builder.putAttrDouble(AppEventTracking.MOENGAGE.TOTAL_PRICE, totalPrice);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.OPEN_THANKYOU_PAGE
+        );
+    }
+
+    public static void sendMoEngagePurchaseReview(String reviewScore) {
+        try {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.putAttrDouble(
+                    AppEventTracking.MOENGAGE.REVIEW_SCORE,
+                    Double.parseDouble(reviewScore)
+            );
+            getMoEngine().sendEvent(
+                    builder.build(),
+                    AppEventTracking.EventMoEngage.SUCCESS_PURCHASE_REVIEW
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void fragmentBasedAFEvent(String tag){
@@ -331,6 +561,10 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().sendEvent(dataLayers);
     }
 
+    public static void sendAppsFlyerDeeplink(Activity activity){
+        getAFEngine().sendDeeplinkData(activity);
+    }
+
     public static String getClientID() {
         return getGTMEngine().getClientIDString();
     }
@@ -344,7 +578,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static long getLong(String key) {
-        return getGTMEngine().getLong(key);
+        return 0;
     }
 
     public static double getDouble(String key) {
@@ -354,6 +588,5 @@ public class TrackingUtils extends TrackingConfig {
     public static String getAfUniqueId(){
         return getAFEngine().getUniqueId();
     }
-
 }
 

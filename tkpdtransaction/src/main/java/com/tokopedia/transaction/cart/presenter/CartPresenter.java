@@ -59,6 +59,8 @@ public class CartPresenter implements ICartPresenter {
 
     private static final int MUST_INSURANCE_MODE = 3;
     public static final int OPTIONAL_INSURANCE_MODE = 2;
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String IS_SUGGESTED = "is_suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -202,13 +204,13 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCart(@NonNull CartItem cartData) {
+    public void processCancelCart(@NonNull final CartItem canceledCartItem) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("address_id", cartData.getCartDestination().getAddressId());
-        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", cartData.getCartShop().getShopId());
+        maps.put("address_id", canceledCartItem.getCartDestination().getAddressId());
+        maps.put("shipment_id", canceledCartItem.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", canceledCartItem.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", canceledCartItem.getCartShop().getShopId());
         cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -235,6 +237,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackCanceledCart(canceledCartItem);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -244,15 +247,15 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull CartItem cartData,
-                                         @NonNull CartProduct cartProductData) {
+    public void processCancelCartProduct(@NonNull final CartItem canceledCartItem,
+                                         @NonNull final CartProduct canceledCartProduct) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("product_cart_id", cartProductData.getProductCartId());
-        maps.put("address_id", cartData.getCartDestination().getAddressId());
-        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", cartData.getCartShop().getShopId());
+        maps.put("product_cart_id", canceledCartProduct.getProductCartId());
+        maps.put("address_id", canceledCartItem.getCartDestination().getAddressId());
+        maps.put("shipment_id", canceledCartItem.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", canceledCartItem.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", canceledCartItem.getCartShop().getShopId());
         cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -279,6 +282,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackCanceledProduct(canceledCartItem, canceledCartProduct);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -386,10 +390,11 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode() {
+    public void processCheckVoucherCode(final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
@@ -399,7 +404,13 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        handleThrowableVoucherCode(e);
+                        if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                            view.renderErrorFromInstantVoucher(instantCheckVoucher);
+                            view.hideProgressLoading();
+                        } else {
+                            handleThrowableVoucherCode(e);
+                        }
                     }
 
                     @Override
@@ -410,7 +421,7 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher);
+                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
                         view.hideProgressLoading();
                     }
                 });
@@ -575,6 +586,32 @@ public class CartPresenter implements ICartPresenter {
         cache.applyEditor();
     }
 
+    private void trackCanceledCart(CartItem canceledCartItem) {
+        if(canceledCartItem != null
+                && canceledCartItem.getCartProducts() != null
+                && !canceledCartItem.getCartProducts().isEmpty()) {
+            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+                trackCanceledProduct(canceledCartItem, cartProduct);
+            }
+        }
+    }
+
+    private void trackCanceledProduct(CartItem cartData, CartProduct cartProduct) {
+        if (cartData != null
+                && cartData.getCartShop() != null
+                && cartProduct != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setName(cartProduct.getProductName());
+            product.setId(cartProduct.getProductId());
+            product.setUrl(cartProduct.getProductUrl());
+            product.setImageUrl(cartProduct.getProductPic());
+            product.setPrice(cartProduct.getProductPrice());
+            product.setShopId(cartData.getCartShop().getShopId());
+
+            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
+        }
+    }
+
     @NonNull
     private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
                                                          List<String> dropShipperPhoneList,
@@ -697,8 +734,6 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof UnknownHostException) {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-        } else if (e.getCause() instanceof ResponseErrorException) {
-            view.renderErrorCheckVoucher(e.getCause().getMessage());
         } else if (e.getCause() instanceof HttpErrorException) {
             view.showToastMessage(e.getCause().getMessage());
         } else {
@@ -759,6 +794,7 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
+        view.renderInstantPromo(data.getCartPromo());
     }
 
     @Override

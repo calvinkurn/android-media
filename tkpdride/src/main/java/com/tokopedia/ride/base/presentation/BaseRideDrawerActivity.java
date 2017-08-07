@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.ride.R;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import com.tokopedia.ride.R;
 
 /**
  * Created by alvarisi on 3/13/17.

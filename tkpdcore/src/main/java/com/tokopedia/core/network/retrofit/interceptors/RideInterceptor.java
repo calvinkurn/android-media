@@ -43,7 +43,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
     private String authorizationString;
 
-    public RideInterceptor(String authorizationString, String userId) {
+    public RideInterceptor(String authorizationString) {
         this.authorizationString = authorizationString;
         this.maxRetryAttempt = 0;
     }

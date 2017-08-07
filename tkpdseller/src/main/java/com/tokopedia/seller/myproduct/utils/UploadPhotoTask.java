@@ -57,7 +57,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
 
     @Override
     protected String doInBackground(byte[]... jpeg) {
-        Log.d(TAG, messageTAG + FileUtils.getPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath(), "image", "jpg"));
 //        File photo=new File(Environment.getExternalStorageDirectory(), "image.jpg");// old
         File photo = writeImageToTkpdPath(jpeg[0]);
 
@@ -69,7 +68,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
             int height = resolution.getModel2();
             PictureDB pictureDB = new PictureDB(path, width, height);
             pictureDB.save();
-            Log.d(TAG, messageTAG + " hasil save ke db : " + pictureDB.Id);
         } catch (MetadataUtil.UnSupportedimageFormatException e) {
             e.printStackTrace();
         }
@@ -96,7 +94,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
                 fos.write(buffer);
                 fos.close();
             } catch (java.io.IOException e) {
-                Log.e("PictureDemo", "Exception in photoCallback", e);
                 return null;
             }
             return photo;
@@ -156,17 +153,17 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
                         new Subscriber<UploadProductImageData>() {
                             @Override
                             public void onCompleted() {
-                                Log.d("MNORMANSYAH", "success upload image!!!");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("MNORMANSYAH", "Hassil Upload Retrofit : " + e.getLocalizedMessage());
+
                             }
 
                             @Override
                             public void onNext(UploadProductImageData uploadProductImageData) {
-                                Log.d("MNORMANSYAH", "Hasil Upload Retrofit " + uploadProductImageData.toString() + "");
+
                             }
                         }
                 );

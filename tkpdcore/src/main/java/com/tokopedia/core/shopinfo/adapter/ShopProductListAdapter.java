@@ -5,17 +5,19 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
 /**
  * Created by Tkpd_Eka on 10/8/2015.
  */
 public class ShopProductListAdapter extends RecyclerView.Adapter {
-
 
     private RetryClickedListener retryClickedListener;
 
@@ -72,13 +74,16 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         this.productModel = productModel;
     }
 
-    public void setEtalaseAdapter(SimpleSpinnerAdapter etalaseAdapter) {
+    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter) {
         header.setEtalaseAdapter(etalaseAdapter);
+    }
+
+    public void setFeaturedProductAdapter(FeaturedProductAdapter featuredProductAdapter) {
+        header.setFeaturedProductAdapter(featuredProductAdapter);
     }
 
     public void setSelectedEtalasePos(int pos) {
         header.setSelectedEtalase(pos);
-        notifyDataSetChanged();
     }
 
     public GridLayoutManager getLayoutManager(Context context) {
@@ -136,6 +141,10 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     public boolean isLoading() {
         return EXTRA_TYPE == TYPE_LOADING;
+    }
+
+    public boolean isEmptyState() {
+        return EXTRA_TYPE == EMPTY_STATE;
     }
 
     public boolean isRetry(){ return EXTRA_TYPE == TYPE_RETRY;}
@@ -323,5 +332,4 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         EXTRA_TYPE = 0;
         notifyDataSetChanged();
     }
-
 }

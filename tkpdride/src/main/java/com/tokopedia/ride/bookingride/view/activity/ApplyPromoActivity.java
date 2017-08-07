@@ -10,13 +10,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
-public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragment.OnFragmentInteractionListener {
+public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
     private static final String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
+    private RideComponent rideComponent;
 
     public static Intent getCallingActivity(Activity activity,
                                             ConfirmBookingViewModel confirmBookingViewModel) {
@@ -88,6 +92,19 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
         );
         Intent intent = TokoCashWebViewActivity.getCallingIntent(this, seamlessURL);
         startActivity(intent);
+    }
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null)
+            initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
     }
 
     public interface BackButtonListener {

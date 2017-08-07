@@ -34,10 +34,14 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
+    Intent instanceIntentDigitalWeb(String url);
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
+
+    Intent instanceIntentTokoCashActivation();
 
 }

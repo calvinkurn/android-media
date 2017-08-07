@@ -218,6 +218,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
             TrackingUtils.eventLocaSearched(browseModel.q);
+            TrackingUtils.sendMoEngageSearchAttempt(browseModel.q, !model.isEmpty());
 
         }
     }
@@ -617,8 +618,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
+
+            TrackingUtils.sendMoEngageOpenCatScreen(
+                    categoryHeader.getName(),
+                    categoryHeader.getId()
+
+            );
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -37,6 +39,7 @@ import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.GetDepositSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TopPointsSubscriber;
@@ -100,7 +103,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void getNotification() {
         notificationUseCase.execute(
-                notificationUseCase.getRequestParam(
+                NotificationUseCase.getRequestParam(
                         GlobalConfig.isSellerApp()),
                 new NotificationSubscriber(viewListener));
     }
@@ -112,6 +115,15 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         notificationUseCase.unsubscribe();
         tokoCashUseCase.unsubscribe();
         depositUseCase.unsubscribe();
+    }
+
+    @Override
+    public void getProfileCompletion() {
+        if(viewListener.getActivity().getApplication() instanceof TkpdCoreRouter){
+            ((TkpdCoreRouter) viewListener.getActivity().getApplication()).getUserInfo(
+                    RequestParams.EMPTY, new ProfileCompletionSubscriber(viewListener)
+            );
+        }
     }
 
 

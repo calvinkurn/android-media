@@ -24,6 +24,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -42,6 +44,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private GetPriceEstimateUseCase getPriceEstimateUseCase;
     private CompositeSubscription compositeSubscription;
 
+    @Inject
     public UberProductPresenter(GetProductAndEstimatedUseCase getProductAndEstimatedUseCase,
                                 GetPriceEstimateUseCase getPriceEstimateUseCase) {
         this.getProductAndEstimatedUseCase = getProductAndEstimatedUseCase;

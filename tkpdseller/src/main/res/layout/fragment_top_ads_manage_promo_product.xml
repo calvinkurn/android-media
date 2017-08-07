@@ -16,17 +16,17 @@
             android:id="@+id/radio_group"
             style="@style/TopAdsCustomRadioGroup">
 
-            <include layout="@layout/include_top_ads_radio_new_group_option"
+            <include layout="@layout/partial_top_ads_radio_new_group_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom = "@dimen/margin_small"/>
 
-            <include layout="@layout/include_top_ads_radio_exist_group_option"
+            <include layout="@layout/partial_top_ads_radio_exist_group_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom = "@dimen/margin_small"/>
 
-            <include layout="@layout/include_top_ads_radio_empty_group_option"
+            <include layout="@layout/partial_top_ads_radio_empty_group_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom = "@dimen/margin_small"/>

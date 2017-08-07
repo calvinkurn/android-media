@@ -41,10 +41,11 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public TextView shopLocation;
     public ImageView productImage;
     private ImageLoader imageLoader;
+    private ImageView rating;
+    private TextView reviewCount;
 
     public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
         super(itemView);
-        itemView.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         context = itemView.getContext();
@@ -55,6 +56,9 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         productPrice = (TextView) itemView.findViewById(R.id.price);
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
+        rating = (ImageView) itemView.findViewById(R.id.rating);
+        reviewCount = (TextView) itemView.findViewById(R.id.review_count);
+        ((LinearLayout) itemView.findViewById(R.id.container)).setOnClickListener(this);
     }
 
     @Override
@@ -75,6 +79,17 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
             if (product.getLabels() != null) {
                 LabelLoader.initLabel(context, labelContainer, product.getLabels());
             }
+            if (data.getProduct().getProductRating() == 0) {
+                rating.setVisibility(View.GONE);
+                reviewCount.setVisibility(View.GONE);
+            } else {
+                rating.setVisibility(View.VISIBLE);
+                reviewCount.setVisibility(View.VISIBLE);
+                rating.setImageResource(
+                        ImageLoader.getRatingDrawable(getStarCount(data.getProduct().getProductRating()))
+                );
+                reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
+            }
         }
         Shop shop = data.getShop();
         if (shop != null) {
@@ -91,9 +106,13 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         }
     }
 
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
+    }
+
     @Override
     public void onClick(View v) {
-        if (itemClickListener != null) {
+        if (itemClickListener != null && v.getId() == R.id.container) {
             itemClickListener.onProductItemClicked(getAdapterPosition(), data);
         }
     }

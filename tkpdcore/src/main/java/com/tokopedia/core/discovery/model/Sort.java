@@ -115,4 +115,9 @@ public class Sort implements Serializable, Parcelable {
             return new Sort[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
