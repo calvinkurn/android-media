@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -134,5 +135,10 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     @Override
     public String getUniqueId() {
         return AppsFlyerLib.getInstance().getAppsFlyerUID(context);
+    }
+
+    @Override
+    public void sendDeeplinkData(Activity activity) {
+        AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 }
