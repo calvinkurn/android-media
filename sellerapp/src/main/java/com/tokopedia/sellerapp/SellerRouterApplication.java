@@ -381,6 +381,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent instanceIntentTokoCashActivation() {
+        return null;
+    }
+
+    @Override
     public String getBaseUrlDomainPayment() {
         return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
     }
