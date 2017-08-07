@@ -48,7 +48,8 @@
             android:layout_marginBottom="20dp"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/item_loading_gmstat_pie_chart"
-            app:tcv_title="@string/gm_statistic_unfinished_transaction_text">
+            app:tcv_title="@string/gm_statistic_unfinished_transaction_text"
+            app:cardCornerRadius="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,7 +92,8 @@
             android:layout_height="wrap_content"
             app:tcv_empty_layout="@layout/partial_gm_statistic_transaction_top_ads_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
-            app:tcv_title="@string/gm_statistic_top_ads_amount_title_text">
+            app:tcv_title="@string/gm_statistic_top_ads_amount_title_text"
+            app:cardCornerRadius="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -136,6 +138,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/product_margin_cards"
+            app:cardCornerRadius="0dp"
             app:cardElevation="1dp"
             app:cardPreventCornerOverlap="false">
 
