@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_product_list">
 
     <LinearLayout
@@ -44,61 +44,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
                 tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-                android:textSize="@dimen/text_size_s_medium"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="normal"
                 android:textColor="@color/black_70"
-                android:lineSpacingExtra="5sp" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/text_original_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/warm_grey"
-                android:textSize="@dimen/fontvvs"
-                android:visibility="gone"/>
-
-            <LinearLayout
+                android:id="@+id/price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    tools:text="Rp 3.121.500"
-                    android:textColor="@color/orange_red"
-                    android:textSize="@dimen/text_size_s_medium"
-                    android:fontFamily="sans-serif-medium"
-                    android:textStyle="normal"
-                    android:lineSpacingExtra="5sp" />
-
-                <TextView
-                    android:id="@+id/text_discount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/fontvvs"
-                    android:paddingTop="@dimen/margin_vvvs"
-                    android:paddingBottom="@dimen/margin_vvvs"
-                    android:paddingLeft="@dimen/padding_vvs"
-                    android:paddingRight="@dimen/padding_vvs"
-                    android:layout_marginLeft="@dimen/media_grid_spacing"
-                    android:layout_marginStart="@dimen/margin_vs"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_rounded_corners_red"
-                    tools:text="10%OFF"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
+                android:gravity="center_vertical"
+                tools:text="Rp 3.121.500"
+                android:textColor="@color/orange_red"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/rating_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/feature_product_item_component_spacing"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
@@ -113,61 +77,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:textSize="@dimen/text_size_xsmall"
+                    android:textSize="11sp"
                     />
 
             </LinearLayout>
 
-            <com.tokopedia.core.customwidget.FlowLayout
-                android:id="@+id/label_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:orientation="horizontal">
-
-            </com.tokopedia.core.customwidget.FlowLayout>
-
-            <TextView
-                android:id="@+id/shop_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/black_54"
-                tools:text="ORIGINAL-ZONE"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textSize="@dimen/text_size_xsmall"
-                android:fontFamily="sans-serif"
-                android:textStyle="normal"
-                android:lineSpacingExtra="5sp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/feature_product_item_component_spacing"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="0dp"
+                <com.tokopedia.core.customwidget.FlowLayout
+                    android:id="@+id/label_container"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_place_black_24dp"
-                    android:gravity="center_vertical"
-                    android:textSize="@dimen/text_size_xsmall"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="normal"
-                    android:textColor="@color/black_38"
-                    android:lineSpacingExtra="5sp"/>
+                    android:gravity="left"
+                    android:orientation="horizontal" />
 
                 <LinearLayout
                     android:id="@+id/badges_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="68dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="2dp"
                     android:orientation="horizontal" />
+
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
