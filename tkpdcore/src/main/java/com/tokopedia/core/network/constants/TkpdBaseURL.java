@@ -703,6 +703,7 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
+        public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
     }
 
     public static class FCM {

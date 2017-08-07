@@ -59,4 +59,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Observable<Boolean> clearCache() {
         return categoryVersionDataSource.clearCache();
     }
+
+    public Observable<String> getCategoryName(long categoryId) {
+        return categoryDataSource.getCategoryName(categoryId);
+    }
 }
+

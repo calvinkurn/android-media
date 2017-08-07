@@ -2018,4 +2018,6 @@ di Tokopedia Sekarang!</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
+    <string name="shop_product_list_header_product_title">Produk</string>
+    <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
 </resources>

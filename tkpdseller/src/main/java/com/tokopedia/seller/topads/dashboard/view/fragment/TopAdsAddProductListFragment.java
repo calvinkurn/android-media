@@ -25,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.dashboard.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
@@ -43,7 +44,6 @@ import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsRetry
 import com.tokopedia.seller.topads.dashboard.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.dashboard.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 
 import java.util.List;
@@ -338,6 +338,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (!isAdded())
+            return;
+
         inflater.inflate(R.menu.menu_top_ads_product_list, menu);
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
@@ -402,7 +405,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     public void fetchDataWithQuery(String newText) {
-        Log.d(TAG, "fetchDataWithQuery " + newText);
         if (newText != null && newText.isEmpty()) {
             topAdsAddProductListPresenter.setQuery(null);
         } else {
