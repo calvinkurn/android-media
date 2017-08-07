@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
+    android:layout_marginBottom="@dimen/margin_sm"
+    android:layout_marginLeft="@dimen/margin_sm"
+    android:layout_marginRight="@dimen/margin_sm"
     android:background="@drawable/rounded"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    tools:layout_marginLeft="@dimen/margin_sm"
-    tools:layout_marginTop="@dimen/margin_sm">
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/base_picker_multiple_item_cache_image_height"
+        android:layout_height="@dimen/base_picker_multiple_item_cache_image_height"
         android:scaleType="centerCrop"
         tools:src="@drawable/shape_oval"
         tools:visibility="visible" />

@@ -55,7 +55,6 @@ public abstract class BasePickerMultipleItemActivity extends BaseToolbarActivity
 
     public abstract Fragment getCacheListFragment();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

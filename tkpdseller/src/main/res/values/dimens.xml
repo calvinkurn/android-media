@@ -4,6 +4,8 @@
     <dimen name="base_picker_multiple_item_bottom_sheet_header_height">58dp</dimen>
     <dimen name="base_picker_multiple_item_bottom_sheet_header_shadow_height">6dp</dimen>
     <dimen name="base_picker_multiple_item_footer_height">56dp</dimen>
+    <dimen name="base_picker_multiple_item_cache_image_height">32dp</dimen>
+
     <dimen name="top_ads_dashboard_margin_cards">20dp</dimen>
     <dimen name="top_ads_dashboard_padding_cards">15dp</dimen>
     <dimen name="top_ads_dashboard_padding_cards_small">7dp</dimen>
