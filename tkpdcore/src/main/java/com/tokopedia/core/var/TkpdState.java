@@ -77,12 +77,13 @@ public class TkpdState {
         public static final int REGISTER_INITIAL = 45;
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
-        public static final int SELLER_PRODUCT_EXTEND = 53;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;
+        public static final int SELLER_PRODUCT_EXTEND = 53;
+        public static final int CATEGORY_NAVIGATION = 54;
     }
 
     public class Application {

@@ -47,7 +47,7 @@ import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;Nisie
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -126,14 +126,14 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        //no route to merchant redirect on seller, go to default
-        goToDefaultRoute(context);
+    public void actionAppLink(Context context, String linkUrl) {
+
     }
 
     @Override
-    public void actionAppLink(Activity activity, String linkUrl) {
-
+    public void goToCreateMerchantRedirect(Context context) {
+        //no route to merchant redirect on seller, go to default
+        goToDefaultRoute(context);
     }
 
     @Override
