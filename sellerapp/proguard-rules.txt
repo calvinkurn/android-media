@@ -84,11 +84,6 @@
     @com.github.asne.facebook.** *;
 }
 
--keep class com.airbnb.deeplinkdispatch.** { *; }
--keepclasseswithmembers class * {
-     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
-}
-
 -keep class com.newrelic.agent.android.** { *; }
 -keepclasseswithmembers class * {
     @com.newrelic.agent.android.** *;
