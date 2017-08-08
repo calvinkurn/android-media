@@ -111,7 +111,7 @@
     <dimen name="gm_tooltip_compare_height">45dp</dimen>
     <dimen name="gm_tooltip_dot_image">8dp</dimen>
     <dimen name="gm_tooltip_text_compare_margin">6dp</dimen>
-    <dimen name="gm_tooltip_compare_text_bottom">8dp</dimen>
+    <dimen name="gm_tooltip_compare_text_bottom">10dp</dimen>
     <dimen name="gm_tooltip_compare_text_top">2dp</dimen>
     <dimen name="gm_tooltip_text_bottom">3dp</dimen>
     <dimen name="gm_tooltip_text_compare_size">11sp</dimen>
